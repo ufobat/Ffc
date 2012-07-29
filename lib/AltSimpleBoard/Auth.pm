@@ -1,35 +1,24 @@
 package AltSimpleBoard::Auth;
 use Mojo::Base 'Mojolicious::Controller';
-use Mojo::Util 'md5_sum';
 use utf8;
 use AltSimpleBoard::Data::Auth;
 
 sub login {
     my $self    = shift;
-    my $session = $self->session;
-
-    if ( $self->check_login_status() ) {
-        return unless $self->get_relevant_data();
-    }
-    else {
-        return unless $self->get_relevant_data();
-        AltSimpleBoard::Data::Auth::update_usersession( "$session", $session->{user} );
-    }
-
-    $self->render('frontpage');
+    return unless $self->get_relevant_data();
+    $self->redirect_to('frontpage');
 }
 
 sub logout {
     my $self = shift;
     my $user = $self->cancel_session();
-    AltSimpleBoard::Data::Auth::logout($user) if $user;
-    $self->render( 'login_form',
+    $self->render( 'auth/login_form',
         error => 'Abmelden bestätigt, bitte melden Sie sich erneut an' );
 }
 
 sub login_form {
     my $self = shift;
-    $self->render( 'login_form', error => 'Bitte melden Sie sich an' );
+    $self->render( 'auth/login_form', error => 'Bitte melden Sie sich an' );
 }
 
 sub cancel_session {
@@ -37,7 +26,6 @@ sub cancel_session {
     my $session = $self->session;
     my $user    = $session->{user};
     delete $session->{user};
-    delete $session->{pass};
     delete $session->{userid};
     return $user;
 }
@@ -46,14 +34,33 @@ sub check_login {
     my $self = shift;
     return 1 if $self->check_login_status();
     $self->cancel_session();
-    $self->render( 'login_form',
+    $self->render( 'auth/login_form',
         error => 'Session ungültig, melden Sie sich erneut an' );
     return;
 }
 
 sub check_login_status {
-    my $user = $_[0]->session()->{user};
-    $user and AltSimpleBoard::Data::Auth::check_login_status($user) ? 1 : 0;
+    my $session = $_[0]->session();
+    return 0 unless $session;
+    $session->{user} ? 1 : 0;
+}
+sub get_relevant_data {
+    my $self    = shift;
+    my $session = $self->session;
+    my $user    = $self->param('user');
+    my $pass    = $self->param('pass');
+    my @data    = AltSimpleBoard::Data::Auth::get_userdata( $user, $pass );
+    unless (@data) {
+        $self->render( 'auth/login_form', error => 'Anmeldung fehlgeschlagen' );
+        return;
+    }
+    %$session = (
+        %$session,
+        user   => $user,
+        userid => $data[0],
+    );
+
+    return 1;
 }
 
 1;

@@ -1,2 +1,4 @@
 etc/*
 log/*
+.htaccess
+*.swp

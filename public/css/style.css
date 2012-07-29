@@ -1,0 +1,44 @@
+@import "threadalign.css";
+* {
+    padding: 0;
+    margin: 0;
+}
+body {
+    background: #369 url('../img/hg.png');
+    color: #003;
+    padding: 1em 2em;
+    margin: 0;
+    max-width: 100em;
+}
+body > * {
+    margin: 8px 0;
+    padding: 0.5em 1em;
+    background: #ccc;
+    border-width: 0 0 0 3px;
+    border-color: #fff;
+    border-style: solid;
+    border-radius: 8px;
+    box-shadow: 1px 1px 4px #666;
+}
+.menu {
+    text-align: center;
+    margin: -1em 0;
+    position: fixed;
+    right: 1em;
+    background: #333;
+    border: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 1px 1px 4px #666;
+}
+.menu, .menu a {
+    color: #fff;
+    text-decoration: none;
+}
+.menu .box {
+    border: 1px #ccc outset;
+    border-radius: 2px;
+    color: #f66;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+}

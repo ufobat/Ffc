@@ -1,7 +1,14 @@
 % layout 'default';
-% title 'Welcome';
-<h2><%= $message %></h2>
-This page was generated from the template "templates/example/welcome.html.ep"
-and the layout "templates/layouts/default.html.ep",
-<a href="<%== url_for %>">click here</a> to reload the page or
-<a href="/index.html">here</a> to move forward to a static page.
+% title 'Board';
+<div class="menu"><a href="<%= url_for 'logout' %>" title="abmelden">abmelden <span class="box">X</span></a></div>
+<div class="input">
+<form>
+   <textarea></textarea> 
+</form>
+</div>
+% for my $p ( @$posts ) {
+<div class="<%= $p->[0] %>">
+<div class="info"><%= $p->[1] %> (<%= $p->[2] %>):</div>
+<div class="text"><%== $p->[3] %></div>
+</div>
+% }

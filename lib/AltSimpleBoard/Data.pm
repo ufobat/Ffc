@@ -1,4 +1,4 @@
-package Data;
+package AltSimpleBoard::Data;
 
 use 5.010;
 use strict;
@@ -9,8 +9,9 @@ use utf8;
 use DBI;
 
 our $DefaultConfig = join '/',
-  File::Spec->splitdir( File::Basename::dirname(__FILE__) ), '..', 'etc',
-  'altsimpleboard.conf';
+  File::Spec->splitdir( File::Basename::dirname(__FILE__) ), '..', '..', 'etc',
+  'altsimpleboard.json';
+our $Prefix = '';
 {
     my $dbh;
     my $config;
@@ -18,8 +19,9 @@ our $DefaultConfig = join '/',
     sub set_config {
         my $app = shift;
         $config = $app->plugin(
-            JSONConfig => { file => $ENV{DQC0R_CONFIG} // $DefaultConfig } );
+            JSONConfig => { file => $ENV{ASB_CONFIG} // $DefaultConfig } );
         $app->secret( $config->{cookie_secret} );
+        $Prefix = $config->{dbprefix};
     }
 
     sub dbh {
