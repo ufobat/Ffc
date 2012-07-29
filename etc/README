@@ -1,0 +1,11 @@
+Place your config in here as "altsimpleboard.json"
+
+Example:
+
+{
+    "cookie_secret": "Very secure passphrase!",
+    "dsn":"DBI:mysql:database=board;host=localhost",
+    "user":"sysdba",
+    "password":"masterkey",
+    "dbprefix":"asb"
+}
