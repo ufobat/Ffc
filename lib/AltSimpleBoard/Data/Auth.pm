@@ -5,7 +5,6 @@ use strict;
 use warnings;
 use utf8;
 use AltSimpleBoard::Data;
-use AltSimpleBoard::Data::Msg;
 
 sub get_userdata {
     my ( $user, $pass ) = @_;
