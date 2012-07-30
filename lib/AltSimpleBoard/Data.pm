@@ -11,6 +11,7 @@ use DBI;
 our $DefaultConfig = join '/',
   File::Spec->splitdir( File::Basename::dirname(__FILE__) ), '..', '..', 'etc',
   'altsimpleboard.json';
+our $PhpBBPath = '';
 our $Prefix = '';
 {
     my $dbh;
@@ -22,6 +23,7 @@ our $Prefix = '';
             JSONConfig => { file => $ENV{ASB_CONFIG} // $DefaultConfig } );
         $app->secret( $config->{cookie_secret} );
         $Prefix = $config->{dbprefix};
+        $PhpBBPath = $config->{phpbbpath};
     }
 
     sub dbh {
