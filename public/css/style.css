@@ -8,6 +8,7 @@ body {
     color: #003;
     padding: 1em 2em;
     margin: 0;
+    line-height: 1.5;
     max-width: 100em;
 }
 body > div {
@@ -43,8 +44,10 @@ body > div {
 .menu .linktext {
     text-decoration: underline;
 }
-.menu a:hover * {
+.menu a:hover .linktext {
     color: #fff;
+}
+.menu a:hover * {
     text-shadow: 1px 1px 3px #666;
 }
 h1, h2, h3, h4 {
@@ -62,4 +65,11 @@ h1.title {
     background: none;
     text-align: center;
     box-shadow: none;
+    margin-bottom: 3em;
+}
+.footer form {
+    display: inline;
+}
+p {
+    margin-top: 1.5em;
 }

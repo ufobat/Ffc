@@ -21,5 +21,9 @@
 </div>
 % }
 <div class="footer">
-    <a href="<%= url_for 'archiv' %>" title="Ältere Beiträge">Ältere Beiträge</a>
+    <a href="<%= url_for 'archiv' %>" title="Ältere Beiträge">Ältere Beiträge</a>,
+%= form_for search => (method => 'POST') => begin
+%= text_field 'suchwort'
+%= submit_button 'Suchen'
+% end
 </div>
