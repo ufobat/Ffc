@@ -1,14 +1,25 @@
 % layout 'default';
 % title 'Board';
-<div class="menu"><a href="<%= url_for 'logout' %>" title="abmelden">abmelden <span class="box">X</span></a></div>
-<div class="input">
-<form>
-   <textarea></textarea> 
-</form>
-</div>
+<div class="menu">
+    Angemeldet als <span class="name"><%= session()->{user} %></span>,
+    <a href="<%= url_for 'msglist' %>" title="Private Nachrichten"><span class="linktext">private Nachrichten</span></a>, 
+    <a href="<%= url_for 'logout' %>" title="abmelden"><span class="linktext">abmelden</span> <span class="logout"> X</span></a></div>
+<h1 class="title">4Friends - Fake-Forum</h1>
 % for my $p ( @$posts ) {
 <div class="<%= $p->[0] %>">
-<div class="info"><%= $p->[1] %> (<%= $p->[2] %>):</div>
+<div class="info">
+    <h2>
+% if ( session()->{user} eq $p->[1] ) {
+        <%= $p->[1] %>
+% } else {
+        <a href="<%= url_for 'usermsg', to => $p->[1] %>" title="Private Nachricht an <%= $p->[1] %> schreiben"><%= $p->[1] %></a> 
+% }
+        (<%= $p->[2] %>):
+    </h2>
+</div>
 <div class="text"><%== $p->[3] %></div>
 </div>
 % }
+<div class="footer">
+    <a href="<%= url_for 'archiv' %>" title="Ältere Beiträge">Ältere Beiträge</a>
+</div>

@@ -10,7 +10,7 @@ body {
     margin: 0;
     max-width: 100em;
 }
-body > * {
+body > div {
     margin: 8px 0;
     padding: 0.5em 1em;
     background: #ccc;
@@ -31,14 +31,35 @@ body > * {
     box-shadow: 1px 1px 4px #666;
 }
 .menu, .menu a {
-    color: #fff;
+    color: #999;
     text-decoration: none;
 }
-.menu .box {
-    border: 1px #ccc outset;
-    border-radius: 2px;
+.menu .logout {
     color: #f66;
-    display: inline-block;
-    width: 1em;
-    height: 1em;
+}
+.menu .name {
+    color: #fff;
+}
+.menu .linktext {
+    text-decoration: underline;
+}
+.menu a:hover * {
+    color: #fff;
+    text-shadow: 1px 1px 3px #666;
+}
+h1, h2, h3, h4 {
+    font-size: 1em;
+    font-weight: bolder;
+    color: #669;
+}
+h1.title {
+    color: #003;
+    font-size: 1.5em;
+    text-shadow: 1px 1px 4px #666;
+}
+.footer {
+    border: none;
+    background: none;
+    text-align: center;
+    box-shadow: none;
 }
