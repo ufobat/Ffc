@@ -14,7 +14,12 @@
 % } else {
         <a href="<%= url_for 'usermsg', to => $p->[1] %>" title="Private Nachricht an <%= $p->[1] %> schreiben"><%= $p->[1] %></a> 
 % }
-        (<%= $p->[2] %>):
+        (
+        <%= $p->[2] %>
+% if ( session()->{user} eq $p->[1] ) {
+        , <a href="<%= url_for 'editpost', id => $p->[0] %>" title="Beitrag editieren">editieren</a> 
+% }
+        ):
     </h2>
 </div>
 <div class="text"><%== $p->[3] %></div>

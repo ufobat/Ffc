@@ -1,7 +1,7 @@
 % layout 'default';
 % title 'Login';
 % if ( $error ) {
-<p><%= $error %></p>
+<div class="error"><%= $error %></div>
 % }
 %= form_for login => (method => 'post') => begin
     <table>

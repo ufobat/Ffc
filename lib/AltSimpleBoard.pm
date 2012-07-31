@@ -18,6 +18,7 @@ sub startup {
     $r->route('/login')->to('auth#login')->name('login');
     my $b = $r->bridge()->to('auth#check_login');
     $b->route('/board')->to('board#frontpage')->name('frontpage');
+    $b->route('/post/:id/edit', id => qr(\d+))->to('board#frontpage')->name('editpost');
     $b->route('/msg')->to('msg#list')->name('msglist');
     $b->route('/msg/:to', to => qr(\w{2,32}))->to('msg#userlist')->name('usermsg');
 }

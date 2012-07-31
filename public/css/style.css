@@ -11,7 +11,7 @@ body {
     line-height: 1.5;
     max-width: 100em;
 }
-body > div {
+body > div, body > form {
     margin: 8px 0;
     padding: 0.5em 1em;
     background: #ccc;
@@ -20,6 +20,18 @@ body > div {
     border-style: solid;
     border-radius: 8px;
     box-shadow: 1px 1px 4px #666;
+}
+.error {
+    color: #c30;
+}
+a {
+    color: #36c;
+    text-decoration: underline;
+}
+a:hover {
+    color: #039;
+    text-decoration: underline;
+    text-shadow: 0 0 2px #69f;
 }
 .menu {
     text-align: center;
