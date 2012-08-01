@@ -13,6 +13,8 @@ our $DefaultConfig = join '/',
   'altsimpleboard.json';
 our $PhpBBPath = '';
 our $Prefix = '';
+our $PhpBBPrefix = '';
+our $AvatarSalt = '';
 {
     my $dbh;
     my $config;
@@ -23,7 +25,11 @@ our $Prefix = '';
             JSONConfig => { file => $ENV{ASB_CONFIG} // $DefaultConfig } );
         $app->secret( $config->{cookie_secret} );
         $Prefix = $config->{dbprefix};
+        $PhpBBPrefix = $config->{phpbbprefix};
         $PhpBBPath = $config->{phpbbpath};
+        $AvatarSalt = dbh()->selectrow_arrayref(
+            'SELECT config_value FROM '.$AltSimpleBoard::Data::PhpBBPrefix.'config WHERE config_name=?'
+            , undef, 'avatar_salt')->[0];
     }
 
     sub dbh {

@@ -7,6 +7,7 @@ Example:
     "dsn":"DBI:mysql:database=board;host=localhost",
     "user":"sysdba",
     "password":"masterkey",
-    "dbprefix":"asb",
+    "dbprefix":"asb_",
+    "phpbbprefix":"phpbb_",
     "phpbbpath":"/srv/www/phpBB3/htdocs/"
 }

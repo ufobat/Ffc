@@ -85,3 +85,12 @@ h1.title {
 p {
     margin-top: 1.5em;
 }
+blockquote {
+    border-style: solid;
+    border-color: #999 #fff #fff #999;
+    border-width: 1px;
+    color: #336;
+    background: #eee;
+    padding-left: 1em;
+    border-radius: 4px;
+}

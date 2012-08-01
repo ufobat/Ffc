@@ -8,5 +8,10 @@ sub frontpage {
     $c->stash( posts => AltSimpleBoard::Data::Board::get_posts() );
 }
 
+sub avatar {
+    my $self = shift;
+    my $img = $self->param('src');
+}
+
 1;
 
