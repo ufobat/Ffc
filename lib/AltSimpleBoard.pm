@@ -13,10 +13,10 @@ sub startup {
     my $r = $self->routes;
 
     # Normal route to controller
-    $r->route('/')->to('auth#login_form')->name('login_form');
     $r->route('/logout')->to('auth#logout')->name('logout');
     $r->route('/login')->to('auth#login')->name('login');
     my $b = $r->bridge()->to('auth#check_login');
+    $b->route('/')->to('board#frontpage');
     $b->route('/board')->to('board#frontpage')->name('frontpage');
     $b->route('/post/:id/edit', id => qr(\d+))->to('board#frontpage')->name('editpost');
     $b->route('/msg')->to('msg#list')->name('msglist');
