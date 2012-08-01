@@ -59,7 +59,7 @@ sub _bbcode {
     $s =~ s~
         \[url
             (?:=(?:"|&quot;)?(?<url>.+?)(?:"|&quot;)?)
-            (?<mark>(?:\:w+?)?)
+            (?<mark>(?:\:\w+?)?)
         \]
         (?<title>.+?)
         \[/url\k{mark}\]
