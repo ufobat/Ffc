@@ -33,6 +33,17 @@ a:hover {
     text-decoration: underline;
     text-shadow: 0 0 2px #69f;
 }
+div.postbox > img {
+    float: left;
+    margin-right: 1em;
+    margin-bottom: 0.5em;
+    border: 2px #fff solid;
+    border-radius: 4px;
+    box-shadow: 1px 1px 2px #999;
+}
+div.clear {
+    clear: both;
+}
 .menu {
     text-align: center;
     margin: -1em 0;

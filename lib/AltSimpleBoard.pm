@@ -21,7 +21,6 @@ sub startup {
     $b->route('/post/:id/edit', id => qr(\d+))->to('board#frontpage')->name('editpost');
     $b->route('/msg')->to('msg#list')->name('msglist');
     $b->route('/msg/:to', to => qr(\w{2,32}))->to('msg#userlist')->name('usermsg');
-    $b->route('/avatar/#src')->to('board#avatar')->name('avatar');
 }
 
 1;

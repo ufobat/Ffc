@@ -9,5 +9,6 @@ Example:
     "password":"masterkey",
     "dbprefix":"asb_",
     "phpbbprefix":"phpbb_",
-    "phpbbpath":"/srv/www/phpBB3/htdocs/"
+    "phpbbpath":"/srv/www/phpBB3/htdocs/",
+    "phpbburl":"https://server.de/phpBB3/"
 }

@@ -6,8 +6,8 @@
     <a href="<%= url_for 'logout' %>" title="abmelden"><span class="linktext">abmelden</span> <span class="logout"> X</span></a></div>
 <h1 class="title">4Friends - Fake-Forum</h1>
 % for my $p ( @$posts ) {
-<div class="<%= $p->[5] %>">
-<img src="<%= $p->[4] =~ m[\Ahttps?://]xmsi ? $p->[4] : url_for( avatar => src => $p->[4]) %>" />
+<div class="postbox <%= $p->[5] %>">
+<img src="<%= $p->[4] =~ m[\Ahttps?://]xmsi ? $p->[4] : "${AltSimpleBoard::Data::PhpBBURL}download/file.php?avatar=$p->[4]" %>" />
 <div class="info">
     <h2>
 % if ( session()->{user} eq $p->[1] ) {
@@ -19,6 +19,7 @@
     </h2>
 </div>
 <div class="text"><%== $p->[3] %></div>
+<div class="clear"></div>
 </div>
 % }
 <div class="footer">

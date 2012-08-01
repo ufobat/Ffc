@@ -14,7 +14,8 @@ our $DefaultConfig = join '/',
 our $PhpBBPath = '';
 our $Prefix = '';
 our $PhpBBPrefix = '';
-our $AvatarSalt = '';
+our $PhpBBURL = '';
+our $SmiliePath = '';
 {
     my $dbh;
     my $config;
@@ -27,9 +28,8 @@ our $AvatarSalt = '';
         $Prefix = $config->{dbprefix};
         $PhpBBPrefix = $config->{phpbbprefix};
         $PhpBBPath = $config->{phpbbpath};
-        $AvatarSalt = dbh()->selectrow_arrayref(
-            'SELECT config_value FROM '.$AltSimpleBoard::Data::PhpBBPrefix.'config WHERE config_name=?'
-            , undef, 'avatar_salt')->[0];
+        $PhpBBURL = $config->{phpbburl};
+        $SmiliePath = dbh()->selectrow_arrayref("select config_value from ${PhpBBPrefix}config where config_name='smilies_path'")->[0];
     }
 
     sub dbh {

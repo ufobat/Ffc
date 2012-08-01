@@ -64,6 +64,7 @@ sub _bbcode {
         (?<title>.+?)
         \[/url\k{mark}\]
         ~<a href="$+{url}">$+{title}</a>~gxms;
+    $s =~ s~\{SMILIES_PATH\}~$AltSimpleBoard::Data::PhpBBURL$AltSimpleBoard::Data::SmiliePath~gxms;
     return $s;
 }
 
