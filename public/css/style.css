@@ -87,10 +87,10 @@ p {
 }
 blockquote {
     border-style: solid;
-    border-color: #999 #fff #fff #999;
+    border-color: #bbb #fff #fff #bbb;
+    background: #ddd;
     border-width: 1px;
     color: #336;
-    background: #eee;
     padding-left: 1em;
     border-radius: 4px;
 }
