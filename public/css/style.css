@@ -43,12 +43,6 @@ div.postbox > img {
 div.clear {
     clear: both;
 }
-.signature {
-    border-top: 2px #ccc groove;
-    font-size: 0.8em;
-    line-height: 1em;
-    text-align: right;
-}
 .menu {
     text-align: center;
     margin: -1em 0;
@@ -100,6 +94,14 @@ h1.title {
 }
 p {
     margin-top: 1.5em;
+}
+.signature {
+    border-top: 2px #ccc groove;
+    font-size: 0.8em;
+    text-align: right;
+}
+.signature p {
+    margin-top: 0;
 }
 blockquote {
     border-style: solid;
