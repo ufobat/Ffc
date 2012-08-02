@@ -25,6 +25,7 @@ sub get_posts {
 
 sub format_text {
     my $s = shift;
+    return '' unless $s;
     $s = _bbcode($s);
     $s =~ s{\n}{</p>\n<p>}gsm;
     $s = "<p>$s</p>";
@@ -75,6 +76,7 @@ sub _bbcode {
         \[/url\k{mark}\]
         ~<a href="$+{url}">$+{title}</a>~gxmis;
 
+    # Farben
     $s =~ s~
         \[color
             (?:=(?:"|&quot;)?(?<color>\#[0-9a-f]{3}(?:[0-9a-f]{3})?)(?:"|&quot;)?)
