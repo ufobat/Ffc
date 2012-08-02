@@ -7,6 +7,7 @@ use File::Spec;
 use File::Basename;
 use utf8;
 use DBI;
+use AltSimpleBoard::Data::Board;
 
 our $DefaultConfig = join '/',
   File::Spec->splitdir( File::Basename::dirname(__FILE__) ), '..', '..', 'etc',
@@ -31,7 +32,18 @@ our %Users;
         $PhpBBPath = $config->{phpbbpath};
         $PhpBBURL = $config->{phpbburl};
         $SmiliePath = dbh()->selectrow_arrayref("select config_value from ${PhpBBPrefix}config where config_name='smilies_path'")->[0];
-        %Users = map {$_->[1] => {id => $_->[0], avatar => $_->[2], signature => $_->[3]}} @{dbh()->selectall_arrayref("select id, name, avatar, signature from ${Prefix}users")};
+        %Users = map {
+                $_->[1] => {
+                    id => $_->[0], 
+                    avatar => $_->[2], 
+                    signature => AltSimpleBoard::Data::Board::format_text($_->[3])
+                }
+            } 
+            @{
+                dbh()->selectall_arrayref(
+                    "select id, name, avatar, signature from ${Prefix}users"
+                    )
+            };
     }
 
     sub dbh {

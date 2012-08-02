@@ -16,13 +16,19 @@ sub get_posts {
         my @t = localtime $p->[2];
         $t[5] += 1900; $t[4]++;
         $p->[2] = sprintf '%d.%d.%d, %d:%02d', @t[3,4,5,2,1];
-        $p->[3] = _bbcode($p->[3]);
-        $p->[3] =~ s{\n}{</p>\n<p>}gsm;
-        $p->[3] = "<p>$p->[3]</p>";
+        $p->[3] = format_text($p->[3]);
         $parents{$p->[4]} = $pid++ unless exists $parents{$p->[4]};
         $p->[4] = sprintf 'c%02d', $parents{$p->[4]};
     }
     return $data;
+}
+
+sub format_text {
+    my $s = shift;
+    $s = _bbcode($s);
+    $s =~ s{\n}{</p>\n<p>}gsm;
+    $s = "<p>$s</p>";
+    return $s;
 }
 
 sub _bbcode {
@@ -36,7 +42,7 @@ sub _bbcode {
         \]
         (?<text>.+?)
         \[/quote\k{mark}\]
-        ~<blockquote cite="$+{cite}">$+{text}</blockquote>~gmxs;
+        ~<blockquote cite="$+{cite}">$+{text}</blockquote>~gmxis;
 
     # textmarkierungen
     for my $c ( qw(u b i) ) {
@@ -46,16 +52,20 @@ sub _bbcode {
             \]
             (.+?)
             \[/$c\1\]
-            ~<$c>$2</$c>~gxms;
+            ~<$c>$2</$c>~gxmis;
     }
 
+    # Bilder und Smilies
     $s =~ s~
         \[img
             (?<mark>(?:\:\w+?)?)
         \]
         (?<src>.+?)
         \[/img\k{mark}\]
-        ~<img src="$+{src}" />~gxms;
+        ~<img src="$+{src}" />~gxmis;
+    $s =~ s~\{SMILIES_PATH\}~$AltSimpleBoard::Data::PhpBBURL$AltSimpleBoard::Data::SmiliePath~gxmis;
+
+    # Links
     $s =~ s~
         \[url
             (?:=(?:"|&quot;)?(?<url>.+?)(?:"|&quot;)?)
@@ -63,8 +73,16 @@ sub _bbcode {
         \]
         (?<title>.+?)
         \[/url\k{mark}\]
-        ~<a href="$+{url}">$+{title}</a>~gxms;
-    $s =~ s~\{SMILIES_PATH\}~$AltSimpleBoard::Data::PhpBBURL$AltSimpleBoard::Data::SmiliePath~gxms;
+        ~<a href="$+{url}">$+{title}</a>~gxmis;
+
+    $s =~ s~
+        \[color
+            (?:=(?:"|&quot;)?(?<color>\#[0-9a-f]{3}(?:[0-9a-f]{3})?)(?:"|&quot;)?)
+            (?<mark>(?:\:\w+?)?)
+        \]
+        (?<text>.+?)
+        \[/color\k{mark}\]
+        ~<span style="color:$+{color}">$+{text}</span>"~gxims;
     return $s;
 }
 

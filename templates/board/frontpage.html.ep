@@ -19,7 +19,7 @@
     </h2>
 </div>
 <div class="text"><%== $p->[3] %></div>
-<div class="clear"></div>
+<div class="clear signature"><%== $AltSimpleBoard::Data::Users{$p->[1]}->{signature} %></div>
 </div>
 % }
 <div class="footer">
