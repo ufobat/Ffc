@@ -10,6 +10,7 @@ body {
     margin: 0;
     line-height: 1.5em;
     max-width: 100em;
+    min-width: 50em;
 }
 body > div, body > form {
     margin: 8px 0;

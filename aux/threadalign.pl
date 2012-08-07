@@ -19,6 +19,6 @@ for my $h ( 0..$#colorchars ) {
 for my $i ( 0..$#colors ) {
     printf 
         ".c%02d{border-color:#%s;margin-left:%dem}\n"
-        , $i + 1, $colors[$i], $i
+        , $i + 1, $colors[$i], 2*$i
 }
 
