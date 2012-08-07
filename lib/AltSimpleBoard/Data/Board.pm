@@ -84,7 +84,7 @@ sub _bbcode {
         \]
         (?<text>.+?)
         \[/color\k{mark}\]
-        ~<span style="color:$+{color}">$+{text}</span>"~gxims;
+        ~<span style="color:$+{color}">$+{text}</span>~gxims;
     return $s;
 }
 
