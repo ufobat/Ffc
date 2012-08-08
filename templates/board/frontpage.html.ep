@@ -6,7 +6,7 @@
     <a href="<%= url_for 'logout' %>" title="abmelden"><span class="linktext">abmelden</span> <span class="logout"> X</span></a></div>
 <h1 class="title">4Friends - Fake-Forum</h1>
 % for my $p ( @$posts ) {
-<div class="postbox <%= $p->[4] %>">
+<div class="postbox <%= $p->[4] %><%= session()->{user} eq $p->[1] ? ' ownpost' : '' %>">
 <img src="<%= "${AltSimpleBoard::Data::PhpBBURL}download/file.php?avatar=$AltSimpleBoard::Data::Users{$p->[1]}->{avatar}" %>" />
 <div class="info">
     <h2>
