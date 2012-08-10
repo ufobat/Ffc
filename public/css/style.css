@@ -6,7 +6,7 @@
 body {
     background: #9cf url('../img/hg.png');
     color: #003;
-    margin: 0 1em;
+    margin: 0 1em 3em 1em;
 }
 .error {
     color: #c30;
@@ -22,12 +22,20 @@ a:hover {
 }
 div.postbox {
     background: #ccc;
-    border: 1px #404040 solid;
-    box-shadow: 1px 1px 4px #666;
+    border: 1px #333 solid;
+    box-shadow: 1px 1px 4px #333;
     margin-top: 1em;
+    border-radius: 3px;
+    overflow: hidden;
 }
 div.postbox > * {
     margin: 1em;
+}
+div.postbox > div.text, div.postbox > div.signature {
+    display: none;
+}
+div.postbox:active > div.text, div.postbox:active > div.signature, div.new > div.text, div.new > div.signature {
+    display: block;
 }
 div.postbox img {
     max-width: 512px;
@@ -39,10 +47,18 @@ div.postbox > img.avatar {
     margin-bottom: 0.5em;
     border-radius: 4px;
     box-shadow: 1px 1px 2px #999;
+    height: 2em;
+}
+div.postbox:active img.avatar, div.new img.avatar {
+    height: auto;
+}
+div.new { 
+    border-color: #f90; 
 }
 div.ownpost {
     color: #333;
     border-color: #666;
+    box-shadow: 1px 1px 4px #666;
 }
 
 div.clear {

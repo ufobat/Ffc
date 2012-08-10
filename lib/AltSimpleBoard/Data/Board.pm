@@ -20,6 +20,7 @@ sub get_posts {
         $parents{$p->[4]} = $pid++ unless exists $parents{$p->[4]};
         $p->[4] = sprintf 'c%02d', $parents{$p->[4]};
     }
+    $data->[-1]->[5] = 'new';
     return $data;
 }
 
