@@ -8,7 +8,7 @@ use AltSimpleBoard::Data;
 
 sub get_posts {
     my $data = AltSimpleBoard::Data::dbh()
-      ->selectall_arrayref( 'SELECT id, user, time, text, parent FROM '.$AltSimpleBoard::Data::Prefix.'posts'
+      ->selectall_arrayref( 'SELECT id, user, time, text, parent FROM '.$AltSimpleBoard::Data::Prefix.'posts ORDER BY time asc'
         , undef );
     my %parents;
     my $pid = 1;

@@ -3,11 +3,12 @@
 <div class="menu">
     Angemeldet als <span class="name"><%= session()->{user} %></span>,
     <a href="<%= url_for 'msglist' %>" title="Private Nachrichten"><span class="linktext">private Nachrichten</span></a>, 
+    <a href="<%= url_for 'options' %>" title="Einstellungen"><span class="linktext">Einstellungen</span></a>, 
     <a href="<%= url_for 'logout' %>" title="abmelden"><span class="linktext">abmelden</span> <span class="logout"> X</span></a></div>
 <h1 class="title">4Friends - Fake-Forum</h1>
 % for my $p ( @$posts ) {
 <div class="postbox <%= $p->[4] %><%= session()->{user} eq $p->[1] ? ' ownpost' : '' %>">
-<img src="<%= "${AltSimpleBoard::Data::PhpBBURL}download/file.php?avatar=$AltSimpleBoard::Data::Users{$p->[1]}->{avatar}" %>" />
+<img class="avatar" src="<%= "${AltSimpleBoard::Data::PhpBBURL}download/file.php?avatar=$AltSimpleBoard::Data::Users{$p->[1]}->{avatar}" %>" />
 <div class="info">
     <h2>
 % if ( session()->{user} eq $p->[1] ) {
@@ -25,7 +26,7 @@
 <div class="footer">
     <a href="<%= url_for 'archiv' %>" title="Ältere Beiträge">Ältere Beiträge</a>,
 %= form_for search => (method => 'POST') => begin
-%= text_field 'suchwort'
+<input type="text" name="Suchfeld" />
 %= submit_button 'Suchen'
 % end
 </div>
