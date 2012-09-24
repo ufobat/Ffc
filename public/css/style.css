@@ -6,7 +6,8 @@
 body {
     background: #9bc url('../img/hg.png');
     color: #003;
-    margin: 0 1em 3em 1em;
+    margin: 0 auto 3em auto;
+    max-width: 75em;
 }
 .error {
     color: #c30;
@@ -51,14 +52,6 @@ div.postbox > img.avatar {
 }
 div.postbox:active img.avatar, div.new img.avatar {
     height: auto;
-}
-div.new { 
-    border-color: #f90; 
-}
-div.ownpost {
-    color: #333;
-    border-color: #666;
-    box-shadow: 1px 1px 4px #666;
 }
 
 div.clear {

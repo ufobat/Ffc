@@ -17,6 +17,7 @@ our $Prefix = '';
 our $PhpBBPrefix = '';
 our $PhpBBURL = '';
 our $SmiliePath = '';
+our $Fullpostnumber = 7;
 our %Users;
 {
     my $dbh;

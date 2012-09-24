@@ -8,19 +8,17 @@ use AltSimpleBoard::Data;
 
 sub get_posts {
     my $data = AltSimpleBoard::Data::dbh()
-      ->selectall_arrayref( 'SELECT id, user, time, text, parent FROM '.$AltSimpleBoard::Data::Prefix.'posts ORDER BY time asc'
+      ->selectall_arrayref( 'SELECT id, user, time, text, parent FROM '.$AltSimpleBoard::Data::Prefix.'posts ORDER BY time DESC'
         , undef );
-    my %parents;
     my $pid = 1;
-    for my $p ( @$data ) {
+    for my $i ( 0..$#$data ) {
+        my $p = $data->[$i];
         my @t = localtime $p->[2];
         $t[5] += 1900; $t[4]++;
         $p->[2] = sprintf '%d.%d.%d, %d:%02d', @t[3,4,5,2,1];
         $p->[3] = format_text($p->[3]);
-        $parents{$p->[4]} = $pid++ unless exists $parents{$p->[4]};
-        $p->[4] = sprintf 'c%02d', $parents{$p->[4]};
+        $p->[5] = 'new' if $i < $AltSimpleBoard::Data::Fullpostnumber;
     }
-    $data->[-1]->[5] = 'new';
     return $data;
 }
 
