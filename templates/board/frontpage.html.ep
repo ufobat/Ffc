@@ -1,12 +1,5 @@
 % layout 'default';
 % title 'Board';
-<div class="menu">
-    Angemeldet als <span class="name"><%= session()->{user} %></span>,
-    <a href="<%= url_for 'msglist' %>" title="Private Nachrichten"><span class="linktext">private Nachrichten</span></a>, 
-    <a href="<%= url_for 'searchform' %>" title="Suchen"><span class="linktext">Suchen</span></a>, 
-    <a href="<%= url_for 'optionsform' %>" title="Einstellungen"><span class="linktext">Einstellungen</span></a>, 
-    <a href="<%= url_for 'logout' %>" title="abmelden"><span class="linktext">abmelden</span> <span class="logout"> X</span></a></div>
-<h1 class="title">4Friends - Fake-Forum</h1>
 % for my $p ( @$posts ) {
 <div class="postbox<%= session()->{user} eq $p->[1] ? ' ownpost' : '' %><%= $p->[5] ? " $p->[5]" : ''%>">
 <img class="avatar" src="<%= "${AltSimpleBoard::Data::PhpBBURL}download/file.php?avatar=$AltSimpleBoard::Data::Users{$p->[1]}->{avatar}" %>" />

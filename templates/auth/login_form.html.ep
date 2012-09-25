@@ -1,5 +1,6 @@
 % layout 'default';
 % title 'Login';
+<div class="postbox">
 % if ( $error ) {
 <div class="error"><%= $error %></div>
 % }
@@ -10,4 +11,4 @@
         <tr><td></td><td><input type="submit" value="anmelden" /></td></tr>
     </table>
 % end
-
+</div>

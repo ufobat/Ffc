@@ -4,5 +4,18 @@
     <title><%= title %></title>
     <link rel="stylesheet" type="text/css" href="<%= url_for '/css/style.css' %>" />
   </head>
-  <body><%= content %></body>
+  <body>
+<div class="menu">
+% if ( session()->{user} ) {
+    Angemeldet als <span class="name"><%= session()->{user} %></span>,
+    <a href="<%= url_for 'msglist' %>" title="Private Nachrichten"><span class="linktext">private Nachrichten</span></a>, 
+    <a href="<%= url_for 'searchform' %>" title="Suchen"><span class="linktext">Suchen</span></a>, 
+    <a href="<%= url_for 'logout' %>" title="abmelden"><span class="linktext">abmelden</span> <span class="logout"> X</span></a>
+% } else {
+    <a href="<%= url_for 'registerform' %>" title="Für das Forum registrieren"><span class="linktext">Registrieren</span></a>, 
+% }
+</div>
+<h1 class="title">4Friends - Fake-Forum</h1>
+<%= content %>
+  </body>
 </html>
