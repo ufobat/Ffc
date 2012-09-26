@@ -160,7 +160,7 @@ input:focus, textarea:focus {
     border-color: #66c;
 }
 .postbox button, .postbox input[type="submit"], .postbox input[type="reset"], .postbox select {
-    box-shadow: 2px 2px 3px #666;
+    box-shadow: 1px 1px 3px #666;
 }
 button, input[type="submit"], input[type="reset"], select {
     border: 1px #000 solid;
