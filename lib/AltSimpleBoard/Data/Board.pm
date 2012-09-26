@@ -20,7 +20,7 @@ sub get_stuff {
     $page = 1 unless $page;
     my $data = AltSimpleBoard::Data::dbh()->selectall_arrayref(
         'SELECT 0 as `id`, p.`from`, u.`name`, p.`posted`, p.`text` FROM'
-          . ' '.$AltSimpleBoard::Data::Prefix.'posti p INNER JOIN'
+          . ' '.$AltSimpleBoard::Data::Prefix.'posts p INNER JOIN'
           . ' '.$AltSimpleBoard::Data::Prefix.'users u ON u.`id`=p.`from`'
           . ' WHERE '.$where 
           . ($query ? ' AND p.`text` LIKE ?' : '')

@@ -7,8 +7,6 @@
   <body>
 <div class="menu">
 % if ( session()->{user} ) {
-    Angemeldet als <span class="name"><%= session()->{user} %></span>
-    <span class="divider">|</span>
     <a href="<%= url_for 'msglist' %>" title="Private Nachrichten"><span class="linktext">private Nachrichten</span></a>
     <span class="divider">|</span>
     <a href="<%= url_for 'noteslist' %>" title="Private Notizen"><span class="linktext">private Notizen</span></a>
@@ -16,7 +14,9 @@
 %= form_for search => ( method => 'POST' ) => begin
 %= text_field query => session()->{query}
 %= submit_button 'Suchen'
-<span class="divider">|</span>
+    <span class="divider">|</span>
+    <a href="<%= url_for 'options' %>" title="Einstellungen anpassen"><span class="linktext">Einstellungen</span></a>
+    <span class="divider">|</span>
 % end
     <a href="<%= url_for 'logout' %>" title="abmelden"><span class="linktext">abmelden</span> <span class="logout"> X</span></a>
 % } else {
