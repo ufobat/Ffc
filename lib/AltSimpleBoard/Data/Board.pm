@@ -6,9 +6,18 @@ use warnings;
 use utf8;
 use AltSimpleBoard::Data;
 
-sub get_notes { get_stuff( @_[0..2], 'p.`from`=? AND p.`to`=p.`from`', $_[0] ) }
-sub get_posts { get_stuff( @_[0..2], 'p.`to` IS NULL' ) }
-sub get_msgs  { get_stuff( @_[0..2], '( p.`from`=? OR p.`to`=? ) AND p.`from` <> p.`to`', $_[0], $_[0] ) }
+sub get_notes {
+    get_stuff( @_[ 0 .. 2 ], 'p.`from`=? AND p.`to`=p.`from`', $_[0] );
+}
+sub get_posts { get_stuff( @_[ 0 .. 2 ], 'p.`to` IS NULL' ) }
+
+sub get_msgs {
+    get_stuff(
+        @_[ 0 .. 2 ],
+        '( p.`from`=? OR p.`to`=? ) AND p.`from` <> p.`to`',
+        $_[0], $_[0]
+    );
+}
 
 sub get_stuff {
     my $userid = shift;
@@ -18,16 +27,19 @@ sub get_stuff {
     my @params = @_;
     return [] unless $userid;
     $page = 1 unless $page;
-    my $data = AltSimpleBoard::Data::dbh()->selectall_arrayref(
-        'SELECT 0 as `id`, p.`from`, u.`name`, p.`posted`, p.`text` FROM'
-          . ' '.$AltSimpleBoard::Data::Prefix.'posts p INNER JOIN'
-          . ' '.$AltSimpleBoard::Data::Prefix.'users u ON u.`id`=p.`from`'
-          . ' WHERE '.$where 
-          . ($query ? ' AND p.`text` LIKE ?' : '')
-          . ' ORDER BY p.`posted` DESC'
-          . ' LIMIT ? OFFSET ?',
-        undef, @params, ( $query ? "%$query%" : () ), $AltSimpleBoard::Data::Limit, ( ( $page - 1 ) * $AltSimpleBoard::Data::Limit )
-    );
+    my $sql =
+        'SELECT p.`id`, p.`from`, u.`name`, p.`posted`, p.`text` FROM '
+      . $AltSimpleBoard::Data::Prefix . 'posts p LEFT OUTER JOIN '
+      . $AltSimpleBoard::Data::Prefix . 'users u ON u.`id`=p.`from`'
+      . ' WHERE ' . $where
+      . ( $query ? ' AND p.`text` LIKE ?' : '' )
+      . ' ORDER BY p.`posted` DESC LIMIT ? OFFSET ?';
+    my $data =
+      AltSimpleBoard::Data::dbh()
+      ->selectall_arrayref( $sql, undef, @params, ( $query ? "%$query%" : () ),
+        $AltSimpleBoard::Data::Limit,
+        ( ( $page - 1 ) * $AltSimpleBoard::Data::Limit ) );
+
     for my $i ( 0 .. $#$data ) {
         given ( $data->[$i] ) {
             $_->[4] = format_text( $_->[4] );
