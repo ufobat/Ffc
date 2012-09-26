@@ -7,9 +7,17 @@
   <body>
 <div class="menu">
 % if ( session()->{user} ) {
-    Angemeldet als <span class="name"><%= session()->{user} %></span>,
-    <a href="<%= url_for 'msglist' %>" title="Private Nachrichten"><span class="linktext">private Nachrichten</span></a>, 
-    <a href="<%= url_for 'searchform' %>" title="Suchen"><span class="linktext">Suchen</span></a>, 
+    Angemeldet als <span class="name"><%= session()->{user} %></span>
+    <span class="divider">|</span>
+    <a href="<%= url_for 'msglist' %>" title="Private Nachrichten"><span class="linktext">private Nachrichten</span></a>
+    <span class="divider">|</span>
+    <a href="<%= url_for 'noteslist' %>" title="Private Notizen"><span class="linktext">private Notizen</span></a>
+    <span class="divider">|</span>
+%= form_for search => ( method => 'POST' ) => begin
+%= text_field query => session()->{query}
+%= submit_button 'Suchen'
+<span class="divider">|</span>
+% end
     <a href="<%= url_for 'logout' %>" title="abmelden"><span class="linktext">abmelden</span> <span class="logout"> X</span></a>
 % } else {
     <a href="<%= url_for 'registerform' %>" title="Für das Forum registrieren"><span class="linktext">Registrieren</span></a> 

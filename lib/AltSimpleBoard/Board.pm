@@ -6,13 +6,20 @@ use AltSimpleBoard::Auth;
 
 sub frontpage {
     my $c = shift;
-    $c->stash( posts => AltSimpleBoard::Data::Board::get_posts($c->session->{userid}, $c->param('page')) );
+    my $s = $c->session;
+    $c->stash( posts => AltSimpleBoard::Data::Board::get_posts($s->{userid}, $c->param('page'), $s->{query} ));
+}
+
+sub search {
+    my $c = shift;
+    $c->session->{query} = $c->param('query') || '';
+    $c->redirect_to( 'frontpage', page => 1 );
 }
 
 sub startpage {
     my $c = shift;
     if ( AltSimpleBoard::Auth::check_login_status($c) ) {
-        $c->redirect_to('frontpage');
+        $c->redirect_to('frontpage', page => 1);
     }
     else {
         $c->render( 'auth/login_form', error => 'Bitte melden Sie sich an' );

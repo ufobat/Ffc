@@ -19,7 +19,6 @@ sub startup {
     my $b = $r->bridge()->to('auth#check_login');
     $b->route('/board/:page', page => qr(\d+))->to('board#frontpage')->name('frontpage');
     $b->route('/board')->to(controller => 'board', action => 'frontpage', page => 1);
-    $b->route('/search')->via('get')->to('board#searchform')->name('searchform');
     $b->route('/options')->via('get')->to('board#optionsform')->name('optionsform');
     $b->route('/search')->via('post')->to('board#search')->name('search');
     $b->route('/options')->via('post')->to('board#optionssave')->name('optionssave');
@@ -27,6 +26,8 @@ sub startup {
     $b->route('/post/new')->via('post')->to('board#frontpage')->name('newpost');
     $b->route('/msg')->to('msg#list')->name('msglist');
     $b->route('/msg/:to', to => qr(\w{2,32}))->to('msg#userlist')->name('usermsg');
+    $b->route('/notes')->to('notes#list')->name('notelist');
+    $b->route('/notes/new')->to('notes#list')->name('newnote');
 }
 
 1;

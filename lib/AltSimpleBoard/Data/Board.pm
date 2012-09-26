@@ -6,13 +6,14 @@ use warnings;
 use utf8;
 use AltSimpleBoard::Data;
 
-sub get_msgs { get_stuff( @_[0,1], 'p.`from`=? OR p.`to`=?', $_[0], $_[0] ) }
-
-sub get_posts { get_stuff( @_[0,1], 'p.`to` IS NULL' ) }
+sub get_notes { get_stuff( @_[0..2], 'p.`from`=? AND p.`to`=p.`from`', $_[0] ) }
+sub get_posts { get_stuff( @_[0..2], 'p.`to` IS NULL' ) }
+sub get_msgs  { get_stuff( @_[0..2], '( p.`from`=? OR p.`to`=? ) AND p.`from` <> p.`to`', $_[0], $_[0] ) }
 
 sub get_stuff {
     my $userid = shift;
     my $page   = shift;
+    my $query  = shift;
     my $where  = shift;
     my @params = @_;
     return [] unless $userid;
@@ -22,9 +23,10 @@ sub get_stuff {
           . ' '.$AltSimpleBoard::Data::Prefix.'posti p INNER JOIN'
           . ' '.$AltSimpleBoard::Data::Prefix.'users u ON u.`id`=p.`from`'
           . ' WHERE '.$where 
+          . ($query ? ' AND p.`text` LIKE ?' : '')
           . ' ORDER BY p.`posted` DESC'
           . ' LIMIT ? OFFSET ?',
-        undef, @params, $AltSimpleBoard::Data::Limit, ( ( $page - 1 ) * $AltSimpleBoard::Data::Limit )
+        undef, @params, ( $query ? "%$query%" : () ), $AltSimpleBoard::Data::Limit, ( ( $page - 1 ) * $AltSimpleBoard::Data::Limit )
     );
     for my $i ( 0 .. $#$data ) {
         given ( $data->[$i] ) {

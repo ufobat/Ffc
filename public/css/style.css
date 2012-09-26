@@ -142,6 +142,19 @@ blockquote {
     padding-left: 1em;
     border-radius: 4px;
 }
+input, textarea {
+    border: 1px #000 solid;
+    background: #fff;
+    color: #006;
+}
+.divider {
+    color: #666;
+    text-shadow: -1px -1px 0px #111;
+}
+input:focus, textarea:focus {
+    box-shadow: 0 0 1px #fff;
+    border-color: #66c;
+}
 button, input[type="submit"], input[type="reset"], select {
     border: 1px #000 solid;
     color: #ccc;
@@ -153,12 +166,6 @@ button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hove
     border-color: #222;
     background: url('../img/tg.png') #666 repeat-x bottom;
 }
-input[type="text"], input[type="password"], textarea {
-    border: 1px #000 solid;
-    background: #fff;
-    color: #006;
-}
-input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
-    box-shadow: 0 0 1px #fff;
-    border-color: #66c;
+.menu form {
+    display: inline;
 }
