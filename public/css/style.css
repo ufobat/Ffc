@@ -163,6 +163,7 @@ input:focus, textarea:focus {
     box-shadow: 1px 1px 3px #666;
 }
 button, input[type="submit"], input[type="reset"], select {
+    cursor: pointer;
     border: 1px #000 solid;
     color: #ccc;
     background: url('../img/tg.png') #404040 repeat-x bottom;
