@@ -163,7 +163,7 @@ button, input[type="submit"], input[type="reset"], select {
     cursor: pointer;
     border: 1px #000 solid;
     color: #ccc;
-    background: url('../img/tg.png') #404040 repeat-x bottom;
+    background: url('../img/bg.png') #404040 repeat-x bottom;
 }
 button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hover {
     box-shadow: 0 0 1px #fff;
