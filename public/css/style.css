@@ -186,3 +186,15 @@ button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hove
     border-color: #eee;
     box-shadow: 1px 1px 3px #333;
 }
+.banner {
+    z-index: 1;
+    position: fixed;
+    left: 0;
+}
+body * {
+    position: relative;
+    z-index: 2;
+}
+.menu {
+    z-index: 3;
+}
