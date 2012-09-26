@@ -178,3 +178,11 @@ button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hove
 .menu form {
     display: inline;
 }
+.new {
+    border-color: #fc6;
+}
+.ownpost {
+    background-color: #bbb;
+    border-color: #eee;
+    box-shadow: 1px 1px 3px #333;
+}

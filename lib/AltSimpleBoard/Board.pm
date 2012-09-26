@@ -7,7 +7,7 @@ use AltSimpleBoard::Auth;
 sub frontpage {
     my $c = shift;
     my $s = $c->session;
-    $c->stash( posts => AltSimpleBoard::Data::Board::get_posts($s->{userid}, $c->param('page'), $s->{query} ));
+    $c->stash( posts => AltSimpleBoard::Data::Board::get_posts($s->{userid}, $c->param('page'), $s->{lastseen}, $s->{query} ));
 }
 
 sub search {
