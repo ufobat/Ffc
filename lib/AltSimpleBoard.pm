@@ -18,6 +18,7 @@ sub startup {
     $r->route('/')->to('board#startpage');
     my $b = $r->bridge()->to('auth#check_login');
     $b->route('/board/:page', page => qr(\d+))->to('board#frontpage')->name('frontpage');
+    $b->route('/board')->to(controller => 'board', action => 'frontpage', page => 1);
     $b->route('/search')->via('get')->to('board#searchform')->name('searchform');
     $b->route('/options')->via('get')->to('board#optionsform')->name('optionsform');
     $b->route('/search')->via('post')->to('board#search')->name('search');
