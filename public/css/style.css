@@ -159,9 +159,6 @@ input:focus, textarea:focus {
     box-shadow: 0 0 1px #fff;
     border-color: #66c;
 }
-.postbox button, .postbox input[type="submit"], .postbox input[type="reset"], .postbox select {
-    box-shadow: 1px 1px 3px #666;
-}
 button, input[type="submit"], input[type="reset"], select {
     cursor: pointer;
     border: 1px #000 solid;
