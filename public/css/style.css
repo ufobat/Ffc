@@ -38,14 +38,6 @@ a:hover {
     border-radius: 3px;
     overflow: hidden;
 }
-.postbox textarea {
-    width: 52.5em;
-    height: 8.5em;
-    border-color: #999;
-    background: #eee;
-    box-shadow: inset 0 0 3px #999;
-    margin-bottom: 1em;
-}
 .postbox > * {
     margin: 1em;
 }
@@ -151,6 +143,14 @@ input, textarea {
     color: #006;
     border-radius: 2px;
 }
+.postbox textarea {
+    width: 52.5em;
+    height: 8.5em;
+    border-color: #fff;
+    background: #eee;
+    box-shadow: inset 0 0 4px #999;
+    margin-bottom: 1em;
+}
 .divider {
     color: #666;
     text-shadow: -1px -1px 0px #111;
@@ -164,6 +164,10 @@ button, input[type="submit"], input[type="reset"], select {
     border: 1px #000 solid;
     color: #ccc;
     background: url('../img/bg.png') #404040 repeat-x bottom;
+    box-shadow: none;
+}
+.postbox button, .postbox input[type="submit"], .postbox input[type="reset"], .postbox select {
+    box-shadow: 2px 2px 3px #666;
 }
 button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hover {
     box-shadow: 0 0 1px #fff;
