@@ -6,27 +6,44 @@ use warnings;
 use utf8;
 use AltSimpleBoard::Data;
 
-sub get_posts {
-    my $data = AltSimpleBoard::Data::dbh()
-      ->selectall_arrayref( 'SELECT id, user, time, text, parent FROM '.$AltSimpleBoard::Data::Prefix.'posts ORDER BY time DESC'
-        , undef );
-    my $pid = 1;
-    for my $i ( 0..$#$data ) {
-        my $p = $data->[$i];
-        my @t = localtime $p->[2];
-        $t[5] += 1900; $t[4]++;
-        $p->[2] = sprintf '%d.%d.%d, %d:%02d', @t[3,4,5,2,1];
-        $p->[3] = format_text($p->[3]);
-        $p->[5] = 'new' if $i < $AltSimpleBoard::Data::Fullpostnumber;
+sub get_msgs { get_stuff( @_[0,1], 'p."to"=?' ) }
+
+sub get_posts { get_stuff( @_[0,1], 'p."to" IS NULL OR p."to"=?' ) }
+
+sub get_stuff {
+    my ( $userid, $page, $where ) = @_;
+    return [] unless $userid;
+    $page = 1 unless $page;
+    my $data = AltSimpleBoard::Data::dbh()->selectall_arrayref(
+        'SELECT p."id", p."from", u."name", p."posted", p."text" FROM'
+          . ' '.$AltSimpleBoard::Data::Prefix.'posts p INNER JOIN'
+          . ' '.$AltSimpleBoard::Data::Prefix.'users u ON u."id"=p."from"'
+          . ' WHERE '.$where 
+          . ' ORDER BY p."posted" DESC'
+          . ' LIMIT ? OFFSET ?',
+        undef, $userid, $AltSimpleBoard::Data::Limit, ( ( $page - 1 ) * $AltSimpleBoard::Data::Limit )
+    );
+    for my $i ( 0 .. $#$data ) {
+        given ( $data->[$i] ) {
+            $_->[4] = format_text( $_->[4] );
+            $_->[5] = format_timestamp( $_->[3] );
+        }
     }
     return $data;
+}
+
+sub format_timestamp {
+    my @t = localtime shift;
+    $t[5] += 1900;
+    $t[4]++;
+    return sprintf '%d.%d.%d, %d:%02d', @t[ 3, 4, 5, 2, 1 ];
 }
 
 sub format_text {
     my $s = shift;
     return '' unless $s;
     $s = _bbcode($s);
-    $s =~ s{\n}{</p>\n<p>}gsm;
+    $s =~ s{\n+}{</p>\n<p>}gsm;
     $s = "<p>$s</p>";
     return $s;
 }
@@ -45,7 +62,7 @@ sub _bbcode {
         ~<blockquote cite="$+{cite}">$+{text}</blockquote>~gmxis;
 
     # textmarkierungen
-    for my $c ( qw(u b i) ) {
+    for my $c (qw(u b i)) {
         $s =~ s~
             \[$c
                 ((?:\:\w+?)?)
@@ -63,7 +80,8 @@ sub _bbcode {
         (?<src>.+?)
         \[/img\k{mark}\]
         ~<img src="$+{src}" />~gxmis;
-    $s =~ s~\{SMILIES_PATH\}~$AltSimpleBoard::Data::PhpBBURL$AltSimpleBoard::Data::SmiliePath~gxmis;
+    $s =~
+s~\{SMILIES_PATH\}~$AltSimpleBoard::Data::PhpBBURL$AltSimpleBoard::Data::SmiliePath~gxmis;
 
     # Links
     $s =~ s~

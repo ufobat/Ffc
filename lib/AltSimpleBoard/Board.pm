@@ -6,7 +6,7 @@ use AltSimpleBoard::Auth;
 
 sub frontpage {
     my $c = shift;
-    $c->stash( posts => AltSimpleBoard::Data::Board::get_posts() );
+    $c->stash( posts => AltSimpleBoard::Data::Board::get_posts($c->session->{userid}, $c->param('page')) );
 }
 
 sub startpage {

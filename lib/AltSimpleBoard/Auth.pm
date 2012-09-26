@@ -6,7 +6,7 @@ use AltSimpleBoard::Data::Auth;
 sub login {
     my $self    = shift;
     return unless $self->get_relevant_data();
-    $self->redirect_to('frontpage');
+    $self->redirect_to('frontpage', page => 1);
 }
 
 sub logout {
@@ -42,7 +42,7 @@ sub check_login {
 sub check_login_status {
     my $session = $_[0]->session();
     return 0 unless $session;
-    $session->{user} ? 1 : 0;
+    $session->{userid} ? 1 : 0;
 }
 sub get_relevant_data {
     my $self    = shift;
@@ -56,8 +56,9 @@ sub get_relevant_data {
     }
     %$session = (
         %$session,
-        user   => $user,
-        userid => $data[0],
+        user     => $user,
+        userid   => $data[0],
+        lastseen => $data[1],
     );
 
     return 1;

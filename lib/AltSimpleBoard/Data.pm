@@ -19,6 +19,8 @@ our $PhpBBURL = '';
 our $SmiliePath = '';
 our $Fullpostnumber = 7;
 our %Users;
+our $CryptSalt;
+our $Limit;
 {
     my $dbh;
     my $config;
@@ -32,17 +34,18 @@ our %Users;
         $PhpBBPrefix = $config->{phpbbprefix};
         $PhpBBPath = $config->{phpbbpath};
         $PhpBBURL = $config->{phpbburl};
+        $CryptSalt = $config->{cryptsalt};
+        $Limit = $config->{postlimit};
         $SmiliePath = dbh()->selectrow_arrayref("select config_value from ${PhpBBPrefix}config where config_name='smilies_path'")->[0];
         %Users = map {
                 $_->[1] => {
-                    id => $_->[0], 
-                    avatar => $_->[2], 
-                    signature => AltSimpleBoard::Data::Board::format_text($_->[3])
+                    userid => $_->[0],
+                    lastseen => $_->[2],
                 }
             } 
             @{
                 dbh()->selectall_arrayref(
-                    "select id, name, avatar, signature from ${Prefix}users"
+                    "select id, name, lastseen from ${Prefix}users"
                     )
             };
     }
