@@ -149,6 +149,7 @@ input, textarea {
     box-shadow: inset 0 0 1px #ccc;
     background: #fff;
     color: #006;
+    border-radius: 2px;
 }
 .divider {
     color: #666;
