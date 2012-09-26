@@ -145,13 +145,13 @@ blockquote {
 button, input[type="submit"], input[type="reset"], select {
     border: 1px #000 solid;
     color: #ccc;
-    background: #404040;
+    background: url('../img/tg.png') #404040 repeat-x bottom;
 }
 button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hover {
     box-shadow: 0 0 1px #fff;
     color: #fff;
     border-color: #222;
-    background: #666;
+    background: url('../img/tg.png') #666 repeat-x bottom;
 }
 input[type="text"], input[type="password"], textarea {
     border: 1px #000 solid;
