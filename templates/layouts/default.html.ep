@@ -15,7 +15,7 @@
     <a href="<%= url_for 'registerform' %>" title="Für das Forum registrieren"><span class="linktext">Registrieren</span></a> 
 % }
 </div>
-<h1 class="title">4Friends - Fake-Forum</h1>
+<h1 class="title"><%= title %></h1>
 <%= content %>
   </body>
 </html>

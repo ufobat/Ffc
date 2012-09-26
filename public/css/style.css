@@ -7,7 +7,7 @@ body {
     background: #9bc url('../img/hg.png') fixed;
     color: #003;
     margin: 0 auto 3em auto;
-    max-width: 75em;
+    max-width: 55em;
 }
 .error {
     color: #c30;
@@ -21,7 +21,16 @@ a:hover {
     text-decoration: underline;
     text-shadow: 0 0 2px #69f;
 }
-div.postbox {
+.toppagelink {
+    margin-top: 1em;
+}
+.pages {
+    border-top: 1px #fff solid;
+    margin-top: 1em;
+    padding-top: 1em;
+    text-align: right;
+}
+.postbox {
     background: #ccc;
     border: 1px #333 solid;
     box-shadow: 1px 1px 4px #333;
@@ -29,20 +38,20 @@ div.postbox {
     border-radius: 3px;
     overflow: hidden;
 }
-div.postbox > * {
+.postbox textarea {
+    width: 52.5em;
+    height: 10em;
+    border-color: #999;
+    background: transparent;
+}
+.postbox > * {
     margin: 1em;
 }
-div.postbox > div.text, div.postbox > div.signature {
-    display: none;
-}
-div.postbox:active > div.text, div.postbox:active > div.signature, div.new > div.text, div.new > div.signature {
-    display: block;
-}
-div.postbox img {
+.postbox img {
     max-width: 512px;
     max-height: 256px;
 }
-div.postbox > img.avatar {
+.postbox > img.avatar {
     float: left;
     margin-right: 1em;
     margin-bottom: 0.5em;
@@ -50,11 +59,11 @@ div.postbox > img.avatar {
     box-shadow: 1px 1px 2px #999;
     height: 2em;
 }
-div.postbox:active img.avatar, div.new img.avatar {
+.postbox:active img.avatar, div.new img.avatar {
     height: auto;
 }
 
-div.clear {
+.clear {
     clear: both;
 }
 .menu {

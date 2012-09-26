@@ -21,6 +21,7 @@ our $Fullpostnumber = 7;
 our %Users;
 our $CryptSalt;
 our $Limit;
+our $Pagelinkpreview;
 {
     my $dbh;
     my $config;
@@ -36,6 +37,8 @@ our $Limit;
         $PhpBBURL = $config->{phpbburl};
         $CryptSalt = $config->{cryptsalt};
         $Limit = $config->{postlimit};
+        $Pagelinkpreview = $config->{pagelinkpreview};
+        $app->helper( title => sub { $config->{title} } );
         $SmiliePath = dbh()->selectrow_arrayref("select config_value from ${PhpBBPrefix}config where config_name='smilies_path'")->[0];
         %Users = map {
                 $_->[1] => {

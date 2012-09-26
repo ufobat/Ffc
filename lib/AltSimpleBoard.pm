@@ -23,6 +23,7 @@ sub startup {
     $b->route('/search')->via('post')->to('board#search')->name('search');
     $b->route('/options')->via('post')->to('board#optionssave')->name('optionssave');
     $b->route('/post/:id/edit', id => qr(\d+))->to('board#frontpage')->name('editpost');
+    $b->route('/post/new')->via('post')->to('board#frontpage')->name('newpost');
     $b->route('/msg')->to('msg#list')->name('msglist');
     $b->route('/msg/:to', to => qr(\w{2,32}))->to('msg#userlist')->name('usermsg');
 }

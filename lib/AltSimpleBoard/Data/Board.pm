@@ -6,22 +6,25 @@ use warnings;
 use utf8;
 use AltSimpleBoard::Data;
 
-sub get_msgs { get_stuff( @_[0,1], 'p."to"=?' ) }
+sub get_msgs { get_stuff( @_[0,1], 'p.`from`=? OR p.`to`=?', $_[0], $_[0] ) }
 
-sub get_posts { get_stuff( @_[0,1], 'p."to" IS NULL OR p."to"=?' ) }
+sub get_posts { get_stuff( @_[0,1], 'p.`to` IS NULL' ) }
 
 sub get_stuff {
-    my ( $userid, $page, $where ) = @_;
+    my $userid = shift;
+    my $page   = shift;
+    my $where  = shift;
+    my @params = @_;
     return [] unless $userid;
     $page = 1 unless $page;
     my $data = AltSimpleBoard::Data::dbh()->selectall_arrayref(
-        'SELECT p."id", p."from", u."name", p."posted", p."text" FROM'
-          . ' '.$AltSimpleBoard::Data::Prefix.'posts p INNER JOIN'
-          . ' '.$AltSimpleBoard::Data::Prefix.'users u ON u."id"=p."from"'
+        'SELECT 0 as `id`, p.`from`, u.`name`, p.`posted`, p.`text` FROM'
+          . ' '.$AltSimpleBoard::Data::Prefix.'posti p INNER JOIN'
+          . ' '.$AltSimpleBoard::Data::Prefix.'users u ON u.`id`=p.`from`'
           . ' WHERE '.$where 
-          . ' ORDER BY p."posted" DESC'
+          . ' ORDER BY p.`posted` DESC'
           . ' LIMIT ? OFFSET ?',
-        undef, $userid, $AltSimpleBoard::Data::Limit, ( ( $page - 1 ) * $AltSimpleBoard::Data::Limit )
+        undef, @params, $AltSimpleBoard::Data::Limit, ( ( $page - 1 ) * $AltSimpleBoard::Data::Limit )
     );
     for my $i ( 0 .. $#$data ) {
         given ( $data->[$i] ) {
