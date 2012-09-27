@@ -25,7 +25,6 @@ a:hover {
     margin-top: 1em;
 }
 .pages {
-    border-top: 1px #fff solid;
     margin-top: 1em;
     padding-top: 1em;
     text-align: right;
@@ -103,9 +102,6 @@ h1.title {
     color: #fff;
     font-size: 1.5em;
     text-shadow: 1px 1px 4px #404040;
-    border-color: #fff;
-    border-style: solid;
-    border-width: 0 0 1px 0;
     padding-top: 2em;
 }
 p {
