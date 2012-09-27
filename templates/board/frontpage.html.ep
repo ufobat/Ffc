@@ -20,20 +20,23 @@
 % } else {
         <a href="<%= url_for 'usermsg', to => $p->[1] %>" title="Private Nachricht an <%= $p->[2] %> schreiben"><%= $p->[2] %></a> 
 % }
-        (<%= $p->[5] %><% if ( session()->{userid} eq $p->[1] ) { %>, <a href="<%= url_for 'editpost', id => $p->[0] %>" title="Beitrag editieren">editieren</a><% } %>):
+        (<%= $p->[5] %><% if ( session()->{userid} eq $p->[1] ) { %>, 
+        <a href="<%= url_for 'editpost', id => $p->[0] %>" title="Beitrag editieren">editieren</a>,
+        <a href="<%= url_for 'deletepost', id => $p->[0] %>" title="Beitrag löschen">löschen</a><% } %>):
     </h2>
 </div>
 <div class="text"><%== $p->[4] %></div>
 </div>
 % }
 <div class="pages">
-% if ( $page > 3 ) {
+% my $plp = $AltSimpleBoard::Data::Pagelinkpreview;
+% if ( $page > $plp + 1 ) {
     <a href="<%= url_for frontpage => page => 1 %>" title="Zur ersten Seite gehen">[1]</a>
 % }
-% if ( $page > 4 ) {
+% if ( $page > $plp + 2 ) {
     ...
 % }
-% for my $p ( $page - 2 .. $page + 2 ) {
+% for my $p ( $page - $plp .. $page + $plp ) {
 %   if ( $p > 0 ) {
 %     if ( $page == $p ) {
     [<%= $page %>]

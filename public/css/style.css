@@ -133,6 +133,7 @@ input, textarea {
 }
 .wysiwyg, .postbox textarea {
     margin-bottom: 1em;
+    box-shadow: 1px 1px 2px #999;
 }
 .divider {
     color: #666;
