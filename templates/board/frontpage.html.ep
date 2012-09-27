@@ -2,7 +2,7 @@
 % if ( $page == 1 ) {
 <div class="postbox ownpost">
 %= form_for newpost => ( method => 'POST' ) => begin
-%= text_area 'text'
+%= text_area 'text', id => 'textinput'
 %= submit_button 'Speichern'
 % end
 </div>
