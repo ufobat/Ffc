@@ -6,6 +6,9 @@
     <link rel="stylesheet" type="text/css" href="<%= url_for '/css/style.css' %>" />
     <script type="text/javascript" src="<%= url_for '/js/jquery.js' %>"></script>
     <script type="text/javascript" src="<%= url_for '/js/jquery.wysiwyg.js' %>"></script>
+    <script type="text/javascript" src="<%= url_for '/js/wysiwyg.image.js' %>"></script>
+    <script type="text/javascript" src="<%= url_for '/js/wysiwyg.link.js' %>"></script>
+    <script type="text/javascript" src="<%= url_for '/js/wysiwyg.table.js' %>"></script>
     <script type="text/javascript">
         $(function() { $('#textinput').wysiwyg({
             resizeOptions: {},
