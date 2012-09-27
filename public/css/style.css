@@ -31,7 +31,7 @@ a:hover {
     text-align: right;
 }
 .postbox {
-    background: url('../img/ug.png') #ccc repeat-x bottom;
+    background: url('../img/ug.png') #eeb repeat-x bottom;
     border: 1px #fff solid;
     box-shadow: 1px 1px 4px #333;
     margin-top: 1em;
@@ -119,14 +119,6 @@ h1.title {
 p {
     margin-top: 1em;
 }
-.signature {
-    border-top: 2px #ccc groove;
-    font-size: 0.8em;
-    text-align: right;
-}
-.signature p {
-    margin-top: 0;
-}
 blockquote {
     border-style: solid;
     border-color: #bbb #fff #fff #bbb;
@@ -182,7 +174,7 @@ button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hove
     border-color: #fc6;
 }
 .ownpost {
-    background-color: #bbb;
+    background-color: #ddd;
     border-color: #eee;
     box-shadow: 1px 1px 3px #333;
 }
