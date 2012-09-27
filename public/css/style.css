@@ -73,6 +73,8 @@ a:hover {
     border-style: solid;
     border-width: 0 0 1px 0;
     box-shadow: 0 0 6px #000;
+    z-index: 3;
+    min-height: 1.5em;
 }
 .menu, .menu a {
     color: #999;
@@ -166,15 +168,19 @@ button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hove
     border-color: #eee;
     box-shadow: 1px 1px 3px #333;
 }
-.banner {
+.banner, .bottom {
     z-index: 1;
     position: fixed;
+}
+.banner {
     left: 0;
+    top: 2.1em;
+}
+.bottom {
+    right: 0;
+    bottom: 0;
 }
 body * {
     position: relative;
     z-index: 2;
-}
-.menu {
-    z-index: 3;
 }
