@@ -6,7 +6,7 @@
 body {
     background: #9bd url('../img/hg.png') fixed;
     color: #003;
-    margin: 3.5em auto 3em auto;
+    margin: 0 auto 3em auto;
     max-width: 55em;
 }
 .error {
