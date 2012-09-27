@@ -52,10 +52,11 @@ sub get_stuff {
 }
 
 sub format_timestamp {
-    my @t = localtime shift;
-    $t[5] += 1900;
-    $t[4]++;
-    return sprintf '%d.%d.%d, %d:%02d', @t[ 3, 4, 5, 2, 1 ];
+    my $t = shift;
+    if ( $t =~ m/(\d\d\d\d)-(\d\d)-(\d\d)\s+(\d\d):(\d\d):(\d\d)/xmsi ) {
+        $t = sprintf '%d.%d.%d, %02d:%02d', $3, $2, $1, $4, $5;
+    }
+    return $t;
 }
 
 sub format_text {
