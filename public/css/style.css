@@ -169,7 +169,7 @@ button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hove
     border-color: #eee;
     box-shadow: 1px 1px 3px #333;
 }
-.banner, .bottom, .logo {
+.banner, .bottom {
     z-index: 1;
     position: fixed;
 }
@@ -180,10 +180,6 @@ button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hove
 .bottom {
     right: 0;
     bottom: 0;
-}
-.logo {
-    right: 1em;
-    bottom: 1em;
 }
 body * {
     position: relative;
