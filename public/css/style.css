@@ -3,7 +3,7 @@
     margin: 0;
 }
 body {
-    background: #9bd url('../img/hg.png') fixed;
+    background: #69c url('../img/hg.png') fixed;
     color: #003;
     margin: 0 auto 3em auto;
     max-width: 55em;
@@ -28,7 +28,7 @@ a:hover {
     padding: .5em 1em;
 }
 .postbox, .pages {
-    background: url('../img/ug.png') #eeb repeat-x bottom;
+    background: url('../img/ug.png') #ff9 repeat-x bottom;
     border: 1px #fff solid;
     box-shadow: 1px 1px 4px #333;
     margin-top: 1em;
@@ -166,7 +166,7 @@ button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hove
     border-color: #fc6;
 }
 .ownpost {
-    background-color: #ddd;
+    background-color: #ccc;
     border-color: #eee;
     box-shadow: 1px 1px 3px #333;
 }
