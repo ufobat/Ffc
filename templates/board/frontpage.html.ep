@@ -12,7 +12,7 @@
 </div>
 % }
 % for my $p ( @$posts ) {
-<div class="postbox<%= session()->{userid} == $p->[1] ? ' ownpost' : '' %><%= $p->[6] ? ' new' : '' %>">
+<div class="postbox<%= session()->{userid} == $p->[1] && $act ne 'notes' ? ' ownpost' : '' %><%= $p->[6] ? ' new' : '' %>">
 <div class="info">
     <h2>
 % if ( session()->{userid} == $p->[1] ) {
