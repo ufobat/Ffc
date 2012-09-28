@@ -17,8 +17,8 @@
     <h2>
 % if ( session()->{userid} == $p->[1] ) {
 % if ( $act ne 'msgs' ) {
-        <a href="<%= url_for 'editpost', id => $p->[0] %>" title="Beitrag bearbeiten"><img src="<%= url_for '/img/icons/buttons/edit.png' %>" alt="bearbeiten" class="buttonicons" /></a>
-        <a href="<%= url_for 'deletepost', id => $p->[0] %>" title="Beitrag löschen"><img src="<%= url_for '/img/icons/buttons/delete.png' %>" alt="löschen" class="buttonicons" /></a>
+        <a href="<%= url_for 'editform', id => $p->[0] %>" title="Beitrag bearbeiten"><img src="<%= url_for '/img/icons/buttons/edit.png' %>" alt="bearbeiten" class="buttonicons" /></a>
+        <a href="<%= url_for 'delete', id => $p->[0] %>" title="Beitrag löschen"><img src="<%= url_for '/img/icons/buttons/delete.png' %>" alt="löschen" class="buttonicons" /></a>
 % }
         <%= $p->[2] %>
 % } else {

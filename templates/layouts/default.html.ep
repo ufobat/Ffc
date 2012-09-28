@@ -20,23 +20,23 @@
 <img src="<%= url_for '/img/icons/' . $act . '.png' %>" alt="" class="actionicon" />
 <div class="menu">
 % if ( session()->{user} ) {
-    <a href="<%= url_for 'frontpage', act => 'forum' %>" title="Offizielles Forum"><span class="linktext<%= $act eq 'forum' ? ' active' : '' %>">Forum</span></a>
+    <a href="<%= url_for 'frontpage', act => 'forum' %>" title="Nachrichten für alle angemeldeten Benutzer in einer Art öffentlichen Diskussion"><span class="linktext linkforum<%= $act eq 'forum' ? ' active activeforum' : '' %>">öffentliches Forum</span></a>
     <span class="divider">|</span>
-    <a href="<%= url_for 'frontpage', act => 'msgs' %>" title="Private Nachrichten"><span class="linktext<%= $act eq 'msgs' ? ' active' : '' %>">private Nachrichten (0)</span></a>
+    <a href="<%= url_for 'frontpage', act => 'msgs' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkmsgs<%= $act eq 'msgs' ? ' active activemsgs' : '' %>">private Nachrichten (0)</span></a>
     <span class="divider">|</span>
-    <a href="<%= url_for 'frontpage', act => 'notes' %>" title="Private Notizen"><span class="linktext<%= $act eq 'notes' ? ' active' : '' %>">private Notizen (0)</span></a>
+    <a href="<%= url_for 'frontpage', act => 'notes' %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= $act eq 'notes' ? ' active activenotes' : '' %>">eigene Notizen (0)</span></a>
     <span class="divider">|</span>
 %= form_for search => ( method => 'POST' ) => begin
 %= hidden_field 'act' => $act
 %= text_field query => session()->{query}, session()->{query} ? (class => 'activesearch') : ()
 %= submit_button 'Suchen', session()->{query} ? (class => 'activesearch') : ()
     <span class="divider">|</span>
-    <a href="<%= url_for 'options' %>" title="Einstellungen anpassen"><span class="linktext">Einstellungen</span></a>
+    <a href="<%= url_for 'options' %>" title="Einstellungen für diese Plattform anpassen"><span class="linktext">Einstellungen</span></a>
     <span class="divider">|</span>
 % end
-    <a href="<%= url_for 'logout' %>" title="abmelden"><span class="linktext">abmelden</span> <span class="logout"> X</span></a>
+    <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linktext">abmelden</span> <span class="logout"> X</span></a>
 % } else {
-    <a href="<%= url_for 'registerform' %>" title="Für das Forum registrieren"><span class="linktext">Registrieren</span></a> 
+    <a href="<%= url_for 'registerform' %>" title="Für diese Plattform registrieren"><span class="linktext">Registrieren</span></a> 
 % }
 </div>
 <h1 class="title"><%= title %> - <%= AltSimpleBoard::Data::acttitle($act) %></h1>

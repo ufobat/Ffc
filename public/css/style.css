@@ -85,10 +85,6 @@ a:hover {
 .menu .name {
     color: #fff;
 }
-.menu .linktext {
-    text-decoration: underline;
-    border: 1px transparent solid;
-}
 .menu a:hover .linktext {
     color: #fff;
 }
@@ -200,12 +196,6 @@ body * {
     box-shadow: none;
     margin-right: .5em;
 }
-.menu .active {
-    border: 1px #963 solid;
-    border-radius: 2px;
-    color: #fc6;
-    text-decoration: none;
-}
 
 .menu .activesearch {
     border: 1px #963 solid;
@@ -215,4 +205,31 @@ body * {
 }
 .menu input[type="submit"].activesearch {
     background-color: #630;
+}
+
+.menu .linkforum { border-color: #369 }
+.menu .linknotes { border-color: #963 }
+.menu .linkmsgs  { border-color: #396 }
+.menu .linktext {
+    text-decoration: none;
+    border-style: solid;
+    border-width: 1px;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+.menu .active {
+    border-radius: 2px;
+}
+.menu .activeforum {
+    border-color: #369;
+    color: #9cf;
+}
+.menu .activenotes {
+    border-color: #963;
+    color: #fc9;
+}
+.menu .activemsgs {
+    border-color: #396;
+    color: #9fc;
 }
