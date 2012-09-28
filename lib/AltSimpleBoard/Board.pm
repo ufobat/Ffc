@@ -29,6 +29,7 @@ sub startpage {
         $c->redirect_to('act', act => 'forum');
     }
     else {
+        $c->stash( act => 'auth' );
         $c->render( 'auth/login_form', error => 'Bitte melden Sie sich an' );
     }
 }

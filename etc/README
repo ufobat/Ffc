@@ -18,6 +18,7 @@ Example:
     "acttitles":{
         "forum":"Forenboard",
         "notes":"Notizen",
-        "msgs":"Privatnachrichten"
+        "msgs":"Privatnachrichten",
+        "auth":"Anmeldung"
     }
 }

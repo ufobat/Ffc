@@ -52,7 +52,7 @@ our $Pagelinkpreview;
                     "select id, name, lastseen from ${Prefix}users"
                     )
             };
-        %acttitles = ( map({$_ => "\u$_"} qw(forum notes msgs)), %{ $config->{acttitles} });
+        %acttitles = ( map({$_ => "\u$_"} qw(auth forum notes msgs)), %{ $config->{acttitles} });
     }
 
     sub acttitle { $acttitles{shift()} // 'Unknown place' }

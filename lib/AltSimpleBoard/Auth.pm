@@ -6,18 +6,20 @@ use AltSimpleBoard::Data::Auth;
 sub login {
     my $self    = shift;
     return unless $self->get_relevant_data();
-    $self->redirect_to('frontpage', page => 1);
+    $self->redirect_to('frontpage', act => 'forum', page => 1);
 }
 
 sub logout {
     my $self = shift;
     my $user = $self->cancel_session();
+    $self->stash( act => 'auth' );
     $self->render( 'auth/login_form',
         error => 'Abmelden bestätigt, bitte melden Sie sich erneut an' );
 }
 
 sub login_form {
     my $self = shift;
+    $self->stash( act => 'auth' );
     $self->render( 'auth/login_form', error => 'Bitte melden Sie sich an' );
 }
 
