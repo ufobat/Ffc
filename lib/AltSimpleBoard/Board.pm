@@ -19,7 +19,7 @@ sub search {
 sub startpage {
     my $c = shift;
     if ( AltSimpleBoard::Auth::check_login_status($c) ) {
-        $c->redirect_to('frontpage', page => 1);
+        $c->redirect_to('act', act => 'forum');
     }
     else {
         $c->render( 'auth/login_form', error => 'Bitte melden Sie sich an' );

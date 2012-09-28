@@ -45,7 +45,7 @@ sub get_stuff {
         given ( $data->[$i] ) {
             $_->[4] = format_text( $_->[4] );
             $_->[5] = format_timestamp( $_->[3] );
-            $_->[6] = $_->[3] > $lasts;
+            $_->[6] = $_->[3] && $lasts && $_->[3] =~ m/\A\d+\z/xmsi && $lasts =~ m/\A\d+\z/xmsi && $_->[3] > $lasts; #FIXME
         }
     }
     return $data;
