@@ -18,17 +18,16 @@ sub startup {
     $routes->route('/')->to('board#startpage');
     my $authed = $routes->bridge()->to('auth#check_login');
 
-    # general action
-    my $act = $authed->route('/:act', act => [qw(forum notes msgs)])->name('act');
-    $act->route('/:page', page => qr(\d+))->to('board#frontpage')->name('frontpage');
-    $act->route('/')->to(controller => 'board', action => 'frontpage', page => 1);
+    # options
+    $authed->route('/options')->via('get')->to('board#optionsform')->name('optionsform');
+    $authed->route('/options')->via('post')->to('board#optionssave')->name('optionssave');
 
     # search
-    $act->route('/search')->via('post')->to('board#search')->name('search');
+    $authed->route('/search')->via('post')->to('board#search')->name('search');
 
-    # options
-    $act->route('/options')->via('get')->to('board#optionsform')->name('optionsform');
-    $act->route('/options')->via('post')->to('board#optionssave')->name('optionssave');
+    # general action
+    my $act = $authed->route('/:act', act => [qw(forum notes msgs)])->to('board#frontpage')->name('frontpage');
+
 }
 
 1;

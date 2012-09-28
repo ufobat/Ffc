@@ -2,6 +2,7 @@ package AltSimpleBoard::Auth;
 use Mojo::Base 'Mojolicious::Controller';
 use utf8;
 use AltSimpleBoard::Data::Auth;
+use AltSimpleBoard::Board;
 
 sub login {
     my $self    = shift;
@@ -34,7 +35,7 @@ sub cancel_session {
 
 sub check_login {
     my $self = shift;
-    return 1 if $self->check_login_status();
+    return AltSimpleBoard::Board::init() if $self->check_login_status();
     $self->cancel_session();
     $self->render( 'auth/login_form',
         error => 'Session ungültig, melden Sie sich erneut an' );

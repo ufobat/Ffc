@@ -20,15 +20,16 @@
 <img src="<%= url_for '/img/icons/' . $act . '.png' %>" alt="" class="actionicon" />
 <div class="menu">
 % if ( session()->{user} ) {
-    <a href="<%= url_for 'act', act => 'forum' %>" title="Offizielles Forum"><span class="linktext<%= $act eq 'forum' ? ' active' : '' %>">Forum</span></a>
+    <a href="<%= url_for 'frontpage', act => 'forum' %>" title="Offizielles Forum"><span class="linktext<%= $act eq 'forum' ? ' active' : '' %>">Forum</span></a>
     <span class="divider">|</span>
-    <a href="<%= url_for 'act', act => 'msgs' %>" title="Private Nachrichten"><span class="linktext<%= $act eq 'msgs' ? ' active' : '' %>">private Nachrichten (0)</span></a>
+    <a href="<%= url_for 'frontpage', act => 'msgs' %>" title="Private Nachrichten"><span class="linktext<%= $act eq 'msgs' ? ' active' : '' %>">private Nachrichten (0)</span></a>
     <span class="divider">|</span>
-    <a href="<%= url_for 'act', act => 'notes' %>" title="Private Notizen"><span class="linktext<%= $act eq 'notes' ? ' active' : '' %>">private Notizen (0)</span></a>
+    <a href="<%= url_for 'frontpage', act => 'notes' %>" title="Private Notizen"><span class="linktext<%= $act eq 'notes' ? ' active' : '' %>">private Notizen (0)</span></a>
     <span class="divider">|</span>
 %= form_for search => ( method => 'POST' ) => begin
-%= text_field query => session()->{query}
-%= submit_button 'Suchen'
+%= hidden_field 'act' => $act
+%= text_field query => session()->{query}, session()->{query} ? (class => 'activesearch') : ()
+%= submit_button 'Suchen', session()->{query} ? (class => 'activesearch') : ()
     <span class="divider">|</span>
     <a href="<%= url_for 'options' %>" title="Einstellungen anpassen"><span class="linktext">Einstellungen</span></a>
     <span class="divider">|</span>

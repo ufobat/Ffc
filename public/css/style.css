@@ -203,6 +203,16 @@ body * {
 .menu .active {
     border: 1px #963 solid;
     border-radius: 2px;
-    color: #c96;
+    color: #fc6;
     text-decoration: none;
+}
+
+.menu .activesearch {
+    border: 1px #963 solid;
+}
+.menu input.activesearch {
+    background-color: #fc9;
+}
+.menu input[type="submit"].activesearch {
+    background-color: #630;
 }
