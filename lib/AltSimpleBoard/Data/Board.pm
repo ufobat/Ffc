@@ -9,7 +9,7 @@ use AltSimpleBoard::Data;
 sub get_notes {
     get_stuff( @_[ 0 .. 3 ], 'p.`from`=? AND p.`to`=p.`from`', $_[0] );
 }
-sub get_posts { get_stuff( @_[ 0 .. 3 ], 'p.`to` IS NULL' ) }
+sub get_forum { get_stuff( @_[ 0 .. 3 ], 'p.`to` IS NULL' ) }
 
 sub get_msgs {
     get_stuff(

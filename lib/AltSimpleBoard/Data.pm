@@ -25,6 +25,7 @@ our $Pagelinkpreview;
 {
     my $dbh;
     my $config;
+    my %acttitles;
 
     sub set_config {
         my $app = shift;
@@ -51,7 +52,10 @@ our $Pagelinkpreview;
                     "select id, name, lastseen from ${Prefix}users"
                     )
             };
+        %acttitles = ( map({$_ => "\u$_"} qw(forum notes msgs)), %{ $config->{acttitles} });
     }
+
+    sub acttitle { $acttitles{shift()} // 'Unknown place' }
 
     sub dbh {
         return $dbh if $dbh;

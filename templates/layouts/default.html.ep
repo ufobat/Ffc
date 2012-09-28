@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %> - <%= uc $act %></title>
+    <title><%= title %> - <%= AltSimpleBoard::Data::acttitle($act) %></title>
     <link rel="stylesheet" type="text/css" href="<%= url_for '/css/jquery.wysiwyg.css' %>" />
     <link rel="stylesheet" type="text/css" href="<%= url_for '/css/style.css' %>" />
     <script type="text/javascript" src="<%= url_for '/js/jquery.js' %>"></script>
@@ -38,7 +38,7 @@
     <a href="<%= url_for 'registerform' %>" title="Für das Forum registrieren"><span class="linktext">Registrieren</span></a> 
 % }
 </div>
-<h1 class="title"><%= title %> - <%= uc $act %></h1>
+<h1 class="title"><%= title %> - <%= AltSimpleBoard::Data::acttitle($act) %></h1>
 <%= content %>
 <img src="<%= url_for '/img/bottom.png' %>" alt="" class="bottom" />
   </body>

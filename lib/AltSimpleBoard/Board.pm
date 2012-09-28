@@ -7,7 +7,14 @@ use AltSimpleBoard::Auth;
 sub frontpage {
     my $c = shift;
     my $s = $c->session;
-    $c->stash( posts => AltSimpleBoard::Data::Board::get_posts($s->{userid}, $c->param('page'), $s->{lastseen}, $s->{query} ));
+    my @params = ( $s->{userid}, $c->param('page'), $s->{lastseen}, $s->{query} );
+    my $posts = [];
+    given ( $c->param('act') ) {
+        when ( 'forum' ) { $posts = AltSimpleBoard::Data::Board::get_forum(@params) }
+        when ( 'notes' ) { $posts = AltSimpleBoard::Data::Board::get_notes(@params) }
+        when ( 'msgs' )  { $posts = AltSimpleBoard::Data::Board::get_msgs( @params) }
+    }
+    $c->stash( posts => $posts);
 }
 
 sub search {

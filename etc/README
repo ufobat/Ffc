@@ -14,5 +14,10 @@ Example:
     "cryptsalt":"1234567890",
     "postlimit":"28",
     "title":"Fake Forum",
-    "pagelinkpreview":2
+    "pagelinkpreview":2,
+    "acttitles":{
+        "forum":"Forenboard",
+        "notes":"Notizen",
+        "msgs":"Privatnachrichten"
+    }
 }
