@@ -19,9 +19,11 @@
 <img src="<%= url_for '/img/banner.png' %>" alt="" class="banner" />
 <div class="menu">
 % if ( session()->{user} ) {
-    <a href="<%= url_for 'msglist' %>" title="Private Nachrichten"><span class="linktext">private Nachrichten</span></a>
+    <a href="<%= url_for 'forum' %>" title="Offizielles Forum"><span class="linktext">Forum</span></a>
     <span class="divider">|</span>
-    <a href="<%= url_for 'noteslist' %>" title="Private Notizen"><span class="linktext">private Notizen</span></a>
+    <a href="<%= url_for 'msgs' %>" title="Private Nachrichten"><span class="linktext">private Nachrichten (0)</span></a>
+    <span class="divider">|</span>
+    <a href="<%= url_for 'notes' %>" title="Private Notizen"><span class="linktext">private Notizen (0)</span></a>
     <span class="divider">|</span>
 %= form_for search => ( method => 'POST' ) => begin
 %= text_field query => session()->{query}

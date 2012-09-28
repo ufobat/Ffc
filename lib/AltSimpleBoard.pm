@@ -24,10 +24,11 @@ sub startup {
     $b->route('/options')->via('post')->to('board#optionssave')->name('optionssave');
     $b->route('/post/:id/edit', id => qr(\d+))->to('board#frontpage')->name('editpost');
     $b->route('/post/new')->via('post')->to('board#frontpage')->name('newpost');
-    $b->route('/msg')->to('msg#list')->name('msglist');
+    $b->route('/forum')->to('board#forum')->name('forum');
+    $b->route('/msgs')->to('board#msgs')->name('msgs');
     $b->route('/msg/:to', to => qr(\w{2,32}))->to('msg#userlist')->name('usermsg');
-    $b->route('/notes')->to('notes#list')->name('notelist');
-    $b->route('/notes/new')->to('notes#list')->name('newnote');
+    $b->route('/notes')->to('board#notes')->name('notes');
+    $b->route('/notes/new')->to('board#newnote')->name('newnote');
 }
 
 1;

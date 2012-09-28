@@ -167,7 +167,6 @@ button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hove
 }
 .ownpost {
     background-color: #ccc;
-    border-color: #eee;
     box-shadow: 1px 1px 3px #333;
 }
 .pages {
