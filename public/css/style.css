@@ -208,7 +208,7 @@ body * {
 }
 
 .menu .linkforum { border-color: #369 }
-.menu .linknotes { border-color: #963 }
+.menu .linknotes { border-color: #993 }
 .menu .linkmsgs  { border-color: #396 }
 .menu .linktext {
     text-decoration: none;
@@ -226,8 +226,8 @@ body * {
     color: #9cf;
 }
 .menu .activenotes {
-    border-color: #963;
-    color: #fc9;
+    border-color: #993;
+    color: #ff9;
 }
 .menu .activemsgs {
     border-color: #396;
