@@ -87,6 +87,7 @@ a:hover {
 }
 .menu .linktext {
     text-decoration: underline;
+    border: 1px transparent solid;
 }
 .menu a:hover .linktext {
     color: #fff;
@@ -198,4 +199,10 @@ body * {
     border: none;
     box-shadow: none;
     margin-right: .5em;
+}
+.menu .active {
+    border: 1px #963 solid;
+    border-radius: 2px;
+    color: #c96;
+    text-decoration: none;
 }
