@@ -16,13 +16,15 @@
 <div class="info">
     <h2>
 % if ( session()->{userid} == $p->[1] ) {
+% if ( $act ne 'msgs' ) {
+        <a href="<%= url_for 'editpost', id => $p->[0] %>" title="Beitrag editieren"><img src="<%= url_for '/img/icons/buttons/edit.png' %>" alt="editieren" class="buttonicons" /></a>
+        <a href="<%= url_for 'deletepost', id => $p->[0] %>" title="Beitrag löschen"><img src="<%= url_for '/img/icons/buttons/delete.png' %>" alt="löschen" class="buttonicons" /></a>
+% }
         <%= $p->[2] %>
 % } else {
-        <a href="<%= url_for 'usermsg', to => $p->[1] %>" title="Private Nachricht an <%= $p->[2] %> schreiben"><%= $p->[2] %></a> 
+        <a href="<%= url_for 'usermsg', to => $p->[1] %>" title="Private Nachricht an <%= $p->[2] %> schreiben"><img src="<%= url_for '/img/icons/buttons/msgs.png' %>" alt="" class="buttonicons" /><%= $p->[2] %></a> 
 % }
-        (<%= $p->[5] %><% if ( session()->{userid} eq $p->[1] and $act ne 'msgs' ) { %>, 
-        <a href="<%= url_for 'editpost', id => $p->[0] %>" title="Beitrag editieren">editieren</a>,
-        <a href="<%= url_for 'deletepost', id => $p->[0] %>" title="Beitrag löschen">löschen</a><% } %>):
+        (<%= $p->[5] %>):
     </h2>
 </div>
 <div class="text"><%== $p->[4] %></div>
