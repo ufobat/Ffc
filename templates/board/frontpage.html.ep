@@ -22,7 +22,7 @@
 % }
         <%= $p->[2] %>
 % } else {
-        <a href="<%= url_for detail => act => 'msgs',  page => 1, id => $p->[1] %>" title="Private Nachricht an &quot;<%= $p->[2] %>&quot; schreiben"><img src="<%= url_for '/img/icons/buttons/msgs.png' %>" alt="" class="buttonicons" /><%= $p->[2] %></a> 
+        <a href="<%= url_for 'msgs', userid => $p->[1] %>" title="Private Nachricht an &quot;<%= $p->[2] %>&quot; schreiben"><img src="<%= url_for '/img/icons/buttons/msgs.png' %>" alt="" class="buttonicons" /><%= $p->[2] %></a> 
 % }
         (<%= $p->[5] %>):
     </h2>
@@ -43,7 +43,7 @@
 %     if ( $page == $p ) {
     [<%= $page %>]
 %     } else {
-    <a href="<%= url_for frontpage => page => $p %>" title="Zur Seite <%= $p %> gehen">[<%= $p %>]</a>
+    <a href="?page=<%= $p %>" title="Zur Seite <%= $p %> gehen">[<%= $p %>]</a>
 %     }
 %   }
 % }

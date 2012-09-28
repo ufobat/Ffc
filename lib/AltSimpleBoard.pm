@@ -28,6 +28,23 @@ sub startup {
     # general action
     my $act = $authed->route('/:act', act => [qw(forum notes msgs)])->to('board#frontpage')->name('frontpage');
 
+    # basic editing of postings
+    my $crud = $authed->route('/:act', act => [qw(forum notes)]); # msg work seperatly
+    # delete something
+    $crud->route('/delete/:id', id => qr(\d+))->via('get')->to('board#delete')->name('delete');
+    # create something
+    $crud->route('/new')->via('get')->to('board#editform')->name('newform');
+    $crud->route('/new')->via('post')->to('board#insert')->name('new');
+    # update something
+    my $edit = $crud->route('/edit');
+    $edit->route('/:id', id => qr(\d+))->via('get')->to('board#editform')->name('editform');
+    $crud->route('/:id', id => qr(\d+))->via('post')->to('board#update')->name('edit');
+
+    # message system
+    my $msgs  = $authed->route('/msgs');
+    $msgs->route('/:userid', userid => qr(\d+))->via('get')->to('board#msgs')->name('msgs');
+    $msgs->route('/:userid', userid => qr(\d+))->via('post')->to('board#msgssave')->name('msgssave');
+
 }
 
 1;
