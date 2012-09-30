@@ -85,10 +85,10 @@ a:hover {
 .menu .name {
     color: #fff;
 }
-.menu a:hover .linktext {
+.menu a:hover .linktext, .menu .menu a:hover {
     color: #fff;
 }
-.menu a:hover * {
+.menu a:hover *, .menu a:hover {
     text-shadow: 1px 1px 3px #666;
 }
 h1, h2, h3, h4 {
