@@ -28,7 +28,7 @@ a:hover {
     padding: .5em 1em;
 }
 .postbox, .pages {
-    background: url('../img/ug.png') #ff9 repeat-x bottom;
+    background: url('../img/ug.png') #fcf repeat-x bottom;
     border: 1px #fff solid;
     box-shadow: 1px 1px 4px #333;
     margin-top: 1em;
@@ -162,10 +162,6 @@ button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hove
 .new {
     border-color: #fc6;
 }
-.ownpost {
-    background-color: #ccc;
-    box-shadow: 1px 1px 3px #333;
-}
 .pages {
     background-color: #ccc;
     border-color: #ddd;
@@ -245,3 +241,7 @@ body * {
 .mark {
     color: #f96;
 }
+.forum   { background-color: #ccf }
+.notes   { background-color: #ffc }
+.msgs    { background-color: #cfc }
+.ownpost { background-color: #ccc }

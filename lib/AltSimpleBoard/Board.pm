@@ -84,7 +84,7 @@ sub frontpage {
     $page = 1 unless $page =~ m/\A\d+\z/xmsi;
     $c->stash(page => $page);
     
-    for my $k ( qw(post error msgs_userid msgs_username postid) ) {
+    for my $k ( qw(post error msgs_userid msgs_username postid notecount newmsgscount) ) {
         my $d = $c->stash($k);
         $c->stash($k => '') unless $d;
     }
@@ -109,6 +109,7 @@ sub search {
 sub startpage {
     my $c = shift;
     if ( AltSimpleBoard::Auth::check_login_status($c) ) {
+        $c->init();
         $c->show();
     }
     else {

@@ -23,6 +23,7 @@ our $CryptSalt;
 our $Limit;
 our $Pagelinkpreview;
 our %Acttitles;
+our $Title;
 {
     my $dbh;
     my $config;
@@ -39,7 +40,7 @@ our %Acttitles;
         $CryptSalt = $config->{cryptsalt};
         $Limit = $config->{postlimit};
         $Pagelinkpreview = $config->{pagelinkpreview};
-        $app->helper( title => sub { $config->{title} } );
+        $Title = $config->{title};
         $SmiliePath = dbh()->selectrow_arrayref("select config_value from ${PhpBBPrefix}config where config_name='smilies_path'")->[0];
         %Users = map {
                 $_->[1] => {

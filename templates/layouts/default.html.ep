@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %> - <%= acttitle() %></title>
+    <title><%= $AltSimpleBoard::Data::Title %> - <%= acttitle() %></title>
     <link rel="stylesheet" type="text/css" href="<%= url_for '/css/style.css' %>" />
   </head>
   <body>
@@ -27,7 +27,7 @@
     <a href="<%= url_for 'registerform' %>" title="Für diese Plattform registrieren"><span class="linktext">Registrieren</span></a> 
 % }
 </div>
-<h1 class="title"><%= title %> - <%= acttitle() %><%= session()->{msgs_userid} ? ' mit ' . ( session()->{msgs_username} || 'Unbekannt' ) : '' %></h1> 
+<h1 class="title"><%= $AltSimpleBoard::Data::Title %> - <%= acttitle() %><%= session()->{msgs_userid} ? ' mit ' . ( session()->{msgs_username} || 'Unbekannt' ) : '' %></h1> 
 <%= content %>
 <img src="<%= url_for '/img/bottom.png' %>" alt="" class="bottom" />
   </body>
