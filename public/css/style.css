@@ -224,13 +224,24 @@ body * {
 .menu .activeforum {
     border-color: #369;
     color: #9cf;
+    background: #003;
 }
 .menu .activenotes {
     border-color: #993;
     color: #ff9;
+    background: #330;
 }
 .menu .activemsgs {
     border-color: #396;
     color: #9fc;
+    background: #030;
 }
-
+.nodata {
+    color: #930;
+}
+.nodata, div.error {
+    background-color: #fcc;
+}
+.mark {
+    color: #f96;
+}

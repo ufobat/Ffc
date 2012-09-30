@@ -22,10 +22,10 @@ our %Users;
 our $CryptSalt;
 our $Limit;
 our $Pagelinkpreview;
+our %Acttitles;
 {
     my $dbh;
     my $config;
-    my %acttitles;
 
     sub set_config {
         my $app = shift;
@@ -52,10 +52,8 @@ our $Pagelinkpreview;
                     "select id, name, lastseen from ${Prefix}users"
                     )
             };
-        %acttitles = ( map({$_ => "\u$_"} qw(auth forum notes msgs)), %{ $config->{acttitles} });
+        %Acttitles = ( map({$_ => "\u$_"} qw(auth forum notes msgs)), %{ $config->{acttitles} });
     }
-
-    sub acttitle { $acttitles{shift()} // 'Unknown place' }
 
     sub dbh {
         return $dbh if $dbh;

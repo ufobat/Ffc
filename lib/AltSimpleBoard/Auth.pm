@@ -7,7 +7,7 @@ use AltSimpleBoard::Board;
 sub login {
     my $self    = shift;
     return unless $self->get_relevant_data();
-    $self->redirect_to('frontpage', act => 'forum', page => 1);
+    $self->redirect_to('show');
 }
 
 sub logout {
@@ -35,7 +35,7 @@ sub cancel_session {
 
 sub check_login {
     my $self = shift;
-    return AltSimpleBoard::Board::init() if $self->check_login_status();
+    return AltSimpleBoard::Board::init($self) if $self->check_login_status();
     $self->cancel_session();
     $self->render( 'auth/login_form',
         error => 'Session ungültig, melden Sie sich erneut an' );
@@ -62,6 +62,7 @@ sub get_relevant_data {
         user     => $user,
         userid   => $data[0],
         lastseen => $data[1],
+        act      => 'forum',
         query    => '',
     );
 

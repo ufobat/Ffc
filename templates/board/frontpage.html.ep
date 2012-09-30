@@ -1,35 +1,48 @@
 % layout 'default';
-% if ( $page == 1 ) {
+% if ( $page == 1 and ( act() ne 'msgs' or session->{msgs_userid} ) ) {
+% my $what = $postid ? 'edit' : 'new';
 <div class="postbox ownpost">
-%= form_for newpost => ( method => 'POST' ) => begin
-%= text_area 'text', id => 'textinput'
+%= form_for $what => ( method => 'POST' )  => begin
+<textarea name="post" id="textinput"><%= $post %></textarea>
 %= submit_button 'Speichern'
 % end
 </div>
-% } else {
+% } 
+% if ( $page > 1 ) {
 <div class="toppagelink">
-    <a href="<%= url_for frontpage => page => 1 %>" title="Zur ersten Seite zurück gehen">Zu den aktuellsten Postings zurück</a>
+    <a href="<%= url_for 'show' %>" title="Zur ersten Seite zurück gehen">Zu den aktuellsten Postings zurück</a>
 </div>
 % }
 % for my $p ( @$posts ) {
-<div class="postbox<%= session()->{userid} == $p->[1] && $act ne 'notes' ? ' ownpost' : '' %><%= $p->[6] ? ' new' : '' %>">
+%   if ( !$postid or ( $postid and $p->[0] != $postid ) ) {
+<div class="postbox<%= session()->{userid} == $p->[1] && act() ne 'notes' ? ' ownpost' : '' %><%= $p->[9] ? ' new' : '' %>">
 <div class="info">
     <h2>
 % if ( session()->{userid} == $p->[1] ) {
-% if ( $act ne 'msgs' ) {
-        <a href="<%= url_for 'editform', id => $p->[0] %>" title="Beitrag bearbeiten"><img src="<%= url_for '/img/icons/buttons/edit.png' %>" alt="bearbeiten" class="buttonicons" /></a>
-        <a href="<%= url_for 'delete', id => $p->[0] %>" title="Beitrag löschen"><img src="<%= url_for '/img/icons/buttons/delete.png' %>" alt="löschen" class="buttonicons" /></a>
+% if ( act() ne 'msgs' ) {
+        <a href="<%= url_for "editform", postid => $p->[0] %>" title="Beitrag bearbeiten"><img src="<%= url_for '/img/icons/buttons/edit.png' %>" alt="bearbeiten" class="buttonicons" /></a>
+        <a href="<%= url_for "delete", postid => $p->[0] %>" title="Beitrag löschen"><img src="<%= url_for '/img/icons/buttons/delete.png' %>" alt="löschen" class="buttonicons" /></a>
 % }
         <%= $p->[2] %>
+% } elsif ( $p->[5] ) {
+        <a href="<%= url_for 'msgs_user', msgs_userid => $p->[1] %>" title="Private Nachricht an &quot;<%= $p->[2] %>&quot; schreiben"><img src="<%= url_for '/img/icons/buttons/msgs.png' %>" alt="" class="buttonicons" /><%= $p->[2] %></a> 
 % } else {
-        <a href="<%= url_for 'msgs', userid => $p->[1] %>" title="Private Nachricht an &quot;<%= $p->[2] %>&quot; schreiben"><img src="<%= url_for '/img/icons/buttons/msgs.png' %>" alt="" class="buttonicons" /><%= $p->[2] %></a> 
+    <%= $p->[2] %>
 % }
-        (<%= $p->[5] %>):
+% if ( $p->[6] and $p->[7] ) {
+    an <a href="<%= url_for 'msgs_user', msgs_userid => $p->[6] %>" title="Private Nachricht an &quot;<%= $p->[7] %>&quot; schreiben"><%= $p->[7] %><img src="<%= url_for '/img/icons/buttons/msgs.png' %>" alt="" class="buttonicons" /></a> 
+% }
+        (<%= $p->[8] %>):
     </h2>
 </div>
 <div class="text"><%== $p->[4] %></div>
 </div>
+%   }
 % }
+% unless ( @$posts ) {
+<div class="postbox nodata"><div class="text">Keine Daten für die Anzeige vorhanden.</div></div>
+% }
+% if ( @$posts == $AltSimpleBoard::Data::Limit ) {
 <div class="pages">
 % my $plp = $AltSimpleBoard::Data::Pagelinkpreview;
 % if ( $page > $plp + 1 ) {
@@ -43,9 +56,10 @@
 %     if ( $page == $p ) {
     [<%= $page %>]
 %     } else {
-    <a href="?page=<%= $p %>" title="Zur Seite <%= $p %> gehen">[<%= $p %>]</a>
+    <a href="<%= url_for 'show_page', page => $p %>" title="Zur Seite <%= $p %> gehen">[<%= $p %>]</a>
 %     }
 %   }
 % }
 ...
 </div>
+% }

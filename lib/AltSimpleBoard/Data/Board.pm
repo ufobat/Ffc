@@ -6,6 +6,48 @@ use warnings;
 use utf8;
 use AltSimpleBoard::Data;
 
+sub notecount {
+    my $userid = shift;
+    my $sql = 'SELECT count(`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE `from`=? AND `to`=`from`';
+    return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
+}
+
+sub username {
+    my $id = shift;
+    my $sql = 'SELECT `name` FROM '.$AltSimpleBoard::Data::Prefix.'users WHERE `id`=?';
+    return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $id))[0];
+}
+
+sub post {
+    my $id = shift;
+    my $sql = 'SELECT `text` FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE `id`=?';
+    return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $id))[0];
+}
+
+sub delete {
+    my ( $from, $id ) = @_;
+    my $sql = 'DELETE FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE `id`=? and `from`=? AND (`to` IS NULL OR `to`=`from`);';
+    AltSimpleBoard::Data::dbh()->do( $sql, undef, $id, $from );
+}
+sub insert {
+    my ( $f, $d, $t ) = @_;
+    my $sql = 'INSERT INTO '.$AltSimpleBoard::Data::Prefix.'posts (`from`, `to`, `text`, `posted`) VALUES (?, ?, ?, current_timestamp)';
+    AltSimpleBoard::Data::dbh()->do( $sql, undef, $f, $t, $d );
+}
+
+sub update {
+    my ( $f, $d, $i, $t ) = @_;
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'posts SET `text`=?, `posted`=current_timestamp, `to`=? WHERE `id`=? AND `from`=? AND (`to` IS NULL OR `to`=`from`);';
+    AltSimpleBoard::Data::dbh()->do( $sql, undef, $d, $t, $i, $f );
+}
+
+sub update_user_stats {
+    my $userid = shift;
+    return unless $userid;
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users SET `lastseen`=current_timestamp WHERE `id`=?;';
+    AltSimpleBoard::Data::dbh()->do( $sql, undef, $userid );
+}
+
 sub get_notes {
     get_stuff( @_[ 0 .. 3 ], 'p.`from`=? AND p.`to`=p.`from`', $_[0] );
 }
@@ -31,9 +73,10 @@ sub get_stuff {
     return [] unless $userid;
     $page = 1 unless $page;
     my $sql =
-        'SELECT p.`id`, p.`from`, u.`name`, p.`posted`, p.`text` FROM '
-      . $AltSimpleBoard::Data::Prefix . 'posts p LEFT OUTER JOIN '
-      . $AltSimpleBoard::Data::Prefix . 'users u ON u.`id`=p.`from`'
+        'SELECT p.`id`, p.`from`, f.`name`, p.`posted`, p.`text`, f.`active`, p.`to`, t.`name` FROM '
+      . $AltSimpleBoard::Data::Prefix . 'posts p INNER JOIN '
+      . $AltSimpleBoard::Data::Prefix . 'users f ON f.`id`=p.`from` LEFT OUTER JOIN '
+      . $AltSimpleBoard::Data::Prefix . 'users t ON t.`id`=p.`to` '
       . ' WHERE ' . $where
       . ( $query ? ' AND p.`text` LIKE ?' : '' )
       . ' ORDER BY p.`posted` DESC LIMIT ? OFFSET ?';
@@ -46,8 +89,8 @@ sub get_stuff {
     for my $i ( 0 .. $#$data ) {
         given ( $data->[$i] ) {
             $_->[4] = format_text( $_->[4] );
-            $_->[5] = format_timestamp( $_->[3] );
-            $_->[6] = $_->[3] && $lasts && $_->[3] =~ m/\A\d+\z/xmsi && $lasts =~ m/\A\d+\z/xmsi && $_->[3] > $lasts; #FIXME
+            $_->[8] = format_timestamp( $_->[3] );
+            $_->[9] = $_->[3] && $lasts && $_->[3] =~ m/\A\d+\z/xmsi && $lasts =~ m/\A\d+\z/xmsi && $_->[3] > $lasts; #FIXME
         }
     }
     return $data;

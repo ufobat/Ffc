@@ -9,6 +9,10 @@ sub startup {
     my $app  = $self->app;
     AltSimpleBoard::Data::set_config($app);
 
+    sub switch_act { $_[1]->session->{act} = $_[2] }
+    $app->helper( act => sub { shift->session->{act} } );
+    $app->helper( acttitle => sub { $AltSimpleBoard::Data::Acttitles{shift->session->{act}} // 'Unbekannt' } );
+
     # Router
     my $routes = $self->routes;
 
@@ -25,25 +29,25 @@ sub startup {
     # search
     $authed->route('/search')->via('post')->to('board#search')->name('search');
 
-    # general action
-    my $act = $authed->route('/:act', act => [qw(forum notes msgs)])->to('board#frontpage')->name('frontpage');
+    # back to the first page
+    $authed->route('/show/:page', page => qr(\d+))->to('board#show')->name('show_page');
+    # switch context
+    $authed->route('/show/:act', act => [qw(forum notes msgs)])->to('board#switch')->name('switch');
+    # current start page
+    $authed->route('/show')->to('board#show')->name('show');
 
-    # basic editing of postings
-    my $crud = $authed->route('/:act', act => [qw(forum notes)]); # msg work seperatly
+
     # delete something
-    $crud->route('/delete/:id', id => qr(\d+))->via('get')->to('board#delete')->name('delete');
+    $authed->route('/delete/:postid', postid => qr(\d+))->via('get')->to('board#delete')->name('delete');
     # create something
-    $crud->route('/new')->via('get')->to('board#editform')->name('newform');
-    $crud->route('/new')->via('post')->to('board#insert')->name('new');
+    $authed->route('/new')->via('post')->to('board#insert')->name('new');
     # update something
-    my $edit = $crud->route('/edit');
-    $edit->route('/:id', id => qr(\d+))->via('get')->to('board#editform')->name('editform');
-    $crud->route('/:id', id => qr(\d+))->via('post')->to('board#update')->name('edit');
+    my $edit = $authed->route('/edit');
+    $edit->route('/:postid', postid => qr(\d+))->via('get' )->to('board#editform')->name('editform');
+    $edit->route('/:postid', postid => qr(\d+))->via('post')->to('board#update'  )->name('edit');
 
-    # message system
-    my $msgs  = $authed->route('/msgs');
-    $msgs->route('/:userid', userid => qr(\d+))->via('get')->to('board#msgs')->name('msgs');
-    $msgs->route('/:userid', userid => qr(\d+))->via('post')->to('board#msgssave')->name('msgssave');
+    # conversation with single user
+    $authed->route('/msgs/:msgs_userid', msgs_userid => qr(\d+))->to('board#msgs_user')->name('msgs_user');
 
 }
 

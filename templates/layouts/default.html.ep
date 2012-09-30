@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %> - <%= AltSimpleBoard::Data::acttitle($act) %></title>
+    <title><%= title %> - <%= acttitle() %></title>
     <link rel="stylesheet" type="text/css" href="<%= url_for '/css/jquery.wysiwyg.css' %>" />
     <link rel="stylesheet" type="text/css" href="<%= url_for '/css/style.css' %>" />
     <script type="text/javascript" src="<%= url_for '/js/jquery.js' %>"></script>
@@ -11,23 +11,23 @@
     <script type="text/javascript" src="<%= url_for '/js/wysiwyg.table.js' %>"></script>
     <script type="text/javascript">
         $(function() { $('#textinput').wysiwyg({
+            initialContent: '',
             autoGrow: true
         }); }); 
     </script>
   </head>
   <body>
 <img src="<%= url_for '/img/banner.png' %>" alt="" class="banner" />
-<img src="<%= url_for '/img/icons/' . $act . '.png' %>" alt="" class="actionicon" />
+<img src="<%= url_for '/img/icons/' . act() . '.png' %>" alt="" class="actionicon" />
 <div class="menu">
 % if ( session()->{user} ) {
-    <a href="<%= url_for 'frontpage', act => 'forum' %>" title="Nachrichten für alle angemeldeten Benutzer in der Art einer öffentlichen Diskussion"><span class="linktext linkforum<%= $act eq 'forum' ? ' active activeforum' : '' %>">öffentliches Forum</span></a>
+    <a href="<%= url_for 'switch', act => 'forum' %>" title="Nachrichten für alle angemeldeten Benutzer in der Art einer öffentlichen Diskussion"><span class="linktext linkforum<%= act() eq 'forum' ? ' active activeforum' : '' %>">öffentliches Forum</span></a>
     <span class="divider">|</span>
-    <a href="<%= url_for 'frontpage', act => 'msgs' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkmsgs<%= $act eq 'msgs' ? ' active activemsgs' : '' %>">private Nachrichten (0)</span></a>
+    <a href="<%= url_for 'switch', act => 'msgs' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkmsgs<%= act() eq 'msgs' ? ' active activemsgs' : '' %>">private Nachrichten (<span class="mark">0</span>)</span></a>
     <span class="divider">|</span>
-    <a href="<%= url_for 'frontpage', act => 'notes' %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= $act eq 'notes' ? ' active activenotes' : '' %>">eigene Notizen (0)</span></a>
+    <a href="<%= url_for 'switch', act => 'notes' %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= act() eq 'notes' ? ' active activenotes' : '' %>">eigene Notizen (<% if ( $notecount ) { %><span class="mark"><%= $notecount %></span><% } else { %><%= 0 %><% } %>)</span></a>
     <span class="divider">|</span>
 %= form_for search => ( method => 'POST' ) => begin
-%= hidden_field 'act' => $act
 %= text_field query => session()->{query}, session()->{query} ? (class => 'activesearch') : ()
 %= submit_button 'Suchen', session()->{query} ? (class => 'activesearch') : ()
     <span class="divider">|</span>
@@ -39,7 +39,7 @@
     <a href="<%= url_for 'registerform' %>" title="Für diese Plattform registrieren"><span class="linktext">Registrieren</span></a> 
 % }
 </div>
-<h1 class="title"><%= title %> - <%= AltSimpleBoard::Data::acttitle($act) %></h1>
+<h1 class="title"><%= title %> - <%= acttitle() %><%= session()->{msgs_userid} ? ' mit ' . ( session()->{msgs_username} || 'Unbekannt' ) : '' %></h1>
 <%= content %>
 <img src="<%= url_for '/img/bottom.png' %>" alt="" class="bottom" />
   </body>
