@@ -11,7 +11,16 @@
 % if ( session()->{user} ) {
     <a href="<%= url_for 'switch', act => 'forum' %>" title="Nachrichten für alle angemeldeten Benutzer in der Art einer öffentlichen Diskussion"><span class="linktext linkforum<%= act() eq 'forum' ? ' active activeforum' : '' %>">öffentliches Forum</span></a>
     <span class="divider">|</span>
-    <a href="<%= url_for 'switch', act => 'msgs' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkmsgs<%= act() eq 'msgs' ? ' active activemsgs' : '' %>">private Nachrichten (<% if ( $newmsgscount ) { %><span class="mark"><%= $newmsgscount %></span><% } else { %><%= 0 %><% } %>)</span></a>
+    <span class="popup">
+        <a href="<%= url_for 'switch', act => 'msgs' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkmsgs<%= act() eq 'msgs' ? ' active activemsgs' : '' %>">private Nachrichten (<% if ( $newmsgscount ) { %><span class="mark"><%= $newmsgscount %></span><% } else { %><%= 0 %><% } %>)</span></a>
+% if ( @$newmsgs ) {
+        <span class="menu">
+% for my $m ( @$newmsgs ) {
+            <p><a href="<%= url_for 'msgs_user', msgs_userid => $m->[0] %>" title="Private Nachricht an &quot;<%= $m->[1] %>&quot; schreiben"><%= $m->[1] %> (<span class="mark"><%= $m->[2] %></span>)</a></p>
+% }
+        </span>
+% }
+    </span>
     <span class="divider">|</span>
     <a href="<%= url_for 'switch', act => 'notes' %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= act() eq 'notes' ? ' active activenotes' : '' %>">eigene Notizen (<% if ( $notecount ) { %><span class="mark"><%= $notecount %></span><% } else { %><%= 0 %><% } %>)</span></a>
     <span class="divider">|</span>

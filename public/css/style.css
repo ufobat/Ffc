@@ -245,3 +245,19 @@ body * {
 .notes   { background-color: #ffc }
 .msgs    { background-color: #cfc }
 .ownpost { background-color: #ccc }
+
+.menu .menu {
+    border-width: 1px;
+    border-radius: 4px;
+    position: absolute;
+    top: 1.25em;
+    text-align: left;
+    left: 2em;
+    display: none;
+    z-index: 4;
+    width: 12em;
+    padding: .5em 1.5em;
+}
+.menu .popup:hover .menu {
+    display: block;
+}

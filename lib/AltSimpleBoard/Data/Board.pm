@@ -6,6 +6,12 @@ use warnings;
 use utf8;
 use AltSimpleBoard::Data;
 
+sub newmsgs {
+    my $userid = shift;
+    my $sql = 'SELECT p.`from`, f.`name`, count(p.`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts p INNER JOIN '.$AltSimpleBoard::Data::Prefix.'users f ON p.`from`=f.`id` WHERE `to` IS NOT NULL AND `to`=? AND `from` <> `to` GROUP BY p.`from`';
+    return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql, undef, $userid);
+}
+
 sub newmsgscount {
     my $userid = shift;
     my $sql = 'SELECT count(`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE `to` IS NOT NULL AND `to`=? AND `from` <> `to`';

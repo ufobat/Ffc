@@ -8,6 +8,7 @@ sub login {
     my $self    = shift;
     $self->app->switch_act( $self,  'auth' );
     $self->stash( $_ => '' ) for qw(notecount newmsgscount);
+    $self->stash( newmsgs => [] );
     return unless $self->get_relevant_data();
     $self->redirect_to('show');
 }
@@ -17,6 +18,7 @@ sub logout {
     my $user = $self->cancel_session();
     $self->app->switch_act( $self,  'auth' );
     $self->stash( $_ => '' ) for qw(notecount newmsgscount);
+    $self->stash( newmsgs => [] );
     $self->render( 'auth/login_form',
         error => 'Abmelden bestätigt, bitte melden Sie sich erneut an' );
 }
@@ -25,6 +27,7 @@ sub login_form {
     my $self = shift;
     $self->app->switch_act( $self,  'auth' );
     $self->stash( $_ => '' ) for qw(notecount newmsgscount);
+    $self->stash( newmsgs => [] );
     $self->render( 'auth/login_form', error => 'Bitte melden Sie sich an' );
 }
 
@@ -43,6 +46,7 @@ sub check_login {
     $self->cancel_session();
     $self->app->switch_act( $self,  'auth' );
     $self->stash( $_ => '' ) for qw(notecount newmsgscount);
+    $self->stash( newmsgs => [] );
     $self->render( 'auth/login_form',
         error => 'Session ungültig, melden Sie sich erneut an' );
     return;
@@ -62,6 +66,7 @@ sub get_relevant_data {
     unless (@data) {
         $self->app->switch_act( $self,  'auth' );
         $self->stash( $_ => '' ) for qw(notecount newmsgscount);
+        $self->stash( newmsgs => [] );
         $self->render( 'auth/login_form', error => 'Anmeldung fehlgeschlagen' );
         return;
     }

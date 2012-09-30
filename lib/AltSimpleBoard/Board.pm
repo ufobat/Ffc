@@ -115,6 +115,7 @@ sub startpage {
     else {
         $c->app->switch_act( $c, 'auth' );
         $c->stash( $_ => '' ) for qw(notecount newmsgscount);
+        $c->stash( newmsgs => [] );
         $c->render( 'auth/login_form', error => 'Bitte melden Sie sich an' );
     }
 }
@@ -126,6 +127,7 @@ sub init {
     AltSimpleBoard::Data::Board::update_user_stats($userid);
     $c->stash(notecount => AltSimpleBoard::Data::Board::notecount($userid));
     $c->stash(newmsgscount => AltSimpleBoard::Data::Board::newmsgscount($userid));
+    $c->stash(newmsgs => AltSimpleBoard::Data::Board::newmsgs($userid));
     return 1;
 }
 
