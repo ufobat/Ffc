@@ -3,9 +3,11 @@ use Mojo::Base 'Mojolicious::Controller';
 use utf8;
 use AltSimpleBoard::Data::Auth;
 use AltSimpleBoard::Board;
-
+# FIXME in bestimmte ecken von den subs kommt der nie nicht hin, muss mal geprüft werden
 sub login {
     my $self    = shift;
+    $self->app->switch_act( $self,  'auth' );
+    $self->stash( $_ => '' ) for qw(notecount newmsgscount);
     return unless $self->get_relevant_data();
     $self->redirect_to('show');
 }
@@ -13,14 +15,16 @@ sub login {
 sub logout {
     my $self = shift;
     my $user = $self->cancel_session();
-    $self->stash( act => 'auth' );
+    $self->app->switch_act( $self,  'auth' );
+    $self->stash( $_ => '' ) for qw(notecount newmsgscount);
     $self->render( 'auth/login_form',
         error => 'Abmelden bestätigt, bitte melden Sie sich erneut an' );
 }
 
 sub login_form {
     my $self = shift;
-    $self->stash( act => 'auth' );
+    $self->app->switch_act( $self,  'auth' );
+    $self->stash( $_ => '' ) for qw(notecount newmsgscount);
     $self->render( 'auth/login_form', error => 'Bitte melden Sie sich an' );
 }
 
@@ -37,6 +41,8 @@ sub check_login {
     my $self = shift;
     return AltSimpleBoard::Board::init($self) if $self->check_login_status();
     $self->cancel_session();
+    $self->app->switch_act( $self,  'auth' );
+    $self->stash( $_ => '' ) for qw(notecount newmsgscount);
     $self->render( 'auth/login_form',
         error => 'Session ungültig, melden Sie sich erneut an' );
     return;
@@ -54,6 +60,8 @@ sub get_relevant_data {
     my $pass    = $self->param('pass');
     my @data    = AltSimpleBoard::Data::Auth::get_userdata( $user, $pass );
     unless (@data) {
+        $self->app->switch_act( $self,  'auth' );
+        $self->stash( $_ => '' ) for qw(notecount newmsgscount);
         $self->render( 'auth/login_form', error => 'Anmeldung fehlgeschlagen' );
         return;
     }

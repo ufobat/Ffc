@@ -6,6 +6,12 @@ use warnings;
 use utf8;
 use AltSimpleBoard::Data;
 
+sub newmsgscount {
+    my $userid = shift;
+    my $sql = 'SELECT count(`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE `to` IS NOT NULL AND `to`=? AND `from` <> `to`';
+    return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
+}
+
 sub notecount {
     my $userid = shift;
     my $sql = 'SELECT count(`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE `from`=? AND `to`=`from`';

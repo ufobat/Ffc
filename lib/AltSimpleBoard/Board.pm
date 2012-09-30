@@ -112,17 +112,19 @@ sub startpage {
         $c->show();
     }
     else {
-        $c->stash( act => 'auth' );
+        $c->app->switch_act( $c, 'auth' );
+        $c->stash( $_ => '' ) for qw(notecount newmsgscount);
         $c->render( 'auth/login_form', error => 'Bitte melden Sie sich an' );
     }
 }
 
 sub init {
     my $c = shift;
-    my $s = $c->session;
+    my $userid = $c->session->{userid};
 # prepare the user action
-    AltSimpleBoard::Data::Board::update_user_stats($c->session->{userid});
-    $c->stash(notecount => AltSimpleBoard::Data::Board::notecount($s->{userid}));
+    AltSimpleBoard::Data::Board::update_user_stats($userid);
+    $c->stash(notecount => AltSimpleBoard::Data::Board::notecount($userid));
+    $c->stash(newmsgscount => AltSimpleBoard::Data::Board::newmsgscount($userid));
     return 1;
 }
 
