@@ -163,8 +163,8 @@ button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hove
     border-color: #fc6;
 }
 .pages {
-    background-color: #ccc;
-    border-color: #ddd;
+    background-color: #bbb;
+    border-color: #ccc;
     box-shadow: 1px 1px 2px #666;
 }
 .banner, .bottom, .actionicon {
