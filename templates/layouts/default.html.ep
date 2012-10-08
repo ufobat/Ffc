@@ -28,12 +28,12 @@
 %= text_field query => session()->{query}, session()->{query} ? (class => 'activesearch') : ()
 %= submit_button 'Suchen', session()->{query} ? (class => 'activesearch') : ()
     <span class="divider">|</span>
-    <a href="<%= url_for 'options' %>" title="Einstellungen für diese Plattform anpassen"><span class="linktext">Einstellungen</span></a>
+    <a href="<%= url_for 'options' %>" title="Einstellungen für diese Plattform anpassen"><span class="linktext linkoptions">Einstellungen</span></a>
     <span class="divider">|</span>
 % end
-    <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linktext">abmelden</span> <span class="logout"> X</span></a>
+    <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linktext linklogout">abmelden</span> <span class="logout"> X</span></a>
 % } else {
-    <a href="<%= url_for 'registerform' %>" title="Für diese Plattform registrieren"><span class="linktext">Registrieren</span></a> 
+    <a href="<%= url_for 'registerform' %>" title="Für diese Plattform registrieren"><span class="linktext linkregister">Registrieren</span></a> 
 % }
 </div>
 <h1 class="title"><%= $AltSimpleBoard::Data::Title %> - <%= acttitle() %><%= session()->{msgs_userid} ? ' mit ' . ( session()->{msgs_username} || 'Unbekannt' ) : '' %></h1> 

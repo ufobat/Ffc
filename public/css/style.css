@@ -28,7 +28,7 @@ a:hover {
     padding: .5em 1em;
 }
 .postbox, .pages {
-    background: url('../img/ug.png') #fcf repeat-x bottom;
+    background: url('../img/ug.png') #fcc repeat-x bottom;
     border: 1px #fff solid;
     box-shadow: 1px 1px 4px #333;
     margin-top: 1em;
@@ -204,9 +204,12 @@ body * {
     background-color: #630;
 }
 
-.menu .linkforum { border-color: #369 }
-.menu .linknotes { border-color: #993 }
-.menu .linkmsgs  { border-color: #396 }
+.menu .linkforum    { border-color: #369 }
+.menu .linknotes    { border-color: #993 }
+.menu .linkmsgs     { border-color: #396 }
+.menu .linkoptions  { border-color: #969 }
+.menu .linkregister { border-color: #963 }
+.menu .linklogout   { border-color: #966 }
 .menu .linktext {
     text-decoration: none;
     border-style: solid;
@@ -235,8 +238,6 @@ body * {
 }
 .nodata {
     color: #930;
-}
-.nodata {
     background-color: #fcc;
 }
 .mark {
