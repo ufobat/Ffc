@@ -3,6 +3,12 @@
 %= form_for optionssave => ( method => 'POST' ) => begin 
     <table>
         <tr>
+            <th><img src="" class="avatar" /></th>
+            <th>Avatar-Bild</th>
+            <td><%= file_field 'email' %></td>
+        </tr>
+        <tr><td colspan="3"><hr /></td></tr>
+        <tr>
             <th colspan="2">E-Mail-Adresse</th>
             <td><%= text_field 'email' %></td>
         </tr>
@@ -10,15 +16,15 @@
         <tr>
             <th rowspan="3">Passwort</th>
             <th>Alt</th>
-            <td><%= password_field 'oldpw' %></td>
+            <td><input type="password" name="oldpw" value="" /></td>
         </tr>
         <tr>
             <th>Neu</th>
-            <td><%= password_field 'newpw1' %></td>
+            <td><input type="password" name="newpw1" value="" /></td>
         </tr>
         <tr>
             <th>Wiederholen</th>
-            <td><%= password_field 'newpw2' %></td>
+            <td><input type="password" name="newpw2" value="" /></td>
         </tr>
         <tr><td colspan="3"><hr /></td></tr>
         <tr>
