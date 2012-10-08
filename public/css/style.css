@@ -29,7 +29,7 @@ a:hover {
 }
 .postbox, .pages {
     background: url('../img/ug.png') #fcc repeat-x bottom;
-    border: 1px #fff solid;
+    border: 2px #fff solid;
     box-shadow: 1px 1px 4px #333;
     margin-top: 1em;
     border-radius: 3px;
@@ -70,7 +70,7 @@ a:hover {
     background: url('../img/tg.png') #404040 repeat-x bottom;
     border-color: #ccc;
     border-style: solid;
-    border-width: 0 0 1px 0;
+    border-width: 0 0 2px 0;
     box-shadow: 0 0 6px #000;
     z-index: 3;
     min-height: 1.5em;
@@ -250,7 +250,7 @@ body * {
 .options { background-color: #fcf }
 
 .menu .menu {
-    border-width: 1px;
+    border-width: 2px;
     border-radius: 4px;
     position: absolute;
     top: 1.25em;
