@@ -247,6 +247,7 @@ body * {
 .notes   { background-color: #ffc }
 .msgs    { background-color: #cfc }
 .ownpost { background-color: #ccc }
+.options { background-color: #fcf }
 
 .menu .menu {
     border-width: 1px;
@@ -263,3 +264,16 @@ body * {
 .menu .popup:hover .menu {
     display: block;
 }
+form table {
+    border: none;
+    background: none;
+    border-collapse: collapse;
+}
+form th, form td {
+    padding: .5em;
+    vertical-align: top;
+}
+form th {
+    text-align: right;
+}
+

@@ -4,6 +4,11 @@ use utf8;
 use AltSimpleBoard::Data::Board;
 use AltSimpleBoard::Auth;
 
+sub optionsform {
+    my $c = shift;
+    $c->app->switch_act( $c, 'options' );
+}
+
 sub msgs_user {
     my $c = shift;
     my $s = $c->session;
