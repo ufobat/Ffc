@@ -236,6 +236,11 @@ body * {
     color: #9fc;
     background: #030;
 }
+.menu .activeoptions {
+    border-color: #939;
+    color: #f9f;
+    background: #303;
+}
 .nodata {
     color: #930;
     background-color: #fcc;
