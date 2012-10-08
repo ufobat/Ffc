@@ -248,6 +248,10 @@ body * {
 .mark {
     color: #f96;
 }
+.forumownpost { border-color: #bdf }
+.notesownpost { border-color: #ffc }
+.msgsownpost  { border-color: #cfc }
+
 .forum   { background-color: #bdf }
 .notes   { background-color: #ffc }
 .msgs    { background-color: #cfc }
