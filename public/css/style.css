@@ -236,13 +236,13 @@ body * {
 .nodata {
     color: #930;
 }
-.nodata, div.error {
+.nodata {
     background-color: #fcc;
 }
 .mark {
     color: #f96;
 }
-.forum   { background-color: #ccf }
+.forum   { background-color: #bdf }
 .notes   { background-color: #ffc }
 .msgs    { background-color: #cfc }
 .ownpost { background-color: #ccc }
