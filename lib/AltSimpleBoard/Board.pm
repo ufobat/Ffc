@@ -4,9 +4,12 @@ use utf8;
 use AltSimpleBoard::Data::Board;
 use AltSimpleBoard::Auth;
 
-sub options_form {
+sub optionsform {
     my $c = shift;
+    my $s = $c->session;
     $c->app->switch_act( $c, 'options' );
+    $s->{msgs_userid} = '';
+    $s->{msgs_username} = '';
 }
 
 sub msgs_user {
@@ -96,9 +99,10 @@ sub frontpage {
     my @params = ( $s->{userid}, $page, $s->{lastseen}, $s->{query} );
     my $posts = [];
     given ( $s->{act} ) {
-        when ( 'forum' ) { $posts = AltSimpleBoard::Data::Board::get_forum(@params) }
-        when ( 'notes' ) { $posts = AltSimpleBoard::Data::Board::get_notes(@params) }
-        when ( 'msgs' )  { $posts = AltSimpleBoard::Data::Board::get_msgs( @params, $s->{msgs_userid}) }
+        when ( 'forum' )   { $posts = AltSimpleBoard::Data::Board::get_forum(@params) }
+        when ( 'notes' )   { $posts = AltSimpleBoard::Data::Board::get_notes(@params) }
+        when ( 'msgs' )    { $posts = AltSimpleBoard::Data::Board::get_msgs( @params, $s->{msgs_userid}) }
+        when ( 'options' ) {}
         default { die qq("$s->{act}" undefined) }
     }
     $c->stash( posts => $posts);

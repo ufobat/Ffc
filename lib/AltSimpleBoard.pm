@@ -20,13 +20,13 @@ sub startup {
     $routes->route('/logout')->to('auth#logout')->name('logout');
     $routes->route('/login')->to('auth#login')->name('login');
     $routes->route('/')->to('board#startpage');
-    $routes->route('/registerform')->to('auth#register_form')->name('registerform');
-    $routes->route('/registersave')->to('auth#register_save')->name('registersave');
+    $routes->route('/registerform')->to('auth#registerform')->name('registerform');
+    $routes->route('/registersave')->to('auth#registersave')->name('registersave');
     my $authed = $routes->bridge()->to('auth#check_login');
 
     # options
-    $authed->route('/options')->via('get')->to('board#options_form')->name('optionsform');
-    $authed->route('/options')->via('post')->to('board#options_save')->name('optionssave');
+    $authed->route('/options')->via('get')->to('board#optionsform')->name('optionsform');
+    $authed->route('/options')->via('post')->to('board#optionssave')->name('optionssave');
 
     # search
     $authed->route('/search')->via('post')->to('board#search')->name('search');

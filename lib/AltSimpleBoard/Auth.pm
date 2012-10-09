@@ -5,14 +5,14 @@ use AltSimpleBoard::Data::Auth;
 use AltSimpleBoard::Board;
 # FIXME in bestimmte ecken von den subs kommt der nie nicht hin, muss mal geprüft werden
 
-sub register_form  {
+sub registerform  {
     my $self = shift;
     $self->stash( $_ => '' ) for qw(notecount newmsgscount);
     $self->stash( newmsgs => [] );
     $self->render('auth/registerform', error => 'not implemented yet');
 }
 
-sub register_save  {
+sub registersave  {
     my $self = shift;
     $self->stash( $_ => '' ) for qw(notecount newmsgscount);
     $self->stash( newmsgs => [] );
@@ -38,7 +38,7 @@ sub logout {
         error => 'Abmelden bestätigt, bitte melden Sie sich erneut an' );
 }
 
-sub login_form {
+sub loginform {
     my $self = shift;
     $self->app->switch_act( $self,  'auth' );
     $self->stash( $_ => '' ) for qw(notecount newmsgscount);
