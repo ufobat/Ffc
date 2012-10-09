@@ -4,8 +4,23 @@ use utf8;
 use AltSimpleBoard::Data::Auth;
 use AltSimpleBoard::Board;
 # FIXME in bestimmte ecken von den subs kommt der nie nicht hin, muss mal geprüft werden
+
+sub register_form  {
+    my $self = shift;
+    $self->stash( $_ => '' ) for qw(notecount newmsgscount);
+    $self->stash( newmsgs => [] );
+    $self->render('auth/registerform', error => 'not implemented yet');
+}
+
+sub register_save  {
+    my $self = shift;
+    $self->stash( $_ => '' ) for qw(notecount newmsgscount);
+    $self->stash( newmsgs => [] );
+    $self->render('auth/registerform', error => 'not implemented yet');
+}
+
 sub login {
-    my $self    = shift;
+    my $self = shift;
     $self->app->switch_act( $self,  'auth' );
     $self->stash( $_ => '' ) for qw(notecount newmsgscount);
     $self->stash( newmsgs => [] );
@@ -19,7 +34,7 @@ sub logout {
     $self->app->switch_act( $self,  'auth' );
     $self->stash( $_ => '' ) for qw(notecount newmsgscount);
     $self->stash( newmsgs => [] );
-    $self->render( 'auth/login_form',
+    $self->render( 'auth/loginform',
         error => 'Abmelden bestätigt, bitte melden Sie sich erneut an' );
 }
 
@@ -28,7 +43,7 @@ sub login_form {
     $self->app->switch_act( $self,  'auth' );
     $self->stash( $_ => '' ) for qw(notecount newmsgscount);
     $self->stash( newmsgs => [] );
-    $self->render( 'auth/login_form', error => 'Bitte melden Sie sich an' );
+    $self->render( 'auth/loginform', error => 'Bitte melden Sie sich an' );
 }
 
 sub cancel_session {
@@ -47,7 +62,7 @@ sub check_login {
     $self->app->switch_act( $self,  'auth' );
     $self->stash( $_ => '' ) for qw(notecount newmsgscount);
     $self->stash( newmsgs => [] );
-    $self->render( 'auth/login_form',
+    $self->render( 'auth/loginform',
         error => 'Session ungültig, melden Sie sich erneut an' );
     return;
 }
@@ -67,7 +82,7 @@ sub get_relevant_data {
         $self->app->switch_act( $self,  'auth' );
         $self->stash( $_ => '' ) for qw(notecount newmsgscount);
         $self->stash( newmsgs => [] );
-        $self->render( 'auth/login_form', error => 'Anmeldung fehlgeschlagen' );
+        $self->render( 'auth/loginform', error => 'Anmeldung fehlgeschlagen' );
         return;
     }
     %$session = (

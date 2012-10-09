@@ -4,7 +4,7 @@ use utf8;
 use AltSimpleBoard::Data::Board;
 use AltSimpleBoard::Auth;
 
-sub optionsform {
+sub options_form {
     my $c = shift;
     $c->app->switch_act( $c, 'options' );
 }
@@ -121,7 +121,7 @@ sub startpage {
         $c->app->switch_act( $c, 'auth' );
         $c->stash( $_ => '' ) for qw(notecount newmsgscount);
         $c->stash( newmsgs => [] );
-        $c->render( 'auth/login_form', error => 'Bitte melden Sie sich an' );
+        $c->render( 'auth/loginform', error => 'Bitte melden Sie sich an' );
     }
 }
 

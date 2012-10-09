@@ -1,6 +1,6 @@
 % layout 'default';
 % title 'Login';
-<div class="postbox">
+<div class="postbox auth">
 % if ( $error ) {
 <div class="error"><%= $error %></div>
 % }
