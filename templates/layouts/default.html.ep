@@ -2,7 +2,7 @@
 <html>
   <head>
     <title><%= $AltSimpleBoard::Data::Title %> - <%= acttitle() %></title>
-    <link rel="stylesheet" type="text/css" href="<%= url_for '/css/style.css' %>" />
+    <%= stylesheet '/css/style.css' %>
     <link rel="icon" type="image/ico" href="<%= url_for '/img/favicon.ico' %>" />
   </head>
   <body>
