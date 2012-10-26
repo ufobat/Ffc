@@ -40,5 +40,6 @@
 <h1 class="title"><%= $AltSimpleBoard::Data::Title %> - <%= acttitle() %><%= session()->{msgs_userid} ? ' mit ' . ( session()->{msgs_username} || 'Unbekannt' ) : '' %></h1> 
 <%= content %>
 <img src="<%= url_for '/img/bottom.png' %>" alt="" class="bottom" />
+<div class="bottomshadow"></div>
   </body>
 </html>
