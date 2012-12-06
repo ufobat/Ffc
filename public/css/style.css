@@ -254,6 +254,8 @@ body * {
 .msgs    { background-color: #cfc }
 .ownpost { background-color: #ccc }
 .options { background-color: #fcf }
+.forumownpost { background-color: #bcd }
+.msgsownpost  { background-color: #bdb }
 
 .menu .menu {
     border-width: 2px;
