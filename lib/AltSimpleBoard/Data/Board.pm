@@ -157,8 +157,6 @@ sub _bbcode {
         (?<src>.+?)
         \[/img\k{mark}\]
         ~<img src="$+{src}" />~gxmis;
-    $s =~
-s~\{SMILIES_PATH\}~$AltSimpleBoard::Data::PhpBBURL$AltSimpleBoard::Data::SmiliePath~gxmis;
 
     # Links
     $s =~ s~

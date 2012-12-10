@@ -12,11 +12,7 @@ use AltSimpleBoard::Data::Board;
 our $DefaultConfig = join '/',
   File::Spec->splitdir( File::Basename::dirname(__FILE__) ), '..', '..', 'etc',
   'altsimpleboard.json';
-our $PhpBBPath = '';
 our $Prefix = '';
-our $PhpBBPrefix = '';
-our $PhpBBURL = '';
-our $SmiliePath = '';
 our $Fullpostnumber = 7;
 our %Users;
 our $CryptSalt;
@@ -34,14 +30,10 @@ our $Title;
             JSONConfig => { file => $ENV{ASB_CONFIG} // $DefaultConfig } );
         $app->secret( $config->{cookie_secret} );
         $Prefix = $config->{dbprefix};
-        $PhpBBPrefix = $config->{phpbbprefix};
-        $PhpBBPath = $config->{phpbbpath};
-        $PhpBBURL = $config->{phpbburl};
         $CryptSalt = $config->{cryptsalt};
         $Limit = $config->{postlimit};
         $Pagelinkpreview = $config->{pagelinkpreview};
         $Title = $config->{title};
-        $SmiliePath = dbh()->selectrow_arrayref("select config_value from ${PhpBBPrefix}config where config_name='smilies_path'")->[0];
         %Users = map {
                 $_->[1] => {
                     userid => $_->[0],
