@@ -11,7 +11,6 @@
     border-style: solid;
     border-width: 0 0 1px 0;
     box-shadow: 0 0 8px #000;
-    z-index: 3;
     min-height: 1.5em;
 }
 .menu, .menu a {
@@ -57,7 +56,6 @@
     text-align: left;
     left: 2em;
     display: none;
-    z-index: 4;
     width: 12em;
     padding: .5em 1.5em;
 }
