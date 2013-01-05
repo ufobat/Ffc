@@ -7,7 +7,6 @@
   </head>
   <body>
 <img src="<%= url_for '/img/banner.png' %>" alt="" class="banner" />
-<img src="<%= url_for '/img/icons/' . act() . '.png' %>" alt="" class="actionicon" />
 <div class="menu">
 % if ( session()->{user} ) {
     <a href="<%= url_for 'switch', act => 'forum' %>" title="Nachrichten für alle angemeldeten Benutzer in der Art einer öffentlichen Diskussion"><span class="linktext linkforum<%= act() eq 'forum' ? ' active activeforum' : '' %>">öffentliches Forum</span></a>
@@ -37,7 +36,6 @@
     <a href="<%= url_for 'registerform' %>" title="Für diese Plattform registrieren"><span class="linktext linkregister">Registrieren</span></a> 
 % }
 </div>
-<h1 class="title"><%= $AltSimpleBoard::Data::Title %> - <%= acttitle() %><%= session()->{msgs_userid} ? ' mit ' . ( session()->{msgs_username} || 'Unbekannt' ) : '' %></h1> 
 <%= content %>
 <img src="<%= url_for '/img/bottom.png' %>" alt="" class="bottom" />
 <div class="bottomshadow"></div>

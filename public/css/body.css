@@ -6,23 +6,20 @@
 body {
     background: #69c url('../img/hg.png') fixed;
     color: #003;
+    margin-top: 3em;
 }
 body > * {
     margin: 0 auto;
     max-width: 55em;
 }
 
-.banner, .bottom, .actionicon {
+.banner, .bottom {
     z-index: 1;
     position: fixed;
 }
 .banner {
     left: 0;
     top: 2.1em;
-}
-.actionicon {
-    left: 2.5em;
-    top: 4em;
 }
 .bottom {
     right: 0;
