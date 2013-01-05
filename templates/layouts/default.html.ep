@@ -38,6 +38,5 @@
 </div>
 <%= content %>
 <img src="<%= url_for '/img/bottom.png' %>" alt="" class="bottom" />
-<div class="bottomshadow"></div>
   </body>
 </html>
