@@ -1,0 +1,87 @@
+.error {
+    color: #c30;
+}
+a {
+    color: #36c;
+    text-decoration: underline;
+}
+a:hover {
+    color: #039;
+    text-decoration: underline;
+    text-shadow: 0 0 2px #69f;
+}
+
+h1, h2, h3, h4 {
+    color: #666699;
+    font-size: 1em;
+    font-weight: bolder;
+}
+h1.title {
+    color: #fff;
+    font-size: 1.5em;
+    text-shadow: 1px 1px 4px #404040;
+    padding-top: 2em;
+}
+
+blockquote {
+    border-style: solid;
+    border-color: #bbb #fff #fff #bbb;
+    background: #ddd;
+    border-width: 1px;
+    color: #336;
+    padding-left: 1em;
+}
+input, textarea {
+    border: 1px #000 solid;
+    box-shadow: inset 0 0 1px #ccc;
+    background: #fff;
+    color: #006;
+}
+.postbox textarea {
+    width: 52.5em;
+    height: 8.5em;
+    border-color: #fff;
+    background: #eee;
+    box-shadow: inset 0 0 4px #999;
+}
+.wysiwyg, .postbox textarea {
+    margin-bottom: 1em;
+    box-shadow: 1px 1px 2px #999;
+}
+.divider {
+    color: #666;
+    text-shadow: -1px -1px 0px #111;
+}
+input:focus, textarea:focus {
+    box-shadow: 0 0 1px #fff;
+    border-color: #66c;
+}
+button, input[type="submit"], input[type="reset"], select {
+    cursor: pointer;
+    border: 1px #000 solid;
+    color: #ccc;
+    background: url('../img/bg.png') #404040 repeat-x bottom;
+    box-shadow: none;
+}
+.postbox button, .postbox input[type="submit"], .postbox input[type="reset"], .postbox select {
+    box-shadow: 2px 2px 3px #666;
+}
+button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hover {
+    box-shadow: 0 0 1px #fff;
+    color: #fff;
+    border-color: #222;
+    background: url('../img/tg.png') #666 repeat-x bottom;
+}
+
+form table {
+    border: none;
+    background: none;
+    border-collapse: collapse;
+}
+form th, form td {
+    padding: .5em;
+    vertical-align: top;
+}
+form th {
+    text-align: right;
+}

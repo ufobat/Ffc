@@ -1,0 +1,35 @@
+.forum { background-color: #bdf }
+.notes { background-color: #ffc }
+.msgs { background-color: #cfc }
+.ownpost { background-color: #ccc }
+.options { background-color: #fcf }
+.forumownpost { background-color: #bcd }
+.msgsownpost { background-color: #bdb }
+
+.menu .linkforum { color: #369 }
+.menu .linknotes { color: #993 }
+.menu .linkmsgs { color: #396 }
+.menu .linkoptions { color: #969 }
+.menu .linkregister { color: #963 }
+.menu .linklogout { color: #966 }
+
+.menu .activeforum {
+    border-color: #369;
+    color: #9cf;
+    background: #003;
+}
+.menu .activenotes {
+    border-color: #993;
+    color: #ff9;
+    background: #330;
+}
+.menu .activemsgs {
+    border-color: #396;
+    color: #9fc;
+    background: #030;
+}
+.menu .activeoptions {
+    border-color: #939;
+    color: #f9f;
+    background: #303;
+}

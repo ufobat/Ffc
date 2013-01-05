@@ -1,0 +1,66 @@
+.menu {
+    text-align: right;
+    position: fixed;
+    left: -0.5em;
+    top: 0;
+    padding: 0.25em;
+    width: 100%;
+    max-width: 100%;
+    background: #404040;
+    border-color: #ccc;
+    border-style: solid;
+    border-width: 0 0 1px 0;
+    box-shadow: 0 0 8px #000;
+    z-index: 3;
+    min-height: 1.5em;
+}
+.menu, .menu a {
+    color: #999;
+    text-decoration: none;
+}
+.menu .logout {
+    color: #f66;
+}
+.menu .name {
+    color: #fff;
+}
+.menu a:hover .linktext, .menu .menu a:hover {
+    color: #fff;
+}
+.menu a:hover *, .menu a:hover {
+    text-shadow: 1px 1px 3px #666;
+}
+.menu form {
+    display: inline;
+}
+.menu .activesearch {
+    border: 1px #963 solid;
+}
+.menu input.activesearch {
+    background-color: #fc9;
+}
+.menu input[type="submit"].activesearch {
+    background-color: #630;
+}
+.menu .linktext {
+    text-decoration: none;
+    border-style: solid;
+    border-width: 1px;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+.menu .menu {
+    border-width: 1px;
+    position: absolute;
+    top: 1.25em;
+    text-align: left;
+    left: 2em;
+    display: none;
+    z-index: 4;
+    width: 12em;
+    padding: .5em 1.5em;
+}
+.menu .popup:hover .menu {
+    display: block;
+}

@@ -1,0 +1,42 @@
+.pages {
+    text-align: right;
+    padding: .5em 1em;
+}
+.postbox {
+    background: #fcc;
+    border: 1px #666 solid;
+    box-shadow: 1px 1px 4px #666;
+}
+.postbox, .pages {
+    margin-top: .5em;
+    overflow: hidden;
+}
+.postbox > * {
+    margin: 1em;
+}
+.postbox img {
+    max-width: 512px;
+    max-height: 256px;
+    border: 1px #fff solid;
+    box-shadow: 1px 1px 2px #999;
+}
+.postbox > img.avatar {
+    float: left;
+    margin-right: 1em;
+    margin-bottom: 0.5em;
+    box-shadow: 1px 1px 2px #999;
+    height: 2em;
+}
+.postbox:active img.avatar, div.new img.avatar {
+    height: auto;
+}
+
+.clear {
+    clear: both;
+}
+.postbox img.buttonicons {
+    border: none;
+    box-shadow: none;
+    margin-right: .5em;
+}
+
