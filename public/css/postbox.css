@@ -9,6 +9,8 @@
 .postbox, .pages {
     margin-top: .5em;
     overflow: hidden;
+    position: relative;
+    z-index: 2;
 }
 .postbox > * {
     margin: 1em;
