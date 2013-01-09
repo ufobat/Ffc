@@ -86,13 +86,13 @@ sub get_relevant_data {
         return;
     }
     %$session = (
+        %$session,
         user     => $user,
         userid   => $data[0],
         lastseen => $data[1],
         act      => 'forum',
         query    => '',
         category => undef,
-        %$session,
     );
 
     return 1;

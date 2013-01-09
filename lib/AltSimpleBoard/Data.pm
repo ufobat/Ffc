@@ -15,7 +15,6 @@ our $DefaultConfig = join '/',
 our $Prefix = '';
 our $Fullpostnumber = 7;
 our %Users;
-our $CryptSalt;
 our $Limit;
 our $Pagelinkpreview;
 our %Acttitles;
@@ -23,6 +22,10 @@ our $Title;
 {
     my $dbh;
     my $config;
+    my $dbconfig;
+    my $cryptsalt;
+
+    sub cryptsalt { $cryptsalt }
 
     sub set_config {
         my $app = shift;
@@ -30,10 +33,17 @@ our $Title;
             JSONConfig => { file => $ENV{ASB_CONFIG} // $DefaultConfig } );
         $app->secret( $config->{cookie_secret} );
         $Prefix = $config->{dbprefix};
-        $CryptSalt = $config->{cryptsalt};
         $Limit = $config->{postlimit};
         $Pagelinkpreview = $config->{pagelinkpreview};
         $Title = $config->{title};
+
+        $dbconfig = {map {
+                my $v = $config->{$_};
+                delete $config->{$_};
+                $_ => $v;
+            } qw(dsn user password)};
+        $cryptsalt = $config->{cryptsalt};
+        delete $config->{cryptsalt};
         %Users = map {
                 $_->[1] => {
                     userid => $_->[0],
@@ -51,9 +61,9 @@ our $Title;
     sub dbh {
         return $dbh if $dbh;
         $dbh = DBI->connect(
-            $config->{dsn},
-            $config->{user},
-            $config->{password},
+            $dbconfig->{dsn},
+            $dbconfig->{user},
+            $dbconfig->{password},
             {
                 RaiseError => 1,
                 AutoCommit => 1,
