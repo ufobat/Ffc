@@ -61,9 +61,9 @@ sub update_user_stats {
 }
 
 sub get_notes {
-    get_stuff( @_[ 0 .. 3 ], 'p.`from`=? AND p.`to`=p.`from`', $_[0] );
+    get_stuff( @_[ 0 .. 4 ], 'p.`from`=? AND p.`to`=p.`from`', $_[0] );
 }
-sub get_forum { get_stuff( @_[ 0 .. 3 ], 'p.`to` IS NULL' ) }
+sub get_forum { get_stuff( @_[ 0 .. 4 ], 'p.`to` IS NULL' ) }
 
 sub get_msgs {
     my @params = ( $_[0], $_[0] );
@@ -72,7 +72,7 @@ sub get_msgs {
         $where .= ' AND ( p.`from`=? OR p.`to`=? )';
         push @params, $_[4], $_[4];
     }
-    get_stuff( @_[ 0 .. 3 ], $where, @params );
+    get_stuff( @_[ 0 .. 4 ], $where, @params );
 }
 
 sub get_stuff {
@@ -80,6 +80,7 @@ sub get_stuff {
     my $page   = shift;
     my $lasts  = shift;
     my $query  = shift;
+    my $cat    = shift;
     my $where  = shift;
     my @params = @_;
     return [] unless $userid;
@@ -91,10 +92,11 @@ sub get_stuff {
       . $AltSimpleBoard::Data::Prefix . 'users t ON t.`id`=p.`to` '
       . ' WHERE ' . $where
       . ( $query ? ' AND p.`text` LIKE ?' : '' )
+      . ' AND ( p.`category` = ? OR ? IS NULL )'
       . ' ORDER BY p.`posted` DESC LIMIT ? OFFSET ?';
     my $data =
       AltSimpleBoard::Data::dbh()
-      ->selectall_arrayref( $sql, undef, @params, ( $query ? "%$query%" : () ),
+      ->selectall_arrayref( $sql, undef, @params, ( $query ? "%$query%" : () ), $cat, $cat,
         $AltSimpleBoard::Data::Limit,
         ( ( $page - 1 ) * $AltSimpleBoard::Data::Limit ) );
 

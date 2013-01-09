@@ -2,6 +2,12 @@ package AltSimpleBoard;
 use Mojo::Base 'Mojolicious';
 use AltSimpleBoard::Data;
 
+sub switch_act { 
+    my $s = $_[1]->session;
+    $s->{act} = $_[2];
+    $s->{category} = undef;
+}
+
 # This method will run once at server start
 sub startup {
     my $self = shift;
@@ -9,7 +15,6 @@ sub startup {
     my $app  = $self->app;
     AltSimpleBoard::Data::set_config($app);
 
-    sub switch_act { $_[1]->session->{act} = $_[2] }
     $app->helper( act => sub { shift->session->{act} } );
     $app->helper( acttitle => sub { $AltSimpleBoard::Data::Acttitles{shift->session->{act}} // 'Unbekannt' } );
 

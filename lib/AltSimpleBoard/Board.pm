@@ -96,7 +96,7 @@ sub frontpage {
         my $d = $c->stash($k);
         $c->stash($k => '') unless $d;
     }
-    my @params = ( $s->{userid}, $page, $s->{lastseen}, $s->{query} );
+    my @params = ( $s->{userid}, $page, $s->{lastseen}, $s->{query}, $s->{category} );
     my $posts = [];
     given ( $s->{act} ) {
         when ( 'forum' )   { $posts = AltSimpleBoard::Data::Board::get_forum(@params) }

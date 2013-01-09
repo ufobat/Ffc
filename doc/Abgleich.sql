@@ -16,10 +16,26 @@ CREATE TABLE `asb_posts` (
   `posted` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   `text` text NOT NULL,
   `to` int(11) NOT NULL,
+  `category` bigint,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=65535 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `asb_categories` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) NOT NULL,
+  `root` smallint NOT NULL default 1,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=65535 DEFAULT CHARSET=utf8;
 
 insert into asb_users (name, email) select substring(username, 1, 64), user_email from phpbb_users;
 
-insert into asb_posts (`from`, posted, text) select `from`, FROM_UNIXTIME(posted), text from asb_posti;
+insert into asb_posts (`from`, posted, text) select `from`, FROM_UNIXTIME(posted), text from asb_post;
+
+insert into asb_categories (`name`) values ('Treffen und Feten');
+insert into asb_categories (`name`) values ('Musik, Filme, Serien, Kunst');
+insert into asb_categories (`name`) values ('Links, Bilder, Videos');
+insert into asb_categories (`name`) values ('Computer und Spiele');
+insert into asb_categories (`name`) values ('Aufreger');
+insert into asb_categories (`name`) values ('Zitate');
 
