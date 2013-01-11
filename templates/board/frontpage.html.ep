@@ -20,21 +20,21 @@
     <h2>
 % if ( session()->{userid} == $p->[1] ) {
 % if ( act() ne 'msgs' or act() eq 'notes' ) {
-        <a href="<%= url_for "editform", postid => $p->[0] %>" title="Beitrag bearbeiten"><img src="<%= url_for '/img/icons/buttons/edit.png' %>" alt="bearbeiten" class="buttonicons" /></a>
-        <a href="<%= url_for "delete", postid => $p->[0] %>" title="Beitrag löschen"><img src="<%= url_for '/img/icons/buttons/delete.png' %>" alt="löschen" class="buttonicons" /></a>
+        <a href="<%= url_for "editform", postid => $p->[0] %>" title="Beitrag bearbeiten">[e]</a>
+        <a href="<%= url_for "delete", postid => $p->[0] %>" title="Beitrag löschen">[x]</a>
 % }
 % if ( act() ne 'notes' ) {
         <%= $p->[2] %>
 % }
 % } elsif ( $p->[5] ) {
-        <a href="<%= url_for 'msgs_user', msgs_userid => $p->[1] %>" title="Private Nachricht an &quot;<%= $p->[2] %>&quot; schreiben"><img src="<%= url_for '/img/icons/buttons/msgs.png' %>" alt="" class="buttonicons" /><%= $p->[2] %></a> 
+        <a href="<%= url_for 'msgs_user', msgs_userid => $p->[1] %>" title="Private Nachricht an &quot;<%= $p->[2] %>&quot; schreiben"><%= $p->[2] %></a> 
 % } else {
     <%= $p->[2] %>
 % }
 % if ( $p->[6] and $p->[7] and act() ne 'notes' ) {
     an
 %   if ( $p->[6] != session()->{userid} and ( ! session()->{msgs_userid} ) ) {
-    <a href="<%= url_for 'msgs_user', msgs_userid => $p->[6] %>" title="Private Nachricht an &quot;<%= $p->[7] %>&quot; schreiben"><%= $p->[7] %><img src="<%= url_for '/img/icons/buttons/msgs.png' %>" alt="" class="buttonicons" /></a> 
+    <a href="<%= url_for 'msgs_user', msgs_userid => $p->[6] %>" title="Private Nachricht an &quot;<%= $p->[7] %>&quot; schreiben"><%= $p->[7] %></a> 
 %   } else {
     <%= $p->[7] %>
 %   }
