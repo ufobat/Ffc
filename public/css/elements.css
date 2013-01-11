@@ -63,7 +63,7 @@ button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hove
     box-shadow: 0 0 1px #fff;
     color: #fff;
     border-color: #222;
-    background: url('../img/tg.png') #666 repeat-x bottom;
+    background: url('../img/bg.png') #666 repeat-x bottom;
 }
 
 form table {
