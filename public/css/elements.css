@@ -18,10 +18,10 @@ h1, h2, h3, h4 {
 }
 
 blockquote {
-    background: #ddd;
     color: #339;
     font-family: serif;
-    padding-left: 1em;
+    border-left: 1px #339 solid;
+    padding-left: .5em;
 }
 input, textarea {
     border: 1px #000 solid;
