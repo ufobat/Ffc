@@ -24,6 +24,10 @@ sub notecount {
     return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
 
+sub allcategories {
+    my $sql = 'SELECT c.`id`, c.`name` FROM '.$AltSimpleBoard::Data::Prefix.'categories c ORDER BY c.`id`';
+    return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql);
+}
 sub categories {
     my $sql = 'SELECT c.`id`, c.`name`, COUNT(p.`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts p INNER JOIN '.$AltSimpleBoard::Data::Prefix.'categories c ON p.`category` = c.`id` WHERE p.`to` IS NULL GROUP BY c.`id` ORDER BY c.`id`';
     return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql);
@@ -37,8 +41,8 @@ sub username {
 
 sub post {
     my $id = shift;
-    my $sql = 'SELECT `text` FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE `id`=?';
-    return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $id))[0];
+    my $sql = 'SELECT `text`, `category` FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE `id`=?';
+    return AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $id);
 }
 
 sub delete {

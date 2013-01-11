@@ -4,6 +4,14 @@
 <div class="postbox ownpost">
 %= form_for $what => ( method => 'POST' )  => begin
 <textarea name="post" id="textinput"><%= $post %></textarea>
+% if ( act() eq 'forum' ) {
+<select type="text" name="category">
+    <option value=""></option>
+% for my $c ( @$allcategories ) {
+    <option value="<%= $c->[0] %>"<%= session()->{category} && session->{category} == $c->[0] ? ' selected="selected"' : '' %>><%= $c->[1] %></option>
+% }
+</select>
+% }
 %= submit_button 'Speichern'
 % end
 </div>
@@ -70,3 +78,6 @@
 ...
 </div>
 % }
+<pre>
+<%= Data::Dumper::Dumper session() %>
+</pre>

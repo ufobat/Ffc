@@ -48,7 +48,9 @@ sub switch {
 sub editform {
     my $c = shift;
     my $id = $c->param('postid');
-    $c->stash( post => AltSimpleBoard::Data::Board::post($id) );
+    my ( $text, $cat ) = AltSimpleBoard::Data::Board::post($id);
+    $c->stash( post => $text );
+    $c->session->{category} = $cat;
     $c->frontpage();
 }
 
@@ -146,6 +148,7 @@ sub init {
     $c->stash(newmsgscount => AltSimpleBoard::Data::Board::newmsgscount($userid));
     $c->stash(newmsgs => AltSimpleBoard::Data::Board::newmsgs($userid));
     $c->stash(categories => AltSimpleBoard::Data::Board::categories());
+    $c->stash(allcategories => AltSimpleBoard::Data::Board::allcategories());
     return 1;
 }
 
