@@ -7,7 +7,6 @@ body {
     background: #69c url('../img/hg.png') fixed;
     color: #003;
     margin-top: 2.5em;
-    font-family: sans-serif;
 }
 body > * {
     margin: 0 auto;
