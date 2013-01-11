@@ -39,8 +39,7 @@ input, textarea {
     margin-bottom: 1em;
 }
 .divider {
-    color: #666;
-    text-shadow: -1px -1px 0px #111;
+    color: #000;
 }
 input:focus, textarea:focus {
     border-color: #66c;
