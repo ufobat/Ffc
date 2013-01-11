@@ -20,8 +20,8 @@
     <h2>
 % if ( session()->{userid} == $p->[1] ) {
 % if ( act() ne 'msgs' or act() eq 'notes' ) {
-        <a href="<%= url_for "editform", postid => $p->[0] %>" title="Beitrag bearbeiten">[edit]</a>
-        <a href="<%= url_for "delete", postid => $p->[0] %>" title="Beitrag löschen">[delete]</a>
+        <a href="<%= url_for "editform", postid => $p->[0] %>" title="Beitrag bearbeiten">[&auml;ndern]</a>
+        <a href="<%= url_for "delete", postid => $p->[0] %>" title="Beitrag löschen">[l&ouml;schen]</a>
 % }
 % if ( act() ne 'notes' ) {
         <%= $p->[2] %>
