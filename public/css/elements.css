@@ -53,7 +53,7 @@ button, input[type="submit"], input[type="reset"], select {
     cursor: pointer;
     border: 1px #000 solid;
     color: #ccc;
-    background: url('../img/bg.png') #404040 repeat-x bottom;
+    background: #404040;
     box-shadow: none;
 }
 .postbox button, .postbox input[type="submit"], .postbox input[type="reset"], .postbox select {
@@ -63,7 +63,7 @@ button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hove
     box-shadow: 0 0 1px #fff;
     color: #fff;
     border-color: #222;
-    background: url('../img/bg.png') #666 repeat-x bottom;
+    background: #666;
 }
 
 form table {
