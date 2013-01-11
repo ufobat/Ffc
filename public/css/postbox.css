@@ -1,7 +1,6 @@
 .pages {
     text-align: right;
     padding: .5em 1em;
-    text-shadow: 0 0 1px #fff;
 }
 .pages a {
     color: #03f;
@@ -9,7 +8,6 @@
 .postbox {
     background: #fcc;
     border: 1px #333 solid;
-    box-shadow: 1px 1px 2px #369;
 }
 .postbox, .pages {
     margin-top: .5em;
