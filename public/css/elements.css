@@ -29,11 +29,12 @@ input, textarea {
 }
 .postbox textarea {
     width: 62.5em;
-    height: 7.5em;
+    height: 1.5em;
     border-color: #666;
+    margin-bottom: .5em;
 }
-.wysiwyg, .postbox textarea {
-    margin-bottom: 1em;
+.postbox textarea:focus {
+    height: 10em;
 }
 .divider {
     color: #000;
