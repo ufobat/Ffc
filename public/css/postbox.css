@@ -10,7 +10,7 @@
     border: 1px #666 solid;
 }
 .postbox, .pages {
-    margin-top: .5em;
+    margin-top: .25em;
     overflow: hidden;
 }
 .postbox > * {
