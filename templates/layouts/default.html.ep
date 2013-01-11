@@ -6,7 +6,6 @@
     <link rel="icon" type="image/ico" href="<%= url_for '/img/favicon.ico' %>" />
   </head>
   <body>
-<img src="<%= url_for '/img/banner.png' %>" alt="" class="banner" />
 <div class="menu">
 % if ( session()->{user} ) {
     <a href="<%= url_for 'switch', act => 'forum' %>" title="Nachrichten für alle angemeldeten Benutzer in der Art einer öffentlichen Diskussion"><span class="linktext linkforum<%= act() eq 'forum' ? ' active activeforum' : '' %>">öffentliches Forum</span></a>
@@ -37,6 +36,5 @@
 % }
 </div>
 <%= content %>
-<img src="<%= url_for '/img/bottom.png' %>" alt="" class="bottom" />
   </body>
 </html>
