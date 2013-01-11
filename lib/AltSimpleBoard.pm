@@ -56,6 +56,9 @@ sub startup {
     # conversation with single user
     $authed->route('/msgs/:msgs_userid', msgs_userid => qr(\d+))->to('board#msgs_user')->name('msgs_user');
 
+    # display special category
+    $authed->route('/category/:categoryid', categoryid => qr(\d+))->to('board#switch_category')->name('category');
+
 }
 
 1;

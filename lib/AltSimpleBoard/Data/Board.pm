@@ -24,6 +24,11 @@ sub notecount {
     return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
 
+sub categories {
+    my $sql = 'SELECT c.`id`, c.`name`, COUNT(p.`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts p INNER JOIN '.$AltSimpleBoard::Data::Prefix.'categories c ON p.`category` = c.`id` WHERE p.`to` IS NULL GROUP BY c.`id` ORDER BY c.`id`';
+    return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql);
+}
+
 sub username {
     my $id = shift;
     my $sql = 'SELECT `name` FROM '.$AltSimpleBoard::Data::Prefix.'users WHERE `id`=?';
@@ -86,10 +91,11 @@ sub get_stuff {
     return [] unless $userid;
     $page = 1 unless $page;
     my $sql =
-        'SELECT p.`id`, p.`from`, f.`name`, p.`posted`, p.`text`, f.`active`, p.`to`, t.`name` FROM '
+        'SELECT p.`id`, p.`from`, f.`name`, p.`posted`, p.`text`, f.`active`, p.`to`, t.`name`, c.`name` FROM '
       . $AltSimpleBoard::Data::Prefix . 'posts p INNER JOIN '
       . $AltSimpleBoard::Data::Prefix . 'users f ON f.`id`=p.`from` LEFT OUTER JOIN '
-      . $AltSimpleBoard::Data::Prefix . 'users t ON t.`id`=p.`to` '
+      . $AltSimpleBoard::Data::Prefix . 'users t ON t.`id`=p.`to` LEFT OUTER JOIN '
+      . $AltSimpleBoard::Data::Prefix . 'categories c ON c.`id`=p.`category` '
       . ' WHERE ' . $where
       . ( $query ? ' AND p.`text` LIKE ?' : '' )
       . ' AND ( p.`category` = ? OR ? IS NULL )'
@@ -103,8 +109,8 @@ sub get_stuff {
     for my $i ( 0 .. $#$data ) {
         given ( $data->[$i] ) {
             $_->[4] = format_text( $_->[4] );
-            $_->[8] = format_timestamp( $_->[3] );
-            $_->[9] = $_->[3] && $lasts && $_->[3] =~ m/\A\d+\z/xmsi && $lasts =~ m/\A\d+\z/xmsi && $_->[3] > $lasts; #FIXME
+            $_->[9] = format_timestamp( $_->[3] );
+            $_->[10] = $_->[3] && $lasts && $_->[3] =~ m/\A\d+\z/xmsi && $lasts =~ m/\A\d+\z/xmsi && $_->[3] > $lasts; #FIXME
         }
     }
     return $data;

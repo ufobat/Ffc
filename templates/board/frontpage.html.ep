@@ -15,7 +15,7 @@
 % }
 % for my $p ( @$posts ) {
 %   if ( !$postid or ( $postid and $p->[0] != $postid ) ) {
-<div class="postbox <%= act() %><%= act() ne 'notes' && session()->{userid} == $p->[1] ? ' '.act().'ownpost ownpost' : '' %><%= $p->[9] ? ' new' : '' %>">
+<div class="postbox <%= act() %><%= act() ne 'notes' && session()->{userid} == $p->[1] ? ' '.act().'ownpost ownpost' : '' %><%= $p->[10] ? ' new' : '' %>">
 <div class="info">
     <h2>
 % if ( session()->{userid} == $p->[1] ) {
@@ -39,7 +39,7 @@
     <%= $p->[7] %>
 %   }
 % }
-        (<%= $p->[8] %>):
+        <span class="titleinfo">(<span class="timestamp"><%= $p->[9] %></span><%== $p->[8] ? qq{, <span class="category">$p->[8]</span>} : '' %>)</span>:
     </h2>
 </div>
 <div class="text"><%== $p->[4] %></div>

@@ -12,6 +12,14 @@ sub optionsform {
     $s->{msgs_username} = '';
 }
 
+sub switch_category {
+    my $c = shift;
+    my $s = $c->session;
+    $c->app->switch_act($c, 'forum');
+    $s->{category} = $c->param('categoryid');
+    $c->frontpage();
+}
+
 sub msgs_user {
     my $c = shift;
     my $s = $c->session;
@@ -137,6 +145,7 @@ sub init {
     $c->stash(notecount => AltSimpleBoard::Data::Board::notecount($userid));
     $c->stash(newmsgscount => AltSimpleBoard::Data::Board::newmsgscount($userid));
     $c->stash(newmsgs => AltSimpleBoard::Data::Board::newmsgs($userid));
+    $c->stash(categories => AltSimpleBoard::Data::Board::categories());
     return 1;
 }
 

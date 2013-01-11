@@ -37,4 +37,13 @@
     border: none;
     margin-right: .5em;
 }
+.postbox .category {
+    color: #339;
+}
+.postbox .timestamp {
+    color: #99c;
+}
+.postbox .titleinfo {
+    font-weight: normal;
+}
 
