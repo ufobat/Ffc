@@ -14,7 +14,7 @@
     overflow: hidden;
 }
 .postbox > * {
-    margin: 1em;
+    margin: .5em 1em;
 }
 .postbox img {
     max-width: 512px;
