@@ -66,9 +66,10 @@ sub delete {
 sub insert {
     my $c = shift;
     my $s = $c->session;
-    my $text = $c->param('post') =~ m/\A\s*(.+)\s*\z/xmsi ? $1 : '';
+    my $text = $c->param('post')     =~ m/\A\s*(.+)\s*\z/xmsi ? $1 : '';
+    my $cat  = $c->param('category') =~ m/\A\d+\z/xmsi        ? $1 : undef;
     my $fromid = $s->{userid};
-    my @params = ( $fromid, $text );
+    my @params = ( $fromid, $text, $cat );
     given ( $s->{act} ) {
         when ( 'notes' ) { push @params, $fromid }
         when ( 'msgs'  ) { push @params, $s->{msgs_userid} }
@@ -81,10 +82,11 @@ sub insert {
 sub update {
     my $c = shift;
     my $s = $c->session;
-    my $text = $c->param('post') =~ m/\A\s*(.+)\s*\z/xmsi ? $1 : '';
+    my $text = $c->param('post')     =~ m/\A\s*(.+)\s*\z/xmsi ? $1 : '';
+    my $cat  = $c->param('category') =~ m/\A\d+\z/xmsi        ? $1 : undef;
     my $postid = $c->param('postid');
     my $fromid = $s->{userid};
-    my @params = ( $fromid, $text, $postid );
+    my @params = ( $fromid, $text, $cat, $postid );
     given ( $s->{act} ) {
         when ( 'notes' ) { push @params, $fromid }
         when ( 'msgs'  ) { die 'Privatnachrichten dürfen nicht geändert werden' }

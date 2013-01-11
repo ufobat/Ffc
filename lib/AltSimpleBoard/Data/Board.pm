@@ -51,15 +51,15 @@ sub delete {
     AltSimpleBoard::Data::dbh()->do( $sql, undef, $id, $from );
 }
 sub insert {
-    my ( $f, $d, $t ) = @_;
-    my $sql = 'INSERT INTO '.$AltSimpleBoard::Data::Prefix.'posts (`from`, `to`, `text`, `posted`) VALUES (?, ?, ?, current_timestamp)';
-    AltSimpleBoard::Data::dbh()->do( $sql, undef, $f, $t, $d );
+    my ( $f, $d, $c, $t ) = @_;
+    my $sql = 'INSERT INTO '.$AltSimpleBoard::Data::Prefix.'posts (`from`, `to`, `text`, `posted`, `category`) VALUES (?, ?, ?, current_timestamp, ?)';
+    AltSimpleBoard::Data::dbh()->do( $sql, undef, $f, $t, $d, $c );
 }
 
 sub update {
-    my ( $f, $d, $i, $t ) = @_;
-    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'posts SET `text`=?, `posted`=current_timestamp, `to`=? WHERE `id`=? AND `from`=? AND (`to` IS NULL OR `to`=`from`);';
-    AltSimpleBoard::Data::dbh()->do( $sql, undef, $d, $t, $i, $f );
+    my ( $f, $d, $c, $i, $t ) = @_;
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'posts SET `text`=?, `posted`=current_timestamp, `to`=?, `cagetory`=?? WHERE `id`=? AND `from`=? AND (`to` IS NULL OR `to`=`from`);';
+    AltSimpleBoard::Data::dbh()->do( $sql, undef, $d, $t, $c, $i, $f );
 }
 
 sub update_user_stats {
