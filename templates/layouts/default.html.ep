@@ -30,7 +30,7 @@
     <a href="<%= url_for 'optionsform' %>" title="Einstellungen für diese Plattform anpassen"><span class="linktext linkoptions<%= act() eq 'options' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
     <span class="divider">|</span>
 % end
-    <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linktext linklogout">abmelden</span> <span class="logout"> X</span></a>
+    <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linktext linklogout">abmelden</span></a>
 % } else {
     <a href="<%= url_for 'registerform' %>" title="Für diese Plattform registrieren"><span class="linktext linkregister">Registrieren</span></a> 
 % }
