@@ -16,7 +16,6 @@ body > * {
 
 .banner, .bottom {
     position: fixed;
-    z-index: 1;
 }
 .banner {
     left: 0;
