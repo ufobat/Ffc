@@ -135,8 +135,7 @@ sub startpage {
     }
     else {
         $c->app->switch_act( $c, 'auth' );
-        $c->stash( $_ => '' ) for qw(notecount newmsgscount);
-        $c->stash( newmsgs => [] );
+        AltSimpleBoard::Auth::form_prepare($c);
         $c->render( 'auth/loginform', error => 'Bitte melden Sie sich an' );
     }
 }
@@ -146,10 +145,10 @@ sub init {
     my $userid = $c->session->{userid};
 # prepare the user action
     AltSimpleBoard::Data::Board::update_user_stats($userid);
-    $c->stash(notecount => AltSimpleBoard::Data::Board::notecount($userid));
-    $c->stash(newmsgscount => AltSimpleBoard::Data::Board::newmsgscount($userid));
-    $c->stash(newmsgs => AltSimpleBoard::Data::Board::newmsgs($userid));
-    $c->stash(categories => AltSimpleBoard::Data::Board::categories());
+    $c->stash(notecount     => AltSimpleBoard::Data::Board::notecount($userid));
+    $c->stash(newmsgscount  => AltSimpleBoard::Data::Board::newmsgscount($userid));
+    $c->stash(newmsgs       => AltSimpleBoard::Data::Board::newmsgs($userid));
+    $c->stash(categories    => AltSimpleBoard::Data::Board::categories());
     $c->stash(allcategories => AltSimpleBoard::Data::Board::allcategories());
     return 1;
 }

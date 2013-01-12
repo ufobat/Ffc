@@ -10,9 +10,9 @@
 % if ( session()->{user} ) {
     <span class="popup">
         <a href="<%= url_for 'switch', act => 'forum' %>" title="Nachrichten für alle angemeldeten Benutzer in der Art einer öffentlichen Diskussion"><span class="linktext linkforum<%= act() eq 'forum' ? ' active activeforum' : '' %>">öffentliches Forum</span></a>
-% if ( @$categories ) {
+% if ( values %$categories ) {
             <span class="menu">
-% for my $c ( @$categories ) {
+% for my $c ( sort { $a->[0] <=> $b->[0] } values %$categories ) {
             <p><a href="<%= url_for 'category', categoryid => $c->[0] %>" title="Beiträge der Kategorie &quot;<%= $c->[1] %>&quot; anzeigen"><%= $c->[1] %> (<span class="mark"><%= $c->[2] %></span>)</a></p>
 % }
             </span>
