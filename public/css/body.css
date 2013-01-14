@@ -6,23 +6,10 @@
 body {
     background: #69c url('../img/hg.png') fixed;
     color: #003;
-    margin-top: 2.5em;
 }
 body > * {
     margin: 0 auto;
     max-width: 65em;
-}
-
-.banner, .bottom {
-    position: fixed;
-}
-.banner {
-    left: 0;
-    top: 2.1em;
-}
-.bottom {
-    right: 0;
-    bottom: 0;
 }
 
 p {

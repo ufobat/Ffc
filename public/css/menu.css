@@ -1,17 +1,12 @@
 .menu {
     text-align: center;
-    position: fixed;
-    left: -0.5em;
-    top: 0;
-    padding: 0.25em;
-    width: 100%;
-    max-width: 100%;
+    padding: 0.25em 0;
     background: #333;
-    border-color: #000;
-    border-style: solid;
-    border-width: 0 0 1px 0;
+    border: 1px #000 solid;
     box-shadow: 0 0 .2em #000;
     min-height: 1.5em;
+    width: 100%;
+    max-width: 100%;
 }
 .menu, .menu a {
     color: #999;
@@ -47,11 +42,8 @@
     border-right-color: transparent;
 }
 .menu .menu {
-    border-width: 1px;
-    position: absolute;
-    top: 1.25em;
+    position: fixed;
     text-align: left;
-    left: 2em;
     display: none;
     width: 12em;
     padding: .5em 1.5em;

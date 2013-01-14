@@ -10,7 +10,6 @@
 }
 .postbox, .pages {
     margin-top: .25em;
-    overflow: hidden;
 }
 .postbox > * {
     margin: .5em 1em;
