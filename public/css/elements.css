@@ -27,8 +27,11 @@ input, textarea {
     background: #fff;
     color: #006;
 }
+input[type="text"], input[type="password"] {
+    width: 10em;
+}
 .postbox textarea {
-    width: 62.5em;
+    width: 47.5em;
     height: 5em;
     border-color: #666;
     margin-bottom: .5em;

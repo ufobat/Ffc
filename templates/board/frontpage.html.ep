@@ -32,16 +32,16 @@
         <span class="titleinfo">(<%= $p->{timestamp} %><% if ( $p->{editable} ) { %>, <a
                 href="<%= url_for editform => postid => $p->{id} %>" 
                 title="Beitrag bearbeiten">
-                &auml;ndern</a>, <a 
+                &Auml;ndern</a>, <a 
                 href="<%= url_for delete   => postid => $p->{id} %>" 
                 title="Beitrag l&ouml;schen">
-                l&ouml;schen</a><% } if ( $p->{category} ) { %>, <a 
+                L&ouml;schen</a><% } if ( $p->{category} ) { %>, <a 
                 href="<%= url_for 'category' => categoryid => $p->{category}->{id} %>" 
                 title="Kategorie &quot;<%= $p->{category}->{name} %>&quot; anzeigen">
                 <%= $p->{category}->{name} %></a><% } for my $w (qw(from to)) { if ( $p->{$w} and $p->{$w}->{chatable} ) { %>, <a
                 href="<%= url_for msgs_user => msgs_userid => $p->{$w}->{id} %>"
-                title="Benutzer &quot;$p->{$w}->{name}&quot; privat anschreiben">
-                anschreiben</a><% } } %>)</span>:
+                title="Dem Benutzer &quot;<%= $p->{$w}->{name} %>&quot; eine private Nachricht zukommen lassen">
+                Nachricht</a><% } } %>)</span>:
     </h2>
     <%== $p->{text} %>
 </div>

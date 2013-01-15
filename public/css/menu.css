@@ -8,6 +8,7 @@
     max-width: 100%;
     position: fixed;
     margin-top: -2.25em;
+    white-space: nowrap;
 }
 .menu, .menu a {
     color: #999;
@@ -46,12 +47,16 @@
     position: absolute;
     text-align: left;
     display: none;
-    width: 12em;
     padding: .5em 1.5em;
+    width: inherit;
     margin: 0;
     top: 0;
     left: 0;
 }
 .menu .popup:hover .menu {
     display: block;
+}
+.menu input[type="text"] {
+    background-color: #666;
+    color: #ccc;
 }

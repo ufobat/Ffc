@@ -9,7 +9,7 @@
 <div class="menu">
 % if ( session()->{user} ) {
     <span class="popup">
-        <a href="<%= url_for 'switch', act => 'forum' %>" title="Nachrichten für alle angemeldeten Benutzer in der Art einer öffentlichen Diskussion"><span class="linktext linkforum<%= act() eq 'forum' ? ' active activeforum' : '' %>">öffentliches Forum</span></a>
+        <a href="<%= url_for 'switch', act => 'forum' %>" title="Nachrichten für alle angemeldeten Benutzer in der Art einer öffentlichen Diskussion"><span class="linktext linkforum<%= act() eq 'forum' ? ' active activeforum' : '' %>">Forum</span></a>
 % if ( values %$categories ) {
             <span class="menu">
 % for my $c ( sort { $a->[0] <=> $b->[0] } values %$categories ) {
@@ -20,7 +20,7 @@
         </span>
     <span class="divider">|</span>
     <span class="popup">
-        <a href="<%= url_for 'switch', act => 'msgs' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkmsgs<%= act() eq 'msgs' ? ' active activemsgs' : '' %>">private Nachrichten (<% if ( $newmsgscount ) { %><span class="mark"><%= $newmsgscount %></span><% } else { %><%= 0 %><% } %>)</span></a>
+        <a href="<%= url_for 'switch', act => 'msgs' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkmsgs<%= act() eq 'msgs' ? ' active activemsgs' : '' %>">Nachrichten (<% if ( $newmsgscount ) { %><span class="mark"><%= $newmsgscount %></span><% } else { %><%= 0 %><% } %>)</span></a>
 % if ( @$newmsgs ) {
         <span class="menu">
 % for my $m ( @$newmsgs ) {
@@ -30,7 +30,7 @@
 % }
     </span>
     <span class="divider">|</span>
-    <a href="<%= url_for 'switch', act => 'notes' %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= act() eq 'notes' ? ' active activenotes' : '' %>">eigene Notizen (<% if ( $notecount ) { %><span class="mark"><%= $notecount %></span><% } else { %><%= 0 %><% } %>)</span></a>
+    <a href="<%= url_for 'switch', act => 'notes' %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= act() eq 'notes' ? ' active activenotes' : '' %>">Notizen (<% if ( $notecount ) { %><span class="mark"><%= $notecount %></span><% } else { %><%= 0 %><% } %>)</span></a>
     <span class="divider">|</span>
 %= form_for search => ( method => 'POST' ) => begin
 %= text_field query => session()->{query}, session()->{query} ? (class => 'activesearch') : ()
@@ -39,7 +39,7 @@
     <a href="<%= url_for 'optionsform' %>" title="Einstellungen für diese Plattform anpassen"><span class="linktext linkoptions<%= act() eq 'options' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
     <span class="divider">|</span>
 % end
-    <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linktext linklogout">abmelden</span></a>
+    <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linktext linklogout">[X]</span></a>
 % } else {
     <a href="<%= url_for 'registerform' %>" title="Für diese Plattform registrieren"><span class="linktext linkregister">Registrieren</span></a> 
 % }
