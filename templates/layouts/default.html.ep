@@ -6,8 +6,8 @@
     <link rel="icon" type="image/ico" href="<%= url_for '/img/favicon.ico' %>" />
   </head>
   <body>
-<div class="menu">
 % if ( session()->{user} ) {
+<div class="menu">
     <span class="popup">
         <a href="<%= url_for 'switch', act => 'forum' %>" title="Nachrichten für alle angemeldeten Benutzer in der Art einer öffentlichen Diskussion"><span class="linktext linkforum<%= act() eq 'forum' ? ' active activeforum' : '' %>">Forum</span></a>
 % if ( values %$categories ) {
@@ -34,16 +34,14 @@
     <span class="divider">|</span>
 %= form_for search => ( method => 'POST' ) => begin
 %= text_field query => session()->{query}, session()->{query} ? (class => 'activesearch') : ()
-%= submit_button 'Suchen', session()->{query} ? (class => 'activesearch') : ()
+%= submit_button 'oO', session()->{query} ? (class => 'activesearch') : ()
     <span class="divider">|</span>
     <a href="<%= url_for 'optionsform' %>" title="Einstellungen für diese Plattform anpassen"><span class="linktext linkoptions<%= act() eq 'options' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
     <span class="divider">|</span>
 % end
     <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linktext linklogout">[X]</span></a>
-% } else {
-    &nbsp;
-% }
 </div>
+% }
 <%= content %>
         <p class="footerlinks">
             <a href="https://github.com/bedivere/AltSimpleBoard" title="Zum Projekt auf GitHub" target="_blank">Projektwebseite</a> |
