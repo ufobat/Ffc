@@ -28,7 +28,11 @@
 % for my $p ( @$posts ) {
 <div class="postbox <%= act() %><%= $p->{ownpost} ? ' '.act().'ownpost ownpost' : '' %><%= $p->{id} && $postid && $p->{id} == $postid ? ' activepost' : '' %>">
     <h2>
+% if ( act() eq 'msgs' ) {
+        <%= $p->{from}->{name} %> → <%= $p->{to}->{name} %>
+% } else {
         <%= $p->{from}->{name} %>
+% }
         <span class="titleinfo">(<%= $p->{timestamp} %><% if ( $p->{editable} ) { %>, <a
                 href="<%= url_for editform => postid => $p->{id} %>" 
                 title="Beitrag bearbeiten">
