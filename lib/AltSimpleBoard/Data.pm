@@ -44,6 +44,7 @@ our $Title;
             } qw(dsn user password)};
         $cryptsalt = $config->{cryptsalt};
         delete $config->{cryptsalt};
+        delete $config->{cookie_secret};
         %Users = map {
                 $_->[1] => {
                     userid => $_->[0],
