@@ -100,9 +100,9 @@ sub get_forum { get_stuff( @_[ 0 .. 5 ], 'p.`to` IS NULL' ) }
 sub get_msgs {
     my @params = ( $_[0], $_[0] );
     my $where = '( p.`from`=? OR p.`to`=? ) AND p.`from` <> p.`to`';
-    if ( $_[4] ) {
+    if ( $_[6] ) {
         $where .= ' AND ( p.`from`=? OR p.`to`=? )';
-        push @params, $_[4], $_[4];
+        push @params, $_[6], $_[6];
     }
     get_stuff( @_[ 0 .. 5 ], $where, @params );
 }
