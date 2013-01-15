@@ -17,7 +17,11 @@ p {
     margin-top: .5em;
 }
 .footerlinks {
-    border-top: 1px #36c solid;
+    border-top: 1px #333 dashed;
     text-align: center;
+    color: #333;
+}
+.footerlinks a {
+    color: #333;
 }
 
