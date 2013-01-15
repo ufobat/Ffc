@@ -4,9 +4,10 @@
     background: #333;
     border: 1px #000 solid;
     box-shadow: 0 0 .2em #000;
-    min-height: 1.5em;
     width: 100%;
     max-width: 100%;
+    position: fixed;
+    margin-top: -2.25em;
 }
 .menu, .menu a {
     color: #999;
@@ -41,12 +42,15 @@
     border-left-color: transparent;
     border-right-color: transparent;
 }
-.menu .menu {
-    position: fixed;
+.popup .menu {
+    position: absolute;
     text-align: left;
     display: none;
     width: 12em;
     padding: .5em 1.5em;
+    margin: 0;
+    top: 0;
+    left: 0;
 }
 .menu .popup:hover .menu {
     display: block;

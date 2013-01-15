@@ -5,6 +5,7 @@
 
 body {
     background: #69c url('../img/hg.png') fixed;
+    padding-top: 2.25em;
     color: #003;
 }
 body > * {
