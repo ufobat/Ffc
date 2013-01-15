@@ -45,4 +45,6 @@
 .postbox .titleinfo {
     font-weight: normal;
 }
-
+.activepost {
+    display: none;
+}

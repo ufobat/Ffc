@@ -67,7 +67,7 @@ sub insert {
     my $c = shift;
     my $s = $c->session;
     my $text = $c->param('post')     =~ m/\A\s*(.+)\s*\z/xmsi ? $1 : '';
-    my $cat  = $c->param('category') =~ m/\A\d+\z/xmsi        ? $1 : undef;
+    my $cat  = $c->param('category') =~ m/\A(\d+)\z/xmsi      ? $1 : undef;
     my $fromid = $s->{userid};
     my @params = ( $fromid, $text, $cat );
     given ( $s->{act} ) {
@@ -108,7 +108,7 @@ sub frontpage {
         my $d = $c->stash($k);
         $c->stash($k => '') unless $d;
     }
-    my @params = ( $s->{userid}, $page, $s->{lastseen}, $s->{query}, $s->{category} );
+    my @params = ( $s->{userid}, $page, $s->{lastseen}, $s->{query}, $s->{category}, $s->{act} );
     my $posts = [];
     given ( $s->{act} ) {
         when ( 'forum' )   { $posts = AltSimpleBoard::Data::Board::get_forum(@params) }

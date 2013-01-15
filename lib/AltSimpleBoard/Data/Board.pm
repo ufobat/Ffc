@@ -33,6 +33,28 @@ sub categories {
     return { map {$_->[0] => $_} @{ AltSimpleBoard::Data::dbh()->selectall_arrayref($sql) } };
 }
 
+sub _get_category_id { 
+    my $sql = 'SELECT c.`id` WHERE c.`name`=?';
+    my $data = AltSimpleBoard::Data::dbh()->selectall_arrayref($sql, undef, $_[0]);
+    if ( @$data ) {
+        return $data->[0]->[0];
+    }
+    else {
+        return;
+    }
+}
+sub get_category {
+    my $cat = shift;
+    return unless 3 < length $cat;
+    my $data = _get_category_id( $cat );
+    return $data if $data;
+    my $sql = 'INSERT INTO '.$AltSimpleBoard::Data::Prefix.'categories VALUES (`name`) VALUES (?)';
+    AltSimpleBoard::Data::dbh()->do($sql, undef, $cat);
+    $data = _get_category_id( $cat );
+    return $data if $data;
+    return;
+}
+
 sub username {
     my $id = shift;
     my $sql = 'SELECT `name` FROM '.$AltSimpleBoard::Data::Prefix.'users WHERE `id`=?';
@@ -58,7 +80,7 @@ sub insert {
 
 sub update {
     my ( $f, $d, $c, $i, $t ) = @_;
-    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'posts SET `text`=?, `posted`=current_timestamp, `to`=?, `cagetory`=?? WHERE `id`=? AND `from`=? AND (`to` IS NULL OR `to`=`from`);';
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'posts SET `text`=?, `posted`=current_timestamp, `to`=?, `category`=? WHERE `id`=? AND `from`=? AND (`to` IS NULL OR `to`=`from`);';
     AltSimpleBoard::Data::dbh()->do( $sql, undef, $d, $t, $c, $i, $f );
 }
 
@@ -70,9 +92,9 @@ sub update_user_stats {
 }
 
 sub get_notes {
-    get_stuff( @_[ 0 .. 4 ], 'p.`from`=? AND p.`to`=p.`from`', $_[0] );
+    get_stuff( @_[ 0 .. 5 ], 'p.`from`=? AND p.`to`=p.`from`', $_[0] );
 }
-sub get_forum { get_stuff( @_[ 0 .. 4 ], 'p.`to` IS NULL' ) }
+sub get_forum { get_stuff( @_[ 0 .. 5 ], 'p.`to` IS NULL' ) }
 
 sub get_msgs {
     my @params = ( $_[0], $_[0] );
@@ -81,7 +103,7 @@ sub get_msgs {
         $where .= ' AND ( p.`from`=? OR p.`to`=? )';
         push @params, $_[4], $_[4];
     }
-    get_stuff( @_[ 0 .. 4 ], $where, @params );
+    get_stuff( @_[ 0 .. 5 ], $where, @params );
 }
 
 sub get_stuff {
@@ -90,34 +112,56 @@ sub get_stuff {
     my $lasts  = shift;
     my $query  = shift;
     my $cat    = shift;
+    my $act    = shift;
     my $where  = shift;
     my @params = @_;
     return [] unless $userid;
     $page = 1 unless $page;
     my $sql =
-        'SELECT p.`id`, p.`from`, f.`name`, p.`posted`, p.`text`, f.`active`, p.`to`, t.`name`, c.`id`, c.`name` FROM '
-      . $AltSimpleBoard::Data::Prefix . 'posts p INNER JOIN '
-      . $AltSimpleBoard::Data::Prefix . 'users f ON f.`id`=p.`from` LEFT OUTER JOIN '
-      . $AltSimpleBoard::Data::Prefix . 'users t ON t.`id`=p.`to` LEFT OUTER JOIN '
-      . $AltSimpleBoard::Data::Prefix . 'categories c ON c.`id`=p.`category` '
+        'SELECT'
+      . ' p.`id`, p.`text`, p.`posted`,'
+      . ' c.`id`, c.`name`,'
+      . ' f.`id`, f.`name`, f.`active`,'
+      . ' t.`id`, t.`name`, t.`active`'
+      . ' FROM '            . $AltSimpleBoard::Data::Prefix . 'posts p'
+      . ' INNER JOIN '      . $AltSimpleBoard::Data::Prefix . 'users f ON f.`id`=p.`from`'
+      . ' LEFT OUTER JOIN ' . $AltSimpleBoard::Data::Prefix . 'users t ON t.`id`=p.`to`'
+      . ' LEFT OUTER JOIN ' . $AltSimpleBoard::Data::Prefix . 'categories c ON c.`id`=p.`category`'
       . ' WHERE ' . $where
       . ( $query ? ' AND p.`text` LIKE ?' : '' )
       . ' AND ( p.`category` = ? OR ? IS NULL )'
       . ' ORDER BY p.`posted` DESC LIMIT ? OFFSET ?';
-    my $data =
-      AltSimpleBoard::Data::dbh()
-      ->selectall_arrayref( $sql, undef, @params, ( $query ? "%$query%" : () ), $cat, $cat,
-        $AltSimpleBoard::Data::Limit,
-        ( ( $page - 1 ) * $AltSimpleBoard::Data::Limit ) );
 
-    for my $i ( 0 .. $#$data ) {
-        given ( $data->[$i] ) {
-            $_->[4] = format_text( $_->[4] );
-            $_->[10] = format_timestamp( $_->[3] );
-            $_->[11] = $_->[3] && $lasts && $_->[3] =~ m/\A\d+\z/xmsi && $lasts =~ m/\A\d+\z/xmsi && $_->[3] > $lasts; #FIXME
-        }
-    }
-    return $data;
+    return [ map { my $d = $_;
+            {
+                text      => format_text($d->[1]),
+                timestamp => format_timestamp($d->[2]),
+                ownpost   => $d->[5] == $userid && $act ne 'notes' ? 1 : 0,
+                category  => $d->[3] # kategorie
+                    ? { id => $d->[3], name => $d->[4] }
+                    : undef,
+                $d->[5] == $userid && $act ne 'msgs' # editierbarkeit
+                    ? (editable => 1, id => $d->[0]) 
+                    : (editable => 0, id => undef),
+                map( { $d->[$_->[1]] # from und to
+                      ? ( $_->[0] => { 
+                          id       => $d->[$_->[1]], 
+                          name     => $d->[$_->[2]], 
+                          active   => $d->[$_->[3]], 
+                          chatable => 
+                            (    $_->[0] eq 'from'
+                              && $d->[$_->[3]]
+                              && $d->[$_->[1]] != $userid 
+                              && $act          ne 'notes' )
+                            ? 1 : 0, 
+                        } )
+                      : ( $_->[0] => undef ) }
+                      ([from => 5,6,7], [to => 8,9,10]) ),
+            }
+        } @{ AltSimpleBoard::Data::dbh()
+          ->selectall_arrayref( $sql, undef, @params, ( $query ? "%$query%" : () ), $cat, $cat,
+            $AltSimpleBoard::Data::Limit,
+            ( ( $page - 1 ) * $AltSimpleBoard::Data::Limit ) ) } ];
 }
 
 sub format_timestamp {
