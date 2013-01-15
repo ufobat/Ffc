@@ -150,8 +150,7 @@ sub get_stuff {
                           name     => $d->[$_->[2]], 
                           active   => $d->[$_->[3]], 
                           chatable => 
-                            (    $_->[0] eq 'from'
-                              && $d->[$_->[3]]
+                            (    $d->[$_->[3]]
                               && $d->[$_->[1]] != $userid 
                               && $act          ne 'notes' )
                             ? 1 : 0, 
