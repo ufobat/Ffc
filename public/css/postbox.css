@@ -46,5 +46,6 @@
     font-weight: normal;
 }
 .activepost {
-    display: none;
+    height: 1px;
+    overflow: hidden;
 }
