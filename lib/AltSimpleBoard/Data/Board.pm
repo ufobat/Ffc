@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use utf8;
 use AltSimpleBoard::Data;
+use Mojo::Util;
 
 sub newmsgs {
     my $userid = shift;
@@ -175,6 +176,7 @@ sub format_timestamp {
 sub format_text {
     my $s = shift;
     return '' unless $s;
+    $s = Mojo::Util::xml_escape($s);
     $s = _bbcode($s);
     $s =~ s{\n+}{</p>\n<p>}gsm;
     $s = "<p>$s</p>";
