@@ -175,11 +175,23 @@ sub format_timestamp {
 
 sub format_text {
     my $s = shift;
+    chomp $s;
     return '' unless $s;
     $s = Mojo::Util::xml_escape($s);
+    $s = _links($s);
     $s = _bbcode($s);
     $s =~ s{\n+}{</p>\n<p>}gsm;
     $s = "<p>$s</p>";
+    return $s;
+}
+
+sub _links {
+    my $s = shift;
+    $s =~
+s{(?:\s|\A)(https?://\S+\.(jpg|jpeg|gif|bmp|png))(?:\s|\z)}{<a href="$1" title="Externes Bild" target="_blank"><img src="$1" class="extern" title="Externes Bild" /></a>}xmsig;
+    $s =~
+s{(\s|\A)(https?://\S+)(\s|\z)}{$1<a href="$2" title="Externe Webseite" target="_blank">$2</a>$3}xmsig;
+    $s =~ s{_(\w+)_}{<u>$1</u>}xmsig;
     return $s;
 }
 
