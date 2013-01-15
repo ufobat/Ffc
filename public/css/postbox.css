@@ -8,10 +8,6 @@
     background: #fcc;
     border: 1px #333 solid;
 }
-.postbox:hover {
-    border-color: #fff;
-    box-shadow: 0 0 1px #000;
-}
 .postbox, .pages {
     margin-top: .25em;
 }
