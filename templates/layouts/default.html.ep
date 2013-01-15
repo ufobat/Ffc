@@ -41,7 +41,7 @@
 % end
     <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linktext linklogout">[X]</span></a>
 % } else {
-    <a href="<%= url_for 'registerform' %>" title="Für diese Plattform registrieren"><span class="linktext linkregister">Registrieren</span></a> 
+    &nbsp;
 % }
 </div>
 <%= content %>

@@ -9,8 +9,7 @@
         <tr><td>Benutzer:</td><td><input type="text" name="user" class="loginfield" /></td></tr>
         <tr><td>Passwort:</td><td><input type="password" name="pass" class="loginfield" /></td></tr>
         <tr><td></td><td>
-            <input type="submit" value="anmelden" /> /
-            <a href="<%= url_for 'registerform' %>" title="Für das Forum registrieren">Registrieren</a>
+            <input type="submit" value="anmelden" />
         </td></tr>
     </table>
 % end

@@ -11,18 +11,6 @@ sub form_prepare {
     $self->stash( $_ => [] ) for qw(newmsgs categories);
 }
 
-sub registerform  {
-    my $self = shift;
-    $self->stash( newmsgs => [] );
-    $self->render('auth/registerform', error => 'not implemented yet');
-}
-
-sub registersave  {
-    my $self = shift;
-    form_prepare( $self );
-    $self->render('auth/registerform', error => 'not implemented yet');
-}
-
 sub login {
     my $self = shift;
     $self->app->switch_act( $self,  'auth' );

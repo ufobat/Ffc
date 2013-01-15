@@ -25,8 +25,6 @@ sub startup {
     $routes->route('/logout')->to('auth#logout')->name('logout');
     $routes->route('/login')->to('auth#login')->name('login');
     $routes->route('/')->to('board#startpage');
-    $routes->route('/registerform')->to('auth#registerform')->name('registerform');
-    $routes->route('/registersave')->to('auth#registersave')->name('registersave');
     my $authed = $routes->bridge()->to('auth#check_login');
 
     # options
