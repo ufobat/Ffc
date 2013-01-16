@@ -6,6 +6,8 @@ CREATE TABLE `asb_users` (
   `password` varchar(64) NOT NULL,
   `email` varchar(1024) NOT NULL,
   `lastseen` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `active` tinyint(1) NOT NULL DEFAULT '0',
+  `admin` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=137 DEFAULT CHARSET=utf8;

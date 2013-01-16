@@ -77,6 +77,7 @@ sub get_relevant_data {
         user     => $user,
         userid   => $data[0],
         lastseen => $data[1],
+        admin    => $data[2],
         act      => 'forum',
         query    => '',
         category => undef,
