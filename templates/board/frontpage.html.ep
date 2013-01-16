@@ -28,11 +28,19 @@
 % for my $p ( @$posts ) {
 <div class="postbox <%= act() %><%= $p->{ownpost} ? ' '.act().'ownpost ownpost' : '' %><%= $p->{id} && $postid && $p->{id} == $postid ? ' activepost' : '' %>">
     <h2>
-% if ( act() eq 'msgs' ) {
-        <%= $p->{from}->{name} %> → <%= $p->{to}->{name} %>
-% } else {
+% if ( $p->{from}->{active} ) {
         <%= $p->{from}->{name} %>
-% }
+% } else {
+        <span class="inactive"><%= $p->{from}->{name} %></span>
+% } 
+% if ( act() eq 'msgs' ) {
+        → 
+%   if ( $p->{to}->{active} ) {
+        <%= $p->{to}->{name} %>
+%   } else {
+        <span class="inactive"><%= $p->{to}->{name} %></span>
+%   } 
+% } 
         <span class="titleinfo">(<%= $p->{timestamp} %><% if ( $p->{editable} ) { %>, <a
                 href="<%= url_for editform => postid => $p->{id} %>" 
                 title="Beitrag bearbeiten">
