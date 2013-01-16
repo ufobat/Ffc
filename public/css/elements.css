@@ -6,9 +6,8 @@ a {
     text-decoration: underline;
 }
 a:hover {
-    color: #039;
-    text-decoration: underline;
-    text-shadow: 0 0 2px #69f;
+    color: #00f;
+    text-decoration: none;
 }
 
 h1, h2, h3, h4 {
