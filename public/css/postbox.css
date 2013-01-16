@@ -17,17 +17,8 @@
 .postbox img {
     max-width: 512px;
     max-height: 256px;
-    border: 3px #fff solid;
-    box-shadow: 1px 1px 2px #666;
-}
-.postbox > img.avatar {
-    float: left;
-    margin-right: 1em;
-    margin-bottom: 0.5em;
-    height: 2em;
-}
-.postbox:active img.avatar, div.new img.avatar {
-    height: auto;
+    border: 2px #fff solid;
+    box-shadow: 0 0 1px #000;
 }
 
 .clear {
