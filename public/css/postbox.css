@@ -17,8 +17,7 @@
 .postbox img {
     max-width: 512px;
     max-height: 256px;
-    border: 2px #fff solid;
-    box-shadow: 0 0 1px #000;
+    border: 1px #fff solid;
 }
 
 .clear {
