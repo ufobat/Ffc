@@ -1,18 +1,12 @@
 % layout 'default';
 <div class="postbox options">
 %= form_for optionssave => ( method => 'POST' ) => begin 
+    <h2>Eigene Einstellungen</h2>
     <table>
-        <tr>
-            <th><img src="" class="avatar" /></th>
-            <th>Avatar-Bild</th>
-            <td><%= file_field 'email' %></td>
-        </tr>
-        <tr><td colspan="3"><hr /></td></tr>
         <tr>
             <th colspan="2">E-Mail-Adresse</th>
             <td><%= text_field 'email' %></td>
         </tr>
-        <tr><td colspan="3"><hr /></td></tr>
         <tr>
             <th rowspan="3">Passwort</th>
             <th>Alt</th>
@@ -26,10 +20,40 @@
             <th>Wiederholen</th>
             <td><input type="password" name="newpw2" value="" /></td>
         </tr>
-        <tr><td colspan="3"><hr /></td></tr>
         <tr>
             <th colspan="3"><%= submit_button 'Speichern' %></th>
         </tr>
     </table>
 % end
+% if ( session()->{admin} ) {
+    <h2>Benutzerverwaltung <span class="titleinfo">(Vorsicht, kompliziert!)</span></h2>
+%= form_for usersave => ( method => 'POST' ) => begin 
+    <table>
+        <tr>
+            <th colspan="2">Benutzername</th>
+            <td><%= text_field 'username' %></td>
+        </tr>
+        <tr>
+            <th rowspan="2">Passwort</th>
+            <th>Neu</th>
+            <td><input type="password" name="newpw1" value="" /></td>
+        </tr>
+        <tr>
+            <th>Wiederholen</th>
+            <td><input type="password" name="newpw2" value="" /></td>
+        </tr>
+        <tr>
+            <th colspan="2">Aktiv</th>
+            <td><%= check_box 'active' %></td>
+        </tr>
+        <tr>
+            <th colspan="2">Admin</th>
+            <td><%= check_box 'admin' %></td>
+        </tr>
+        <tr>
+            <th colspan="3"><%= submit_button 'Speichern' %></th>
+        </tr>
+    </table>
+% end
+% }
 </div>

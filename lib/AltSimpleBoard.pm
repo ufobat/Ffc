@@ -30,6 +30,7 @@ sub startup {
     # options
     $authed->route('/options')->via('get')->to('board#optionsform')->name('optionsform');
     $authed->route('/options')->via('post')->to('board#optionssave')->name('optionssave');
+    $authed->route('/options')->via('post')->to('board#usersave')->name('usersave');
 
     # search
     $authed->route('/search')->via('post')->to('board#search')->name('search');

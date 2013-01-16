@@ -12,6 +12,16 @@ sub optionsform {
     $s->{msgs_username} = '';
 }
 
+sub optionssave {
+    my $c = shift;
+    my $s = $c->session;
+}
+
+sub usersave {
+    my $c = shift;
+    my $s = $c->session;
+}
+
 sub switch_category {
     my $c = shift;
     my $s = $c->session;
