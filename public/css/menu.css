@@ -1,6 +1,6 @@
 .menu {
     text-align: center;
-    padding: 0.25em 0;
+    padding: 0.15em 0;
     background: #333;
     border-color: #000;
     border-style: solid;
@@ -8,7 +8,7 @@
     box-shadow: 0 0 .2em #000;
     width: 100%;
     max-width: 100%;
-    margin-top: -2.25em;
+    margin-top: -1.85em;
     white-space: nowrap;
     position: fixed;
 }
@@ -21,9 +21,6 @@
 }
 .menu a:hover .linktext, .menu .menu a:hover {
     color: #fff;
-}
-.menu a:hover *, .menu a:hover {
-    text-shadow: 1px 1px 3px #666;
 }
 .menu form {
     display: inline;
@@ -41,21 +38,14 @@
     text-decoration: none;
     border: 1px transparent solid;
 }
-.popup {
-    border-left: 1px transparent solid;
-}
 .popup > .menu {
     text-align: left;
     display: none;
-    padding: 1em;
+    padding: .25em .5em;
     width: inherit;
     position: absolute;
-    margin: 1.25em -1px;
-    border-width: 1px 1px 1px 2px;
-    border-left-color: #ccc;
-}
-.popup:hover {
-    border-left-color: #fff;
+    margin: 1.25em 0;
+    border-width: 1px;
 }
 .popup:hover > .menu {
     display: inline-block;
@@ -63,6 +53,7 @@
 .menu input[type="text"] {
     background-color: #666;
     color: #ccc;
+    width: 7.5em;
 }
 
 .menu .category {
