@@ -22,6 +22,9 @@
     max-height: 128px;
     border: 1px #fff solid;
 }
+.postbox .titleinfo img {
+    border: none;
+}
 
 .clear {
     clear: both;
