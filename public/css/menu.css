@@ -44,7 +44,7 @@
     padding: .25em .5em;
     width: inherit;
     position: absolute;
-    margin: 1.25em 0;
+    margin: 1.25em -1px;
     border-width: 1px;
 }
 .popup:hover > .menu {
