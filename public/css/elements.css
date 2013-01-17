@@ -23,7 +23,7 @@ blockquote {
     margin-left: 1em;
 }
 input, textarea, select {
-    border: 1px #000 solid;
+    border: 1px #999 solid;
     background: #fff;
     color: #006;
 }
@@ -33,7 +33,6 @@ input[type="text"], input[type="password"] {
 .postbox textarea {
     width: 47.5em;
     height: 5em;
-    border-color: #666;
     margin-bottom: .5em;
 }
 .divider {
@@ -57,6 +56,15 @@ button:hover, input[type="submit"]:hover, input[type="reset"]:hover {
     color: #fff;
     border-color: #222;
     background: #666;
+}
+
+.options form > * {
+    margin: 0 auto;
+}
+.options form tr {
+    border-style: dashed;
+    border-color: #999;
+    border-width: 1px 0;
 }
 
 form table {

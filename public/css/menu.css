@@ -52,6 +52,7 @@
 }
 .menu input[type="text"] {
     background-color: #666;
+    border-color: #000;
     color: #ccc;
     width: 7.5em;
 }

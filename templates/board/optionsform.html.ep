@@ -1,7 +1,7 @@
 % layout 'default';
 <div class="postbox options">
-%= form_for optionssave => ( method => 'POST' ) => begin 
     <h2>Eigene Einstellungen</h2>
+%= form_for optionssave => ( method => 'POST' ) => begin 
     <table>
         <tr>
             <th colspan="2">E-Mail-Adresse</th>
@@ -26,6 +26,8 @@
     </table>
 % end
 % if ( session()->{admin} ) {
+</div> 
+<div class="postbox options">
     <h2>Benutzerverwaltung <span class="titleinfo">(Vorsicht, kompliziert!)</span></h2>
 %= form_for usersave => ( method => 'POST' ) => begin 
     <table>
