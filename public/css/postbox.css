@@ -46,3 +46,8 @@
     height: 1px;
     overflow: hidden;
 }
+.titleinfo .category {
+    border-bottom: 1px #36c solid;;
+    text-decoration: none;
+}
+

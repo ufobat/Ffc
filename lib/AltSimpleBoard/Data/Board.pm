@@ -26,11 +26,11 @@ sub notecount {
 }
 
 sub allcategories {
-    my $sql = 'SELECT c.`id`, c.`name` FROM '.$AltSimpleBoard::Data::Prefix.'categories c ORDER BY c.`id`';
+    my $sql = 'SELECT c.`id`, c.`name`, c.`cssclass` FROM '.$AltSimpleBoard::Data::Prefix.'categories c ORDER BY c.`id`';
     return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql);
 }
 sub categories {
-    my $sql = 'SELECT c.`id`, c.`name`, COUNT(p.`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts p INNER JOIN '.$AltSimpleBoard::Data::Prefix.'categories c ON p.`category` = c.`id` WHERE p.`to` IS NULL GROUP BY c.`id` ORDER BY c.`id`';
+    my $sql = 'SELECT c.`id`, c.`name`, c.`cssclass`, COUNT(p.`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts p INNER JOIN '.$AltSimpleBoard::Data::Prefix.'categories c ON p.`category` = c.`id` WHERE p.`to` IS NULL GROUP BY c.`id` ORDER BY c.`id`';
     return { map {$_->[0] => $_} @{ AltSimpleBoard::Data::dbh()->selectall_arrayref($sql) } };
 }
 
@@ -119,19 +119,19 @@ sub get_stuff {
     return [] unless $userid;
     $page = 1 unless $page;
     my $sql =
-        'SELECT'
-      . ' p.`id`, p.`text`, p.`posted`,'
-      . ' c.`id`, c.`name`,'
-      . ' f.`id`, f.`name`, f.`active`,'
-      . ' t.`id`, t.`name`, t.`active`'
-      . ' FROM '            . $AltSimpleBoard::Data::Prefix . 'posts p'
-      . ' INNER JOIN '      . $AltSimpleBoard::Data::Prefix . 'users f ON f.`id`=p.`from`'
-      . ' LEFT OUTER JOIN ' . $AltSimpleBoard::Data::Prefix . 'users t ON t.`id`=p.`to`'
-      . ' LEFT OUTER JOIN ' . $AltSimpleBoard::Data::Prefix . 'categories c ON c.`id`=p.`category`'
-      . ' WHERE ' . $where
-      . ( $query ? ' AND p.`text` LIKE ?' : '' )
-      . ' AND ( p.`category` = ? OR ? IS NULL )'
-      . ' ORDER BY p.`posted` DESC LIMIT ? OFFSET ?';
+        q{SELECT}
+      . q{ p.`id`, p.`text`, p.`posted`,}
+      . q{ c.`id`, c.`name`, COALESCE(c.`cssclass`,''),}
+      . q{ f.`id`, f.`name`, f.`active`,}
+      . q{ t.`id`, t.`name`, t.`active`}
+      . q{ FROM }            . $AltSimpleBoard::Data::Prefix . q{posts p}
+      . q{ INNER JOIN }      . $AltSimpleBoard::Data::Prefix . q{users f ON f.`id`=p.`from`}
+      . q{ LEFT OUTER JOIN } . $AltSimpleBoard::Data::Prefix . q{users t ON t.`id`=p.`to`}
+      . q{ LEFT OUTER JOIN } . $AltSimpleBoard::Data::Prefix . q{categories c ON c.`id`=p.`category`}
+      . q{ WHERE } . $where
+      . ( $query ? q{ AND p.`text` LIKE ? } : '' )
+      . q{ AND ( p.`category` = ? OR ? IS NULL )}
+      . q{ ORDER BY p.`posted` DESC LIMIT ? OFFSET ?};
 
     return [ map { my $d = $_;
             {
@@ -139,7 +139,7 @@ sub get_stuff {
                 timestamp => format_timestamp($d->[2]),
                 ownpost   => $d->[5] == $userid && $act ne 'notes' ? 1 : 0,
                 category  => $d->[3] # kategorie
-                    ? { id => $d->[3], name => $d->[4] }
+                    ? { id => $d->[3], name => $d->[4], cssclass => $d->[5] }
                     : undef,
                 $d->[5] == $userid && $act ne 'msgs' # editierbarkeit
                     ? (editable => 1, id => $d->[0]) 
@@ -156,7 +156,7 @@ sub get_stuff {
                             ? 1 : 0, 
                         } )
                       : ( $_->[0] => undef ) }
-                      ([from => 5,6,7], [to => 8,9,10]) ),
+                      ([from => 6,7,8], [to => 9,10,11]) ),
             }
         } @{ AltSimpleBoard::Data::dbh()
           ->selectall_arrayref( $sql, undef, @params, ( $query ? "%$query%" : () ), $cat, $cat,

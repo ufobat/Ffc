@@ -8,10 +8,10 @@
 </p>
 <p>
 % if ( act() eq 'forum' ) {
-    <select type="text" name="category">
+    <select type="text" name="category" class="categories">
         <option value=""></option>
 % for my $c ( @$allcategories ) {
-        <option value="<%= $c->[0] %>"<%= session()->{category} && session->{category} == $c->[0] ? ' selected="selected"' : '' %>><%= $c->[1] %></option>
+        <option value="<%= $c->[0] %>"<%= session()->{category} && session->{category} == $c->[0] ? ' selected="selected"' : '' %> class="category<%== $c->[2] ? " category_$c->[2]" : '' %>"><%= $c->[1] %></option>
 % }
     </select>
 % }
@@ -49,7 +49,8 @@
                 title="Beitrag l&ouml;schen">
                 L&ouml;schen</a><% } if ( $p->{category} ) { %>, <a 
                 href="<%= url_for 'category' => categoryid => $p->{category}->{id} %>" 
-                title="Kategorie &quot;<%= $p->{category}->{name} %>&quot; anzeigen">
+                title="Kategorie &quot;<%= $p->{category}->{name} %>&quot; anzeigen"
+                class="category<%== $p->{category}->{cssclass} ? qq[ category_$p->{category}->{cssclass}] : '' %>">
                 <%= $p->{category}->{name} %></a><% } for my $w (qw(from to)) { if ( $p->{$w} and $p->{$w}->{chatable} ) { %>, <a
                 href="<%= url_for msgs_user => msgs_userid => $p->{$w}->{id} %>"
                 title="Dem Benutzer &quot;<%= $p->{$w}->{name} %>&quot; eine private Nachricht zukommen lassen">

@@ -19,9 +19,10 @@ h1, h2, h3, h4 {
 blockquote {
     color: #339;
     border-left: 1px #339 solid;
-    padding-left: .5em;
+    padding-left: .25em;
+    margin-left: 1em;
 }
-input, textarea {
+input, textarea, select {
     border: 1px #000 solid;
     background: #fff;
     color: #006;
@@ -38,19 +39,21 @@ input[type="text"], input[type="password"] {
 .divider {
     color: #000;
 }
-input:hover, textarea:hover {
+input:hover, textarea:hover, select:hover {
     border-color: #99f;
 }
-input:focus, textarea:focus {
+input:focus, textarea:focus, select:focus {
     border-color: #66c;
 }
 button, input[type="submit"], input[type="reset"], select {
     cursor: pointer;
-    border: 1px #000 solid;
+}
+button, input[type="submit"], input[type="reset"] {
     color: #ccc;
     background: #404040;
+    border: 1px #000 solid;
 }
-button:hover, input[type="submit"]:hover, input[type="reset"]:hover, select:hover {
+button:hover, input[type="submit"]:hover, input[type="reset"]:hover {
     color: #fff;
     border-color: #222;
     background: #666;

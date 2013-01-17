@@ -62,3 +62,8 @@
     background-color: #666;
     color: #ccc;
 }
+
+.menu .category {
+    border-bottom: 1px #999 solid;;
+    text-decoration: none;
+}
