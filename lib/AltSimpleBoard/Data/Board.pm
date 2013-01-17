@@ -130,18 +130,18 @@ sub get_stuff {
       . q{ LEFT OUTER JOIN } . $AltSimpleBoard::Data::Prefix . q{categories c ON c.`id`=p.`category`}
       . q{ WHERE } . $where
       . ( $query ? q{ AND p.`text` LIKE ? } : '' )
-      . q{ AND ( p.`category` = ? OR ? IS NULL )}
+      . q{ AND ( p.`category` = ? OR ( ? IS NULL AND ( p.`category` IS NULL OR c.`root` = 1 ) ) )}
       . q{ ORDER BY p.`posted` DESC LIMIT ? OFFSET ?};
 
     return [ map { my $d = $_;
             {
                 text      => format_text($d->[1]),
                 timestamp => format_timestamp($d->[2]),
-                ownpost   => $d->[5] == $userid && $act ne 'notes' ? 1 : 0,
+                ownpost   => $d->[6] == $userid && $act ne 'notes' ? 1 : 0,
                 category  => $d->[3] # kategorie
                     ? { id => $d->[3], name => $d->[4], cssclass => $d->[5] }
                     : undef,
-                $d->[5] == $userid && $act ne 'msgs' # editierbarkeit
+                $d->[6] == $userid && $act ne 'msgs' # editierbarkeit
                     ? (editable => 1, id => $d->[0]) 
                     : (editable => 0, id => undef),
                 map( { $d->[$_->[1]] 
