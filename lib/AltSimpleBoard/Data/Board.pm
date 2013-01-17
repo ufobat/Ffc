@@ -179,7 +179,7 @@ sub format_text {
     $s = Mojo::Util::xml_escape($s);
     $s = _links($s);
     $s = _bbcode($s);
-    $s =~ s{\n+}{</p>\n<p>}gsm;
+    $s =~ s{\n[\n\s]*}{</p>\n<p>}gsm;
     $s = "<p>$s</p>";
     return $s;
 }
