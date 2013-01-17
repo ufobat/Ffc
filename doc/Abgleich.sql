@@ -38,10 +38,10 @@ insert into asb_users (name, email) select substring(username, 1, 64), user_emai
 
 insert into asb_posts (`from`, posted, text) select `from`, FROM_UNIXTIME(posted), text from asb_post;
 
-insert into asb_categories (`name`, `cssclass`) values ('Treffen und Feten', 'party');
-insert into asb_categories (`name`, `cssclass`) values ('Musik, Filme, Serien, Kunst', 'kultur');
-insert into asb_categories (`name`, `cssclass`) values ('Links, Bilder, Videos', 'links');
-insert into asb_categories (`name`, `cssclass`) values ('Computer und Spiele', 'pc');
-insert into asb_categories (`name`, `cssclass`) values ('Aufreger', 'arrrgh');
-insert into asb_categories (`name`, `cssclass`) values ('Zitate', 'zitate');
+insert into asb_categories (`name`, `cssclass`, `root`) values ('Treffen und Feten', 'party', 1);
+insert into asb_categories (`name`, `cssclass`, `root`) values ('Musik, Filme, Serien, Kunst', 'kultur', 0);
+insert into asb_categories (`name`, `cssclass`, `root`) values ('Links, Bilder, Videos', 'links', 1);
+insert into asb_categories (`name`, `cssclass`, `root`) values ('Computer und Spiele', 'pc', 0);
+insert into asb_categories (`name`, `cssclass`, `root`) values ('Aufreger', 'arrrgh', 0);
+insert into asb_categories (`name`, `cssclass`, `root`) values ('Zitate', 'zitate', 0);
 
