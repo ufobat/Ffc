@@ -144,7 +144,7 @@ sub get_stuff {
                 $d->[5] == $userid && $act ne 'msgs' # editierbarkeit
                     ? (editable => 1, id => $d->[0]) 
                     : (editable => 0, id => undef),
-                map( { $d->[$_->[1]] # from und to
+                map( { $d->[$_->[1]] 
                       ? ( $_->[0] => { 
                           id       => $d->[$_->[1]], 
                           name     => $d->[$_->[2]], 
@@ -200,7 +200,7 @@ sub _bbcode {
     # zitate
     $s =~ s~
         \[quote
-            (?:=(?:"|&quot;)(?<cite>.+?)(?:"|&quot;))?
+            (?:=(?:"|&quot;)(?<cite>.+?)(?:"|&quot;)|(?<cite>))
             (?<mark>(?:\:\w+?)?)
         \]
         (?<text>.+?)
