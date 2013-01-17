@@ -5,14 +5,17 @@
     color: #03f;
 }
 .postbox {
-    background: #fcc;
+    background: #ccc;
     border: 1px #333 solid;
+}
+.postbox h2 {
+    border-bottom: 1px #999 solid;
 }
 .postbox, .pages {
     margin-top: .25em;
 }
 .postbox > * {
-    margin: .5em 1em;
+    padding: .25em 1em;
 }
 .postbox img {
     max-width: 512px;

@@ -33,6 +33,7 @@ input[type="text"], input[type="password"] {
     width: 47.5em;
     height: 5em;
     border-color: #666;
+    margin-bottom: .5em;
 }
 .divider {
     color: #000;
