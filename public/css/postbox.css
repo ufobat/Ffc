@@ -7,9 +7,11 @@
 .postbox {
     background: #ccc;
     border: 1px #036 solid;
+    color: #000;
 }
 .postbox h2 {
     background: #fff url('../img/tg.png') bottom repeat-x;
+    color: #333;
 }
 .postbox, .pages {
     margin-top: .25em;
@@ -32,12 +34,6 @@
 .postbox img.buttonicons {
     border: none;
     margin-right: .5em;
-}
-.postbox .category {
-    color: #339;
-}
-.postbox .timestamp {
-    color: #99c;
 }
 .postbox .titleinfo {
     font-weight: normal;

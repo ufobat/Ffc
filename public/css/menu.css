@@ -25,13 +25,24 @@
 .menu form {
     display: inline;
 }
+.menu input[type="text"] {
+    background-color: #666;
+    border-color: #000;
+    color: #ccc;
+    width: 7.5em;
+}
 .menu .activesearch {
     border: 1px #963 solid;
 }
 .menu input.activesearch {
     background-color: #fc9;
 }
-.menu input[type="submit"].activesearch {
+.menu button {
+    border: none;
+    display: inline;
+    background: none;
+}
+.menu input.activesearch {
     background-color: #630;
 }
 .menu .linktext {
@@ -49,12 +60,6 @@
 }
 .popup:hover > .menu {
     display: inline-block;
-}
-.menu input[type="text"] {
-    background-color: #666;
-    border-color: #000;
-    color: #ccc;
-    width: 7.5em;
 }
 
 .menu .category {

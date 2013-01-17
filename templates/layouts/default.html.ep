@@ -40,12 +40,11 @@
     <span class="divider">|</span>
 %= form_for search => ( method => 'POST' ) => begin
 %= text_field query => session()->{query}, session()->{query} ? (class => 'activesearch') : ()
-%= submit_button 'oO', session()->{query} ? (class => 'activesearch') : ()
+    <button type="submit"><img src="<%= url_for '/img/icons/search.png' %>" alt="Einstellungen" /></button>
     <span class="divider">|</span>
-    <a href="<%= url_for 'optionsform' %>" title="Einstellungen für diese Plattform anpassen"><span class="linktext linkoptions<%= act() eq 'options' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
-    <span class="divider">|</span>
+    <a href="<%= url_for 'optionsform' %>" title="Einstellungen für diese Plattform anpassen"><span class="linktext linkoptions<%= act() eq 'options' ? ' active activeoptions' : '' %>"><img src="<%= url_for '/img/icons/options.png' %>" alt="Einstellungen" /></span></a>
 % end
-    <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linktext linklogout">[X]</span></a>
+    <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linktext linklogout"><img src="<%= url_for '/img/icons/bye.png' %>" alt="[X]" /></span></a>
 </div>
 % }
 <%= content %>
