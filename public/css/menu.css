@@ -8,9 +8,9 @@
     box-shadow: 0 0 .2em #000;
     width: 100%;
     max-width: 100%;
-    position: fixed;
     margin-top: -2.25em;
     white-space: nowrap;
+    position: fixed;
 }
 .menu, .menu a {
     color: #999;
@@ -39,24 +39,20 @@
 }
 .menu .linktext {
     text-decoration: none;
-    border-style: solid;
-    border-width: 1px;
-    border-top-color: transparent;
-    border-left-color: transparent;
-    border-right-color: transparent;
+    border: 1px transparent solid;
 }
-.popup .menu {
-    position: absolute;
+.popup > .menu {
     text-align: left;
     display: none;
     padding: .5em 1.5em;
     width: inherit;
-    margin: 0;
-    top: 0;
-    left: 0;
+    position: absolute;
+    margin: 1.25em 0;
+    border-width: 1px 1px 1px 2px;
+    border-left-color: #ccc;
 }
-.menu .popup:hover .menu {
-    display: block;
+.popup:hover > .menu {
+    display: inline-block;
 }
 .menu input[type="text"] {
     background-color: #666;
