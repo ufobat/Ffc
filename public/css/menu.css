@@ -41,15 +41,21 @@
     text-decoration: none;
     border: 1px transparent solid;
 }
+.popup {
+    border-left: 1px transparent solid;
+}
 .popup > .menu {
     text-align: left;
     display: none;
-    padding: .5em 1.5em;
+    padding: 1em;
     width: inherit;
     position: absolute;
-    margin: 1.25em 0;
+    margin: 1.25em -1px;
     border-width: 1px 1px 1px 2px;
     border-left-color: #ccc;
+}
+.popup:hover {
+    border-left-color: #fff;
 }
 .popup:hover > .menu {
     display: inline-block;
