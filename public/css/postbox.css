@@ -9,7 +9,7 @@
     border: 1px #036 solid;
 }
 .postbox h2 {
-    border-bottom: 1px #fff solid;
+    background: #fff url('../img/tg.png') bottom repeat-x;
 }
 .postbox, .pages {
     margin-top: .25em;
