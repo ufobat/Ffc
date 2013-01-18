@@ -38,19 +38,19 @@ sub startup {
     # back to the first page
     $authed->route('/show/:page', page => qr(\d+))->to('board#show')->name('show_page');
     # switch context
-    $authed->route('/show/:act', act => [qw(forum notes msgs)])->to('board#switch')->name('switch');
+    $authed->route('/show/:act', act => [qw(forum notes msgs)])->to('board#switch_act')->name('switch');
     # current start page
     $authed->route('/show')->to('board#show')->name('show');
 
 
     # delete something
-    $authed->route('/delete/:postid', postid => qr(\d+))->via('get')->to('board#delete')->name('delete');
+    $authed->route('/delete/:postid', postid => qr(\d+))->via('get')->to('board#delete_post')->name('delete');
     # create something
-    $authed->route('/new')->via('post')->to('board#insert')->name('new');
+    $authed->route('/new')->via('post')->to('board#insert_post')->name('new');
     # update something
     my $edit = $authed->route('/edit');
     $edit->route('/:postid', postid => qr(\d+))->via('get' )->to('board#editform')->name('editform');
-    $edit->route('/:postid', postid => qr(\d+))->via('post')->to('board#update'  )->name('edit');
+    $edit->route('/:postid', postid => qr(\d+))->via('post')->to('board#update_post'  )->name('edit');
 
     # conversation with single user
     $authed->route('/msgs/:msgs_userid', msgs_userid => qr(\d+))->to('board#msgs_user')->name('msgs_user');

@@ -7,9 +7,8 @@ use AltSimpleBoard::Auth;
 sub optionsform {
     my $c = shift;
     my $s = $c->session;
+    delete $s->{msgs_userid}; delete $s->{msgs_username};
     $c->app->switch_act( $c, 'options' );
-    $s->{msgs_userid} = '';
-    $s->{msgs_username} = '';
 }
 
 sub optionssave {
@@ -27,7 +26,7 @@ sub switch_category {
     my $s = $c->session;
     $c->app->switch_act($c, 'forum');
     $s->{category} = $c->param('category');
-    $s->{category} = '' unless $s->{category} =~ m/\A\w+\z/xms;
+    $s->{category} = '' unless eval { AltSimpleBoard::Data::Board::get_category_id($s->{category}) };
     $c->frontpage();
 }
 
@@ -36,7 +35,8 @@ sub msgs_user {
     my $s = $c->session;
     $c->app->switch_act($c, 'msgs');
     $s->{msgs_userid} = $c->param('msgs_userid');
-    $s->{msgs_username} = AltSimpleBoard::Data::Board::username($s->{msgs_userid});
+    $s->{msgs_username} = eval { AltSimpleBoard::Data::Board::get_username($s->{msgs_userid}) };
+    delete($s->{msgs_userid}), delete($s->{msgs_username}) unless $s->{msgs_username};
     $c->frontpage();
 }
 
@@ -46,12 +46,11 @@ sub show {
     $c->frontpage();
 }
 
-sub switch {
+sub switch_act {
     my $c = shift;
     my $act = $c->param('act');
     my $s = $c->session;
-    $s->{msgs_userid} = '';
-    $s->{msgs_username} = '';
+    delete $s->{msgs_userid}; delete $s->{msgs_username};
     $c->app->switch_act($c, $act);
     $c->frontpage();
 }
@@ -65,16 +64,16 @@ sub editform {
     $c->frontpage();
 }
 
-sub delete {
+sub delete_post {
     my $c = shift;
     my $s = $c->session;
     my $id = $c->param('postid');
-    AltSimpleBoard::Data::Board::delete($s->{userid}, $id);
     die "Privatnachrichten dürfen nicht gelöscht werden" if $s->{act} eq 'msgs';
+    AltSimpleBoard::Data::Board::delete_post($s->{userid}, $id);
     $c->redirect_to('show');
 }
 
-sub insert {
+sub insert_post {
     my $c = shift;
     my $s = $c->session;
     my $text = $c->param('post')     =~ m/\A\s*(.+)\s*\z/xmsi ? $1 : '';
@@ -86,11 +85,11 @@ sub insert {
         when ( 'msgs'  ) { push @params, $s->{msgs_userid} }
     }
     # from, text, to
-    AltSimpleBoard::Data::Board::insert(@params) if $text;
+    AltSimpleBoard::Data::Board::insert_post(@params) if $text;
     $c->redirect_to('show');
 }
 
-sub update {
+sub update_post {
     my $c = shift;
     my $s = $c->session;
     my $text = $c->param('post')     =~ m/\A\s*(.+)\s*\z/xmsi ? $1 : '';
@@ -103,7 +102,7 @@ sub update {
         when ( 'msgs'  ) { die 'Privatnachrichten dürfen nicht geändert werden' }
     }
     # from, text, id, to
-    AltSimpleBoard::Data::Board::update(@params) if $text;
+    AltSimpleBoard::Data::Board::update_post(@params) if $text;
     $c->redirect_to('show');
 }
 
