@@ -29,7 +29,7 @@ CREATE TABLE `asb_categories` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(64) NOT NULL,
   `root` tinyint(1) NOT NULL default 1,
-  `cssclass` varchar(8),
+  `short` varchar(8),
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=65535 DEFAULT CHARSET=utf8;

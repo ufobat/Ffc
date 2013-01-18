@@ -26,35 +26,20 @@ sub notecount {
 }
 
 sub allcategories {
-    my $sql = 'SELECT c.`id`, c.`name`, c.`cssclass` FROM '.$AltSimpleBoard::Data::Prefix.'categories c ORDER BY c.`id`';
+    my $sql = 'SELECT c.`name`, c.`short` FROM '.$AltSimpleBoard::Data::Prefix.'categories c ORDER BY c.`id`';
     return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql);
 }
 sub categories {
-    my $sql = 'SELECT c.`id`, c.`name`, c.`cssclass`, COUNT(p.`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts p INNER JOIN '.$AltSimpleBoard::Data::Prefix.'categories c ON p.`category` = c.`id` WHERE p.`to` IS NULL GROUP BY c.`id` ORDER BY c.`id`';
+    my $sql = 'SELECT c.`name`, c.`short`, COUNT(p.`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts p INNER JOIN '.$AltSimpleBoard::Data::Prefix.'categories c ON p.`category` = c.`id` WHERE p.`to` IS NULL GROUP BY c.`id` ORDER BY c.`id`';
     return { map {$_->[0] => $_} @{ AltSimpleBoard::Data::dbh()->selectall_arrayref($sql) } };
 }
-
-#sub _get_category_id { 
-#    my $sql = 'SELECT c.`id` WHERE c.`name`=?';
-#    my $data = AltSimpleBoard::Data::dbh()->selectall_arrayref($sql, undef, $_[0]);
-#    if ( @$data ) {
-#        return $data->[0]->[0];
-#    }
-#    else {
-#        return;
-#    }
-#}
-#sub get_category {
-#    my $cat = shift;
-#    return unless 3 < length $cat;
-#    my $data = _get_category_id( $cat );
-#    return $data if $data;
-#    my $sql = 'INSERT INTO '.$AltSimpleBoard::Data::Prefix.'categories VALUES (`name`) VALUES (?)';
-#    AltSimpleBoard::Data::dbh()->do($sql, undef, $cat);
-#    $data = _get_category_id( $cat );
-#    return $data if $data;
-#    return;
-#}
+sub _get_category_id {
+    my $c = shift;
+    my $sql = '';
+    my $cats = AltSimpleBoard::Data::dbh()->selectall_arrayref($sql, undef, $c);
+    return unless @$cats;
+    return $cats->[0]->[0];
+}
 
 sub username {
     my $id = shift;
@@ -64,7 +49,7 @@ sub username {
 
 sub post {
     my $id = shift;
-    my $sql = 'SELECT `text`, `category` FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE `id`=?';
+    my $sql = q{SELECT p.`text`, COALESCE(c.`short`,'') FROM }.$AltSimpleBoard::Data::Prefix.'posts p LEFT OUTER JOIN '.$AltSimpleBoard::Data::Prefix.'categories c ON c.`id`=p.`category` WHERE p.`id`=?';
     return AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $id);
 }
 
@@ -75,13 +60,13 @@ sub delete {
 }
 sub insert {
     my ( $f, $d, $c, $t ) = @_;
-    my $sql = 'INSERT INTO '.$AltSimpleBoard::Data::Prefix.'posts (`from`, `to`, `text`, `posted`, `category`) VALUES (?, ?, ?, current_timestamp, ?)';
+    my $sql = 'INSERT INTO '.$AltSimpleBoard::Data::Prefix.'posts (`from`, `to`, `text`, `posted`, `category`) VALUES (?, ?, ?, current_timestamp, (SELECT `id` FROM '.$AltSimpleBoard::Data::Prefix.'categories WHERE `short`=? LIMIT 1))';
     AltSimpleBoard::Data::dbh()->do( $sql, undef, $f, $t, $d, $c );
 }
 
 sub update {
     my ( $f, $d, $c, $i, $t ) = @_;
-    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'posts SET `text`=?, `posted`=current_timestamp, `to`=?, `category`=? WHERE `id`=? AND `from`=? AND (`to` IS NULL OR `to`=`from`);';
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'posts SET `text`=?, `posted`=current_timestamp, `to`=?, `category`=(SELECT `id` FROM '.$AltSimpleBoard::Data::Prefix.'categories WHERE `short`=? LIMIT 1) WHERE `id`=? AND `from`=? AND (`to` IS NULL OR `to`=`from`);';
     AltSimpleBoard::Data::dbh()->do( $sql, undef, $d, $t, $c, $i, $f );
 }
 
@@ -121,7 +106,7 @@ sub get_stuff {
     my $sql =
         q{SELECT}
       . q{ p.`id`, p.`text`, p.`posted`,}
-      . q{ c.`id`, c.`name`, COALESCE(c.`cssclass`,''),}
+      . q{ c.`name`, COALESCE(c.`short`,''),}
       . q{ f.`id`, f.`name`, f.`active`,}
       . q{ t.`id`, t.`name`, t.`active`}
       . q{ FROM }            . $AltSimpleBoard::Data::Prefix . q{posts p}
@@ -130,18 +115,18 @@ sub get_stuff {
       . q{ LEFT OUTER JOIN } . $AltSimpleBoard::Data::Prefix . q{categories c ON c.`id`=p.`category`}
       . q{ WHERE } . $where
       . ( $query ? q{ AND p.`text` LIKE ? } : '' )
-      . q{ AND ( p.`category` = ? OR ( ? IS NULL AND ( p.`category` IS NULL OR c.`root` = 1 ) ) )}
+      . q{ AND ( c.`short` = ? OR ( ( ? = '' OR ? IS NULL ) AND ( p.`category` IS NULL OR c.`root` = 1 ) ) )}
       . q{ ORDER BY p.`posted` DESC LIMIT ? OFFSET ?};
 
     return [ map { my $d = $_;
             {
                 text      => format_text($d->[1]),
                 timestamp => format_timestamp($d->[2]),
-                ownpost   => $d->[6] == $userid && $act ne 'notes' ? 1 : 0,
+                ownpost   => $d->[5] == $userid && $act ne 'notes' ? 1 : 0,
                 category  => $d->[3] # kategorie
-                    ? { id => $d->[3], name => $d->[4], cssclass => $d->[5] }
+                    ? { name => $d->[3], short => $d->[4] }
                     : undef,
-                $d->[6] == $userid && $act ne 'msgs' # editierbarkeit
+                $d->[5] == $userid && $act ne 'msgs' # editierbarkeit
                     ? (editable => 1, id => $d->[0]) 
                     : (editable => 0, id => undef),
                 map( { $d->[$_->[1]] 
@@ -156,10 +141,10 @@ sub get_stuff {
                             ? 1 : 0, 
                         } )
                       : ( $_->[0] => undef ) }
-                      ([from => 6,7,8], [to => 9,10,11]) ),
+                      ([from => 5,6,7], [to => 8,9,10]) ),
             }
         } @{ AltSimpleBoard::Data::dbh()
-          ->selectall_arrayref( $sql, undef, @params, ( $query ? "%$query%" : () ), $cat, $cat,
+          ->selectall_arrayref( $sql, undef, @params, ( $query ? "%$query%" : () ), $cat, $cat, $cat,
             $AltSimpleBoard::Data::Limit,
             ( ( $page - 1 ) * $AltSimpleBoard::Data::Limit ) ) } ];
 }

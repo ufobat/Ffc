@@ -9,9 +9,9 @@
 <p>
 % if ( act() eq 'forum' ) {
     <select type="text" name="category" class="categories">
-        <option value=""></option>
+        <option value="">Allgemeiner Beitrag</option>
 % for my $c ( @$allcategories ) {
-        <option value="<%= $c->[0] %>"<%= session()->{category} && session->{category} == $c->[0] ? ' selected="selected"' : '' %> class="category<%== $c->[2] ? " category_$c->[2]" : '' %>"><%= $c->[1] %></option>
+        <option value="<%= $c->[1] %>"<%= session()->{category} && session->{category} eq $c->[1] ? ' selected="selected"' : '' %> class="category<%== $c->[1] ? " category_$c->[1]" : '' %>"><%= $c->[0] %></option>
 % }
     </select>
 % }
@@ -42,9 +42,9 @@
 %   } 
 % } 
         <span class="titleinfo">(<%= $p->{timestamp} %><% if ( $p->{category} ) { %>, <a 
-          href="<%= url_for 'category' => categoryid => $p->{category}->{id} %>" 
+          href="<%= url_for 'category' => category => $p->{category}->{short} %>" 
           title="Kategorie &quot;<%= $p->{category}->{name} %>&quot; anzeigen"
-          class="category<%== $p->{category}->{cssclass} ? qq[ category_$p->{category}->{cssclass}] : '' %>">
+          class="category<%== $p->{category}->{short} ? qq[ category_$p->{category}->{short}] : '' %>">
           <%= $p->{category}->{name} %></a><% } %><% if ( $p->{editable} ) { %>, 
           <a href="<%= url_for editform => postid => $p->{id} %>" 
             title="Beitrag bearbeiten"><img 
