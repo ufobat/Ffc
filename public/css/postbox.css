@@ -11,7 +11,8 @@
 }
 .postbox h2 {
     background: #fff url('../img/tg.png') bottom repeat-x;
-    color: #333;
+    color: #666;
+    font-size: 0.75em;
 }
 .postbox, .pages {
     margin-top: .25em;
