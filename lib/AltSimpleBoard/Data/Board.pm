@@ -34,27 +34,27 @@ sub categories {
     return { map {$_->[0] => $_} @{ AltSimpleBoard::Data::dbh()->selectall_arrayref($sql) } };
 }
 
-sub _get_category_id { 
-    my $sql = 'SELECT c.`id` WHERE c.`name`=?';
-    my $data = AltSimpleBoard::Data::dbh()->selectall_arrayref($sql, undef, $_[0]);
-    if ( @$data ) {
-        return $data->[0]->[0];
-    }
-    else {
-        return;
-    }
-}
-sub get_category {
-    my $cat = shift;
-    return unless 3 < length $cat;
-    my $data = _get_category_id( $cat );
-    return $data if $data;
-    my $sql = 'INSERT INTO '.$AltSimpleBoard::Data::Prefix.'categories VALUES (`name`) VALUES (?)';
-    AltSimpleBoard::Data::dbh()->do($sql, undef, $cat);
-    $data = _get_category_id( $cat );
-    return $data if $data;
-    return;
-}
+#sub _get_category_id { 
+#    my $sql = 'SELECT c.`id` WHERE c.`name`=?';
+#    my $data = AltSimpleBoard::Data::dbh()->selectall_arrayref($sql, undef, $_[0]);
+#    if ( @$data ) {
+#        return $data->[0]->[0];
+#    }
+#    else {
+#        return;
+#    }
+#}
+#sub get_category {
+#    my $cat = shift;
+#    return unless 3 < length $cat;
+#    my $data = _get_category_id( $cat );
+#    return $data if $data;
+#    my $sql = 'INSERT INTO '.$AltSimpleBoard::Data::Prefix.'categories VALUES (`name`) VALUES (?)';
+#    AltSimpleBoard::Data::dbh()->do($sql, undef, $cat);
+#    $data = _get_category_id( $cat );
+#    return $data if $data;
+#    return;
+#}
 
 sub username {
     my $id = shift;
