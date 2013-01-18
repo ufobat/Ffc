@@ -25,7 +25,7 @@
     <span class="popup">
 % if ( @$newmsgs ) {
         <span class="menu">
-          <p><a href="<%= url_for 'switch', act => 'msgs' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können">Alle Nachrichten (<% if ( $newmsgscount ) { %><span class="mark"><%= $newmsgscount %></span><% } else { %><%= 0 %><% } %>)</a></p>
+          <p><a href="<%= url_for 'switch', act => 'msgs' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können">Alle Nachrichten</a></p>
 % for my $m ( @$newmsgs ) {
           <p><a href="<%= url_for 'msgs_user', msgs_userid => $m->[0] %>" title="Private Nachricht an &quot;<%= $m->[1] %>&quot; schreiben"><%= $m->[1] %> (<span class="mark"><%= $m->[2] %></span>)</a></p>
 % }
