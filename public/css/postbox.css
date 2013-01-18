@@ -25,16 +25,17 @@
     max-height: 128px;
     border: 1px #fff solid;
 }
+.postbox .titleinfo a {
+    display: inline-block;
+    min-width: 1em;
+    text-align: center;
+}
 .postbox .titleinfo img {
     border: none;
 }
 
 .clear {
     clear: both;
-}
-.postbox img.buttonicons {
-    border: none;
-    margin-right: .5em;
 }
 .postbox .titleinfo {
     font-weight: normal;

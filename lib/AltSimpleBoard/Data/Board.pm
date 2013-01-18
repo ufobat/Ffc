@@ -172,7 +172,7 @@ sub get_stuff {
       . q{ ORDER BY p.`posted` DESC LIMIT ? OFFSET ?};
 
     return [ map { my $d = $_;
-            {
+            $d = {
                 text      => format_text($d->[1]),
                 timestamp => format_timestamp($d->[2]),
                 ownpost   => $d->[5] == $userid && $act ne 'notes' ? 1 : 0,
@@ -195,7 +195,12 @@ sub get_stuff {
                         } )
                       : ( $_->[0] => undef ) }
                       ([from => 5,6,7], [to => 8,9,10]) ),
-            }
+            };
+            $d->{iconspresent} = $d->{editable} 
+                || ( $d->{from} && $d->{from}->{chatable} ) 
+                || ( $d->{to} && $d->{to}->{chatable} ) 
+                ? 1 : 0;
+            $d;
         } @{ AltSimpleBoard::Data::dbh()
           ->selectall_arrayref( $sql, undef, @params, ( $query ? "%$query%" : () ), $cat, $cat, $cat,
             $AltSimpleBoard::Data::Limit,
