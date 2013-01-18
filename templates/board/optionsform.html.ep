@@ -5,7 +5,7 @@
     <table>
         <tr>
             <th colspan="2">E-Mail-Adresse</th>
-            <td><%= text_field email => $email %></td>
+            <td><input type="text" name="email" value="<%= $email // '' %>" /></td>
         </tr>
         <tr>
             <th rowspan="3">Passwort</th>
@@ -21,7 +21,7 @@
             <td><input type="password" name="newpw2" value="" /></td>
         </tr>
         <tr>
-            <th colspan="3"><%= submit_button 'Speichern' %></th>
+            <th colspan="3"><button type="submit">Speichern</button></th>
         </tr>
     </table>
 % end
@@ -33,7 +33,7 @@
     <table>
         <tr>
             <th colspan="2">Benutzername</th>
-            <td><%= text_field 'username' %></td>
+            <td><input type="text" name="alter" value="" /></td>
         </tr>
         <tr>
             <th rowspan="2">Passwort</th>
@@ -46,14 +46,14 @@
         </tr>
         <tr>
             <th colspan="2">Aktiv</th>
-            <td><%= check_box 'active' %></td>
+            <td><input type="checkbox" name="active" checked="checked" /></td>
         </tr>
         <tr>
             <th colspan="2">Admin</th>
-            <td><%= check_box 'admin' %></td>
+            <td><input type="checkbox" name="admin" /></td>
         </tr>
         <tr>
-            <th colspan="3"><%= submit_button 'Speichern' %></th>
+            <th colspan="3"><button type="submit">Speichern</button></th>
         </tr>
     </table>
 % end
