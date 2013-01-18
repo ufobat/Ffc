@@ -115,7 +115,7 @@ sub get_stuff {
       . q{ LEFT OUTER JOIN } . $AltSimpleBoard::Data::Prefix . q{categories c ON c.`id`=p.`category`}
       . q{ WHERE } . $where
       . ( $query ? q{ AND p.`text` LIKE ? } : '' )
-      . q{ AND ( c.`short` = ? OR ( ( ? = '' OR ? IS NULL ) AND ( p.`category` IS NULL OR c.`root` = 1 ) ) )}
+      . q{ AND ( c.`short` = ? OR ? = '' OR ? IS NULL )}
       . q{ ORDER BY p.`posted` DESC LIMIT ? OFFSET ?};
 
     return [ map { my $d = $_;

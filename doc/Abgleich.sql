@@ -28,7 +28,6 @@ DROP TABLE IF EXISTS `asb_categories`;
 CREATE TABLE `asb_categories` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(64) NOT NULL,
-  `root` tinyint(1) NOT NULL default 1,
   `short` varchar(8),
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
