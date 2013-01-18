@@ -7,6 +7,7 @@ use AltSimpleBoard::Auth;
 sub optionsform {
     my $c = shift;
     my $s = $c->session;
+    $c->stash(email => AltSimpleBoard::Data::Board::get_useremail($s->{userid}));
     delete $s->{msgs_userid}; delete $s->{msgs_username};
     $c->app->switch_act( $c, 'options' );
 }
@@ -14,6 +15,13 @@ sub optionsform {
 sub optionssave {
     my $c = shift;
     my $s = $c->session;
+    my $email  = $c->param('email');
+    my $oldpw  = $c->param('oldpw');
+    my $newpw1 = $c->param('newpw1');
+    my $newpw2 = $c->param('newpw2');
+    AltSimpleBoard::Data::Board::update_email($s->{userid}, $email) if $email;
+    AltSimpleBoard::Data::Board::update_password($s->{userid}, $oldpw, $newpw1, $newpw2) if $oldpw and $newpw1 and $newpw2;
+    $c->redirect_to('optionsform');
 }
 
 sub usersave {

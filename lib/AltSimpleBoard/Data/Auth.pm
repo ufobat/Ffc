@@ -9,11 +9,11 @@ use FindBin;
 
 sub check_password {
     my ( $userid, $pass ) = @_;
-    my $sql = 'SELECT COUNT(id) FROM '.$AltSimpleBoard::Data::Prefix.'users WHERE name=? and password=? AND active=1';
+    my $sql = 'SELECT COUNT(id) FROM '.$AltSimpleBoard::Data::Prefix.'users WHERE id=? and password=? AND active=1';
     return (AltSimpleBoard::Data::dbh()->selectrow_array( $sql, undef, $userid, crypt($pass, AltSimpleBoard::Data::cryptsalt())))[0];
 }
 
-sub get_userdata {
+sub get_userdata_for_login { # for login only
     my ( $user, $pass ) = @_;
     my $sql = 'SELECT id, lastseen, admin FROM '.$AltSimpleBoard::Data::Prefix.'users WHERE name=? and password=? AND active=1';
     my $data = AltSimpleBoard::Data::dbh()->selectall_arrayref( $sql, undef, $user, crypt($pass, AltSimpleBoard::Data::cryptsalt()));

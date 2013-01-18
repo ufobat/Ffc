@@ -5,7 +5,7 @@
     <table>
         <tr>
             <th colspan="2">E-Mail-Adresse</th>
-            <td><%= text_field 'email' %></td>
+            <td><%= text_field email => $email %></td>
         </tr>
         <tr>
             <th rowspan="3">Passwort</th>

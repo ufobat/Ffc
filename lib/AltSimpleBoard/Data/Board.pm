@@ -17,7 +17,7 @@ sub update_email {
 }
 
 sub update_password {
-    my ( $userid, $oldpw, $newpw1, $newpw2 );
+    my ( $userid, $oldpw, $newpw1, $newpw2 ) = @_;
     die qq{Benutzer unbekannt} unless get_username($userid);
     for ( ['Altes Passwort' => $oldpw], ['Neues Passwort' => $newpw1], ['Passwortwiederholung' => $newpw2] ) {
         die qq{$_->[0] entspricht nicht der Norm (4-16 Zeichen)} unless $_->[1] =~ m/\A.{4,16}\z/xms;
@@ -69,6 +69,13 @@ sub get_username {
     my $id = shift;
     die qq{Benutzerid ungültig} unless $id =~ m/\A\d+\z/xms;
     my $sql = 'SELECT `name` FROM '.$AltSimpleBoard::Data::Prefix.'users WHERE `id`=? AND `active`=1';
+    return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $id))[0];
+}
+
+sub get_useremail {
+    my $id = shift;
+    die qq{Benutzerid ungültig} unless $id =~ m/\A\d+\z/xms;
+    my $sql = 'SELECT `email` FROM '.$AltSimpleBoard::Data::Prefix.'users WHERE `id`=? AND `active`=1';
     return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $id))[0];
 }
 

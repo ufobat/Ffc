@@ -65,7 +65,7 @@ sub get_relevant_data {
     my $session = $self->session;
     my $user    = $self->param('user');
     my $pass    = $self->param('pass');
-    my @data    = AltSimpleBoard::Data::Auth::get_userdata( $user, $pass );
+    my @data    = AltSimpleBoard::Data::Auth::get_userdata_for_login( $user, $pass );
     unless (@data) {
         $self->app->switch_act( $self,  'auth' );
         form_prepare( $self );
