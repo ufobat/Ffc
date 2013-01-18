@@ -8,6 +8,7 @@ sub optionsform {
     my $c = shift;
     my $s = $c->session;
     $c->stash(email => AltSimpleBoard::Data::Board::get_useremail($s->{userid}));
+    $c->stash(userlist => AltSimpleBoard::Data::Board::get_userlist());
     delete $s->{msgs_userid}; delete $s->{msgs_username};
     $c->app->switch_act( $c, 'options' );
 }

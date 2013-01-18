@@ -38,6 +38,12 @@ input[type="text"], input[type="password"] {
 .divider {
     color: #000;
 }
+.adminmark {
+    color: #c33;
+}
+.inactive {
+    color: #999;
+}
 input:hover, textarea:hover, select:hover {
     border-color: #99f;
 }
@@ -78,4 +84,9 @@ form th, form td {
 }
 form th {
     text-align: right;
+}
+.userlist {
+    width: 12em;
+    height: 15em;
+    overflow: scroll;
 }

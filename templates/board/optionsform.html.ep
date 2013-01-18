@@ -32,6 +32,13 @@
 %= form_for usersave => ( method => 'POST' ) => begin 
     <table>
         <tr>
+            <td rowspan="8"><div class="userlist">
+% for my $u ( @$userlist ) {
+                <p<%== $u->[2] ? '' : ' class="inactive"' %>><%== $u->[3] ? '<span class="adminmark">@</span> ' : '' %><%= $u->[1] %></p>
+% }
+            <div></td>
+        </tr>
+        <tr>
             <th colspan="2">Benutzername</th>
             <td><input type="text" name="alter" value="" /></td>
         </tr>
@@ -43,6 +50,10 @@
         <tr>
             <th>Wiederholen</th>
             <td><input type="password" name="newpw2" value="" /></td>
+        </tr>
+        <tr>
+            <th colspan="2">Überschreiben wenn existent</th>
+            <td><input type="checkbox" name="overwriteok" /></td>
         </tr>
         <tr>
             <th colspan="2">Aktiv</th>

@@ -39,9 +39,6 @@
 .postbox .titleinfo {
     font-weight: normal;
 }
-.postbox .inactive {
-    color: #999;
-}
 .activepost {
     height: 1px;
     overflow: hidden;
