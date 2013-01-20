@@ -94,13 +94,6 @@ sub get_userlist {
     return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql);
 }
 
-sub post {
-    my $id = shift;
-    die qq{Postid ungültig} unless $id =~ m/\A\d+\z/xms;
-    my $sql = q{SELECT p.`text`, COALESCE(c.`short`,'') FROM }.$AltSimpleBoard::Data::Prefix.'posts p LEFT OUTER JOIN '.$AltSimpleBoard::Data::Prefix.'categories c ON c.`id`=p.`category` WHERE p.`id`=?';
-    return AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $id);
-}
-
 sub delete_post {
     my ( $from, $id ) = @_;
     die qq{Postid ungültig} unless $id =~ m/\A\d+\z/xms;
@@ -186,6 +179,7 @@ sub get_stuff {
     return [ map { my $d = $_;
             $d = {
                 text      => format_text($d->[1]),
+                raw       => $d->[1],
                 timestamp => format_timestamp($d->[2]),
                 ownpost   => $d->[5] == $userid && $act ne 'notes' ? 1 : 0,
                 category  => $d->[3] # kategorie

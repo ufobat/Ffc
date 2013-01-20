@@ -67,9 +67,10 @@ sub switch_act {
 sub editform {
     my $c = shift;
     my $id = $c->param('postid');
-    my ( $text, $cat ) = AltSimpleBoard::Data::Board::post($id);
-    $c->stash( post => $text );
-    $c->session->{category} = $cat;
+    my $s = $c->session;
+    my $post = AltSimpleBoard::Data::Board::get_post($id, get_params($s) );
+    $c->stash( post => $post );
+    $s->{category} = $post->{category} ? $post->{category}->{short} : '';
     $c->frontpage();
 }
 
