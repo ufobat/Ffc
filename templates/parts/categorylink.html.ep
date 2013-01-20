@@ -1,4 +1,4 @@
-% if ( session->{category} and session->{category} eq $cat->[1] ) {
+% if ( not ( session->{category} or $cat->[1] ) or ( session->{category} and session->{category} eq $cat->[1] ) ) {
 <span class="active">
 %   if ( $cat->[1] ) {
 <%= $cat->[0] %>
