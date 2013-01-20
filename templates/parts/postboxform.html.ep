@@ -1,0 +1,21 @@
+% if ( $page == 1 and ( act() ne 'msgs' or session->{msgs_userid} ) ) {
+% my $what = $postid ? 'edit' : 'new';
+<div class="postbox ownpost">
+%= form_for $what => ( method => 'POST' )  => begin
+<p>
+    <textarea name="post" id="textinput"><%= $post %></textarea>
+</p>
+<p>
+% if ( act() eq 'forum' ) {
+    <select type="text" name="category" class="categories">
+        <option value="">Allgemeiner Beitrag</option>
+% for my $c ( @$allcategories ) {
+        <option value="<%= $c->[1] %>"<%= session()->{category} && session->{category} eq $c->[1] ? ' selected="selected"' : '' %> class="category<%== $c->[1] ? " category_$c->[1]" : '' %>"><%= $c->[0] %></option>
+% }
+    </select>
+% }
+%= submit_button 'Speichern'
+</p>
+% end
+</div>
+% } 

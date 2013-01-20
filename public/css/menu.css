@@ -34,9 +34,6 @@
 .menu .activesearch {
     border: 1px #963 solid;
 }
-.menu input.activesearch {
-    background-color: #fc9;
-}
 .menu button {
     border: none;
     display: inline;
@@ -61,4 +58,6 @@
 .popup:hover > .menu {
     display: inline-block;
 }
-
+.popup .menu .active {
+    color: #fff;
+}

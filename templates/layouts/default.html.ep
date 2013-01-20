@@ -11,12 +11,8 @@
     <span class="popup">
 % if ( values %$categories ) {
         <span class="menu">
-% for my $c ( sort { $a->[0] cmp $b->[0] } values %$categories ) {
-%   if ( $c->[1] ) {
-          <p><a href="<%= url_for 'category', category => $c->[1] %>" title="Beiträge der Kategorie &quot;<%= $c->[0] %>&quot; anzeigen" class="category<%== $c->[1] ? " category_$c->[1]" : '' %>"><%= $c->[0] %> (<span class="mark"><%= $c->[2] %></span>)</a></p>
-%   } else {
-          <p><a href="<%= url_for 'switch', act => 'forum' %>" title="Allgemeine Beiträge anzeigen">Allgemeine Beiträge (<span class="mark"><%= $c->[2] %></span>)</a></p>
-%   }
+% for ( sort { $a->[0] cmp $b->[0] } values %$categories ) {
+        <p><%= include 'parts/categorylink', cat => $_ %></p>
 % }
         </span>
         <span class="linktext linkforum<%= act() eq 'forum' ? ' active activeforum' : '' %>">Forum</span>

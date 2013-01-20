@@ -1,0 +1,21 @@
+% if ( @$posts == $AltSimpleBoard::Data::Limit ) {
+<div class="pages">
+% my $plp = $AltSimpleBoard::Data::Pagelinkpreview;
+% if ( $page > $plp + 1 ) {
+    <a href="<%= url_for frontpage => page => 1 %>" title="Zur ersten Seite gehen">[1]</a>
+% }
+% if ( $page > $plp + 2 ) {
+    ...
+% }
+% for my $p ( $page - $plp .. $page + $plp ) {
+%   if ( $p > 0 ) {
+%     if ( $page == $p ) {
+    [<%= $page %>]
+%     } else {
+    <a href="<%= url_for 'show_page', page => $p %>" title="Zur Seite <%= $p %> gehen">[<%= $p %>]</a>
+%     }
+%   }
+% }
+...
+</div>
+% }

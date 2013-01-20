@@ -1,0 +1,40 @@
+<div class="postbox <%= act() %><%= $post->{ownpost} ? ' '.act().'ownpost ownpost' : '' %><%= $post->{id} && $postid && $post->{id} == $postid ? ' activepost' : '' %>">
+    <h2>
+% if ( $post->{from}->{active} ) {
+        <%= $post->{from}->{name} %>
+% } else {
+        <span class="inactive"><%= $post->{from}->{name} %></span>
+% } 
+% if ( act() eq 'msgs' ) {
+        → 
+%   if ( $post->{to}->{active} ) {
+        <%= $post->{to}->{name} %>
+%   } else {
+        <span class="inactive"><%= $post->{to}->{name} %></span>
+%   } 
+% } 
+        <span class="titleinfo">(
+          <%= $post->{timestamp} %><%= $post->{category} || $post->{iconspresent}  ? ',' : '' %>
+% if ( $post->{category} ) {
+          <a href="<%= url_for 'category' => category => $post->{category}->{short} %>" 
+            title="Kategorie &quot;<%= $post->{category}->{name} %>&quot; anzeigen"
+            class="category<%== $post->{category}->{short} ? qq[ category_$post->{category}->{short}] : '' %>">
+            <%= $post->{category}->{name} %></a><%= $post->{iconspresent} ? ',' : '' %>
+% }
+% if ( $post->{editable} ) {
+          <a href="<%= url_for editform => postid => $post->{id} %>" title="Beitrag bearbeiten">
+            <img src="<%= url_for '/img/icons/edit.png' %>" alt="&Auml;ndern" /></a>
+          <a href="<%= url_for delete   => postid => $post->{id} %>" title="Beitrag l&ouml;schen">
+            <img src="<%= url_for '/img/icons/delete.png' %>" alt="L&ouml;schen" /></a>
+% }
+% for my $w (qw(from to)) {
+%   if ( $post->{$w} and $post->{$w}->{chatable} ) {
+          <a href="<%= url_for msgs_user => msgs_userid => $post->{$w}->{id} %>"
+            title="Dem Benutzer &quot;<%= $post->{$w}->{name} %>&quot; eine private Nachricht zukommen lassen">
+            <img src="<%= url_for '/img/icons/msg.png' %>" alt="Nachricht" /></a>
+%   } 
+% }
+        )</span>:
+    </h2>
+    <%== $post->{text} %>
+</div>
