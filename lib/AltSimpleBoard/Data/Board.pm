@@ -148,6 +148,15 @@ sub get_msgs {
     get_stuff( @_[ 0 .. 5 ], $where, @params );
 }
 
+sub get_post {
+    my $postid = shift;
+    die q{Ungültige ID für den Beitrag} unless $postid =~ m/\A\d+\z/xms;
+    my $where = 'p.`id`=?';
+    my $data = get_stuff( @_[ 0 .. 5 ], $where, $postid );
+    die q{Kein Datensatz gefunden} unless @$data;
+    return $data->[0];
+}
+
 sub get_stuff {
     my $userid = shift;
     my $page   = shift;

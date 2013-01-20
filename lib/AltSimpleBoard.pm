@@ -44,7 +44,8 @@ sub startup {
 
 
     # delete something
-    $authed->route('/delete/:postid', postid => qr(\d+))->via('get')->to('board#delete_post')->name('delete');
+    $authed->route('/delete/:postid', postid => qr(\d+))->via('get')->to('board#delete_check')->name('delete_check');
+    $authed->route('/delete')->via('post')->to('board#delete_ok')->name('delete_ok');
     # create something
     $authed->route('/new')->via('post')->to('board#insert_post')->name('new');
     # update something

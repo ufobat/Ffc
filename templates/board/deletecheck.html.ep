@@ -1,0 +1,12 @@
+% layout 'default';
+%= include 'parts/postbox', post => $post, postid => ''
+<div class="postbox deleteform">
+  <p>Den oben angezeigten Beitrag wirklich löschen?</p>
+  <p>
+%= form_for 'delete_ok' => ( method => 'POST' ) => begin
+%= hidden_field postid => $postid
+    <button type="submit" class="linkalike" title="L&ouml;schen best&auml;tigen">Ja, weg damit, ich will das nicht mehr sehen!</button>
+% end
+  </p>
+  <p><a href="<%= url_for 'show' %>" title="L&ouml;schaktion abbrechen und zur&uuml;ck zur &Uuml;bersicht">Nein, doch nicht, halt, zur&uuml;ck zur &Uuml;bersicht!</a></p>
+</div>

@@ -1,19 +1,25 @@
 .error {
     color: #c30;
 }
-a {
-    color: #36c;
-    text-decoration: underline;
-}
-a:hover {
-    color: #00f;
-    text-decoration: none;
-}
-
 h1, h2, h3, h4 {
+
     color: #666699;
     font-size: 1em;
     font-weight: bolder;
+}
+
+.linkalike, a {
+    color: #36c;
+    text-decoration: underline;
+    display: inline;
+    border: none;
+    background: none;
+    font-size: 1em;
+}
+.linkalike:hover, a:hover {
+    color: #00f;
+    text-decoration: none;
+    background: none;
 }
 
 blockquote {

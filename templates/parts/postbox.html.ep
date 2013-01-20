@@ -22,9 +22,9 @@
             <%= $post->{category}->{name} %></a><%= $post->{iconspresent} ? ',' : '' %>
 % }
 % if ( $post->{editable} ) {
-          <a href="<%= url_for editform => postid => $post->{id} %>" title="Beitrag bearbeiten">
+          <a href="<%= url_for editform     => postid => $post->{id} %>" title="Beitrag bearbeiten">
             <img src="<%= url_for '/img/icons/edit.png' %>" alt="&Auml;ndern" /></a>
-          <a href="<%= url_for delete   => postid => $post->{id} %>" title="Beitrag l&ouml;schen">
+          <a href="<%= url_for delete_check => postid => $post->{id} %>" title="Beitrag l&ouml;schen">
             <img src="<%= url_for '/img/icons/delete.png' %>" alt="L&ouml;schen" /></a>
 % }
 % for my $w (qw(from to)) {

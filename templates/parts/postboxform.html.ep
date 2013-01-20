@@ -1,6 +1,6 @@
 % my $what = $postid ? 'edit' : 'new';
 <div class="postbox ownpost">
-%= form_for $what => ( method => 'POST' )  => begin
+%= form_for $what => ( method => 'POST' ) => begin
 <p>
     <textarea name="post" id="textinput"><%= $post %></textarea>
 </p>
