@@ -27,15 +27,14 @@
 % }
 % if ( act() eq 'forum' ) {
 <div class="postbox categorylinks"><p>
-%   if ( session()->{category} ) {
+%   my $counter = 0;
+%   if ( session()->{category} ) { $counter++;
     <a href="<%= url_for 'switch', act => 'forum' %>" title="Allgemeine Beiträge anzeigen">Zu den Allgemeinen Beiträgen zurück kehren</a>
-%   } else {
-%      my $counter = 0;
+%   }
 %      for my $c ( sort { $a->[0] cmp $b->[0] } values %$categories ) {
 %        next unless $c->[1]; $counter++;
    <%= $counter > 1 ? '/ ' : '' %><a href="<%= url_for 'category', category => $c->[1] %>" title="Beiträge der Kategorie &quot;<%= $c->[0] %>&quot; anzeigen" class="category<%== $c->[1] ? " category_$c->[1]" : '' %>"><%= $c->[0] %> (<span class="mark"><%= $c->[2] %></span>)</a>
 %      }
-%   }
 </p></div>
 % }
 % for my $p ( @$posts ) {
