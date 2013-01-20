@@ -140,10 +140,13 @@ sub frontpage {
     my $s = $c->session;
 
     my $page = $c->param('page') // 1;
-    $page = 1 unless $page =~ m/\A\d+\z/xmsi;
-    $c->stash(page => $page);
+    my $postid = $c->param( 'postid' ) // '';
+    $page = 1 unless $page =~ m/\A\d+\z/xms;
+    $postid = '' unless $postid =~ m/\A\d+\z/xms;
+    $c->stash(page   => $page);
+    $c->stash(postid => $postid);
     
-    for my $k ( qw(post error msgs_userid msgs_username postid notecount newmsgscount) ) {
+    for my $k ( qw(error msgs_userid post msgs_username notecount newmsgscount) ) {
         my $d = $c->stash($k);
         $c->stash($k => '') unless $d;
     }
@@ -155,6 +158,13 @@ sub frontpage {
         when ( 'msgs' )    { $posts = AltSimpleBoard::Data::Board::get_msgs( @params, $s->{msgs_userid}) }
         when ( 'options' ) {}
         default { die qq("$s->{act}" undefined) }
+    }
+    if ( $postid and $postid ne '' ) {
+        my @post = grep { $_->{id} eq $postid } @$posts;
+        if ( @post ) {
+            $c->stash( post => $post[0] );
+            $post[0]->{active} = 1;
+        }
     }
     $c->stash( posts => $posts);
     $c->render('board/frontpage');

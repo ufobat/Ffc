@@ -41,8 +41,11 @@
     font-weight: normal;
 }
 .activepost {
-    height: 1px;
-    overflow: hidden;
+    color: #666;
+    background-color: #999;
+}
+.activepost h2 {
+    background-image: url('../img/ag.png');
 }
 .titleinfo .category {
     text-decoration: none;

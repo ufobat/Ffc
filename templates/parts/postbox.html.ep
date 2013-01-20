@@ -1,4 +1,4 @@
-<div class="postbox <%= act() %><%= $post->{ownpost} ? ' '.act().'ownpost ownpost' : '' %><%= $post->{id} && $postid && $post->{id} == $postid ? ' activepost' : '' %>">
+<div class="postbox <%= act() %><%= $post->{ownpost} ? ' '.act().'ownpost ownpost' : '' %><%= $post->{active} ? ' activepost' : '' %>">
     <h2>
 % if ( $post->{from}->{active} ) {
         <%= $post->{from}->{name} %>
@@ -14,6 +14,7 @@
 %   } 
 % } 
         <span class="titleinfo">(
+% unless ( $post->{active} ) {
           <%= $post->{timestamp} %><%= $post->{category} || $post->{iconspresent}  ? ',' : '' %>
 % if ( $post->{category} ) {
           <a href="<%= url_for 'category' => category => $post->{category}->{short} %>" 
@@ -34,7 +35,14 @@
             <img src="<%= url_for '/img/icons/msg.png' %>" alt="Nachricht" /></a>
 %   } 
 % }
+% } else {
+            <%= $post->{timestamp} %>, in Bearbeitung
+% }
         )</span>:
     </h2>
+% unless ( $post->{active} ) {
     <%== $post->{text} %>
+% } else {
+    <%== $post->{start} %>
+% }
 </div>

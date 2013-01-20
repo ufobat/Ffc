@@ -179,7 +179,9 @@ sub get_stuff {
     return [ map { my $d = $_;
             $d = {
                 text      => format_text($d->[1]),
+                start     => format_text(do {(split /\n/, $d->[1])[0] // ''}),
                 raw       => $d->[1],
+                active    => 0,
                 timestamp => format_timestamp($d->[2]),
                 ownpost   => $d->[5] == $userid && $act ne 'notes' ? 1 : 0,
                 category  => $d->[3] # kategorie
