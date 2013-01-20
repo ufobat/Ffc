@@ -1,5 +1,7 @@
 % layout 'default';
+% if ( $page == 1 and ( act() ne 'msgs' or session->{msgs_userid} ) ) {
 %= include 'parts/postboxform'
+% } 
 % if ( $page > 1 ) {
 <div class="toppagelink">
     <a href="<%= url_for 'show' %>" title="Zur ersten Seite zurück gehen">Zu den aktuellsten Postings zurück</a>
