@@ -53,8 +53,11 @@ sub allcategories {
     return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql);
 }
 sub categories {
-    my $sql = 'SELECT c.`name`, c.`short`, COUNT(p.`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts p INNER JOIN '.$AltSimpleBoard::Data::Prefix.'categories c ON p.`category` = c.`id` WHERE p.`to` IS NULL GROUP BY c.`id` ORDER BY c.`id`';
-    return { map {$_->[0] => $_} @{ AltSimpleBoard::Data::dbh()->selectall_arrayref($sql) } };
+    my $sql1 = q{SELECT 'Allgemein', '', COUNT(p.`id`) FROM }.$AltSimpleBoard::Data::Prefix.'posts p WHERE p.`category` IS NULL';
+    my $sql2 = 'SELECT c.`name`, c.`short`, COUNT(p.`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts p INNER JOIN '.$AltSimpleBoard::Data::Prefix.'categories c ON p.`category` = c.`id` WHERE p.`to` IS NULL GROUP BY c.`id` ORDER BY c.`id`';
+    return { map {$_->[0] => $_} 
+        @{ AltSimpleBoard::Data::dbh()->selectall_arrayref($sql1) },
+        @{ AltSimpleBoard::Data::dbh()->selectall_arrayref($sql2) } };
 }
 sub get_category_id {
     my $c = shift;
@@ -168,7 +171,7 @@ sub get_stuff {
       . q{ LEFT OUTER JOIN } . $AltSimpleBoard::Data::Prefix . q{categories c ON c.`id`=p.`category`}
       . q{ WHERE } . $where
       . ( $query ? q{ AND p.`text` LIKE ? } : '' )
-      . q{ AND ( c.`short` = ? OR ? = '' OR ? IS NULL )}
+      . q{ AND ( c.`short` = ? OR ( ( ? = '' OR ? IS NULL ) AND p.`category` IS NULL) )}
       . q{ ORDER BY p.`posted` DESC LIMIT ? OFFSET ?};
 
     return [ map { my $d = $_;

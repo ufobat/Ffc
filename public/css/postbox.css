@@ -47,4 +47,6 @@
 .titleinfo .category {
     text-decoration: none;
 }
-
+.postbox .category {
+    white-space: nowrap;
+}
