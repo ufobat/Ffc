@@ -5,14 +5,6 @@
     <textarea name="post" id="textinput"><%= $post ? ( ( $what eq 'insert_post' ) ? "[quote] $post->{raw} [/quote]" : $post->{raw} ) : '' %></textarea>
 </p>
 <p>
-% if ( act() eq 'forum' ) {
-    <select type="text" name="category" class="categories">
-        <option value="">Allgemeiner Beitrag</option>
-% for my $c ( @$allcategories ) {
-        <option value="<%= $c->[1] %>"<%= session()->{category} && session->{category} eq $c->[1] ? ' selected="selected"' : '' %> class="category<%== $c->[1] ? " category_$c->[1]" : '' %>"><%= $c->[0] %></option>
-% }
-    </select>
-% }
 %= submit_button 'Speichern'
 (<a href="<%= url_for 'show' %>" title="&Auml;nderung abbrechen">Abbrechen</a>)
 </p>

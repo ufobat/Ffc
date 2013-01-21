@@ -49,10 +49,6 @@ sub notecount {
     return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
 
-sub allcategories {
-    my $sql = 'SELECT c.`name`, c.`short` FROM '.$AltSimpleBoard::Data::Prefix.'categories c ORDER BY c.`id`';
-    return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql);
-}
 sub categories {
     my $sql1 = q{SELECT 'Allgemein', '', COUNT(p.`id`) FROM }.$AltSimpleBoard::Data::Prefix.'posts p WHERE p.`category` IS NULL';
     my $sql2 = 'SELECT c.`name`, c.`short`, COUNT(p.`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts p INNER JOIN '.$AltSimpleBoard::Data::Prefix.'categories c ON p.`category` = c.`id` WHERE p.`to` IS NULL GROUP BY c.`id` ORDER BY c.`id`';

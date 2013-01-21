@@ -177,7 +177,6 @@ sub frontpage {
     $c->stash(newmsgscount  => AltSimpleBoard::Data::Board::newmsgscount($userid));
     $c->stash(newmsgs       => AltSimpleBoard::Data::Board::newmsgs($userid));
     $c->stash(categories    => AltSimpleBoard::Data::Board::categories());
-    $c->stash(allcategories => AltSimpleBoard::Data::Board::allcategories());
 
     $c->render('board/frontpage');
 }
