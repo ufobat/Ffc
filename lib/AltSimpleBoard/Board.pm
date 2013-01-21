@@ -30,12 +30,16 @@ sub usersave {
     my $s = $c->session;
 }
 
+sub _switch_category {
+    my ( $c, $cat ) = @_;
+    my $cat  = $cat =~ m/\A(\w+)\z/xmsi ? $1 : undef;
+    $c->session->{category} = eval { AltSimpleBoard::Data::Board::get_category_id($cat) } ? $cat : '';
+}
+
 sub switch_category {
     my $c = shift;
-    my $s = $c->session;
     $c->app->switch_act($c, 'forum');
-    $s->{category} = $c->param('category');
-    $s->{category} = '' unless eval { AltSimpleBoard::Data::Board::get_category_id($s->{category}) };
+    _switch_category($c,$c->param('category'));
     $c->frontpage();
 }
 
@@ -94,7 +98,8 @@ sub insert_post {
     my $c = shift;
     my $s = $c->session;
     my $text = $c->param('post')     =~ m/\A\s*(.+)\s*\z/xmsi ? $1 : '';
-    my $cat  = $c->param('category') =~ m/\A(\w+)\z/xmsi      ? $1 : undef;
+    my $cat  = $c->param('category');
+    $cat = _switch_category($c, $cat);
     my $fromid = $s->{userid};
     my @params = ( $fromid, $text, $cat );
     given ( $s->{act} ) {
@@ -110,7 +115,8 @@ sub update_post {
     my $c = shift;
     my $s = $c->session;
     my $text = $c->param('post')     =~ m/\A\s*(.+)\s*\z/xmsi ? $1 : '';
-    my $cat  = $c->param('category') =~ m/\A(\w+)\z/xmsi      ? $1 : undef;
+    my $cat  = $c->param('category');
+    $cat = _switch_category($c, $cat);
     my $postid = $c->param('postid');
     my $fromid = $s->{userid};
     my @params = ( $fromid, $text, $cat, $postid );
