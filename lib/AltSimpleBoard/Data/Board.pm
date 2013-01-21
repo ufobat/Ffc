@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use utf8;
 use AltSimpleBoard::Data;
+use AltSimpleBoard::Data::Auth;
 use AltSimpleBoard::Data::Formats;
 
 sub update_email {
