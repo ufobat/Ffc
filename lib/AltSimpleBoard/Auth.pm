@@ -13,7 +13,7 @@ sub form_prepare {
 
 sub login {
     my $self = shift;
-    $self->app->switch_act( $self,  'auth' );
+    $self->app->switch_act( $self, 'forum' );
     form_prepare( $self );
     return unless $self->get_relevant_data();
     $self->redirect_to('show');
@@ -21,18 +21,17 @@ sub login {
 
 sub logout {
     my $self = shift;
-    my $user = $self->cancel_session();
-    $self->app->switch_act( $self,  'auth' );
-    form_prepare( $self );
-    $self->render( 'auth/loginform',
-        error => 'Abmelden bestätigt, bitte melden Sie sich erneut an' );
+    $self->login_form('Abmelden bestätigt, bitte melden Sie sich erneut an');
 }
 
-sub loginform {
+sub login_form {
     my $self = shift;
+    my $msg  = shift // 'Bitte melden Sie sich an';
     $self->app->switch_act( $self,  'auth' );
+    cancel_session( $self );
     form_prepare( $self );
-    $self->render( 'auth/loginform', error => 'Bitte melden Sie sich an' );
+    $self->stash( error => $msg );
+    $self->render( 'auth/loginform');
 }
 
 sub cancel_session {
@@ -47,12 +46,7 @@ sub cancel_session {
 sub check_login {
     my $self = shift;
     return AltSimpleBoard::Board::init($self) if $self->check_login_status();
-    $self->cancel_session();
-    form_prepare( $self );
-    $self->app->switch_act( $self,  'auth' );
-    $self->render( 'auth/loginform',
-        error => 'Session ungültig, melden Sie sich erneut an' );
-    return;
+    $self->login_form('Session ungültig, melden Sie sich erneut an');
 }
 
 sub check_login_status {
@@ -66,12 +60,7 @@ sub get_relevant_data {
     my $user    = $self->param('user');
     my $pass    = $self->param('pass');
     my @data    = AltSimpleBoard::Data::Auth::get_userdata_for_login( $user, $pass );
-    unless (@data) {
-        $self->app->switch_act( $self,  'auth' );
-        form_prepare( $self );
-        $self->render( 'auth/loginform', error => 'Anmeldung fehlgeschlagen' );
-        return;
-    }
+    return $self->login_form('Anmeldung fehlgeschlagen') unless @data;
     %$session = (
         %$session,
         user     => $user,

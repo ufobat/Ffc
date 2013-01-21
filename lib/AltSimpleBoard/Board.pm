@@ -32,7 +32,7 @@ sub useradmin_save {
 
 sub _switch_category {
     my ( $c, $cat ) = @_;
-    my $cat  = $cat =~ m/\A(\w+)\z/xmsi ? $1 : undef;
+    $cat = $cat =~ m/\A(\w+)\z/xmsi ? $1 : undef;
     $c->session->{category} = eval { AltSimpleBoard::Data::Board::get_category_id($cat) } ? $cat : '';
 }
 
@@ -189,9 +189,7 @@ sub startpage {
         $c->show();
     }
     else {
-        $c->app->switch_act( $c, 'auth' );
-        AltSimpleBoard::Auth::form_prepare($c);
-        $c->render( 'auth/loginform', error => 'Bitte melden Sie sich an' );
+        AltSimpleBoard::Auth::login_form($c, 'Bitte melden Sie sich an');
     }
 }
 
