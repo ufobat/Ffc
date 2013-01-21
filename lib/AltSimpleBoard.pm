@@ -28,9 +28,9 @@ sub startup {
     my $authed = $routes->bridge()->to('auth#check_login');
 
     # options
-    $authed->route('/options')->via('get')->to('board#optionsform')->name('optionsform');
-    $authed->route('/options')->via('post')->to('board#optionssave')->name('optionssave');
-    $authed->route('/options')->via('post')->to('board#usersave')->name('usersave');
+    $authed->route('/options')->via('get')->to('board#options_form')->name('options_form');
+    $authed->route('/options')->via('post')->to('board#options_save')->name('options_save');
+    $authed->route('/options')->via('post')->to('board#useradmin_save')->name('useradmin_save');
 
     # search
     $authed->route('/search')->via('post')->to('board#search')->name('search');
@@ -45,13 +45,13 @@ sub startup {
 
     # delete something
     $authed->route('/delete/:postid', postid => qr(\d+))->via('get')->to('board#delete_check')->name('delete_check');
-    $authed->route('/delete')->via('post')->to('board#delete_ok')->name('delete_ok');
+    $authed->route('/delete')->via('post')->to('board#delete_post')->name('delete_post');
     # create something
-    $authed->route('/new')->via('post')->to('board#insert_post')->name('new');
+    $authed->route('/new')->via('post')->to('board#insert_post')->name('insert_post');
     # update something
     my $edit = $authed->route('/edit');
-    $edit->route('/:postid', postid => qr(\d+))->via('get' )->to('board#editform')->name('editform');
-    $edit->route('/:postid', postid => qr(\d+))->via('post')->to('board#update_post'  )->name('edit');
+    $edit->route('/:postid', postid => qr(\d+))->via('get' )->to('board#edit_form')->name('edit_form');
+    $edit->route('/:postid', postid => qr(\d+))->via('post')->to('board#update_post'  )->name('update_post');
 
     # conversation with single user
     $authed->route('/msgs/:msgs_userid', msgs_userid => qr(\d+))->to('board#msgs_user')->name('msgs_user');

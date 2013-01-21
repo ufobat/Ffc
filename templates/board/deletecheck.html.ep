@@ -3,7 +3,7 @@
 <div class="postbox deleteform">
   <p>Den oben angezeigten Beitrag wirklich löschen?</p>
   <p>
-%= form_for 'delete_ok' => ( method => 'POST' ) => begin
+%= form_for 'delete_post' => ( method => 'POST' ) => begin
 %= hidden_field postid => $postid
     <button type="submit" class="linkalike" title="L&ouml;schen best&auml;tigen">Ja, weg damit, ich will das nicht mehr sehen!</button>
 % end

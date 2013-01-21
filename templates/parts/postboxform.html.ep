@@ -1,8 +1,8 @@
-% my $what = $post && $post->{id} ? 'edit' : 'new';
+% my $what = ($post && $post->{id} ? 'update' : 'insert').'_post';
 <div class="postbox ownpost">
 %= form_for $what => ( method => 'POST' ) => begin
 <p>
-    <textarea name="post" id="textinput"><%= $post ? ( ( $what eq 'new' ) ? "[quote] $post->{raw} [/quote]" : $post->{raw} ) : '' %></textarea>
+    <textarea name="post" id="textinput"><%= $post ? ( ( $what eq 'insert_post' ) ? "[quote] $post->{raw} [/quote]" : $post->{raw} ) : '' %></textarea>
 </p>
 <p>
 % if ( act() eq 'forum' ) {

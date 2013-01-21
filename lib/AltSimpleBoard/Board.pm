@@ -4,7 +4,7 @@ use utf8;
 use AltSimpleBoard::Data::Board;
 use AltSimpleBoard::Auth;
 
-sub optionsform {
+sub options_form {
     my $c = shift;
     my $s = $c->session;
     $c->stash(email => AltSimpleBoard::Data::Board::get_useremail($s->{userid}));
@@ -13,7 +13,7 @@ sub optionsform {
     $c->app->switch_act( $c, 'options' );
 }
 
-sub optionssave {
+sub options_save {
     my $c = shift;
     my $s = $c->session;
     my $email  = $c->param('email');
@@ -25,7 +25,7 @@ sub optionssave {
     $c->redirect_to('optionsform');
 }
 
-sub usersave {
+sub useradmin_save {
     my $c = shift;
     my $s = $c->session;
 }
@@ -68,7 +68,7 @@ sub switch_act {
     $c->frontpage();
 }
 
-sub editform {
+sub edit_form {
     my $c = shift;
     my $id = $c->param('postid');
     my $s = $c->session;
@@ -86,7 +86,7 @@ sub delete_check {
     $c->stash( post => AltSimpleBoard::Data::Board::get_post($id, get_params($s)) );
     $c->render('board/deletecheck');
 }
-sub delete_ok {
+sub delete_post {
     my $c = shift;
     my $s = $c->session;
     die "Privatnachrichten dürfen nicht gelöscht werden" if $s->{act} eq 'msgs';
