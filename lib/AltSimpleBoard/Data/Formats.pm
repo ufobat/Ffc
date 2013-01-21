@@ -31,7 +31,7 @@ sub _format_links {
     $s =~
 s{(?:\s|\A)(https?://\S+\.(jpg|jpeg|gif|bmp|png))(?:\s|\z)}{<a href="$1" title="Externes Bild" target="_blank"><img src="$1" class="extern" title="Externes Bild" /></a>}xmsig;
     $s =~
-s{(\s|\A)(https?://\S+)(\s|\z)}{$1<a href="$2" title="Externe Webseite" target="_blank">$2</a>$3}xmsig;
+s{([\(\s]|\A)(https?://\S+)([\(\s]|\z)}{$1<a href="$2" title="Externe Webseite" target="_blank">$2</a>$3}xmsig;
     $s =~ s{_(\w+)_}{<u>$1</u>}xmsig;
     return $s;
 }
