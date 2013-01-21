@@ -1,10 +1,11 @@
 AltSimpleBoard
 ==============
 
-Schnelle, leichtgewichtige, übersichtliche und unkomplizierte
-Foren- und Nachrichtenplattform für eine überschaubare Anzahl
-von händisch angelegten angemeldeten Teilnehmern mit klarer
-und einfacher Datenhaltung und simpler technischer Struktur.
+Schnelle, leichtgewichtige, übersichtliche, schlanke und 
+unkomplizierte Foren- und Nachrichtenplattform für eine 
+überschaubare Anzahl von händisch angelegten angemeldeten 
+Teilnehmern mit klarer und einfacher Datenhaltung und 
+simpler technischer Struktur.  
 
 Features
 --------
