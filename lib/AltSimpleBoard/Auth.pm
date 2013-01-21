@@ -3,9 +3,8 @@ use Mojo::Base 'Mojolicious::Controller';
 use utf8;
 use AltSimpleBoard::Data::Auth;
 use AltSimpleBoard::Board;
-# FIXME in bestimmte ecken von den subs kommt der nie nicht hin, muss mal geprüft werden
 
-sub form_prepare {
+sub _form_prepare {
     my $self = shift;
     $self->stash( $_ => '' ) for qw(notecount newmsgscount);
     $self->stash( $_ => [] ) for qw(newmsgs categories);
@@ -14,8 +13,8 @@ sub form_prepare {
 sub login {
     my $self = shift;
     $self->app->switch_act( $self, 'forum' );
-    form_prepare( $self );
-    return unless $self->get_relevant_data();
+    _form_prepare( $self );
+    return unless $self->_get_relevant_data();
     $self->redirect_to('show');
 }
 
@@ -28,13 +27,14 @@ sub login_form {
     my $self = shift;
     my $msg  = shift // 'Bitte melden Sie sich an';
     $self->app->switch_act( $self,  'auth' );
-    cancel_session( $self );
-    form_prepare( $self );
+    _cancel_session( $self );
+    _form_prepare( $self );
     $self->stash( error => $msg );
     $self->render( 'auth/loginform');
+    return 0;
 }
 
-sub cancel_session {
+sub _cancel_session {
     my $self    = shift;
     my $session = $self->session;
     my $user    = $session->{user};
@@ -45,16 +45,13 @@ sub cancel_session {
 
 sub check_login {
     my $self = shift;
-    return AltSimpleBoard::Board::init($self) if $self->check_login_status();
-    $self->login_form('Session ungültig, melden Sie sich erneut an');
+    if ( my $s = $self->session ) {
+        return 1 if $s->{userid};
+    }
+    return 0;
 }
 
-sub check_login_status {
-    my $session = $_[0]->session();
-    return 0 unless $session;
-    $session->{userid} ? 1 : 0;
-}
-sub get_relevant_data {
+sub _get_relevant_data {
     my $self    = shift;
     my $session = $self->session;
     my $user    = $self->param('user');

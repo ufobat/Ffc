@@ -53,12 +53,6 @@ sub msgs_user {
     $c->frontpage();
 }
 
-sub show { 
-    my $c = shift;
-    $c->stash( page => $c->param('page') || 1 );
-    $c->frontpage();
-}
-
 sub switch_act {
     my $c = shift;
     my $act = $c->param('act');
@@ -145,8 +139,13 @@ sub frontpage {
     my $c = shift;
     my $s = $c->session;
 
+    unless ( AltSimpleBoard::Auth::check_login($c) ) {
+        return AltSimpleBoard::Auth::login_form($c, 'Bitte melden Sie sich an');
+    }
+
     my $page = $c->param('page') // 1;
     my $postid = $c->param( 'postid' ) // '';
+    my $userid = $s->{userid};
     $page = 1 unless $page =~ m/\A\d+\z/xms;
     $postid = '' unless $postid =~ m/\A\d+\z/xms;
     $c->stash(page   => $page);
@@ -173,6 +172,13 @@ sub frontpage {
         }
     }
     $c->stash( posts => $posts);
+    AltSimpleBoard::Data::Board::update_user_stats($userid);
+    $c->stash(notecount     => AltSimpleBoard::Data::Board::notecount($userid));
+    $c->stash(newmsgscount  => AltSimpleBoard::Data::Board::newmsgscount($userid));
+    $c->stash(newmsgs       => AltSimpleBoard::Data::Board::newmsgs($userid));
+    $c->stash(categories    => AltSimpleBoard::Data::Board::categories());
+    $c->stash(allcategories => AltSimpleBoard::Data::Board::allcategories());
+
     $c->render('board/frontpage');
 }
 
@@ -180,30 +186,6 @@ sub search {
     my $c = shift;
     $c->session->{query} = $c->param('query') || '';
     $c->frontpage();
-}
-
-sub startpage {
-    my $c = shift;
-    if ( AltSimpleBoard::Auth::check_login_status($c) ) {
-        $c->init();
-        $c->show();
-    }
-    else {
-        AltSimpleBoard::Auth::login_form($c, 'Bitte melden Sie sich an');
-    }
-}
-
-sub init {
-    my $c = shift;
-    my $userid = $c->session->{userid};
-# prepare the user action
-    AltSimpleBoard::Data::Board::update_user_stats($userid);
-    $c->stash(notecount     => AltSimpleBoard::Data::Board::notecount($userid));
-    $c->stash(newmsgscount  => AltSimpleBoard::Data::Board::newmsgscount($userid));
-    $c->stash(newmsgs       => AltSimpleBoard::Data::Board::newmsgs($userid));
-    $c->stash(categories    => AltSimpleBoard::Data::Board::categories());
-    $c->stash(allcategories => AltSimpleBoard::Data::Board::allcategories());
-    return 1;
 }
 
 1;
