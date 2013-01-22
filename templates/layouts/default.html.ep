@@ -9,9 +9,9 @@
 % if ( session()->{user} ) {
 <div class="menu">
     <span class="popup">
-% if ( values %$categories ) {
+% if ( @$categories ) {
         <span class="menu">
-% for ( sort { $a->[0] cmp $b->[0] } values %$categories ) {
+% for ( @$categories ) {
         <p><%= include 'parts/categorylink', cat => $_ %></p>
 % }
         </span>

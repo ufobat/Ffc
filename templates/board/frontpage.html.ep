@@ -1,8 +1,8 @@
 % layout 'default';
-% if ( act() eq 'forum' ) {
+% if ( act() eq 'forum' and @$categories ) {
 <div class="postbox categorylinks"><p>
 %   my $counter = 0;
-%      for ( sort { $a->[0] cmp $b->[0] } values %$categories ) { $counter++;
+%      for ( @$categories ) { $counter++;
    <%= $counter > 1 ? '/ ' : '' %><%= include 'parts/categorylink', cat => $_ %>
 %      }
 </p></div>

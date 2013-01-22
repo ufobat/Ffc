@@ -52,9 +52,9 @@ sub notecount {
 sub categories {
     my $sql1 = q{SELECT 'Allgemein', '', COUNT(p.`id`) FROM }.$AltSimpleBoard::Data::Prefix.'posts p WHERE p.`category` IS NULL';
     my $sql2 = 'SELECT c.`name`, c.`short`, COUNT(p.`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts p INNER JOIN '.$AltSimpleBoard::Data::Prefix.'categories c ON p.`category` = c.`id` WHERE p.`to` IS NULL GROUP BY c.`id` ORDER BY c.`id`';
-    return { map {$_->[0] => $_} 
+    return [ 
         @{ AltSimpleBoard::Data::dbh()->selectall_arrayref($sql1) },
-        @{ AltSimpleBoard::Data::dbh()->selectall_arrayref($sql2) } };
+        @{ AltSimpleBoard::Data::dbh()->selectall_arrayref($sql2) } ];
 }
 sub get_category_id {
     my $c = shift;
