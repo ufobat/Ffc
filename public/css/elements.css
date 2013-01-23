@@ -96,4 +96,6 @@ input.linkalike:hover, .linkalike:hover, a:hover {
     text-decoration: none;
     background: none;
 }
-
+.mark {
+    color: #c63;
+}
