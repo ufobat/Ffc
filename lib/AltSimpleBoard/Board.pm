@@ -175,7 +175,7 @@ sub frontpage {
     AltSimpleBoard::Data::Board::update_user_stats($userid);
     $c->stash(notecount     => AltSimpleBoard::Data::Board::notecount($userid));
     $c->stash(newmsgscount  => AltSimpleBoard::Data::Board::newmsgscount($userid));
-    $c->stash(categories    => AltSimpleBoard::Data::Board::categories());
+    $c->stash(categories    => ($s->{act} eq 'forum') ? AltSimpleBoard::Data::Board::categories() : []);
 
     $c->render('board/frontpage');
 }
