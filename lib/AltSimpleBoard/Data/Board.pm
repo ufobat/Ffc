@@ -50,11 +50,17 @@ sub notecount {
 }
 
 sub categories {
-    my $sql1 = q{SELECT 'Allgemein', '', COUNT(p.`id`) FROM }.$AltSimpleBoard::Data::Prefix.'posts p WHERE p.`category` IS NULL';
-    my $sql2 = 'SELECT c.`name`, c.`short`, COUNT(p.`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts p INNER JOIN '.$AltSimpleBoard::Data::Prefix.'categories c ON p.`category` = c.`id` WHERE p.`to` IS NULL GROUP BY c.`id` ORDER BY c.`id`';
-    return [ 
-        @{ AltSimpleBoard::Data::dbh()->selectall_arrayref($sql1) },
-        @{ AltSimpleBoard::Data::dbh()->selectall_arrayref($sql2) } ];
+    my $sql 
+     = q{SELECT c.`name` AS `name`, c.`short` AS `short`, ( SELECT COUNT(p.`id`) FROM }
+     . $AltSimpleBoard::Data::Prefix
+     . q{posts p WHERE p.`category`=c.`id` ) AS `cnt` FROM }
+     . $AltSimpleBoard::Data::Prefix
+     . q{categories c UNION }
+     . q{SELECT 'Allgemein' AS `name`, '' AS `short`, COUNT(p.`id`) AS `cnt` FROM }
+     . $AltSimpleBoard::Data::Prefix
+     . q{posts p WHERE p.`category` IS NULL }
+     . q{ORDER BY `short`};
+    return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql);
 }
 sub get_category_id {
     my $c = shift;
