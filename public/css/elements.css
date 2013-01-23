@@ -28,7 +28,7 @@ input[type="text"], input[type="password"] {
     margin-bottom: .25em;
 }
 .divider {
-    color: #666;
+    color: #000;
 }
 .adminmark {
     color: #c33;
