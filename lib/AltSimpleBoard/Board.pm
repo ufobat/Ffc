@@ -2,6 +2,7 @@ package AltSimpleBoard::Board;
 use Mojo::Base 'Mojolicious::Controller';
 use utf8;
 use AltSimpleBoard::Data::Board;
+use AltSimpleBoard::Data::Auth;
 use AltSimpleBoard::Auth;
 
 sub options_form {
@@ -28,6 +29,8 @@ sub options_save {
 sub useradmin_save {
     my $c = shift;
     my $s = $c->session;
+    die q{Angemeldeter Benutzer ist kein Admin und darf das hier garnicht} 
+        unless AltSimpleBoard::Data::Auth::is_user_admin($s->{userid});
 }
 
 sub _switch_category {

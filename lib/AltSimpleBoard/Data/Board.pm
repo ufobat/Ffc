@@ -85,13 +85,6 @@ sub get_useremail {
     return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $id))[0];
 }
 
-sub is_user_admin {
-    my $id = shift;
-    die qq{Benutzerid ungültig} unless $id =~ m/\A\d+\z/xms;
-    my $sql = 'SELECT COUNT(`id`) FROM '.$AltSimpleBoard::Data::Prefix.'users WHERE `id`=? AND `active`=1 AND `admin`=1';
-    return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $id))[0];
-}
-
 sub get_userlist {
     my $sql = 'SELECT `id`, `name`, `active`, `admin` FROM '.$AltSimpleBoard::Data::Prefix.'users ORDER BY `active` DESC, `name` ASC';
     return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql);

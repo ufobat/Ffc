@@ -28,5 +28,13 @@ sub set_password {
     AltSimpleBoard::Data::dbh()->do($sql, undef, crypt($pass, AltSimpleBoard::Data::cryptsalt()), $userid);
 }
 
+sub is_user_admin {
+    my $id = shift;
+    die qq{Benutzerid ungültig} unless $id =~ m/\A\d+\z/xms;
+    my $sql = 'SELECT COUNT(`id`) FROM '.$AltSimpleBoard::Data::Prefix.'users WHERE `id`=? AND `active`=1 AND `admin`=1';
+    return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $id))[0];
+}
+
+
 1;
 
