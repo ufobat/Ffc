@@ -7,7 +7,7 @@ use AltSimpleBoard::Board;
 sub _form_prepare {
     my $self = shift;
     $self->stash( $_ => '' ) for qw(notecount newmsgscount);
-    $self->stash( $_ => [] ) for qw(newmsgs categories);
+    $self->stash( categories => [] );
 }
 
 sub login {

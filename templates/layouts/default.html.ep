@@ -23,19 +23,7 @@
 % }
     </span>
     <span class="divider">|</span>
-    <span class="popup">
-% if ( @$newmsgs ) {
-        <span class="menu">
-          <p><a href="<%= url_for 'switch', act => 'msgs' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können">Alle Nachrichten</a></p>
-% for my $m ( @$newmsgs ) {
-          <p><a href="<%= url_for 'msgs_user', msgs_userid => $m->[0] %>" title="Private Nachricht an &quot;<%= $m->[1] %>&quot; schreiben"><%= $m->[1] %> (<span class="mark"><%= $m->[2] %></span>)</a></p>
-% }
-        </span>
-        <span class="linktext linkmsgs<%= act() eq 'msgs' ? ' active activemsgs' : '' %>">Nachrichten (<% if ( $newmsgscount ) { %><span class="mark"><%= $newmsgscount %></span><% } else { %><%= 0 %><% } %>)</span>
-% } else {
-        <a href="<%= url_for 'switch', act => 'msgs' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkmsgs<%= act() eq 'msgs' ? ' active activemsgs' : '' %>">Nachrichten (<% if ( $newmsgscount ) { %><span class="mark"><%= $newmsgscount %></span><% } else { %><%= 0 %><% } %>)</span></a>
-% }
-    </span>
+    <a href="<%= url_for 'switch', act => 'msgs' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkmsgs<%= act() eq 'msgs' ? ' active activemsgs' : '' %>">Nachrichten (<% if ( $newmsgscount ) { %><span class="mark"><%= $newmsgscount %></span><% } else { %><%= 0 %><% } %>)</span></a>
     <span class="divider">|</span>
     <a href="<%= url_for 'switch', act => 'notes' %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= act() eq 'notes' ? ' active activenotes' : '' %>">Notizen (<% if ( $notecount ) { %><span class="mark"><%= $notecount %></span><% } else { %><%= 0 %><% } %>)</span></a>
     <span class="divider">|</span>
