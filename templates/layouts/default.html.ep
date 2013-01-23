@@ -12,7 +12,9 @@
 % if ( @$categories ) {
         <span class="menu">
 % for ( @$categories ) {
-        <p><%= include 'parts/categorylink', cat => $_ %></p>
+        <p>
+            <%= include 'parts/categorylink', cat => $_ %>
+        </p>
 % }
         </span>
         <span class="linktext linkforum<%= act() eq 'forum' ? ' active activeforum' : '' %>">Forum</span>

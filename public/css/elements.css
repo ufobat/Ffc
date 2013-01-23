@@ -8,20 +8,6 @@ h1, h2, h3, h4 {
     font-weight: bolder;
 }
 
-.linkalike, a {
-    color: #36c;
-    text-decoration: underline;
-    display: inline;
-    border: none;
-    background: none;
-    font-size: 1em;
-}
-.linkalike:hover, a:hover {
-    color: #00f;
-    text-decoration: none;
-    background: none;
-}
-
 blockquote {
     color: #339;
     border-left: 1px #339 solid;
@@ -96,3 +82,18 @@ form th {
     height: 15em;
     overflow: scroll;
 }
+
+input.linkalike, .linkalike, a {
+    color: #36c;
+    text-decoration: underline;
+    display: inline;
+    border: none;
+    background: none;
+    font-size: 1em;
+}
+input.linkalike:hover, .linkalike:hover, a:hover {
+    color: #00f;
+    text-decoration: none;
+    background: none;
+}
+

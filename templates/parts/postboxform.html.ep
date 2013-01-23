@@ -5,7 +5,7 @@
     <textarea name="post" id="textinput"><%= $post ? ( ( $what eq 'insert_post' ) ? "[quote] $post->{raw} [/quote]" : $post->{raw} ) : '' %></textarea>
 </p>
 <p>
-%= submit_button 'Speichern'
+%= submit_button 'Speichern', class => 'linkalike'
 (<a href="<%= url_for 'show' %>" title="&Auml;nderung abbrechen">Abbrechen</a>)
 </p>
 % end
