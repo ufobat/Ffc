@@ -1,10 +1,10 @@
-.forum        h2 { background-color: #abf }
-.notes        h2 { background-color: #ffc }
-.msgs         h2 { background-color: #cfc }
-.ownpost      h2 { background-color: #ccc }
-.options      h2 { background-color: #fcf }
-.forumownpost h2 { background-color: #bcd }
-.msgsownpost  h2 { background-color: #bdb }
+.forum        h2 { background-color: #69f }
+.notes        h2 { background-color: #ff9 }
+.msgs         h2 { background-color: #9f9 }
+.ownpost      h2 { background-color: #999 }
+.options      h2 { background-color: #f9f }
+.forumownpost h2 { background-color: #9ad}
+.msgsownpost  h2 { background-color: #ada }
 
 .menu .linkforum { color: #369 }
 .menu .linknotes { color: #993 }
