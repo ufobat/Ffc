@@ -6,6 +6,7 @@ sub switch_act {
     my $s = $_[1]->session;
     $s->{act} = $_[2];
     $s->{category} = undef;
+    delete $s->{msgs_userid}; delete $s->{msgs_username};
 }
 
 # This method will run once at server start

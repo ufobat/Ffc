@@ -11,7 +11,9 @@ sub options_form {
     $c->stash(email => AltSimpleBoard::Data::Board::get_useremail($s->{userid}));
     $c->stash(userlist => AltSimpleBoard::Data::Board::get_userlist());
     delete $s->{msgs_userid}; delete $s->{msgs_username};
+    $c->stash($_ => '') for qw(newpostcount newmsgscount notecount);
     $c->app->switch_act( $c, 'options' );
+    $c->render('board/optionsform');
 }
 
 sub options_save {
@@ -23,7 +25,7 @@ sub options_save {
     my $newpw2 = $c->param('newpw2');
     AltSimpleBoard::Data::Board::update_email($s->{userid}, $email) if $email;
     AltSimpleBoard::Data::Board::update_password($s->{userid}, $oldpw, $newpw1, $newpw2) if $oldpw and $newpw1 and $newpw2;
-    $c->redirect_to('optionsform');
+    $c->redirect_to('options_form');
 }
 
 sub useradmin_save {
@@ -31,6 +33,7 @@ sub useradmin_save {
     my $s = $c->session;
     die q{Angemeldeter Benutzer ist kein Admin und darf das hier garnicht} 
         unless AltSimpleBoard::Data::Auth::is_user_admin($s->{userid});
+    $c->redirect_to('options_form');
 }
 
 sub _switch_category {
@@ -58,10 +61,7 @@ sub msgs_user {
 
 sub switch_act {
     my $c = shift;
-    my $act = $c->param('act');
-    my $s = $c->session;
-    delete $s->{msgs_userid}; delete $s->{msgs_username};
-    $c->app->switch_act($c, $act);
+    $c->app->switch_act($c, $c->param('act'));
     $c->frontpage();
 }
 
