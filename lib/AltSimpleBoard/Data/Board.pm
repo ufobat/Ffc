@@ -53,13 +53,13 @@ sub categories {
     my $sql 
      = q{SELECT c.`name` AS `name`, c.`short` AS `short`, ( SELECT COUNT(p.`id`) FROM }
      . $AltSimpleBoard::Data::Prefix
-     . q{posts p WHERE p.`category`=c.`id` ) AS `cnt` FROM }
+     . q{posts p WHERE p.`category`=c.`id` ) AS `cnt`, 1 AS `sort` FROM }
      . $AltSimpleBoard::Data::Prefix
      . q{categories c UNION }
-     . q{SELECT 'Allgemein' AS `name`, '' AS `short`, COUNT(p.`id`) AS `cnt` FROM }
+     . q{SELECT 'Allgemein' AS `name`, '' AS `short`, COUNT(p.`id`) AS `cnt`, 0 AS `sort` FROM }
      . $AltSimpleBoard::Data::Prefix
      . q{posts p WHERE p.`category` IS NULL }
-     . q{ORDER BY `short`};
+     . q{ORDER BY `sort`, `name`};
     return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql);
 }
 sub get_category_id {
