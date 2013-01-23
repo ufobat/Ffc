@@ -6,7 +6,7 @@ use AltSimpleBoard::Board;
 
 sub _form_prepare {
     my $self = shift;
-    $self->stash( $_ => '' ) for qw(notecount newmsgscount);
+    $self->stash( $_ => '' ) for qw(notecount newpostcount newmsgscount);
     $self->stash( categories => [] );
 }
 

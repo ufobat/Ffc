@@ -35,6 +35,13 @@ sub newmsgscount {
     return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
 
+sub newpostcount {
+    my $userid = shift;
+    die qq{Benutzer unbekannt} unless get_username($userid);
+    my $sql = 'SELECT count(`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE `to` IS NULL';
+    return (AltSimpleBoard::Data::dbh()->selectrow_array($sql))[0];
+}
+
 sub notecount {
     my $userid = shift;
     die qq{Benutzer unbekannt} unless get_username($userid);
@@ -122,19 +129,16 @@ sub update_user_stats {
     AltSimpleBoard::Data::dbh()->do( $sql, undef, $userid );
 }
 
-sub get_notes {
-    get_stuff( @_[ 0 .. 5 ], 'p.`from`=? AND p.`to`=p.`from`', $_[0] );
-}
+sub get_notes { get_stuff( @_[ 0 .. 5 ], 'p.`from`=? AND p.`to`=p.`from`', $_[0]) }
 sub get_forum { get_stuff( @_[ 0 .. 5 ], 'p.`to` IS NULL' ) }
-
-sub get_msgs {
+sub get_msgs  {
     my @params = ( $_[0], $_[0] );
     my $where = '( p.`from`=? OR p.`to`=? ) AND p.`from` <> p.`to`';
     if ( $_[6] ) {
         $where .= ' AND ( p.`from`=? OR p.`to`=? )';
         push @params, $_[6], $_[6];
     }
-    get_stuff( @_[ 0 .. 5 ], $where, @params );
+    return get_stuff( @_[ 0 .. 5 ], $where, @params );
 }
 
 sub get_post {

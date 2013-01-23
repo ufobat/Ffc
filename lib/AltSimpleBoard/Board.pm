@@ -151,7 +151,7 @@ sub frontpage {
     $c->stash(page   => $page);
     $c->stash(postid => $postid);
     
-    for my $k ( qw(error msgs_userid post msgs_username notecount newmsgscount) ) {
+    for my $k ( qw(error msgs_userid post msgs_username notecount newpostcount newmsgscount) ) {
         my $d = $c->stash($k);
         $c->stash($k => '') unless $d;
     }
@@ -175,6 +175,7 @@ sub frontpage {
     AltSimpleBoard::Data::Board::update_user_stats($userid);
     $c->stash(notecount     => AltSimpleBoard::Data::Board::notecount($userid));
     $c->stash(newmsgscount  => AltSimpleBoard::Data::Board::newmsgscount($userid));
+    $c->stash(newpostcount  => AltSimpleBoard::Data::Board::newpostcount($userid));
     $c->stash(categories    => ($s->{act} eq 'forum') ? AltSimpleBoard::Data::Board::categories() : []);
 
     $c->render('board/frontpage');
