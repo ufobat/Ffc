@@ -8,6 +8,7 @@
     background: #ccc;
     border: 1px #fff solid;
     color: #000;
+    box-shadow: 0 0 1px #036;
 }
 .postbox h2 {
     background: #fff url('../img/tg.png') bottom repeat-x;
