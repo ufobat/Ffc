@@ -51,11 +51,11 @@ sub notecount {
 
 sub categories {
     my $sql 
-     = q{SELECT c.`name` AS `name`, c.`short` AS `short`, ( SELECT COUNT(p.`id`) FROM }
+     = q{SELECT c.`name` AS `name`, c.`short` AS `short`, COUNT(p.`id`) AS `cnt`, 1 AS `sort` FROM }
      . $AltSimpleBoard::Data::Prefix
-     . q{posts p WHERE p.`category`=c.`id` ) AS `cnt`, 1 AS `sort` FROM }
+     . q{categories c LEFT OUTER JOIN }
      . $AltSimpleBoard::Data::Prefix
-     . q{categories c UNION }
+     . q{posts p ON p.`category`=c.`id` GROUP BY c.`id` UNION }
      . q{SELECT 'Allgemein' AS `name`, '' AS `short`, COUNT(p.`id`) AS `cnt`, 0 AS `sort` FROM }
      . $AltSimpleBoard::Data::Prefix
      . q{posts p WHERE p.`category` IS NULL }
