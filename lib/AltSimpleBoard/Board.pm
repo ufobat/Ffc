@@ -176,10 +176,10 @@ sub frontpage {
     }
     $c->stash( posts => $posts);
     AltSimpleBoard::Data::Board::update_user_stats($userid);
-    $c->stash(notecount     => AltSimpleBoard::Data::Board::notecount($userid));
-    $c->stash(newmsgscount  => AltSimpleBoard::Data::Board::newmsgscount($userid));
-    $c->stash(newpostcount  => AltSimpleBoard::Data::Board::newpostcount($userid));
-    $c->stash(categories    => ($s->{act} eq 'forum') ? AltSimpleBoard::Data::Board::categories() : []);
+    $c->stash(notecount     => AltSimpleBoard::Data::Board::count_notes($userid));
+    $c->stash(newmsgscount  => AltSimpleBoard::Data::Board::count_newmsgs($userid));
+    $c->stash(newpostcount  => AltSimpleBoard::Data::Board::count_newpost($userid));
+    $c->stash(categories    => ($s->{act} eq 'forum') ? AltSimpleBoard::Data::Board::get_categories() : []);
 
     $c->render('board/frontpage');
 }

@@ -28,28 +28,28 @@ sub update_password {
     AltSimpleBoard::Data::Auth::set_password($userid, $newpw1);
 }
 
-sub newmsgscount {
+sub count_newmsgs {
     my $userid = shift;
     die qq{Benutzer unbekannt} unless get_username($userid);
     my $sql = 'SELECT count(`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE `to` IS NOT NULL AND `to`=? AND `from` <> `to`';
     return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
 
-sub newpostcount {
+sub count_newpost {
     my $userid = shift;
     die qq{Benutzer unbekannt} unless get_username($userid);
     my $sql = 'SELECT count(`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE `to` IS NULL';
     return (AltSimpleBoard::Data::dbh()->selectrow_array($sql))[0];
 }
 
-sub notecount {
+sub count_notes {
     my $userid = shift;
     die qq{Benutzer unbekannt} unless get_username($userid);
     my $sql = 'SELECT count(`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE `from`=? AND `to`=`from`';
     return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
 
-sub categories {
+sub get_categories {
     my $sql 
      = q{SELECT c.`name` AS `name`, c.`short` AS `short`, COUNT(p.`id`) AS `cnt`, 1 AS `sort` FROM }
      . $AltSimpleBoard::Data::Prefix
@@ -122,8 +122,8 @@ sub update_user_stats {
     AltSimpleBoard::Data::dbh()->do( $sql, undef, $userid );
 }
 
-sub get_notes { get_stuff( @_[ 0 .. 5 ], 'p.`from`=? AND p.`to`=p.`from`', $_[0]) }
-sub get_forum { get_stuff( @_[ 0 .. 5 ], 'p.`to` IS NULL' ) }
+sub get_notes { _get_stuff( @_[ 0 .. 5 ], 'p.`from`=? AND p.`to`=p.`from`', $_[0]) }
+sub get_forum { _get_stuff( @_[ 0 .. 5 ], 'p.`to` IS NULL' ) }
 sub get_msgs  {
     my @params = ( $_[0], $_[0] );
     my $where = '( p.`from`=? OR p.`to`=? ) AND p.`from` <> p.`to`';
@@ -131,19 +131,19 @@ sub get_msgs  {
         $where .= ' AND ( p.`from`=? OR p.`to`=? )';
         push @params, $_[6], $_[6];
     }
-    return get_stuff( @_[ 0 .. 5 ], $where, @params );
+    return _get_stuff( @_[ 0 .. 5 ], $where, @params );
 }
 
 sub get_post {
     my $postid = shift;
     die q{Ungültige ID für den Beitrag} unless $postid =~ m/\A\d+\z/xms;
     my $where = 'p.`id`=?';
-    my $data = get_stuff( @_[ 0 .. 5 ], $where, $postid );
+    my $data = _get_stuff( @_[ 0 .. 5 ], $where, $postid );
     die q{Kein Datensatz gefunden} unless @$data;
     return $data->[0];
 }
 
-sub get_stuff {
+sub _get_stuff {
     my $userid = shift;
     my $page   = shift;
     my $lasts  = shift;
