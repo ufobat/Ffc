@@ -2,7 +2,6 @@
     color: #c30;
 }
 h1, h2, h3, h4 {
-
     color: #666699;
     font-size: 1em;
     font-weight: bolder;
@@ -15,7 +14,7 @@ blockquote {
     margin-left: 1em;
 }
 input, textarea, select {
-    border: 1px #999 solid;
+    border: 1px #369 solid;
     background: #fff;
     color: #006;
 }
