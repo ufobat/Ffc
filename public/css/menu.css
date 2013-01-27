@@ -19,9 +19,6 @@
 .menu .name {
     color: #fff;
 }
-.menu a:hover .linktext, .menu .menu a:hover {
-    color: #fff;
-}
 .menu form {
     display: inline;
 }
