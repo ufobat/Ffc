@@ -12,4 +12,6 @@
     <a href="<%= url_for 'options_form' %>" title="Einstellungen für diese Plattform anpassen"><span class="linktext linkoptions<%= act() eq 'options' ? ' active activeoptions' : '' %>"><img src="<%= url_for '/img/icons/options.png' %>" alt="Einstellungen" /></span></a>
 % end
     <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linktext linklogout"><img src="<%= url_for '/img/icons/bye.png' %>" alt="[X]" /></span></a>
+    <span class="divider">|</span>
+    <span class="clock"><%= sprintf '%02d:%02d', (localtime)[2,1] %></span>
 </div>
