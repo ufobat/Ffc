@@ -11,7 +11,7 @@
 }
 .postbox h2 {
     background: #fff url('../img/tg.png') bottom repeat-x;
-    color: #666;
+    color: #333;
     font-size: 0.75em;
 }
 .postbox, .pages {
@@ -53,3 +53,6 @@
 .postbox .category {
     white-space: nowrap;
 }
+.postbox h2 { background-color: #69f }
+.ownpost h2 { background-color: #9ad }
+

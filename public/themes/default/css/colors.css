@@ -1,11 +1,3 @@
-.forum        h2 { background-color: #c9f }
-.notes        h2 { background-color: #ff9 }
-.msgs         h2 { background-color: #9f9 }
-.ownpost      h2 { background-color: #999 }
-.options      h2 { background-color: #69f }
-.forumownpost h2 { background-color: #cbd}
-.msgsownpost  h2 { background-color: #ada }
-
 .menu .linkforum { color: #969 }
 .menu .linknotes { color: #993 }
 .menu .linkmsgs { color: #396 }
