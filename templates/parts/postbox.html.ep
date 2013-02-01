@@ -17,13 +17,7 @@
 % }
         <span class="titleinfo"><%= act() eq 'notes' ? '' : '(' %>
 % unless ( $post->{active} ) {
-          <%= $post->{timestamp} %><%= $post->{category} || $post->{iconspresent}  ? ',' : '' %>
-% if ( $post->{category} ) {
-          <a href="<%= url_for 'category' => category => $post->{category}->{short} %>" 
-            title="Kategorie &quot;<%= $post->{category}->{name} %>&quot; anzeigen"
-            class="category<%== $post->{category}->{short} ? qq[ category_$post->{category}->{short}] : '' %>">
-            <%= $post->{category}->{name} %></a><%= $post->{iconspresent} ? ',' : '' %>
-% }
+          <%= $post->{timestamp} %><%= $post->{iconspresent}  ? ',' : '' %>
 % if ( $post->{editable} ) {
           <a href="<%= url_for edit_form     => postid => $post->{id} %>" title="Beitrag bearbeiten">
             <img src="<%= url_for theme().'/img/icons/edit.png' %>" alt="&Auml;ndern" /></a>
