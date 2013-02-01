@@ -1,19 +1,21 @@
 <div class="postbox <%= act() %><%= $post->{ownpost} ? ' '.act().'ownpost ownpost' : '' %><%= $post->{active} ? ' activepost' : '' %>">
     <h2>
-% if ( $post->{from}->{active} ) {
+% if ( act() ne 'notes' ) {
+%   if ( $post->{from}->{active} ) {
         <%= $post->{from}->{name} %>
-% } else {
-        <span class="inactive"><%= $post->{from}->{name} %></span>
-% } 
-% if ( act() eq 'msgs' ) {
-        → 
-%   if ( $post->{to}->{active} ) {
-        <%= $post->{to}->{name} %>
 %   } else {
-        <span class="inactive"><%= $post->{to}->{name} %></span>
+        <span class="inactive"><%= $post->{from}->{name} %></span>
 %   } 
-% } 
-        <span class="titleinfo">(
+%   if ( act() eq 'msgs' ) {
+        → 
+%     if ( $post->{to}->{active} ) {
+        <%= $post->{to}->{name} %>
+%     } else {
+        <span class="inactive"><%= $post->{to}->{name} %></span>
+%     } 
+%   } 
+% }
+        <span class="titleinfo"><%= act() eq 'notes' ? '' : '(' %>
 % unless ( $post->{active} ) {
           <%= $post->{timestamp} %><%= $post->{category} || $post->{iconspresent}  ? ',' : '' %>
 % if ( $post->{category} ) {
@@ -38,7 +40,7 @@
 % } else {
             <%= $post->{timestamp} %>, in Bearbeitung
 % }
-        )</span>:
+        <%= act() eq 'notes' ? '' : ')' %></span>:
     </h2>
 % unless ( $post->{active} ) {
     <%== $post->{text} %>

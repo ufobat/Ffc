@@ -53,6 +53,10 @@
 .postbox .category {
     white-space: nowrap;
 }
-.postbox h2 { background-color: #69f }
-.ownpost h2 { background-color: #9ad }
+.postbox h2 { 
+    background-color: #69f;
+}
+.ownpost h2 { 
+    background-color: #9ad;
+}
 

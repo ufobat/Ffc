@@ -176,7 +176,7 @@ sub _get_stuff {
                 raw       => $d->[1],
                 active    => 0,
                 timestamp => AltSimpleBoard::Data::Formats::format_timestamp($d->[2]),
-                ownpost   => $d->[5] == $userid && $act ne 'notes' ? 1 : 0,
+                ownpost   => $d->[5] == $userid ? 1 : 0,
                 category  => $d->[3] # kategorie
                     ? { name => $d->[3], short => $d->[4] }
                     : undef,
