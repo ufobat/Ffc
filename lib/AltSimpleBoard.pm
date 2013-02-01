@@ -17,6 +17,7 @@ sub startup {
     AltSimpleBoard::Data::set_config($app);
 
     $app->helper( act => sub { shift->session->{act} } );
+    $app->helper( theme => sub { $AltSimpleBoard::Data::Theme } );
     $app->helper( acttitle => sub { $AltSimpleBoard::Data::Acttitles{shift->session->{act}} // 'Unbekannt' } );
 
     # Router

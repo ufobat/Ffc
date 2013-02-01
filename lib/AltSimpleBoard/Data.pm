@@ -20,6 +20,7 @@ our $Pagelinkpreview;
 our %Acttitles;
 our $Title;
 our $SessionTimeout;
+our $Theme;
 {
     my $dbh;
     my $config;
@@ -38,6 +39,7 @@ our $SessionTimeout;
         $Pagelinkpreview = $config->{pagelinkpreview};
         $Title = $config->{title};
         $SessionTimeout = $config->{sessiontimeout};
+        $Theme = "/themes/$config->{theme}";
 
         $dbconfig = {map {
                 my $v = $config->{$_};

@@ -2,8 +2,8 @@
 <html>
   <head>
     <title><%= $AltSimpleBoard::Data::Title %> - <%= acttitle() %></title>
-    <%= stylesheet '/css/style.css' %>
-    <link rel="icon" type="image/ico" href="<%= url_for '/img/favicon.png' %>" />
+    <%= stylesheet theme().'/css/style.css' %>
+    <link rel="icon" type="image/ico" href="<%= url_for theme().'/img/favicon.png' %>" />
   </head>
   <body>
 % if ( session()->{user} ) {

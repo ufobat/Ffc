@@ -9,6 +9,7 @@
     "title":"Alternatives Einfaches Brett",
     "pagelinkpreview":2,
     "sessiontimeout":3600,
+    "theme":"default",
     "acttitles":{
         "forum":"Forenboard",
         "notes":"Notizen",
