@@ -1,6 +1,7 @@
 package AltSimpleBoard::Auth;
 use Mojo::Base 'Mojolicious::Controller';
 use utf8;
+use AltSimpleBoard::Data;
 use AltSimpleBoard::Data::Auth;
 use AltSimpleBoard::Board;
 
@@ -46,7 +47,10 @@ sub _cancel_session {
 sub check_login {
     my $self = shift;
     if ( my $s = $self->session ) {
-        return 1 if $s->{userid};
+        if ( $s->{userid } ) {
+            $self->session( expiration => $AltSimpleBoard::Data::SessionTimeout );
+            return 1 if $s->{userid};
+        }
     }
     return 0;
 }

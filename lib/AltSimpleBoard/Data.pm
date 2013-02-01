@@ -19,6 +19,7 @@ our $Limit;
 our $Pagelinkpreview;
 our %Acttitles;
 our $Title;
+our $SessionTimeout;
 {
     my $dbh;
     my $config;
@@ -36,6 +37,7 @@ our $Title;
         $Limit = $config->{postlimit};
         $Pagelinkpreview = $config->{pagelinkpreview};
         $Title = $config->{title};
+        $SessionTimeout = $config->{sessiontimeout};
 
         $dbconfig = {map {
                 my $v = $config->{$_};
