@@ -7,9 +7,6 @@ body {
     padding-bottom: .25em;
     color: #000;
 }
-input, textarea {
-    border: 1px #bbb solid;
-}
 .menu {
     white-space: nowrap;
     margin: 0 auto;
@@ -28,6 +25,7 @@ input, textarea {
     color: #666;
     font-size: 1em;
     font-family: monospace;
+    border: none;
 }
 input {
     width: 10em;
@@ -35,9 +33,6 @@ input {
 textarea {
     width: 49.5em;
     height: 5em;
-}
-input[type="text"]:focus, textarea:focus {
-    border-color: #999;
 }
 .menu input[type="text"] {
     width: 5em;
