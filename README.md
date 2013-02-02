@@ -16,16 +16,16 @@ Features
 * Einfache klare Datenhaltung
 * Alle Daten werden grundlegend in einer zentralen Tabelle erfasst
 * Kein unnützer Ballast wie 
-** Beitragstitel
-** Überbordender Eyecandy
-** Featuritis
-** Avatare (ja, die sind rausgefallen)
+  * Beitragstitel
+  * Überbordender Eyecandy
+  * Featuritis
+  * Avatare (ja, die sind rausgefallen)
 * Datenaustauschplattform für alle Teilbereiche
 * Teilbereiche:
-** Diskussionsforum
-*** Mit Kategorien
-** Nachrichtenplattform für Privatnachrichten an einzelne Teilnehmer
-** Notizen für den eigenen Bedarf
+  * Diskussionsforum
+    * Mit Kategorien
+  * Nachrichtenplattform für Privatnachrichten an einzelne Teilnehmer
+  * Notizen für den eigenen Bedarf
 
 Datenstruktur
 -------------
