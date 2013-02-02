@@ -8,7 +8,7 @@ body {
     padding-bottom: .25em;
     color: #000;
 }
-.menu, input, textarea {
+.menu, input, textarea, .postbox {
     border-style: solid;
     border-color: #bbb;
 }
@@ -68,6 +68,7 @@ h2 {
 .postbox {
     padding: .25em .5em;
     background: #fff;
+    border-width: 1px;
 }
 .postbox img {
     max-height: 10em;
