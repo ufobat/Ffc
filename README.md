@@ -46,7 +46,7 @@ Benutzer können nur von bestehenden Administratorbenutzern hinzugefügt
 werden, können ihr Passwort und ihre Emailadresse aber selber ändern.
 
 Jedem Beitrag kann genau eine Datei angehängt werden ("Zwang" zur 
-Archivierung). Diese Datei wird dann über einen Beitragsindex 
-referenziert im Dateisystem abgelegt und kann entsprechend von allen
-oder von den Zielpersonen des Beitrages abgerufen werden.
+Archivierung und Komprimierung). Diese Datei wird dann über einen
+Beitragsindex referenziert im Dateisystem abgelegt und kann entsprechend
+von allen oder von den Zielpersonen des Beitrages abgerufen werden.
 
