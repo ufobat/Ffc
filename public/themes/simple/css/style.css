@@ -4,11 +4,13 @@
 }
 body {
     background: #ccc;
-    padding-top: 1.75em;
+    padding-top: 2em;
+    padding-bottom: .25em;
     color: #000;
 }
 .menu, input, textarea {
     border-style: solid;
+    border-color: #bbb;
 }
 .menu {
     width: 100%;
@@ -16,9 +18,8 @@ body {
     white-space: nowrap;
     position: fixed;
     padding: .25em 0;
-    margin-top: -1.75em;
+    margin-top: -2em;
     border-width: 0 0 1px;
-    border-color: #bbb;
     background: #ddd;
 }
 .menu * {
@@ -30,20 +31,21 @@ body {
 
 input, textarea {
     border-width: 1px;
-    border-color: #999;
     background: #eee;
     display: inline;
     color: #666;
+    font-size: 1em;
+    font-family: monospace;
 }
 input {
     width: 10em;
 }
 textarea {
-    width: 49em;
+    width: 49.5em;
     height: 5em;
 }
 input[type="text"]:focus, textarea:focus {
-    border-color: #666;
+    border-color: #999;
 }
 .menu input[type="text"] {
     width: 5em;
