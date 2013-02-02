@@ -19,7 +19,7 @@ Features
 ** Beitragstitel
 ** Überbordender Eyecandy
 ** Featuritis
-** Avatare (ja, die sind rausgefallen=
+** Avatare (ja, die sind rausgefallen)
 * Datenaustauschplattform für alle Teilbereiche
 * Teilbereiche:
 ** Diskussionsforum
