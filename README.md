@@ -22,8 +22,7 @@ Features
   * Avatare (ja, die sind rausgefallen)
 * Datenaustauschplattform für alle Teilbereiche
 * Teilbereiche:
-  * Diskussionsforum
-    * Mit Kategorien
+  * Diskussionsforum mit Kategorien
   * Nachrichtenplattform für Privatnachrichten an einzelne Teilnehmer
   * Notizen für den eigenen Bedarf
 
