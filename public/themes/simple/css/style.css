@@ -4,24 +4,15 @@
 }
 body {
     background: #ccc;
-    padding-top: 2em;
     padding-bottom: .25em;
     color: #000;
 }
-.menu, input, textarea, .postbox {
-    border-style: solid;
-    border-color: #bbb;
+input, textarea {
+    border: 1px #bbb solid;
 }
 .menu {
-    width: 100%;
-    max-width: 100%;
     white-space: nowrap;
-    position: fixed;
-    padding: .25em 0;
-    margin-top: -2em;
-    border-width: 0 0 1px;
-    background: #ddd;
-    border-color: #aaa;
+    margin: 0 auto;
 }
 .menu * {
     display: inline;
@@ -67,15 +58,17 @@ h2 {
     color: #666;
 }
 .postbox {
-    padding: .25em .5em;
     background: #fff;
     border-width: 1px;
 }
 .postbox img {
     max-height: 10em;
 }
+.postbox, .pages, .menu {
+    padding: .25em .5em;
+}
 .postbox, .pages {
-    margin: 2px auto;
+    margin: 3px auto;
     width: 50em;
     max-width: 50em;
 }
