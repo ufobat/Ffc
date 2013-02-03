@@ -104,7 +104,6 @@ input.linkalike:hover, .linkalike:hover, a:hover {
 }
 .alert {
     color: #c00;
-    text-decoration: blink;
     text-transform: uppercase;
     font-weight: bolder;
 }
