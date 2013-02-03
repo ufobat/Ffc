@@ -24,5 +24,6 @@
   * `down.png`:        -.-
   * `nope.png`:        :/ :-/ :\ :-\ =/ =\
   * `sunny.png`:       B) B-) 8) 8-)
+  * `cats.png`:        ^^
 
 Der Name des Themenverzeichnisses wird in der Konfiguration unter `etc/altsimpleboard.json` angegeben

@@ -9,6 +9,8 @@ CREATE TABLE `asb_users` (
   `lastseen` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `active` tinyint(1) NOT NULL DEFAULT '0',
   `admin` tinyint(1) NOT NULL DEFAULT '0',
+  `show_images` tiniint(1) NOT NULL DEFAULT '1',
+  `theme` varchar(64),
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=137 DEFAULT CHARSET=utf8;
