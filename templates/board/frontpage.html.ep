@@ -6,12 +6,13 @@
 <div class="toppagelink">
     <a href="<%= url_for 'show' %>" title="Zur ersten Seite zurück gehen">Zu den aktuellsten Postings zurück</a>
 </div>
-% } elsif ( act() eq 'forum' and @$categories > 1  ) {
+% } 
+% if ( act() eq 'forum' ) {
 <div class="postbox categorylinks"><p>
 %   my $counter = 0;
-%      for ( @$categories ) { $counter++;
+%   for ( @$categories ) { $counter++;
    <%== $counter > 1 ? '/ ' : '' %><%= include 'parts/categorylink', cat => $_ %>
-%      }
+%   }
 </p></div>
 % }
 % for ( @$posts ) {
