@@ -10,7 +10,7 @@
 % for my $p ( $page - $plp .. $page + $plp ) {
 %   if ( $p > 0 ) {
 %     if ( $page == $p ) {
-    [<%= $page %>]
+    <span class="actpage">[<%= $page %>]</span>
 %     } else {
     <a href="<%= url_for 'show_page', page => $p %>" title="Zur Seite <%= $p %> gehen">[<%= $p %>]</a>
 %     }

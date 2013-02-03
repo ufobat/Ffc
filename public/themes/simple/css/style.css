@@ -79,8 +79,12 @@ h2 {
 .mark {
     color: #c0c;
 }
-.menu a {
+.pages, .pages a, .footerlinks, .footerlinks a, .menu a {
     color: #666;
+}
+.actpage {
+    font-weight: bolder;
+    color: #333;
 }
 .menu a:hover {
     text-decoration: none;
