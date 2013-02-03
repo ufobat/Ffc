@@ -27,12 +27,16 @@ sub format_text {
     return $s;
 }
 
+our %Goodies = qw( _ underline - linethrough + bold / italic ! alert);
+sub _make_goody {
+    my ( $marker, $string ) = @_;
+    my $rem = "\\$marker";
+    $string =~ s/$rem/ /gms;
+    return qq~<span class="$Goodies{$marker}">$string</span>~;
+}
 sub _format_goodies {
     my $s = shift;
-    $s =~ s{_(\w+)_}{<u>$1</u>}xmsig;
-    $s =~ s{\~(\w+)\~}{<b>$1</b>}xmsig;
-    $s =~ s{\/(\w+)\/}{<i>$1</i>}xmsig;
-    $s =~ s{\!(\w+)\!}{<span class="alert">$1!!!</span>}xmsig;
+    $s =~ s~([\_\-\+\/\!])([\_\-\+\/\!\w]+)\1~_make_goody($1, $2)~xmsieg;
     return $s;
 }
 

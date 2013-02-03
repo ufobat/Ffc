@@ -88,9 +88,23 @@ h2 {
 .menu .mark {
     color: #333;
 }
-.alert {
-    color: #900;
-}
 .help {
     color: #ccc;
+    font-size: .75em;
+}
+.alert {
+    color: #900;
+    font-weight: bolder;
+}
+.linethrough {
+    text-decoration: line-through;
+}
+.underline {
+    text-decoration: underline;
+}
+.bold {
+    font-weight: bolder;
+}
+.italic {
+    font-style: italic;
 }

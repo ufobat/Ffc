@@ -98,9 +98,25 @@ input.linkalike:hover, .linkalike:hover, a:hover {
 .mark {
     color: #c63;
 }
+.help {
+    color: #999;
+    font-size: .75em;
+}
 .alert {
     color: #c00;
     text-decoration: blink;
     text-transform: uppercase;
     font-weight: bolder;
+}
+.linethrough {
+    text-decoration: line-through;
+}
+.underline {
+    text-decoration: underline;
+}
+.bold {
+    font-weight: bolder;
+}
+.italic {
+    font-style: italic;
 }
