@@ -69,7 +69,7 @@ sub edit_form {
     my $c = shift;
     my $id = $c->param('postid');
     my $s = $c->session;
-    my $post = AltSimpleBoard::Data::Board::get_post($id, get_params($s) );
+    my $post = AltSimpleBoard::Data::Board::get_post($id, $c->get_params($s) );
     $c->stash( post => $post );
     $s->{category} = $post->{category} ? $post->{category}->{short} : '';
     $c->frontpage();
@@ -80,7 +80,7 @@ sub delete_check {
     my $s = $c->session;
     my $id = $c->param('postid');
     die "Privatnachrichten dürfen nicht gelöscht werden" if $s->{act} eq 'msgs';
-    $c->stash( post => AltSimpleBoard::Data::Board::get_post($id, get_params($s)) );
+    $c->stash( post => AltSimpleBoard::Data::Board::get_post($id, $c->get_params($s)) );
     $c->render('board/deletecheck');
 }
 sub delete_post {
@@ -127,7 +127,7 @@ sub update_post {
 }
 
 sub get_params {
-    my ( $session, $page ) = @_;
+    my ( $self, $session, $page ) = @_;
     $page = 1 unless $page and $page =~ m/\A\d+\z/xms;
     return 
         $session->{userid}, 
@@ -135,7 +135,8 @@ sub get_params {
         $session->{lastseen},
         $session->{query},
         $session->{category},
-        $session->{act};
+        $session->{act},
+        $self;
 }
 
 sub frontpage {
@@ -158,8 +159,8 @@ sub frontpage {
         my $d = $c->stash($k);
         $c->stash($k => '') unless $d;
     }
-    my @params = get_params( $s, $page );
-    my $posts = [];
+    my @params = $c->get_params($s, $page);
+    my $posts  = [];
     given ( $s->{act} ) {
         when ( 'forum' )   { $posts = AltSimpleBoard::Data::Board::get_forum(@params) }
         when ( 'notes' )   { $posts = AltSimpleBoard::Data::Board::get_notes(@params) }

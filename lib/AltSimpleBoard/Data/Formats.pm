@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use utf8;
 use Mojo::Util;
+use Mojolicious::Plugin::DefaultHelpers;
 
 sub format_timestamp {
     my $t = shift;
@@ -16,12 +17,14 @@ sub format_timestamp {
 
 sub format_text {
     my $s = shift;
+    my $c = shift;
     chomp $s;
     return '' unless $s;
     $s = Mojo::Util::xml_escape($s);
     $s = _format_links($s);
     $s = _format_bbcode($s);
     $s = _format_goodies($s);
+    $s = _format_smilies($s, $c);
     $s =~ s{\n[\n\s]*}{</p>\n<p>}gsm;
     $s = "<p>$s</p>";
     return $s;
@@ -109,6 +112,34 @@ sub _format_bbcode {
         (?<text>.+?)
         \[/color\k{mark}\]
         ~<span style="color:$+{color}">$+{text}</span>~gxims;
+    return $s;
+}
+
+our @Smilies = (
+    [ smile     => [':)',  ':-)',  '=)',                         ] ],
+    [ sad       => [':(',  ':-(',  '=(',                         ] ],
+    [ crying    => [':,(',                                       ] ],
+    [ twinkling => [';)',  ';-)',                                ] ],
+    [ laughting => [':D',  '=D',   ':-D',  'LOL',                ] ],
+    [ rofl      => ['XD',  'X-D',  'ROFL',                       ] ],
+    [ unsure    => [':|',  ':-|',  '=|',                         ] ],
+    [ yes       => ['(y)', '(Y)'                                 ] ],
+    [ no        => ['(n)', '(N)',                                ] ],
+    [ down      => ['-.-',                                       ] ],
+    [ nope      => [':/',  ':-/',  '=/',   ':\\', ':-\\', '=\\', ] ],
+);
+our %Smiley = map {my ($n,$l)=($_->[0],$_->[1]); map {$_=>$n} @$l} @Smilies;
+our $SmileyRe = join '|', map {s{([\<\-\.\:\\\/\(\)\=\|\,])}{\\$1}gxms; $_} keys %Smiley;
+sub _make_smiley {
+    my ( $c, $s, $x, $e ) = @_;
+    return qq~$s<img class="smiley" src="~
+        .$c->url_for("$AltSimpleBoard::Data::Theme/img/smileys/$Smiley{$x}.png")
+        .qq~" alt="$x" />$e~;
+}
+sub _format_smilies {
+    my $s = shift;
+    my $c = shift;
+    $s =~ s/(\s|\A)($SmileyRe)/_make_smiley($c, $1, $2, $3)/gmsxe;
     return $s;
 }
 

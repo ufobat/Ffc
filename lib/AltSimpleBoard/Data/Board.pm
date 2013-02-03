@@ -122,23 +122,23 @@ sub update_user_stats {
     AltSimpleBoard::Data::dbh()->do( $sql, undef, $userid );
 }
 
-sub get_notes { _get_stuff( @_[ 0 .. 5 ], 'p.`from`=? AND p.`to`=p.`from`', $_[0]) }
-sub get_forum { _get_stuff( @_[ 0 .. 5 ], 'p.`to` IS NULL' ) }
+sub get_notes { _get_stuff( @_[ 0 .. 6 ], 'p.`from`=? AND p.`to`=p.`from`', $_[0]) }
+sub get_forum { _get_stuff( @_[ 0 .. 6 ], 'p.`to` IS NULL' ) }
 sub get_msgs  {
     my @params = ( $_[0], $_[0] );
     my $where = '( p.`from`=? OR p.`to`=? ) AND p.`from` <> p.`to`';
-    if ( $_[6] ) {
+    if ( $_[7] ) {
         $where .= ' AND ( p.`from`=? OR p.`to`=? )';
-        push @params, $_[6], $_[6];
+        push @params, $_[7], $_[7];
     }
-    return _get_stuff( @_[ 0 .. 5 ], $where, @params );
+    return _get_stuff( @_[ 0 .. 6 ], $where, @params );
 }
 
 sub get_post {
     my $postid = shift;
     die q{Ungültige ID für den Beitrag} unless $postid =~ m/\A\d+\z/xms;
     my $where = 'p.`id`=?';
-    my $data = _get_stuff( @_[ 0 .. 5 ], $where, $postid );
+    my $data = _get_stuff( @_[ 0 .. 6 ], $where, $postid );
     die q{Kein Datensatz gefunden} unless @$data;
     return $data->[0];
 }
@@ -150,6 +150,7 @@ sub _get_stuff {
     my $query  = shift;
     my $cat    = shift;
     my $act    = shift;
+    my $c      = shift;
     my $where  = shift;
     my @params = @_;
     return [] unless $userid;
@@ -171,8 +172,8 @@ sub _get_stuff {
 
     return [ map { my $d = $_;
             $d = {
-                text      => AltSimpleBoard::Data::Formats::format_text($d->[1]),
-                start     => AltSimpleBoard::Data::Formats::format_text(do {(split /\n/, $d->[1])[0] // ''}),
+                text      => AltSimpleBoard::Data::Formats::format_text($d->[1], $c),
+                start     => AltSimpleBoard::Data::Formats::format_text(do {(split /\n/, $d->[1])[0] // ''}, $c),
                 raw       => $d->[1],
                 active    => 0,
                 timestamp => AltSimpleBoard::Data::Formats::format_timestamp($d->[2]),
