@@ -22,7 +22,6 @@ sub format_text {
     return '' unless $s;
     $s = Mojo::Util::xml_escape($s);
     $s = _format_links($s);
-    $s = _format_bbcode($s);
     $s = _format_goodies($s);
     $s = _format_smilies($s, $c);
     $s =~ s{\n[\n\s]*}{</p>\n<p>}gsm;
@@ -60,65 +59,11 @@ sub _format_links {
     return $s;
 }
 
-sub _format_bbcode {
-    my $s = shift;
-
-    # zitate
-    $s =~ s~
-        \[quote
-            (?:=(?:"|&quot;)(?<cite>.+?)(?:"|&quot;)|(?<cite>))
-            (?<mark>(?:\:\w+?)?)
-        \]
-        (?<text>.+?)
-        \[/quote\k{mark}\]
-        ~<blockquote cite="$+{cite}">$+{text}</blockquote>~gmxis;
-
-    # textmarkierungen
-    for my $c (qw(u b i)) {
-        $s =~ s~
-            \[$c
-                ((?:\:\w+?)?)
-            \]
-            (.+?)
-            \[/$c\1\]
-            ~<$c>$2</$c>~gxmis;
-    }
-
-    # Bilder und Smilies
-    $s =~ s~
-        \[img
-            (?<mark>(?:\:\w+?)?)
-        \]
-        (?<src>.+?)
-        \[/img\k{mark}\]
-        ~<img src="$+{src}" />~gxmis;
-
-    # Links
-    $s =~ s~
-        \[url
-            (?:=(?:"|&quot;)?(?<url>.+?)(?:"|&quot;)?)
-            (?<mark>(?:\:\w+?)?)
-        \]
-        (?<title>.+?)
-        \[/url\k{mark}\]
-        ~<a href="$+{url}">$+{title}</a>~gxmis;
-
-    # Farben
-    $s =~ s~
-        \[color
-            (?:=(?:"|&quot;)?(?<color>\#[0-9a-f]{3}(?:[0-9a-f]{3})?)(?:"|&quot;)?)
-            (?<mark>(?:\:\w+?)?)
-        \]
-        (?<text>.+?)
-        \[/color\k{mark}\]
-        ~<span style="color:$+{color}">$+{text}</span>~gxims;
-    return $s;
-}
-
 our @Smilies = (
     [ smile     => [':)',  ':-)',  '=)',                         ] ],
     [ sad       => [':(',  ':-(',  '=(',                         ] ],
     [ crying    => [':,(',                                       ] ],
+    [ sunny     => ['B)',  '8)',   'B-)',  '8-)',                ] ],
     [ twinkling => [';)',  ';-)',                                ] ],
     [ laughting => [':D',  '=D',   ':-D',  'LOL',                ] ],
     [ rofl      => ['XD',  'X-D',  'ROFL',                       ] ],
