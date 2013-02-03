@@ -35,7 +35,7 @@
 .menu input.activesearch {
     background-color: #630;
 }
-.menu .linktext {
+.menu a, .menu .linktext {
     text-decoration: none;
     border: 1px transparent solid;
 }
