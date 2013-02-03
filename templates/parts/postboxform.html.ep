@@ -7,6 +7,7 @@
 <p>
 %= submit_button 'Speichern', class => 'linkalike'
 (<a href="<%= url_for 'show' %>" title="&Auml;nderung abbrechen">Abbrechen</a>)
+<span class="help">(_unterstrichen_, ~fett~, /kursiv/, !hervorgehoben!)</span>
 </p>
 % end
 </div>

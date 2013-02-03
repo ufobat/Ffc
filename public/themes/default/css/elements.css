@@ -98,3 +98,9 @@ input.linkalike:hover, .linkalike:hover, a:hover {
 .mark {
     color: #c63;
 }
+.alert {
+    color: #c00;
+    text-decoration: blink;
+    text-transform: uppercase;
+    font-weight: bolder;
+}

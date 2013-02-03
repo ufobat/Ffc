@@ -12,10 +12,6 @@
     white-space: nowrap;
     position: fixed;
 }
-.menu, .menu a {
-    color: #999;
-    text-decoration: none;
-}
 .menu .name {
     color: #fff;
 }
@@ -42,21 +38,6 @@
 .menu .linktext {
     text-decoration: none;
     border: 1px transparent solid;
-}
-.popup > .menu {
-    text-align: left;
-    display: none;
-    padding: .25em .5em;
-    width: inherit;
-    position: absolute;
-    margin: 1.25em -1px;
-    border-width: 1px;
-}
-.popup:hover > .menu {
-    display: inline-block;
-}
-.popup .menu .active {
-    color: #fff;
 }
 .menu .mark {
     color: #fc6;

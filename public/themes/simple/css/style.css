@@ -88,3 +88,9 @@ h2 {
 .menu .mark {
     color: #333;
 }
+.alert {
+    color: #900;
+}
+.help {
+    color: #ccc;
+}

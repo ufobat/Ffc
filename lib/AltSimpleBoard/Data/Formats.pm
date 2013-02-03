@@ -21,18 +21,33 @@ sub format_text {
     $s = Mojo::Util::xml_escape($s);
     $s = _format_links($s);
     $s = _format_bbcode($s);
+    $s = _format_goodies($s);
     $s =~ s{\n[\n\s]*}{</p>\n<p>}gsm;
     $s = "<p>$s</p>";
     return $s;
 }
 
+sub _format_goodies {
+    my $s = shift;
+    $s =~ s{_(\w+)_}{<u>$1</u>}xmsig;
+    $s =~ s{\~(\w+)\~}{<b>$1</b>}xmsig;
+    $s =~ s{\/(\w+)\/}{<i>$1</i>}xmsig;
+    $s =~ s{\!(\w+)\!}{<span class="alert">$1!!!</span>}xmsig;
+    return $s;
+}
+
+sub _make_link {
+    if ( $_[1] =~ m(jpe?g|gif|bmp|png\z)xmsi ) {
+        return qq~$_[0]<a href="$_[1]" title="Externes Bild" target="_blank"><img src="$_[1]" class="extern" title="Externes Bild" /></a>$_[2]~;
+    }
+    else {
+        return qq~$_[0]<a href="$_[1]" title="Externe Webseite" target="_blank">$_[1]</a>$_[2]~;
+    }
+}
+
 sub _format_links {
     my $s = shift;
-    $s =~
-s{(?:\s|\A)(https?://\S+\.(jpg|jpeg|gif|bmp|png))(?:\s|\z)}{<a href="$1" title="Externes Bild" target="_blank"><img src="$1" class="extern" title="Externes Bild" /></a>}xmsig;
-    $s =~
-s{([\(\s]|\A)(https?://\S+)([\(\s]|\z)}{$1<a href="$2" title="Externe Webseite" target="_blank">$2</a>$3}xmsig;
-    $s =~ s{_(\w+)_}{<u>$1</u>}xmsig;
+    $s =~ s{([\(\s]|\A)(https?://\S+)([\(\s]|\z)}{_make_link($1,$2,$3)}xmseig;
     return $s;
 }
 
