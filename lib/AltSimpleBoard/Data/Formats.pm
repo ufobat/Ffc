@@ -15,12 +15,20 @@ sub format_timestamp {
     return $t;
 }
 
+sub _xml_escape {
+    my $s = shift;
+    $s =~ s/\&/\&amp;/xmsg;
+    $s =~ s/\<(?=\w)/\&lt;/xmgs;
+    $s =~ s/(?<=\w)\>/\&gt;/xmgs;
+    $s =~ s/"/\&quote;/xgms;
+    return $s;
+}
 sub format_text {
     my $s = shift;
     my $c = shift;
     chomp $s;
     return '' unless $s;
-    $s = Mojo::Util::xml_escape($s);
+    $s = _xml_escape($s);
     $s = _format_links($s);
     $s = _format_goodies($s);
     $s = _format_smilies($s, $c);
@@ -60,27 +68,33 @@ sub _format_links {
 }
 
 our @Smilies = (
-    [ smile     => [':)',  ':-)',  '=)',                         ] ],
-    [ sad       => [':(',  ':-(',  '=(',                         ] ],
-    [ crying    => [':,(',                                       ] ],
-    [ sunny     => ['B)',  '8)',   'B-)',  '8-)',                ] ],
-    [ twinkling => [';)',  ';-)',                                ] ],
-    [ laughting => [':D',  '=D',   ':-D',  'LOL',                ] ],
-    [ rofl      => ['XD',  'X-D',  'ROFL',                       ] ],
-    [ unsure    => [':|',  ':-|',  '=|',                         ] ],
-    [ yes       => ['(y)', '(Y)'                                 ] ],
-    [ no        => ['(n)', '(N)',                                ] ],
-    [ down      => ['-.-',                                       ] ],
-    [ cats      => ['^^',                                        ] ],
-    [ nope      => [':/',  ':-/',  '=/',   ':\\', ':-\\', '=\\', ] ],
+    [ smile      => [':)',  ':-)',  '=)',                         ] ],
+    [ sad        => [':(',  ':-(',  '=(',                         ] ],
+    [ crying     => [':,(',                                       ] ],
+    [ sunny      => ['B)',  '8)',   'B-)',  '8-)',                ] ],
+    [ twinkling  => [';)',  ';-)',                                ] ],
+    [ laughting  => [':D',  '=D',   ':-D',  'LOL',                ] ],
+    [ rofl       => ['XD',  'X-D',  'ROFL',                       ] ],
+    [ unsure     => [':|',  ':-|',  '=|',                         ] ],
+    [ yes        => ['(y)', '(Y)'                                 ] ],
+    [ no         => ['(n)', '(N)',                                ] ],
+    [ down       => ['-.-',                                       ] ],
+    [ cats       => ['^^',                                        ] ],
+    [ devilsmile => ['>:)', '>=)',  '>:-)',                       ] ],
+    [ angry      => ['>:(', '>=(',  '>:-(',                       ] ],
+    [ nope       => [':/',  ':-/',  '=/',   ':\\', ':-\\', '=\\', ] ],
 );
 our %Smiley = map {my ($n,$l)=($_->[0],$_->[1]); map {$_=>$n} @$l} @Smilies;
 our $SmileyRe = join '|', map {s{([\^\<\-\.\:\\\/\(\)\=\|\,])}{\\$1}gxms; $_} keys %Smiley;
 sub _make_smiley {
     my ( $c, $s, $x, $e ) = @_;
+    my $y = $x;
+    $y =~ s/\&/&lt;/xmsg;
+    $y =~ s/\>/&gt;/xmsg;
+    $y =~ s/\</&lt;/xmsg;
     return qq~$s<img class="smiley" src="~
         .$c->url_for("$AltSimpleBoard::Data::Theme/img/smileys/$Smiley{$x}.png")
-        .qq~" alt="$x" />$e~;
+        .qq~" alt="$y" />$e~;
 }
 sub _format_smilies {
     my $s = shift;
