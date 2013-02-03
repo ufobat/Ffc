@@ -71,10 +71,11 @@ our @Smilies = (
     [ yes       => ['(y)', '(Y)'                                 ] ],
     [ no        => ['(n)', '(N)',                                ] ],
     [ down      => ['-.-',                                       ] ],
+    [ cats      => ['^^',                                        ] ],
     [ nope      => [':/',  ':-/',  '=/',   ':\\', ':-\\', '=\\', ] ],
 );
 our %Smiley = map {my ($n,$l)=($_->[0],$_->[1]); map {$_=>$n} @$l} @Smilies;
-our $SmileyRe = join '|', map {s{([\<\-\.\:\\\/\(\)\=\|\,])}{\\$1}gxms; $_} keys %Smiley;
+our $SmileyRe = join '|', map {s{([\^\<\-\.\:\\\/\(\)\=\|\,])}{\\$1}gxms; $_} keys %Smiley;
 sub _make_smiley {
     my ( $c, $s, $x, $e ) = @_;
     return qq~$s<img class="smiley" src="~
