@@ -87,8 +87,10 @@ our @Smilies = (
 our %Smiley = map {my ($n,$l)=($_->[0],$_->[1]); map {$_=>$n} @$l} @Smilies;
 our $SmileyRe = join '|', map {s{([\^\<\-\.\:\\\/\(\)\=\|\,])}{\\$1}gxms; $_} keys %Smiley;
 sub _make_smiley {
-    my ( $c, $s, $x, $e ) = @_;
-    my $y = $x;
+    my $c = shift;
+    my $s = shift // '';
+    my $y = my $x = shift // return '';
+    my $e = shift // '';
     $y =~ s/\&/&lt;/xmsg;
     $y =~ s/\>/&gt;/xmsg;
     $y =~ s/\</&lt;/xmsg;
