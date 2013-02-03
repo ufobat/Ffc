@@ -32,6 +32,7 @@ sub _make_goody {
     my ( $marker, $string ) = @_;
     my $rem = "\\$marker";
     $string =~ s/$rem/ /gms;
+    $string .= ' !!!' if $marker eq '!';
     return qq~<span class="$Goodies{$marker}">$string</span>~;
 }
 sub _format_goodies {
