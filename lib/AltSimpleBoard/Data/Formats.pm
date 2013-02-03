@@ -36,22 +36,23 @@ sub _make_goody {
 }
 sub _format_goodies {
     my $s = shift;
-    $s =~ s~([\_\-\+\/\!])([\_\-\+\/\!\w]+)\1~_make_goody($1, $2)~xmsieg;
+    $s =~ s~([\_\-\+\/\!])([\_\-\+\/\!\w]+)\g1~_make_goody($1, $2)~xmsieg;
     return $s;
 }
 
 sub _make_link {
-    if ( $_[1] =~ m(jpe?g|gif|bmp|png\z)xmsi ) {
-        return qq~$_[0]<a href="$_[1]" title="Externes Bild" target="_blank"><img src="$_[1]" class="extern" title="Externes Bild" /></a>$_[2]~;
+    my ( $start, $url, $end ) = @_;
+    if ( $url =~ m(jpe?g|gif|bmp|png\z)xmsi ) {
+        return qq~$start<a href="$url" title="Externes Bild" target="_blank"><img src="$url" class="extern" title="Externes Bild" /></a>$end~;
     }
     else {
-        return qq~$_[0]<a href="$_[1]" title="Externe Webseite" target="_blank">$_[1]</a>$_[2]~;
+        return qq~$end<a href="$url" title="Externe Webseite" target="_blank">$url</a>$end~;
     }
 }
 
 sub _format_links {
     my $s = shift;
-    $s =~ s{([\(\s]|\A)(https?://\S+)([\(\s]|\z)}{_make_link($1,$2,$3)}xmseig;
+    $s =~ s{([\(\s]|\A)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3, @+)}xmseig;
     return $s;
 }
 
