@@ -64,13 +64,15 @@ sub _get_relevant_data {
     return $self->login_form('Anmeldung fehlgeschlagen') unless @data;
     %$session = (
         %$session,
-        user     => $user,
-        userid   => $data[0],
-        lastseen => $data[1],
-        admin    => $data[2],
-        act      => 'forum',
-        query    => '',
-        category => undef,
+        user        => $user,
+        userid      => $data[0],
+        lastseen    => $data[1],
+        admin       => $data[2],
+        show_images => $data[3],
+        theme       => $data[4] // $AltSimpleBoard::Data::Theme,
+        act         => 'forum',
+        query       => '',
+        category    => undef,
     );
 
     return 1;

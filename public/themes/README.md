@@ -11,6 +11,7 @@
   * `msgs.png` als Chat-Knopf
   * `options.png` für den Link zu den Optionen im Menü
   * `search.png` für den Suchenbutton im Menü
+  * `img.png` für Bildericon, wenn keine Bilder angezeigt werden sollen
 * `img/smileys/` (Gesichtchenbildchen):
   * `smile.png`:       :) :-) =)
   * `sad.png`:         :( :-( =(

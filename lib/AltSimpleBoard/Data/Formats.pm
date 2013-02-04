@@ -29,8 +29,8 @@ sub format_text {
     chomp $s;
     return '' unless $s;
     $s = _xml_escape($s);
-    $s = _format_links($s);
     $s = _format_goodies($s);
+    $s = _format_links($s, $c);
     $s = _format_smilies($s, $c);
     $s =~ s{\n[\n\s]*}{</p>\n<p>}gsm;
     $s = "<p>$s</p>";
@@ -52,18 +52,27 @@ sub _format_goodies {
 }
 
 sub _make_link {
-    my ( $start, $url, $end ) = @_;
+    my ( $start, $url, $end, $c ) = @_;
+    my $t = $AltSimpleBoard::Data::Themedir.$c->session()->{theme};
     if ( $url =~ m(jpe?g|gif|bmp|png\z)xmsi ) {
-        return qq~$start<a href="$url" title="Externes Bild" target="_blank"><img src="$url" class="extern" title="Externes Bild" /></a>$end~;
+        if ( $c->session()->{show_images} ) {
+            return qq~$start<a href="$url" title="Externes Bild" target="_blank"><img src="$url" class="extern" title="Externes Bild" /></a>$end~;
+        }
+        else {
+            my $url_xmlencode = _xml_escape($url);
+            return qq~$start<a href="$url" title="Externes Bild" target="_blank"><img class="icon" src="$t/img/icons/img.png" class="extern" title="Externes Bild" /> $url_xmlencode</a>$end~;
+        }
     }
     else {
-        return qq~$end<a href="$url" title="Externe Webseite" target="_blank">$url</a>$end~;
+        my $url_xmlencode = _xml_escape($url);
+        return qq~$end<a href="$url" title="Externe Webseite" target="_blank">$url_xmlencode</a>$end~;
     }
 }
 
 sub _format_links {
     my $s = shift;
-    $s =~ s{([\(\s]|\A)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3, @+)}xmseig;
+    my $c = shift;
+    $s =~ s{([\(\s]|\A)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3, $c)}xmseig;
     return $s;
 }
 
@@ -95,12 +104,14 @@ sub _make_smiley {
     $y =~ s/\>/&gt;/xmsg;
     $y =~ s/\</&lt;/xmsg;
     return qq~$s<img class="smiley" src="~
-        .$c->url_for("$AltSimpleBoard::Data::Theme/img/smileys/$Smiley{$x}.png")
+        .$c->url_for("/$AltSimpleBoard::Data::Themedir/$AltSimpleBoard::Data::Theme/img/smileys/$Smiley{$x}.png")
         .qq~" alt="$y" />$e~;
 }
 sub _format_smilies {
     my $s = shift;
+    return '' unless $s;
     my $c = shift;
+    return $s unless $c->session()->{show_images};
     $s =~ s/(\s|\A)($SmileyRe)/_make_smiley($c, $1, $2, $3)/gmsxe;
     return $s;
 }

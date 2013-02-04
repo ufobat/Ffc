@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= $AltSimpleBoard::Data::Title %> - <%= acttitle() %></title>
+    <%= stylesheet $AltSimpleBoard::Data::Themedir.$AltSimpleBoard::Data::Theme.'/css/style.css' %>
+    <link rel="icon" type="image/ico" href="<%= url_for $AltSimpleBoard::Data::Themedir.$AltSimpleBoard::Data::Theme.'/img/favicon.png' %>" />
+  </head>
+  <body>
+<%= content %>
+%= include 'parts/footerlinks'
+  </body>
+</html>

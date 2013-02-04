@@ -15,7 +15,7 @@ sub check_password {
 
 sub get_userdata_for_login { # for login only
     my ( $user, $pass ) = @_;
-    my $sql = 'SELECT id, lastseen, admin FROM '.$AltSimpleBoard::Data::Prefix.'users WHERE name=? and password=? AND active=1';
+    my $sql = 'SELECT id, lastseen, admin, show_images, theme FROM '.$AltSimpleBoard::Data::Prefix.'users WHERE name=? and password=? AND active=1';
     my $data = AltSimpleBoard::Data::dbh()->selectall_arrayref( $sql, undef, $user, crypt($pass, AltSimpleBoard::Data::cryptsalt()));
     die qq{Benutzer oder Passwort passen nicht} unless @$data;
     return @{$data->[0]};

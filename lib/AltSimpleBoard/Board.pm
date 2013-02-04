@@ -10,6 +10,7 @@ sub options_form {
     my $s = $c->session;
     $c->stash(email => AltSimpleBoard::Data::Board::get_useremail($s->{userid}));
     $c->stash(userlist => AltSimpleBoard::Data::Board::get_userlist());
+    $c->stash(themes => \@AltSimpleBoard::Data::Themes);
     delete $s->{msgs_userid}; delete $s->{msgs_username};
     $c->get_counts();
     $c->app->switch_act( $c, 'options' );
@@ -19,12 +20,16 @@ sub options_form {
 sub options_save {
     my $c = shift;
     my $s = $c->session;
-    my $email  = $c->param('email');
-    my $oldpw  = $c->param('oldpw');
-    my $newpw1 = $c->param('newpw1');
-    my $newpw2 = $c->param('newpw2');
+    my $email       = $c->param('email');
+    my $oldpw       = $c->param('oldpw');
+    my $newpw1      = $c->param('newpw1');
+    my $newpw2      = $c->param('newpw2');
+    my $show_images = $c->param('show_images') || 0;
+    my $theme       = $c->param('theme');
     AltSimpleBoard::Data::Board::update_email($s->{userid}, $email) if $email;
     AltSimpleBoard::Data::Board::update_password($s->{userid}, $oldpw, $newpw1, $newpw2) if $oldpw and $newpw1 and $newpw2;
+    AltSimpleBoard::Data::Board::update_theme($s, $theme) if $theme;
+    AltSimpleBoard::Data::Board::update_show_images($s, $show_images);
     $c->redirect_to('options_form');
 }
 

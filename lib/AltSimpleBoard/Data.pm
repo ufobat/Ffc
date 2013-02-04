@@ -21,6 +21,9 @@ our %Acttitles;
 our $Title;
 our $SessionTimeout;
 our $Theme;
+our @Themes;
+our $Themedir = 'themes/';
+our $Themebasedir = File::Basename::dirname(__FILE__).'/../../public/'.$Themedir;
 {
     my $dbh;
     my $config;
@@ -39,7 +42,16 @@ our $Theme;
         $Pagelinkpreview = $config->{pagelinkpreview};
         $Title = $config->{title};
         $SessionTimeout = $config->{sessiontimeout};
-        $Theme = "/themes/$config->{theme}";
+        $Theme = $config->{theme};
+        {
+            opendir my $dh, $Themebasedir or die qq(could not open theme directory $Themedir: $!);
+            while ( my $d = readdir $dh ) {
+                next if $d =~ m/\A\./xms;
+                next unless -d "$Themebasedir/$d";
+                push @Themes, $d;
+            }
+            closedir $dh;
+        }
 
         $dbconfig = {map {
                 my $v = $config->{$_};

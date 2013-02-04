@@ -28,6 +28,25 @@ sub update_password {
     AltSimpleBoard::Data::Auth::set_password($userid, $newpw1);
 }
 
+sub update_show_images {
+    my $s = shift;
+    my $x = shift;
+    die qq{show_images muss 0 oder 1 sein} unless $x =~ m/\A[01]\z/xms;
+    $s->{show_images} = $x;
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users SET `show_images`=? WHERE `id`=?';
+    AltSimpleBoard::Data::dbh()->do($sql, undef, $x, $s->{userid});
+}
+
+sub update_theme {
+    my $s = shift;
+    my $t = shift;
+    die qq{Themenname zu lang (64 Zeichen maximal)} if 64 < length $t;
+    die qq{Thema ungültig: $t} unless $t ~~ @AltSimpleBoard::Data::Themes; 
+    $s->{theme} = $t;
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users SET `theme`=? WHERE `id`=?';
+    AltSimpleBoard::Data::dbh()->do($sql, undef, $t, $s->{userid});
+}
+
 sub count_newmsgs {
     my $userid = shift;
     die qq{Benutzer unbekannt} unless get_username($userid);

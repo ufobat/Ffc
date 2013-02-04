@@ -21,7 +21,25 @@
             <td><input type="password" name="newpw2" value="" /></td>
         </tr>
         <tr>
-            <th colspan="3"><button type="submit">Speichern</button></th>
+            <td>&nbsp;</td>
+            <th>Bilder anzeigen</th>
+            <td><input type="checkbox" name="show_images" value="1"<%== session()->{show_images} ? ' checked="checked"' : '' %> /></td>
+        </tr>
+% if ( @$themes > 1 ) {
+        <tr>
+            <td>&nbsp;</td>
+            <th>Theme</th>
+            <td>
+                <select name="theme">
+% for my $t ( @$themes ) {
+                    <option value="<%= $t %>"<%== $t eq session()->{theme} ? ' selected="selected"' : '' %>><%= $t %></option>
+% }
+                </select>
+            </td>
+        </tr>
+% }
+        <tr>
+            <th colspan="3"><button type="submit" class="linkalike">Speichern</button></th>
         </tr>
     </table>
 % end
@@ -64,7 +82,7 @@
             <td><input type="checkbox" name="admin" /></td>
         </tr>
         <tr>
-            <th colspan="3"><button type="submit">Speichern</button></th>
+            <th colspan="3"><button type="submit" class="linkalike">Speichern</button></th>
         </tr>
     </table>
 % end
