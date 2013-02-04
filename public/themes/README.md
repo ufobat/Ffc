@@ -26,6 +26,7 @@
   * `nope.png`:        :/ :-/ :\ :-\ =/ =\
   * `sunny.png`:       B) B-) 8) 8-)
   * `cats.png`:        ^^
+  * `love.png`:        <3
   * `devilsmile.png`:  >:) >:-) >=)
   * `angry.png`:       >:( >:-( >=(
 
