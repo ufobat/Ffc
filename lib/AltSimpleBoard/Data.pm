@@ -22,8 +22,8 @@ our $Title;
 our $SessionTimeout;
 our $Theme;
 our @Themes;
-our $Themedir = 'themes/';
-our $Themebasedir = File::Basename::dirname(__FILE__).'/../../public/'.$Themedir;
+our $Themedir = '/themes/';
+our $Themebasedir = File::Basename::dirname(__FILE__).'/../../public'.$Themedir;
 {
     my $dbh;
     my $config;

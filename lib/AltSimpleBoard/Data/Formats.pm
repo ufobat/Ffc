@@ -37,7 +37,7 @@ sub format_text {
     return $s;
 }
 
-our %Goodies = qw( _ underline - linethrough + bold / italic ! alert);
+our %Goodies = qw( _ underline - linethrough + bold ~ italic ! alert);
 sub _make_goody {
     my ( $marker, $string ) = @_;
     my $rem = "\\$marker";
@@ -47,7 +47,7 @@ sub _make_goody {
 }
 sub _format_goodies {
     my $s = shift;
-    $s =~ s~([\_\-\+\/\!])([\_\-\+\/\!\w]+)\g1~_make_goody($1, $2)~xmsieg;
+    $s =~ s{([\_\-\+\~\!])([\_\-\+\~\!\w]+)\g1}{_make_goody($1, $2)}xmsieg;
     return $s;
 }
 
@@ -104,7 +104,7 @@ sub _make_smiley {
     $y =~ s/\>/&gt;/xmsg;
     $y =~ s/\</&lt;/xmsg;
     return qq~$s<img class="smiley" src="~
-        .$c->url_for("/$AltSimpleBoard::Data::Themedir/$AltSimpleBoard::Data::Theme/img/smileys/$Smiley{$x}.png")
+        .$c->url_for("$AltSimpleBoard::Data::Themedir/$AltSimpleBoard::Data::Theme/img/smileys/$Smiley{$x}.png")
         .qq~" alt="$y" />$e~;
 }
 sub _format_smilies {
