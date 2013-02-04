@@ -11,7 +11,7 @@ sub options_form {
     $c->stash(email => AltSimpleBoard::Data::Board::get_useremail($s->{userid}));
     $c->stash(userlist => AltSimpleBoard::Data::Board::get_userlist());
     delete $s->{msgs_userid}; delete $s->{msgs_username};
-    $c->stash($_ => '') for qw(newpostcount newmsgscount notecount);
+    $c->get_counts();
     $c->app->switch_act( $c, 'options' );
     $c->render('board/optionsform');
 }
@@ -80,6 +80,7 @@ sub delete_check {
     my $s = $c->session;
     my $id = $c->param('postid');
     die "Privatnachrichten dürfen nicht gelöscht werden" if $s->{act} eq 'msgs';
+    $c->get_counts();
     $c->stash( post => AltSimpleBoard::Data::Board::get_post($id, $c->get_params($s)) );
     $c->render('board/deletecheck');
 }
@@ -155,7 +156,7 @@ sub frontpage {
     $c->stash(page   => $page);
     $c->stash(postid => $postid);
     
-    for my $k ( qw(error msgs_userid post msgs_username notecount newpostcount newmsgscount) ) {
+    for my $k ( qw(error msgs_userid post msgs_username) ) {
         my $d = $c->stash($k);
         $c->stash($k => '') unless $d;
     }
@@ -177,14 +178,19 @@ sub frontpage {
     }
     $c->stash( posts => $posts);
     AltSimpleBoard::Data::Board::update_user_stats($userid);
-    $c->stash(notecount     => AltSimpleBoard::Data::Board::count_notes($userid));
-    $c->stash(newmsgscount  => AltSimpleBoard::Data::Board::count_newmsgs($userid));
-    $c->stash(newpostcount  => AltSimpleBoard::Data::Board::count_newpost($userid));
+    $c->get_counts;
     $c->stash(categories    => ($s->{act} eq 'forum') ? AltSimpleBoard::Data::Board::get_categories() : []);
 
     $c->render('board/frontpage');
 }
 
+sub get_counts {
+    my $c = shift;
+    my $userid = $c->session()->{userid};
+    $c->stash(notecount     => AltSimpleBoard::Data::Board::count_notes($userid));
+    $c->stash(newmsgscount  => AltSimpleBoard::Data::Board::count_newmsgs($userid));
+    $c->stash(newpostcount  => AltSimpleBoard::Data::Board::count_newpost($userid));
+}
 sub search {
     my $c = shift;
     $c->session->{query} = $c->param('query') || '';
