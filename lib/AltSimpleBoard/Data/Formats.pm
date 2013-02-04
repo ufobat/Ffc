@@ -18,8 +18,8 @@ sub format_timestamp {
 sub _xml_escape {
     my $s = shift;
     $s =~ s/\&/\&amp;/xmsg;
-    $s =~ s/\<(?=\w)/\&lt;/xmgs;
-    $s =~ s/(?<=\w)\>/\&gt;/xmgs;
+    $s =~ s/\<(?=[^3])/\&lt;/xmgis;
+    $s =~ s/\>(?=[^\:\=])/\&gt;/xmgis;
     $s =~ s/"/\&quote;/xgms;
     return $s;
 }
