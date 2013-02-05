@@ -13,5 +13,5 @@
 % end
     <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linktext linklogout"><img src="<%= url_for $AltSimpleBoard::Data::Themedir.session()->{theme}.'/img/icons/bye.png' %>" alt="[X]" /></span></a>
     <span class="divider">|</span>
-    <a href="<%= url_for 'show' %>" title="Seite neu laden"><span class="clock"><%= sprintf '%02d:%02d', (localtime)[2,1] %></span></a>
+    <a href="<%= url_for 'show' %>" title="Seite neu laden"><img src="<%= url_for $AltSimpleBoard::Data::Themedir.session()->{theme}.'/img/icons/refresh.png' %>" alt="" /><span class="clock"><%= sprintf '%02d:%02d', (localtime)[2,1] %></span></a>
 </div>

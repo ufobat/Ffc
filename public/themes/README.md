@@ -12,6 +12,7 @@
   * `options.png` für den Link zu den Optionen im Menü
   * `search.png` für den Suchenbutton im Menü
   * `img.png` für Bildericon, wenn keine Bilder angezeigt werden sollen
+  * `refresh.png` erklärt die Uhrzeit im Menü näher
 * `img/smileys/` (Gesichtchenbildchen):
   * `smile.png`:       :) :-) =)
   * `sad.png`:         :( :-( =(
