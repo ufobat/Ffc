@@ -29,5 +29,6 @@
   * `love.png`:        <3
   * `devilsmile.png`:  >:) >:-) >=)
   * `angry.png`:       >:( >:-( >=(
+  * `evilgrin.png`:    >:D >:-D >=D
 
 Der Name des Themenverzeichnisses wird in der Konfiguration unter `etc/altsimpleboard.json` angegeben

@@ -92,6 +92,7 @@ our @Smilies = (
     [ love       => ['<3',                                        ] ],
     [ devilsmile => ['>:)', '>=)',  '>:-)',                       ] ],
     [ angry      => ['>:(', '>=(',  '>:-(',                       ] ],
+    [ evilgrin   => ['>:D', '>=D',  '>:-D',                       ] ],
     [ nope       => [':/',  ':-/',  '=/',   ':\\', ':-\\', '=\\', ] ],
 );
 our %Smiley = map {my ($n,$l)=($_->[0],$_->[1]); map {$_=>$n} @$l} @Smilies;
@@ -105,7 +106,7 @@ sub _make_smiley {
     $y =~ s/\>/&gt;/xmsg;
     $y =~ s/\</&lt;/xmsg;
     return qq~$s<img class="smiley" src="~
-        .$c->url_for("$AltSimpleBoard::Data::Themedir/$AltSimpleBoard::Data::Theme/img/smileys/$Smiley{$x}.png")
+        .$c->url_for("$AltSimpleBoard::Data::Themedir/".$c->session()->{theme}."/img/smileys/$Smiley{$x}.png")
         .qq~" alt="$y" />$e~;
 }
 sub _format_smilies {
