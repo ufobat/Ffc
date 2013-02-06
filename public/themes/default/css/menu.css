@@ -11,7 +11,14 @@
     margin-top: -1.75em;
     white-space: nowrap;
     position: fixed;
+    overflow:auto;
 }
+.menu:after {
+    content:"";
+    float:left;
+    height:1%;/*the fix*/
+    width:0;
+}  
 .menu .name {
     color: #fff;
 }

@@ -3,7 +3,9 @@
     margin:  0;
     font-size: 1em;
 }
-
+html,body {
+    height:100%;/*the fix*/
+}
 body {
     background: #7e97b0 url('../img/hg.png');
     padding-top: 1.75em;
