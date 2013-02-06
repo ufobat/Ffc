@@ -65,7 +65,7 @@ sub _make_link {
     }
     else {
         my $url_xmlencode = _xml_escape($url);
-        return qq~$end<a href="$url" title="Externe Webseite" target="_blank">$url_xmlencode</a>$end~;
+        return qq~$start<a href="$url" title="Externe Webseite" target="_blank">$url_xmlencode</a>$end~;
     }
 }
 
