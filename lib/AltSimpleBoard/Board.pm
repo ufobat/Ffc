@@ -101,10 +101,8 @@ sub insert_post {
     my $c = shift;
     my $s = $c->session;
     my $text = $c->param('post')     =~ m/\A\s*(.+)\s*\z/xmsi ? $1 : '';
-    my $cat  = $c->param('category');
-    $cat = _switch_category($c, $cat);
     my $fromid = $s->{userid};
-    my @params = ( $fromid, $text, $cat );
+    my @params = ( $fromid, $text, $s->{category} );
     given ( $s->{act} ) {
         when ( 'notes' ) { push @params, $fromid }
         when ( 'msgs'  ) { push @params, $s->{msgs_userid} }
@@ -118,11 +116,9 @@ sub update_post {
     my $c = shift;
     my $s = $c->session;
     my $text = $c->param('post')     =~ m/\A\s*(.+)\s*\z/xmsi ? $1 : '';
-    my $cat  = $c->param('category');
-    $cat = _switch_category($c, $cat);
     my $postid = $c->param('postid');
     my $fromid = $s->{userid};
-    my @params = ( $fromid, $text, $cat, $postid );
+    my @params = ( $fromid, $text, $postid );
     given ( $s->{act} ) {
         when ( 'notes' ) { push @params, $fromid }
         when ( 'msgs'  ) { die 'Privatnachrichten dürfen nicht geändert werden' }

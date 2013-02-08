@@ -81,6 +81,12 @@ sub get_categories {
      . q{ORDER BY `sort`, `name`};
     return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql);
 }
+sub get_category {
+    my $id = shift;
+    die qq{Kategorie-ID ist ungültig} unless $id =~ m/\A\d+\z/xms;
+    my $sql = 'SELECT `short` FROM '.$AltSimpleBoard::Data::Prefix.'categories WHERE `id`=? LIMIT 1';
+    ( AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $id) )[0];
+}
 sub get_category_id {
     my $c = shift;
     die qq{Kategoriekürzel ungültig} unless $c =~ m/\A\w+\z/xms;
@@ -120,18 +126,17 @@ sub insert_post {
     my ( $f, $d, $c, $t ) = @_;
     die qq{Ersteller ungültig} unless get_username($f);
     die qq{Empfänger ungültig} if $t and not get_username($t);
-    die qq{Kategorie ungültig} if $c and not get_category_id($c);
-    my $sql = 'INSERT INTO '.$AltSimpleBoard::Data::Prefix.'posts (`from`, `to`, `text`, `posted`, `category`) VALUES (?, ?, ?, current_timestamp, (SELECT `id` FROM '.$AltSimpleBoard::Data::Prefix.'categories WHERE `short`=? LIMIT 1))';
-    AltSimpleBoard::Data::dbh()->do( $sql, undef, $f, $t, $d, $c );
+    my $cid = $c ? get_category_id($c) : undef;
+    my $sql = 'INSERT INTO '.$AltSimpleBoard::Data::Prefix.'posts (`from`, `to`, `text`, `posted`, `category`) VALUES (?, ?, ?, current_timestamp, ?)';
+    AltSimpleBoard::Data::dbh()->do( $sql, undef, $f, $t, $d, $cid );
 }
 
 sub update_post {
-    my ( $f, $d, $c, $i, $t ) = @_;
+    my ( $f, $d, $i, $t ) = @_;
     die qq{Bearbeiter ungültig} unless get_username($f);
     die qq{Empfänger ungültig} if $t and not get_username($t);
-    die qq{Kategorie ungültig} if $c and not get_category_id($c);
-    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'posts SET `text`=?, `posted`=current_timestamp, `to`=?, `category`=(SELECT `id` FROM '.$AltSimpleBoard::Data::Prefix.'categories WHERE `short`=? LIMIT 1) WHERE `id`=? AND `from`=? AND (`to` IS NULL OR `to`=`from`);';
-    AltSimpleBoard::Data::dbh()->do( $sql, undef, $d, $t, $c, $i, $f );
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'posts SET `text`=?, `posted`=current_timestamp, `to`=? WHERE `id`=? AND `from`=? AND (`to` IS NULL OR `to`=`from`);';
+    AltSimpleBoard::Data::dbh()->do( $sql, undef, $d, $t, $i, $f );
 }
 
 sub update_user_stats {
