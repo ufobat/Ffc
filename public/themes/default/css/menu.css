@@ -8,10 +8,9 @@
     box-shadow: 0 0 .25em #000;
     width: 100%;
     max-width: 100%;
+    position: fixed;
     margin-top: -1.75em;
     white-space: nowrap;
-    position: fixed;
-    overflow:auto;
 }
 .menu .name {
     color: #fff;
@@ -41,8 +40,19 @@
     border: 1px transparent solid;
 }
 .menu .mark {
-    color: #fc6;
+    color: #960;
 }
 .menu .clock {
     color: #666;
+}
+.menu .linktext { 
+    color: #369;
+}
+.menu .active .mark {
+    color: #fc6;
+}
+.menu .active {
+    border-color: #369;
+    color: #9cf;
+    background: #003;
 }
