@@ -13,12 +13,6 @@
     position: fixed;
     overflow:auto;
 }
-.menu:after {
-    content:"";
-    float:left;
-    height:1%;/*the fix*/
-    width:0;
-}  
 .menu .name {
     color: #fff;
 }
