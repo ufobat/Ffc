@@ -39,20 +39,20 @@
     text-decoration: none;
     border: 1px transparent solid;
 }
-.menu .mark {
-    color: #960;
-}
 .menu .clock {
     color: #666;
 }
+.menu .mark {
+    color: #c93;
+}
 .menu .linktext { 
-    color: #369;
+    color: #69c;
 }
 .menu .active .mark {
     color: #fc6;
 }
 .menu .active {
-    border-color: #369;
+    border-color: #69c;
     color: #9cf;
     background: #003;
 }
