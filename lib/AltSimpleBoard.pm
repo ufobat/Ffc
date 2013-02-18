@@ -9,17 +9,6 @@ sub switch_act {
     delete $s->{msgs_userid}; delete $s->{msgs_username};
 }
 
-sub handle_error {
-    my $code = $_[2];
-    local $@;
-    eval { &$code };
-    if ( $@ ) {
-        $_[1]->stash(error => $AltSimpleBoard::Data::Debug ? $@ : ($_[3] // 'Fehler'));
-        return;
-    }
-    return 1; 
-}
-
 # This method will run once at server start
 sub startup {
     my $self = shift;

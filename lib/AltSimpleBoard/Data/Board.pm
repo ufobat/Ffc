@@ -138,7 +138,7 @@ sub update_post {
     my ( $f, $d, $i, $t ) = @_;
     die qq{Bearbeiter ungültig} unless get_username($f);
     die qq{Empfänger ungültig} if $t and not get_username($t);
-    die qq{Posting ungültig, zu wenig Zeichen} if 2 >= length $d;
+    die qq{Beitrag ungültig, zu wenig Zeichen (min. 2)} if 2 >= length $d;
     my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'posts p SET p.text=?, p.posted=current_timestamp, p.to=? WHERE p.id=? AND p.from=? AND (p.to IS NULL OR p.to=p.from);';
     AltSimpleBoard::Data::dbh()->do( $sql, undef, $d, $t, $i, $f );
 }

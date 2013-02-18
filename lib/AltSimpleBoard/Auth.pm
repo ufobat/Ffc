@@ -4,6 +4,7 @@ use utf8;
 use AltSimpleBoard::Data;
 use AltSimpleBoard::Data::Auth;
 use AltSimpleBoard::Board;
+use AltSimpleBoard::Errors;
 
 sub _form_prepare {
     my $self = shift;
@@ -64,7 +65,7 @@ sub _get_relevant_data {
     my $user    = $self->param('user');
     my $pass    = $self->param('pass');
     my @data;
-    $self->app->handle_error( $self, sub { @data = AltSimpleBoard::Data::Auth::get_userdata_for_login( $user, $pass ) }, 'Benutzername oder Passwort ungültig, bitte melden Sie sich erneut an.' );
+    AltSimpleBoard::Errors::handle( $self, sub { @data = AltSimpleBoard::Data::Auth::get_userdata_for_login( $user, $pass ) }, 'Benutzername oder Passwort ungültig, bitte melden Sie sich erneut an.' );
     return unless @data;
     $self->stash( error => '' );
     %$session = (

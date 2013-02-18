@@ -4,17 +4,22 @@ use utf8;
 use AltSimpleBoard::Data::Board;
 use AltSimpleBoard::Data::Auth;
 use AltSimpleBoard::Auth;
-
-sub _error_prepare {
-    $_[0]->stash( error => '' ) unless $_[0]->stash('error');
-}
+use AltSimpleBoard::Errors;
 
 sub options_form {
     my $c = shift;
     my $s = $c->session;
-    $c->_error_prepare();
-    $c->stash(email => AltSimpleBoard::Data::Board::get_useremail($s->{userid}));
-    $c->stash(userlist => AltSimpleBoard::Data::Board::get_userlist());
+    AltSimpleBoard::Errors::prepare( $c );
+    my $email;
+    AltSimpleBoard::Errors::handling( $c,
+        sub { $email = AltSimpleBoard::Data::Board::get_useremail($s->{userid}) },
+    );
+    my $userlist;
+    AltSimpleBoard::Errors::handling( $c,
+        sub { $userlist = AltSimpleBoard::Data::Board::get_userlist() },
+    );
+    $c->stash(email    => $email // '');
+    $c->stash(userlist => $userlist // '' );
     $c->stash(themes => \@AltSimpleBoard::Data::Themes);
     delete $s->{msgs_userid}; delete $s->{msgs_username};
     $c->get_counts();
@@ -31,25 +36,37 @@ sub options_save {
     my $newpw2      = $c->param('newpw2');
     my $show_images = $c->param('show_images') || 0;
     my $theme       = $c->param('theme');
-    AltSimpleBoard::Data::Board::update_email($s->{userid}, $email) if $email;
-    AltSimpleBoard::Data::Board::update_password($s->{userid}, $oldpw, $newpw1, $newpw2) if $oldpw and $newpw1 and $newpw2;
-    AltSimpleBoard::Data::Board::update_theme($s, $theme) if $theme;
-    AltSimpleBoard::Data::Board::update_show_images($s, $show_images);
-    $c->render('options_form');
+    AltSimpleBoard::Errors::handling( $c,
+        sub { AltSimpleBoard::Data::Board::update_email($s->{userid}, $email) },
+    ) if $email;
+    AltSimpleBoard::Errors::handling( $c,
+        sub { AltSimpleBoard::Data::Board::update_password($s->{userid}, $oldpw, $newpw1, $newpw2) },
+    ) if $oldpw and $newpw1 and $newpw2;
+    AltSimpleBoard::Errors::handling( $c,
+        sub { AltSimpleBoard::Data::Board::update_theme($s, $theme) },
+    ) if $theme;
+    AltSimpleBoard::Errors::handling( $c,
+        sub { AltSimpleBoard::Data::Board::update_show_images($s, $show_images) },
+    );
+    $c->options_form();
 }
 
 sub useradmin_save {
     my $c = shift;
     my $s = $c->session;
-    die q{Angemeldeter Benutzer ist kein Admin und darf das hier garnicht} 
-        unless AltSimpleBoard::Data::Auth::is_user_admin($s->{userid});
+    AltSimpleBoard::Errors::handling( $c, {
+        code => sub { die unless AltSimpleBoard::Data::Auth::is_user_admin($s->{userid}) },
+        msg => q{Angemeldeter Benutzer ist kein Admin und darf das hier garnicht},
+    } );
     $c->render('options_form');
 }
 
 sub _switch_category {
     my ( $c, $cat ) = @_;
     $cat = $cat =~ m/\A(\w+)\z/xmsi ? $1 : undef;
-    $c->session->{category} = eval { AltSimpleBoard::Data::Board::get_category_id($cat) } ? $cat : '';
+    $c->session->{category} =
+        AltSimpleBoard::Errors::or_nostring($c,
+            sub{AltSimpleBoard::Data::Board::get_category_id($cat)});
 }
 
 sub switch_category {
@@ -64,7 +81,9 @@ sub msgs_user {
     my $s = $c->session;
     $c->app->switch_act($c, 'msgs');
     $s->{msgs_userid} = $c->param('msgs_userid');
-    $s->{msgs_username} = eval { AltSimpleBoard::Data::Board::get_username($s->{msgs_userid}) };
+    $s->{msgs_username} = 
+        AltSimpleBoard::Errors::or_nostring($c,
+            sub{AltSimpleBoard::Data::Board::get_username($s->{msgs_userid})});
     delete($s->{msgs_userid}), delete($s->{msgs_username}) unless $s->{msgs_username};
     $c->frontpage();
 }
@@ -77,31 +96,44 @@ sub switch_act {
 
 sub edit_form {
     my $c = shift;
-    $c->_error_prepare();
+    AltSimpleBoard::Errors::prepare( $c );
     my $id = $c->param('postid');
     my $s = $c->session;
     my $post;
-    eval { $post = AltSimpleBoard::Data::Board::get_post($id, $c->get_params($s) ) };
-    $c->stash( post => $post // '' );
-    $s->{category} = $post->{category} ? $post->{category}->{short} : '';
+    AltSimpleBoard::Errors::or_nostring($c, 
+        sub { $post = AltSimpleBoard::Data::Board::get_post($id, $c->get_params($s) ) } );
+    $c->stash( post => $post );
+    $s->{category} = $post->{category} ? $post->{category}->{short} : '' if $post;
     $c->frontpage();
 }
 
 sub delete_check {
     my $c = shift;
-    $c->_error_prepare();
+    AltSimpleBoard::Errors::prepare( $c );
     my $s = $c->session;
     my $id = $c->param('postid');
-    die "Privatnachrichten dürfen nicht gelöscht werden" if $s->{act} eq 'msgs';
+    AltSimpleBoard::Errors::handling( $c, 
+        { plain => "Privatnachrichten dürfen nicht gelöscht werden" } )
+        if $s->{act} eq 'msgs';
     $c->get_counts();
-    $c->stash( post => AltSimpleBoard::Data::Board::get_post($id, $c->get_params($s)) );
-    $c->render('board/deletecheck');
+    my $post;
+    AltSimpleBoard::Errors::handling( $c, {
+        code => sub { $post = AltSimpleBoard::Data::Board::get_post($id, $c->get_params($s)) },
+        msg  => 'Beitrag zum Löschen konnte nicht ermittelt werden',
+        after_error => sub { $c->frontpage() },
+        after_ok    => sub { $c->stash( post => $post ); $c->render('board/deletecheck') },
+    } );
 }
 sub delete_post {
     my $c = shift;
     my $s = $c->session;
-    die "Privatnachrichten dürfen nicht gelöscht werden" if $s->{act} eq 'msgs';
-    AltSimpleBoard::Data::Board::delete_post($s->{userid}, $c->param('postid'));
+    AltSimpleBoard::Errors::handling( $c, 
+        { plain => "Privatnachrichten dürfen nicht gelöscht werden" } )
+        if $s->{act} eq 'msgs';
+    AltSimpleBoard::Errors::handling( $c, {
+        code => sub { AltSimpleBoard::Data::Board::delete_post($s->{userid}, $c->param('postid')) },
+        msg  => 'Beitrag konnte nicht gelöscht werden',
+    } );
     $c->redirect_to('show');
 }
 
@@ -115,12 +147,12 @@ sub insert_post {
         when ( 'notes' ) { push @params, $fromid }
         when ( 'msgs'  ) { push @params, $s->{msgs_userid} }
     }
-    # from, text, to
-    unless ( $c->app->handle_error( $c, sub { AltSimpleBoard::Data::Board::insert_post(@params) }, 'Beitrag ungültig, bitte erneut eingeben' ) ) {
-        $c->edit_form();
-        return;
-    }
-    $c->frontpage();
+    AltSimpleBoard::Errors::handling( $c, {
+        code        => sub { AltSimpleBoard::Data::Board::insert_post(@params) }, 
+        msg         => 'Beitrag ungültig, bitte erneut eingeben', 
+        after_ok    => sub { $c->frontpage() },
+        after_error => sub { $c->edit_form() },
+    } );
 }
 
 sub update_post {
@@ -132,14 +164,17 @@ sub update_post {
     my @params = ( $fromid, $text, $postid );
     given ( $s->{act} ) {
         when ( 'notes' ) { push @params, $fromid }
-        when ( 'msgs'  ) { die 'Privatnachrichten dürfen nicht geändert werden' }
+        when ( 'msgs'  ) { 
+            AltSimpleBoard::Errors::error( $c, 
+                { plain => 'Privatnachrichten dürfen nicht geändert werden' } );
+        }
     }
-    # from, text, id, to
-    unless ( $c->app->handle_error( $c, sub { AltSimpleBoard::Data::Board::update_post(@params) }, 'Beitrag ungültig, bitte erneut eingeben' ) ) {
-        $c->edit_form();
-        return;
-    }
-    $c->redirect_to('show');
+    AltSimpleBoard::Errors::handling( $c, {
+        code        => sub { AltSimpleBoard::Data::Board::update_post(@params) },
+        msgs        => 'Beitrag ungültig, bitte erneut eingeben',
+        after_ok    => sub { $c->redirect_to('show') },
+        after_error => sub { $c->edit_form() },
+    } );
 }
 
 sub get_params {
@@ -155,19 +190,20 @@ sub get_params {
         $self;
 }
 
+sub _get_posts { AltSimpleBoard::Errors::or_empty( @_ ) }
 sub frontpage {
     my $c = shift;
     my $s = $c->session;
-    $c->_error_prepare();
+    AltSimpleBoard::Errors::prepare( $c );
 
     unless ( AltSimpleBoard::Auth::check_login($c) ) {
         return AltSimpleBoard::Auth::login_form($c, 'Bitte melden Sie sich an');
     }
 
-    my $page = $c->param('page') // 1;
+    my $page   = $c->param('page')     // 1;
     my $postid = $c->param( 'postid' ) // '';
     my $userid = $s->{userid};
-    $page = 1 unless $page =~ m/\A\d+\z/xms;
+    $page   = 1  unless $page   =~ m/\A\d+\z/xms;
     $postid = '' unless $postid =~ m/\A\d+\z/xms;
     $c->stash(page   => $page);
     $c->stash(postid => $postid);
@@ -179,11 +215,19 @@ sub frontpage {
     my @params = $c->get_params($s, $page);
     my $posts  = [];
     given ( $s->{act} ) {
-        when ( 'forum' )   { $posts = AltSimpleBoard::Data::Board::get_forum(@params) }
-        when ( 'notes' )   { $posts = AltSimpleBoard::Data::Board::get_notes(@params) }
-        when ( 'msgs' )    { $posts = AltSimpleBoard::Data::Board::get_msgs( @params, $s->{msgs_userid}) }
+        when ( 'forum' )   { 
+            $posts = $c->_get_posts(sub{ AltSimpleBoard::Data::Board::get_forum(@params)});
+        }
+        when ( 'notes' )   { 
+            $posts = $c->_get_posts(sub{ AltSimpleBoard::Data::Board::get_notes(@params)});
+        }
+        when ( 'msgs' )    { 
+            $posts = $c->_get_posts(sub{ AltSimpleBoard::Data::Board::get_notes(@params),$s->{msgs_userid}});
+        }
         when ( 'options' ) {}
-        default { die qq("$s->{act}" undefined) }
+        default { 
+            error( $c, { plain => qq("$s->{act}" unbekannt) } ) 
+        }
     }
     if ( $postid and $postid ne '' ) {
         my @post = grep { $_->{id} eq $postid } @$posts;
@@ -195,17 +239,26 @@ sub frontpage {
     $c->stash( posts => $posts);
     AltSimpleBoard::Data::Board::update_user_stats($userid);
     $c->get_counts;
-    $c->stash(categories    => ($s->{act} eq 'forum') ? AltSimpleBoard::Data::Board::get_categories() : []);
+    $c->stash( 
+        categories => ($s->{act} eq 'forum') 
+            ? AltSimpleBoard::Errors::or_empty( $c, sub { AltSimpleBoard::Data::Board::get_categories() } ) 
+            : [] 
+    ) ;
 
     $c->render('board/frontpage');
+}
+
+sub _get_count {
+    my $c = shift; my $code = shift;
+    AltSimpleBoard::Errors::or_zero( $c, $code, @_ );
 }
 
 sub get_counts {
     my $c = shift;
     my $userid = $c->session()->{userid};
-    $c->stash(notecount     => AltSimpleBoard::Data::Board::count_notes($userid));
-    $c->stash(newmsgscount  => AltSimpleBoard::Data::Board::count_newmsgs($userid));
-    $c->stash(newpostcount  => AltSimpleBoard::Data::Board::count_newpost($userid));
+    $c->stash(notecount    => $c->_get_count(sub{AltSimpleBoard::Data::Board::count_notes(  $userid)}));
+    $c->stash(newmsgscount => $c->_get_count(sub{AltSimpleBoard::Data::Board::count_newmsgs($userid)}));
+    $c->stash(newpostcount => $c->_get_count(sub{AltSimpleBoard::Data::Board::count_newpost($userid)}));
 }
 sub search {
     my $c = shift;
