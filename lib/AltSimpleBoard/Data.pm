@@ -19,6 +19,7 @@ our $Limit;
 our $Pagelinkpreview;
 our %Acttitles;
 our $Title;
+our $Debug = 0;
 our $SessionTimeout;
 our $Theme;
 our @Themes;
@@ -43,6 +44,7 @@ our $Themebasedir = File::Basename::dirname(__FILE__).'/../../public'.$Themedir;
         $Title = $config->{title};
         $SessionTimeout = $config->{sessiontimeout};
         $Theme = $config->{theme};
+        $Debug = $config->{debug};
         {
             opendir my $dh, $Themebasedir or die qq(could not open theme directory $Themedir: $!);
             while ( my $d = readdir $dh ) {

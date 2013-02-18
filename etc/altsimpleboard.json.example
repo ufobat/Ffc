@@ -10,6 +10,7 @@
     "pagelinkpreview":2,
     "sessiontimeout":3600,
     "theme":"default",
+    "debug":0,
     "acttitles":{
         "forum":"Forenboard",
         "notes":"Notizen",

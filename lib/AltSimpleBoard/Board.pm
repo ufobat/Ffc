@@ -5,9 +5,14 @@ use AltSimpleBoard::Data::Board;
 use AltSimpleBoard::Data::Auth;
 use AltSimpleBoard::Auth;
 
+sub _error_prepare {
+    $_[0]->stash( error => '' ) unless $_[0]->stash('error');
+}
+
 sub options_form {
     my $c = shift;
     my $s = $c->session;
+    $c->_error_prepare();
     $c->stash(email => AltSimpleBoard::Data::Board::get_useremail($s->{userid}));
     $c->stash(userlist => AltSimpleBoard::Data::Board::get_userlist());
     $c->stash(themes => \@AltSimpleBoard::Data::Themes);
@@ -30,7 +35,7 @@ sub options_save {
     AltSimpleBoard::Data::Board::update_password($s->{userid}, $oldpw, $newpw1, $newpw2) if $oldpw and $newpw1 and $newpw2;
     AltSimpleBoard::Data::Board::update_theme($s, $theme) if $theme;
     AltSimpleBoard::Data::Board::update_show_images($s, $show_images);
-    $c->redirect_to('options_form');
+    $c->render('options_form');
 }
 
 sub useradmin_save {
@@ -38,7 +43,7 @@ sub useradmin_save {
     my $s = $c->session;
     die q{Angemeldeter Benutzer ist kein Admin und darf das hier garnicht} 
         unless AltSimpleBoard::Data::Auth::is_user_admin($s->{userid});
-    $c->redirect_to('options_form');
+    $c->render('options_form');
 }
 
 sub _switch_category {
@@ -72,16 +77,19 @@ sub switch_act {
 
 sub edit_form {
     my $c = shift;
+    $c->_error_prepare();
     my $id = $c->param('postid');
     my $s = $c->session;
-    my $post = AltSimpleBoard::Data::Board::get_post($id, $c->get_params($s) );
-    $c->stash( post => $post );
+    my $post;
+    eval { $post = AltSimpleBoard::Data::Board::get_post($id, $c->get_params($s) ) };
+    $c->stash( post => $post // '' );
     $s->{category} = $post->{category} ? $post->{category}->{short} : '';
     $c->frontpage();
 }
 
 sub delete_check {
     my $c = shift;
+    $c->_error_prepare();
     my $s = $c->session;
     my $id = $c->param('postid');
     die "Privatnachrichten dürfen nicht gelöscht werden" if $s->{act} eq 'msgs';
@@ -108,8 +116,11 @@ sub insert_post {
         when ( 'msgs'  ) { push @params, $s->{msgs_userid} }
     }
     # from, text, to
-    AltSimpleBoard::Data::Board::insert_post(@params) if $text;
-    $c->redirect_to('show');
+    unless ( $c->app->handle_error( $c, sub { AltSimpleBoard::Data::Board::insert_post(@params) }, 'Beitrag ungültig, bitte erneut eingeben' ) ) {
+        $c->edit_form();
+        return;
+    }
+    $c->frontpage();
 }
 
 sub update_post {
@@ -124,7 +135,10 @@ sub update_post {
         when ( 'msgs'  ) { die 'Privatnachrichten dürfen nicht geändert werden' }
     }
     # from, text, id, to
-    AltSimpleBoard::Data::Board::update_post(@params) if $text;
+    unless ( $c->app->handle_error( $c, sub { AltSimpleBoard::Data::Board::update_post(@params) }, 'Beitrag ungültig, bitte erneut eingeben' ) ) {
+        $c->edit_form();
+        return;
+    }
     $c->redirect_to('show');
 }
 
@@ -144,6 +158,7 @@ sub get_params {
 sub frontpage {
     my $c = shift;
     my $s = $c->session;
+    $c->_error_prepare();
 
     unless ( AltSimpleBoard::Auth::check_login($c) ) {
         return AltSimpleBoard::Auth::login_form($c, 'Bitte melden Sie sich an');

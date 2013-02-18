@@ -15,8 +15,12 @@ sub login {
     my $self = shift;
     $self->app->switch_act( $self, 'forum' );
     _form_prepare( $self );
-    return unless $self->_get_relevant_data();
-    $self->redirect_to('show');
+    if ( $self->_get_relevant_data() ) {
+        $self->redirect_to('show');
+        return 1;
+    }
+    $self->login_form('Anmeldung fehlgeschlagen, Benutzername oder Passwort stimmen nicht.');
+    return; 
 }
 
 sub logout {
@@ -26,11 +30,10 @@ sub logout {
 
 sub login_form {
     my $self = shift;
-    my $msg  = shift // 'Bitte melden Sie sich an';
+    $self->stash( error => shift // 'Bitte melden Sie sich an' );
     $self->app->switch_act( $self,  'auth' );
     _cancel_session( $self );
     _form_prepare( $self );
-    $self->stash( error => $msg );
     $self->render( 'auth/loginform');
     return 0;
 }
@@ -60,8 +63,10 @@ sub _get_relevant_data {
     my $session = $self->session;
     my $user    = $self->param('user');
     my $pass    = $self->param('pass');
-    my @data    = AltSimpleBoard::Data::Auth::get_userdata_for_login( $user, $pass );
-    return $self->login_form('Anmeldung fehlgeschlagen') unless @data;
+    my @data;
+    $self->app->handle_error( $self, sub { @data = AltSimpleBoard::Data::Auth::get_userdata_for_login( $user, $pass ) }, 'Benutzername oder Passwort ungültig, bitte melden Sie sich erneut an.' );
+    return unless @data;
+    $self->stash( error => '' );
     %$session = (
         %$session,
         user        => $user,

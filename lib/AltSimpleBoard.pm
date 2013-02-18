@@ -9,6 +9,17 @@ sub switch_act {
     delete $s->{msgs_userid}; delete $s->{msgs_username};
 }
 
+sub handle_error {
+    my $code = $_[2];
+    local $@;
+    eval { &$code };
+    if ( $@ ) {
+        $_[1]->stash(error => $AltSimpleBoard::Data::Debug ? $@ : ($_[3] // 'Fehler'));
+        return;
+    }
+    return 1; 
+}
+
 # This method will run once at server start
 sub startup {
     my $self = shift;
@@ -16,9 +27,10 @@ sub startup {
     my $app  = $self->app;
     AltSimpleBoard::Data::set_config($app);
 
-    $app->helper( act => sub { shift->session->{act} } );
+    $app->helper( act => sub { shift->session->{act} // 'forum' } );
     $app->helper( theme => sub { $AltSimpleBoard::Data::Theme } );
     $app->helper( acttitle => sub { $AltSimpleBoard::Data::Acttitles{shift->session->{act}} // 'Unbekannt' } );
+    $app->helper( error => sub { shift->session->{error} // '' } );
 
     # Router
     my $routes = $self->routes;

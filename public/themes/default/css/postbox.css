@@ -65,3 +65,8 @@ img.smiley {
 img.icon {
     border: none;
 }
+.error {
+    color: #c30;
+    border: none;
+    background: transparent;
+}

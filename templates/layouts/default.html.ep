@@ -9,7 +9,8 @@
 % if ( session()->{user} ) {
 %= include 'parts/menu'
 % }
-<%= content %>
+%= include 'parts/error'
+%= content
 %= include 'parts/footerlinks'
   </body>
 </html>
