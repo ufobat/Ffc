@@ -123,10 +123,4 @@ img.icon {
 .userlist {
     border-right: 1px #ccc dashed;
 }
-blockquote, code {
-    border-left: 1px #ccc solid;
-    color: #666;
-    padding-left: .25em;
-    margin-left: 1em;
-}
 

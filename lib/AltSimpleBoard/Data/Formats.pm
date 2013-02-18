@@ -26,11 +26,9 @@ our @Smilies = (
     [ evilgrin   => ['>:D', '>=D',  '>:-D',                       ] ],
     [ nope       => [':/',  ':-/',  '=/',   ':\\', ':-\\', '=\\', ] ],
 );
-our %Smiley    = map {my ($n,$l)=($_->[0],$_->[1]); map {$_=>$n} @$l} @Smilies;
-our $SmileyRe  = join '|', map {s{([\^\<\-\.\:\\\/\(\)\=\|\,])}{\\$1}gxms; $_} keys %Smiley;
-our %BBCodes   = (qw(quote blockquote code code));
-our $BBCodesRe = join '|', keys %BBCodes;
-our %Goodies   = qw( _ underline - linethrough + bold ~ italic ! alert);
+our %Smiley           = map {my ($n,$l)=($_->[0],$_->[1]); map {$_=>$n} @$l} @Smilies;
+our $SmileyRe         = join '|', map {s{([\^\<\-\.\:\\\/\(\)\=\|\,])}{\\$1}gxms; $_} keys %Smiley;
+our %Goodies          = qw( _ underline - linethrough + bold ~ italic ! alert);
 
 sub format_timestamp {
     my $t = shift;
@@ -52,23 +50,13 @@ sub format_text {
     my $t = shift;
     chomp $s;
     return '' unless $s;
-    if ( not $t or $t ne 'code' ) {
-        _xml_escape($s);
-        $s =~ s{\[($BBCodesRe)[^\]]*\](.+)\[/\1[^\]]*\]}{_make_bbcode($BBCodes{$1},$2,$c)}gxemis;
-        $s =~ s{([\_\-\+\~\!])([\_\-\+\~\!\w]+)\g1}{_make_goody($1,$2)}gxmies;
-        $s =~ s{([\(\s]|\A)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3,$c)}gxmeis;
-        $s =~ s/(\s|\A)($SmileyRe)/_make_smiley($1,$2,$3,$c)/gmxes;
-        unless ( $t ){
-            $s =~ s{\n[\n\s]*}{</p>\n<p>}xgms;
-            $s =~ s{\A(.+)\z}{<p>$1</p>}xgms;
-        }
-    }
+    _xml_escape($s);
+    $s =~ s{([\_\-\+\~\!])([\_\-\+\~\!\w]+)\g1}{_make_goody($1,$2)}gxmies;
+    $s =~ s{([\(\s]|\A)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3,$c)}gxmeis;
+    $s =~ s/(\s|\A)($SmileyRe)/_make_smiley($1,$2,$3,$c)/gmxes;
+    $s =~ s{[\A\n][\n\s]*(\S)}{<p>$1}xgs;
+    $s =~ s{(\S)[\n\s]*[\n\z]}{$1</p>}xgs;
     return $s;
-}
-
-sub _make_bbcode {
-    my ( $bbcode, $s, $c ) = @_;
-    return "<$bbcode>".format_text($s,$c,$bbcode)."</$bbcode>";
 }
 
 sub _make_goody {
