@@ -215,14 +215,14 @@ sub frontpage {
     my @params = $c->get_params($s, $page);
     my $posts  = [];
     given ( $s->{act} ) {
-        when ( 'forum' )   { 
-            $posts = $c->_get_posts(sub{ AltSimpleBoard::Data::Board::get_forum(@params)});
+        when ( 'forum' ) { 
+            $posts = $c->_get_posts(sub{AltSimpleBoard::Data::Board::get_forum(@params)});
         }
-        when ( 'notes' )   { 
-            $posts = $c->_get_posts(sub{ AltSimpleBoard::Data::Board::get_notes(@params)});
+        when ( 'notes' ) { 
+            $posts = $c->_get_posts(sub{AltSimpleBoard::Data::Board::get_notes(@params)});
         }
-        when ( 'msgs' )    { 
-            $posts = $c->_get_posts(sub{ AltSimpleBoard::Data::Board::get_notes(@params),$s->{msgs_userid}});
+        when ( 'msgs' ) { 
+            $posts = $c->_get_posts(sub{AltSimpleBoard::Data::Board::get_msgs(@params,$s->{msgs_userid})});
         }
         when ( 'options' ) {}
         default { 
@@ -248,10 +248,7 @@ sub frontpage {
     $c->render('board/frontpage');
 }
 
-sub _get_count {
-    my $c = shift; my $code = shift;
-    AltSimpleBoard::Errors::or_zero( $c, $code, @_ );
-}
+sub _get_count { AltSimpleBoard::Errors::or_zero( @_ ) }
 
 sub get_counts {
     my $c = shift;
