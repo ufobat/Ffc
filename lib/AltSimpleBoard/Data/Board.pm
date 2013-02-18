@@ -13,7 +13,7 @@ sub update_email {
     die qq{Benutzer unbekannt} unless get_username($userid);
     die qq{Neue Emailadresse ist zu lang (<=1024)} unless 1024 >= length $email;
     die qq(Neue Emailadresse schaut komisch aus) unless $email =~ m/\A[-.\w]+\@[-.\w]+\.\w+\z/xmsi;
-    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users SET `email`=? WHERE `id`=? AND `active`=1';
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users SET email=? WHERE id=? AND active=1';
     AltSimpleBoard::Data::dbh()->do($sql, undef, $email, $userid);
 }
 
@@ -33,7 +33,7 @@ sub update_show_images {
     my $x = shift;
     die qq{show_images muss 0 oder 1 sein} unless $x =~ m/\A[01]\z/xms;
     $s->{show_images} = $x;
-    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users SET `show_images`=? WHERE `id`=?';
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users SET show_images=? WHERE id=?';
     AltSimpleBoard::Data::dbh()->do($sql, undef, $x, $s->{userid});
 }
 
@@ -43,54 +43,54 @@ sub update_theme {
     die qq{Themenname zu lang (64 Zeichen maximal)} if 64 < length $t;
     die qq{Thema ungültig: $t} unless $t ~~ @AltSimpleBoard::Data::Themes; 
     $s->{theme} = $t;
-    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users SET `theme`=? WHERE `id`=?';
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users SET theme=? WHERE id=?';
     AltSimpleBoard::Data::dbh()->do($sql, undef, $t, $s->{userid});
 }
 
 sub count_newmsgs {
     my $userid = shift;
     die qq{Benutzer unbekannt} unless get_username($userid);
-    my $sql = 'SELECT count(`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE `to` IS NOT NULL AND `to`=? AND `from` <> `to`';
+    my $sql = 'SELECT count(p.id) FROM '.$AltSimpleBoard::Data::Prefix.'posts p WHERE p.to IS NOT NULL AND p.to=? AND p.from <> p.to';
     return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
 
 sub count_newpost {
     my $userid = shift;
     die qq{Benutzer unbekannt} unless get_username($userid);
-    my $sql = 'SELECT count(`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE `to` IS NULL';
+    my $sql = 'SELECT count(p.id) FROM '.$AltSimpleBoard::Data::Prefix.'posts p WHERE p.to IS NULL';
     return (AltSimpleBoard::Data::dbh()->selectrow_array($sql))[0];
 }
 
 sub count_notes {
     my $userid = shift;
     die qq{Benutzer unbekannt} unless get_username($userid);
-    my $sql = 'SELECT count(`id`) FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE `from`=? AND `to`=`from`';
+    my $sql = 'SELECT count(p.id) FROM '.$AltSimpleBoard::Data::Prefix.'posts p WHERE p.from=? AND p.to=p.from';
     return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
 
 sub get_categories {
     my $sql 
-     = q{SELECT c.`name` AS `name`, c.`short` AS `short`, COUNT(p.`id`) AS `cnt`, 1 AS `sort` FROM }
+     = q{SELECT c.name AS name, c.short AS short, COUNT(p1.id) AS cnt, 1 AS sort FROM }
      . $AltSimpleBoard::Data::Prefix
      . q{categories c LEFT OUTER JOIN }
      . $AltSimpleBoard::Data::Prefix
-     . q{posts p ON p.`category`=c.`id` GROUP BY c.`id` UNION }
-     . q{SELECT 'Allgemein' AS `name`, '' AS `short`, COUNT(p.`id`) AS `cnt`, 0 AS `sort` FROM }
+     . q{posts p1 ON p1.category=c.id GROUP BY c.id UNION }
+     . q{SELECT 'Allgemein' AS name, '' AS short, COUNT(p2.id) AS cnt, 0 AS sort FROM }
      . $AltSimpleBoard::Data::Prefix
-     . q{posts p WHERE p.`category` IS NULL }
-     . q{ORDER BY `sort`, `name`};
+     . q{posts p2 WHERE p2.category IS NULL }
+     . q{ORDER BY sort, name};
     return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql);
 }
 sub get_category {
     my $id = shift;
     die qq{Kategorie-ID ist ungültig} unless $id =~ m/\A\d+\z/xms;
-    my $sql = 'SELECT `short` FROM '.$AltSimpleBoard::Data::Prefix.'categories WHERE `id`=? LIMIT 1';
+    my $sql = 'SELECT c.short FROM '.$AltSimpleBoard::Data::Prefix.'categories c WHERE c.id=? LIMIT 1';
     ( AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $id) )[0];
 }
 sub get_category_id {
     my $c = shift;
     die qq{Kategoriekürzel ungültig} unless $c =~ m/\A\w+\z/xms;
-    my $sql = 'SELECT `id` FROM '.$AltSimpleBoard::Data::Prefix.'categories WHERE `short`=?';
+    my $sql = 'SELECT c.id FROM '.$AltSimpleBoard::Data::Prefix.'categories c WHERE c.short=?';
     my $cats = AltSimpleBoard::Data::dbh()->selectall_arrayref($sql, undef, $c);
     die qq{Kategorie ungültig} unless @$cats;
     return $cats->[0]->[0];
@@ -99,19 +99,19 @@ sub get_category_id {
 sub get_username {
     my $id = shift;
     die qq{Benutzerid ungültig} unless $id =~ m/\A\d+\z/xms;
-    my $sql = 'SELECT `name` FROM '.$AltSimpleBoard::Data::Prefix.'users WHERE `id`=? AND `active`=1';
+    my $sql = 'SELECT u.name FROM '.$AltSimpleBoard::Data::Prefix.'users u WHERE u.id=? AND u.active=1';
     return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $id))[0];
 }
 
 sub get_useremail {
     my $id = shift;
     die qq{Benutzerid ungültig} unless $id =~ m/\A\d+\z/xms;
-    my $sql = 'SELECT `email` FROM '.$AltSimpleBoard::Data::Prefix.'users WHERE `id`=? AND `active`=1';
+    my $sql = 'SELECT u.email FROM '.$AltSimpleBoard::Data::Prefix.'users u WHERE u.id=? AND u.active=1';
     return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $id))[0];
 }
 
 sub get_userlist {
-    my $sql = 'SELECT `id`, `name`, `active`, `admin` FROM '.$AltSimpleBoard::Data::Prefix.'users ORDER BY `active` DESC, `name` ASC';
+    my $sql = 'SELECT u.id, u.name, u.active, u.admin FROM '.$AltSimpleBoard::Data::Prefix.'users u ORDER BY u.active DESC, u.name ASC';
     return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql);
 }
 
@@ -119,7 +119,7 @@ sub delete_post {
     my ( $from, $id ) = @_;
     die qq{Postid ungültig} unless $id =~ m/\A\d+\z/xms;
     die qq{Benutzer ungültig} unless get_username($from);
-    my $sql = 'DELETE FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE `id`=? and `from`=? AND (`to` IS NULL OR `to`=`from`);';
+    my $sql = 'DELETE FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE id=? and from=? AND (to IS NULL OR to=from);';
     AltSimpleBoard::Data::dbh()->do( $sql, undef, $id, $from );
 }
 sub insert_post {
@@ -127,32 +127,33 @@ sub insert_post {
     die qq{Ersteller ungültig} unless get_username($f);
     die qq{Empfänger ungültig} if $t and not get_username($t);
     my $cid = $c ? get_category_id($c) : undef;
-    my $sql = 'INSERT INTO '.$AltSimpleBoard::Data::Prefix.'posts (`from`, `to`, `text`, `posted`, `category`) VALUES (?, ?, ?, current_timestamp, ?)';
-    AltSimpleBoard::Data::dbh()->do( $sql, undef, $f, $t, $d, $cid );
+    my $dbh = AltSimpleBoard::Data::dbh();
+    my $sql = 'INSERT INTO '.$AltSimpleBoard::Data::Prefix.'posts ('.join(', ',map {$dbh->quote_identifier($_)} qw(from to text posted category)).') VALUES (?, ?, ?, current_timestamp, ?)';
+    $dbh->do( $sql, undef, $f, $t, $d, $cid );
 }
 
 sub update_post {
     my ( $f, $d, $i, $t ) = @_;
     die qq{Bearbeiter ungültig} unless get_username($f);
     die qq{Empfänger ungültig} if $t and not get_username($t);
-    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'posts SET `text`=?, `posted`=current_timestamp, `to`=? WHERE `id`=? AND `from`=? AND (`to` IS NULL OR `to`=`from`);';
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'posts p SET p.text=?, p.posted=current_timestamp, p.to=? WHERE p.id=? AND p.from=? AND (p.to IS NULL OR p.to=p.from);';
     AltSimpleBoard::Data::dbh()->do( $sql, undef, $d, $t, $i, $f );
 }
 
 sub update_user_stats {
     my $userid = shift;
     die qq{Benutzerid ungültig} unless $userid =~ m/\A\d+\z/xms;
-    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users SET `lastseen`=current_timestamp WHERE `id`=?;';
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users u SET u.lastseen=current_timestamp WHERE u.id=?;';
     AltSimpleBoard::Data::dbh()->do( $sql, undef, $userid );
 }
 
-sub get_notes { _get_stuff( @_[ 0 .. 6 ], 'p.`from`=? AND p.`to`=p.`from`', $_[0]) }
-sub get_forum { _get_stuff( @_[ 0 .. 6 ], 'p.`to` IS NULL' ) }
+sub get_notes { _get_stuff( @_[ 0 .. 6 ], 'p.from=? AND p.to=p.from', $_[0]) }
+sub get_forum { _get_stuff( @_[ 0 .. 6 ], 'p.to IS NULL' ) }
 sub get_msgs  {
     my @params = ( $_[0], $_[0] );
-    my $where = '( p.`from`=? OR p.`to`=? ) AND p.`from` <> p.`to`';
+    my $where = '( p.from=? OR p.to=? ) AND p.from <> p.to';
     if ( $_[7] ) {
-        $where .= ' AND ( p.`from`=? OR p.`to`=? )';
+        $where .= ' AND ( p.from=? OR p.to=? )';
         push @params, $_[7], $_[7];
     }
     return _get_stuff( @_[ 0 .. 6 ], $where, @params );
@@ -161,7 +162,7 @@ sub get_msgs  {
 sub get_post {
     my $postid = shift;
     die q{Ungültige ID für den Beitrag} unless $postid =~ m/\A\d+\z/xms;
-    my $where = 'p.`id`=?';
+    my $where = 'p.id=?';
     my $data = _get_stuff( @_[ 0 .. 6 ], $where, $postid );
     die q{Kein Datensatz gefunden} unless @$data;
     return $data->[0];
@@ -181,18 +182,18 @@ sub _get_stuff {
     $page = 1 unless $page and $page =~ m/\A\d+\z/xms;
     my $sql =
         q{SELECT}
-      . q{ p.`id`, p.`text`, p.`posted`,}
-      . q{ c.`name`, COALESCE(c.`short`,''),}
-      . q{ f.`id`, f.`name`, f.`active`,}
-      . q{ t.`id`, t.`name`, t.`active`}
+      . q{ p.id, p.text, p.posted,}
+      . q{ c.name, COALESCE(c.short,''),}
+      . q{ f.id, f.name, f.active,}
+      . q{ t.id, t.name, t.active}
       . q{ FROM }            . $AltSimpleBoard::Data::Prefix . q{posts p}
-      . q{ INNER JOIN }      . $AltSimpleBoard::Data::Prefix . q{users f ON f.`id`=p.`from`}
-      . q{ LEFT OUTER JOIN } . $AltSimpleBoard::Data::Prefix . q{users t ON t.`id`=p.`to`}
-      . q{ LEFT OUTER JOIN } . $AltSimpleBoard::Data::Prefix . q{categories c ON c.`id`=p.`category`}
+      . q{ INNER JOIN }      . $AltSimpleBoard::Data::Prefix . q{users f ON f.id=p.from}
+      . q{ LEFT OUTER JOIN } . $AltSimpleBoard::Data::Prefix . q{users t ON t.id=p.to}
+      . q{ LEFT OUTER JOIN } . $AltSimpleBoard::Data::Prefix . q{categories c ON c.id=p.category}
       . q{ WHERE } . $where
-      . ( $query ? q{ AND p.`text` LIKE ? } : '' )
-      . q{ AND ( c.`short` = ? OR ( ( ? = '' OR ? IS NULL ) AND p.`category` IS NULL) )}
-      . q{ ORDER BY p.`posted` DESC LIMIT ? OFFSET ?};
+      . ( $query ? q{ AND p.text LIKE ? } : '' )
+      . q{ AND ( c.short = ? OR ( ( ? = '' OR ? IS NULL ) AND p.category IS NULL) )}
+      . q{ ORDER BY p.posted DESC LIMIT ? OFFSET ?};
 
     return [ map { my $d = $_;
             $d = {
