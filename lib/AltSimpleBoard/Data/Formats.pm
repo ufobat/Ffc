@@ -31,6 +31,7 @@ sub format_text {
     $s = _xml_escape($s);
     $s = _format_goodies($s);
     $s = _format_links($s, $c);
+    $s = _format_simplebbcodes($s);
     $s = _format_smilies($s, $c);
     $s =~ s{\n[\n\s]*}{</p>\n<p>}gsm;
     $s = "<p>$s</p>";
@@ -115,6 +116,14 @@ sub _format_smilies {
     my $c = shift;
     return $s unless $c->session()->{show_images};
     $s =~ s/(\s|\A)($SmileyRe)/_make_smiley($c, $1, $2, $3)/gmsxe;
+    return $s;
+}
+
+my %BBCodes = (qw(quote blockquote code code));
+my $BBCodes = join '|', keys %BBCodes;
+sub _format_simplebbcodes {
+    my $s = shift;
+    $s =~ s{\[($BBCodes)[^\]]*\]([^\]]+)\[/\1[^\]]*\]}{<$BBCodes{$1}>$2</$BBCodes{$1}>}xmgsi;
     return $s;
 }
 

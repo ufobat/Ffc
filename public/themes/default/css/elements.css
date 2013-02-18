@@ -7,11 +7,18 @@ h1, h2, h3, h4 {
     font-weight: bolder;
 }
 
-blockquote {
-    color: #339;
+code, blockquote {
     border-left: 1px #339 solid;
     padding-left: .25em;
     margin-left: 1em;
+}
+code {
+    font-family: monospace;
+    color: #639;
+}
+blockquote {
+    font-family: serif;
+    color: #339;
 }
 input, textarea, select {
     border: 1px #999 solid;
