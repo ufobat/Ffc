@@ -54,8 +54,8 @@ sub format_text {
     $s =~ s{([\_\-\+\~\!])([\_\-\+\~\!\w]+)\g1}{_make_goody($1,$2)}gxmies;
     $s =~ s{([\(\s]|\A)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3,$c)}gxmeis;
     $s =~ s/(\s|\A)($SmileyRe)/_make_smiley($1,$2,$3,$c)/gmxes;
-    $s =~ s{[\A\n][\n\s]*(\S)}{<p>$1}xgs;
-    $s =~ s{(\S)[\n\s]*[\n\z]}{$1</p>}xgs;
+    $s =~ s{\n[\n\s]*}{</p>\n<p>}xgms;
+    $s = "<p>$s</p>";
     return $s;
 }
 
