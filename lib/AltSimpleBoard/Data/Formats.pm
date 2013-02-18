@@ -26,15 +26,23 @@ sub _xml_escape {
 sub format_text {
     my $s = shift;
     my $c = shift;
+    my $t = shift;
     chomp $s;
     return '' unless $s;
     $s = _xml_escape($s);
-    $s = _format_goodies($s);
-    $s = _format_links($s, $c);
-    $s = _format_simplebbcodes($s);
-    $s = _format_smilies($s, $c);
-    $s =~ s{\n[\n\s]*}{</p>\n<p>}gsm;
-    $s = "<p>$s</p>";
+    if ( not $t or $t ne 'code' ) {
+        $s = _format_goodies($s);
+        $s = _format_links($s, $c);
+        $s = _format_simplebbcodes($s, $c);
+        $s = _format_smilies($s, $c);
+    }
+    if ( $t ) {
+        $s = "<$t>$s</$t>";
+    }
+    else {
+        $s =~ s{\n[\n\s]*}{</p>\n<p>}gsm;
+        $s = "<p>$s</p>";
+    }
     return $s;
 }
 
@@ -122,8 +130,8 @@ sub _format_smilies {
 my %BBCodes = (qw(quote blockquote code code));
 my $BBCodes = join '|', keys %BBCodes;
 sub _format_simplebbcodes {
-    my $s = shift;
-    $s =~ s{\[($BBCodes)[^\]]*\]([^\]]+)\[/\1[^\]]*\]}{<$BBCodes{$1}>$2</$BBCodes{$1}>}xmgsi;
+    my $s = shift; my $c = shift;
+    $s =~ s{\[($BBCodes)[^\]]*\]([^\]]+)\[/\1[^\]]*\]}{format_text($2, $c, $BBCodes{$1})}xemgsi;
     return $s;
 }
 
