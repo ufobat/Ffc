@@ -35,6 +35,7 @@ CREATE TABLE `asb_categories` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=65535 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `abs_lastseenforum`;
 CREATE TABLE `abs_lastseenforum` (
   `userid` bigint(20) NOT NULL,
   `category` bigint(20) NOT NULL,
