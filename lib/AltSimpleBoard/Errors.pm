@@ -52,12 +52,12 @@ sub handling {
 sub _something {
     my $c = shift; my $code = shift; my $return;
     die '"code" is not a code reference' unless 'CODE' eq ref $code;
-    handle( $c, sub { $return = $code->(@_) }, '' );
+    handle( $c, sub { $return = $code->() }, '' );
     return $return;
 }
-sub or_empty    { _something( @_ ) or [] }
-sub or_nostring { _something( @_ ) or '' }
-sub or_zero     { _something( @_ ) or 0  }
+sub or_empty    { _something( @_ ) // [] }
+sub or_nostring { _something( @_ ) // '' }
+sub or_zero     { _something( @_ ) // 0  }
 
 sub prepare { $_[0]->stash( error => '' ) unless $_[0]->stash('error') }
 
