@@ -3,7 +3,7 @@ CREATE TABLE "${Prefix}users" (
   "name" varchar(64) NOT NULL,
   "password" varchar(64) NOT NULL,
   "email" varchar(1024) NOT NULL,
-  "lastseen" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "lastseenmsgs" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "active" tinyint(1) NOT NULL DEFAULT '0',
   "admin" tinyint(1) NOT NULL DEFAULT '0',
   "show_images" tiniint(1) NOT NULL DEFAULT '1',
@@ -28,5 +28,14 @@ CREATE TABLE "${Prefix}categories" (
   "short" varchar(8),
   PRIMARY KEY ("id"),
   UNIQUE KEY "u_name" ("name")
+);
+
+CREATE TABLE "${Prefix}lastseenforum" (
+  "userid" bigint(20) NOT NULL,
+  "category" bigint(20) NOT NULL,
+  "lastseen" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY ("userid", "categoryid"),
+  UNIQUE KEY "u_userid" ("userid"),
+  UNIQUE KEY "u_category" ("category")
 );
 

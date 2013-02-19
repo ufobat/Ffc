@@ -35,6 +35,15 @@ CREATE TABLE `asb_categories` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=65535 DEFAULT CHARSET=utf8;
 
+CREATE TABLE `abs_lastseenforum` (
+  `userid` bigint(20) NOT NULL,
+  `category` bigint(20) NOT NULL,
+  `lastseen` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`userid`, `categoryid`),
+  UNIQUE KEY `u_userid` (`userid`),
+  UNIQUE KEY `u_category` (`category`)
+);
+
 insert into asb_users (name, email) select substring(username, 1, 64), user_email from phpbb_users;
 
 insert into asb_posts (`from`, posted, text) select `from`, FROM_UNIXTIME(posted), text from asb_post;
