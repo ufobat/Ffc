@@ -3,7 +3,7 @@
     <span class="divider">|</span>
     <a href="<%= url_for 'switch', act => 'msgs' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkmsgs<%= act() eq 'msgs' ? ' active activemsgs' : '' %>">Nachrichten (<% if ( $newmsgscount ) { %><span class="mark"><%= $newmsgscount %></span><% } else { %><%= 0 %><% } %>)</span></a>
     <span class="divider">|</span>
-    <a href="<%= url_for 'switch', act => 'notes' %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= act() eq 'notes' ? ' active activenotes' : '' %>">Notizen (<% if ( $notecount ) { %><span class="mark"><%= $notecount %></span><% } else { %><%= 0 %><% } %>)</span></a>
+    <a href="<%= url_for 'switch', act => 'notes' %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= act() eq 'notes' ? ' active activenotes' : '' %>">Notizen (<% if ( $notecount ) { %><span class="notecount"><%= $notecount %></span><% } else { %><%= 0 %><% } %>)</span></a>
     <span class="divider">|</span>
 %= form_for search => ( method => 'POST' ) => begin
 %= text_field query => session()->{query}, session()->{query} ? (class => 'activesearch') : ()

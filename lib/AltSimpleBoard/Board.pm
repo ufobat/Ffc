@@ -212,15 +212,15 @@ sub frontpage {
     }
     $c->stash( posts => $posts);
     $c->get_counts;
+    $c->stash( categories => ($act eq 'forum') 
+            ? $c->or_empty( sub { AltSimpleBoard::Data::Board::get_categories() } ) 
+            : [] );
     $c->error_handling({
         code        => sub { AltSimpleBoard::Data::Board::update_user_stats($userid, $act, $cat) },
         msg         => 'Etwas ist intern schief gegangen, bitte versuchen Sie es später noch einmal.',
         after_error => sub { 
             AltSimpleBoard::Auth::login_form($c, 'Etwas ist intern schief gegangen, bitte melden Sie sich an') },
     });
-    $c->stash( categories => ($act eq 'forum') 
-            ? $c->or_empty( sub { AltSimpleBoard::Data::Board::get_categories() } ) 
-            : [] );
     $c->render('board/frontpage');
 }
 

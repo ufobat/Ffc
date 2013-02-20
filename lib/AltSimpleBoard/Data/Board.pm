@@ -50,7 +50,7 @@ sub update_theme {
 sub count_newmsgs {
     my $userid = shift;
     check_user( $userid );
-    my $sql = 'SELECT count(p.id) FROM '.$AltSimpleBoard::Data::Prefix.'posts p WHERE p.to IS NOT NULL AND p.to=? AND p.from <> p.to';
+    my $sql = 'SELECT count(p.id) FROM '.$AltSimpleBoard::Data::Prefix.'posts p INNER JOIN '.$AltSimpleBoard::Data::Prefix.'users u ON u.id=p.to WHERE p.to IS NOT NULL AND p.to=? AND p.from <> p.to AND p.posted >= u.lastseenmsgs';
     return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
 
