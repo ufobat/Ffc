@@ -53,6 +53,7 @@ sub format_text {
     _xml_escape($s);
     $s =~ s{([\_\-\+\~\!])([\_\-\+\~\!\w]+)\g1}{_make_goody($1,$2)}gxmies;
     $s =~ s{([\(\s]|\A)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3,$c)}gxmeis;
+    $s =~ s{((?:\A|\n)\s*)[-*+]}{_make_bullet($c,$1)}gxmeis;
     $s =~ s/(\s|\A)($SmileyRe)/_make_smiley($1,$2,$3,$c)/gmxes;
     $s =~ s{\n[\n\s]*}{</p>\n<p>}xgms;
     $s = "<p>$s</p>";
@@ -100,6 +101,14 @@ sub _make_smiley {
         . qq~" alt="$y" />$e~;
 }
 
+sub _make_bullet {
+    my $c = shift;
+    my $s = shift;
+    $s =~ s/\s/\&nbsp;/gmx;
+    return qq~$s<img class="bullet" src="~
+        . $c->url_for("$AltSimpleBoard::Data::Themedir/".$c->session()->{theme}."/img/icons/bullet.png")
+        . qq~" alt="·" />~;
+}
 
 1;
 
