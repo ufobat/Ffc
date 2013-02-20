@@ -40,9 +40,7 @@ CREATE TABLE `abs_lastseenforum` (
   `userid` bigint(20) NOT NULL,
   `category` bigint(20) NOT NULL,
   `lastseen` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`userid`, `categoryid`),
-  UNIQUE KEY `u_userid` (`userid`),
-  UNIQUE KEY `u_category` (`category`)
+  PRIMARY KEY (`userid`, `category`)
 );
 
 insert into asb_users (name, email) select substring(username, 1, 64), user_email from phpbb_users;

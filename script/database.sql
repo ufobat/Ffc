@@ -34,8 +34,6 @@ CREATE TABLE "${Prefix}lastseenforum" (
   "userid" bigint(20) NOT NULL,
   "category" bigint(20) NOT NULL,
   "lastseen" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY ("userid", "categoryid"),
-  UNIQUE KEY "u_userid" ("userid"),
-  UNIQUE KEY "u_category" ("category")
+  PRIMARY KEY ("userid", "category")
 );
 

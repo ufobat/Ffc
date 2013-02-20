@@ -7,14 +7,12 @@ use File::Spec;
 use File::Basename;
 use utf8;
 use DBI;
-use AltSimpleBoard::Data::Board;
 
 our $DefaultConfig = join '/',
   File::Spec->splitdir( File::Basename::dirname(__FILE__) ), '..', '..', 'etc',
   'altsimpleboard.json';
 our $Prefix = '';
 our $Fullpostnumber = 7;
-our %Users;
 our $Limit;
 our $Pagelinkpreview;
 our %Acttitles;
@@ -63,17 +61,6 @@ our $Themebasedir = File::Basename::dirname(__FILE__).'/../../public'.$Themedir;
         $cryptsalt = $config->{cryptsalt};
         delete $config->{cryptsalt};
         delete $config->{cookie_secret};
-        %Users = map {
-                $_->[1] => {
-                    userid => $_->[0],
-                    lastseen => $_->[2],
-                }
-            } 
-            @{
-                dbh()->selectall_arrayref(
-                    "select id, name, lastseen from ${Prefix}users"
-                    )
-            };
         %Acttitles = ( map({$_ => "\u$_"} qw(auth forum notes msgs)), %{ $config->{acttitles} });
     }
 

@@ -10,7 +10,7 @@ use AltSimpleBoard::Data::Formats;
 
 sub update_email {
     my ( $userid, $email ) = @_;
-    die qq{Benutzer unbekannt} unless get_username($userid);
+    check_user( $userid );
     die qq{Neue Emailadresse ist zu lang (<=1024)} unless 1024 >= length $email;
     die qq(Neue Emailadresse schaut komisch aus) unless $email =~ m/\A[-.\w]+\@[-.\w]+\.\w+\z/xmsi;
     my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users SET email=? WHERE id=? AND active=1';
@@ -19,7 +19,7 @@ sub update_email {
 
 sub update_password {
     my ( $userid, $oldpw, $newpw1, $newpw2 ) = @_;
-    die qq{Benutzer unbekannt} unless get_username($userid);
+    check_user( $userid );
     for ( ['Altes Passwort' => $oldpw], ['Neues Passwort' => $newpw1], ['Passwortwiederholung' => $newpw2] ) {
         die qq{$_->[0] entspricht nicht der Norm (4-16 Zeichen)} unless $_->[1] =~ m/\A.{4,16}\z/xms;
     }
@@ -49,7 +49,7 @@ sub update_theme {
 
 sub count_newmsgs {
     my $userid = shift;
-    die qq{Benutzer unbekannt} unless get_username($userid);
+    check_user( $userid );
     my $sql = 'SELECT count(p.id) FROM '.$AltSimpleBoard::Data::Prefix.'posts p WHERE p.to IS NOT NULL AND p.to=? AND p.from <> p.to';
     return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
@@ -89,23 +89,31 @@ sub get_category {
 }
 sub get_category_id {
     my $c = shift;
-    die qq{Kategoriekürzel ungültig} unless $c =~ m/\A\w+\z/xms;
+    die qq{Kategoriekürzel ungültig} unless $c =~ m/\A\w{1,64}\z/xms;
     my $sql = 'SELECT c.id FROM '.$AltSimpleBoard::Data::Prefix.'categories c WHERE c.short=?';
     my $cats = AltSimpleBoard::Data::dbh()->selectall_arrayref($sql, undef, $c);
     die qq{Kategorie ungültig} unless @$cats;
     return $cats->[0]->[0];
 }
 
+sub check_user { 
+    local $@;
+    eval { get_username( shift ) };
+    die shift // $@ if $@;
+    return 1;
+}
 sub get_username {
     my $id = shift;
     die qq{Benutzerid ungültig} unless $id =~ m/\A\d+\z/xms;
     my $sql = 'SELECT u.name FROM '.$AltSimpleBoard::Data::Prefix.'users u WHERE u.id=? AND u.active=1';
-    return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $id))[0];
+    $id = AltSimpleBoard::Data::dbh()->selectall_arrayref($sql, undef, $id);
+    die qq{Benutzer unbekannt oder inaktiv} unless @$id and $id->[0]->[0];
+    return $id;
 }
 
 sub get_useremail {
     my $id = shift;
-    die qq{Benutzerid ungültig} unless $id =~ m/\A\d+\z/xms;
+    check_user( $id );
     my $sql = 'SELECT u.email FROM '.$AltSimpleBoard::Data::Prefix.'users u WHERE u.id=? AND u.active=1';
     return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $id))[0];
 }
@@ -118,15 +126,15 @@ sub get_userlist {
 sub delete_post {
     my ( $from, $id ) = @_;
     die qq{Postid ungültig} unless $id =~ m/\A\d+\z/xms;
-    die qq{Benutzer ungültig} unless get_username($from);
+    check_user( $from );
     my $dbh = AltSimpleBoard::Data::dbh();
     my $sql = sprintf 'DELETE FROM '.$AltSimpleBoard::Data::Prefix.'posts WHERE %s=? and %s=? AND (%s IS NULL OR %s=%s);', map {$dbh->quote_identifier($_)} qw(id from to to from);
     $dbh->do( $sql, undef, $id, $from );
 }
 sub insert_post {
     my ( $f, $d, $c, $t ) = @_;
-    die qq{Ersteller ungültig} unless get_username($f);
-    die qq{Empfänger ungültig} if $t and not get_username($t);
+    check_user( $f, 'Sender des Beitrages unbekannt' );
+    check_user( $t, 'Empfänger des Beitrages unbekannt' );
     die qq{Beitrag ungültig, zu wenig Zeichen (min. 2)} if 2 >= length $d;
     my $cid = $c ? get_category_id($c) : undef;
     my $dbh = AltSimpleBoard::Data::dbh();
@@ -136,18 +144,39 @@ sub insert_post {
 
 sub update_post {
     my ( $f, $d, $i, $t ) = @_;
-    die qq{Bearbeiter ungültig} unless get_username($f);
-    die qq{Empfänger ungültig} if $t and not get_username($t);
+    check_user( $f, 'Sender des Beitrages unbekannt' );
+    check_user( $t, 'Empfänger des Beitrages unbekannt' );
     die qq{Beitrag ungültig, zu wenig Zeichen (min. 2)} if 2 >= length $d;
     my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'posts p SET p.text=?, p.posted=current_timestamp, p.to=? WHERE p.id=? AND p.from=? AND (p.to IS NULL OR p.to=p.from);';
     AltSimpleBoard::Data::dbh()->do( $sql, undef, $d, $t, $i, $f );
 }
 
-sub update_user_stats {
+sub _update_user_forum {
     my $userid = shift;
-    die qq{Benutzerid ungültig} unless $userid =~ m/\A\d+\z/xms;
-    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users u SET u.lastseen=current_timestamp WHERE u.id=?;';
+    check_user( $userid );
+    my $category = get_category_id(shift);
+    my $sql = 'SELECT COUNT(l.userid) FROM '.$AltSimpleBoard::Data::Prefix.'lastseenforum l WHERE l.userid=? AND l.category=?';
+    my $dbh = AltSimpleBoard::Data::dbh();
+    if ( ( $dbh->selectrow_array( $sql, undef, $userid, $category ) )[0] ) {
+        $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'lastseenforum l SET l.lastseen=current_timestamp WHERE l.userid=? AND l.category=?';
+    }
+    else {
+        $sql = 'INSERT INTO '.$AltSimpleBoard::Data::Prefix.'lastseenforum (lastseen, userid, category) VALUES (current_timestamp, ?, ?)';
+    }
+    $dbh->do( $sql, undef, $userid, $category );
+}
+
+sub _update_user_msgs {
+    my $userid = shift;
+    check_user( $userid );
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users u SET u.lastseenmsgs=current_timestamp WHERE u.id=?;';
     AltSimpleBoard::Data::dbh()->do( $sql, undef, $userid );
+}
+sub update_user_stats {
+    given ( $_[1] ) {
+        when ( 'forum' ) { _update_user_msgs(  @_ ) }
+        when ( 'msgs'  ) { _update_user_forum( @_ ) }
+    }
 }
 
 sub get_notes { _get_stuff( @_[ 0 .. 6 ], 'p.from=? AND p.to=p.from', $_[0]) }
@@ -181,7 +210,7 @@ sub _get_stuff {
     my $c      = shift;
     my $where  = shift;
     my @params = @_;
-    return [] unless $userid;
+    check_user( $userid );
     $page = 1 unless $page and $page =~ m/\A\d+\z/xms;
     my $sql =
         q{SELECT}

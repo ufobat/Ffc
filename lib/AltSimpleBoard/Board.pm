@@ -194,12 +194,14 @@ sub frontpage {
     }
     my @params = $c->get_params($s, $page);
     my $posts  = [];
-    given ( $s->{act} ) {
+    my $act = $s->{act};
+    my $cat = $s->{category};
+    given ( $act ) {
         when('forum'  ){$posts=$c->or_empty(sub{AltSimpleBoard::Data::Board::get_forum(@params)})}
         when('notes'  ){$posts=$c->or_empty(sub{AltSimpleBoard::Data::Board::get_notes(@params)})}
         when('msgs'   ){$posts=$c->or_empty(sub{AltSimpleBoard::Data::Board::get_msgs(@params,$s->{msgs_userid})})}
         when('options'){}
-        default        {$c->error_handling({plain=>qq("$s->{act}" unbekannt)})}
+        default        {$c->error_handling({plain=>qq("$act" unbekannt)})}
     }
     if ( $postid and $postid ne '' ) {
         my @post = grep { $_->{id} eq $postid } @$posts;
@@ -211,12 +213,12 @@ sub frontpage {
     $c->stash( posts => $posts);
     $c->get_counts;
     $c->error_handling({
-        code        => sub { AltSimpleBoard::Data::Board::update_user_stats($userid) },
+        code        => sub { AltSimpleBoard::Data::Board::update_user_stats($userid, $act, $cat) },
         msg         => 'Etwas ist intern schief gegangen, bitte versuchen Sie es später noch einmal.',
         after_error => sub { 
             AltSimpleBoard::Auth::login_form($c, 'Etwas ist intern schief gegangen, bitte melden Sie sich an') },
     });
-    $c->stash( categories => ($s->{act} eq 'forum') 
+    $c->stash( categories => ($act eq 'forum') 
             ? $c->or_empty( sub { AltSimpleBoard::Data::Board::get_categories() } ) 
             : [] );
     $c->render('board/frontpage');
