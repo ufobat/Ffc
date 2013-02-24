@@ -272,7 +272,7 @@ sub _get_stuff {
                 ? 1 : 0;
             $d;
         } @{ AltSimpleBoard::Data::dbh()
-          ->selectall_arrayref( $sql, undef, @params, ( $query ? "%$query%" : () ), $cat, $cat, $cat,
+          ->selectall_arrayref( $sql, undef, @params, ( $query ? "\%$query\%" : () ), $cat, $cat, $cat,
             $AltSimpleBoard::Data::Limit,
             ( ( $page - 1 ) * $AltSimpleBoard::Data::Limit ) ) } ];
 }
