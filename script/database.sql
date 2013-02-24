@@ -4,6 +4,7 @@ CREATE TABLE "${Prefix}users" (
   "password" varchar(64) NOT NULL,
   "email" varchar(1024) NOT NULL,
   "lastseenmsgs" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "lastseenforum" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "active" tinyint(1) NOT NULL DEFAULT '0',
   "admin" tinyint(1) NOT NULL DEFAULT '0',
   "show_images" tiniint(1) NOT NULL DEFAULT '1',

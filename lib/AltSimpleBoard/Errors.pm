@@ -9,8 +9,11 @@ sub handle {
     my $code = shift;
     my $msg  = shift;
     local $@;
-    eval { &$code };
+    eval { $code->() };
     if ( $@ ) {
+        my $log = $c->app->log;
+        $log->error("system error message: $@");
+        $log->error("user presented error message: $msg");
         my $error = $c->stash('error') // '';
         my $newerror = $AltSimpleBoard::Data::Debug ? $@ : ($msg // 'Fehler');
         $c->stash(error => $error ? "$error\n\n$newerror" : $newerror);

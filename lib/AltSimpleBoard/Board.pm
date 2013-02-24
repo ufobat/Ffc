@@ -61,7 +61,7 @@ sub useradmin_save {
 sub _switch_category {
     my ( $c, $cat ) = @_;
     $cat = $cat =~ m/\A(\w+)\z/xmsi ? $1 : undef;
-    $c->session->{category} = $c->or_nostring( sub{AltSimpleBoard::Data::Board::get_category_id($cat) } );
+    $c->session->{category} = $c->or_nostring( sub{AltSimpleBoard::Data::Board::check_category($cat) } );
 }
 
 sub switch_category {
@@ -215,13 +215,14 @@ sub frontpage {
     $c->stash( categories => ($act eq 'forum') 
             ? $c->or_empty( sub { AltSimpleBoard::Data::Board::get_categories() } ) 
             : [] );
-    $c->error_handling({
+    if ( $c->error_handling({
         code        => sub { AltSimpleBoard::Data::Board::update_user_stats($userid, $act, $cat) },
         msg         => 'Etwas ist intern schief gegangen, bitte versuchen Sie es später noch einmal.',
         after_error => sub { 
             AltSimpleBoard::Auth::login_form($c, 'Etwas ist intern schief gegangen, bitte melden Sie sich an') },
-    });
-    $c->render('board/frontpage');
+    }) ) {
+        $c->render('board/frontpage');
+    }
 }
 
 sub get_counts {

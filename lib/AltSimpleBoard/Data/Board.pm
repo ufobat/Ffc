@@ -95,6 +95,10 @@ sub get_category_id {
     die qq{Kategorie ungültig} unless @$cats;
     return $cats->[0]->[0];
 }
+sub check_category {
+    return $_[0] if get_category_id($_[0]);
+    return;
+}
 
 sub check_user { 
     local $@;
@@ -134,7 +138,7 @@ sub delete_post {
 sub insert_post {
     my ( $f, $d, $c, $t ) = @_;
     check_user( $f, 'Sender des Beitrages unbekannt' );
-    check_user( $t, 'Empfänger des Beitrages unbekannt' );
+    check_user( $t, 'Empfänger des Beitrages unbekannt' ) if $t;
     die qq{Beitrag ungültig, zu wenig Zeichen (min. 2)} if 2 >= length $d;
     my $cid = $c ? get_category_id($c) : undef;
     my $dbh = AltSimpleBoard::Data::dbh();
@@ -145,7 +149,7 @@ sub insert_post {
 sub update_post {
     my ( $f, $d, $i, $t ) = @_;
     check_user( $f, 'Sender des Beitrages unbekannt' );
-    check_user( $t, 'Empfänger des Beitrages unbekannt' );
+    check_user( $t, 'Empfänger des Beitrages unbekannt' ) if $t;
     die qq{Beitrag ungültig, zu wenig Zeichen (min. 2)} if 2 >= length $d;
     my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'posts p SET p.text=?, p.posted=current_timestamp, p.to=? WHERE p.id=? AND p.from=? AND (p.to IS NULL OR p.to=p.from);';
     AltSimpleBoard::Data::dbh()->do( $sql, undef, $d, $t, $i, $f );
@@ -154,16 +158,23 @@ sub update_post {
 sub _update_user_forum {
     my $userid = shift;
     check_user( $userid );
-    my $category = get_category_id(shift);
-    my $sql = 'SELECT COUNT(l.userid) FROM '.$AltSimpleBoard::Data::Prefix.'lastseenforum l WHERE l.userid=? AND l.category=?';
-    my $dbh = AltSimpleBoard::Data::dbh();
-    if ( ( $dbh->selectrow_array( $sql, undef, $userid, $category ) )[0] ) {
-        $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'lastseenforum l SET l.lastseen=current_timestamp WHERE l.userid=? AND l.category=?';
+    my $category = $_[2];
+    if ( $category ) {
+        my $category = get_category_id($category);
+        my $sql = 'SELECT COUNT(l.userid) FROM '.$AltSimpleBoard::Data::Prefix.'lastseenforum l WHERE l.userid=? AND l.category=?';
+        my $dbh = AltSimpleBoard::Data::dbh();
+        if ( ( $dbh->selectrow_array( $sql, undef, $userid, $category ) )[0] ) {
+            $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'lastseenforum l SET l.lastseen=current_timestamp WHERE l.userid=? AND l.category=?';
+        }
+        else {
+            $sql = 'INSERT INTO '.$AltSimpleBoard::Data::Prefix.'lastseenforum (lastseen, userid, category) VALUES (current_timestamp, ?, ?)';
+        }
+        $dbh->do( $sql, undef, $userid, $category );
     }
     else {
-        $sql = 'INSERT INTO '.$AltSimpleBoard::Data::Prefix.'lastseenforum (lastseen, userid, category) VALUES (current_timestamp, ?, ?)';
+        my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users u SET u.lastseenforum=current_timestamp WHERE u.id=?;';
+        AltSimpleBoard::Data::dbh()->do( $sql, undef, $userid );
     }
-    $dbh->do( $sql, undef, $userid, $category );
 }
 
 sub _update_user_msgs {
@@ -174,8 +185,8 @@ sub _update_user_msgs {
 }
 sub update_user_stats {
     given ( $_[1] ) {
-        when ( 'forum' ) { _update_user_msgs(  @_ ) }
-        when ( 'msgs'  ) { _update_user_forum( @_ ) }
+        when ( 'forum' ) { _update_user_forum( @_ ) }
+        when ( 'msgs'  ) { _update_user_msgs(  @_ ) }
     }
 }
 
