@@ -3,6 +3,17 @@ use utf8;
 use strict;
 use warnings;
 
+sub handle_silent {
+    # controller, code, errormessage
+    my $c    = shift;
+    my $code = shift;
+    local $@;
+    eval { $code->() };
+    return if $@;
+    return 1;
+
+}
+
 sub handle {
     # controller, code, errormessage
     my $c    = shift;
@@ -55,7 +66,7 @@ sub handling {
 sub _something {
     my $c = shift; my $code = shift; my $return;
     die '"code" is not a code reference' unless 'CODE' eq ref $code;
-    handle( $c, sub { $return = $code->() }, '' );
+    handle_silent( $c, sub { $return = $code->() }, '' );
     return $return;
 }
 sub or_empty    { _something( @_ ) // [] }
