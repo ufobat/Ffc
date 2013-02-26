@@ -65,7 +65,6 @@ sub _get_relevant_data {
     my $user    = $self->param('user');
     my $pass    = $self->param('pass');
     my @data;
-AltSimpleBoard::Data::Auth::get_userdata_for_login( $user, $pass );
     AltSimpleBoard::Errors::handle( $self, sub { @data = AltSimpleBoard::Data::Auth::get_userdata_for_login( $user, $pass ) }, 'Benutzername oder Passwort ungültig, bitte melden Sie sich erneut an.' );
     return unless @data;
     $self->stash( error => '' );
