@@ -1,4 +1,4 @@
-<div class="postbox <%= act() %><%= $post->{ownpost} ? ' '.act().'ownpost ownpost' : '' %><%= $post->{active} ? ' activepost' : '' %><%= $post->{new} ? ' newpost' : '' %>">
+<div class="postbox <%= act() %><%= $post->{ownpost} ? ' '.act().'ownpost ownpost' : '' %><%= $post->{active} ? ' activepost' : '' %><%= $post->{newpost} ? ' newpost' : '' %>">
     <h2>
 % if ( act() ne 'notes' ) {
 %   if ( $post->{from}->{active} ) {

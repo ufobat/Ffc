@@ -234,27 +234,41 @@ sub _get_stuff {
     my @params = @_;
     check_user( $userid );
     $page = 1 unless $page and $page =~ m/\A\d+\z/xms;
-    my $sql =
-        q{SELECT}
-      . q{ p.id, p.text, p.posted,}
-      . q{ c.name, COALESCE(c.short,''),}
-      . q{ f.id, f.name, f.active,}
-      . q{ t.id, t.name, t.active}
-      . q{ FROM }            . $AltSimpleBoard::Data::Prefix . q{posts p}
-      . q{ INNER JOIN }      . $AltSimpleBoard::Data::Prefix . q{users f ON f.id=p.from}
-      . q{ LEFT OUTER JOIN } . $AltSimpleBoard::Data::Prefix . q{users t ON t.id=p.to}
-      . q{ LEFT OUTER JOIN } . $AltSimpleBoard::Data::Prefix . q{categories c ON c.id=p.category}
-      . q{ WHERE } . $where
-      . ( $query ? q{ AND p.text LIKE ? } : '' )
-      . q{ AND ( c.short = ? OR ( ( ? = '' OR ? IS NULL ) AND p.category IS NULL) )}
-      . q{ ORDER BY p.posted DESC LIMIT ? OFFSET ?};
-
+    my $q = $query ? q{AND p.text LIKE ?} : '';
+    my $p = $AltSimpleBoard::Data::Prefix;
+    my $l = _get_categories_sql();
+    my $sql = << "EOSQL";
+SELECT p.id, p.text, p.posted, 
+       c.name, COALESCE(c.short,''),
+       f.id, f.name, f.active,
+       t.id, t.name, t.active,
+       CASE WHEN p.from = p.to
+            THEN 0
+            ELSE CASE WHEN p.to IS NOT NULL AND p.to = u.id
+                      THEN CASE WHEN p.posted >= t.lastseenmsgs THEN 1 ELSE 0 END
+                      ELSE CASE WHEN p.category IS NULL
+                                THEN CASE WHEN p.posted >= u.lastseenforum THEN 1 ELSE 0 END
+                                ELSE CASE WHEN p.posted >= l.lastseen THEN 1 ELSE 0 END
+                           END
+                 END
+       END
+  FROM             ${p}posts         p
+  INNER       JOIN ${p}users         u ON u.id = ?
+  INNER       JOIN ${p}users         f ON f.id = p.from
+  LEFT  OUTER JOIN ${p}users         t ON t.id = p.to
+  LEFT  OUTER JOIN ${p}categories    c ON c.id = p.category
+  LEFT  OUTER JOIN ${p}lastseenforum l ON c.id = l.category AND l.userid = u.id
+  WHERE $where $q
+    AND ( c.short = ? OR ( ( ? = '' OR ? IS NULL ) AND p.category IS NULL) )
+  ORDER BY p.posted DESC LIMIT ? OFFSET ?
+EOSQL
     return [ map { my $d = $_;
             $d = {
                 text      => AltSimpleBoard::Data::Formats::format_text($d->[1], $c),
                 start     => AltSimpleBoard::Data::Formats::format_text(do {(split /\n/, $d->[1])[0] // ''}, $c),
                 raw       => $d->[1],
                 active    => 0,
+                newpost   => $d->[11],
                 timestamp => AltSimpleBoard::Data::Formats::format_timestamp($d->[2]),
                 ownpost   => $d->[5] == $userid ? 1 : 0,
                 category  => $d->[3] # kategorie
@@ -283,7 +297,7 @@ sub _get_stuff {
                 ? 1 : 0;
             $d;
         } @{ AltSimpleBoard::Data::dbh()
-          ->selectall_arrayref( $sql, undef, @params, ( $query ? "\%$query\%" : () ), $cat, $cat, $cat,
+          ->selectall_arrayref( $sql, undef, $userid, @params, ( $query ? "\%$query\%" : () ), $cat, $cat, $cat,
             $AltSimpleBoard::Data::Limit,
             ( ( $page - 1 ) * $AltSimpleBoard::Data::Limit ) ) } ];
 }

@@ -196,6 +196,7 @@ sub frontpage {
     my $posts  = [];
     my $act = $s->{act};
     my $cat = $s->{category};
+    AltSimpleBoard::Data::Board::get_forum(@params);
     given ( $act ) {
         when('forum'  ){$posts=$c->or_empty(sub{AltSimpleBoard::Data::Board::get_forum(@params)})}
         when('notes'  ){$posts=$c->or_empty(sub{AltSimpleBoard::Data::Board::get_notes(@params)})}
