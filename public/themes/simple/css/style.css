@@ -126,3 +126,6 @@ img.icon {
 .newpost {
     box-shadow: 0 0 3px #fff;
 }
+.postbox textarea:focus {
+    height: 15em;
+}

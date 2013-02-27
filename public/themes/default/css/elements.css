@@ -20,6 +20,9 @@ input[type="text"], input[type="password"] {
     height: 5em;
     margin-bottom: .25em;
 }
+.postbox textarea:focus {
+    height: 15em;
+}
 .divider {
     color: #000;
 }
