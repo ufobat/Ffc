@@ -213,7 +213,7 @@ sub frontpage {
     $c->stash( posts => $posts);
     $c->get_counts;
     $c->stash( categories => ($act eq 'forum') 
-            ? $c->or_empty( sub { AltSimpleBoard::Data::Board::get_categories() } ) 
+            ? $c->or_empty( sub { AltSimpleBoard::Data::Board::get_categories($userid) } ) 
             : [] );
     if ( $c->error_handling({
         code        => sub { AltSimpleBoard::Data::Board::update_user_stats($userid, $act, $cat) },
@@ -228,6 +228,7 @@ sub frontpage {
 sub get_counts {
     my $c = shift;
     my $userid = $c->session()->{userid};
+AltSimpleBoard::Data::Board::count_newpost($userid);
     $c->stash(notecount    => $c->or_zero(sub{AltSimpleBoard::Data::Board::count_notes(  $userid)}));
     $c->stash(newmsgscount => $c->or_zero(sub{AltSimpleBoard::Data::Board::count_newmsgs($userid)}));
     $c->stash(newpostcount => $c->or_zero(sub{AltSimpleBoard::Data::Board::count_newpost($userid)}));

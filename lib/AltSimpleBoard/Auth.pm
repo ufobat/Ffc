@@ -31,7 +31,7 @@ sub logout {
 
 sub login_form {
     my $self = shift;
-    $self->stash( error => shift // 'Bitte melden Sie sich an' );
+    AltSimpleBoard::Errors::prepare($self, 'Bitte melden Sie sich an');
     $self->app->switch_act( $self,  'auth' );
     _cancel_session( $self );
     _form_prepare( $self );

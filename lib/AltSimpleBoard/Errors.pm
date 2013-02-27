@@ -73,7 +73,7 @@ sub or_empty    { _something( @_ ) // [] }
 sub or_nostring { _something( @_ ) // '' }
 sub or_zero     { _something( @_ ) // 0  }
 
-sub prepare { $_[0]->stash( error => '' ) unless $_[0]->stash('error') }
+sub prepare { $_[0]->stash( error => $_[1] // '' ) unless $_[0]->stash('error') }
 
 1;
 

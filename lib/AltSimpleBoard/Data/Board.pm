@@ -47,6 +47,23 @@ sub update_theme {
     AltSimpleBoard::Data::dbh()->do($sql, undef, $t, $s->{userid});
 }
 
+sub _get_categories_sql {
+    my $p = $AltSimpleBoard::Data::Prefix;
+    return << "EOSQL";
+SELECT c.name AS name, c.short AS short, COUNT(p1.id) AS cnt, 1 AS sort
+  FROM ${p}categories c
+  LEFT OUTER JOIN ${p}lastseenforum f ON f.category=c.id AND f.userid=?
+  LEFT OUTER JOIN ${p}posts p1 ON p1.category=c.id AND p1.posted>=COALESCE(f.lastseen,0)
+  GROUP BY c.id
+UNION
+SELECT 'Allgemein' AS name, '' AS short, COUNT(p2.id) AS cnt, 0 AS sort 
+  FROM ${p}posts p2 
+  WHERE p2.category IS NULL 
+    AND p2.posted>=(SELECT u.lastseenforum FROM ${p}users u WHERE u.id=? LIMIT 1)
+  ORDER BY sort, name
+EOSQL
+}
+
 sub count_newmsgs {
     my $userid = shift;
     check_user( $userid );
@@ -57,8 +74,9 @@ sub count_newmsgs {
 sub count_newpost {
     my $userid = shift;
     die qq{Benutzer unbekannt} unless get_username($userid);
-    my $sql = 'SELECT count(p.id) FROM '.$AltSimpleBoard::Data::Prefix.'posts p WHERE p.to IS NULL';
-    return (AltSimpleBoard::Data::dbh()->selectrow_array($sql))[0];
+    my $sql = _get_categories_sql();
+    $sql = "SELECT SUM(t.cnt) FROM ($sql) t";
+    return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $userid, $userid))[0];
 }
 
 sub count_notes {
@@ -69,17 +87,10 @@ sub count_notes {
 }
 
 sub get_categories {
-    my $sql 
-     = q{SELECT c.name AS name, c.short AS short, COUNT(p1.id) AS cnt, 1 AS sort FROM }
-     . $AltSimpleBoard::Data::Prefix
-     . q{categories c LEFT OUTER JOIN }
-     . $AltSimpleBoard::Data::Prefix
-     . q{posts p1 ON p1.category=c.id GROUP BY c.id UNION }
-     . q{SELECT 'Allgemein' AS name, '' AS short, COUNT(p2.id) AS cnt, 0 AS sort FROM }
-     . $AltSimpleBoard::Data::Prefix
-     . q{posts p2 WHERE p2.category IS NULL }
-     . q{ORDER BY sort, name};
-    return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql);
+    my $userid = shift;
+    die qq{Benutzer unbekannt} unless get_username($userid);
+    my $sql = _get_categories_sql();
+    return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql, undef, $userid, $userid);
 }
 sub get_category {
     my $id = shift;
@@ -158,7 +169,7 @@ sub update_post {
 sub _update_user_forum {
     my $userid = shift;
     check_user( $userid );
-    my $category = $_[2];
+    my $category = $_[1];
     if ( $category ) {
         my $category = get_category_id($category);
         my $sql = 'SELECT COUNT(l.userid) FROM '.$AltSimpleBoard::Data::Prefix.'lastseenforum l WHERE l.userid=? AND l.category=?';
