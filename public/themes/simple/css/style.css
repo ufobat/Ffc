@@ -123,4 +123,6 @@ img.icon {
 .userlist {
     border-right: 1px #ccc dashed;
 }
-
+.newpost {
+    box-shadow: 0 0 3px #fff;
+}
