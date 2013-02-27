@@ -37,6 +37,7 @@ our $Themebasedir = File::Basename::dirname(__FILE__).'/../../public'.$Themedir;
             JSONConfig => { file => $ENV{ASB_CONFIG} // $DefaultConfig } );
         $app->secret( $config->{cookie_secret} );
         $Prefix = $config->{dbprefix};
+        die q(Prefix invalid, needs to be something like /\\w{0,10}/) unless $Prefix =~ m/\A\w{0,10}/xms;
         $Limit = $config->{postlimit};
         $Pagelinkpreview = $config->{pagelinkpreview};
         $Title = $config->{title};
