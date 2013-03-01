@@ -39,7 +39,7 @@
     text-decoration: none;
     border: 1px transparent solid;
 }
-.menu .clock {
+.menu .username, .menu .clock {
     color: #666;
 }
 .menu .mark {

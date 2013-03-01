@@ -80,7 +80,7 @@ h2 {
 .mark {
     color: #c0c;
 }
-.pages, .pages a, .footerlinks, .footerlinks a, .menu a {
+.pages, .pages a, .footerlinks, .footerlinks a, .menu a, .menu .username {
     color: #666;
 }
 .actpage {
