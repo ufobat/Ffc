@@ -21,10 +21,13 @@
 .postbox > * {
     padding: .25em 1em;
 }
-.postbox img {
+.postbox a img {
     max-width: 256px;
     max-height: 128px;
     border: 1px #fff solid;
+}
+.postbox a:hover img {
+    border-color: #00f;
 }
 .postbox .titleinfo a {
     display: inline-block;
