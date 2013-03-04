@@ -32,7 +32,7 @@ sub startup {
     # options
     $routes->route('/options')->via('get')->to('board#options_form')->name('options_form');
     $routes->route('/options')->via('post')->to('board#options_save')->name('options_save');
-    $routes->route('/options')->via('post')->to('board#useradmin_save')->name('useradmin_save');
+    $routes->route('/optionsadmin')->via('post')->to('board#useradmin_save')->name('useradmin_save');
 
     # search
     $routes->route('/search')->via('post')->to('board#search')->name('search');

@@ -13,18 +13,24 @@ sub update_email {
     check_user( $userid );
     die qq{Neue Emailadresse ist zu lang (<=1024)} unless 1024 >= length $email;
     die qq(Neue Emailadresse schaut komisch aus) unless $email =~ m/\A[-.\w]+\@[-.\w]+\.\w+\z/xmsi;
-    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users SET email=? WHERE id=? AND active=1';
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users u SET u.email=? WHERE u.id=?';
     AltSimpleBoard::Data::dbh()->do($sql, undef, $email, $userid);
+}
+
+sub _check_password_change {
+    my ( $newpw1, $newpw2, $oldpw ) = @_;
+    for ( ( $oldpw ? ['Altes Passwort' => $oldpw] : () ), ['Neues Passwort' => $newpw1], ['Passwortwiederholung' => $newpw2] ) {
+        die qq{$_->[0] entspricht nicht der Norm (4-16 Zeichen)} unless $_->[1] =~ m/\A.{4,16}\z/xms;
+    }
+    die qq{Das neue Passwort und dessen Wiederholung stimmen nicht überein} unless $newpw1 eq $newpw2;
+    return 1;
 }
 
 sub update_password {
     my ( $userid, $oldpw, $newpw1, $newpw2 ) = @_;
     check_user( $userid );
-    for ( ['Altes Passwort' => $oldpw], ['Neues Passwort' => $newpw1], ['Passwortwiederholung' => $newpw2] ) {
-        die qq{$_->[0] entspricht nicht der Norm (4-16 Zeichen)} unless $_->[1] =~ m/\A.{4,16}\z/xms;
-    }
+    _check_password_change( $newpw1, $newpw2, $oldpw );
     die qq{Das alte Passwort ist falsch} unless AltSimpleBoard::Data::Auth::check_password($userid, $oldpw);
-    die qq{Das neue Passwort und dessen Wiederholung stimmen nicht überein} unless $newpw1 eq $newpw2;
     AltSimpleBoard::Data::Auth::set_password($userid, $newpw1);
 }
 
@@ -33,7 +39,7 @@ sub update_show_images {
     my $x = shift;
     die qq{show_images muss 0 oder 1 sein} unless $x =~ m/\A[01]\z/xms;
     $s->{show_images} = $x;
-    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users SET show_images=? WHERE id=?';
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users u SET u.show_images=? WHERE u.id=?';
     AltSimpleBoard::Data::dbh()->do($sql, undef, $x, $s->{userid});
 }
 
@@ -43,8 +49,58 @@ sub update_theme {
     die qq{Themenname zu lang (64 Zeichen maximal)} if 64 < length $t;
     die qq{Thema ungültig: $t} unless $t ~~ @AltSimpleBoard::Data::Themes; 
     $s->{theme} = $t;
-    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users SET theme=? WHERE id=?';
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users u SET u.theme=? WHERE u.id=?';
     AltSimpleBoard::Data::dbh()->do($sql, undef, $t, $s->{userid});
+}
+
+sub admin_update_password {
+    my $adminuid = shift;
+    die 'Passworte von anderen Benutzern dürfen nur Administratoren ändern'
+        unless AltSimpleBoard::Data::Auth::is_user_admin($adminuid);
+    my $userid = shift;
+    check_user( $userid );
+    my $pw1 = shift;
+    my $pw2 = shift;
+    _check_password_change( $pw1, $pw2 );
+    AltSimpleBoard::Data::Auth::set_password($userid, $pw1);
+}
+
+sub admin_update_active {
+    my $adminuid = shift;
+    die 'Benutzern aktivieren oder deaktiveren dürfen nur Administratoren'
+        unless AltSimpleBoard::Data::Auth::is_user_admin($adminuid);
+    my $userid = shift;
+    check_user( $userid );
+    my $active = shift() ? 1 : 0;
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users u SET u.active=? WHERE u.id=?';
+    AltSimpleBoard::Data::dbh()->do($sql, undef, $active, $userid);
+}
+
+sub admin_update_admin {
+    my $adminuid = shift;
+    die 'Benutzern zu Administratoren befördern oder ihnen den Adminstratorenstatus wegnehmen dürfen nur Administratoren'
+        unless AltSimpleBoard::Data::Auth::is_user_admin($adminuid);
+    my $userid = shift;
+    check_user( $userid );
+    my $admin = shift() ? 1 : 0;
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users u SET u.admin=? WHERE u.id=?';
+    AltSimpleBoard::Data::dbh()->do($sql, undef, $admin, $userid);
+}
+
+sub admin_create_user {
+    my $adminuid = shift;
+    die 'Neue Benutzer anlegen dürfen nur Administratoren'
+        unless AltSimpleBoard::Data::Auth::is_user_admin($adminuid);
+    my $username = shift;
+    die qq(Benutzer "$username" existiert bereits und darf nicht neu angelegt werden)
+        if AltSimpleBoard::Data::Board::get_userid($username);
+    my $pw1 = shift;
+    my $pw2 = shift;
+    _check_password_change( $pw1, $pw2 );
+    my $active = shift() ? 1 : 0;
+    my $admin  = shift() ? 1 : 0;
+    my $sql = 'INSERT INTO '.$AltSimpleBoard::Data::Prefix.'users (name, password, active, admin) VALUES (?,?,?,?)';
+    AltSimpleBoard::Data::dbh()->do($sql, undef, $username, crypt($pw1, AltSimpleBoard::Data::cryptsalt()), $active, $admin);
 }
 
 sub _get_categories_sql {
@@ -112,17 +168,26 @@ sub check_category {
 }
 
 sub check_user { 
-    local $@;
     eval { get_username( shift ) };
-    die shift // $@ if $@;
+    die shift() // $@ if $@;
     return 1;
 }
+sub get_userid {
+    my $username = shift;
+    die qq{Benutzername ungültig, zwei bis 64 Zeichen erlaubt}
+        unless $username =~ m/\A\w{2,64}\z/xms;
+    my $sql = 'SELECT u.id FROM '.$AltSimpleBoard::Data::Prefix.'users u WHERE u.name = ?';
+    $username = AltSimpleBoard::Data::dbh()->selectall_arrayref($sql, undef, $username);
+    return $username->[0]->[0] if @$username;
+    return;
+}
+
 sub get_username {
     my $id = shift;
     die qq{Benutzerid ungültig} unless $id =~ m/\A\d+\z/xms;
-    my $sql = 'SELECT u.name FROM '.$AltSimpleBoard::Data::Prefix.'users u WHERE u.id=? AND u.active=1';
+    my $sql = 'SELECT u.name FROM '.$AltSimpleBoard::Data::Prefix.'users u WHERE u.id=?';
     $id = AltSimpleBoard::Data::dbh()->selectall_arrayref($sql, undef, $id);
-    die qq{Benutzer unbekannt oder inaktiv} unless @$id and $id->[0]->[0];
+    die qq{Benutzer unbekannt} unless @$id and $id->[0]->[0];
     return $id;
 }
 

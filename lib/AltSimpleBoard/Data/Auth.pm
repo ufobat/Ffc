@@ -24,7 +24,7 @@ sub get_userdata_for_login { # for login only
 sub set_password {
     my ( $userid, $pass ) = @_;
     die qq{Das Passwort entspricht nicht der Norm (4-16 Zeichen)} unless $pass =~ m/\A.{4,16}\z/xms;
-    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users u SET u.password=? WHERE u.id=? AND u.active=1';
+    my $sql = 'UPDATE '.$AltSimpleBoard::Data::Prefix.'users u SET u.password=? WHERE u.id=?';
     AltSimpleBoard::Data::dbh()->do($sql, undef, crypt($pass, AltSimpleBoard::Data::cryptsalt()), $userid);
 }
 

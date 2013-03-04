@@ -11,6 +11,7 @@ sub error_handling { &AltSimpleBoard::Errors::handling    }
 sub or_nostring    { &AltSimpleBoard::Errors::or_nostring }
 sub or_empty       { &AltSimpleBoard::Errors::or_empty    }
 sub or_zero        { &AltSimpleBoard::Errors::or_zero     }
+sub or_undef       { &AltSimpleBoard::Errors::or_undef    }
 
 sub options_form {
     my $c = shift;
@@ -50,12 +51,40 @@ sub options_save {
 
 sub useradmin_save {
     my $c = shift;
-    my $s = $c->session;
-    $c->error_handling( {
-        code => sub { die unless AltSimpleBoard::Data::Auth::is_user_admin($s->{userid}) },
-        msg => q{Angemeldeter Benutzer ist kein Admin und darf das hier garnicht},
-    } );
-    $c->render('options_form');
+    my $adminuid = $c->session()->{userid};
+    my $username = $c->param('username');
+    if ( $c->error_handling( {
+            code => sub { die 'Angemeldeter Benutzer ist kein Administrator' unless AltSimpleBoard::Data::Auth::is_user_admin($adminuid) },
+            msg => q{Angemeldeter Benutzer ist kein Admin und darf das hier garnicht},
+        } ) ) {
+        my $userid  = $c->or_undef( sub { AltSimpleBoard::Data::Board::get_userid($username) } );
+        my $newpw1  = $c->param('newpw1');
+        my $newpw2  = $c->param('newpw2');
+        my $admin   = $c->param('admin');
+        my $active  = $c->param('active');
+        if ( defined $userid ) {
+            if ( $c->param('overwriteok') ) {
+                $c->error_handling( sub { 
+                    AltSimpleBoard::Data::Board::admin_update_password( $adminuid, $userid, $newpw1, $newpw2 )
+                } ) if $newpw1 and $newpw2;
+                $c->error_handling( sub { 
+                    AltSimpleBoard::Data::Board::admin_update_active( $adminuid, $userid, $active )
+                } );
+                $c->error_handling( sub { 
+                    AltSimpleBoard::Data::Board::admin_update_admin( $adminuid, $userid, $admin )
+                } );
+            }
+            else {
+                $c->error_handling( { plain => '"Überschreiben"-Option muss angekreuzt werden, wesche de Sischeheit!' } );
+            }
+        }
+        else {
+            $c->error_handling( sub {
+                AltSimpleBoard::Data::Board::admin_create_user( $adminuid, $username, $newpw1, $newpw2, $active, $admin )
+            } );
+        }
+    }
+    $c->options_form();
 }
 
 sub _switch_category {

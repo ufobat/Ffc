@@ -58,7 +58,7 @@
         </tr>
         <tr>
             <th colspan="2">Benutzername</th>
-            <td><input type="text" name="alter" value="" /></td>
+            <td><input type="text" name="username" value="" /></td>
         </tr>
         <tr>
             <th rowspan="2">Passwort</th>
