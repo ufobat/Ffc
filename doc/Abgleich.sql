@@ -22,7 +22,7 @@ CREATE TABLE `asb_posts` (
   `from` int(11) NOT NULL,
   `posted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `text` text NOT NULL,
-  `to` int(11) NOT NULL,
+  `to` int(11),
   `category` bigint,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=65535 DEFAULT CHARSET=utf8;

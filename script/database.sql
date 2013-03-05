@@ -18,7 +18,7 @@ CREATE TABLE "${Prefix}posts" (
   "from" int(11) NOT NULL,
   "posted" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   "text" text NOT NULL,
-  "to" int(11) NOT NULL,
+  "to" int(11),
   "category" bigint,
   PRIMARY KEY ("id")
 );
