@@ -19,6 +19,7 @@
 .menu input[type="text"] {
     background-color: #666;
     border-color: #000;
+    box-shadow: inset 1px 1px 2px #111;
     color: #ccc;
     width: 7.5em;
 }
