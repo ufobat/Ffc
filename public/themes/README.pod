@@ -1,0 +1,79 @@
+=encoding utf8
+
+=head1 Themen-Verzeichnisse hier ablegen
+
+=head2 Themen-Verzeichnisse benötigen:
+
+=over 4
+
+=item C<css/style.css>, in der das CSS definiert wird
+
+=item C<img/favicon.png> für das Favoritenicon
+
+=item C<img/icons/> (diverse Aktionsbuttons und so):
+
+=over 8
+
+=item C<bye.png> als Beendenbutton im Menü
+
+=item C<delete.png> als Löschen-Knopf
+
+=item C<edit.png> als Bearbeiten-Button
+
+=item C<msgs.png> als Chat-Knopf
+
+=item C<options.png> für den Link zu den Optionen im Menü
+
+=item C<search.png> für den Suchenbutton im Menü
+
+=item C<img.png> für Bildericon, wenn keine Bilder angezeigt werden sollen
+
+=item C<refresh.png> erklärt die Uhrzeit im Menü näher
+
+=back
+
+=item C<img/smileys/> (Gesichtchenbildchen):
+
+=over 8
+
+=item C<smile.png>:       C<<< :) :-) =) >>>
+
+=item C<sad.png>:         C<<< :( :-( =( >>>
+
+=item C<crying.png>:      C<<< :'( :,( >>>
+
+=item C<twinkling.png>:   C<<< ;) ;-) >>>
+
+=item C<laughting.png>:   C<<< :D =D :-D LOL >>>
+
+=item C<rofl.png>:        C<<< XD X-D ROFL >>>
+
+=item C<unsure.png>:      C<<< :| :-| =| >>>
+
+=item C<yes.png>:         C<<< (y) (Y) >>>
+
+=item C<no.png>:          C<<< (n) (N) >>>
+
+=item C<down.png>:        C<<< -.- >>>
+
+=item C<nope.png>:        C<<< :/ :-/ :\ :-\ =/ =\ >>>
+
+=item C<sunny.png>:       C<<< B) B-) 8) 8-) >>>
+
+=item C<cats.png>:        C<<< ^^ >>>
+
+=item C<love.png>:        C<<< <3 >>>
+
+=item C<devilsmile.png>:  C<<< >:) >:-) >=) >>>
+
+=item C<angry.png>:       C<<< >:( >:-( >=( >>>
+
+=item C<evilgrin.png>:    C<<< >:D >:-D >=D >>>
+
+=back
+
+=back
+
+Der Name des Themenverzeichnisses wird in der Konfiguration unter `etc/altsimpleboard.json` angegeben
+
+=cut

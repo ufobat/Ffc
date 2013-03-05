@@ -1,5 +1,6 @@
-AltSimpleBoard
-==============
+=encoding utf8
+
+=head1 AltSimpleBoard
 
 Schnelle, leichtgewichtige, übersichtliche, schlanke und 
 unkomplizierte Foren- und Nachrichtenplattform für eine 
@@ -7,33 +8,57 @@ unkomplizierte Foren- und Nachrichtenplattform für eine
 Teilnehmern mit klarer und einfacher Datenhaltung und 
 simpler technischer Struktur.  
 
-Features
---------
+=head2 Features
 
-* Einfache Bedienung
-* Schlanke Präsentation
-* Ressourcenschohnende Darbietung
-* Einfache klare Datenhaltung
-* Alle Daten werden grundlegend in einer zentralen Tabelle erfasst
-* Kein unnützer Ballast wie 
-  * Beitragstitel
-  * Überbordender Eyecandy
-  * Featuritis
-  * Avatare (ja, die sind rausgefallen)
-* Datenaustauschplattform für alle Teilbereiche
-* Teilbereiche:
-  * Diskussionsforum mit Kategorien
-  * Nachrichtenplattform für Privatnachrichten an einzelne Teilnehmer
-  * Notizen für den eigenen Bedarf
+=item Einfache Bedienung
 
-Datenstruktur
--------------
+=over 4
+
+=item Schlanke Präsentation
+
+=item Ressourcenschohnende Darbietung
+
+=item Einfache klare Datenhaltung
+
+=item Alle Daten werden grundlegend in einer zentralen Tabelle erfasst
+
+=item Kein unnützer Ballast wie 
+
+=over 8
+
+=item Beitragstitel
+
+=item Überbordender Eyecandy
+
+=item Featuritis
+
+=item Avatare (ja, die sind rausgefallen)
+
+=back
+
+=item Datenaustauschplattform für alle Teilbereiche
+
+=item Teilbereiche:
+
+=over 8
+
+=item Diskussionsforum mit Kategorien
+
+=item Nachrichtenplattform für Privatnachrichten an einzelne Teilnehmer
+
+=item Notizen für den eigenen Bedarf
+
+=back
+
+=back
+
+=head2 Datenstruktur
 
 Alles ist ein Beitrag.
 
 Beiträge haben einen Text, ein Erstelldatum und einen Urheber.
 
-Beiträge ohne Zielperson (`to`) gelten als öffentliche Forenbeiträge.
+Beiträge ohne Zielperson (C<to>) gelten als öffentliche Forenbeiträge.
 Beiträge mit anderer Zielperson, als der Urheber ist, gelten als 
 Privatnachrichten. Beiträge mit dem Urheber zusätzlich als Zielperson
 gelten als eigene Notizen.
@@ -50,3 +75,4 @@ Archivierung und Komprimierung). Diese Datei wird dann über einen
 Beitragsindex referenziert im Dateisystem abgelegt und kann entsprechend
 von allen oder von den Zielpersonen des Beitrages abgerufen werden.
 
+=cut
