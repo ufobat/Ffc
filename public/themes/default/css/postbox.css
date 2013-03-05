@@ -10,9 +10,12 @@
     color: #000;
 }
 .postbox h2 {
-    background: #69c;
+    background: #ddd;
     color: #333;
     font-size: 0.75em;
+}
+.ownpost h2 { 
+    background-color: transparent;
 }
 .postbox, .pages {
     margin-top: 3px;
@@ -52,9 +55,6 @@
 }
 .postbox .category {
     white-space: nowrap;
-}
-.ownpost h2 { 
-    background-color: #8ac;
 }
 img.smiley {
     border: none;
