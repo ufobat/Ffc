@@ -10,9 +10,9 @@ simpler technischer Struktur.
 
 =head2 Features
 
-=item Einfache Bedienung
-
 =over 4
+
+=item Einfache Bedienung
 
 =item Schlanke Präsentation
 
