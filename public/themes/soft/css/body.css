@@ -4,7 +4,7 @@
     font-size: 1em;
 }
 body {
-    background: #7e97b0 url('../img/hg.png');
+    background: #7e97b0 url('../img/hg.png') fixed;
     padding-top: 1.75em;
     font-family: serif;
     color: #003;
