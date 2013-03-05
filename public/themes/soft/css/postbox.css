@@ -1,0 +1,75 @@
+.pages {
+    text-align: right;
+}
+.pages a {
+    color: #03f;
+}
+.postbox {
+    background: #ccc url('../img/tg.png') repeat-x;
+    box-shadow: 0px 1px 3px #036;
+    border-radius: 4px;
+    border: 2px #fff solid;
+    color: #333;
+    text-shadow: 1px 1px 0 #eee;
+}
+.postbox h2 {
+    color: #333;
+    font-size: 0.75em;
+}
+.ownpost { 
+    background-image: url('../img/otg.png');
+}
+.postbox, .pages {
+    margin-top: 7px;
+}
+.postbox > * {
+    padding: .25em 1em;
+}
+.postbox a img {
+    max-width: 256px;
+    max-height: 128px;
+    border: 1px #fff solid;
+}
+.postbox a:hover img {
+    border-color: #00f;
+}
+.postbox .titleinfo a {
+    display: inline-block;
+    min-width: 1em;
+    text-align: center;
+}
+.postbox .titleinfo img {
+    border: none;
+}
+
+.clear {
+    clear: both;
+}
+.postbox .titleinfo {
+    font-weight: normal;
+}
+.activepost {
+    color: #666;
+    background-color: #999;
+}
+.titleinfo .category {
+    text-decoration: none;
+}
+.postbox .category {
+    white-space: nowrap;
+}
+img.smiley {
+    border: none;
+    background: none;
+}
+img.icon {
+    border: none;
+}
+.error {
+    color: #c30;
+    border: none;
+    background: transparent;
+}
+.newpost {
+    border-color: #fc6;
+}

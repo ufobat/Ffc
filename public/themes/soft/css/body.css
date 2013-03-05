@@ -1,0 +1,30 @@
+* {
+    padding: 0;
+    margin:  0;
+    font-size: 1em;
+}
+body {
+    background: #7e97b0 url('../img/hg.png');
+    padding-top: 1.75em;
+    font-family: serif;
+    color: #003;
+}
+body > * {
+    margin: 0 auto;
+    max-width: 50em;
+}
+
+.footerlinks {
+    text-align: center;
+    color: #036;
+    margin-top: .25em;
+}
+.footerlinks a {
+    color: #036;
+    text-decoration: none;
+}
+
+.footerlinks * {
+    font-size: .75em;
+}
+
