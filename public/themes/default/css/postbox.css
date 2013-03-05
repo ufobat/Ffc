@@ -5,17 +5,16 @@
     color: #03f;
 }
 .postbox {
-    background: #ccc;
+    background: #ddd;
     border: 1px #369 solid;
     color: #000;
 }
 .postbox h2 {
-    background: #ddd;
     color: #333;
     font-size: 0.75em;
 }
-.ownpost h2 { 
-    background-color: transparent;
+.ownpost { 
+    background: #ccc;
 }
 .postbox, .pages {
     margin-top: 3px;
