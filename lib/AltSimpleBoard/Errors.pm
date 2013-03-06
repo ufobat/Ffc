@@ -19,12 +19,13 @@ sub handle {
     my $c    = shift;
     my $code = shift;
     my $msg  = shift;
+    prepare($c);
     local $@;
     eval { $code->() };
     if ( $@ ) {
         my $log = $c->app->log;
         $log->error("system error message: $@");
-        $log->error("user presented error message: $msg");
+        $log->error("user presented error message: " . ($msg // ''));
         my $error = $c->stash('error') // '';
         my $newerror = $AltSimpleBoard::Data::Debug ? $@ : ($msg // 'Fehler');
         $c->stash(error => $error ? "$error\n\n$newerror" : $newerror);
@@ -74,7 +75,10 @@ sub or_nostring { _something( @_ ) // '' }
 sub or_zero     { _something( @_ ) // 0  }
 sub or_undef    { _something( @_ )       }
 
-sub prepare { $_[0]->stash( error => $_[1] // '' ) unless $_[0]->stash('error') }
+sub prepare { 
+    die q{no mojolicious controller given} unless $_[0];
+    $_[0]->stash( error => $_[1] // '' ) unless $_[0]->stash('error');
+}
 
 1;
 
