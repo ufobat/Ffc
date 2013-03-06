@@ -5,8 +5,8 @@ use warnings;
 
 sub handle_silent {
     # controller, code, errormessage
-    my $c    = shift;
-    my $code = shift;
+    my $c    = shift or die 'no controller provided as first parameter';
+    my $code = shift or die 'no code provided as second parameter';
     local $@;
     eval { $code->() };
     return if $@;
@@ -16,8 +16,8 @@ sub handle_silent {
 
 sub handle {
     # controller, code, errormessage
-    my $c    = shift;
-    my $code = shift;
+    my $c    = shift or die 'no controller provided as first parameter';
+    my $code = shift or die 'no code provided as second parameter';
     my $msg  = shift;
     prepare($c);
     local $@;
@@ -35,8 +35,8 @@ sub handle {
 }
 
 sub handling {
-    my $c           = shift; 
-    my $params      = shift or die 'params not set for board error handling';
+    my $c      = shift or die 'no controller provided as first parameter';
+    my $params = shift or die 'params not set for board error handling';
     my ( $code, $msg, $after_ok, $after_error, $plain );
     if ( 'CODE' eq ref $params ) {
         $code = $params;

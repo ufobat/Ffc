@@ -76,7 +76,7 @@ use 5.010;
 use Data::Dumper;
 
 sub c  { MockController->new() }
-sub r  { '>>> ' . rand(10000) . ' <<<<' }
+sub r  { '>>> ' . rand(10000) . ' <<<' }
 sub gs { r(), '', c(), r() }
 
 ##############################################################################
@@ -84,7 +84,7 @@ BEGIN { use_ok('AltSimpleBoard::Errors'); }
 ##############################################################################
 
 ##############################################################################
-diag('prepare');
+diag('=== prepare ===');
 ##############################################################################
 # - stash für fehlerbehandlung vorbereiten
 # - sollte mittlerweile automatisch passieren
@@ -116,13 +116,26 @@ diag('prepare');
 }
 
 ##############################################################################
-diag('handle_silent');
+diag('=== handle_silent ===');
 ##############################################################################
 # - etwas ausführen, aber fehler unterdrücken
 # - stattdessen mit true oder false antworten, obs geklappt hat
 {
     my $h = sub { &AltSimpleBoard::Errors::handle_silent };
+    diag('test wrong call');
     {
+        eval { $h->() };
+        ok( $@, 'died due to wrong call (no controller)' );
+        like( $@, qr/no controller provided as first parameter/, 'died with correct message with wrong call' );
+    }
+    {
+        my ( $r, $x, $c, $e ) = gs();
+        eval { $h->($c) };
+        ok( $@, 'died due to wrong call (no code)' );
+        like( $@, qr/no code provided as second parameter/, 'died with correct message with wrong call' );
+    }
+    {
+        diag('test with good code');
         my ( $r, $x, $c, $e ) = gs();
         isnt( $x, $r, 'check before running the code' );
         ok( $h->( $c, sub { $x = $r } ),
@@ -130,6 +143,7 @@ diag('handle_silent');
         is( $x, $r, 'code without errors has been silently executed' );
     }
     {
+        diag('test with bad code');
         my ( $r, $x, $c, $e ) = gs();
         my $ret;
         eval {
@@ -139,6 +153,7 @@ diag('handle_silent');
         ok( !$ret, 'silent handling of error-prone code returns false' );
     }
     {
+        diag('test with bad code, check for error message');
         my ( $r, $x, $c, $e ) = gs();
         my $y = $x;
         isnt( $x, $r, 'check before running the code' );
@@ -155,10 +170,22 @@ diag('handle_silent');
 }
 
 ##############################################################################
-diag(q{handle});
+diag(q{=== handle ===});
 ##############################################################################
 {
     my $h = sub { &AltSimpleBoard::Errors::handle };
+    diag('test wrong call');
+    {
+        eval { $h->() };
+        ok( $@, 'died due to wrong call (no controller)' );
+        like( $@, qr/no controller provided as first parameter/, 'died with correct message with wrong call' );
+    }
+    {
+        my ( $r, $x, $c, $e ) = gs();
+        eval { $h->($c) };
+        ok( $@, 'died due to wrong call (no code)' );
+        like( $@, qr/no code provided as second parameter/, 'died with correct message with wrong call' );
+    }
     {
         diag('checking good code');
         my ( $r, $x, $c, $e ) = gs();
@@ -276,14 +303,14 @@ diag(q{handle});
 }
 
 ##############################################################################
-diag(q{handling});
+diag(q{=== handling ===});
 ##############################################################################
 {
     my $h = sub { &AltSimpleBoard::Errors::handling };
 }
 
 ##############################################################################
-diag(q{or_empty    -> []});
+diag(q{=== or_empty    -> [] ===});
 ##############################################################################
 {
     my $o = sub { &AltSimpleBoard::Errors::or_empty };
@@ -291,7 +318,7 @@ diag(q{or_empty    -> []});
 }
 
 ##############################################################################
-diag(q{or_nostring -> ''});
+diag(q{=== or_nostring -> '' ===});
 ##############################################################################
 {
     my $o = sub { &AltSimpleBoard::Errors::or_nostring };
@@ -299,7 +326,7 @@ diag(q{or_nostring -> ''});
 }
 
 ##############################################################################
-diag(q{or_undef    -> undef});
+diag(q{=== or_undef    -> undef ===});
 ##############################################################################
 {
     my $o = sub { &AltSimpleBoard::Errors::or_undef };
@@ -307,7 +334,7 @@ diag(q{or_undef    -> undef});
 }
 
 ##############################################################################
-diag(q{or_zero     -> 0});
+diag(q{=== or_zero     -> 0 ===});
 ##############################################################################
 {
     my $o = sub { &AltSimpleBoard::Errors::or_zero };
