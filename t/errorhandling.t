@@ -126,13 +126,21 @@ diag('=== handle_silent ===');
     {
         eval { $h->() };
         ok( $@, 'died due to wrong call (no controller)' );
-        like( $@, qr/no controller provided as first parameter/, 'died with correct message with wrong call' );
+        like(
+            $@,
+            qr/no controller provided as first parameter/,
+            'died with correct message with wrong call'
+        );
     }
     {
         my ( $r, $x, $c, $e ) = gs();
         eval { $h->($c) };
         ok( $@, 'died due to wrong call (no code)' );
-        like( $@, qr/no code provided as second parameter/, 'died with correct message with wrong call' );
+        like(
+            $@,
+            qr/no code provided as second parameter/,
+            'died with correct message with wrong call'
+        );
     }
     {
         diag('test with good code');
@@ -147,7 +155,7 @@ diag('=== handle_silent ===');
         my ( $r, $x, $c, $e ) = gs();
         my $ret;
         eval {
-            $ret = $h->( $c, sub { die $e} );
+            $ret = $h->( $c, sub { die $e } );
         };
         ok( !$@,   'bad code died, death was unnoticed from the outside' );
         ok( !$ret, 'silent handling of error-prone code returns false' );
@@ -178,13 +186,21 @@ diag(q{=== handle ===});
     {
         eval { $h->() };
         ok( $@, 'died due to wrong call (no controller)' );
-        like( $@, qr/no controller provided as first parameter/, 'died with correct message with wrong call' );
+        like(
+            $@,
+            qr/no controller provided as first parameter/,
+            'died with correct message with wrong call'
+        );
     }
     {
         my ( $r, $x, $c, $e ) = gs();
         eval { $h->($c) };
         ok( $@, 'died due to wrong call (no code)' );
-        like( $@, qr/no code provided as second parameter/, 'died with correct message with wrong call' );
+        like(
+            $@,
+            qr/no code provided as second parameter/,
+            'died with correct message with wrong call'
+        );
     }
     {
         diag('checking good code');
@@ -198,7 +214,7 @@ diag(q{=== handle ===});
         my ( $r, $x, $c, $e ) = gs();
         my $y = $x;
         my $ret;
-        $AltSimpleBoard::Data::Debug = 0; 
+        $AltSimpleBoard::Data::Debug = 0;
         eval {
             $ret = $h->( $c, sub { $x = $r; die $e; $y = $r } );
         };
@@ -207,11 +223,7 @@ diag(q{=== handle ===});
         is( $x, $r, 'errorprone code has been run, even if it died' );
         isnt( $y, $r, 'errorprone code has been run, but died ok' );
         my $l = $c->app->log->error;
-        like(
-            $l->[0],
-            qr{system error message: $e},
-            'system error catched'
-        );
+        like( $l->[0], qr{system error message: $e}, 'system error catched' );
         is(
             $l->[1],
             'user presented error message: ',
@@ -225,7 +237,7 @@ diag(q{=== handle ===});
         my ( $r, $x, $c, $e ) = gs();
         my $y = $x;
         my $ret;
-        $AltSimpleBoard::Data::Debug = 1; 
+        $AltSimpleBoard::Data::Debug = 1;
         eval {
             $ret = $h->( $c, sub { $x = $r; die $e; $y = $r } );
         };
@@ -234,25 +246,22 @@ diag(q{=== handle ===});
         is( $x, $r, 'errorprone code has been run, even if it died' );
         isnt( $y, $r, 'errorprone code has been run, but died ok' );
         my $l = $c->app->log->error;
-        like(
-            $l->[0],
-            qr{system error message: $e},
-            'system error catched'
-        );
+        like( $l->[0], qr{system error message: $e}, 'system error catched' );
         is(
             $l->[1],
             'user presented error message: ',
             'empty user error catched'
         );
-        like( $c->{stash}->{error}, qr/$e/i, 'error message in stash reseived' );
+        like( $c->{stash}->{error}, qr/$e/i,
+            'error message in stash reseived' );
     }
     {
         diag('checking bad code with an error message and without debugging');
         my ( $r, $x, $c, $e ) = gs();
-        my $y = $x;
+        my $y   = $x;
         my $msg = r();
         my $ret;
-        $AltSimpleBoard::Data::Debug = 0; 
+        $AltSimpleBoard::Data::Debug = 0;
         eval {
             $ret = $h->( $c, sub { $x = $r; die $e; $y = $r }, $msg );
         };
@@ -261,14 +270,10 @@ diag(q{=== handle ===});
         is( $x, $r, 'errorprone code has been run, even if it died' );
         isnt( $y, $r, 'errorprone code has been run, but died ok' );
         my $l = $c->app->log->error;
-        like(
-            $l->[0],
-            qr{system error message: $e}i,
-            'system error catched'
-        );
+        like( $l->[0], qr{system error message: $e}i, 'system error catched' );
         is(
             $l->[1],
-            'user presented error message: '.$msg,
+            'user presented error message: ' . $msg,
             'empty user error catched'
         );
         is( $c->{stash}->{error}, $msg, 'error message in stash reseived' );
@@ -276,10 +281,10 @@ diag(q{=== handle ===});
     {
         diag('checking bad code with an error message and with debugging');
         my ( $r, $x, $c, $e ) = gs();
-        my $y = $x;
+        my $y   = $x;
         my $msg = r();
         my $ret;
-        $AltSimpleBoard::Data::Debug = 1; 
+        $AltSimpleBoard::Data::Debug = 1;
         eval {
             $ret = $h->( $c, sub { $x = $r; die $e; $y = $r }, $msg );
         };
@@ -288,17 +293,14 @@ diag(q{=== handle ===});
         is( $x, $r, 'errorprone code has been run, even if it died' );
         isnt( $y, $r, 'errorprone code has been run, but died ok' );
         my $l = $c->app->log->error;
-        like(
-            $l->[0],
-            qr{system error message: $e}i,
-            'system error catched'
-        );
+        like( $l->[0], qr{system error message: $e}i, 'system error catched' );
         is(
             $l->[1],
-            'user presented error message: '.$msg,
+            'user presented error message: ' . $msg,
             'empty user error catched'
         );
-        like( $c->{stash}->{error}, qr/$e/i, 'error message in stash reseived' );
+        like( $c->{stash}->{error}, qr/$e/i,
+            'error message in stash reseived' );
     }
 }
 
