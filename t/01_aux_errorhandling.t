@@ -222,31 +222,32 @@ diag(q{=== handling ===});
     my $h = sub { &AltSimpleBoard::Errors::handling };
     {
         diag('wrong call, no controller');
-        eval { my $ret = $h->() };
+        eval { $h->() };
         ok( $@, 'no controller kills' );
         like( $@, qr/no controller/i, 'error message ok' );
     }
     {
         diag('wrong call, no params');
         my ( $r, $x, $c, $e ) = gs();
-        eval { my $ret = $h->($c) };
+        eval { $h->($c) };
         ok( $@, 'no params kill' );
         like( $@, qr/params not set/i, 'error message ok' );
     }
     {
         diag('wrong call, neighter params nor code as argument');
         my ( $r, $x, $c, $e ) = gs();
-        eval { my $ret = $h->( $c, [] ) };
+        eval { $h->( $c, [] ) };
         ok( $@, 'no params kill' );
         like( $@, qr/no hash params/i, 'error message ok' );
     }
-
     {
         diag('plain error message, no after_error - debugging off');
         $AltSimpleBoard::Data::Debug = 0;
         my ( $r, $x, $c, $e ) = gs();
-        eval { my $ret = $h->( $c, { plain => $e } ) };
-        ok( !$@, 'no one died, everything is fine' );
+        my $ret = 1;
+        eval { $ret = $h->( $c, { plain => $e } ) };
+        ok( !$@, 'no one really died, everything is fine' );
+        ok( !$ret, 'but the call returned false');
         my $l = $c->app->log->error;
         like( $l->[0], qr/system error message: $e/i, 'system error catched' );
         is(
@@ -255,66 +256,6 @@ diag(q{=== handling ===});
             'user error catched'
         );
         is( $c->{stash}->{error}, $e, 'error message presented correct' );
-    }
-    {
-        diag('plain error message, with after_error - debugging off');
-        $AltSimpleBoard::Data::Debug = 0;
-    }
-    {
-        diag('easy call with code only - debugging off');
-        $AltSimpleBoard::Data::Debug = 0;
-    }
-    {
-        diag('call with message - debugging off');
-        $AltSimpleBoard::Data::Debug = 0;
-    }
-    {
-        diag('call with after_ok, no message - debugging off');
-        $AltSimpleBoard::Data::Debug = 0;
-    }
-    {
-        diag('call with after_error, no message - debugging off');
-        $AltSimpleBoard::Data::Debug = 0;
-    }
-    {
-        diag('call with after_ok, with message - debugging off');
-        $AltSimpleBoard::Data::Debug = 0;
-    }
-    {
-        diag('call with after_error, with message - debugging off');
-        $AltSimpleBoard::Data::Debug = 0;
-    }
-    {
-        diag('plain error message, no after_error - debugging on');
-        $AltSimpleBoard::Data::Debug = 1;
-    }
-    {
-        diag('plain error message, with after_error - debugging off');
-        $AltSimpleBoard::Data::Debug = 0;
-    }
-    {
-        diag('easy call with code only - debugging on');
-        $AltSimpleBoard::Data::Debug = 1;
-    }
-    {
-        diag('call with message - debugging on');
-        $AltSimpleBoard::Data::Debug = 1;
-    }
-    {
-        diag('call with after_ok, no message - debugging on');
-        $AltSimpleBoard::Data::Debug = 1;
-    }
-    {
-        diag('call with after_error, no message - debugging on');
-        $AltSimpleBoard::Data::Debug = 1;
-    }
-    {
-        diag('call with after_ok, with message - debugging on');
-        $AltSimpleBoard::Data::Debug = 1;
-    }
-    {
-        diag('call with after_error, with message - debugging on');
-        $AltSimpleBoard::Data::Debug = 1;
     }
 }
 
