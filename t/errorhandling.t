@@ -6,7 +6,7 @@ use warnings;
 use utf8;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
-use Test::More tests => 47;
+use Test::More tests => 55;
 
 srand;
 
@@ -182,6 +182,30 @@ diag(q{=== handle ===});
 ##############################################################################
 {
     my $h = sub { &AltSimpleBoard::Errors::handle };
+    my $ra = sub {
+        my $msg = shift;
+        my ( $r, $x, $c, $e ) = gs();
+        my $y = $x;
+        my $ret;
+        if ($msg) {
+            eval {
+                $ret = $h->( $c, sub { $x = $r; die $e; $y = $r }, $msg );
+            };
+        }
+        else {
+            eval {
+                $ret = $h->( $c, sub { $x = $r; die $e; $y = $r } );
+            };
+        }
+        ok( !$@,   'bad code died, death was unnoticed from the outside' );
+        ok( !$ret, 'bad code returns false' );
+        is( $x, $r, 'errorprone code has been run, even if it died' );
+        isnt( $y, $r, 'errorprone code has been run, but died ok' );
+        my $l = $c->app->log->error;
+        like( $l->[0], qr{system error message: $e}, 'system error catched' );
+        return $r, $x, $c, $e, $l;
+
+    };
     diag('test wrong call');
     {
         eval { $h->() };
@@ -211,19 +235,8 @@ diag(q{=== handle ===});
     }
     {
         diag('checking bad code without an error message without debugging');
-        my ( $r, $x, $c, $e ) = gs();
-        my $y = $x;
-        my $ret;
         $AltSimpleBoard::Data::Debug = 0;
-        eval {
-            $ret = $h->( $c, sub { $x = $r; die $e; $y = $r } );
-        };
-        ok( !$@,   'bad code died, death was unnoticed from the outside' );
-        ok( !$ret, 'bad code returns false' );
-        is( $x, $r, 'errorprone code has been run, even if it died' );
-        isnt( $y, $r, 'errorprone code has been run, but died ok' );
-        my $l = $c->app->log->error;
-        like( $l->[0], qr{system error message: $e}, 'system error catched' );
+        my ( $r, $x, $c, $e, $l ) = $ra->();
         is(
             $l->[1],
             'user presented error message: ',
@@ -234,19 +247,8 @@ diag(q{=== handle ===});
     }
     {
         diag('checking bad code without an error message with debugging');
-        my ( $r, $x, $c, $e ) = gs();
-        my $y = $x;
-        my $ret;
         $AltSimpleBoard::Data::Debug = 1;
-        eval {
-            $ret = $h->( $c, sub { $x = $r; die $e; $y = $r } );
-        };
-        ok( !$@,   'bad code died, death was unnoticed from the outside' );
-        ok( !$ret, 'bad code returns false' );
-        is( $x, $r, 'errorprone code has been run, even if it died' );
-        isnt( $y, $r, 'errorprone code has been run, but died ok' );
-        my $l = $c->app->log->error;
-        like( $l->[0], qr{system error message: $e}, 'system error catched' );
+        my ( $r, $x, $c, $e, $l ) = $ra->();
         is(
             $l->[1],
             'user presented error message: ',
@@ -257,20 +259,9 @@ diag(q{=== handle ===});
     }
     {
         diag('checking bad code with an error message and without debugging');
-        my ( $r, $x, $c, $e ) = gs();
-        my $y   = $x;
-        my $msg = r();
-        my $ret;
         $AltSimpleBoard::Data::Debug = 0;
-        eval {
-            $ret = $h->( $c, sub { $x = $r; die $e; $y = $r }, $msg );
-        };
-        ok( !$@,   'bad code died, death was unnoticed from the outside' );
-        ok( !$ret, 'bad code returns false' );
-        is( $x, $r, 'errorprone code has been run, even if it died' );
-        isnt( $y, $r, 'errorprone code has been run, but died ok' );
-        my $l = $c->app->log->error;
-        like( $l->[0], qr{system error message: $e}i, 'system error catched' );
+        my $msg = r();
+        my ( $r, $x, $c, $e, $l ) = $ra->($msg);
         is(
             $l->[1],
             'user presented error message: ' . $msg,
@@ -280,20 +271,9 @@ diag(q{=== handle ===});
     }
     {
         diag('checking bad code with an error message and with debugging');
-        my ( $r, $x, $c, $e ) = gs();
-        my $y   = $x;
-        my $msg = r();
-        my $ret;
         $AltSimpleBoard::Data::Debug = 1;
-        eval {
-            $ret = $h->( $c, sub { $x = $r; die $e; $y = $r }, $msg );
-        };
-        ok( !$@,   'bad code died, death was unnoticed from the outside' );
-        ok( !$ret, 'bad code returns false' );
-        is( $x, $r, 'errorprone code has been run, even if it died' );
-        isnt( $y, $r, 'errorprone code has been run, but died ok' );
-        my $l = $c->app->log->error;
-        like( $l->[0], qr{system error message: $e}i, 'system error catched' );
+        my $msg = r();
+        my ( $r, $x, $c, $e, $l ) = $ra->($msg);
         is(
             $l->[1],
             'user presented error message: ' . $msg,
