@@ -244,6 +244,21 @@ diag(q{=== handling ===});
     {
         diag('plain error message - debugging off');
         $AltSimpleBoard::Data::Debug = 0;
+        my ( $r, $x, $c, $e ) = gs();
+        eval { my $ret = $h->($c, { plain => $e }) };
+        ok(!$@, 'no one died, everything is fine');
+        my $l = $c->app->log->error;
+        like(
+            $l->[0],
+            qr/system error message: $e/i,
+            'system error catched'
+        );
+        is(
+            $l->[1],
+            'user presented error message: ' . $e,
+            'user error catched'
+        );
+        is( $c->{stash}->{error}, $e, 'error message presented correct');
     }
     {
         diag('easy call with code only - debugging off');
