@@ -241,8 +241,7 @@ diag(q{=== handling ===});
         like( $@, qr/no hash params/i, 'error message ok' );
     }
     {
-        diag('plain error message, no after_error - debugging off');
-        $AltSimpleBoard::Data::Debug = 0;
+        diag('plain error message, no after_error');
         my ( $r, $x, $c, $e ) = gs();
         my $ret = 1;
         eval { $ret = $h->( $c, { plain => $e } ) };
