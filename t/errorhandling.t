@@ -5,76 +5,15 @@ use strict;
 use warnings;
 use utf8;
 use FindBin;
+use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
+use Data::Dumper;
+
+use MockController;
+
 use Test::More tests => 55;
 
 srand;
-
-##############################################################################
-package MockController;
-##############################################################################
-use strict;
-use warnings;
-use utf8;
-use 5.010;
-
-sub new {
-    bless { session => {}, stash => {}, app => MockController::App->new() },
-      shift;
-}
-sub session { shift->{session} }
-sub app     { shift->{app} }
-
-sub stash {
-    my $stash = shift->{stash};
-    my $key   = shift;
-    my $value = shift;
-    if ( $key and not defined $value ) {
-        $stash->{$key} = undef unless exists $stash->{$key};
-        return $stash->{$key};
-
-    }
-    return $stash->{$key} = $value if $key and $value;
-    return;
-}
-
-##############################################################################
-package MockController::App;
-##############################################################################
-use strict;
-use warnings;
-use utf8;
-use 5.010;
-
-sub new { bless { log => MockController::Log->new() }, shift }
-sub log { shift->{log} }
-
-##############################################################################
-package MockController::Log;
-##############################################################################
-use strict;
-use warnings;
-use utf8;
-use 5.010;
-
-sub new { bless { error => [] }, shift }
-
-sub error {
-    my $l = shift;
-    my $m = shift;
-    push @{ $l->{error} }, $m if $m;
-    return $l->{error};
-}
-
-##############################################################################
-package main;
-##############################################################################
-use strict;
-use warnings;
-use utf8;
-use 5.010;
-use Data::Dumper;
-
 sub c  { MockController->new() }
 sub r  { '>>> ' . rand(10000) . ' <<<' }
 sub gs { r(), '', c(), r() }
