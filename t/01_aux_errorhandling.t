@@ -11,7 +11,7 @@ use Data::Dumper;
 
 use MockController;
 
-use Test::More tests => 55;
+use Test::More tests => 154;
 
 srand;
 sub c  { MockController->new() }
@@ -245,8 +245,8 @@ diag(q{=== handling ===});
         my ( $r, $x, $c, $e ) = gs();
         my $ret = 1;
         eval { $ret = $h->( $c, { plain => $e } ) };
-        ok( !$@, 'no one really died, everything is fine' );
-        ok( !$ret, 'but the call returned false');
+        ok( !$@,   'no one really died, everything is fine' );
+        ok( !$ret, 'but the call returned false' );
         my $l = $c->app->log->error;
         like( $l->[0], qr/system error message: $e/i, 'system error catched' );
         is(
@@ -254,8 +254,99 @@ diag(q{=== handling ===});
             'user presented error message: ' . $e,
             'user error catched'
         );
-        is( $c->{stash}->{error}, $e, 'error message presented correct' );
+        like( $c->{stash}->{error}, qr/$e/, 'error message presented correct' );
     }
+    my $prepare = sub {
+        my $params = shift;
+        $params = { map { $_ => 1 } @$params };
+        my ( $r, $x, $c, $e ) = gs();
+        if ( exists $params->{msg} ) {
+            $params->{msg} = $e;
+        }
+        else {
+            $e = '';
+        }
+        my $checks = {};
+        for my $check (qw(after_ok after_error)) {
+            next unless exists $params->{$check};
+            $checks->{$check} = {};
+            $checks->{$check}->{expected} = my $w = r();
+            $params->{$check} = sub { $checks->{$check}->{got} = $w };
+        }
+        return $r, $x, $c, $e, $params, $checks, '', undef;
+    };
+    my $ck = sub {
+        my $params = shift;
+        {
+            diag('* good code');
+            my ( $r, $x, $c, $e, $params, $checks, $y, $ret ) =
+              $prepare->($params);
+            $params->{code} = sub { $x = $r };
+            eval { $ret = $h->( $c, $params ) };
+            ok( !$@,  'no one died, everything is fine' );
+            ok( $ret, 'the call returned true' );
+            my $l = $c->app->log->error;
+            is( scalar(@$l), 0, 'no errors reported' );
+            ok( !$c->{stash}->{error}, 'no error in stash' );
+            is(
+                $checks->{after_ok}->{got},
+                $checks->{after_ok}->{expected},
+                'after_ok ran'
+            ) if exists $params->{after_ok};
+            isnt(
+                $checks->{after_error}->{got},
+                $checks->{after_error}->{expected},
+                'after_error did not run'
+            ) if exists $params->{after_error};
+        }
+        {
+            diag('* bad code');
+            my ( $r, $x, $c, $e, $params, $checks, $y, $ret ) =
+              $prepare->($params);
+            $params->{code} = sub { $x = $r; die $e; $y = $r };
+            eval { $ret = $h->( $c, $params ) };
+            ok( !$@,   'no one died, everything is fine' );
+            ok( !$ret, 'the call returned true' );
+            my $l = $c->app->log->error;
+            cmp_ok( scalar(@$l), '>', 0, 'no errors reported' );
+            like(
+                $l->[0],
+                qr/system error message: $e/i,
+                'system error catched'
+            );
+            is(
+                $l->[1],
+                'user presented error message: ' . $e,
+                'user error catched'
+            );
+            isnt(
+                $checks->{after_ok}->{got},
+                $checks->{after_ok}->{expected},
+                'after_ok ran'
+            ) if exists $params->{after_ok};
+            is(
+                $checks->{after_error}->{got},
+                $checks->{after_error}->{expected},
+                'after_error did not run'
+            ) if exists $params->{after_error};
+        }
+    };
+    diag('without anything');
+    $ck->( [] );
+    diag('with error message and nothing else');
+    $ck->( [qw(msg)] );
+    diag('with error message and just after_ok');
+    $ck->( [qw(msg after_ok)] );
+    diag('with error message and just after_error');
+    $ck->( [qw(msg after_error)] );
+    diag('with error message, after_ok and after_error');
+    $ck->( [qw(msg after_ok after_error)] );
+    diag('without error message and just after_ok');
+    $ck->( [qw(after_ok)] );
+    diag('without error message and just after_error');
+    $ck->( [qw(after_error)] );
+    diag('without error message, after_ok and after_error');
+    $ck->( [qw(after_ok after_error)] );
 }
 
 ##############################################################################
