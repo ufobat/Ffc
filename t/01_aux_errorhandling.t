@@ -359,31 +359,36 @@ diag(q{=== run code, return something special at errors, don't die ===});
         my $code = shift;
         my $st   = shift;
         my $nt   = shift;
-        { 
-            diag('* good code'); 
+        {
+            diag('* good code');
             my $c = c();
             my $ret;
-            eval { $ret = $code->( $c, sub { return $st }  ) };
-            ok( !$@,   'no one died, everything is fine' );
+            eval {
+                $ret = $code->( $c, sub { return $st } );
+            };
+            ok( !$@,  'no one died, everything is fine' );
             ok( $ret, 'the call returned something' );
             my $l = $c->app->log->error;
             is( scalar(@$l), 0, 'no errors reported' );
             ok( !$c->{stash}->{error}, 'no error in stash' );
-            is_deeply( $ret, $st, 'the returned value is ok');
+            is_deeply( $ret, $st, 'the returned value is ok' );
         }
         {
             diag('* bad code');
             my ( $r, $x, $c, $e ) = gs();
             my $ret;
             my $y = '';
-            eval { $ret = $code->( $c, sub { $x = $r; die $e; $y = $r; return $st }  ) };
-            ok( !$@,   'no one died, everything is fine' );
+            eval {
+                $ret =
+                  $code->( $c, sub { $x = $r; die $e; $y = $r; return $st } );
+            };
+            ok( !$@, 'no one died, everything is fine' );
             my $l = $c->app->log->error;
             ok( !$c->{stash}->{error}, 'no error in stash' );
             is( scalar(@$l), 0, 'no errors reported' );
             is( $x, $r, 'errorprone code has been run, even if it died' );
             isnt( $y, $r, 'errorprone code has been run, but died ok' );
-            is_deeply( $ret, $nt, 'the returned the expected default thingy');
+            is_deeply( $ret, $nt, 'the returned the expected default thingy' );
         }
     };
 ##############################################################################
