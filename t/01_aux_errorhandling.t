@@ -388,11 +388,11 @@ diag(q{=== run code, return something special at errors, don't die ===});
             is( scalar(@$l), 0, 'no errors reported' );
             is( $x, $r, 'errorprone code has been run, even if it died' );
             isnt( $y, $r, 'errorprone code has been run, but died ok' );
-            is_deeply( $ret, $nt, 'the returned the expected default thingy' );
+            is_deeply( $ret, $nt, 'the call returned the expected default thingy' );
         }
     };
 ##############################################################################
-    diag(q{or_empty    -> []});
+    diag(q{or_empty -> []});
 ##############################################################################
     {
         my $o = sub { &AltSimpleBoard::Errors::or_empty };
@@ -408,7 +408,7 @@ diag(q{=== run code, return something special at errors, don't die ===});
     }
 
 ##############################################################################
-    diag(q{or_undef    -> undef});
+    diag(q{or_undef -> undef});
 ##############################################################################
     {
         my $o = sub { &AltSimpleBoard::Errors::or_undef };
@@ -416,7 +416,7 @@ diag(q{=== run code, return something special at errors, don't die ===});
     }
 
 ##############################################################################
-    diag(q{or_zero     -> 0});
+    diag(q{or_zero -> 0});
 ##############################################################################
     {
         my $o = sub { &AltSimpleBoard::Errors::or_zero };
