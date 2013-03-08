@@ -54,4 +54,5 @@ insert into asb_categories (`name`, `cssclass`, `root`) values ('Links, Bilder, 
 insert into asb_categories (`name`, `cssclass`, `root`) values ('Computer und Spiele', 'pc', 0);
 insert into asb_categories (`name`, `cssclass`, `root`) values ('Aufreger', 'arrrgh', 0);
 insert into asb_categories (`name`, `cssclass`, `root`) values ('Zitate', 'zitate', 0);
+insert into asb_categories (`name`, `cssclass`, `root`) values ('42', '42', 0);
 
