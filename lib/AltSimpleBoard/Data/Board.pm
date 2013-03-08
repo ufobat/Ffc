@@ -106,18 +106,28 @@ sub admin_create_user {
 sub _get_categories_sql {
     my $p = $AltSimpleBoard::Data::Prefix;
     return << "EOSQL";
-SELECT c.name AS name, c.short AS short, COUNT(p1.id) AS cnt, 1 AS sort
+SELECT c.name       AS name, 
+       c.short      AS short,
+       COUNT(p1.id) AS cnt,
+       1            AS sort
   FROM ${p}categories c
-  LEFT OUTER JOIN ${p}lastseenforum f ON f.category=c.id AND f.userid=?
-  LEFT OUTER JOIN ${p}posts p1 ON p1.category=c.id AND p1.posted>=COALESCE(f.lastseen,0)
-  WHERE p1.to IS NULL
+  LEFT OUTER JOIN ${p}lastseenforum f ON  f.category  =  c.id 
+                                      AND f.userid    =  ?
+  LEFT OUTER JOIN ${p}posts p1        ON  p1.category =  c.id 
+                                      AND p1.posted   >= COALESCE(f.lastseen,0) 
+                                      AND p1.from     != f.userid
+                                      AND p1.to       IS NULL
   GROUP BY c.id
 UNION
-SELECT 'Allgemein' AS name, '' AS short, COUNT(p2.id) AS cnt, 0 AS sort 
+SELECT 'Allgemein'  AS name,
+       ''           AS short,
+       COUNT(p2.id) AS cnt,
+       0            AS sort 
   FROM ${p}posts p2 
   WHERE p2.category IS NULL 
-    AND p2.posted>=(SELECT u.lastseenforum FROM ${p}users u WHERE u.id=? LIMIT 1)
-    AND p2.to IS NULL
+    AND p2.posted >= (SELECT u.lastseenforum FROM ${p}users u WHERE u.id=? LIMIT 1)
+    AND p2.from   != ?
+    AND p2.to     IS NULL
   ORDER BY sort, name
 EOSQL
 }
@@ -134,7 +144,7 @@ sub count_newpost {
     die qq{Benutzer unbekannt} unless get_username($userid);
     my $sql = _get_categories_sql();
     $sql = "SELECT SUM(t.cnt) FROM ($sql) t";
-    return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, $userid, $userid))[0];
+    return (AltSimpleBoard::Data::dbh()->selectrow_array($sql, undef, ($userid) x 3 ))[0];
 }
 
 sub count_notes {
@@ -148,7 +158,7 @@ sub get_categories {
     my $userid = shift;
     die qq{Benutzer unbekannt} unless get_username($userid);
     my $sql = _get_categories_sql();
-    return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql, undef, $userid, $userid);
+    return AltSimpleBoard::Data::dbh()->selectall_arrayref($sql, undef, ($userid) x 3);
 }
 sub get_category {
     my $id = shift;
@@ -309,9 +319,9 @@ SELECT p.id, p.text, p.posted,
        c.name, COALESCE(c.short,''),
        f.id, f.name, f.active,
        t.id, t.name, t.active,
-       CASE WHEN p.from = p.to
+       CASE WHEN p.from = p.to OR p.from = u.id
             THEN 0
-            ELSE CASE WHEN p.to IS NOT NULL AND p.to = u.id
+            ELSE CASE WHEN p.to IS NOT NULL
                       THEN CASE WHEN p.posted >= t.lastseenmsgs THEN 1 ELSE 0 END
                       ELSE CASE WHEN p.category IS NULL
                                 THEN CASE WHEN p.posted >= u.lastseenforum THEN 1 ELSE 0 END
