@@ -11,7 +11,7 @@ use Data::Dumper;
 
 use MockController;
 
-use Test::More tests => 154;
+use Test::More tests => 214;
 
 srand;
 sub c  { MockController->new() }
@@ -256,27 +256,27 @@ diag(q{=== handling ===});
         );
         like( $c->{stash}->{error}, qr/$e/, 'error message presented correct' );
     }
-    my $prepare = sub {
-        my $params = shift;
-        $params = { map { $_ => 1 } @$params };
-        my ( $r, $x, $c, $e ) = gs();
-        if ( exists $params->{msg} ) {
-            $params->{msg} = $e;
-        }
-        else {
-            $e = '';
-        }
-        my $checks = {};
-        for my $check (qw(after_ok after_error)) {
-            next unless exists $params->{$check};
-            $checks->{$check} = {};
-            $checks->{$check}->{expected} = my $w = r();
-            $params->{$check} = sub { $checks->{$check}->{got} = $w };
-        }
-        return $r, $x, $c, $e, $params, $checks, '', undef;
-    };
     my $ck = sub {
-        my $params = shift;
+        my $params  = shift;
+        my $prepare = sub {
+            my $params = shift;
+            $params = { map { $_ => 1 } @$params };
+            my ( $r, $x, $c, $e ) = gs();
+            if ( exists $params->{msg} ) {
+                $params->{msg} = $e;
+            }
+            else {
+                $e = '';
+            }
+            my $checks = {};
+            for my $check (qw(after_ok after_error)) {
+                next unless exists $params->{$check};
+                $checks->{$check} = {};
+                $checks->{$check}->{expected} = my $w = r();
+                $params->{$check} = sub { $checks->{$check}->{got} = $w };
+            }
+            return $r, $x, $c, $e, $params, $checks, '', undef;
+        };
         {
             diag('* good code');
             my ( $r, $x, $c, $e, $params, $checks, $y, $ret ) =
@@ -319,6 +319,8 @@ diag(q{=== handling ===});
                 'user presented error message: ' . $e,
                 'user error catched'
             );
+            is( $x, $r, 'errorprone code has been run, even if it died' );
+            isnt( $y, $r, 'errorprone code has been run, but died ok' );
             isnt(
                 $checks->{after_ok}->{got},
                 $checks->{after_ok}->{expected},
@@ -350,33 +352,70 @@ diag(q{=== handling ===});
 }
 
 ##############################################################################
-diag(q{=== or_empty    -> [] ===});
+diag(q{=== run code, return something special at errors, don't die ===});
 ##############################################################################
 {
-    my $o = sub { &AltSimpleBoard::Errors::or_empty };
-
-}
+    my $ck = sub {
+        my $code = shift;
+        my $st   = shift;
+        my $nt   = shift;
+        { 
+            diag('* good code'); 
+            my $c = c();
+            my $ret;
+            eval { $ret = $code->( $c, sub { return $st }  ) };
+            ok( !$@,   'no one died, everything is fine' );
+            ok( $ret, 'the call returned something' );
+            my $l = $c->app->log->error;
+            is( scalar(@$l), 0, 'no errors reported' );
+            ok( !$c->{stash}->{error}, 'no error in stash' );
+            is_deeply( $ret, $st, 'the returned value is ok');
+        }
+        {
+            diag('* bad code');
+            my ( $r, $x, $c, $e ) = gs();
+            my $ret;
+            my $y = '';
+            eval { $ret = $code->( $c, sub { $x = $r; die $e; $y = $r; return $st }  ) };
+            ok( !$@,   'no one died, everything is fine' );
+            my $l = $c->app->log->error;
+            ok( !$c->{stash}->{error}, 'no error in stash' );
+            is( scalar(@$l), 0, 'no errors reported' );
+            is( $x, $r, 'errorprone code has been run, even if it died' );
+            isnt( $y, $r, 'errorprone code has been run, but died ok' );
+            is_deeply( $ret, $nt, 'the returned the expected default thingy');
+        }
+    };
+##############################################################################
+    diag(q{or_empty    -> []});
+##############################################################################
+    {
+        my $o = sub { &AltSimpleBoard::Errors::or_empty };
+        $ck->( $o, [ ( r() ) x rand(50) ], [] );
+    }
 
 ##############################################################################
-diag(q{=== or_nostring -> '' ===});
+    diag(q{or_nostring -> ''});
 ##############################################################################
-{
-    my $o = sub { &AltSimpleBoard::Errors::or_nostring };
-
-}
-
-##############################################################################
-diag(q{=== or_undef    -> undef ===});
-##############################################################################
-{
-    my $o = sub { &AltSimpleBoard::Errors::or_undef };
-
-}
+    {
+        my $o = sub { &AltSimpleBoard::Errors::or_nostring };
+        $ck->( $o, r(), '' );
+    }
 
 ##############################################################################
-diag(q{=== or_zero     -> 0 ===});
+    diag(q{or_undef    -> undef});
 ##############################################################################
-{
-    my $o = sub { &AltSimpleBoard::Errors::or_zero };
+    {
+        my $o = sub { &AltSimpleBoard::Errors::or_undef };
+        $ck->( $o, r(), undef );
+    }
+
+##############################################################################
+    diag(q{or_zero     -> 0});
+##############################################################################
+    {
+        my $o = sub { &AltSimpleBoard::Errors::or_zero };
+        $ck->( $o, r(), 0 );
+    }
 }
 
