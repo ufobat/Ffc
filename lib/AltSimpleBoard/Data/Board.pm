@@ -110,12 +110,14 @@ SELECT c.name AS name, c.short AS short, COUNT(p1.id) AS cnt, 1 AS sort
   FROM ${p}categories c
   LEFT OUTER JOIN ${p}lastseenforum f ON f.category=c.id AND f.userid=?
   LEFT OUTER JOIN ${p}posts p1 ON p1.category=c.id AND p1.posted>=COALESCE(f.lastseen,0)
+  WHERE p1.to IS NULL
   GROUP BY c.id
 UNION
 SELECT 'Allgemein' AS name, '' AS short, COUNT(p2.id) AS cnt, 0 AS sort 
   FROM ${p}posts p2 
   WHERE p2.category IS NULL 
     AND p2.posted>=(SELECT u.lastseenforum FROM ${p}users u WHERE u.id=? LIMIT 1)
+    AND p2.to IS NULL
   ORDER BY sort, name
 EOSQL
 }
