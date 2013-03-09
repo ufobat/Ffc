@@ -13,31 +13,31 @@ use Mojo::JSON 'j';
 use DBI;
 
 use Test::More tests => 10;
+my $config;
 
 srand;
 
-sub r { '>>> ' . rand(10000) . ' <<<' }
-
 BEGIN {
-    my $config = {
-        "cookie_secret"   => "geh doch heim",
+    sub r { '>>> ' . rand(10000) . ' <<<' }
+    $config = {
+        "cookie_secret"   => r(),
         "dsn"             => "DBI:SQLite:database=",
         "user"            => "",
         "password"        => "",
-        "dbprefix"        => "asb_",
-        "cryptsalt"       => "123456789",
-        "postlimit"       => "10",
-        "title"           => "Alternatives Einfaches Brett",
-        "pagelinkpreview" => 2,
-        "sessiontimeout"  => 3600,
-        "theme"           => "default",
+        "dbprefix"        => join('', map {('a'..'z')[int rand 26]} (0..int(rand 15))).'_',
+        "cryptsalt"       => int(rand 100000),
+        "postlimit"       => int(rand 30),
+        "title"           => r(),
+        "pagelinkpreview" => int(rand 15),
+        "sessiontimeout"  => int(rand 10000),
+        "theme"           => r(),
         "debug"           => 0,
         "acttitles"       => {
-            "forum"   => "Forenboard",
-            "notes"   => "Notizen",
-            "msgs"    => "Privatnachrichten",
-            "auth"    => "Anmeldung",
-            "options" => "Einstellungen"
+            "forum"   =>  r(),
+            "notes"   =>  r(),
+            "msgs"    =>  r(),
+            "auth"    =>  r(),
+            "options" =>  r(),
         }
     };
 
@@ -61,6 +61,8 @@ my $app = Mojolicious->new();
 ok( AltSimpleBoard::Data::set_config($app), 'config set returned true' );
 my $dbh = AltSimpleBoard::Data::dbh();
 is( ref($dbh), 'DBI::db', 'got dbi handle' );
+is( AltSimpleBoard::Data::cryptsalt(), $config->{cryptsalt}, 'cryptsalt is ok');
+die Dumper $app->config;
 
 END {
     unlink $ENV{ASB_CONFIG};
