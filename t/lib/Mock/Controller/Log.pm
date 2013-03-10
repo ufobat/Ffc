@@ -1,4 +1,4 @@
-package MockController::Log;
+package Mock::Controller::Log;
 use strict;
 use warnings;
 use utf8;

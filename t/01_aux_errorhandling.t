@@ -9,12 +9,12 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Data::Dumper;
 
-use MockController;
+use Mock::Controller;
 
 use Test::More tests => 214;
 
 srand;
-sub c  { MockController->new() }
+sub c  { Mock::Controller->new() }
 sub r  { '>>> ' . rand(10000) . ' <<<' }
 sub gs { r(), '', c(), r() }
 

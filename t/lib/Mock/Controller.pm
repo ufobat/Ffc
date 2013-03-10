@@ -1,12 +1,12 @@
-package MockController;
+package Mock::Controller;
 use strict;
 use warnings;
 use utf8;
 use 5.010;
-use MockController::App;
+use Mock::Controller::App;
 
 sub new {
-    bless { session => {}, stash => {}, app => MockController::App->new() },
+    bless { session => {}, stash => {}, app => Mock::Controller::App->new() },
       shift;
 }
 sub session { shift->{session} }

@@ -1,9 +1,9 @@
-package MockController::App;
+package Mock::Controller::App;
 use strict;
 use warnings;
 use utf8;
 use 5.010;
-use MockController::Log;
+use Mock::Controller::Log;
 use Mojolicious::Plugin::JSONConfig;
 
 our %Plugins = (
@@ -14,7 +14,7 @@ our %Plugins = (
     },
 );
 
-sub new { bless { log => MockController::Log->new() }, shift }
+sub new { bless { log => Mock::Controller::Log->new() }, shift }
 sub log { shift->{log} }
 
 sub _logit {
