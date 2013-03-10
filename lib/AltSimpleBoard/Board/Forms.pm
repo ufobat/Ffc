@@ -1,4 +1,4 @@
-package AltSimpleBoard::Board::Options;
+package AltSimpleBoard::Board::Forms;
 
 use 5.010;
 use strict;
@@ -7,14 +7,15 @@ use utf8;
 
 use Mojo::Base 'AltSimpleBoard::Board::Errors';
 
-use AltSimpleBoard::Data::Board;
+use AltSimpleBoard::Data::Board::Views;
+use AltSimpleBoard::Data::Board::Forms;
 
 sub edit_form {
     my $c = shift;
     $c->error_prepare;
     my $id   = $c->param('postid');
     my $s    = $c->session;
-    my $post = $c->or_nostring( sub { AltSimpleBoard::Data::Board::get_post($id, $c->get_params($s) ) } );
+    my $post = $c->or_nostring( sub { AltSimpleBoard::Data::Board::Views::get_post($id, $c->get_params($s) ) } );
     $c->stash( post => $post ); $s->{category} = $post->{category} ? $post->{category}->{short} : '' if $post;
     $c->frontpage();
 }
@@ -28,7 +29,7 @@ sub delete_check {
     $c->get_counts();
     my $post;
     $c->error_handling( {
-        code => sub { $post = AltSimpleBoard::Data::Board::get_post($id, $c->get_params($s)) },
+        code => sub { $post = AltSimpleBoard::Data::Board::Views::get_post($id, $c->get_params($s)) },
         msg  => 'Beitrag zum Löschen konnte nicht ermittelt werden',
         after_error => sub { $c->frontpage() },
         after_ok    => sub { $c->stash( post => $post ); $c->render('board/deletecheck') },
@@ -38,7 +39,7 @@ sub delete_post {
     my $c = shift;
     my $s = $c->session;
     $c->error_handling( { plain => "Privatnachrichten dürfen nicht gelöscht werden" } ) if $s->{act} eq 'msgs';
-    $c->error_handling( { code => sub { AltSimpleBoard::Data::Board::delete_post($s->{userid}, $c->param('postid')) }, msg  => 'Beitrag konnte nicht gelöscht werden',
+    $c->error_handling( { code => sub { AltSimpleBoard::Data::Board::Forms::delete_post($s->{userid}, $c->param('postid')) }, msg  => 'Beitrag konnte nicht gelöscht werden',
     } );
     $c->redirect_to('show');
 }
@@ -54,7 +55,7 @@ sub insert_post {
         when ( 'msgs'  ) { push @params, $s->{msgs_userid} }
     }
     $c->error_handling( {
-        code        => sub { AltSimpleBoard::Data::Board::insert_post(@params) }, 
+        code        => sub { AltSimpleBoard::Data::Board::Forms::insert_post(@params) }, 
         msg         => 'Beitrag ungültig, bitte erneut eingeben', 
         after_ok    => sub { $c->frontpage() },
         after_error => sub { $c->edit_form() },
@@ -73,7 +74,7 @@ sub update_post {
         when ( 'msgs'  ) { $c->error_handling( { plain => 'Privatnachrichten dürfen nicht geändert werden' } ) }
     }
     $c->error_handling( {
-        code        => sub { AltSimpleBoard::Data::Board::update_post(@params) },
+        code        => sub { AltSimpleBoard::Data::Board::Forms::update_post(@params) },
         msgs        => 'Beitrag ungültig, bitte erneut eingeben',
         after_ok    => sub { $c->redirect_to('show') },
         after_error => sub { $c->edit_form() },

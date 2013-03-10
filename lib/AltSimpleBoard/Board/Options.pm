@@ -7,17 +7,19 @@ use utf8;
 
 use Mojo::Base 'AltSimpleBoard::Board::Errors';
 
-use AltSimpleBoard::Data::Board;
 use AltSimpleBoard::Data::Auth;
+use AltSimpleBoard::Data::Board::General;
+use AltSimpleBoard::Data::Board::OptionsUser;
+use AltSimpleBoard::Data::Board::OptionsAdmin;
 
 sub options_form {
     my $c = shift;
     my $s = $c->session;
     $c->error_prepare;
     my $email;
-    $c->error_handling( sub { $email = AltSimpleBoard::Data::Board::get_useremail($s->{userid}) } );
+    $c->error_handling( sub { $email = AltSimpleBoard::Data::Board::General::get_useremail($s->{userid}) } );
     my $userlist;
-    $c->error_handling( sub { $userlist = AltSimpleBoard::Data::Board::get_userlist() });
+    $c->error_handling( sub { $userlist = AltSimpleBoard::Data::Board::General::get_userlist() });
     $c->stash(email    => $email // '');
     $c->stash(userlist => $userlist // '' );
     $c->stash(themes => \@AltSimpleBoard::Data::Themes);
@@ -36,13 +38,13 @@ sub options_save {
     my $newpw2      = $c->param('newpw2');
     my $show_images = $c->param('show_images') || 0;
     my $theme       = $c->param('theme');
-    $c->error_handling( sub { AltSimpleBoard::Data::Board::update_email($s->{userid}, $email) } ) 
+    $c->error_handling( sub { AltSimpleBoard::Data::Board::OptionsUser::update_email($s->{userid}, $email) } ) 
         if $email;
-    $c->error_handling( sub { AltSimpleBoard::Data::Board::update_password($s->{userid}, $oldpw, $newpw1, $newpw2) } ) 
+    $c->error_handling( sub { AltSimpleBoard::Data::Board::OptionsUser::update_password($s->{userid}, $oldpw, $newpw1, $newpw2) } ) 
         if $oldpw and $newpw1 and $newpw2;
-    $c->error_handling( sub { AltSimpleBoard::Data::Board::update_theme($s, $theme) } ) 
+    $c->error_handling( sub { AltSimpleBoard::Data::Board::OptionsUser::update_theme($s, $theme) } ) 
         if $theme;
-    $c->error_handling( sub { AltSimpleBoard::Data::Board::update_show_images($s, $show_images) } );
+    $c->error_handling( sub { AltSimpleBoard::Data::Board::OptionsUser::update_show_images($s, $show_images) } );
     $c->options_form();
 }
 
@@ -54,7 +56,7 @@ sub useradmin_save {
             code => sub { die 'Angemeldeter Benutzer ist kein Administrator' unless AltSimpleBoard::Data::Auth::is_user_admin($adminuid) },
             msg => q{Angemeldeter Benutzer ist kein Admin und darf das hier garnicht},
         } ) ) {
-        my $userid  = $c->or_undef( sub { AltSimpleBoard::Data::Board::get_userid($username) } );
+        my $userid  = $c->or_undef( sub { AltSimpleBoard::Data::Board::General::get_userid($username) } );
         my $newpw1  = $c->param('newpw1');
         my $newpw2  = $c->param('newpw2');
         my $admin   = $c->param('admin');
@@ -62,13 +64,13 @@ sub useradmin_save {
         if ( defined $userid ) {
             if ( $c->param('overwriteok') ) {
                 $c->error_handling( sub { 
-                    AltSimpleBoard::Data::Board::admin_update_password( $adminuid, $userid, $newpw1, $newpw2 )
+                    AltSimpleBoard::Data::Board::OptionsAdmin::admin_update_password( $adminuid, $userid, $newpw1, $newpw2 )
                 } ) if $newpw1 and $newpw2;
                 $c->error_handling( sub { 
-                    AltSimpleBoard::Data::Board::admin_update_active( $adminuid, $userid, $active )
+                    AltSimpleBoard::Data::Board::OptionsAdmin::admin_update_active( $adminuid, $userid, $active )
                 } );
                 $c->error_handling( sub { 
-                    AltSimpleBoard::Data::Board::admin_update_admin( $adminuid, $userid, $admin )
+                    AltSimpleBoard::Data::Board::OptionsAdmin::admin_update_admin( $adminuid, $userid, $admin )
                 } );
             }
             else {
@@ -77,7 +79,7 @@ sub useradmin_save {
         }
         else {
             $c->error_handling( sub {
-                AltSimpleBoard::Data::Board::admin_create_user( $adminuid, $username, $newpw1, $newpw2, $active, $admin )
+                AltSimpleBoard::Data::Board::OptionsAdmin::admin_create_user( $adminuid, $username, $newpw1, $newpw2, $active, $admin )
             } );
         }
     }
