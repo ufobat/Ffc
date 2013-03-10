@@ -1,12 +1,4 @@
 % layout 'default';
-% if ( $page == 1 and ( act() ne 'msgs' or session->{msgs_userid} ) ) {
-%= include 'parts/postboxform'
-% } 
-% if ( $page > 1 ) {
-<div class="toppagelink">
-    <a href="<%= url_for 'show' %>" title="Zur ersten Seite zurück gehen">Zu den aktuellsten Postings zurück</a>
-</div>
-% } 
 % if ( act() eq 'forum' ) {
 <div class="postbox categorylinks"><p>
 %   my $counter = 0;
@@ -15,6 +7,14 @@
 %   }
 </p></div>
 % }
+% if ( $page == 1 and ( act() ne 'msgs' or session->{msgs_userid} ) ) {
+%= include 'parts/postboxform'
+% } 
+% if ( $page > 1 ) {
+<div class="toppagelink">
+    <a href="<%= url_for 'show' %>" title="Zur ersten Seite zurück gehen">Zu den aktuellsten Postings zurück</a>
+</div>
+% } 
 % for ( @$posts ) {
 %= include 'parts/postbox', post => $_
 % }

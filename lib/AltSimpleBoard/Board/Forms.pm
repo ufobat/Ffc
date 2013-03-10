@@ -32,7 +32,7 @@ sub delete_check {
         code => sub { $post = AltSimpleBoard::Data::Board::Views::get_post($id, $c->get_params($s)) },
         msg  => 'Beitrag zum Löschen konnte nicht ermittelt werden',
         after_error => sub { $c->frontpage() },
-        after_ok    => sub { $c->stash( post => $post ); $c->render('board/deletecheck') },
+        after_ok    => sub { $post->{active} = 1; $c->stash( post => $post ); $c->render('board/deletecheck') },
     } );
 }
 sub delete_post {
