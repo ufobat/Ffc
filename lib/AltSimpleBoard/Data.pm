@@ -35,7 +35,11 @@ our $Themebasedir = File::Basename::dirname(__FILE__).'/../../public'.$Themedir;
         my $app = shift;
         $config = $app->plugin(
             JSONConfig => { file => $ENV{ASB_CONFIG} // $DefaultConfig } );
-        $app->secret( $config->{cookie_secret} );
+        $app->secret( $config->{cookiesecret} );
+        delete $config->{cookiesecret};
+        $cryptsalt = $config->{cryptsalt};
+        delete $config->{cryptsalt};
+
         $Prefix = $config->{dbprefix};
         die q(Prefix invalid, needs to be something like /\\w{0,10}/) unless $Prefix =~ m/\A\w{0,10}/xms;
         $Limit = $config->{postlimit};
@@ -45,7 +49,7 @@ our $Themebasedir = File::Basename::dirname(__FILE__).'/../../public'.$Themedir;
         $Theme = $config->{theme};
         $Debug = $config->{debug};
         {
-            opendir my $dh, $Themebasedir or die qq(could not open theme directory $Themedir: $!);
+            opendir my $dh, $Themebasedir or die qq(could not open theme directory $Themebasedir: $!);
             while ( my $d = readdir $dh ) {
                 next if $d =~ m/\A\./xms;
                 next unless -d "$Themebasedir/$d";
@@ -59,10 +63,8 @@ our $Themebasedir = File::Basename::dirname(__FILE__).'/../../public'.$Themedir;
                 delete $config->{$_};
                 $_ => $v;
             } qw(dsn user password)};
-        $cryptsalt = $config->{cryptsalt};
-        delete $config->{cryptsalt};
-        delete $config->{cookie_secret};
         %Acttitles = ( map({$_ => "\u$_"} qw(auth forum notes msgs)), %{ $config->{acttitles} });
+        return 1;
     }
 
     sub dbh {

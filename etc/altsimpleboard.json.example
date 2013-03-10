@@ -1,5 +1,5 @@
 {
-    "cookie_secret": "geh doch heim",
+    "cookiesecret": "geh doch heim",
     "dsn":"DBI:SQLite:database=/tmp/testdb.sqlite",
     "user":"",
     "password":"",
