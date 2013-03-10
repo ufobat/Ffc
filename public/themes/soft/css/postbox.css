@@ -74,3 +74,6 @@ img.icon {
 .newpost {
     border-color: #fc6;
 }
+.postboxform:hover textarea {
+    height: 15em;
+}

@@ -126,6 +126,9 @@ img.icon {
 .newpost {
     box-shadow: 0 0 3px #fff;
 }
-.postbox textarea:focus {
+.postboxform textarea:focus {
+    height: 15em;
+}
+.postboxform:hover textarea {
     height: 15em;
 }
