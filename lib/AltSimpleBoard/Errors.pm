@@ -9,7 +9,10 @@ sub handle_silent {
     my $code = shift or die 'no code provided as second parameter';
     local $@;
     eval { $code->() };
-    return if $@;
+    if ( $@ ) {
+        $c->app->log->error($@);
+        return;
+    }
     return 1;
 
 }
@@ -18,18 +21,24 @@ sub handle {
     # controller, code, errormessage
     my $c    = shift or die 'no controller provided as first parameter';
     my $code = shift or die 'no code provided as second parameter';
-    my $msg  = shift;
-    prepare($c);
-    local $@;
-    eval { $code->() };
-    if ( $@ ) {
-        my $log = $c->app->log;
-        $log->error("system error message: $@");
-        $log->error("user presented error message: " . ($msg // ''));
-        my $error = $c->stash('error') // '';
-        my $newerror = $AltSimpleBoard::Data::Debug ? $@ : ($msg // 'Fehler');
-        $c->stash(error => $error ? "$error\n\n$newerror" : $newerror);
-        return;
+    if ( $AltSimpleBoard::Data::Debug ) {
+        $code->();
+        return 1;
+    }
+    else {
+        my $msg  = shift;
+        prepare($c);
+        local $@;
+        eval { $code->() };
+        if ( $@ ) {
+            my $log = $c->app->log;
+            $log->error("system error message: $@");
+            $log->error("user presented error message: " . ($msg // ''));
+            my $error = $c->stash('error') // '';
+            my $newerror = $msg // 'Fehler';
+            $c->stash(error => $error ? "$error\n\n$newerror" : $newerror);
+            return;
+        }
     }
     return 1; 
 }

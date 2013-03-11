@@ -11,7 +11,7 @@ use Data::Dumper;
 
 use Mock::Controller;
 
-use Test::More tests => 214;
+use Test::More tests => 306;
 
 srand;
 sub c  { Mock::Controller->new() }
@@ -124,16 +124,32 @@ diag(q{=== handle ===});
     my $ra = sub {
         my $msg = shift;
         my ( $r, $x, $c, $e ) = gs();
+        my $l = $c->app->log->error;
         my $y = $x;
         my $ret;
         my $code = sub { $x = $r; die $e; $y = $r };
         eval { $ret = $h->( $c, $code, ( $msg // () ) ) };
-        ok( !$@,   'bad code died, death was unnoticed from the outside' );
+        if ( $AltSimpleBoard::Data::Debug ) {
+            ok( $@, 'bad code died in debug mode' );
+            like( $@, qr/$e/, 'error message ok in debug mode' );
+            ok( !@$l, 'log is empty' );
+            ok( !$c->{stash}->{error}, 'stash error empty' );
+        }
+        else {
+            ok( !$@,   'bad code died, death was unnoticed from the outside' );
+            like( $l->[0], qr{system error message: $e}, 'system error catched' );
+            if ( $msg ) {
+                is( $l->[1], 'user presented error message: ' . $msg, 'empty user error catched');
+                is( $c->{stash}->{error}, $msg, 'error message in stash reseived' );
+            }
+            else {
+                is( $l->[1], 'user presented error message: ', 'empty user error catched');
+                like( $c->{stash}->{error}, qr/Fehler/i, 'error message in stash reseived' );
+            }
+        }
         ok( !$ret, 'bad code returns false' );
         is( $x, $r, 'errorprone code has been run, even if it died' );
         isnt( $y, $r, 'errorprone code has been run, but died ok' );
-        my $l = $c->app->log->error;
-        like( $l->[0], qr{system error message: $e}, 'system error catched' );
         return $r, $x, $c, $e, $l;
 
     };
@@ -168,50 +184,23 @@ diag(q{=== handle ===});
         diag('checking bad code without an error message without debugging');
         $AltSimpleBoard::Data::Debug = 0;
         my ( $r, $x, $c, $e, $l ) = $ra->();
-        is(
-            $l->[1],
-            'user presented error message: ',
-            'empty user error catched'
-        );
-        like( $c->{stash}->{error},
-            qr/Fehler/i, 'error message in stash reseived' );
     }
     {
         diag('checking bad code without an error message with debugging');
         $AltSimpleBoard::Data::Debug = 1;
         my ( $r, $x, $c, $e, $l ) = $ra->();
-        is(
-            $l->[1],
-            'user presented error message: ',
-            'empty user error catched'
-        );
-        like( $c->{stash}->{error}, qr/$e/i,
-            'error message in stash reseived' );
     }
     {
         diag('checking bad code with an error message and without debugging');
         $AltSimpleBoard::Data::Debug = 0;
         my $msg = r();
         my ( $r, $x, $c, $e, $l ) = $ra->($msg);
-        is(
-            $l->[1],
-            'user presented error message: ' . $msg,
-            'empty user error catched'
-        );
-        is( $c->{stash}->{error}, $msg, 'error message in stash reseived' );
     }
     {
         diag('checking bad code with an error message and with debugging');
         $AltSimpleBoard::Data::Debug = 1;
         my $msg = r();
         my ( $r, $x, $c, $e, $l ) = $ra->($msg);
-        is(
-            $l->[1],
-            'user presented error message: ' . $msg,
-            'empty user error catched'
-        );
-        like( $c->{stash}->{error}, qr/$e/i,
-            'error message in stash reseived' );
     }
 }
 
@@ -219,6 +208,7 @@ diag(q{=== handle ===});
 diag(q{=== handling ===});
 ##############################################################################
 {
+    $AltSimpleBoard::Data::Debug = 0;
     my $h = sub { &AltSimpleBoard::Errors::handling };
     {
         diag('wrong call, no controller');
@@ -303,51 +293,80 @@ diag(q{=== handling ===});
             diag('* bad code');
             my ( $r, $x, $c, $e, $params, $checks, $y, $ret ) =
               $prepare->($params);
+            my $l = $c->app->log->error;
             $params->{code} = sub { $x = $r; die $e; $y = $r };
             eval { $ret = $h->( $c, $params ) };
-            ok( !$@,   'no one died, everything is fine' );
-            ok( !$ret, 'the call returned true' );
-            my $l = $c->app->log->error;
-            cmp_ok( scalar(@$l), '>', 0, 'no errors reported' );
-            like(
-                $l->[0],
-                qr/system error message: $e/i,
-                'system error catched'
-            );
-            is(
-                $l->[1],
-                'user presented error message: ' . $e,
-                'user error catched'
-            );
+            ok( !$ret, 'the call did not return' );
             is( $x, $r, 'errorprone code has been run, even if it died' );
             isnt( $y, $r, 'errorprone code has been run, but died ok' );
             isnt(
                 $checks->{after_ok}->{got},
                 $checks->{after_ok}->{expected},
-                'after_ok ran'
+                'after_ok did not run'
             ) if exists $params->{after_ok};
-            is(
-                $checks->{after_error}->{got},
-                $checks->{after_error}->{expected},
-                'after_error did not run'
-            ) if exists $params->{after_error};
+            if ( $AltSimpleBoard::Data::Debug ) {
+                ok( $@,   'we died in debug mode' );
+                ok( !@$l, 'log is empty, as expected' );
+                isnt(
+                    $checks->{after_error}->{got},
+                    $checks->{after_error}->{expected},
+                    'after_error did not run'
+                ) if exists $params->{after_error};
+            }
+            else {
+                ok( !$@,   'no one died, everything is fine' );
+                cmp_ok( scalar(@$l), '>', 0, 'no errors reported' );
+                like(
+                    $l->[0],
+                    qr/system error message: $e/i,
+                    'system error catched'
+                );
+                is(
+                    $l->[1],
+                    'user presented error message: ' . $e,
+                    'user error catched'
+                );
+                is(
+                    $checks->{after_error}->{got},
+                    $checks->{after_error}->{expected},
+                    'after_error ran, as expected'
+                ) if exists $params->{after_error};
+            }
         }
     };
-    diag('without anything');
+    $AltSimpleBoard::Data::Debug = 0;
+    diag('without anything, no debug');
     $ck->( [] );
-    diag('with error message and nothing else');
+    diag('with error message and nothing else, no debug');
     $ck->( [qw(msg)] );
-    diag('with error message and just after_ok');
+    diag('with error message and just after_ok, no debug');
     $ck->( [qw(msg after_ok)] );
-    diag('with error message and just after_error');
+    diag('with error message and just after_error, no debug');
     $ck->( [qw(msg after_error)] );
-    diag('with error message, after_ok and after_error');
+    diag('with error message, after_ok and after_error, no debug');
     $ck->( [qw(msg after_ok after_error)] );
-    diag('without error message and just after_ok');
+    diag('without error message and just after_ok, no debug');
     $ck->( [qw(after_ok)] );
-    diag('without error message and just after_error');
+    diag('without error message and just after_error, no debug');
     $ck->( [qw(after_error)] );
-    diag('without error message, after_ok and after_error');
+    diag('without error message, after_ok and after_error, no debug');
+    $ck->( [qw(after_ok after_error)] );
+    $AltSimpleBoard::Data::Debug = 1;
+    diag('without anything, with debug');
+    $ck->( [] );
+    diag('with error message and nothing else, with debug');
+    $ck->( [qw(msg)] );
+    diag('with error message and just after_ok, with debug');
+    $ck->( [qw(msg after_ok)] );
+    diag('with error message and just after_error, with debug');
+    $ck->( [qw(msg after_error)] );
+    diag('with error message, after_ok and after_error, with debug');
+    $ck->( [qw(msg after_ok after_error)] );
+    diag('without error message and just after_ok, with debug');
+    $ck->( [qw(after_ok)] );
+    diag('without error message and just after_error, with debug');
+    $ck->( [qw(after_error)] );
+    diag('without error message, after_ok and after_error, with debug');
     $ck->( [qw(after_ok after_error)] );
 }
 
@@ -385,7 +404,8 @@ diag(q{=== run code, return something special at errors, don't die ===});
             ok( !$@, 'no one died, everything is fine' );
             my $l = $c->app->log->error;
             ok( !$c->{stash}->{error}, 'no error in stash' );
-            is( scalar(@$l), 0, 'no errors reported' );
+            ok( scalar(@$l), 'errors reported' );
+            like( $l->[0], qr/$e/, 'correct errors reported' );
             is( $x, $r, 'errorprone code has been run, even if it died' );
             isnt( $y, $r, 'errorprone code has been run, but died ok' );
             is_deeply( $ret, $nt, 'the call returned the expected default thingy' );
