@@ -23,7 +23,7 @@ BEGIN { use_ok('AltSimpleBoard::Errors'); }
 ##############################################################################
 
 ##############################################################################
-diag('=== prepare ===');
+note('=== prepare ===');
 ##############################################################################
 # - stash für fehlerbehandlung vorbereiten
 # - sollte mittlerweile automatisch passieren
@@ -55,13 +55,13 @@ diag('=== prepare ===');
 }
 
 ##############################################################################
-diag('=== handle_silent ===');
+note('=== handle_silent ===');
 ##############################################################################
 # - etwas ausführen, aber fehler unterdrücken
 # - stattdessen mit true oder false antworten, obs geklappt hat
 {
     my $h = sub { &AltSimpleBoard::Errors::handle_silent };
-    diag('test wrong call');
+    note('test wrong call');
     {
         eval { $h->() };
         ok( $@, 'died due to wrong call (no controller)' );
@@ -82,7 +82,7 @@ diag('=== handle_silent ===');
         );
     }
     {
-        diag('test with good code');
+        note('test with good code');
         my ( $r, $x, $c, $e ) = gs();
         isnt( $x, $r, 'check before running the code' );
         ok( $h->( $c, sub { $x = $r } ),
@@ -90,7 +90,7 @@ diag('=== handle_silent ===');
         is( $x, $r, 'code without errors has been silently executed' );
     }
     {
-        diag('test with bad code');
+        note('test with bad code');
         my ( $r, $x, $c, $e ) = gs();
         my $ret;
         eval {
@@ -100,7 +100,7 @@ diag('=== handle_silent ===');
         ok( !$ret, 'silent handling of error-prone code returns false' );
     }
     {
-        diag('test with bad code, check for error message');
+        note('test with bad code, check for error message');
         my ( $r, $x, $c, $e ) = gs();
         my $y = $x;
         isnt( $x, $r, 'check before running the code' );
@@ -117,7 +117,7 @@ diag('=== handle_silent ===');
 }
 
 ##############################################################################
-diag(q{=== handle ===});
+note(q{=== handle ===});
 ##############################################################################
 {
     my $h = sub { &AltSimpleBoard::Errors::handle };
@@ -153,7 +153,7 @@ diag(q{=== handle ===});
         return $r, $x, $c, $e, $l;
 
     };
-    diag('test wrong call');
+    note('test wrong call');
     {
         eval { $h->() };
         ok( $@, 'died due to wrong call (no controller)' );
@@ -174,30 +174,30 @@ diag(q{=== handle ===});
         );
     }
     {
-        diag('checking good code');
+        note('checking good code');
         my ( $r, $x, $c, $e ) = gs();
         isnt( $x, $r, 'check before running the code' );
         ok( $h->( $c, sub { $x = $r } ), 'good code runs without any issues' );
         ok( !$c->{stash}->{error}, 'good code produces no errors' );
     }
     {
-        diag('checking bad code without an error message without debugging');
+        note('checking bad code without an error message without debugging');
         $AltSimpleBoard::Data::Debug = 0;
         my ( $r, $x, $c, $e, $l ) = $ra->();
     }
     {
-        diag('checking bad code without an error message with debugging');
+        note('checking bad code without an error message with debugging');
         $AltSimpleBoard::Data::Debug = 1;
         my ( $r, $x, $c, $e, $l ) = $ra->();
     }
     {
-        diag('checking bad code with an error message and without debugging');
+        note('checking bad code with an error message and without debugging');
         $AltSimpleBoard::Data::Debug = 0;
         my $msg = r();
         my ( $r, $x, $c, $e, $l ) = $ra->($msg);
     }
     {
-        diag('checking bad code with an error message and with debugging');
+        note('checking bad code with an error message and with debugging');
         $AltSimpleBoard::Data::Debug = 1;
         my $msg = r();
         my ( $r, $x, $c, $e, $l ) = $ra->($msg);
@@ -205,33 +205,33 @@ diag(q{=== handle ===});
 }
 
 ##############################################################################
-diag(q{=== handling ===});
+note(q{=== handling ===});
 ##############################################################################
 {
     $AltSimpleBoard::Data::Debug = 0;
     my $h = sub { &AltSimpleBoard::Errors::handling };
     {
-        diag('wrong call, no controller');
+        note('wrong call, no controller');
         eval { $h->() };
         ok( $@, 'no controller kills' );
         like( $@, qr/no controller/i, 'error message ok' );
     }
     {
-        diag('wrong call, no params');
+        note('wrong call, no params');
         my ( $r, $x, $c, $e ) = gs();
         eval { $h->($c) };
         ok( $@, 'no params kill' );
         like( $@, qr/params not set/i, 'error message ok' );
     }
     {
-        diag('wrong call, neighter params nor code as argument');
+        note('wrong call, neighter params nor code as argument');
         my ( $r, $x, $c, $e ) = gs();
         eval { $h->( $c, [] ) };
         ok( $@, 'no params kill' );
         like( $@, qr/no hash params/i, 'error message ok' );
     }
     {
-        diag('plain error message, no after_error');
+        note('plain error message, no after_error');
         my ( $r, $x, $c, $e ) = gs();
         my $ret = 1;
         eval { $ret = $h->( $c, { plain => $e } ) };
@@ -268,7 +268,7 @@ diag(q{=== handling ===});
             return $r, $x, $c, $e, $params, $checks, '', undef;
         };
         {
-            diag('* good code');
+            note('* good code');
             my ( $r, $x, $c, $e, $params, $checks, $y, $ret ) =
               $prepare->($params);
             $params->{code} = sub { $x = $r };
@@ -290,7 +290,7 @@ diag(q{=== handling ===});
             ) if exists $params->{after_error};
         }
         {
-            diag('* bad code');
+            note('* bad code');
             my ( $r, $x, $c, $e, $params, $checks, $y, $ret ) =
               $prepare->($params);
             my $l = $c->app->log->error;
@@ -335,43 +335,43 @@ diag(q{=== handling ===});
         }
     };
     $AltSimpleBoard::Data::Debug = 0;
-    diag('without anything, no debug');
+    note('without anything, no debug');
     $ck->( [] );
-    diag('with error message and nothing else, no debug');
+    note('with error message and nothing else, no debug');
     $ck->( [qw(msg)] );
-    diag('with error message and just after_ok, no debug');
+    note('with error message and just after_ok, no debug');
     $ck->( [qw(msg after_ok)] );
-    diag('with error message and just after_error, no debug');
+    note('with error message and just after_error, no debug');
     $ck->( [qw(msg after_error)] );
-    diag('with error message, after_ok and after_error, no debug');
+    note('with error message, after_ok and after_error, no debug');
     $ck->( [qw(msg after_ok after_error)] );
-    diag('without error message and just after_ok, no debug');
+    note('without error message and just after_ok, no debug');
     $ck->( [qw(after_ok)] );
-    diag('without error message and just after_error, no debug');
+    note('without error message and just after_error, no debug');
     $ck->( [qw(after_error)] );
-    diag('without error message, after_ok and after_error, no debug');
+    note('without error message, after_ok and after_error, no debug');
     $ck->( [qw(after_ok after_error)] );
     $AltSimpleBoard::Data::Debug = 1;
-    diag('without anything, with debug');
+    note('without anything, with debug');
     $ck->( [] );
-    diag('with error message and nothing else, with debug');
+    note('with error message and nothing else, with debug');
     $ck->( [qw(msg)] );
-    diag('with error message and just after_ok, with debug');
+    note('with error message and just after_ok, with debug');
     $ck->( [qw(msg after_ok)] );
-    diag('with error message and just after_error, with debug');
+    note('with error message and just after_error, with debug');
     $ck->( [qw(msg after_error)] );
-    diag('with error message, after_ok and after_error, with debug');
+    note('with error message, after_ok and after_error, with debug');
     $ck->( [qw(msg after_ok after_error)] );
-    diag('without error message and just after_ok, with debug');
+    note('without error message and just after_ok, with debug');
     $ck->( [qw(after_ok)] );
-    diag('without error message and just after_error, with debug');
+    note('without error message and just after_error, with debug');
     $ck->( [qw(after_error)] );
-    diag('without error message, after_ok and after_error, with debug');
+    note('without error message, after_ok and after_error, with debug');
     $ck->( [qw(after_ok after_error)] );
 }
 
 ##############################################################################
-diag(q{=== run code, return something special at errors, don't die ===});
+note(q{=== run code, return something special at errors, don't die ===});
 ##############################################################################
 {
     my $ck = sub {
@@ -379,7 +379,7 @@ diag(q{=== run code, return something special at errors, don't die ===});
         my $st   = shift;
         my $nt   = shift;
         {
-            diag('* good code');
+            note('* good code');
             my $c = c();
             my $ret;
             eval {
@@ -393,7 +393,7 @@ diag(q{=== run code, return something special at errors, don't die ===});
             is_deeply( $ret, $st, 'the returned value is ok' );
         }
         {
-            diag('* bad code');
+            note('* bad code');
             my ( $r, $x, $c, $e ) = gs();
             my $ret;
             my $y = '';
@@ -412,7 +412,7 @@ diag(q{=== run code, return something special at errors, don't die ===});
         }
     };
 ##############################################################################
-    diag(q{or_empty -> []});
+    note(q{or_empty -> []});
 ##############################################################################
     {
         my $o = sub { &AltSimpleBoard::Errors::or_empty };
@@ -420,7 +420,7 @@ diag(q{=== run code, return something special at errors, don't die ===});
     }
 
 ##############################################################################
-    diag(q{or_nostring -> ''});
+    note(q{or_nostring -> ''});
 ##############################################################################
     {
         my $o = sub { &AltSimpleBoard::Errors::or_nostring };
@@ -428,7 +428,7 @@ diag(q{=== run code, return something special at errors, don't die ===});
     }
 
 ##############################################################################
-    diag(q{or_undef -> undef});
+    note(q{or_undef -> undef});
 ##############################################################################
     {
         my $o = sub { &AltSimpleBoard::Errors::or_undef };
@@ -436,7 +436,7 @@ diag(q{=== run code, return something special at errors, don't die ===});
     }
 
 ##############################################################################
-    diag(q{or_zero -> 0});
+    note(q{or_zero -> 0});
 ##############################################################################
     {
         my $o = sub { &AltSimpleBoard::Errors::or_zero };

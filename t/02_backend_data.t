@@ -20,12 +20,13 @@ BEGIN { use_ok('AltSimpleBoard::Data') }
 
 my $config = Mock::Config->new->{config};
 
-diag('checking configuration loading');
+note('checking configuration loading');
 my $app = Mojolicious->new();
+$app->log->level('error');
 ok( AltSimpleBoard::Data::set_config($app), 'config set returned true' );
 
 {
-    diag('checking database configuration');
+    note('checking database configuration');
     my $dbh = AltSimpleBoard::Data::dbh();
     is( ref($dbh), 'DBI::db', 'got dbi handle' );
     ok( $dbh->{Name}, 'database name set' );
@@ -43,7 +44,7 @@ ok( AltSimpleBoard::Data::set_config($app), 'config set returned true' );
 }
 
 {
-    diag('checking sensible config values');
+    note('checking sensible config values');
 
     ok( keys( %{ $app->config } ), 'config stored in application' );
 
@@ -56,7 +57,7 @@ ok( AltSimpleBoard::Data::set_config($app), 'config set returned true' );
         'secret deleted from config' );
     ok( !exists( $app->config()->{cryptsalt} ), 'secret deleted from config' );
 
-    diag('checking ordinary config values');
+    note('checking ordinary config values');
     {
         my %order = (
             dbprefix        => 'Prefix',
@@ -75,7 +76,7 @@ ok( AltSimpleBoard::Data::set_config($app), 'config set returned true' );
         }
     }
 
-    diag('checking computed config values');
+    note('checking computed config values');
     like($AltSimpleBoard::Data::Themedir, qr/themes/, 'theme dir ok');
     like($AltSimpleBoard::Data::Themebasedir, qr/$FindBin::Bin/, 'theme base dir inside project directory');
     like($AltSimpleBoard::Data::Themedir, qr/$AltSimpleBoard::Data::Themedir/, 'theme base dir ok');
