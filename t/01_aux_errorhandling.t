@@ -19,7 +19,7 @@ sub r  { '>>> ' . rand(10000) . ' <<<' }
 sub gs { r(), '', c(), r() }
 
 ##############################################################################
-BEGIN { use_ok('AltSimpleBoard::Errors'); }
+BEGIN { use_ok('Ffc::Errors'); }
 ##############################################################################
 
 ##############################################################################
@@ -28,7 +28,7 @@ note('=== prepare ===');
 # - stash für fehlerbehandlung vorbereiten
 # - sollte mittlerweile automatisch passieren
 {
-    my $p = sub { &AltSimpleBoard::Errors::prepare };
+    my $p = sub { &Ffc::Errors::prepare };
     {
         eval { $p->() };
         ok( $@, 'dies when prepared without controller' );
@@ -60,7 +60,7 @@ note('=== handle_silent ===');
 # - etwas ausführen, aber fehler unterdrücken
 # - stattdessen mit true oder false antworten, obs geklappt hat
 {
-    my $h = sub { &AltSimpleBoard::Errors::handle_silent };
+    my $h = sub { &Ffc::Errors::handle_silent };
     note('test wrong call');
     {
         eval { $h->() };
@@ -120,7 +120,7 @@ note('=== handle_silent ===');
 note(q{=== handle ===});
 ##############################################################################
 {
-    my $h = sub { &AltSimpleBoard::Errors::handle };
+    my $h = sub { &Ffc::Errors::handle };
     my $ra = sub {
         my $msg = shift;
         my ( $r, $x, $c, $e ) = gs();
@@ -129,7 +129,7 @@ note(q{=== handle ===});
         my $ret;
         my $code = sub { $x = $r; die $e; $y = $r };
         eval { $ret = $h->( $c, $code, ( $msg // () ) ) };
-        if ( $AltSimpleBoard::Data::Debug ) {
+        if ( $Ffc::Data::Debug ) {
             ok( $@, 'bad code died in debug mode' );
             like( $@, qr/$e/, 'error message ok in debug mode' );
             ok( !@$l, 'log is empty' );
@@ -182,23 +182,23 @@ note(q{=== handle ===});
     }
     {
         note('checking bad code without an error message without debugging');
-        $AltSimpleBoard::Data::Debug = 0;
+        $Ffc::Data::Debug = 0;
         my ( $r, $x, $c, $e, $l ) = $ra->();
     }
     {
         note('checking bad code without an error message with debugging');
-        $AltSimpleBoard::Data::Debug = 1;
+        $Ffc::Data::Debug = 1;
         my ( $r, $x, $c, $e, $l ) = $ra->();
     }
     {
         note('checking bad code with an error message and without debugging');
-        $AltSimpleBoard::Data::Debug = 0;
+        $Ffc::Data::Debug = 0;
         my $msg = r();
         my ( $r, $x, $c, $e, $l ) = $ra->($msg);
     }
     {
         note('checking bad code with an error message and with debugging');
-        $AltSimpleBoard::Data::Debug = 1;
+        $Ffc::Data::Debug = 1;
         my $msg = r();
         my ( $r, $x, $c, $e, $l ) = $ra->($msg);
     }
@@ -208,8 +208,8 @@ note(q{=== handle ===});
 note(q{=== handling ===});
 ##############################################################################
 {
-    $AltSimpleBoard::Data::Debug = 0;
-    my $h = sub { &AltSimpleBoard::Errors::handling };
+    $Ffc::Data::Debug = 0;
+    my $h = sub { &Ffc::Errors::handling };
     {
         note('wrong call, no controller');
         eval { $h->() };
@@ -304,7 +304,7 @@ note(q{=== handling ===});
                 $checks->{after_ok}->{expected},
                 'after_ok did not run'
             ) if exists $params->{after_ok};
-            if ( $AltSimpleBoard::Data::Debug ) {
+            if ( $Ffc::Data::Debug ) {
                 ok( $@,   'we died in debug mode' );
                 ok( !@$l, 'log is empty, as expected' );
                 isnt(
@@ -334,7 +334,7 @@ note(q{=== handling ===});
             }
         }
     };
-    $AltSimpleBoard::Data::Debug = 0;
+    $Ffc::Data::Debug = 0;
     note('without anything, no debug');
     $ck->( [] );
     note('with error message and nothing else, no debug');
@@ -351,7 +351,7 @@ note(q{=== handling ===});
     $ck->( [qw(after_error)] );
     note('without error message, after_ok and after_error, no debug');
     $ck->( [qw(after_ok after_error)] );
-    $AltSimpleBoard::Data::Debug = 1;
+    $Ffc::Data::Debug = 1;
     note('without anything, with debug');
     $ck->( [] );
     note('with error message and nothing else, with debug');
@@ -415,7 +415,7 @@ note(q{=== run code, return something special at errors, don't die ===});
     note(q{or_empty -> []});
 ##############################################################################
     {
-        my $o = sub { &AltSimpleBoard::Errors::or_empty };
+        my $o = sub { &Ffc::Errors::or_empty };
         $ck->( $o, [ ( r() ) x rand(50) ], [] );
     }
 
@@ -423,7 +423,7 @@ note(q{=== run code, return something special at errors, don't die ===});
     note(q{or_nostring -> ''});
 ##############################################################################
     {
-        my $o = sub { &AltSimpleBoard::Errors::or_nostring };
+        my $o = sub { &Ffc::Errors::or_nostring };
         $ck->( $o, r(), '' );
     }
 
@@ -431,7 +431,7 @@ note(q{=== run code, return something special at errors, don't die ===});
     note(q{or_undef -> undef});
 ##############################################################################
     {
-        my $o = sub { &AltSimpleBoard::Errors::or_undef };
+        my $o = sub { &Ffc::Errors::or_undef };
         $ck->( $o, r(), undef );
     }
 
@@ -439,7 +439,7 @@ note(q{=== run code, return something special at errors, don't die ===});
     note(q{or_zero -> 0});
 ##############################################################################
     {
-        my $o = sub { &AltSimpleBoard::Errors::or_zero };
+        my $o = sub { &Ffc::Errors::or_zero };
         $ck->( $o, r(), 0 );
     }
 }

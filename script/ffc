@@ -11,4 +11,4 @@ my $lib = join('/', @base, 'lib');
 
 # Start commands for application
 require Mojolicious::Commands;
-Mojolicious::Commands->start_app('AltSimpleBoard');
+Mojolicious::Commands->start_app('Ffc');

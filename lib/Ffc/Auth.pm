@@ -1,10 +1,10 @@
-package AltSimpleBoard::Auth;
+package Ffc::Auth;
 use Mojo::Base 'Mojolicious::Controller';
 use utf8;
-use AltSimpleBoard::Data;
-use AltSimpleBoard::Data::Auth;
-use AltSimpleBoard::Board;
-use AltSimpleBoard::Errors;
+use Ffc::Data;
+use Ffc::Data::Auth;
+use Ffc::Board;
+use Ffc::Errors;
 
 sub _form_prepare {
     my $self = shift;
@@ -31,7 +31,7 @@ sub logout {
 
 sub login_form {
     my $self = shift;
-    AltSimpleBoard::Errors::prepare($self, 'Bitte melden Sie sich an');
+    Ffc::Errors::prepare($self, 'Bitte melden Sie sich an');
     $self->app->switch_act( $self,  'auth' );
     _cancel_session( $self );
     _form_prepare( $self );
@@ -52,7 +52,7 @@ sub check_login {
     my $self = shift;
     if ( my $s = $self->session ) {
         if ( $s->{userid } ) {
-            $self->session( expiration => $AltSimpleBoard::Data::SessionTimeout );
+            $self->session( expiration => $Ffc::Data::SessionTimeout );
             return 1 if $s->{userid};
         }
     }
@@ -65,7 +65,7 @@ sub _get_relevant_data {
     my $user    = $self->param('user');
     my $pass    = $self->param('pass');
     my @data;
-    AltSimpleBoard::Errors::handle( $self, sub { @data = AltSimpleBoard::Data::Auth::get_userdata_for_login( $user, $pass ) }, 'Benutzername oder Passwort ungültig, bitte melden Sie sich erneut an.' );
+    Ffc::Errors::handle( $self, sub { @data = Ffc::Data::Auth::get_userdata_for_login( $user, $pass ) }, 'Benutzername oder Passwort ungültig, bitte melden Sie sich erneut an.' );
     return unless @data;
     $self->stash( error => '' );
     %$session = (
@@ -75,7 +75,7 @@ sub _get_relevant_data {
         lastseen    => $data[1],
         admin       => $data[2],
         show_images => $data[3],
-        theme       => $data[4] // $AltSimpleBoard::Data::Theme,
+        theme       => $data[4] // $Ffc::Data::Theme,
         act         => 'forum',
         query       => '',
         category    => undef,

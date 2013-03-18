@@ -1,6 +1,6 @@
 =encoding utf8
 
-=head1 AltSimpleBoard
+=head1 Ffc
 
 Schnelle, leichtgewichtige, übersichtliche, schlanke und 
 unkomplizierte Foren- und Nachrichtenplattform für eine 

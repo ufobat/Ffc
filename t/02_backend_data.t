@@ -16,18 +16,18 @@ srand;
 
 sub r { '>>> ' . rand(10000) . ' <<<' }
 
-BEGIN { use_ok('AltSimpleBoard::Data') }
+BEGIN { use_ok('Ffc::Data') }
 
 my $config = Mock::Config->new->{config};
 
 note('checking configuration loading');
 my $app = Mojolicious->new();
 $app->log->level('error');
-ok( AltSimpleBoard::Data::set_config($app), 'config set returned true' );
+ok( Ffc::Data::set_config($app), 'config set returned true' );
 
 {
     note('checking database configuration');
-    my $dbh = AltSimpleBoard::Data::dbh();
+    my $dbh = Ffc::Data::dbh();
     is( ref($dbh), 'DBI::db', 'got dbi handle' );
     ok( $dbh->{Name}, 'database name set' );
     is( $dbh->{Name}, "database=$ENV{ASB_DATABASE}", 'database name ok' );
@@ -48,7 +48,7 @@ ok( AltSimpleBoard::Data::set_config($app), 'config set returned true' );
 
     ok( keys( %{ $app->config } ), 'config stored in application' );
 
-    is( AltSimpleBoard::Data::cryptsalt(),
+    is( Ffc::Data::cryptsalt(),
         $config->{cryptsalt}, 'cryptsalt is ok' );
 
     is( $app->secret, $config->{cookiesecret}, 'secret is ok' );
@@ -70,33 +70,33 @@ ok( AltSimpleBoard::Data::set_config($app), 'config set returned true' );
         );
         while ( my ( $k, $v ) = each %order ) {
             no strict 'refs';
-            is( ${"AltSimpleBoard::Data::$v"},
+            is( ${"Ffc::Data::$v"},
                 $config->{$k},
                 qq(config files "$k" matches application configs "$v") );
         }
     }
 
     note('checking computed config values');
-    like($AltSimpleBoard::Data::Themedir, qr/themes/, 'theme dir ok');
-    like($AltSimpleBoard::Data::Themebasedir, qr/$FindBin::Bin/, 'theme base dir inside project directory');
-    like($AltSimpleBoard::Data::Themedir, qr/$AltSimpleBoard::Data::Themedir/, 'theme base dir ok');
-    like($AltSimpleBoard::Data::DefaultConfig, qr/$FindBin::Bin/, 'default config inside project directory');
-    like($AltSimpleBoard::Data::DefaultConfig, qr/etc/, 'default config in something with "etc" in it');
-    like($AltSimpleBoard::Data::DefaultConfig, qr/altsimpleboard\.json/, 'default config looks good');
+    like($Ffc::Data::Themedir, qr/themes/, 'theme dir ok');
+    like($Ffc::Data::Themebasedir, qr/$FindBin::Bin/, 'theme base dir inside project directory');
+    like($Ffc::Data::Themedir, qr/$Ffc::Data::Themedir/, 'theme base dir ok');
+    like($Ffc::Data::DefaultConfig, qr/$FindBin::Bin/, 'default config inside project directory');
+    like($Ffc::Data::DefaultConfig, qr/etc/, 'default config in something with "etc" in it');
+    like($Ffc::Data::DefaultConfig, qr/ffc\.json/, 'default config looks good');
 
     my @themes;
     {
-        opendir my $dh, $AltSimpleBoard::Data::Themebasedir
-            or die qq(could not open theme dir "$AltSimpleBoard::Data::Themebasedir": $!);
+        opendir my $dh, $Ffc::Data::Themebasedir
+            or die qq(could not open theme dir "$Ffc::Data::Themebasedir": $!);
         while ( my $file = readdir $dh ) {
             next unless $file =~ m/\A\w+\z/xms;
             push @themes, $file;
         }
     }
     
-    ok( @AltSimpleBoard::Data::Themes, 'themes from directory are available');
-    is_deeply( \@AltSimpleBoard::Data::Themes, \@themes, 'avaiable themes figured out correctly' );
+    ok( @Ffc::Data::Themes, 'themes from directory are available');
+    is_deeply( \@Ffc::Data::Themes, \@themes, 'avaiable themes figured out correctly' );
 
-    ok( keys(%AltSimpleBoard::Data::Acttitles), 'custom activity titles are available');
-    is_deeply( \%AltSimpleBoard::Data::Acttitles, $config->{acttitles}, 'custom activity titles from config ok' );
+    ok( keys(%Ffc::Data::Acttitles), 'custom activity titles are available');
+    is_deeply( \%Ffc::Data::Acttitles, $config->{acttitles}, 'custom activity titles from config ok' );
 }

@@ -74,6 +74,6 @@
 
 =back
 
-Der Name des Themenverzeichnisses wird in der Konfiguration unter `etc/altsimpleboard.json` angegeben
+Der Name des Themenverzeichnisses wird in der Konfiguration unter `etc/ffc.json` angegeben
 
 =cut

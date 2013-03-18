@@ -1,21 +1,21 @@
-package AltSimpleBoard::Board::Views;
+package Ffc::Board::Views;
 
 use 5.010;
 use strict;
 use warnings;
 use utf8;
 
-use Mojo::Base 'AltSimpleBoard::Board::Errors';
+use Mojo::Base 'Ffc::Board::Errors';
 
-use AltSimpleBoard::Auth;
-use AltSimpleBoard::Data::Board;
-use AltSimpleBoard::Data::Board::Views;
-use AltSimpleBoard::Data::Board::General;
+use Ffc::Auth;
+use Ffc::Data::Board;
+use Ffc::Data::Board::Views;
+use Ffc::Data::Board::General;
 
 sub _switch_category {
     my ( $c, $cat ) = @_;
     $cat = $cat =~ m/\A(\w+)\z/xmsi ? $1 : undef;
-    $c->session->{category} = $c->or_nostring( sub{AltSimpleBoard::Data::Board::General::check_category($cat) } );
+    $c->session->{category} = $c->or_nostring( sub{Ffc::Data::Board::General::check_category($cat) } );
 }
 
 sub switch_category {
@@ -30,7 +30,7 @@ sub msgs_user {
     my $s = $c->session;
     $c->app->switch_act($c, 'msgs');
     $s->{msgs_userid} = $c->param('msgs_userid');
-    $s->{msgs_username} = $c->or_nostring( sub{AltSimpleBoard::Data::Board::General::get_username($s->{msgs_userid}) } );
+    $s->{msgs_username} = $c->or_nostring( sub{Ffc::Data::Board::General::get_username($s->{msgs_userid}) } );
     delete($s->{msgs_userid}), delete($s->{msgs_username}) unless $s->{msgs_username};
     $c->frontpage();
 }
@@ -59,8 +59,8 @@ sub frontpage {
     my $s = $c->session;
     $c->error_prepare;
 
-    unless ( AltSimpleBoard::Auth::check_login($c) ) {
-        return AltSimpleBoard::Auth::login_form($c, 'Bitte melden Sie sich an');
+    unless ( Ffc::Auth::check_login($c) ) {
+        return Ffc::Auth::login_form($c, 'Bitte melden Sie sich an');
     }
 
     my $page   = $c->param('page')     // 1;
@@ -79,11 +79,11 @@ sub frontpage {
     my $posts  = [];
     my $act = $s->{act};
     my $cat = $s->{category};
-    AltSimpleBoard::Data::Board::Views::get_forum(@params);
+    Ffc::Data::Board::Views::get_forum(@params);
     given ( $act ) {
-        when('forum'  ){$posts=$c->or_empty(sub{AltSimpleBoard::Data::Board::Views::get_forum(@params)})}
-        when('notes'  ){$posts=$c->or_empty(sub{AltSimpleBoard::Data::Board::Views::get_notes(@params)})}
-        when('msgs'   ){$posts=$c->or_empty(sub{AltSimpleBoard::Data::Board::Views::get_msgs(@params,$s->{msgs_userid})})}
+        when('forum'  ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_forum(@params)})}
+        when('notes'  ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_notes(@params)})}
+        when('msgs'   ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_msgs(@params,$s->{msgs_userid})})}
         when('options'){}
         default        {$c->error_handling({plain=>qq("$act" unbekannt)})}
     }
@@ -97,13 +97,13 @@ sub frontpage {
     $c->stash( posts => $posts);
     $c->get_counts;
     $c->stash( categories => ($act eq 'forum') 
-            ? $c->or_empty( sub { AltSimpleBoard::Data::Board::Views::get_categories($userid) } ) 
+            ? $c->or_empty( sub { Ffc::Data::Board::Views::get_categories($userid) } ) 
             : [] );
     if ( $c->error_handling({
-        code        => sub { AltSimpleBoard::Data::Board::update_user_stats($userid, $act, $cat) },
+        code        => sub { Ffc::Data::Board::update_user_stats($userid, $act, $cat) },
         msg         => 'Etwas ist intern schief gegangen, bitte versuchen Sie es später noch einmal.',
         after_error => sub { 
-            AltSimpleBoard::Auth::login_form($c, 'Etwas ist intern schief gegangen, bitte melden Sie sich an') },
+            Ffc::Auth::login_form($c, 'Etwas ist intern schief gegangen, bitte melden Sie sich an') },
     }) ) {
         $c->render('board/frontpage');
     }
@@ -112,9 +112,9 @@ sub frontpage {
 sub get_counts {
     my $c = shift;
     my $userid = $c->session()->{userid};
-    $c->stash(notecount    => $c->or_zero(sub{AltSimpleBoard::Data::Board::Views::count_notes(  $userid)}));
-    $c->stash(newmsgscount => $c->or_zero(sub{AltSimpleBoard::Data::Board::Views::count_newmsgs($userid)}));
-    $c->stash(newpostcount => $c->or_zero(sub{AltSimpleBoard::Data::Board::Views::count_newpost($userid)}));
+    $c->stash(notecount    => $c->or_zero(sub{Ffc::Data::Board::Views::count_notes(  $userid)}));
+    $c->stash(newmsgscount => $c->or_zero(sub{Ffc::Data::Board::Views::count_newmsgs($userid)}));
+    $c->stash(newpostcount => $c->or_zero(sub{Ffc::Data::Board::Views::count_newpost($userid)}));
 }
 sub search {
     my $c = shift;

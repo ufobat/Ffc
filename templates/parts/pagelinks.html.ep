@@ -1,6 +1,6 @@
-% if ( @$posts == $AltSimpleBoard::Data::Limit ) {
+% if ( @$posts == $Ffc::Data::Limit ) {
 <div class="pages">
-% my $plp = $AltSimpleBoard::Data::Pagelinkpreview;
+% my $plp = $Ffc::Data::Pagelinkpreview;
 % if ( $page > $plp + 1 ) {
     <a href="<%= url_for frontpage => page => 1 %>" title="Zur ersten Seite gehen">[1]</a>
 % }

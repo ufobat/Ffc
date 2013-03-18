@@ -1,4 +1,4 @@
-package AltSimpleBoard::Errors;
+package Ffc::Errors;
 use utf8;
 use strict;
 use warnings;
@@ -21,7 +21,7 @@ sub handle {
     # controller, code, errormessage
     my $c    = shift or die 'no controller provided as first parameter';
     my $code = shift or die 'no code provided as second parameter';
-    if ( $AltSimpleBoard::Data::Debug ) {
+    if ( $Ffc::Data::Debug ) {
         $code->();
         return 1;
     }

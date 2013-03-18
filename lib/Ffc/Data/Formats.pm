@@ -1,4 +1,4 @@
-package AltSimpleBoard::Data::Formats;
+package Ffc::Data::Formats;
 
 use 5.010;
 use strict;
@@ -70,7 +70,7 @@ sub _make_goody {
 
 sub _make_link {
     my ( $start, $url, $end, $c ) = @_;
-    my $t = $AltSimpleBoard::Data::Themedir.$c->session()->{theme};
+    my $t = $Ffc::Data::Themedir.$c->session()->{theme};
     if ( $url =~ m(jpe?g|gif|bmp|png\z)xmsi ) {
         if ( $c->session()->{show_images} ) {
             return qq~$start<a href="$url" title="Externes Bild" target="_blank"><img src="$url" class="extern" title="Externes Bild" /></a>$end~;
@@ -97,7 +97,7 @@ sub _make_smiley {
     $y =~ s/\>/&gt;/xmsg;
     $y =~ s/\</&lt;/xmsg;
     return qq~$s<img class="smiley" src="~
-        . $c->url_for("$AltSimpleBoard::Data::Themedir/".$c->session()->{theme}."/img/smileys/$Smiley{$x}.png")
+        . $c->url_for("$Ffc::Data::Themedir/".$c->session()->{theme}."/img/smileys/$Smiley{$x}.png")
         . qq~" alt="$y" />$e~;
 }
 
@@ -106,7 +106,7 @@ sub _make_bullet {
     my $s = shift;
     $s =~ s/\s/\&nbsp;/gmx;
     return qq~$s<img class="bullet" src="~
-        . $c->url_for("$AltSimpleBoard::Data::Themedir/".$c->session()->{theme}."/img/icons/bullet.png")
+        . $c->url_for("$Ffc::Data::Themedir/".$c->session()->{theme}."/img/icons/bullet.png")
         . qq~" alt="·" />~;
 }
 

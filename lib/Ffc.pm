@@ -1,6 +1,6 @@
-package AltSimpleBoard;
+package Ffc;
 use Mojo::Base 'Mojolicious';
-use AltSimpleBoard::Data;
+use Ffc::Data;
 
 sub switch_act { 
     my $s = $_[1]->session;
@@ -14,11 +14,11 @@ sub startup {
     my $self = shift;
     $ENV{MOJO_REVERSE_PROXY} = 1;
     my $app  = $self->app;
-    AltSimpleBoard::Data::set_config($app);
+    Ffc::Data::set_config($app);
 
     $app->helper( act => sub { shift->session->{act} // 'forum' } );
-    $app->helper( theme => sub { $AltSimpleBoard::Data::Theme } );
-    $app->helper( acttitle => sub { $AltSimpleBoard::Data::Acttitles{shift->session->{act}} // 'Unbekannt' } );
+    $app->helper( theme => sub { $Ffc::Data::Theme } );
+    $app->helper( acttitle => sub { $Ffc::Data::Acttitles{shift->session->{act}} // 'Unbekannt' } );
     $app->helper( error => sub { shift->session->{error} // '' } );
 
     # Router

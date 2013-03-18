@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= $AltSimpleBoard::Data::Title %> - <%= acttitle() %></title>
-    <%= stylesheet $AltSimpleBoard::Data::Themedir.session()->{theme}.'/css/style.css' %>
-    <link rel="icon" type="image/ico" href="<%= url_for $AltSimpleBoard::Data::Themedir.session()->{theme}.'/img/favicon.png' %>" />
+    <title><%= $Ffc::Data::Title %> - <%= acttitle() %></title>
+    <%= stylesheet $Ffc::Data::Themedir.session()->{theme}.'/css/style.css' %>
+    <link rel="icon" type="image/ico" href="<%= url_for $Ffc::Data::Themedir.session()->{theme}.'/img/favicon.png' %>" />
   </head>
   <body>
 % if ( session()->{user} ) {

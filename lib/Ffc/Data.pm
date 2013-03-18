@@ -1,4 +1,4 @@
-package AltSimpleBoard::Data;
+package Ffc::Data;
 
 use 5.010;
 use strict;
@@ -10,7 +10,7 @@ use DBI;
 
 our $DefaultConfig = join '/',
   File::Spec->splitdir( File::Basename::dirname(__FILE__) ), '..', '..', 'etc',
-  'altsimpleboard.json';
+  'ffc.json';
 our $Prefix = '';
 our $Fullpostnumber = 7;
 our $Limit;
