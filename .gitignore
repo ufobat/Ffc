@@ -2,3 +2,6 @@ etc/*.json
 log/*
 .htaccess
 *.swp
+Makefile
+MYMETA.json
+MYMETA.yml
