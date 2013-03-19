@@ -29,6 +29,7 @@ sub new {
           . '_',
         "cryptsalt"       => int( rand 100000 ),
         "postlimit"       => int( rand 30 ),
+        "favicon"         => r(),
         "title"           => r(),
         "pagelinkpreview" => int( rand 15 ),
         "sessiontimeout"  => int( rand 10000 ),

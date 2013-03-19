@@ -25,6 +25,7 @@ our $Themedir = '/themes/';
 our $Themebasedir = File::Basename::dirname(__FILE__).'/../../public'.$Themedir;
 our $DbTemplate = File::Basename::dirname(__FILE__).'/../../t/var/database.sql';
 our $DbTestdata = File::Basename::dirname(__FILE__).'/../../t/var/testdata.sql';
+our $Favicon;
 {
     my $dbh;
     my $config;
@@ -50,6 +51,7 @@ our $DbTestdata = File::Basename::dirname(__FILE__).'/../../t/var/testdata.sql';
         $SessionTimeout = $config->{sessiontimeout};
         $Theme = $config->{theme};
         $Debug = $config->{debug};
+        $Favicon = $config->{favicon} if $config->{favicon};
         {
             opendir my $dh, $Themebasedir or die qq(could not open theme directory $Themebasedir: $!);
             while ( my $d = readdir $dh ) {

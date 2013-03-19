@@ -11,6 +11,7 @@
     "sessiontimeout":3600,
     "theme":"default",
     "debug":0,
+    "favicon":"http://www.favicons.org/favicon.png",
     "acttitles":{
         "forum":"Forenboard",
         "notes":"Notizen",
