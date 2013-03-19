@@ -14,7 +14,7 @@ use Mock::Testuser;
 use Test::Callcheck;
 use Ffc::Data;
 
-use Test::More tests => 52;
+use Test::More tests => 68;
 
 BEGIN { use_ok('Ffc::Data::Auth') }
 
@@ -86,6 +86,42 @@ $activefaultyuser->alter_password;
         is( $return->[2], 1, 'admin is no admin' );
         is( $return->[3], 1, 'admin wants to see images' );
         ok( !$return->[4], 'admin has not set a theme yet' );
+    }
+    {
+        my ( $ok, $return, $error ) =
+          just_call( \&Ffc::Data::Auth::get_userdata_for_login,
+            $inactiveuser->{name}, $inactiveuser->{password} );
+        ok( !$ok,    'nothing is ok with good inactive user' );
+        ok( $error, 'errors with good inactive user' );
+        ok( !defined($return), 'nothing came back with good inactive user' );
+        like( $error, qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/, 'error message ok with good inactive user');
+    }
+    {
+        my ( $ok, $return, $error ) =
+          just_call( \&Ffc::Data::Auth::get_userdata_for_login,
+            $inactiveadmin->{name}, $inactiveadmin->{password} );
+        ok( !$ok,    'nothing is ok with good inactive admin' );
+        ok( $error, 'errors with good inactive admin' );
+        ok( !defined($return), 'nothing came back with good inactive admin' );
+        like( $error, qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/, 'error message ok with good inactive admin');
+    }
+    {
+        my ( $ok, $return, $error ) =
+          just_call( \&Ffc::Data::Auth::get_userdata_for_login,
+            $activefaultyuser->{name}, $activefaultyuser->{password} );
+        ok( !$ok,    'nothing is ok with bad active user' );
+        ok( $error, 'errors with bad active user' );
+        ok( !defined($return), 'nothing came back with bad active user' );
+        like( $error, qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/, 'error message ok with bad active user');
+    }
+    {
+        my ( $ok, $return, $error ) =
+          just_call( \&Ffc::Data::Auth::get_userdata_for_login,
+            $activefaultyadmin->{name}, $activefaultyadmin->{password} );
+        ok( !$ok,    'nothing is ok with bad active admin' );
+        ok( $error, 'errors with bad active admin' );
+        ok( !defined($return), 'nothing came back with bad active admin' );
+        like( $error, qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/, 'error message ok with bad active admin');
     }
 }
 
