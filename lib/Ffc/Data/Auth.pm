@@ -50,7 +50,7 @@ sub set_password {
     my ( $userid, $pass ) = @_;
     check_userid_rules( $userid );
     check_password_rules($pass);
-    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users u SET u.password=? WHERE u.id=?';
+    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET password=? WHERE id=?';
     Ffc::Data::dbh()->do($sql, undef, crypt($pass, Ffc::Data::cryptsalt()), $userid);
 }
 

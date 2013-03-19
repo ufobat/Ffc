@@ -14,7 +14,7 @@ use Mock::Testuser;
 use Test::Callcheck;
 use Ffc::Data;
 
-use Test::More tests => 150;
+use Test::More tests => 167;
 
 BEGIN { use_ok('Ffc::Data::Auth') }
 
@@ -33,7 +33,10 @@ my $activefaultyadmin = Mock::Testuser->new_active_admin();
 my $activefaultyuser  = Mock::Testuser->new_active_user();
 $activefaultyadmin->alter_password;
 $activefaultyuser->alter_password;
-my @users = ( $activeadmin, $activeuser, $inactiveadmin, $inactiveuser, $activefaultyadmin, $activefaultyuser );
+my @users = (
+    $activeadmin, $activeuser, $inactiveadmin, $inactiveuser,
+    $activefaultyadmin, $activefaultyuser
+);
 
 sub _run_failures {
     my $code        = shift;
@@ -148,16 +151,16 @@ qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/,
         eval { $ret = $code->( $user->{id} ) };
         return $ret;
     };
-    for my $user (@users ) {
+    for my $user (@users) {
         my $ret = $c->($user);
         if ( $user->{active} ) {
             is( $ret, $user->{admin},
-                qq(checked for true administrational being of "$user->{pseudoname}")
+qq(checked for true administrational being of "$user->{pseudoname}")
             );
         }
         else {
             ok( !$ret,
-                qq(checked for false administrational being of "$user->{pseudoname}")
+qq(checked for false administrational being of "$user->{pseudoname}")
             );
         }
     }
@@ -167,20 +170,22 @@ qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/,
     note('TESTING check_password( $userid, $pass )');
     my $code = \&Ffc::Data::Auth::check_password;
     check_call(
-        $code, check_password =>
-        Mock::Testuser::get_userid_check_hash( $activeuser->{id} ),
+        $code,
+        check_password =>
+          Mock::Testuser::get_userid_check_hash( $activeuser->{id} ),
         Mock::Testuser::get_password_check_hash( $activeuser->{password} ),
     );
-    for my $user ( @users ) {
-        my ( $ok, $return, $error ) = just_call( $code,  $user->{id}, $user->{password} );
+    for my $user (@users) {
+        my ( $ok, $return, $error ) =
+          just_call( $code, $user->{id}, $user->{password} );
         $return = $return->[0];
-        ok(!$error, qq'no error reported "$user->{pseudoname}"');
-        ok($ok, qq'code ran ok for "$user->{pseudoname}"');
+        ok( !$error, qq'no error reported "$user->{pseudoname}"' );
+        ok( $ok,     qq'code ran ok for "$user->{pseudoname}"' );
         if ( $user->{faulty} or not $user->{active} ) {
-            ok(!$return, qq'false return is ok for "$user->{pseudoname}"');
+            ok( !$return, qq'false return is ok for "$user->{pseudoname}"' );
         }
         else {
-            ok($return, qq'true return is good for "$user->{pseudoname}"');
+            ok( $return, qq'true return is good for "$user->{pseudoname}"' );
         }
     }
 }
@@ -188,72 +193,110 @@ qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/,
 {
     note('TESTING check_user( $userid )');
     my $code = \&Ffc::Data::Auth::check_user;
-    check_call(
-        $code, check_user =>
-        Mock::Testuser::get_userid_check_hash( $activeuser->{id} ),
-    );
-    for my $user ( @users ) {
-        my ( $ok, $return, $error ) = just_call( $code,  $user->{id} );
+    check_call( $code,
+        check_user =>
+          Mock::Testuser::get_userid_check_hash( $activeuser->{id} ), );
+    for my $user (@users) {
+        my ( $ok, $return, $error ) = just_call( $code, $user->{id} );
         $return = $return->[0];
-        ok($return, qq'true return is good for "$user->{pseudoname}"');
+        ok( $return, qq'true return is good for "$user->{pseudoname}"' );
     }
     {
-        my $newid = (Ffc::Data::dbh->selectrow_array('SELECT MAX(u.id) FROM '.$Ffc::Data::Prefix.'users u'))[0];
-        my ( $ok, $return, $error ) = just_call( $code,  $newid );
+        my $newid = (
+            Ffc::Data::dbh->selectrow_array(
+                'SELECT MAX(u.id) FROM ' . $Ffc::Data::Prefix . 'users u'
+            )
+        )[0];
+        my ( $ok, $return, $error ) = just_call( $code, $newid );
         $return = $return->[0];
-        ok($return, qq'false return is good for none existing user');
+        ok( $return, qq'false return is good for none existing user' );
     }
 }
 
 {
     note('TESTING get_userid( $username )');
     my $code = \&Ffc::Data::Auth::get_userid;
-    check_call(
-        $code, get_userid =>
-          Mock::Testuser::get_username_check_hash( $activeuser->{name} ),
-    );
-    for my $user ( @users ) {
-        my ( $ok, $return, $error ) = just_call( $code,  $user->{name} );
+    check_call( $code,
+        get_userid =>
+          Mock::Testuser::get_username_check_hash( $activeuser->{name} ), );
+    for my $user (@users) {
+        my ( $ok, $return, $error ) = just_call( $code, $user->{name} );
         $return = $return->[0];
-        is($return, $user->{id}, qq'user id returned ok for "$user->{pseudoname}"');
+        is( $return, $user->{id},
+            qq'user id returned ok for "$user->{pseudoname}"' );
     }
     {
         my $newname = Mock::Testuser::get_noneexisting_username();
-        my ( $ok, $return, $error ) = just_call( $code,  $newname );
-        ok(!defined($return), qq'undefined return is good for none existing user');
-        ok($error, qq'error returned is good for non existing user');
-        ok(!$ok, qq'false return is good for non existing user');
+        my ( $ok, $return, $error ) = just_call( $code, $newname );
+        ok( !defined($return),
+            qq'undefined return is good for none existing user' );
+        ok( $error, qq'error returned is good for non existing user' );
+        ok( !$ok,   qq'false return is good for non existing user' );
     }
 }
 
 {
     note('TESTING get_username( $userid )');
     my $code = \&Ffc::Data::Auth::get_username;
-    check_call(
-        $code, get_username =>
-        Mock::Testuser::get_userid_check_hash( $activeuser->{id} ),
-    );
-    for my $user ( @users ) {
-        my ( $ok, $return, $error ) = just_call( $code,  $user->{id} );
+    check_call( $code,
+        get_username =>
+          Mock::Testuser::get_userid_check_hash( $activeuser->{id} ), );
+    for my $user (@users) {
+        my ( $ok, $return, $error ) = just_call( $code, $user->{id} );
         $return = $return->[0];
-        is($return, $user->{name}, qq'user name returned ok for "$user->{pseudoname}"');
+        is( $return, $user->{name},
+            qq'user name returned ok for "$user->{pseudoname}"' );
     }
     {
         my $newid = Mock::Testuser::get_noneexisting_userid();
-        my ( $ok, $return, $error ) = just_call( $code,  $newid );
-        ok(!defined($return), qq'undefined return is good for none existing user');
-        ok($error, qq'error returned is good for non existing user');
-        ok(!$ok, qq'false return is good for non existing user');
+        my ( $ok, $return, $error ) = just_call( $code, $newid );
+        ok( !defined($return),
+            qq'undefined return is good for none existing user' );
+        ok( $error, qq'error returned is good for non existing user' );
+        ok( !$ok,   qq'false return is good for non existing user' );
     }
 }
 
 {
     note('TESTING set_password( $userid, $pass )');
     my $code = \&Ffc::Data::Auth::set_password;
-#    check_call(
-#        $code, check_password =>
-#        Mock::Testuser::get_userid_check_hash( $activefaultyuser->{id} ),
-#        Mock::Testuser::get_password_check_hash( $activefaultyuser->{password} ),
-#    );
+    check_call(
+        $code,
+        check_password =>
+          Mock::Testuser::get_userid_check_hash( $activeuser->{id} ),
+        Mock::Testuser::get_password_check_hash( $activeuser->{password} ),
+    );
+    my $check = \&Ffc::Data::Auth::check_password;
+    {
+        {
+            my $return =
+              $check->( $activefaultyuser->{id},
+                $activefaultyuser->{password} );
+            ok( !$return, 'user with wrong password generates false results' );
+        }
+        {
+            eval {
+                $code->(
+                    $activefaultyuser->{id},
+                    $activefaultyuser->{password}
+                );
+            };
+            ok( !$@, 'no errors reported' )
+        }
+        {
+            my $return =
+              $check->( $activefaultyuser->{id},
+                $activefaultyuser->{password} );
+            ok( $return, 'user with reset password generates true results' );
+        }
+        {
+            my $return = $check->(
+                $activefaultyadmin->{id},
+                $activefaultyadmin->{password}
+            );
+            ok( !$return,
+                'but user with wrong password generates also false results' );
+        }
+    }
 }
 
