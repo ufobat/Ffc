@@ -39,5 +39,12 @@ sub check_call {    # alle aufrufoptionen durchprobieren
     }
 }
 
+sub just_call {
+    my $code = shift;
+    my $ret;
+    eval { $ret = [ $code->(@_) ] };
+    return $@ ? 0 : 1, $ret, $@;
+}
+
 1;
 
