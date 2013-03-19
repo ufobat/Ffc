@@ -10,7 +10,7 @@ use Data::Dumper;
 use Mojolicious;
 use Mock::Config;
 
-use Test::More tests => 31;
+use Test::More tests => 32;
 
 srand;
 
@@ -83,6 +83,8 @@ ok( Ffc::Data::set_config($app), 'config set returned true' );
     like($Ffc::Data::DefaultConfig, qr/$FindBin::Bin/, 'default config inside project directory');
     like($Ffc::Data::DefaultConfig, qr/etc/, 'default config in something with "etc" in it');
     like($Ffc::Data::DefaultConfig, qr/ffc\.json/, 'default config looks good');
+    like($Ffc::Data::DbTemplate, qr/database.sql/, 'database template file looks good');
+    like($Ffc::Data::DbTestdata, qr/testdata.sql/, 'testdata file looks good');
 
     my @themes;
     {

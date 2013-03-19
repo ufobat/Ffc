@@ -23,6 +23,8 @@ our $Theme;
 our @Themes;
 our $Themedir = '/themes/';
 our $Themebasedir = File::Basename::dirname(__FILE__).'/../../public'.$Themedir;
+our $DbTemplate = File::Basename::dirname(__FILE__).'/../../t/var/database.sql';
+our $DbTestdata = File::Basename::dirname(__FILE__).'/../../t/var/testdata.sql';
 {
     my $dbh;
     my $config;
