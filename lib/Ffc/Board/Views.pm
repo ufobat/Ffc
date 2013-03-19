@@ -30,7 +30,7 @@ sub msgs_user {
     my $s = $c->session;
     $c->app->switch_act($c, 'msgs');
     $s->{msgs_userid} = $c->param('msgs_userid');
-    $s->{msgs_username} = $c->or_nostring( sub{Ffc::Data::Board::General::get_username($s->{msgs_userid}) } );
+    $s->{msgs_username} = $c->or_nostring( sub{Ffc::Data::Board::Views::get_username($s->{msgs_userid}) } );
     delete($s->{msgs_userid}), delete($s->{msgs_username}) unless $s->{msgs_username};
     $c->frontpage();
 }
@@ -96,6 +96,7 @@ sub frontpage {
     }
     $c->stash( posts => $posts);
     $c->get_counts;
+Ffc::Data::Board::Views::get_categories($userid);
     $c->stash( categories => ($act eq 'forum') 
             ? $c->or_empty( sub { Ffc::Data::Board::Views::get_categories($userid) } ) 
             : [] );

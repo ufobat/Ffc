@@ -6,11 +6,12 @@ use warnings;
 use utf8;
 
 use Ffc::Data;
+use Ffc::Data::Auth;
 use Ffc::Data::Formats;
 use Ffc::Data::Board::General;
 
-sub check_user { &Ffc::Data::Board::General::check_user }
-sub get_username { &Ffc::Data::Board::General::get_username }
+sub check_user { &Ffc::Data::Auth::check_user }
+sub get_username { &Ffc::Data::Auth::get_username }
 
 sub _get_categories_sql {
     my $p = $Ffc::Data::Prefix;

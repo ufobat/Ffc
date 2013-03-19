@@ -6,11 +6,12 @@ use warnings;
 use utf8;
 
 use Ffc::Data;
+use Ffc::Data::Auth;
 
 sub check_password_change {
     my ( $newpw1, $newpw2, $oldpw ) = @_;
     for ( ( $oldpw ? ['Altes Passwort' => $oldpw] : () ), ['Neues Passwort' => $newpw1], ['Passwortwiederholung' => $newpw2] ) {
-        die qq{$_->[0] entspricht nicht der Norm (4-16 Zeichen)} unless $_->[1] =~ m/\A.{4,16}\z/xms;
+        Ffc::Data::Auth::check_password_rules($_);
     }
     die qq{Das neue Passwort und dessen Wiederholung stimmen nicht überein} unless $newpw1 eq $newpw2;
     return 1;
@@ -30,33 +31,9 @@ sub check_category {
     return;
 }
 
-sub check_user { 
-    eval { get_username( shift ) };
-    die shift() // $@ if $@;
-    return 1;
-}
-sub get_userid {
-    my $username = shift;
-    die qq{Benutzername ungültig, zwei bis 64 Zeichen erlaubt}
-        unless $username =~ m/\A\w{2,64}\z/xms;
-    my $sql = 'SELECT u.id FROM '.$Ffc::Data::Prefix.'users u WHERE u.name = ?';
-    $username = Ffc::Data::dbh()->selectall_arrayref($sql, undef, $username);
-    return $username->[0]->[0] if @$username;
-    return;
-}
-
-sub get_username {
-    my $id = shift;
-    die qq{Benutzerid ungültig} unless $id =~ m/\A\d+\z/xms;
-    my $sql = 'SELECT u.name FROM '.$Ffc::Data::Prefix.'users u WHERE u.id=?';
-    $id = Ffc::Data::dbh()->selectall_arrayref($sql, undef, $id);
-    die qq{Benutzer unbekannt} unless @$id and $id->[0]->[0];
-    return $id;
-}
-
 sub get_useremail {
     my $id = shift;
-    check_user( $id );
+    Ffc::Data::Auth::check_user( $id );
     my $sql = 'SELECT u.email FROM '.$Ffc::Data::Prefix.'users u WHERE u.id=? AND u.active=1';
     return (Ffc::Data::dbh()->selectrow_array($sql, undef, $id))[0];
 }

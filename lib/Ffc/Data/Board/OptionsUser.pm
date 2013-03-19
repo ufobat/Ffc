@@ -9,7 +9,7 @@ use Ffc::Data;
 use Ffc::Data::Auth;
 use Ffc::Data::Board::General;
 
-sub check_user { &Ffc::Data::Board::General::check_user }
+sub check_user { &Ffc::Data::Auth::check_user }
 sub _check_password_change { &Ffc::Data::Board::General::check_password_change }
 
 sub update_email {

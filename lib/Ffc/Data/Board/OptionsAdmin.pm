@@ -9,9 +9,9 @@ use Ffc::Data;
 use Ffc::Data::Auth;
 use Ffc::Data::Board::General;
 
-sub check_user { &Ffc::Data::Board::General::check_user }
+sub check_user { &Ffc::Data::Auth::check_user }
 sub _check_password_change { &Ffc::Data::Board::General::check_password_change }
-sub get_userid { &Ffc::Data::Board::General::get_userid }
+sub get_userid { &Ffc::Data::Auth::get_userid }
 
 sub admin_update_password {
     my $adminuid = shift;
