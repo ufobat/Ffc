@@ -33,7 +33,7 @@ sub check_password {
     check_userid_rules( $userid );
     check_password_rules($pass);
     my $sql = 'SELECT COUNT(u.id) FROM '.$Ffc::Data::Prefix.'users u WHERE u.id=? and u.password=? AND u.active=1';
-    return (Ffc::Data::dbh()->selectrow_array( $sql, undef, $userid, crypt($pass, Ffc::Data::cryptsalt())))[0] ? 1 : 0;
+    return (Ffc::Data::dbh()->selectrow_array( $sql, undef, $userid, crypt($pass, Ffc::Data::cryptsalt())))[0];
 }
 
 sub get_userdata_for_login { # for login only
@@ -71,8 +71,8 @@ sub get_userid {
     check_username_rules($username);
     my $sql = 'SELECT u.id FROM '.$Ffc::Data::Prefix.'users u WHERE u.name = ?';
     $username = Ffc::Data::dbh()->selectall_arrayref($sql, undef, $username);
-    return $username->[0]->[0] if @$username;
-    return;
+    die qq(Benutzer unbekannt) unless @$username and $username->[0]->[0];
+    return $username->[0]->[0];
 }
 
 sub get_username {
@@ -81,7 +81,7 @@ sub get_username {
     my $sql = 'SELECT u.name FROM '.$Ffc::Data::Prefix.'users u WHERE u.id=?';
     $userid = Ffc::Data::dbh()->selectall_arrayref($sql, undef, $userid);
     die qq{Benutzer unbekannt} unless @$userid and $userid->[0]->[0];
-    return $userid;
+    return $userid->[0]->[0];
 }
 
 1;

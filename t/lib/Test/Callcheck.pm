@@ -43,7 +43,7 @@ sub just_call {
     my $code = shift;
     my $ret;
     eval { $ret = [ $code->(@_) ] };
-    return $@ ? 0 : 1, $ret, $@;
+    return( ( $@ ? 0 : 1 ), $ret, $@ );
 }
 
 1;

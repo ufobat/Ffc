@@ -107,9 +107,20 @@ sub alter_password {
         $newpw = randstr();
     }
     $user->{password}    = $newpw;
-    $user->{faulty}      = 0;
-    $user->{pseudoname} .= ' (faulty)';
+    $user->{faulty}      = 1;
+    $user->{pseudoname} .= ' (faulty password)';
     return $user;
+}
+
+sub get_noneexisting_username {
+    my $newname = randstr();
+    while ( ( Ffc::Data::dbh()->selectrow_array('SELECT COUNT(u.id) FROM '.$Ffc::Data::Prefix.'users u WHERE u.name=?', undef, $newname ) )[0] ) {
+        $newname = randstr();
+    }
+    return $newname;
+}
+sub get_noneexisting_userid {
+    return (Ffc::Data::dbh->selectrow_array('SELECT MAX(u.id) + 1 FROM '.$Ffc::Data::Prefix.'users u'))[0];
 }
 
 1;
