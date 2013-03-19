@@ -14,7 +14,7 @@ use Mock::Testuser;
 use Test::Callcheck;
 use Ffc::Data;
 
-use Test::More tests => 68;
+use Test::More tests => 74;
 
 BEGIN { use_ok('Ffc::Data::Auth') }
 
@@ -33,6 +33,42 @@ my $activefaultyadmin = Mock::Testuser->new_active_admin();
 my $activefaultyuser  = Mock::Testuser->new_active_user();
 $activefaultyadmin->alter_password;
 $activefaultyuser->alter_password;
+
+sub _run_failures {
+    my $code        = shift;
+    my $params      = shift;
+    my $run_failure = sub {
+        my ( $code, $user, $params ) = @_;
+        my $name = $user->{pseudoname};
+        my @params = map { $user->{$_} } @$params;
+        my ( $ok, $return, $error ) = just_call( $code, @params );
+        ok( !$ok,              "nothing is ok with $name" );
+        ok( $error,            "errors with $name" );
+        ok( !defined($return), "nothing came back with $name" );
+        like(
+            $error,
+qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/,
+            "error message ok with $name"
+        );
+    };
+    $run_failure->(
+        \&Ffc::Data::Auth::get_userdata_for_login,
+        $inactiveuser, $params
+    );
+    $run_failure->(
+        \&Ffc::Data::Auth::get_userdata_for_login,
+        $inactiveadmin, $params
+    );
+    $run_failure->(
+        \&Ffc::Data::Auth::get_userdata_for_login,
+        $activefaultyuser, $params
+    );
+    $run_failure->(
+        \&Ffc::Data::Auth::get_userdata_for_login,
+        $activefaultyadmin, $params
+    );
+}
+
 {
     note('TESTING check_username_rules( $username )');
     check_call( \&Ffc::Data::Auth::check_username_rules,
@@ -52,6 +88,7 @@ $activefaultyuser->alter_password;
 }
 
 {
+
     note('TESTING get_userdata_for_login( $user, $pass )');
     check_call(
         \&Ffc::Data::Auth::get_userdata_for_login,
@@ -63,7 +100,7 @@ $activefaultyuser->alter_password;
         my ( $ok, $return, $error ) =
           just_call( \&Ffc::Data::Auth::get_userdata_for_login,
             $activeuser->{name}, $activeuser->{password} );
-        ok( $ok,    'everything is ok with good active user' );
+        ok( $ok,     'everything is ok with good active user' );
         ok( !$error, 'no error with good active user' );
 
         # u.id, u.lastseenmsgs, u.admin, u.show_images, u.theme
@@ -72,12 +109,13 @@ $activefaultyuser->alter_password;
         is( $return->[2], 0, 'user is no admin' );
         is( $return->[3], 1, 'user wants to see images' );
         ok( !$return->[4], 'user has not set a theme yet' );
+        $activeuser->{id} = $return->[0];
     }
     {
         my ( $ok, $return, $error ) =
           just_call( \&Ffc::Data::Auth::get_userdata_for_login,
             $activeadmin->{name}, $activeadmin->{password} );
-        ok( $ok,    'everything is ok with good active admin' );
+        ok( $ok,     'everything is ok with good active admin' );
         ok( !$error, 'no error with good active admin' );
 
         # u.id, u.lastseenmsgs, u.admin, u.show_images, u.theme
@@ -86,47 +124,47 @@ $activefaultyuser->alter_password;
         is( $return->[2], 1, 'admin is no admin' );
         is( $return->[3], 1, 'admin wants to see images' );
         ok( !$return->[4], 'admin has not set a theme yet' );
+        $activeadmin->{id} = $return->[0];
     }
-    {
-        my ( $ok, $return, $error ) =
-          just_call( \&Ffc::Data::Auth::get_userdata_for_login,
-            $inactiveuser->{name}, $inactiveuser->{password} );
-        ok( !$ok,    'nothing is ok with good inactive user' );
-        ok( $error, 'errors with good inactive user' );
-        ok( !defined($return), 'nothing came back with good inactive user' );
-        like( $error, qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/, 'error message ok with good inactive user');
-    }
-    {
-        my ( $ok, $return, $error ) =
-          just_call( \&Ffc::Data::Auth::get_userdata_for_login,
-            $inactiveadmin->{name}, $inactiveadmin->{password} );
-        ok( !$ok,    'nothing is ok with good inactive admin' );
-        ok( $error, 'errors with good inactive admin' );
-        ok( !defined($return), 'nothing came back with good inactive admin' );
-        like( $error, qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/, 'error message ok with good inactive admin');
-    }
-    {
-        my ( $ok, $return, $error ) =
-          just_call( \&Ffc::Data::Auth::get_userdata_for_login,
-            $activefaultyuser->{name}, $activefaultyuser->{password} );
-        ok( !$ok,    'nothing is ok with bad active user' );
-        ok( $error, 'errors with bad active user' );
-        ok( !defined($return), 'nothing came back with bad active user' );
-        like( $error, qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/, 'error message ok with bad active user');
-    }
-    {
-        my ( $ok, $return, $error ) =
-          just_call( \&Ffc::Data::Auth::get_userdata_for_login,
-            $activefaultyadmin->{name}, $activefaultyadmin->{password} );
-        ok( !$ok,    'nothing is ok with bad active admin' );
-        ok( $error, 'errors with bad active admin' );
-        ok( !defined($return), 'nothing came back with bad active admin' );
-        like( $error, qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/, 'error message ok with bad active admin');
-    }
+    _run_failures( \&Ffc::Data::Auth::get_userdata_for_login,
+        [qw(name password)] );
 }
 
 {
     note('TESTING is_user_admin( $userid )');
+    for my $user ( $inactiveadmin, $inactiveuser, $activefaultyuser,
+        $activefaultyadmin )
+    {
+        $user->{id} = Ffc::Data::dbh()->selectrow_arrayref(
+                'SELECT u.id FROM '
+                  . $Ffc::Data::Prefix
+                  . 'users u WHERE u.name=?',
+                undef,
+                $user->{name}
+            )->[0];
+    }
+    my $c = sub {
+        my $user = shift;
+        my $code = \&Ffc::Data::Auth::is_user_admin;
+        my $ret;
+        eval { $ret = $code->( $user->{id} ) };
+        return $ret;
+    };
+    for my $user ( $activeuser, $activeadmin, $inactiveadmin, $inactiveuser,
+        $activefaultyuser, $activefaultyadmin )
+    {
+        my $ret = $c->($user);
+        if ( $user->{faulty} or not $user->{active} ) {
+            ok( !$ret,
+                qq(checked for administrational being of "$user->{pseudoname}")
+            );
+        }
+        else {
+            is( $ret, $user->{admin},
+                qq(checked for administrational being of "$user->{pseudoname}")
+            );
+        }
+    }
 }
 
 {

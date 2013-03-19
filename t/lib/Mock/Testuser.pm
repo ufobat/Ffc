@@ -7,11 +7,11 @@ use Ffc::Data;
 use Data::Dumper;
 srand;
 
-sub new_active_admin   { shift->_new(1, 1) }
-sub new_active_user    { shift->_new(1, 0) }
-sub new_inactive_admin { shift->_new(0, 1) }
-sub new_inactive_user  { shift->_new(0, 0) }
-sub _new { bless _generate_testuser( @_[1,2] ), $_[0] }
+sub new_active_admin   { shift->_new( 1, 1 ) }
+sub new_active_user    { shift->_new( 1, 0 ) }
+sub new_inactive_admin { shift->_new( 0, 1 ) }
+sub new_inactive_user  { shift->_new( 0, 0 ) }
+sub _new { bless _generate_testuser( @_[ 1, 2 ] ), $_[0] }
 
 sub randstr {
     my $pick = sub { $_[0][ int rand scalar @{ $_[0] } ] };
@@ -32,8 +32,14 @@ sub randstr {
 }
 
 sub _generate_testuser {
-    my $isactive  = shift() ? 1 : 0;
-    my $isadmin   = shift() ? 1 : 0;
+    my $isactive = shift() ? 1 : 0;
+    my $isadmin  = shift() ? 1 : 0;
+    my %zuord    = (
+        "u00" => 'inactive user',
+        "u01" => 'inactive admin',
+        "u10" => 'active user',
+        "u11" => 'active admin',
+    );
     my $username  = randstr();
     my $password  = randstr();
     my $useremail = "$username\@" . randstr() . '.org';
@@ -46,14 +52,18 @@ INSERT
            ( "name", "password", "email", "admin", "active" )
     VALUES (  ?,      ?,          ?,       ?,       ?       )
 EOSQL
-        undef, $username, crypt( $password, Ffc::Data::cryptsalt() ), $useremail, $isadmin, $isactive
+        undef, $username, crypt( $password, Ffc::Data::cryptsalt() ),
+        $useremail, $isadmin, $isactive
     );
     return {
-        name     => $username,
-        password => $password,
-        email    => $useremail,
-        admin    => $isadmin,
-        data     => []
+        name       => $username,
+        password   => $password,
+        email      => $useremail,
+        admin      => $isadmin,
+        active     => $isactive,
+        data       => [],
+        pseudoname => $zuord{"u$isactive$isadmin"},
+        faulty     => 0,
     };
 }
 
@@ -91,12 +101,14 @@ sub get_userid_check_hash {
 }
 
 sub alter_password {
-    my $user = shift;
+    my $user  = shift;
     my $newpw = randstr();
     while ( $user->{password} eq $newpw ) {
         $newpw = randstr();
-    } 
-    $user->{password} = $newpw;
+    }
+    $user->{password}    = $newpw;
+    $user->{faulty}      = 0;
+    $user->{pseudoname} .= ' (faulty)';
     return $user;
 }
 
