@@ -47,14 +47,13 @@ sub new {
 
 sub _generate_configfile {
     my $config = shift;
-    ( my($dbfh), $config->{dbfile} ) = File::Temp::tempfile();
-    $config->{config}->{dsn} .= $config->{dbfile};
-    close $dbfh; unlink $config->{dbfile};
+    $config->{config}->{dsn} .= $config->{dbfile} = ':memory:';
     DBI->connect($config->{config}->{dsn}, $config->{config}->{username}, $config->{config}->{password} )
       or die qq(could not create database "$config->{config}->{dsn}": ).DBI->errstr;
     ( my($cfh), $config->{configfile} ) = File::Temp::tempfile();
     print $cfh j($config->{config});
     close $cfh;
+
     ( $ENV{ASB_CONFIG}, $ENV{ASB_DATABASE} ) = ( $config->{configfile}, $config->{dbfile} );
     return $config;
 }
