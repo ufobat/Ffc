@@ -14,7 +14,7 @@ use Mock::Testuser;
 use Test::Callcheck;
 use Ffc::Data;
 
-use Test::More tests => 74;
+use Test::More tests => 107;
 
 BEGIN { use_ok('Ffc::Data::Auth') }
 
@@ -136,12 +136,9 @@ qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/,
         $activefaultyadmin )
     {
         $user->{id} = Ffc::Data::dbh()->selectrow_arrayref(
-                'SELECT u.id FROM '
-                  . $Ffc::Data::Prefix
-                  . 'users u WHERE u.name=?',
-                undef,
-                $user->{name}
-            )->[0];
+            'SELECT u.id FROM ' . $Ffc::Data::Prefix . 'users u WHERE u.name=?',
+            undef, $user->{name}
+        )->[0];
     }
     my $c = sub {
         my $user = shift;
@@ -169,20 +166,48 @@ qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/,
 
 {
     note('TESTING check_password( $userid, $pass )');
-}
-
-{
-    note('TESTING set_password( $userid, $pass )');
+    my $code = \&Ffc::Data::Auth::check_password;
+    check_call(
+        $code, check_password =>
+        Mock::Testuser::get_userid_check_hash( $activeuser->{id} ),
+        Mock::Testuser::get_password_check_hash( $activeuser->{password} ),
+    );
 }
 
 {
     note('TESTING check_user( $userid )');
+    my $code = \&Ffc::Data::Auth::check_user;
+    check_call(
+        $code, check_user =>
+        Mock::Testuser::get_userid_check_hash( $activeuser->{id} ),
+    );
 }
 
 {
     note('TESTING get_userid( $username )');
+    my $code = \&Ffc::Data::Auth::get_userid;
+    check_call(
+        $code, get_userid =>
+          Mock::Testuser::get_username_check_hash( $activeuser->{name} ),
+    );
 }
 
 {
     note('TESTING get_username( $userid )');
+    my $code = \&Ffc::Data::Auth::get_username;
+    check_call(
+        $code, get_username =>
+        Mock::Testuser::get_userid_check_hash( $activeuser->{id} ),
+    );
 }
+
+{
+    note('TESTING set_password( $userid, $pass )');
+    my $code = \&Ffc::Data::Auth::set_password;
+#    check_call(
+#        $code, check_password =>
+#        Mock::Testuser::get_userid_check_hash( $activefaultyuser->{id} ),
+#        Mock::Testuser::get_password_check_hash( $activefaultyuser->{password} ),
+#    );
+}
+
