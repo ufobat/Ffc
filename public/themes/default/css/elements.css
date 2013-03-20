@@ -17,10 +17,7 @@ input[type="text"], input[type="password"] {
 }
 .postbox textarea {
     width: 47.5em;
-    height: 1.5em;
-}
-.postbox textarea:focus {
-    height: 15em;
+    height: 5em;
 }
 .divider {
     color: #000;
