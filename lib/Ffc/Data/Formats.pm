@@ -4,8 +4,7 @@ use 5.010;
 use strict;
 use warnings;
 use utf8;
-use Mojo::Util;
-use Mojolicious::Plugin::DefaultHelpers;
+use Ffc::Data;
 
 our @Smilies = (
     [ smile      => [':)',  ':-)',  '=)',                         ] ],
@@ -47,14 +46,13 @@ sub _xml_escape {
 sub format_text {
     my $s = shift;
     my $c = shift;
-    my $t = shift;
-    chomp $s;
+    $s =~ s/\A\s+//gxmsi;
+    $s =~ s/\s+\z//gxmsi;
     return '' unless $s;
     _xml_escape($s);
     $s =~ s{(?<!\w)([\_\-\+\~\!])([\_\-\+\~\!\w]+)\g1(?!\w)}{_make_goody($1,$2)}gxmies;
     $s =~ s{([\(\s]|\A)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3,$c)}gxmeis;
-    $s =~ s{((?:\A|\n)\s*)[-*+]}{_make_bullet($c,$1)}gxmeis;
-    $s =~ s/(\s|\A)($SmileyRe)/_make_smiley($1,$2,$3,$c)/gmxes;
+    $s =~ s/([\(\s]|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxes;
     $s =~ s{\n[\n\s]*}{</p>\n<p>}xgms;
     $s = "<p>$s</p>";
     return $s;
@@ -76,7 +74,8 @@ sub _make_link {
             return qq~$start<a href="$url" title="Externes Bild" target="_blank"><img src="$url" class="extern" title="Externes Bild" /></a>$end~;
         }
         else {
-            my $url_xmlencode = _xml_escape($url);
+            my $url_xmlencode = $url;
+            _xml_escape($url_xmlencode);
             return qq~$start<a href="$url" title="Externes Bild" target="_blank"><img class="icon" src="~.$c->url_for("$t/img/icons/img.png").qq~" class="extern" title="Externes Bild" /> $url_xmlencode</a>$end~;
         }
     }
@@ -90,24 +89,14 @@ sub _make_link {
 sub _make_smiley {
     my $s = shift // '';
     my $y = my $x = shift // return '';
-    my $e = shift // '';
     my $c = shift;
-    return $s unless $c->session()->{show_images};
+    return "$x" unless $c->session()->{show_images};
     $y =~ s/\&/&lt;/xmsg;
     $y =~ s/\>/&gt;/xmsg;
     $y =~ s/\</&lt;/xmsg;
     return qq~$s<img class="smiley" src="~
         . $c->url_for("$Ffc::Data::Themedir/".$c->session()->{theme}."/img/smileys/$Smiley{$x}.png")
-        . qq~" alt="$y" />$e~;
-}
-
-sub _make_bullet {
-    my $c = shift;
-    my $s = shift;
-    $s =~ s/\s/\&nbsp;/gmx;
-    return qq~$s<img class="bullet" src="~
-        . $c->url_for("$Ffc::Data::Themedir/".$c->session()->{theme}."/img/icons/bullet.png")
-        . qq~" alt="·" />~;
+        . qq~" alt="$y" />~;
 }
 
 1;

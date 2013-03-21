@@ -6,9 +6,10 @@ use 5.010;
 use Mock::Controller::App;
 
 sub new {
-    bless { session => {}, stash => {}, app => Mock::Controller::App->new() },
+    bless { url => '', session => {}, stash => {}, app => Mock::Controller::App->new() },
       shift;
 }
+sub url_for { shift->{url} . shift }
 sub session { shift->{session} }
 sub app     { shift->{app} }
 
