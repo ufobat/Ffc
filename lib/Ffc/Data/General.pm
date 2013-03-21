@@ -1,4 +1,4 @@
-package Ffc::Data::Board::General;
+package Ffc::Data::General;
 
 use 5.010;
 use strict;

@@ -7,10 +7,10 @@ use utf8;
 
 use Ffc::Data;
 use Ffc::Data::Auth;
-use Ffc::Data::Board::General;
+use Ffc::Data::General;
 
 sub check_user { &Ffc::Data::Auth::check_user }
-sub _check_password_change { &Ffc::Data::Board::General::check_password_change }
+sub _check_password_change { &Ffc::Data::General::check_password_change }
 sub get_userid { &Ffc::Data::Auth::get_userid }
 
 sub admin_update_password {

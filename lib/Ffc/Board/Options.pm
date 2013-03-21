@@ -8,7 +8,7 @@ use utf8;
 use Mojo::Base 'Ffc::Board::Errors';
 
 use Ffc::Data::Auth;
-use Ffc::Data::Board::General;
+use Ffc::Data::General;
 use Ffc::Data::Board::OptionsUser;
 use Ffc::Data::Board::OptionsAdmin;
 
@@ -17,9 +17,9 @@ sub options_form {
     my $s = $c->session;
     $c->error_prepare;
     my $email;
-    $c->error_handling( sub { $email = Ffc::Data::Board::General::get_useremail($s->{userid}) } );
+    $c->error_handling( sub { $email = Ffc::Data::General::get_useremail($s->{userid}) } );
     my $userlist;
-    $c->error_handling( sub { $userlist = Ffc::Data::Board::General::get_userlist() });
+    $c->error_handling( sub { $userlist = Ffc::Data::General::get_userlist() });
     $c->stash(email    => $email // '');
     $c->stash(userlist => $userlist // '' );
     $c->stash(themes => \@Ffc::Data::Themes);
@@ -56,7 +56,7 @@ sub useradmin_save {
             code => sub { die 'Angemeldeter Benutzer ist kein Administrator' unless Ffc::Data::Auth::is_user_admin($adminuid) },
             msg => q{Angemeldeter Benutzer ist kein Admin und darf das hier garnicht},
         } ) ) {
-        my $userid  = $c->or_undef( sub { Ffc::Data::Board::General::get_userid($username) } );
+        my $userid  = $c->or_undef( sub { Ffc::Data::General::get_userid($username) } );
         my $newpw1  = $c->param('newpw1');
         my $newpw2  = $c->param('newpw2');
         my $admin   = $c->param('admin');

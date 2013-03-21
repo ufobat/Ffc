@@ -8,7 +8,6 @@ use utf8;
 use Ffc::Data;
 use Ffc::Data::Auth;
 use Ffc::Data::Formats;
-use Ffc::Data::Board::General;
 
 sub check_user { &Ffc::Data::Auth::check_user }
 sub get_username { &Ffc::Data::Auth::get_username }

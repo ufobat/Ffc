@@ -7,10 +7,10 @@ use utf8;
 
 use Ffc::Data;
 use Ffc::Data::Auth;
-use Ffc::Data::Board::General;
+use Ffc::Data::General;
 
 sub check_user { &Ffc::Data::Auth::check_user }
-sub get_category_id { &Ffc::Data::Board::General::get_category_id }
+sub get_category_id { &Ffc::Data::General::get_category_id }
 
 sub delete_post {
     my ( $from, $id ) = @_;

@@ -8,14 +8,14 @@ use utf8;
 use Mojo::Base 'Ffc::Board::Errors';
 
 use Ffc::Auth;
+use Ffc::Data::General;
 use Ffc::Data::Board;
 use Ffc::Data::Board::Views;
-use Ffc::Data::Board::General;
 
 sub _switch_category {
     my ( $c, $cat ) = @_;
     $cat = $cat =~ m/\A(\w+)\z/xmsi ? $1 : undef;
-    $c->session->{category} = $c->or_nostring( sub{Ffc::Data::Board::General::check_category($cat) } );
+    $c->session->{category} = $c->or_nostring( sub{Ffc::Data::General::check_category($cat) } );
 }
 
 sub switch_category {
