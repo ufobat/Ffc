@@ -6,9 +6,9 @@ use warnings;
 use utf8;
 
 use Mojo::Base 'Mojolicious::Controller';
-use Mojo::Base 'Ffc::Board::Options';
-use Mojo::Base 'Ffc::Board::Forms';
-use Mojo::Base 'Ffc::Board::Views';
+use base 'Ffc::Board::Options';
+use base 'Ffc::Board::Forms';
+use base 'Ffc::Board::Views';
 
 1;
 

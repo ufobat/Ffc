@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use utf8;
 
-use Mojo::Base 'Ffc::Board::Errors';
+use base 'Ffc::Board::Errors';
 
 use Ffc::Auth;
 use Ffc::Data::General;
