@@ -97,11 +97,11 @@ EOSTRING
 <p>angry: <img class="smiley" src="$url/themes//$theme/img/smileys/angry.png" alt="&gt;:(" /> <img class="smiley" src="$url/themes//$theme/img/smileys/angry.png" alt="&gt;:-(" /> <img class="smiley" src="$url/themes//$theme/img/smileys/angry.png" alt="&gt;=(" /></p>
 EOSTRING
     chomp $controlstring_withimages;
-    my $out = Ffc::Data::Formats::format_text($teststring, $c);
-    for my $f ( ['got.txt' => $out], ['expected.txt' => $controlstring_withimages] ) {
-        open my $fh, '>', $f->[0] or die;
-        print $fh $f->[1];
-    }
+#    my $out = Ffc::Data::Formats::format_text($teststring, $c);
+#    for my $f ( ['got.txt' => $out], ['expected.txt' => $controlstring_withimages] ) {
+#        open my $fh, '>', $f->[0] or die;
+#        print $fh $f->[1];
+#    }
     is(Ffc::Data::Formats::format_text($teststring, $c), $controlstring_withimages, 'teststring testet ok');
 
     note('checking format_text with images');
