@@ -52,51 +52,6 @@ simpler technischer Struktur.
 
 =back
 
-=head2 Ideen für später mal
-
-=head3 Remote-Kategorien
-
-Kategorien zum Verbinden mehrerer Instanzen dieser Software auf 
-verschiedenen Systemen im Internet verteilt, die sich automatisch
-inhaltlich abgleichen für eine dezentrale forenübergreifende
-Kommunikation.
-
-Wichtig ist hier an erster Stelle, eine robuste ausfallsichere verteilte
-Austauschplattform zu schaffen, deren Austausch transparent und definiert
-erfolgt und die Privatsphäre dennoch nicht beeinträchtigt innerhalb des
-Forums.
-
-Die Software liefert eine REST-Schnittstelle, hinter der, über eine 
-Anmeldung, Daten ausgetauscht werden können zu spezifischen Kategorien.
-
-Kategorien bekommen diese REST-URL (mit Anmeldedaten für die Remote-
-Instanz) den jeweiligen anderen Instanz hinterlegt (denn ohne Anmeldung
-läuft nichts). 
-
-Über einen cron-Job erfolgt der Datenabgleich dieser einzelnen Kategorien.
-Das Funktionieren des cron-Job kann von außen über eine URL geprüft und
-ggf. neu angestoßen werden. Die Zeitabstände zwischen den REST-Abfragen
-werden pro REST-URL mit angegeben und können von außen her nicht
-überschritten werden. Auch wird die Datenmenge der von REST-URL'S
-akzeptierten Daten in der URL angegeben und darf nicht überschritten werden.
-
-Beide Seiten haben jeweils eine passende Kategorie, die sich jeweils auf
-die Gegenseite bezieht. Nur im Einvernehmen findet ein Austausch statt.
-Optional kann eine Nur-Lese- oder Nur-Schreib-Funktion eingebaut werden,
-damit bestimmte Kategorien nur zur Datenentgegennahme (News-Aggregation)
-oder zur Datenbereitstellung (News-Produktion) bereit gestellt werden.
-
-Mehrere Austauschkategorien pro Forum sind ebenso vorgesehen, um eine
-netzartige Struktur zu schaffen.
-
-Wenn Benutzer in der entsprechenden Remote-Kategorie (spezielle Kennzeichnung!!!) 
-etwas posten, wird das zeitversetzt an die entsprechende anderen Instanz 
-übertragen und umgekehrt.
-
-Als Prove-Of-Concept sollte aus der Idee mal ein einfaches Text-Netz erstellt
-werden, welches kleine Nachrichten automatisch mit angegebenen URL's 
-austauscht.
-
 =head2 Datenstruktur
 
 Alles ist ein Beitrag.
