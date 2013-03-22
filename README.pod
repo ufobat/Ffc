@@ -52,6 +52,29 @@ simpler technischer Struktur.
 
 =back
 
+=head2 Ideen für später mal
+
+=head3 Remote-Kategorien
+
+Kategorien zum Verbinden mehrerer Instanzen dieser Software auf 
+verschiedenen Systemen im Internet verteilt, die sich automatisch
+inhaltlich abgleichen für eine dezentrale forenübergreifende
+Kommunikation.
+
+=over 4
+
+=item Wichtig ist hier an erster Stelle, eine robuste ausfallsichere Austauschplattform zu schaffen
+
+=item Die Software liefert eine REST-Schnittstelle hinter der, über eine Anmeldung, Daten ausgetauscht werden können zu spezifischen Kategorien
+
+=item Kategorien bekommen diese REST-URL der jeweilig anderen Instanz hinterlegt (zusätzlich zu den Anmeldedaten, denn ohne Anmeldung läuft nichts)
+
+=item Über einen cron-Job erfolgt der Datenabgleich
+
+=item Wenn benutzer in der entsprechenden Remote-Kategorie (spezielle Kennzeichnung!!!) etwas posten, wird das zeitversetzt an die entsprechende anderen Instanz übertragen und umgekehrt
+
+=back
+
 =head2 Datenstruktur
 
 Alles ist ein Beitrag.
