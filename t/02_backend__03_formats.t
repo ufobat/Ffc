@@ -1,13 +1,15 @@
 use strict;
 use warnings;
 use 5.010;
+use utf8;
 use FindBin;
 use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Mock::Controller;
+use Test::Callcheck;
 srand;
 
-use Test::More tests => 7;
+use Test::More tests => 58;
 
 use_ok('Ffc::Data::Formats');
 
@@ -21,38 +23,100 @@ use_ok('Ffc::Data::Formats');
     my $timeok_checkstring = sprintf '%d.%d.%d, %02d:%02d',
       @timeok[ 2, 1, 0, 3, 4 ];
     my $timebad = ">>> " . int( rand 1000000 ) . " <<<";
+    is( Ffc::Data::Formats::format_timestamp(),
+        '', 'no input returned empty string' );
     is( Ffc::Data::Formats::format_timestamp($timebad),
         $timebad, 'bad time string just returned unaltered' );
     is( Ffc::Data::Formats::format_timestamp($timeok_teststring),
         $timeok_checkstring, 'good timestring returned like expected' );
 }
 {
+    note('checking format_text');
     my @chars = ('a'..'z', 0..9, '_', '-', '.');
     my $zs = sub { join '', map({;$chars[int rand scalar @chars]} 0 .. 4 + int rand 8) };
     my $tu = sub { 'http://www.'.$zs->().'.de' };
-    my $testurl = $tu->().'/'.$zs->().'.html';
-    my $testimage = $tu->().'/'.$zs->().'.png';
-
-    note('checking format_text');
     my $c = Mock::Controller->new();
-    $c->session()->{theme} = my $theme = $zs->();
-    $c->{url} = my $url = $tu->();
-    note('checking format_text with images');
-    $c->session()->{show_images} = 1;
+    {
+        note('checking wrong calls');
+        check_call( \&Ffc::Data::Formats::format_text,
+            format_text =>
+            {
+                name => 'input string',
+                good => '',
+                bad => [],
+                emptyerror => 'Controller ungültig',
+                errors => [],
+            },
+            {
+                name => 'controller object',
+                good => $c,
+                bad => [ '' ],
+                emptyerror => 'Controller ungültig',
+                errors => ['Controller ungültig'],
+            },
+        );
+    }
+    note('checking format_text without input');
+    {
+        $c->session()->{show_images} = 1;
+        is( Ffc::Data::Formats::format_text('', $c), '', 'empty (nuthing) string returned empty - like in nothing');
+        is( Ffc::Data::Formats::format_text('', $c), '', 'empty (nuthing) string returned empty - like in nothing');
+        is( Ffc::Data::Formats::format_text(' ' x ( 3 + int rand 1000 ), $c), '', 'empty (lots of spaces) string returned empty - like in nothing');
+        $c->session()->{show_images} = 0;
+        is( Ffc::Data::Formats::format_text('', $c), '', 'empty (nuthing) string returned empty - like in nothing');
+        is( Ffc::Data::Formats::format_text('', $c), '', 'empty (nuthing) string returned empty - like in nothing');
+        is( Ffc::Data::Formats::format_text(' ' x ( 3 + int rand 1000 ), $c), '', 'empty (lots of spaces) string returned empty - like in nothing');
+    }
 
-    is( Ffc::Data::Formats::format_text(' ' x ( 3 + int rand 1000 ), $c), '', 'empty (lots of spaces) string returned empty - like in nothing');
+    {
+        note('checking calls with actual strings');
+        my $prep = do {
+            my $nop_ing = sub { join '', map { "$_\n" } @{ shift() } };
+            my $p_ing = sub { join '', map { "<p>$_</p>\n" } @{ shift() } };
+            sub {
+                my ( $start, $str, $stop, $p ) = @_;
+                my $s = $p
+                    ? $p_ing->($start)."$str\n".$p_ing->($stop)
+                    : $nop_ing->($start)."$str\n".$nop_ing->($stop);
+                chomp $s;
+                return $s;
+            };
+        };
+        my $code = \&Ffc::Data::Formats::format_text;
+        my $testurl = $tu->().'/'.$zs->().'.html';
+        my $testimage = $tu->().'/'.$zs->().'.png';
+        $c->session()->{theme} = my $theme = $zs->();
+        $c->{url} = my $url = $tu->();
+        my @input = map { chomp; $_ ? $_ : () } split /\n+/, teststring($testurl, $testimage);
+        my @output_w_img = map { chomp; $_ ? $_ : () } split /\n+/, controlstring_withimages($testurl, $testimage, $url, $theme);
+        my @output_wo_img = map { chomp; $_ ? $_ : () } split /\n+/, controlstring_withoutimages($testurl, $testimage, $url, $theme);
+        #die ">".@input."<>".@output_w_img."<>".@output_wo_img."<";
+        for my $i ( 0..$#input ) {
+            my $start = [ map {$zs->()} 0 .. int rand 3 ];
+            my $stop = [ map {$zs->()} 0 .. int rand 3 ];
+            my $input = $prep->($start, $input[$i], $stop, 0);
+            my $output_w = $prep->($start, $output_w_img[$i], $stop, 1);
+            my $output_wo = $prep->($start, $output_wo_img[$i], $stop, 1);
+            $c->session()->{show_images} = 1;
+            is($code->($input, $c), $output_w, 'teststring testet ok with images');
+            $c->session()->{show_images} = 0;
+            is($code->($input, $c), $output_wo, 'teststring testet ok witout images');
+        }
+    }
 
-    my $teststring = << "EOSTRING";
+
+}
+
+sub teststring {
+    my ( $testurl, $testimage ) = @_;
+    return << "EOSTRING";
 MarkupTests:
 
 Notiz am Rande: !BBCodes! können mich mal kreuzweise am Arsch lecken, bin fertig mit den sinnlosen Drecksdingern. Die kommen hier nie, nie nie rein!
 
 ($testurl), $testimage
-
 _test1_, +test2+, -test3-, ~test4~, !test5!
-
 _test_1_, +test+2+, -test-3-, ~test~4~, !test!5!
-
 smile: :) :-) =),
 sad: :( :-( =(,
 crying: :,(,
@@ -71,8 +135,11 @@ devilsmile: >:) >:-) >=),
 evilgrin: >:D >:-D >=D,
 angry: >:( >:-( >=(
 EOSTRING
+}
 
-    my $controlstring_withimages = << "EOSTRING";
+sub controlstring_withimages {
+    my ( $testurl, $testimage, $url, $theme ) = @_;
+    return << "EOSTRING";
 <p>MarkupTests:</p>
 <p>Notiz am Rande: <span class="alert">BBCodes !!!</span> können mich mal kreuzweise am Arsch lecken, bin fertig mit den sinnlosen Drecksdingern. Die kommen hier nie, nie nie rein!</p>
 <p>(<a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a>), <a href="$testimage" title="Externes Bild" target="_blank"><img src="$testimage" class="extern" title="Externes Bild" /></a></p>
@@ -96,18 +163,10 @@ EOSTRING
 <p>evilgrin: <img class="smiley" src="$url/themes//$theme/img/smileys/evilgrin.png" alt="&gt;:D" /> <img class="smiley" src="$url/themes//$theme/img/smileys/evilgrin.png" alt="&gt;:-D" /> <img class="smiley" src="$url/themes//$theme/img/smileys/evilgrin.png" alt="&gt;=D" />,</p>
 <p>angry: <img class="smiley" src="$url/themes//$theme/img/smileys/angry.png" alt="&gt;:(" /> <img class="smiley" src="$url/themes//$theme/img/smileys/angry.png" alt="&gt;:-(" /> <img class="smiley" src="$url/themes//$theme/img/smileys/angry.png" alt="&gt;=(" /></p>
 EOSTRING
-    chomp $controlstring_withimages;
-#    my $out = Ffc::Data::Formats::format_text($teststring, $c);
-#    for my $f ( ['got.txt' => $out], ['expected.txt' => $controlstring_withimages] ) {
-#        open my $fh, '>', $f->[0] or die;
-#        print $fh $f->[1];
-#    }
-    is(Ffc::Data::Formats::format_text($teststring, $c), $controlstring_withimages, 'teststring testet ok');
-
-    note('checking format_text with images');
-    $c->session()->{show_images} = 0;
-    is( Ffc::Data::Formats::format_text(' ' x ( 3 + int rand 1000 ), $c), '', 'empty (lots of spaces) string returned empty - like in nothing');
-    my $controlstring_withoutimages = << "EOSTRING";
+}
+sub controlstring_withoutimages {
+    my ( $testurl, $testimage, $url, $theme ) = @_;
+    return << "EOSTRING";
 <p>MarkupTests:</p>
 <p>Notiz am Rande: <span class="alert">BBCodes !!!</span> können mich mal kreuzweise am Arsch lecken, bin fertig mit den sinnlosen Drecksdingern. Die kommen hier nie, nie nie rein!</p>
 <p>(<a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a>), <a href="$testimage" title="Externes Bild" target="_blank"><img class="icon" src="$url/themes/$theme/img/icons/img.png" class="extern" title="Externes Bild" /> $testimage</a></p>
@@ -131,7 +190,4 @@ EOSTRING
 <p>evilgrin:>:D>:-D>=D,</p>
 <p>angry:>:(>:-(>=(</p>
 EOSTRING
-    chomp $controlstring_withoutimages;
-    is( Ffc::Data::Formats::format_text($teststring, $c), $controlstring_withoutimages, 'teststring testet ok');
 }
-

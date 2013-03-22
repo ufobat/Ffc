@@ -30,7 +30,7 @@ our $SmileyRe         = join '|', map {s{([\^\<\-\.\:\\\/\(\)\=\|\,])}{\\$1}gxms
 our %Goodies          = qw( _ underline - linethrough + bold ~ italic ! alert);
 
 sub format_timestamp {
-    my $t = shift;
+    my $t = shift // return '';
     if ( $t =~ m/(\d\d\d\d)-(\d\d)-(\d\d)\s+(\d\d):(\d\d):(\d\d)/xmsi ) {
         $t = sprintf '%d.%d.%d, %02d:%02d', $3, $2, $1, $4, $5;
     }
@@ -44,8 +44,9 @@ sub _xml_escape {
     $_[0] =~ s/"/\&quot;/gxm;
 }
 sub format_text {
-    my $s = shift;
+    my $s = shift // '';
     my $c = shift;
+    die 'Controller ungültig' unless $c;
     $s =~ s/\A\s+//gxmsi;
     $s =~ s/\s+\z//gxmsi;
     return '' unless $s;
