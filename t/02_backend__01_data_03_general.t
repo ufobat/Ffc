@@ -12,9 +12,10 @@ use Mock::Database;
 use Mock::Testuser;
 use Mock::Controller::App;
 use Test::Callcheck;
+use Ffc::Data::Auth;
 srand;
 
-use Test::More tests => 40;
+use Test::More tests => 50;
 
 note('doing some preparations');
 my $config = Mock::Config->new->{config};
@@ -159,9 +160,9 @@ sub _get_rand_user     { $users[ int rand scalar @users ] }
             name       => 'category id',
             good       => _get_rand_category()->[0],
             bad        => [ '', '    ', 'aaaa', $maxcatid + 1 ],
-            emptyerror => 'Kategorie-ID nicht angegeben',
+            emptyerror => 'Keine Kategorieid angegeben',
             errormsg =>
-              [ 'Kategorie-ID nicht angegeben', 'Kategorie-ID ungültig' ],
+              [ 'Keine Kategorieid angegeben', 'Kategorieid ungültig' ],
         },
     );
     ok( Ffc::Data::General::get_category_short( _get_rand_category()->[0] ),
@@ -174,8 +175,54 @@ sub _get_rand_user     { $users[ int rand scalar @users ] }
 }
 {
     note('sub get_useremail( $userid )');
+    check_call(
+        \&Ffc::Data::General::get_useremail,
+        get_usermail => {
+            name => 'userid id',
+            good => Ffc::Data::Auth::get_userid( _get_rand_user()->{name} ),
+            bad  => [ '', '    ', 'aaaa', $maxuserid + 1 ],
+            emptyerror => 'Keine Benutzerid angegeben',
+            errormsg   => [
+                'Keine Benutzerid angegeben',
+                'Benutzer ungültig',
+                'Benutzer ungültig',
+                'Benutzer unbekannt'
+            ],
+        },
+    );
+    like(
+        Ffc::Data::General::get_useremail(
+            Ffc::Data::Auth::get_userid( _get_rand_user()->{name} )
+        ),
+        qr/.+\@.+\.\w+/,
+        'user email retrieved'
+    );
+    {
+        my $user = _get_rand_user();
+        is(
+            Ffc::Data::General::get_useremail(
+                Ffc::Data::Auth::get_userid( $user->{name} )
+            ),
+            $user->{email},
+            'user email retrieved correctly'
+        );
+    }
 }
 {
     note('sub get_userlist()');
+    my $ret = Ffc::Data::General::get_userlist();
+    ok( @$ret, 'user list is not empty' );
+    is_deeply(
+        [ sort { $a->[1] cmp $b->[1] } @$ret ],
+        [
+            map {
+                [
+                    Ffc::Data::Auth::get_userid( $_->{name} ),
+                    $_->{name}, $_->{active}, $_->{admin}
+                ]
+            } sort { $a->{name} cmp $b->{name} } grep { $_->{active} } @users
+        ],
+        'userlist retrieved'
+    );
 }
 

@@ -48,11 +48,11 @@ sub get_userlist {
 
 sub get_category_short {
     my $id = shift;
-    die qq{Kategorie-ID nicht angegeben} unless $id;
-    die qq{Kategorie-ID ungültig} unless $id =~ m/\A\d+\z/xms;
+    die qq{Keine Kategorieid angegeben} unless $id;
+    die qq{Kategorieid ungültig} unless $id =~ m/\A\d+\z/xms;
     my $sql = 'SELECT c.short FROM '.$Ffc::Data::Prefix.'categories c WHERE c.id=? LIMIT 1';
     my @ret = Ffc::Data::dbh()->selectrow_array($sql, undef, $id);
-    die qq{Kategorie-ID ungültig} unless @ret;
+    die qq{Kategorieid ungültig} unless @ret;
     return $ret[0];
 }
 

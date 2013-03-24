@@ -13,6 +13,7 @@ sub check_call {    # alle aufrufoptionen durchprobieren
       ; # ( { name => '', good => '', bad => [ '' ], emptyerror => '', errormsg => [ '' ] } )
     my @okparams;
     while ( my $par = shift @params ) {
+        die qq(good parameter missing for "$par->{name}") unless defined $par->{good};
         for my $s ( qw(errormsgs bad) ) {
             $par->{$s} = [] unless exists $par->{$s};
             $par->{$s} = [$par->{$s}] unless 'ARRAY' eq ref $par->{$s};
