@@ -7,6 +7,13 @@ use utf8;
 use Ffc::Data;
 use Ffc::Data::Auth;
 
+sub check_category_short_rules {
+    my $c = shift;
+    die qq{Kein Kategoriekürzel angegeben} unless $c;
+    die qq{Kategoriekürzel ungültig} unless $c =~ m/\A\w{1,64}\z/xms;
+    return 1;
+}
+
 sub check_password_change {
     my ( $newpw1, $newpw2, $oldpw ) = @_;
     for ( ( $oldpw ? ['Altes Passwort' => $oldpw] : () ), ['Neues Passwort' => $newpw1], ['Passwortwiederholung' => $newpw2] ) {
@@ -18,7 +25,7 @@ sub check_password_change {
 
 sub get_category_id {
     my $c = shift;
-    die qq{Kategoriekürzel ungültig} unless $c =~ m/\A\w{1,64}\z/xms;
+    check_category_short_rules( $c );
     my $sql = 'SELECT c.id FROM '.$Ffc::Data::Prefix.'categories c WHERE c.short=?';
     my $cats = Ffc::Data::dbh()->selectall_arrayref($sql, undef, $c);
     die qq{Kategorie ungültig} unless @$cats;

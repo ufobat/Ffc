@@ -13,6 +13,10 @@ sub check_call {    # alle aufrufoptionen durchprobieren
       ; # ( { name => '', good => '', bad => [ '' ], emptyerror => '', errormsg => [ '' ] } )
     my @okparams;
     while ( my $par = shift @params ) {
+        for my $s ( qw(errormsgs bad) ) {
+            $par->{$s} = [] unless exists $par->{$s};
+            $par->{$s} = [$par->{$s}] unless 'ARRAY' eq ref $par->{$s};
+        }
         unless ( exists( $par->{noemptycheck} ) and $par->{noemptycheck} ) {
             die qq(no emtpy error message given for "$par->{name}")
               unless $par->{emptyerror};
