@@ -62,7 +62,7 @@ EOSQL
         admin      => $isadmin,
         active     => $isactive,
         data       => [],
-        pseudoname => $zuord{"u$isactive$isadmin"},
+        pseudoname => $zuord{sprintf('u%01d%01d', $isactive, $isadmin)},
         faulty     => 0,
     };
 }

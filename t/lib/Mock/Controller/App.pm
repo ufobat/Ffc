@@ -4,13 +4,15 @@ use warnings;
 use utf8;
 use 5.010;
 use Mock::Controller::Log;
+use Mojolicious;
 use Mojolicious::Plugin::JSONConfig;
+use Data::Dumper;
 
 our %Plugins = (
     JSONConfig => sub {
         my $params = shift;
         my $config = Mojolicious::Plugin::JSONConfig->new();
-        $config->load($params->{file}, Mojolicous->new());
+        $config->load($params->{file}, $config, Mojolicious->new());
     },
 );
 

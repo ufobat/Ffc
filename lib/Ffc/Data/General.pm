@@ -4,14 +4,13 @@ use 5.010;
 use strict;
 use warnings;
 use utf8;
-
 use Ffc::Data;
 use Ffc::Data::Auth;
 
 sub check_password_change {
     my ( $newpw1, $newpw2, $oldpw ) = @_;
     for ( ( $oldpw ? ['Altes Passwort' => $oldpw] : () ), ['Neues Passwort' => $newpw1], ['Passwortwiederholung' => $newpw2] ) {
-        Ffc::Data::Auth::check_password_rules($_);
+        Ffc::Data::Auth::check_password_rules($_->[1]);
     }
     die qq{Das neue Passwort und dessen Wiederholung stimmen nicht überein} unless $newpw1 eq $newpw2;
     return 1;
@@ -26,10 +25,7 @@ sub get_category_id {
     return $cats->[0]->[0];
 }
 
-sub check_category {
-    return $_[0] if get_category_id($_[0]);
-    return;
-}
+sub check_category { get_category_id($_[0]) ? 1 : 0 }
 
 sub get_useremail {
     my $id = shift;

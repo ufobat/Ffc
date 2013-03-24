@@ -2,6 +2,7 @@ use 5.010;
 use strict;
 use warnings;
 use utf8;
+use Data::Dumper;
 
 use Test::More;
 
@@ -12,19 +13,21 @@ sub check_call {    # alle aufrufoptionen durchprobieren
       ; # ( { name => '', good => '', bad => [ '' ], emptyerror => '', errormsg => [ '' ] } )
     my @okparams;
     while ( my $par = shift @params ) {
-        die qq(no emtpy error message given for "$par->{name}")
-          unless $par->{emptyerror};
-        {
-            eval { $code->(@okparams) };
-            like( $@, qr/$par->{emptyerror}/,
-                qq~wrong call without "$par->{name}" yelled correctly~ );
+        unless ( exists( $par->{noemptycheck} ) and $par->{noemptycheck} ) {
+            die qq(no emtpy error message given for "$par->{name}")
+              unless $par->{emptyerror};
+            {
+                eval { $code->(@okparams) };
+                like( $@, qr/$par->{emptyerror}/,
+                    qq~wrong call without "$par->{name}" yelled correctly~ );
+            }
         }
         for my $bad ( 0 .. $#{ $par->{bad} } ) {
             my $param = $par->{bad}->[$bad];
             my $error =
                  $par->{errormsg}->[$bad]
-              || $par->{errormsg}->[-1]
-              || $par->{emptyerror};
+              // $par->{errormsg}->[-1]
+              // $par->{emptyerror};
             {
                 eval { $code->(@okparams, $param) };
                 like( $@, qr/$error/,

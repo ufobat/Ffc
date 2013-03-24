@@ -45,14 +45,14 @@ use_ok('Ffc::Data::Formats');
                 good => '',
                 bad => [],
                 emptyerror => 'Controller ungültig',
-                errors => [],
+                errormsg => [],
             },
             {
                 name => 'controller object',
                 good => $c,
                 bad => [ '' ],
                 emptyerror => 'Controller ungültig',
-                errors => ['Controller ungültig'],
+                errormsg => ['Controller ungültig'],
             },
         );
     }
