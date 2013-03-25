@@ -40,6 +40,7 @@ sub _update_user_msgs {
     my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users u SET u.lastseenmsgs=current_timestamp WHERE u.id=?;';
     Ffc::Data::dbh()->do( $sql, undef, $userid );
 }
+# ( $userid, $act, $category )
 sub update_user_stats {
     given ( $_[1] ) {
         when ( 'forum' ) { _update_user_forum( @_ ) }

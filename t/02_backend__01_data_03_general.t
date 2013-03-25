@@ -6,55 +6,28 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Data::Dumper;
-use Mojolicious;
-use Mock::Config;
-use Mock::Database;
-use Mock::Testuser;
-use Mock::Controller::App;
 use Test::Callcheck;
+use Test::General;
 use Ffc::Data::Auth;
 srand;
 
-use Test::More tests => 50;
+Test::General::test_prepare();
 
-note('doing some preparations');
-my $config = Mock::Config->new->{config};
-my $app    = Mojolicious->new();
-$app->log->level('error');
-Ffc::Data::set_config($app);
-Mock::Database::prepare_testdatabase();
-my @users = ( map { Mock::Testuser->new_active_user() } 3 .. 5 + int rand 20 );
-my @categories = @{
-    Ffc::Data::dbh()->selectall_arrayref(
-            'SELECT "id", "name", "short" FROM '
-          . $Ffc::Data::Prefix
-          . 'categories'
-    )
-};
-my $maxcatid = (
-    Ffc::Data::dbh()->selectall_arrayref(
-        'SELECT MAX("id") FROM ' . $Ffc::Data::Prefix . 'categories'
-    )
-)[0];
-my $maxuserid = (
-    Ffc::Data::dbh()->selectall_arrayref(
-        'SELECT MAX("id") FROM ' . $Ffc::Data::Prefix . 'users'
-    )
-)[0];
+my $maxuserid = $Test::General::Maxuserid;
+my $maxcatid = $Test::General::Maxcatid;
+my @users = @Test::General::Users;
+my @categories = @Test::General::Categories;
+sub test_r { &Test::General::test_r }
+sub test_get_rand_user { &Test::General::test_get_rand_user }
+sub test_get_rand_category { &Test::General::test_get_rand_category }
+
+use Test::More tests => 50;
 
 use_ok('Ffc::Data::General');
 
-sub r {
-    my @chars = ( 'a' .. 'z', 'A' .. 'Z', 0 .. 9 );
-    return join '',
-      map { $chars[ int rand scalar @chars ] } 0 .. 7 + int rand 5;
-}
-sub _get_rand_category { $categories[ int rand scalar @categories ] }
-sub _get_rand_user     { $users[ int rand scalar @users ] }
-
 {
     note('sub check_password_change( $newpw1, $newpw2, $oldpw )');
-    my $user         = _get_rand_user();
+    my $user         = test_get_rand_user();
     my $old_password = $user->{password};
     $user->alter_password();
     my $new_password = $user->{password};
@@ -94,9 +67,9 @@ sub _get_rand_user     { $users[ int rand scalar @users ] }
         \&Ffc::Data::General::check_category_short_rules,
         check_category_short_rules => {
             name => 'category short name',
-            good => substr( r(), 0, 64 ),
+            good => substr( test_r(), 0, 64 ),
             bad =>
-              [ '', '    ', substr( r(), 0, 2 ) . '/' . substr( r(), 0, 3 ) ],
+              [ '', '    ', substr( test_r(), 0, 2 ) . '/' . substr( test_r(), 0, 3 ) ],
             emptyerror => 'Kein Kategoriekürzel angegeben',
             errormsg   => [
                 'Kein Kategoriekürzel angegeben',
@@ -105,7 +78,7 @@ sub _get_rand_user     { $users[ int rand scalar @users ] }
         },
     );
     ok(
-        Ffc::Data::General::check_category_short_rules( substr( r(), 0, 64 ) ),
+        Ffc::Data::General::check_category_short_rules( substr( test_r(), 0, 64 ) ),
         'category short fits the rules'
     );
 }
@@ -115,9 +88,9 @@ sub _get_rand_user     { $users[ int rand scalar @users ] }
         \&Ffc::Data::General::get_category_id,
         get_category_id => {
             name => 'category short name',
-            good => _get_rand_category()->[2],
+            good => test_get_rand_category()->[2],
             bad =>
-              [ '', '    ', substr( r(), 0, 2 ) . '/' . substr( r(), 0, 3 ) ],
+              [ '', '    ', substr( test_r(), 0, 2 ) . '/' . substr( test_r(), 0, 3 ) ],
             emptyerror => 'Kein Kategoriekürzel angegeben',
             errormsg   => [
                 'Kein Kategoriekürzel angegeben',
@@ -125,10 +98,10 @@ sub _get_rand_user     { $users[ int rand scalar @users ] }
             ],
         },
     );
-    like( Ffc::Data::General::get_category_id( _get_rand_category()->[2] ),
+    like( Ffc::Data::General::get_category_id( test_get_rand_category()->[2] ),
         qr(\d+), 'category id found' );
     {
-        my $cat = _get_rand_category();
+        my $cat = test_get_rand_category();
         is( Ffc::Data::General::get_category_id( $cat->[2] ),
             $cat->[0], 'category id correct' );
     }
@@ -139,9 +112,9 @@ sub _get_rand_user     { $users[ int rand scalar @users ] }
         \&Ffc::Data::General::check_category,
         check_category => {
             name => 'category short name',
-            good => _get_rand_category()->[2],
+            good => test_get_rand_category()->[2],
             bad =>
-              [ '', '    ', substr( r(), 0, 2 ) . '/' . substr( r(), 0, 3 ) ],
+              [ '', '    ', substr( test_r(), 0, 2 ) . '/' . substr( test_r(), 0, 3 ) ],
             emptyerror => 'Kein Kategoriekürzel angegeben',
             errormsg   => [
                 'Kein Kategoriekürzel angegeben',
@@ -149,7 +122,7 @@ sub _get_rand_user     { $users[ int rand scalar @users ] }
             ],
         },
     );
-    ok( Ffc::Data::General::check_category( _get_rand_category()->[2] ),
+    ok( Ffc::Data::General::check_category( test_get_rand_category()->[2] ),
         'category short fits the rules' );
 }
 {
@@ -158,17 +131,17 @@ sub _get_rand_user     { $users[ int rand scalar @users ] }
         \&Ffc::Data::General::get_category_short,
         get_category_short => {
             name       => 'category id',
-            good       => _get_rand_category()->[0],
+            good       => test_get_rand_category()->[0],
             bad        => [ '', '    ', 'aaaa', $maxcatid + 1 ],
             emptyerror => 'Keine Kategorieid angegeben',
             errormsg =>
               [ 'Keine Kategorieid angegeben', 'Kategorieid ungültig' ],
         },
     );
-    ok( Ffc::Data::General::get_category_short( _get_rand_category()->[0] ),
+    ok( Ffc::Data::General::get_category_short( test_get_rand_category()->[0] ),
         'category id fits the rules' );
     {
-        my $cat = _get_rand_category();
+        my $cat = test_get_rand_category();
         is( Ffc::Data::General::get_category_short( $cat->[0] ),
             $cat->[2], 'category short correct' );
     }
@@ -179,7 +152,7 @@ sub _get_rand_user     { $users[ int rand scalar @users ] }
         \&Ffc::Data::General::get_useremail,
         get_usermail => {
             name => 'userid id',
-            good => Ffc::Data::Auth::get_userid( _get_rand_user()->{name} ),
+            good => Ffc::Data::Auth::get_userid( test_get_rand_user()->{name} ),
             bad  => [ '', '    ', 'aaaa', $maxuserid + 1 ],
             emptyerror => 'Keine Benutzerid angegeben',
             errormsg   => [
@@ -192,13 +165,13 @@ sub _get_rand_user     { $users[ int rand scalar @users ] }
     );
     like(
         Ffc::Data::General::get_useremail(
-            Ffc::Data::Auth::get_userid( _get_rand_user()->{name} )
+            Ffc::Data::Auth::get_userid( test_get_rand_user()->{name} )
         ),
         qr/.+\@.+\.\w+/,
         'user email retrieved'
     );
     {
-        my $user = _get_rand_user();
+        my $user = test_get_rand_user();
         is(
             Ffc::Data::General::get_useremail(
                 Ffc::Data::Auth::get_userid( $user->{name} )
