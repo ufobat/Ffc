@@ -12,7 +12,7 @@ use Mock::Controller;
 use Ffc::Data::Auth;
 srand;
 
-use Test::More tests => 60;
+use Test::More tests => 102;
 
 Test::General::test_prepare();
 
@@ -206,14 +206,90 @@ use_ok('Ffc::Data::Board::OptionsUser');
             )->[0];
         };
         my $order = $get_value->() ? [ 0, 1, 0, 1 ] : [ 1, 0, 1, 0 ];
-        for my $value ( @$order ) {
-            ok( Ffc::Data::Board::OptionsUser::update_show_images($c->session, $value), qq(call with "$value" ok) );
+        for my $value (@$order) {
+            ok(
+                Ffc::Data::Board::OptionsUser::update_show_images(
+                    $c->session, $value
+                ),
+                qq(call with "$value" ok)
+            );
             is( $value, $get_value->(), 'database update ok' );
         }
     }
 }
 {
     note('sub update_theme( $sessionhash, $themename )');
+    {
+        my $user   = Test::General::test_get_rand_user();
+        my $userid = Ffc::Data::Auth::get_userid( $user->{name} );
+        my $c      = Mock::Controller->new();
+        my $theme  = $Ffc::Data::Themes[ int rand scalar @Ffc::Data::Themes ];
+        my $illegal_theme = Test::General::test_r();
+        $illegal_theme = Test::General::test_r()
+          while $illegal_theme ~~ @Ffc::Data::Themes;
+        $c->session()->{userid} = $userid;
+        check_call(
+            \&Ffc::Data::Board::OptionsUser::update_theme,
+            update_theme => {
+                name => 'session hash',
+                good => $c->session,
+                bad  => [
+                    '',
+                    {},
+                    { userid => '' },
+                    { userid => '    ' },
+                    { userid => Test::General::test_r() },
+                    { userid => $Test::General::Maxuserid + 1 }
+                ],
+                errormsg => [
+                    'Session-Hash als erster Parameter benötigt',
+                    ('Keine Benutzerid angegeben') x 2,
+                    ('Benutzer ungültig') x 2,
+                    'Benutzer unbekannt',
+                ],
+                emptyerror => 'Session-Hash als erster Parameter benötigt',
+            },
+            {
+                name     => 'theme name',
+                good     => $theme,
+                bad      => [ '', 'a' x 66, $illegal_theme ],
+                errormsg => [
+                    'Themenname nicht angegeben',
+                    'Themenname zu lang',
+                    'Thema ungültig'
+                ],
+                emptyerror => 'Themenname nicht angegeben',
+            },
+        );
+    }
+    {
+        my $user      = Test::General::test_get_rand_user();
+        my $userid    = Ffc::Data::Auth::get_userid( $user->{name} );
+        my $c         = Mock::Controller->new();
+        $c->session()->{userid} = $userid;
+        my $get_value = sub {
+            Ffc::Data::dbh()->selectrow_arrayref(
+                'SELECT theme FROM ' . $Ffc::Data::Prefix . 'users WHERE id=?',
+                undef, $userid
+            )->[0];
+        };
+        my $theme = $get_value->();
+        $theme = '' unless defined $theme;
+        for my $i ( 0 .. 9 ) {
+            my $new_theme = '';
+            $new_theme =
+              $Ffc::Data::Themes[ int rand scalar @Ffc::Data::Themes ]
+              while !$new_theme
+              or $new_theme eq $theme;
+            isnt( $theme, $new_theme,
+                qq(changing theme from "$theme" to "$new_theme") );
+            ok( Ffc::Data::Board::OptionsUser::update_theme( $c->session(), $new_theme ),
+                'called ok' );
+            my $new_value = $get_value->();
+            isnt( $theme, $new_value, 'value changed' );
+            $theme = $new_theme;
+        }
+    }
 
 }
 

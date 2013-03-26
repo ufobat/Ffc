@@ -41,18 +41,21 @@ sub update_show_images {
     $s->{show_images} = $x;
     my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET show_images=? WHERE id=?';
     Ffc::Data::dbh()->do($sql, undef, $x, $s->{userid});
+    return 1;
 }
 
 sub update_theme {
     my $s = shift;
-    die q(Session-Hash als erster Parameter benötigt) unless 'HASH' ne ref $s;
+    die q(Session-Hash als erster Parameter benötigt) unless $s and 'HASH' eq ref $s;
     check_user( $s->{userid} );
     my $t = shift;
-    die qq{Themenname zu lang (64 Zeichen maximal)} if 64 < length $t;
+    die q{Themenname nicht angegeben} unless $t;
+    die q{Themenname zu lang (64 Zeichen maximal)} if 64 < length $t;
     die qq{Thema ungültig: $t} unless $t ~~ @Ffc::Data::Themes; 
     $s->{theme} = $t;
-    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users u SET u.theme=? WHERE u.id=?';
+    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET theme=? WHERE id=?';
     Ffc::Data::dbh()->do($sql, undef, $t, $s->{userid});
+    return 1;
 }
 
 1;
