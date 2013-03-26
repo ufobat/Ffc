@@ -35,7 +35,7 @@ sub test_prepare {
     $App->log->level('error');
     Ffc::Data::set_config($App);
     Mock::Database::prepare_testdatabase();
-    @Users = ( map { Mock::Testuser->new_active_user() } 3 .. 5 + int rand 20 );
+    @Users = ( map { Mock::Testuser->new_active_user() } 8 .. 16 + int rand 16 );
     @Categories = @{
         Ffc::Data::dbh()->selectall_arrayref(
                 'SELECT "id", "name", "short" FROM '
