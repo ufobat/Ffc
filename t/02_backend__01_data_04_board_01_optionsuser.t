@@ -11,7 +11,7 @@ use Test::General;
 use Ffc::Data::Auth;
 srand;
 
-use Test::More tests => 11;
+use Test::More tests => 17;
 
 Test::General::test_prepare();
 
