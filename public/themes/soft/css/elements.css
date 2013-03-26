@@ -20,10 +20,10 @@ input[type="text"], input[type="password"] {
 }
 .postbox textarea {
     width: 47.5em;
-    min-width: 47.5em;
+    min-width: 10em;
     max-width: 47.5em;
     height: 5em;
-    min-height: 2em;
+    min-height: 5em;
     max-height: 40em;
 }
 .divider {
