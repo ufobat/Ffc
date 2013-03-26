@@ -8,6 +8,8 @@ unkomplizierte Foren- und Nachrichtenplattform für eine
 Teilnehmern mit klarer und einfacher Datenhaltung und 
 simpler technischer Struktur.  
 
+Screenshot: L<https://raw.github.com/bedivere/Ffc/master/doc/Screenshot.png>
+
 =head2 Features
 
 =over 4
