@@ -14,8 +14,12 @@ use Ffc::Data::Board::Views;
 
 sub _switch_category {
     my ( $c, $cat ) = @_;
-    $cat = $cat =~ m/\A(\w+)\z/xmsi ? $1 : undef;
-    $c->session->{category} = $c->or_nostring( sub{Ffc::Data::General::check_category($cat) } );
+    $c->error_handling({
+        code        => sub { Ffc::Data::General::check_category($cat) },
+        msg         => 'Die gewählte Kategorie ist ungültig.',
+        after_error => sub { $c->session->{category} = '' },
+        after_ok    => sub { $c->session->{category} = $cat },
+    });
 }
 
 sub switch_category {
