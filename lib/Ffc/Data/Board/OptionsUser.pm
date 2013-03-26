@@ -15,10 +15,12 @@ sub _check_password_change { &Ffc::Data::General::check_password_change }
 sub update_email {
     my ( $userid, $email ) = @_;
     check_user( $userid );
+    die qq{Keine Emailadresse angegeben} unless $email;
     die qq{Neue Emailadresse ist zu lang (<=1024)} unless 1024 >= length $email;
     die qq(Neue Emailadresse schaut komisch aus) unless $email =~ m/\A[-.\w]+\@[-.\w]+\.\w+\z/xmsi;
-    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users u SET u.email=? WHERE u.id=?';
+    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET email=? WHERE id=?';
     Ffc::Data::dbh()->do($sql, undef, $email, $userid);
+    return 1;
 }
 
 sub update_password {
