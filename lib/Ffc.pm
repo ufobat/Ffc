@@ -3,10 +3,13 @@ use Mojo::Base 'Mojolicious';
 use Ffc::Data;
 
 sub switch_act { 
+    return unless $_[1] and $_[1]->isa('Mojolicious::Controller');
     my $s = $_[1]->session;
-    $s->{act} = $_[2];
+    $s->{act} = $_[2] // 'forum';
+    $s->{act} = 'forum' unless $s->{act} =~ m/\A(?:forum|notes|msgs)\z/xms;
     $s->{category} = undef;
     delete $s->{msgs_userid}; delete $s->{msgs_username};
+    return 1;
 }
 
 # This method will run once at server start

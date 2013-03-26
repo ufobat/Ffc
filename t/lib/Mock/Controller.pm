@@ -4,6 +4,7 @@ use warnings;
 use utf8;
 use 5.010;
 use Mock::Controller::App;
+use Mojo::Base 'Mojolicious::Controller';
 
 sub new {
     bless { url => '', session => {}, stash => {}, app => Mock::Controller::App->new() },
