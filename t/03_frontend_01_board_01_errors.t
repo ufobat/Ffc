@@ -11,6 +11,6 @@ use Data::Dumper;
 
 use Test::More tests => 1;
 
-note('just some inheritance for the actual controller classes');
-use_ok('Ffc::Board');
+note('just some relay methods that are allready tested in "01_aux______01_errorhandling.t"');
+use_ok('Ffc::Board::Errors');
 
