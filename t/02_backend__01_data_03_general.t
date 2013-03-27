@@ -151,14 +151,13 @@ use_ok('Ffc::Data::General');
     check_call(
         \&Ffc::Data::General::get_useremail,
         get_usermail => {
-            name => 'userid id',
+            name => 'userid',
             good => Ffc::Data::Auth::get_userid( test_get_rand_user()->{name} ),
             bad  => [ '', '    ', 'aaaa', $maxuserid + 1 ],
             emptyerror => 'Keine Benutzerid angegeben',
             errormsg   => [
                 'Keine Benutzerid angegeben',
-                'Benutzer ungültig',
-                'Benutzer ungültig',
+                ('Benutzerid ungültig') x 2,
                 'Benutzer unbekannt'
             ],
         },
