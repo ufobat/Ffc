@@ -62,8 +62,13 @@ sub is_user_admin {
     return (Ffc::Data::dbh()->selectrow_array($sql, undef, $userid))[0] ? 1 : 0;
 }
 
-sub check_user { 
+sub check_userid { 
     eval { get_username( shift ) };
+    die shift() // $@ if $@;
+    return 1;
+}
+sub check_username { 
+    eval { get_userid( shift ) };
     die shift() // $@ if $@;
     return 1;
 }

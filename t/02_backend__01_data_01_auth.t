@@ -14,7 +14,7 @@ use Mock::Testuser;
 use Test::Callcheck;
 use Ffc::Data;
 
-use Test::More tests => 167;
+use Test::More tests => 182;
 
 BEGIN { use_ok('Ffc::Data::Auth') }
 
@@ -191,10 +191,29 @@ qq(checked for false administrational being of "$user->{pseudoname}")
 }
 
 {
-    note('TESTING check_user( $userid )');
-    my $code = \&Ffc::Data::Auth::check_user;
+    note('TESTING check_username( $username )');
+    my $code = \&Ffc::Data::Auth::check_username;
     check_call( $code,
-        check_user =>
+        check_username =>
+          Mock::Testuser::get_username_check_hash( $activeuser->{name} ), );
+    for my $user (@users) {
+        my ( $ok, $return, $error ) = just_call( $code, $user->{name} );
+        $return = $return->[0];
+        ok( $return, qq'true return is good for "$user->{pseudoname}"' );
+    }
+    {
+        my $newname = Mock::Testuser::get_noneexisting_username();
+        my ( $ok, $return, $error ) = just_call( $code, $newname );
+        $return = $return->[0];
+        ok( $error, qq'error is good for none existing user' );
+    }
+}
+
+{
+    note('TESTING check_userid( $userid )');
+    my $code = \&Ffc::Data::Auth::check_userid;
+    check_call( $code,
+        check_userid =>
           Mock::Testuser::get_userid_check_hash( $activeuser->{id} ), );
     for my $user (@users) {
         my ( $ok, $return, $error ) = just_call( $code, $user->{id} );
@@ -204,12 +223,12 @@ qq(checked for false administrational being of "$user->{pseudoname}")
     {
         my $newid = (
             Ffc::Data::dbh->selectrow_array(
-                'SELECT MAX(u.id) FROM ' . $Ffc::Data::Prefix . 'users u'
+                'SELECT MAX(u.id) + 1 FROM ' . $Ffc::Data::Prefix . 'users u'
             )
         )[0];
         my ( $ok, $return, $error ) = just_call( $code, $newid );
         $return = $return->[0];
-        ok( $return, qq'false return is good for none existing user' );
+        ok( $error, qq'error is good for none existing user' );
     }
 }
 
