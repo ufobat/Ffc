@@ -9,7 +9,7 @@ use Ffc::Data;
 use Ffc::Data::Auth;
 use Ffc::Data::Formats;
 
-sub check_user { &Ffc::Data::Auth::check_user }
+sub get_userid { &Ffc::Data::Auth::get_userid }
 sub get_username { &Ffc::Data::Auth::get_username }
 
 sub _get_categories_sql {
@@ -42,51 +42,55 @@ EOSQL
 }
 
 sub count_newmsgs {
-    my $userid = shift;
-    check_user( $userid );
+    my $userid = get_userid( shift );
     my $sql = 'SELECT count(p.id) FROM '.$Ffc::Data::Prefix.'posts p INNER JOIN '.$Ffc::Data::Prefix.'users u ON u.id=p.to WHERE p.to IS NOT NULL AND p.to=? AND p.from <> p.to AND p.posted >= u.lastseenmsgs';
     return (Ffc::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
 
 sub count_newpost {
-    my $userid = shift;
-    die qq{Benutzer unbekannt} unless get_username($userid);
+    my $userid = get_userid( shift );
     my $sql = _get_categories_sql();
     $sql = "SELECT SUM(t.cnt) FROM ($sql) t";
     return (Ffc::Data::dbh()->selectrow_array($sql, undef, ($userid) x 3 ))[0];
 }
 
 sub count_notes {
-    my $userid = shift;
-    die qq{Benutzer unbekannt} unless get_username($userid);
+    my $userid = get_userid( shift );
     my $sql = 'SELECT count(p.id) FROM '.$Ffc::Data::Prefix.'posts p WHERE p.from=? AND p.to=p.from';
     return (Ffc::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
 
 sub get_categories {
-    my $userid = shift;
-    die qq{Benutzer unbekannt} unless get_username($userid);
+    my $userid = get_userid( shift );
     my $sql = _get_categories_sql();
     return Ffc::Data::dbh()->selectall_arrayref($sql, undef, ($userid) x 3);
 }
 
-sub get_notes { _get_stuff( @_[ 0 .. 6 ], 'p.from=? AND p.to=p.from', $_[0]) }
-sub get_forum { _get_stuff( @_[ 0 .. 6 ], 'p.to IS NULL' ) }
+sub get_notes { 
+    my $userid = get_userid( shift );
+    return _get_stuff( $userid, @_[ 0 .. 5 ], 'p.from=? AND p.to=p.from', $userid );
+}
+sub get_forum { 
+    return _get_stuff( get_userid( shift ), @_[ 0 .. 5 ], 'p.to IS NULL' );
+}
 sub get_msgs  {
-    my @params = ( $_[0], $_[0] );
+    my $userid = get_userid( shift );
+    my @params = ( $userid, $userid );
     my $where = '( p.from=? OR p.to=? ) AND p.from <> p.to';
-    if ( $_[7] ) {
+    if ( $_[6] ) {
+        my $userid = get_userid( $_[6] );
         $where .= ' AND ( p.from=? OR p.to=? )';
-        push @params, $_[7], $_[7];
+        push @params, $userid, $userid;
     }
-    return _get_stuff( @_[ 0 .. 6 ], $where, @params );
+    return _get_stuff( $userid, @_[ 0 .. 5 ], $where, @params );
 }
 
 sub get_post {
     my $postid = shift;
+    my $userid = get_userid( shift );
     die q{Ungültige ID für den Beitrag} unless $postid =~ m/\A\d+\z/xms;
     my $where = 'p.id=?';
-    my $data = _get_stuff( @_[ 0 .. 6 ], $where, $postid );
+    my $data = _get_stuff( $userid, @_[ 0 .. 5 ], $where, $postid );
     die q{Kein Datensatz gefunden} unless @$data;
     return $data->[0];
 }
@@ -101,7 +105,6 @@ sub _get_stuff {
     my $c      = shift;
     my $where  = shift;
     my @params = @_;
-    check_user( $userid );
     $page = 1 unless $page and $page =~ m/\A\d+\z/xms;
     my $q = $query ? q{AND p.text LIKE ?} : '';
     my $p = $Ffc::Data::Prefix;

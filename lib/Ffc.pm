@@ -8,7 +8,7 @@ sub switch_act {
     $s->{act} = $_[2] // 'forum';
     $s->{act} = 'forum' unless $s->{act} =~ m/\A(?:forum|notes|msgs)\z/xms;
     $s->{category} = undef;
-    delete $s->{msgs_userid}; delete $s->{msgs_username};
+    delete $s->{msgs_username};
     return 1;
 }
 
@@ -56,10 +56,10 @@ sub startup {
     $edit->route('/:postid', postid => qr(\d+))->via('post')->to('board#update_post'  )->name('update_post');
 
     # conversation with single user
-    $routes->route('/msgs/:msgs_userid', msgs_userid => qr(\d+))->to('board#msgs_user')->name('msgs_user');
+    $routes->route('/msgs/:msgs_username', msgs_username => $Ffc::Data::UsernameRegex)->to('board#msgs_user')->name('msgs_user');
 
     # display special category
-    $routes->route('/category/:category', category => qr(\w+))->to('board#switch_category')->name('category');
+    $routes->route('/category/:category', category => $Ffc::Data::CategoryRegex)->to('board#switch_category')->name('category');
 
 }
 

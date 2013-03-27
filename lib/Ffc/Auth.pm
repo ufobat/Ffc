@@ -44,7 +44,6 @@ sub _cancel_session {
     my $session = $self->session;
     my $user    = $session->{user};
     delete $session->{user};
-    delete $session->{userid};
     return $user;
 }
 
@@ -71,7 +70,6 @@ sub _get_relevant_data {
     %$session = (
         %$session,
         user        => $user,
-        userid      => $data[0],
         lastseen    => $data[1],
         admin       => $data[2],
         show_images => $data[3],

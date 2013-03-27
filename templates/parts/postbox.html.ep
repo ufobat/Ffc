@@ -26,7 +26,7 @@
 % }
 % for my $w (qw(from to)) {
 %   if ( $post->{$w} and $post->{$w}->{chatable} ) {
-          <a href="<%= url_for msgs_user => msgs_userid => $post->{$w}->{id} %>"
+          <a href="<%= url_for msgs_user => msgs_username => $post->{$w}->{name} %>"
             title="Dem Benutzer &quot;<%= $post->{$w}->{name} %>&quot; eine private Nachricht zukommen lassen">
             <img src="<%= url_for $Ffc::Data::Themedir.session()->{theme}.'/img/icons/msg.png' %>" alt="Nachricht" /></a>
 %   } 

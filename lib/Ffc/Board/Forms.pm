@@ -39,7 +39,7 @@ sub delete_post {
     my $c = shift;
     my $s = $c->session;
     $c->error_handling( { plain => "Privatnachrichten dürfen nicht gelöscht werden" } ) if $s->{act} eq 'msgs';
-    $c->error_handling( { code => sub { Ffc::Data::Board::Forms::delete_post($s->{userid}, $c->param('postid')) }, msg  => 'Beitrag konnte nicht gelöscht werden',
+    $c->error_handling( { code => sub { Ffc::Data::Board::Forms::delete_post($s->{user}, $c->param('postid')) }, msg  => 'Beitrag konnte nicht gelöscht werden',
     } );
     $c->redirect_to('show');
 }
@@ -48,11 +48,11 @@ sub insert_post {
     my $c = shift;
     my $s = $c->session;
     my $text = $c->param('post')     =~ m/\A\s*(.+)\s*\z/xmsi ? $1 : '';
-    my $fromid = $s->{userid};
-    my @params = ( $fromid, $text, $s->{category} );
+    my $from = $s->{user};
+    my @params = ( $from, $text, $s->{category} );
     given ( $s->{act} ) {
-        when ( 'notes' ) { push @params, $fromid }
-        when ( 'msgs'  ) { push @params, $s->{msgs_userid} }
+        when ( 'notes' ) { push @params, $from }
+        when ( 'msgs'  ) { push @params, $s->{msgs_username} }
     }
     $c->error_handling( {
         code        => sub { Ffc::Data::Board::Forms::insert_post(@params) }, 
@@ -67,10 +67,9 @@ sub update_post {
     my $s = $c->session;
     my $text = $c->param('post')     =~ m/\A\s*(.+)\s*\z/xmsi ? $1 : '';
     my $postid = $c->param('postid');
-    my $fromid = $s->{userid};
-    my @params = ( $fromid, $text, $postid );
+    my $from = $s->{user};
+    my @params = ( $from, $text, $postid );
     given ( $s->{act} ) {
-        when ( 'notes' ) { push @params, $fromid }
         when ( 'msgs'  ) { $c->error_handling( { plain => 'Privatnachrichten dürfen nicht geändert werden' } ) }
     }
     $c->error_handling( {

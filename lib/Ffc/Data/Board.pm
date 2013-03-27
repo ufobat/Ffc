@@ -9,7 +9,7 @@ use Ffc::Data;
 use Ffc::Data::Auth;
 use Ffc::Data::General;
 
-sub check_user { &Ffc::Data::Auth::check_user }
+sub get_userid { &Ffc::Data::Auth::get_userid }
 sub get_category_id { &Ffc::Data::General::get_category_id }
 
 sub _update_user_forum {
@@ -39,10 +39,10 @@ sub _update_user_msgs {
 }
 # ( $userid, $act, $category )
 sub update_user_stats {
-    check_user( $_[0] );
-    given ( $_[1] ) {
-        when ( 'forum' ) { _update_user_forum( @_ ) }
-        when ( 'msgs'  ) { _update_user_msgs(  @_ ) }
+    my $userid = get_userid( shift );
+    given ( $_[0] ) {
+        when ( 'forum' ) { _update_user_forum( $userid, @_ ) }
+        when ( 'msgs'  ) { _update_user_msgs(  $userid, @_ ) }
         when ( 'notes' ) {}
         default { die 'Abschnitt ungültig' }
     }

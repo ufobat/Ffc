@@ -8,6 +8,10 @@ use File::Basename;
 use utf8;
 use DBI;
 
+our $PasswordRegex = qr/\S{8,64}/xms;
+our $UsernameRegex = qr/\w{4,64}/xms;
+our $CategoryRegex = qr/\w{1,64}/xms;
+
 our $DefaultConfig = join '/',
   File::Spec->splitdir( File::Basename::dirname(__FILE__) ), '..', '..', 'etc',
   'ffc.json';

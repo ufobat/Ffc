@@ -9,21 +9,21 @@ use Ffc::Data;
 use Ffc::Data::Auth;
 use Ffc::Data::General;
 
-sub check_user { &Ffc::Data::Auth::check_user }
+sub get_userid { &Ffc::Data::Auth::get_userid }
 sub get_category_id { &Ffc::Data::General::get_category_id }
 
 sub delete_post {
     my ( $from, $id ) = @_;
     die qq{Postid ungültig} unless $id =~ m/\A\d+\z/xms;
-    check_user( $from );
+    $from = get_userid( $from );
     my $dbh = Ffc::Data::dbh();
     my $sql = sprintf 'DELETE FROM '.$Ffc::Data::Prefix.'posts WHERE %s=? and %s=? AND (%s IS NULL OR %s=%s);', map {$dbh->quote_identifier($_)} qw(id from to to from);
     $dbh->do( $sql, undef, $id, $from );
 }
 sub insert_post {
     my ( $f, $d, $c, $t ) = @_;
-    check_user( $f, 'Sender des Beitrages unbekannt' );
-    check_user( $t, 'Empfänger des Beitrages unbekannt' ) if $t;
+    $f = get_userid( $f, 'Sender der Nachricht unbekannt' );
+    $t = get_userid( $t, 'Empfänger der Nachricht unbekannt' ) if $t and $t != $f;
     die qq{Beitrag ungültig, zu wenig Zeichen (min. 2)} if 2 >= length $d;
     my $cid = $c ? get_category_id($c) : undef;
     my $dbh = Ffc::Data::dbh();
@@ -32,12 +32,11 @@ sub insert_post {
 }
 
 sub update_post {
-    my ( $f, $d, $i, $t ) = @_;
-    check_user( $f, 'Sender des Beitrages unbekannt' );
-    check_user( $t, 'Empfänger des Beitrages unbekannt' ) if $t;
+    my ( $f, $d, $i ) = @_;
+    $f = get_userid( $f, 'Sender der Nachricht unbekannt' );
     die qq{Beitrag ungültig, zu wenig Zeichen (min. 2)} if 2 >= length $d;
-    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'posts p SET p.text=?, p.posted=current_timestamp, p.to=? WHERE p.id=? AND p.from=? AND (p.to IS NULL OR p.to=p.from);';
-    Ffc::Data::dbh()->do( $sql, undef, $d, $t, $i, $f );
+    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'posts p SET p.text=?, p.posted=current_timestamp WHERE p.id=? AND p.from=? AND (p.to IS NULL OR p.to=p.from);';
+    Ffc::Data::dbh()->do( $sql, undef, $d, $i, $f );
 }
 1;
 

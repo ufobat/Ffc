@@ -33,9 +33,8 @@ sub msgs_user {
     my $c = shift;
     my $s = $c->session;
     $c->app->switch_act($c, 'msgs');
-    $s->{msgs_userid} = $c->param('msgs_userid');
-    $s->{msgs_username} = $c->or_nostring( sub{Ffc::Data::Board::Views::get_username($s->{msgs_userid}) } );
-    delete($s->{msgs_userid}), delete($s->{msgs_username}) unless $s->{msgs_username};
+    $s->{msgs_username} = $c->param('msgs_username');
+    delete($s->{msgs_username}) unless $s->{msgs_username};
     $c->frontpage();
 }
 
@@ -49,7 +48,7 @@ sub get_params {
     my ( $self, $session, $page ) = @_;
     $page = 1 unless $page and $page =~ m/\A\d+\z/xms;
     return 
-        $session->{userid}, 
+        $session->{user}, 
         $page, 
         $session->{lastseen},
         $session->{query},
@@ -69,13 +68,14 @@ sub frontpage {
 
     my $page   = $c->param('page')     // 1;
     my $postid = $c->param( 'postid' ) // '';
-    my $userid = $s->{userid};
+    my $user = $s->{user};
+    my $userid = Ffc::Data::Auth::get_userid($user);
     $page   = 1  unless $page   =~ m/\A\d+\z/xms;
     $postid = '' unless $postid =~ m/\A\d+\z/xms;
     $c->stash(page   => $page);
     $c->stash(postid => $postid);
     
-    for my $k ( qw(error msgs_userid post msgs_username) ) {
+    for my $k ( qw(error post msgs_username) ) {
         my $d = $c->stash($k);
         $c->stash($k => '') unless $d;
     }
@@ -87,7 +87,7 @@ sub frontpage {
     given ( $act ) {
         when('forum'  ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_forum(@params)})}
         when('notes'  ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_notes(@params)})}
-        when('msgs'   ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_msgs(@params,$s->{msgs_userid})})}
+        when('msgs'   ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_msgs(@params,$s->{msgs_username})})}
         when('options'){}
         default        {$c->error_handling({plain=>qq("$act" unbekannt)})}
     }
@@ -100,12 +100,12 @@ sub frontpage {
     }
     $c->stash( posts => $posts);
     $c->get_counts;
-Ffc::Data::Board::Views::get_categories($userid);
+Ffc::Data::Board::Views::get_categories($user);
     $c->stash( categories => ($act eq 'forum') 
-            ? $c->or_empty( sub { Ffc::Data::Board::Views::get_categories($userid) } ) 
+            ? $c->or_empty( sub { Ffc::Data::Board::Views::get_categories($user) } ) 
             : [] );
     if ( $c->error_handling({
-        code        => sub { Ffc::Data::Board::update_user_stats($userid, $act, $cat) },
+        code        => sub { Ffc::Data::Board::update_user_stats($user, $act, $cat) },
         msg         => 'Etwas ist intern schief gegangen, bitte versuchen Sie es später noch einmal.',
         after_error => sub { 
             Ffc::Auth::login_form($c, 'Etwas ist intern schief gegangen, bitte melden Sie sich an') },
@@ -116,10 +116,10 @@ Ffc::Data::Board::Views::get_categories($userid);
 
 sub get_counts {
     my $c = shift;
-    my $userid = $c->session()->{userid};
-    $c->stash(notecount    => $c->or_zero(sub{Ffc::Data::Board::Views::count_notes(  $userid)}));
-    $c->stash(newmsgscount => $c->or_zero(sub{Ffc::Data::Board::Views::count_newmsgs($userid)}));
-    $c->stash(newpostcount => $c->or_zero(sub{Ffc::Data::Board::Views::count_newpost($userid)}));
+    my $user = $c->session()->{user};
+    $c->stash(notecount    => $c->or_zero(sub{Ffc::Data::Board::Views::count_notes(  $user)}));
+    $c->stash(newmsgscount => $c->or_zero(sub{Ffc::Data::Board::Views::count_newmsgs($user)}));
+    $c->stash(newpostcount => $c->or_zero(sub{Ffc::Data::Board::Views::count_newpost($user)}));
 }
 sub search {
     my $c = shift;
