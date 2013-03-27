@@ -35,7 +35,7 @@ sub get_category_id {
 sub check_category { get_category_id($_[0]) ? 1 : 0 }
 
 sub get_useremail {
-    my $id = shift;
+    my $id = Ffc::Data::Auth::get_userid(shift);
     die q{Keine Benutzerid angegeben} unless $id;
     die q{Benutzerid ungültig} unless $id =~ m/\A\d+\z/xms;
     my $sql = 'SELECT u.email FROM '.$Ffc::Data::Prefix.'users u WHERE u.id=? AND u.active=1';

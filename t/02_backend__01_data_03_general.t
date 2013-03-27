@@ -8,6 +8,7 @@ use lib "$FindBin::Bin/../lib";
 use Data::Dumper;
 use Test::Callcheck;
 use Test::General;
+use Mock::Testuser;
 use Ffc::Data::Auth;
 srand;
 
@@ -18,6 +19,7 @@ my $maxcatid = $Test::General::Maxcatid;
 my @users = @Test::General::Users;
 my @categories = @Test::General::Categories;
 sub test_r { &Test::General::test_r }
+sub get_noneexisting_username { &Mock::Testuser::get_noneexisting_username }
 sub test_get_rand_user { &Test::General::test_get_rand_user }
 sub test_get_rand_category { &Test::General::test_get_rand_category }
 
@@ -147,34 +149,30 @@ use_ok('Ffc::Data::General');
     }
 }
 {
-    note('sub get_useremail( $userid )');
+    note('sub get_useremail( $username )');
     check_call(
         \&Ffc::Data::General::get_useremail,
         get_usermail => {
-            name => 'userid',
-            good => Ffc::Data::Auth::get_userid( test_get_rand_user()->{name} ),
-            bad  => [ '', '    ', 'aaaa', $maxuserid + 1 ],
-            emptyerror => 'Keine Benutzerid angegeben',
+            name => 'username',
+            good => test_get_rand_user()->{name},
+            bad  => [ '', '    ', 'aaaa', get_noneexisting_username() ],
+            emptyerror => 'Kein Benutzername angegeben',
             errormsg   => [
-                'Keine Benutzerid angegeben',
-                ('Benutzerid ungültig') x 2,
+                'Kein Benutzername angegeben',
+                'Benutzername ungültig',
                 'Benutzer unbekannt'
             ],
         },
     );
     like(
-        Ffc::Data::General::get_useremail(
-            Ffc::Data::Auth::get_userid( test_get_rand_user()->{name} )
-        ),
+        Ffc::Data::General::get_useremail( test_get_rand_user()->{name} ),
         qr/.+\@.+\.\w+/,
         'user email retrieved'
     );
     {
         my $user = test_get_rand_user();
         is(
-            Ffc::Data::General::get_useremail(
-                Ffc::Data::Auth::get_userid( $user->{name} )
-            ),
+            Ffc::Data::General::get_useremail($user->{name} ),
             $user->{email},
             'user email retrieved correctly'
         );
