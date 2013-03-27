@@ -63,5 +63,11 @@ sub test_get_non_category_short {
     return $cat;
 }
 
+sub test_get_non_username {
+    my $username = test_r();
+    $username = test_r() while grep { $_->{name} eq $username } @Users;
+    return $username;
+}
+
 1;
 

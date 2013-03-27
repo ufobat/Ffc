@@ -10,14 +10,14 @@ use FindBin;
 sub check_password_rules {
     my $pass = shift;
     die qq(Kein Passwort angegeben) unless $pass;
-    die qq[Passwort ungültig (8 - 64 Zeichen)] unless $pass =~ m/$Ffc::Data::PasswordRegex/xms;
+    die qq[Passwort ungültig (8 - 64 Zeichen)] unless $pass =~ m/\A$Ffc::Data::PasswordRegex\z/xms;
     return 1;
 }
 
 sub check_username_rules {
     my $user = shift;
     die shift() // qq(Kein Benutzername angegeben) unless $user;
-    die shift() // qq[Benutzername ungültig (4 - 64 alphanumerische Zeichen)] unless $user =~ m/$Ffc::Data::UsernameRegex/xms;
+    die shift() // qq[Benutzername ungültig (4 - 64 alphanumerische Zeichen)] unless $user =~ m/\A$Ffc::Data::UsernameRegex\z/xms;
     return 1;
 }
 

@@ -10,7 +10,7 @@ use Ffc::Data::Auth;
 sub check_category_short_rules {
     my $c = shift;
     die qq{Kein Kategoriekürzel angegeben} unless $c;
-    die qq{Kategoriekürzel ungültig} unless $c =~ m/$Ffc::Data::CategoryRegex/xms;
+    die qq{Kategoriekürzel ungültig} unless $c =~ m/\A$Ffc::Data::CategoryRegex\z/xms;
     return 1;
 }
 
