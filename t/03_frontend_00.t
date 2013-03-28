@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/../lib";
 use Mock::Controller;
 use Test::General;
 
-use Test::More tests => 12;
+use Test::More tests => 34;
 
 use_ok('Ffc');
 my $t = Test::Mojo->new('Ffc');
@@ -33,7 +33,8 @@ $session->{act} = '';
 ok(Ffc::switch_act(undef, $c, 'asdf'), 'call with wrong act returns false');
 is_deeply($session, $standard, 'altered session ok');
 
-ok(Ffc::switch_act(undef, $c, 'notes'), 'call ok');
-$standard->{act} = 'notes';
-is_deeply($session, $standard, 'altered session ok');
-
+for my $whut ( qw(notes msgs forum msgs notes forum options notes options msgs options forum) ) {
+    $standard->{act} = $whut;
+    ok(Ffc::switch_act(undef, $c, $whut), 'call ok');
+    is_deeply($session, $standard, qq'altered session to "$whut" ok');
+}

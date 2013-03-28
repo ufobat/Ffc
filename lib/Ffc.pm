@@ -6,7 +6,7 @@ sub switch_act {
     return unless $_[1] and $_[1]->isa('Mojolicious::Controller');
     my $s = $_[1]->session;
     $s->{act} = $_[2] // 'forum';
-    $s->{act} = 'forum' unless $s->{act} =~ m/\A(?:forum|notes|msgs)\z/xms;
+    $s->{act} = 'forum' unless $s->{act} =~ m/\A(?:forum|notes|msgs|options)\z/xms;
     $s->{category} = undef;
     delete $s->{msgs_username};
     return 1;
