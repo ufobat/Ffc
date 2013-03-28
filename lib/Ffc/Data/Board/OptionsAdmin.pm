@@ -14,11 +14,10 @@ sub _check_password_change { &Ffc::Data::General::check_password_change }
 sub get_userid { &Ffc::Data::Auth::get_userid }
 
 sub admin_update_password {
-    my $adminuid = shift;
+    my $adminuid = get_userid(shift);
     die 'Passworte von anderen Benutzern dürfen nur Administratoren ändern'
         unless Ffc::Data::Auth::is_user_admin($adminuid);
-    my $userid = shift;
-    check_user( $userid );
+    my $userid = get_userid(shift);
     my $pw1 = shift;
     my $pw2 = shift;
     _check_password_change( $pw1, $pw2 );
@@ -26,34 +25,31 @@ sub admin_update_password {
 }
 
 sub admin_update_active {
-    my $adminuid = shift;
+    my $adminuid = get_userid(shift);
     die 'Benutzern aktivieren oder deaktiveren dürfen nur Administratoren'
         unless Ffc::Data::Auth::is_user_admin($adminuid);
-    my $userid = shift;
-    check_user( $userid );
+    my $userid = get_userid(shift);
     my $active = shift() ? 1 : 0;
     my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users u SET u.active=? WHERE u.id=?';
     Ffc::Data::dbh()->do($sql, undef, $active, $userid);
 }
 
 sub admin_update_admin {
-    my $adminuid = shift;
+    my $adminuid = get_userid(shift);
     die 'Benutzern zu Administratoren befördern oder ihnen den Adminstratorenstatus wegnehmen dürfen nur Administratoren'
         unless Ffc::Data::Auth::is_user_admin($adminuid);
-    my $userid = shift;
-    check_user( $userid );
+    my $userid = get_userid(shift);
     my $admin = shift() ? 1 : 0;
     my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users u SET u.admin=? WHERE u.id=?';
     Ffc::Data::dbh()->do($sql, undef, $admin, $userid);
 }
 
 sub admin_create_user {
-    my $adminuid = shift;
+    my $adminuid = get_userid(shift);
     die 'Neue Benutzer anlegen dürfen nur Administratoren'
         unless Ffc::Data::Auth::is_user_admin($adminuid);
     my $username = shift;
-    die qq(Benutzer "$username" existiert bereits und darf nicht neu angelegt werden)
-        if get_userid($username);
+    get_userid($username) or die qq(Benutzer "$username" existiert bereits und darf nicht neu angelegt werden);
     my $pw1 = shift;
     my $pw2 = shift;
     _check_password_change( $pw1, $pw2 );
