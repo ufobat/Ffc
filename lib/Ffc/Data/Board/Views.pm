@@ -9,8 +9,8 @@ use Ffc::Data;
 use Ffc::Data::Auth;
 use Ffc::Data::Formats;
 
-sub get_userid { &Ffc::Data::Auth::get_userid }
-sub get_username { &Ffc::Data::Auth::get_username }
+sub _get_userid { &Ffc::Data::Auth::get_userid }
+sub _get_username { &Ffc::Data::Auth::get_username }
 
 sub _get_categories_sql {
     my $p = $Ffc::Data::Prefix;
@@ -42,43 +42,43 @@ EOSQL
 }
 
 sub count_newmsgs {
-    my $userid = get_userid( shift, 'Privatnachrichtenzähler' );
+    my $userid = _get_userid( shift, 'Privatnachrichtenzähler' );
     my $sql = 'SELECT count(p.id) FROM '.$Ffc::Data::Prefix.'posts p INNER JOIN '.$Ffc::Data::Prefix.'users u ON u.id=p.to WHERE p.to IS NOT NULL AND p.to=? AND p.from <> p.to AND p.posted >= u.lastseenmsgs';
     return (Ffc::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
 
 sub count_newpost {
-    my $userid = get_userid( shift, 'Beitragszähler' );
+    my $userid = _get_userid( shift, 'Beitragszähler' );
     my $sql = _get_categories_sql();
     $sql = "SELECT SUM(t.cnt) FROM ($sql) t";
     return (Ffc::Data::dbh()->selectrow_array($sql, undef, ($userid) x 3 ))[0];
 }
 
 sub count_notes {
-    my $userid = get_userid( shift, 'Notizenzähler' );
+    my $userid = _get_userid( shift, 'Notizenzähler' );
     my $sql = 'SELECT count(p.id) FROM '.$Ffc::Data::Prefix.'posts p WHERE p.from=? AND p.to=p.from';
     return (Ffc::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
 
 sub get_categories {
-    my $userid = get_userid( shift, 'Kategorieliste' );
+    my $userid = _get_userid( shift, 'Kategorieliste' );
     my $sql = _get_categories_sql();
     return Ffc::Data::dbh()->selectall_arrayref($sql, undef, ($userid) x 3);
 }
 
 sub get_notes { 
-    my $userid = get_userid( shift, 'Notizenliste' );
+    my $userid = _get_userid( shift, 'Notizenliste' );
     return _get_stuff( $userid, @_[ 0 .. 5 ], 'p.from=? AND p.to=p.from', $userid );
 }
 sub get_forum { 
-    return _get_stuff( get_userid( shift, 'Beitragsliste' ), @_[ 0 .. 5 ], 'p.to IS NULL' );
+    return _get_stuff( _get_userid( shift, 'Beitragsliste' ), @_[ 0 .. 5 ], 'p.to IS NULL' );
 }
 sub get_msgs  {
-    my $userid = get_userid( shift, 'Privatnachrichtenliste' );
+    my $userid = _get_userid( shift, 'Privatnachrichtenliste' );
     my @params = ( $userid, $userid );
     my $where = '( p.from=? OR p.to=? ) AND p.from <> p.to';
     if ( $_[6] ) {
-        my $userid = get_userid( $_[6] );
+        my $userid = _get_userid( $_[6] );
         $where .= ' AND ( p.from=? OR p.to=? )';
         push @params, $userid, $userid;
     }
@@ -87,7 +87,7 @@ sub get_msgs  {
 
 sub get_post {
     my $postid = shift;
-    my $userid = get_userid( shift );
+    my $userid = _get_userid( shift );
     die q{Ungültige ID für den Beitrag} unless $postid =~ m/\A\d+\z/xms;
     my $where = 'p.id=?';
     my $data = _get_stuff( $userid, @_[ 0 .. 5 ], $where, $postid );

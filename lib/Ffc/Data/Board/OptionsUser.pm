@@ -9,11 +9,11 @@ use Ffc::Data;
 use Ffc::Data::Auth;
 use Ffc::Data::General;
 
-sub get_userid { &Ffc::Data::Auth::get_userid }
+sub _get_userid { &Ffc::Data::Auth::get_userid }
 sub _check_password_change { &Ffc::Data::General::check_password_change }
 
 sub update_email {
-    my $userid = get_userid( shift, 'angemeldeter Benutzer für Email-Einstellung' );
+    my $userid = _get_userid( shift, 'angemeldeter Benutzer für Email-Einstellung' );
     my $email = shift;
     die qq{Keine Emailadresse angegeben} unless $email;
     die qq{Neue Emailadresse ist zu lang (<=1024)} unless 1024 >= length $email;
@@ -24,7 +24,7 @@ sub update_email {
 }
 
 sub update_password {
-    my $userid = get_userid( shift, 'angemeldeter Benutzer für die Passwortänderung' );
+    my $userid = _get_userid( shift, 'angemeldeter Benutzer für die Passwortänderung' );
     my ( $oldpw, $newpw1, $newpw2 ) = @_;
     _check_password_change( $newpw1, $newpw2, $oldpw );
     die qq{Das alte Passwort ist falsch} unless Ffc::Data::Auth::check_password($userid, $oldpw);
@@ -34,7 +34,7 @@ sub update_password {
 sub update_show_images {
     my $s = shift;
     die q(Session-Hash als erster Parameter benötigt) unless $s and 'HASH' eq ref $s;
-    my $userid = get_userid( $s->{user}, 'Angemeldeter Benutzer für die Bildanzeigeeinstellung' );
+    my $userid = _get_userid( $s->{user}, 'Angemeldeter Benutzer für die Bildanzeigeeinstellung' );
     my $x = shift;
     die q{show_images nicht angegeben} unless defined $x;
     die q{show_images muss 0 oder 1 sein} unless $x =~ m/\A[01]\z/xms;
@@ -47,7 +47,7 @@ sub update_show_images {
 sub update_theme {
     my $s = shift;
     die q(Session-Hash als erster Parameter benötigt) unless $s and 'HASH' eq ref $s;
-    my $userid = get_userid( $s->{user}, 'Angemeldeter Benutzer für die optischen Einstellung' );
+    my $userid = _get_userid( $s->{user}, 'Angemeldeter Benutzer für die optischen Einstellung' );
     my $t = shift;
     die q{Themenname nicht angegeben} unless $t;
     die q{Themenname zu lang (64 Zeichen maximal)} if 64 < length $t;
