@@ -81,9 +81,9 @@ ok( Ffc::Data::set_config($app), 'config set returned true' );
     like($Ffc::Data::Themedir, qr/themes/, 'theme dir ok');
     like($Ffc::Data::Themebasedir, qr/$FindBin::Bin/, 'theme base dir inside project directory');
     like($Ffc::Data::Themedir, qr/$Ffc::Data::Themedir/, 'theme base dir ok');
-    like($Ffc::Data::DefaultConfig, qr/$FindBin::Bin/, 'default config inside project directory');
-    like($Ffc::Data::DefaultConfig, qr/etc/, 'default config in something with "etc" in it');
-    like($Ffc::Data::DefaultConfig, qr/ffc\.json/, 'default config looks good');
+    like($Ffc::Data::DefaultConfigPath, qr/$FindBin::Bin/, 'default config inside project directory');
+    like($Ffc::Data::DefaultConfigPath, qr/etc/, 'default config in something with "etc" in it');
+    like($Ffc::Data::DefaultConfigPath, qr/ffc\.json/, 'default config looks good');
     like($Ffc::Data::DbTemplate, qr/database.sql/, 'database template file looks good');
     like($Ffc::Data::DbTestdata, qr/testdata.sql/, 'testdata file looks good');
 
