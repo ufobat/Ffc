@@ -42,39 +42,39 @@ EOSQL
 }
 
 sub count_newmsgs {
-    my $userid = get_userid( shift );
+    my $userid = get_userid( shift, 'Privatnachrichtenzähler' );
     my $sql = 'SELECT count(p.id) FROM '.$Ffc::Data::Prefix.'posts p INNER JOIN '.$Ffc::Data::Prefix.'users u ON u.id=p.to WHERE p.to IS NOT NULL AND p.to=? AND p.from <> p.to AND p.posted >= u.lastseenmsgs';
     return (Ffc::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
 
 sub count_newpost {
-    my $userid = get_userid( shift );
+    my $userid = get_userid( shift, 'Beitragszähler' );
     my $sql = _get_categories_sql();
     $sql = "SELECT SUM(t.cnt) FROM ($sql) t";
     return (Ffc::Data::dbh()->selectrow_array($sql, undef, ($userid) x 3 ))[0];
 }
 
 sub count_notes {
-    my $userid = get_userid( shift );
+    my $userid = get_userid( shift, 'Notizenzähler' );
     my $sql = 'SELECT count(p.id) FROM '.$Ffc::Data::Prefix.'posts p WHERE p.from=? AND p.to=p.from';
     return (Ffc::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
 
 sub get_categories {
-    my $userid = get_userid( shift );
+    my $userid = get_userid( shift, 'Kategorieliste' );
     my $sql = _get_categories_sql();
     return Ffc::Data::dbh()->selectall_arrayref($sql, undef, ($userid) x 3);
 }
 
 sub get_notes { 
-    my $userid = get_userid( shift );
+    my $userid = get_userid( shift, 'Notizenliste' );
     return _get_stuff( $userid, @_[ 0 .. 5 ], 'p.from=? AND p.to=p.from', $userid );
 }
 sub get_forum { 
-    return _get_stuff( get_userid( shift ), @_[ 0 .. 5 ], 'p.to IS NULL' );
+    return _get_stuff( get_userid( shift, 'Beitragsliste' ), @_[ 0 .. 5 ], 'p.to IS NULL' );
 }
 sub get_msgs  {
-    my $userid = get_userid( shift );
+    my $userid = get_userid( shift, 'Privatnachrichtenliste' );
     my @params = ( $userid, $userid );
     my $where = '( p.from=? OR p.to=? ) AND p.from <> p.to';
     if ( $_[6] ) {

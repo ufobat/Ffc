@@ -12,9 +12,10 @@ use Mock::Database;
 use Mock::Config;
 use Mock::Testuser;
 use Test::Callcheck;
+use Test::General;
 use Ffc::Data;
 
-use Test::More tests => 182;
+use Test::More tests => 184;
 
 BEGIN { use_ok('Ffc::Data::Auth') }
 
@@ -237,7 +238,8 @@ qq(checked for false administrational being of "$user->{pseudoname}")
     my $code = \&Ffc::Data::Auth::get_userid;
     check_call( $code,
         get_userid =>
-          Mock::Testuser::get_username_check_hash( $activeuser->{name} ), );
+          Mock::Testuser::get_username_check_hash( $activeuser->{name} ), 
+        );
     for my $user (@users) {
         my ( $ok, $return, $error ) = just_call( $code, $user->{name} );
         $return = $return->[0];
@@ -246,10 +248,12 @@ qq(checked for false administrational being of "$user->{pseudoname}")
     }
     {
         my $newname = Mock::Testuser::get_noneexisting_username();
-        my ( $ok, $return, $error ) = just_call( $code, $newname );
+        my $teststr = Test::General::test_r();
+        my ( $ok, $return, $error ) = just_call( $code, $newname, $teststr );
         ok( !defined($return),
             qq'undefined return is good for none existing user' );
         ok( $error, qq'error returned is good for non existing user' );
+        like( $error, qr/$teststr/, 'error message contains parameter element' );
         ok( !$ok,   qq'false return is good for non existing user' );
     }
 }
@@ -268,10 +272,12 @@ qq(checked for false administrational being of "$user->{pseudoname}")
     }
     {
         my $newid = Mock::Testuser::get_noneexisting_userid();
-        my ( $ok, $return, $error ) = just_call( $code, $newid );
+        my $teststr = Test::General::test_r();
+        my ( $ok, $return, $error ) = just_call( $code, $newid, $teststr );
         ok( !defined($return),
             qq'undefined return is good for none existing user' );
         ok( $error, qq'error returned is good for non existing user' );
+        like( $error, qr/$teststr/, 'error message contains parameter element' );
         ok( !$ok,   qq'false return is good for non existing user' );
     }
 }

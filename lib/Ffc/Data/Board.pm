@@ -39,7 +39,7 @@ sub _update_user_msgs {
 }
 # ( $userid, $act, $category )
 sub update_user_stats {
-    my $userid = get_userid( shift );
+    my $userid = get_userid( shift, 'Benutzerstatistik' );
     given ( $_[0] ) {
         when ( 'forum' ) { _update_user_forum( $userid, @_ ) }
         when ( 'msgs'  ) { _update_user_msgs(  $userid, @_ ) }

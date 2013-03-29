@@ -77,7 +77,7 @@ sub get_userid {
     check_username_rules($username);
     my $sql = 'SELECT u.id FROM '.$Ffc::Data::Prefix.'users u WHERE u.name = ?';
     $username = Ffc::Data::dbh()->selectall_arrayref($sql, undef, $username);
-    die qq(Benutzer unbekannt) unless @$username and $username->[0]->[0];
+    die qq(Benutzer unbekannt).($_[0] ? " ($_[0])" : '') unless @$username and $username->[0]->[0];
     return $username->[0]->[0];
 }
 
@@ -86,7 +86,7 @@ sub get_username {
     check_userid_rules( $userid, $_[0] );
     my $sql = 'SELECT u.name FROM '.$Ffc::Data::Prefix.'users u WHERE u.id=?';
     $userid = Ffc::Data::dbh()->selectall_arrayref($sql, undef, $userid);
-    die shift() // qq{Benutzer unbekannt} unless @$userid and $userid->[0]->[0];
+    die qq(Benutzer unbekannt).($_[0] ? " ($_[0])" : '') unless @$userid and $userid->[0]->[0];
     return $userid->[0]->[0];
 }
 
