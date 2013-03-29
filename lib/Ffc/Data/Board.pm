@@ -9,14 +9,14 @@ use Ffc::Data;
 use Ffc::Data::Auth;
 use Ffc::Data::General;
 
-sub get_userid { &Ffc::Data::Auth::get_userid }
-sub get_category_id { &Ffc::Data::General::get_category_id }
+sub _get_userid { &Ffc::Data::Auth::get_userid }
+sub _get_category_id { &Ffc::Data::General::get_category_id }
 
 sub _update_user_forum {
     my $userid = $_[0];
     my $category = $_[2];
     if ( $category ) {
-        my $category = get_category_id($category);
+        my $category = _get_category_id($category);
         my $sql = 'SELECT COUNT(l.userid) FROM '.$Ffc::Data::Prefix.'lastseenforum l WHERE l.userid=? AND l.category=?';
         my $dbh = Ffc::Data::dbh();
         if ( ( $dbh->selectrow_array( $sql, undef, $userid, $category ) )[0] ) {
@@ -39,7 +39,7 @@ sub _update_user_msgs {
 }
 # ( $userid, $act, $category )
 sub update_user_stats {
-    my $userid = get_userid( shift, 'Benutzerstatistik' );
+    my $userid = _get_userid( shift, 'Benutzerstatistik' );
     given ( $_[0] ) {
         when ( 'forum' ) { _update_user_forum( $userid, @_ ) }
         when ( 'msgs'  ) { _update_user_msgs(  $userid, @_ ) }
