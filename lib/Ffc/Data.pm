@@ -46,6 +46,7 @@ our $DefaultConfig = {
     "pagelinkpreview" => 3,
     "sessiontimeout"  => 3600,
     "debug"           => 0,
+    "theme"           => "default",
     "acttitles"       => {
         "forum"   => 'Forum',
         "notes"   => 'Notizen',
