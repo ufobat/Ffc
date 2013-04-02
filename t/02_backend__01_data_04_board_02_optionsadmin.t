@@ -13,7 +13,7 @@ use Mock::Testuser;
 use Ffc::Data::Auth;
 srand;
 
-use Test::More tests => 50;
+use Test::More tests => 55;
 
 Test::General::test_prepare();
 
@@ -21,26 +21,37 @@ use_ok('Ffc::Data::Board::OptionsAdmin');
 
 {
     note('sub admin_update_password( $admin, $user, $password1, $password2 )');
-    my $admin = Mock::Testuser->new_active_admin();
-    my $user = Mock::Testuser->new_active_user();
+    my $admin        = Mock::Testuser->new_active_admin();
+    my $user         = Mock::Testuser->new_active_user();
     my $old_password = $user->{password};
     $user->alter_password();
     my $new_password = $user->{password};
     check_call(
         \&Ffc::Data::Board::OptionsAdmin::admin_update_password,
-        admin_update_password =>
-        {
+        admin_update_password => {
             name => 'admin name',
             good => $admin->{name},
-            bad => ['', '   ', Mock::Testuser::get_noneexisting_username(), $user->{name}],
-            errormsg => ['Kein Benutzername angegeben', 'Benutzername ungültig', 'Benutzer unbekannt', 'Passworte von anderen Benutzern dürfen nur Administratoren ändern'],
+            bad  => [
+                '',                                          '   ',
+                Mock::Testuser::get_noneexisting_username(), $user->{name}
+            ],
+            errormsg => [
+                'Kein Benutzername angegeben',
+                'Benutzername ungültig',
+                'Benutzer unbekannt',
+'Passworte von anderen Benutzern dürfen nur Administratoren ändern'
+            ],
             emptyerror => 'Kein Benutzername angegeben',
         },
         {
             name => 'user name',
             good => $user->{name},
-            bad => ['', '   ', Mock::Testuser::get_noneexisting_username()],
-            errormsg => ['Kein Benutzername angegeben', 'Benutzername ungültig', 'Benutzer unbekannt'],
+            bad  => [ '', '   ', Mock::Testuser::get_noneexisting_username() ],
+            errormsg => [
+                'Kein Benutzername angegeben',
+                'Benutzername ungültig',
+                'Benutzer unbekannt'
+            ],
             emptyerror => 'Kein Benutzername angegeben',
         },
         {
@@ -63,26 +74,58 @@ use_ok('Ffc::Data::Board::OptionsAdmin');
             emptyerror => 'Kein Passwort',
         },
     );
+    {
+        my $user_ok      = Mock::Testuser->new_active_user();
+        my $userid       = Ffc::Data::Auth::get_userid($user_ok->{name});
+        my $old_password = $user_ok->{password};
+        $user_ok->alter_password();
+        my $new_password = $user_ok->{password};
+        ok( Ffc::Data::Auth::check_password( $userid, $old_password ),
+            'old password works' );
+        ok( !Ffc::Data::Auth::check_password( $userid, $new_password ),
+            'new password does not work yet' );
+        ok(
+            Ffc::Data::Board::OptionsAdmin::admin_update_password(
+                $admin->{name}, $user_ok->{name}, $new_password, $new_password
+            ),
+            'call returned true'
+        );
+        ok( !Ffc::Data::Auth::check_password( $userid, $old_password ),
+            'old password does not work anymore' );
+        ok( Ffc::Data::Auth::check_password( $userid, $new_password ),
+            'new password works now' );
+    }
 }
 {
     note('sub admin_update_active( $admin, $user, $is_active )');
     my $admin = Mock::Testuser->new_active_admin();
-    my $user = Mock::Testuser->new_active_user();
+    my $user  = Mock::Testuser->new_active_user();
     check_call(
         \&Ffc::Data::Board::OptionsAdmin::admin_update_active,
-        admin_update_active =>
-        {
+        admin_update_active => {
             name => 'admin name',
             good => $admin->{name},
-            bad => ['', '   ', Mock::Testuser::get_noneexisting_username(), $user->{name}],
-            errormsg => ['Kein Benutzername angegeben', 'Benutzername ungültig', 'Benutzer unbekannt', 'Benutzer aktivieren oder deaktiveren dürfen nur Administratoren'],
+            bad  => [
+                '',                                          '   ',
+                Mock::Testuser::get_noneexisting_username(), $user->{name}
+            ],
+            errormsg => [
+                'Kein Benutzername angegeben',
+                'Benutzername ungültig',
+                'Benutzer unbekannt',
+'Benutzer aktivieren oder deaktiveren dürfen nur Administratoren'
+            ],
             emptyerror => 'Kein Benutzername angegeben',
         },
         {
             name => 'user name',
             good => $user->{name},
-            bad => ['', '   ', Mock::Testuser::get_noneexisting_username()],
-            errormsg => ['Kein Benutzername angegeben', 'Benutzername ungültig', 'Benutzer unbekannt'],
+            bad  => [ '', '   ', Mock::Testuser::get_noneexisting_username() ],
+            errormsg => [
+                'Kein Benutzername angegeben',
+                'Benutzername ungültig',
+                'Benutzer unbekannt'
+            ],
             emptyerror => 'Kein Benutzername angegeben',
         },
     );
@@ -90,45 +133,69 @@ use_ok('Ffc::Data::Board::OptionsAdmin');
 {
     note('sub admin_update_admin( $admin, $user, $is_admin)');
     my $admin = Mock::Testuser->new_active_admin();
-    my $user = Mock::Testuser->new_active_user();
+    my $user  = Mock::Testuser->new_active_user();
     check_call(
         \&Ffc::Data::Board::OptionsAdmin::admin_update_admin,
-        admin_update_admin =>
-        {
+        admin_update_admin => {
             name => 'admin name',
             good => $admin->{name},
-            bad => ['', '   ', Mock::Testuser::get_noneexisting_username(), $user->{name}],
-            errormsg => ['Kein Benutzername angegeben', 'Benutzername ungültig', 'Benutzer unbekannt', 'Benutzer zu Administratoren befördern oder ihnen den Adminstratorenstatus wegnehmen dürfen nur Administratoren'],
+            bad  => [
+                '',                                          '   ',
+                Mock::Testuser::get_noneexisting_username(), $user->{name}
+            ],
+            errormsg => [
+                'Kein Benutzername angegeben',
+                'Benutzername ungültig',
+                'Benutzer unbekannt',
+'Benutzer zu Administratoren befördern oder ihnen den Adminstratorenstatus wegnehmen dürfen nur Administratoren'
+            ],
             emptyerror => 'Kein Benutzername angegeben',
         },
         {
             name => 'user name',
             good => $user->{name},
-            bad => ['', '   ', Mock::Testuser::get_noneexisting_username()],
-            errormsg => ['Kein Benutzername angegeben', 'Benutzername ungültig', 'Benutzer unbekannt'],
+            bad  => [ '', '   ', Mock::Testuser::get_noneexisting_username() ],
+            errormsg => [
+                'Kein Benutzername angegeben',
+                'Benutzername ungültig',
+                'Benutzer unbekannt'
+            ],
             emptyerror => 'Kein Benutzername angegeben',
         },
     );
 }
 {
-    note('sub admin_create_user( $admin, $user, $password1, $password2, $is_active, $is_admin )');
+    note(
+'sub admin_create_user( $admin, $user, $password1, $password2, $is_active, $is_admin )'
+    );
     my $admin = Mock::Testuser->new_active_admin();
-    my $user = Mock::Testuser->new_active_user();
+    my $user  = Mock::Testuser->new_active_user();
     check_call(
         \&Ffc::Data::Board::OptionsAdmin::admin_create_user,
-        admin_create_user =>
-        {
+        admin_create_user => {
             name => 'admin name',
             good => $admin->{name},
-            bad => ['', '   ', Mock::Testuser::get_noneexisting_username(), $user->{name}],
-            errormsg => ['Kein Benutzername angegeben', 'Benutzername ungültig', 'Benutzer unbekannt', 'Neue Benutzer anlegen dürfen nur Administratoren'],
+            bad  => [
+                '',                                          '   ',
+                Mock::Testuser::get_noneexisting_username(), $user->{name}
+            ],
+            errormsg => [
+                'Kein Benutzername angegeben',
+                'Benutzername ungültig',
+                'Benutzer unbekannt',
+                'Neue Benutzer anlegen dürfen nur Administratoren'
+            ],
             emptyerror => 'Kein Benutzername angegeben',
         },
         {
             name => 'user name',
             good => $user->{name},
-            bad => ['', '   ', Mock::Testuser::get_noneexisting_username()],
-            errormsg => ['Kein Benutzername angegeben', 'Benutzername ungültig', 'Benutzer unbekannt'],
+            bad  => [ '', '   ', Mock::Testuser::get_noneexisting_username() ],
+            errormsg => [
+                'Kein Benutzername angegeben',
+                'Benutzername ungültig',
+                'Benutzer unbekannt'
+            ],
             emptyerror => 'Kein Benutzername angegeben',
         },
     );
