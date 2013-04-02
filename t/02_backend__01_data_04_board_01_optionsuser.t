@@ -27,7 +27,7 @@ use_ok('Ffc::Data::Board::OptionsUser');
         check_call(
             \&Ffc::Data::Board::OptionsUser::update_email,
             update_user_stats => {
-                name => 'userid',
+                name => 'user name',
                 good => $user->{name},
                 bad  => [
                     '', '        ',
@@ -91,7 +91,7 @@ use_ok('Ffc::Data::Board::OptionsUser');
     check_call(
         \&Ffc::Data::Board::OptionsUser::update_password,
         update_password => {
-            name => 'userid',
+            name => 'user name',
             good => $username,
             bad =>
               [ '', '        ', Mock::Testuser::get_noneexisting_username() ],
