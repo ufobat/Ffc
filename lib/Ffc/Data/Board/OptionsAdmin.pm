@@ -10,6 +10,7 @@ use Ffc::Data::Auth;
 use Ffc::Data::General;
 
 sub _check_username { &Ffc::Data::Auth::check_username }
+sub _check_username_rules { &Ffc::Data::Auth::check_username_rules }
 sub _check_password_change { &Ffc::Data::General::check_password_change }
 sub _get_userid { &Ffc::Data::Auth::get_userid }
 
@@ -52,8 +53,13 @@ sub admin_create_user {
     my $adminuid = _get_userid(shift, 'Administrator zum Anlegen eines neuen Benutzers');
     die 'Neue Benutzer anlegen dürfen nur Administratoren'
         unless Ffc::Data::Auth::is_user_admin($adminuid);
-    my $username = shift;
-    _check_username($username) or die qq(Benutzer "$username" existiert bereits und darf nicht neu angelegt werden);
+    my $username = shift // '';
+    _check_username_rules($username) or die qq(Benutzername "$username" ist ungültig);
+    {
+        my $ret;
+        eval { $ret = _check_username($username) };
+        die qq(Benutzer "$username" existiert bereits und darf nicht neu angelegt werden) unless $@ and not $ret;
+    }
     my $pw1 = shift;
     my $pw2 = shift;
     _check_password_change( $pw1, $pw2 );
@@ -61,7 +67,7 @@ sub admin_create_user {
     die 'Benutzer-Aktivstatus muss mit angegeben werden' unless defined $active;
     die 'Benutzer-Aktivstatus muss mit "0" oder "1" angegeben werden' unless $active =~ m/\A0|1\z/xms;
     my $admin = shift;
-    die 'Administratorenstatus mit angegeben werden' unless defined $admin;
+    die 'Administratorenstatus muss mit angegeben werden' unless defined $admin;
     die 'Administratorenstatus muss mit "0" oder "1" angegeben werden' unless $admin =~ m/\A0|1\z/xms;
     my $sql = 'INSERT INTO '.$Ffc::Data::Prefix.'users (name, password, active, admin) VALUES (?,?,?,?)';
     Ffc::Data::dbh()->do($sql, undef, $username, crypt($pw1, Ffc::Data::cryptsalt()), $active, $admin);

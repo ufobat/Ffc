@@ -2,7 +2,7 @@ CREATE TABLE "${Prefix}users" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
   "name" varchar(64) NOT NULL,
   "password" varchar(64) NOT NULL,
-  "email" varchar(1024) NOT NULL,
+  "email" varchar(1024),
   "lastseenmsgs" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "lastseenforum" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "active" tinyint(1) NOT NULL DEFAULT '0',
