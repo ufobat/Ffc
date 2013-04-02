@@ -13,7 +13,7 @@ use Mock::Testuser;
 use Ffc::Data::Auth;
 srand;
 
-use Test::More tests => 20;
+use Test::More tests => 50;
 
 Test::General::test_prepare();
 
