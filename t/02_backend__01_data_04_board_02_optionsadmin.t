@@ -13,7 +13,7 @@ use Mock::Testuser;
 use Ffc::Data::Auth;
 srand;
 
-use Test::More tests => 55;
+use Test::More tests => 81;
 
 Test::General::test_prepare();
 
@@ -128,7 +128,35 @@ use_ok('Ffc::Data::Board::OptionsAdmin');
             ],
             emptyerror => 'Kein Benutzername angegeben',
         },
+        {
+            name       => 'boolean (0/1) is_active value',
+            good       => int( rand 2 ),
+            bad        => [ '', 4, 'asd', '   ' ],
+            errormsg   => ['Benutzer-Aktivstatus muss mit "0" oder "1" angegeben werden'],
+            emptyerror => 'Benutzer-Aktivstatus muss mit angegeben werden',
+        },
     );
+    {
+        my $user_ok  = Mock::Testuser->new_active_user();
+        my $get_value = sub {
+            Ffc::Data::dbh()->selectrow_arrayref(
+                'SELECT active FROM '
+                  . $Ffc::Data::Prefix
+                  . 'users WHERE name=?',
+                undef, $user_ok->{name}
+            )->[0];
+        };
+        my $order = $get_value->() ? [ 0, 1, 0, 1 ] : [ 1, 0, 1, 0 ];
+        for my $value (@$order) {
+            ok(
+                Ffc::Data::Board::OptionsAdmin::admin_update_active(
+                    $admin->{name}, $user_ok->{name}, $value
+                ),
+                qq(call with "$value" ok)
+            );
+            is( $value, $get_value->(), 'database update ok' );
+        }
+    }
 }
 {
     note('sub admin_update_admin( $admin, $user, $is_admin)');
@@ -162,7 +190,28 @@ use_ok('Ffc::Data::Board::OptionsAdmin');
             ],
             emptyerror => 'Kein Benutzername angegeben',
         },
+        {
+            name       => 'boolean (0/1) is_admin value',
+            good       => int( rand 2 ),
+            bad        => [ '', 4, 'asd', '   ' ],
+            errormsg   => ['Administratorenstatus muss mit "0" oder "1" angegeben werden'],
+            emptyerror => 'Administratorenstatus muss mit angegeben werden',
+        },
     );
+    {
+        my $user_ok  = Mock::Testuser->new_active_user();
+        my $get_value = sub { Ffc::Data::Auth::is_user_admin(Ffc::Data::Auth::get_userid($user_ok->{name})) };
+        my $order = $get_value->() ? [ 0, 1, 0, 1 ] : [ 1, 0, 1, 0 ];
+        for my $value (@$order) {
+            ok(
+                Ffc::Data::Board::OptionsAdmin::admin_update_admin(
+                    $admin->{name}, $user_ok->{name}, $value
+                ),
+                qq(call with "$value" ok)
+            );
+            is( $value, $get_value->(), 'database update ok' );
+        }
+    }
 }
 {
     note(

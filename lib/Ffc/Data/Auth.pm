@@ -59,7 +59,7 @@ sub is_user_admin {
     my $userid = shift;
     check_userid_rules( $userid );
     my $sql = 'SELECT COUNT(u.id) FROM '.$Ffc::Data::Prefix.'users u WHERE u.id=? AND u.active=1 AND u.admin=1';
-    return (Ffc::Data::dbh()->selectrow_array($sql, undef, $userid))[0] ? 1 : 0;
+    return( (Ffc::Data::dbh()->selectrow_array($sql, undef, $userid))[0] ? 1 : 0 );
 }
 
 sub check_userid { 
