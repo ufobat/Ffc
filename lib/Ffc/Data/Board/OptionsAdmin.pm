@@ -26,21 +26,21 @@ sub admin_update_password {
 
 sub admin_update_active {
     my $adminuid = _get_userid(shift, 'Administrator für Aktivierung/Deaktivierung');
-    die 'Benutzern aktivieren oder deaktiveren dürfen nur Administratoren'
+    die 'Benutzer aktivieren oder deaktiveren dürfen nur Administratoren'
         unless Ffc::Data::Auth::is_user_admin($adminuid);
     my $userid = _get_userid(shift, 'zu bearbeitender Benutzer für Aktivierung/Deaktivierung');
     my $active = shift() ? 1 : 0;
-    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users u SET u.active=? WHERE u.id=?';
+    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET active=? WHERE id=?';
     Ffc::Data::dbh()->do($sql, undef, $active, $userid);
 }
 
 sub admin_update_admin {
     my $adminuid = _get_userid(shift, 'Administrator für Administratoreneinstellung');
-    die 'Benutzern zu Administratoren befördern oder ihnen den Adminstratorenstatus wegnehmen dürfen nur Administratoren'
+    die 'Benutzer zu Administratoren befördern oder ihnen den Adminstratorenstatus wegnehmen dürfen nur Administratoren'
         unless Ffc::Data::Auth::is_user_admin($adminuid);
     my $userid = _get_userid(shift, 'zu bearbeitender Benutzer für Administratoreneinstellung');
     my $admin = shift() ? 1 : 0;
-    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users u SET u.admin=? WHERE u.id=?';
+    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET admin=? WHERE id=?';
     Ffc::Data::dbh()->do($sql, undef, $admin, $userid);
 }
 
