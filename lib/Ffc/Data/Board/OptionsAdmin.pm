@@ -29,7 +29,9 @@ sub admin_update_active {
     die 'Benutzer aktivieren oder deaktiveren dürfen nur Administratoren'
         unless Ffc::Data::Auth::is_user_admin($adminuid);
     my $userid = _get_userid(shift, 'zu bearbeitender Benutzer für Aktivierung/Deaktivierung');
-    my $active = shift() ? 1 : 0;
+    my $active = shift;
+    die 'Benutzer-Aktivstatus muss mit angegeben werden' unless $active;
+    die 'Benutzer-Aktivstatus muss mit "0" oder "1" angegeben werden' unless $active =~ m/\A0|1\z/xms;
     my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET active=? WHERE id=?';
     Ffc::Data::dbh()->do($sql, undef, $active, $userid);
 }
@@ -39,7 +41,9 @@ sub admin_update_admin {
     die 'Benutzer zu Administratoren befördern oder ihnen den Adminstratorenstatus wegnehmen dürfen nur Administratoren'
         unless Ffc::Data::Auth::is_user_admin($adminuid);
     my $userid = _get_userid(shift, 'zu bearbeitender Benutzer für Administratoreneinstellung');
-    my $admin = shift() ? 1 : 0;
+    my $admin = shift;
+    die 'Administratorenstatus mit angegeben werden' unless $admin;
+    die 'Administratorenstatus muss mit "0" oder "1" angegeben werden' unless $admin =~ m/\A0|1\z/xms;
     my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET admin=? WHERE id=?';
     Ffc::Data::dbh()->do($sql, undef, $admin, $userid);
 }
@@ -53,8 +57,12 @@ sub admin_create_user {
     my $pw1 = shift;
     my $pw2 = shift;
     _check_password_change( $pw1, $pw2 );
-    my $active = shift() ? 1 : 0;
-    my $admin  = shift() ? 1 : 0;
+    my $active = shift;
+    die 'Benutzer-Aktivstatus muss mit angegeben werden' unless $active;
+    die 'Benutzer-Aktivstatus muss mit "0" oder "1" angegeben werden' unless $active =~ m/\A0|1\z/xms;
+    my $admin = shift;
+    die 'Administratorenstatus mit angegeben werden' unless $admin;
+    die 'Administratorenstatus muss mit "0" oder "1" angegeben werden' unless $admin =~ m/\A0|1\z/xms;
     my $sql = 'INSERT INTO '.$Ffc::Data::Prefix.'users (name, password, active, admin) VALUES (?,?,?,?)';
     Ffc::Data::dbh()->do($sql, undef, $username, crypt($pw1, Ffc::Data::cryptsalt()), $active, $admin);
 }
