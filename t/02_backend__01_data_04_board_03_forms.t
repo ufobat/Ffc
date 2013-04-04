@@ -13,7 +13,7 @@ use Mock::Testuser;
 use Ffc::Data::Auth;
 srand;
 
-use Test::More tests => 45;
+use Test::More tests => 59;
 
 Test::General::test_prepare();
 
@@ -121,46 +121,82 @@ use_ok('Ffc::Data::Board::Forms');
 }
 {
     note('sub update_post( $username, $data, $postid )');
-        my $user    = Mock::Testuser->new_active_user()->{name};
-        my $posting = join "\n",
-          map { Test::General::test_r() } 0 .. ( 5 + int rand 10 );
+    my $user    = Mock::Testuser->new_active_user()->{name};
+    my $posting = join "\n",
+      map { Test::General::test_r() } 0 .. ( 5 + int rand 10 );
+    {
+        eval { Ffc::Data::Board::Forms::insert_post( $user, $posting ) };
+        ok( !$@, 'new test post created' );
+        diag($@) if $@;
+    }
+    my $post = Test::General::test_get_max_post();
+    my $postid = $post->[0];
+    is( $post->[1], $posting, 'new test post created ok' );
+    check_call(
+        \&Ffc::Data::Board::Forms::update_post,
+        update_post => {
+            name => 'user name',
+            good => $user,
+            bad  => [ '', '   ', Mock::Testuser::get_noneexisting_username() ],
+            errormsg => [
+                'Kein Benutzername angegeben',
+                'Benutzername ungültig',
+                'Benutzer unbekannt',
+            ],
+            emptyerror => 'Kein Benutzername angegeben',
+        },
         {
-            eval { Ffc::Data::Board::Forms::insert_post( $user, $posting ) };
-            ok( !$@, 'new test post created' );
-            diag($@) if $@;
-        }
-        my $postid = Test::General::test_get_max_post()->[0];
-        check_call(
-            \&Ffc::Data::Board::Forms::update_post,
-            update_post => {
-                name => 'user name',
-                good => $user,
-                bad =>
-                  [ '', '   ', Mock::Testuser::get_noneexisting_username() ],
-                errormsg => [
-                    'Kein Benutzername angegeben',
-                    'Benutzername ungültig',
-                    'Benutzer unbekannt',
-                ],
-                emptyerror => 'Kein Benutzername angegeben',
-            },
-            {
-                name => 'text entry',
-                good => $posting,
-                bad  => [ '', ' ', 'a' ],
-                errormsg   => [ 'Kein Beitrag angegeben', 'Beitrag ungültig' ],
-                emptyerror => 'Kein Beitrag angegeben',
-            },
-            {
-                name => 'post id',
-                good => $postid,
-                bad  => [ '', '  ', 'aaaa' ],
-                errormsg   => ['Keine Postid angegeben','Postid ungültig'],
-                emptyerror => 'Keine Postid angegeben',
-            },
-        );
-        is( Test::General::test_get_max_post()->[1], $posting, 'posting updated ok' );
+            name => 'text entry',
+            good => $posting,
+            bad  => [ '', ' ', 'a' ],
+            errormsg   => [ 'Kein Beitrag angegeben', 'Beitrag ungültig' ],
+            emptyerror => 'Kein Beitrag angegeben',
+        },
+        {
+            name => 'post id',
+            good => $postid,
+            bad  => [ '', '  ', 'aaaa' ],
+            errormsg   => [ 'Keine Postid angegeben', 'Postid ungültig' ],
+            emptyerror => 'Keine Postid angegeben',
+        },
+    );
+    is( Test::General::test_get_max_post()->[1],
+        $posting, 'posting updated ok' );
 }
 {
     note('sub delete_post( $username, $postid )');
+    my $user    = Mock::Testuser->new_active_user()->{name};
+    my $posting = join "\n",
+      map { Test::General::test_r() } 0 .. ( 5 + int rand 10 );
+    {
+        eval { Ffc::Data::Board::Forms::insert_post( $user, $posting ) };
+        ok( !$@, 'new test post created' );
+        diag($@) if $@;
+    }
+    my $post = Test::General::test_get_max_post();
+    my $postid = $post->[0];
+    is( $post->[1], $posting, 'new test post created ok' );
+    ok((Ffc::Data::dbh()->selectrow_array('SELECT COUNT(id) FROM '.$Ffc::Data::Prefix.'posts WHERE id=?', undef, $postid ))[0], 'posting does exist before deletion' );
+    check_call(
+        \&Ffc::Data::Board::Forms::delete_post,
+        delete_post => {
+            name => 'user name',
+            good => $user,
+            bad  => [ '', '   ', Mock::Testuser::get_noneexisting_username() ],
+            errormsg => [
+                'Kein Benutzername angegeben',
+                'Benutzername ungültig',
+                'Benutzer unbekannt',
+            ],
+            emptyerror => 'Kein Benutzername angegeben',
+        },
+        {
+            name => 'post id',
+            good => $postid,
+            bad  => [ '', '  ', 'aaaa' ],
+            errormsg   => [ 'Keine Postid angegeben', 'Postid ungültig' ],
+            emptyerror => 'Keine Postid angegeben',
+        },
+    );
+    ok(!(Ffc::Data::dbh()->selectrow_array('SELECT COUNT(id) FROM '.$Ffc::Data::Prefix.'posts WHERE id=?', undef, $postid ))[0], 'posting does not exist after deletion anymore' );
 }

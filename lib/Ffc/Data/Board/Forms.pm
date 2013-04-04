@@ -15,6 +15,7 @@ sub _get_category_id { &Ffc::Data::General::get_category_id }
 sub delete_post {
     my ( $from, $id ) = @_;
     $from = _get_userid( $from, 'Auto des zu löschenden Beitrages' );
+    die qq(Keine Postid angegeben) unless $id;
     die qq{Postid ungültig} unless $id =~ m/\A\d+\z/xms;
     my $dbh = Ffc::Data::dbh();
     my $sql = sprintf 'DELETE FROM '.$Ffc::Data::Prefix.'posts WHERE %s=? and %s=? AND (%s IS NULL OR %s=%s);', map {$dbh->quote_identifier($_)} qw(id from to to from);
