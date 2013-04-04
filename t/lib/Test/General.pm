@@ -69,5 +69,9 @@ sub test_get_non_username {
     return $username;
 }
 
+sub test_get_max_post {
+    return Ffc::Data::dbh()->selectrow_arrayref('SELECT p."id", p."text", p."from", p."to", p."category" FROM '.$Ffc::Data::Prefix.'posts p ORDER BY p."id" DESC');
+}
+
 1;
 

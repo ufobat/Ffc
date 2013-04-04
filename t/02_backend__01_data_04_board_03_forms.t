@@ -103,11 +103,11 @@ use_ok('Ffc::Data::Board::Forms');
                 ok(!$@, 'test run ok');
                 diag($@) if $@;
             }
-            my @dat = Ffc::Data::dbh()->selectrow_array('SELECT p."text", p."from", p."to", p."category" FROM '.$Ffc::Data::Prefix.'posts p ORDER BY p."id" DESC');
-            is( $posting, $dat[0], 'text is ok' );
-            is( Ffc::Data::Auth::get_userid($user), $dat[1], 'author is ok' );
-            is( Ffc::Data::Auth::get_userid($user2), $dat[2], 'recipient is ok' ) if $user2;
-            is( Ffc::Data::General::get_category_id($category), $dat[3], 'author is ok' ) if $category;
+            my $dat = Test::General::test_get_max_post();
+            is( $posting, $dat->[1], 'text is ok' );
+            is( Ffc::Data::Auth::get_userid($user), $dat->[2], 'author is ok' );
+            is( Ffc::Data::Auth::get_userid($user2), $dat->[3], 'recipient is ok' ) if $user2;
+            is( Ffc::Data::General::get_category_id($category), $dat->[4], 'author is ok' ) if $category;
         }
     }
 }
