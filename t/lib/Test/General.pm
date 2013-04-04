@@ -11,6 +11,13 @@ use Test::More;
 
 our ( @Users, @Categories, $Maxcatid, $Maxuserid, $Config, $App );
 
+sub test_get_max_postid {
+    (
+        Ffc::Data::dbh()->selectall_arrayref(
+            'SELECT MAX("id") FROM ' . $Ffc::Data::Prefix . 'posts'
+        )
+    )[0];
+}
 sub test_get_max_categoryid {
     (
         Ffc::Data::dbh()->selectall_arrayref(

@@ -39,8 +39,12 @@ sub update_post {
     $f = _get_userid( $f, 'Autor des bestehenden Beitrages' );
     die q(Kein Beitrag angegeben) unless $d;
     die qq{Beitrag ungültig, zu wenig Zeichen (min. 2)} if 2 >= length $d;
+    die qq(Keine Postid angegeben) unless $i;
     die qq{Postid ungültig} unless $i =~ m/\A\d+\z/xms;
-    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'posts p SET p.text=?, p.posted=current_timestamp WHERE p.id=? AND p.from=? AND (p.to IS NULL OR p.to=p.from);';
+    my $dbh = Ffc::Data::dbh();
+    my $fromstr = $dbh->quote_identifier('from');
+    my $tostr = $dbh->quote_identifier('to');
+    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'posts SET text=?, posted=current_timestamp WHERE id=? AND '.$fromstr.'=? AND ('.$tostr.' IS NULL OR '.$tostr.'='.$fromstr.');';
     Ffc::Data::dbh()->do( $sql, undef, $d, $i, $f );
 }
 
