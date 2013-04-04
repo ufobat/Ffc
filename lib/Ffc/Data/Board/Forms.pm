@@ -14,8 +14,8 @@ sub _get_category_id { &Ffc::Data::General::get_category_id }
 
 sub delete_post {
     my ( $from, $id ) = @_;
-    die qq{Postid ungültig} unless $id =~ m/\A\d+\z/xms;
     $from = _get_userid( $from, 'Auto des zu löschenden Beitrages' );
+    die qq{Postid ungültig} unless $id =~ m/\A\d+\z/xms;
     my $dbh = Ffc::Data::dbh();
     my $sql = sprintf 'DELETE FROM '.$Ffc::Data::Prefix.'posts WHERE %s=? and %s=? AND (%s IS NULL OR %s=%s);', map {$dbh->quote_identifier($_)} qw(id from to to from);
     $dbh->do( $sql, undef, $id, $from );
@@ -23,11 +23,12 @@ sub delete_post {
 
 sub insert_post {
     my ( $f, $d, $c, $t ) = @_;
+    $f = _get_userid( $f, 'Autor des neuen Beitrages' );
     die q(Kein Beitrag angegeben) unless $d;
     die qq{Beitrag ungültig, zu wenig Zeichen (min. 2)} if 2 >= length $d;
-    $f = _get_userid( $f, 'Autor des neuen Beitrages' );
-    $t = _get_userid( $t, 'Empfänger des neuen Beitrages' ) if $t and $t != $f;
-    my $cid = $c ? _get_category_id($c) : undef;
+    my $cid = undef;
+    $cid = _get_category_id($c) if $c;
+    $t = _get_userid( $t, 'Empfänger des neuen Beitrages' ) if $t;
     my $dbh = Ffc::Data::dbh();
     my $sql = 'INSERT INTO '.$Ffc::Data::Prefix.'posts ('.join(', ',map {$dbh->quote_identifier($_)} qw(from to text posted category)).') VALUES (?, ?, ?, current_timestamp, ?)';
     $dbh->do( $sql, undef, $f, $t, $d, $cid );
@@ -35,9 +36,10 @@ sub insert_post {
 
 sub update_post {
     my ( $f, $d, $i ) = @_;
+    $f = _get_userid( $f, 'Autor des bestehenden Beitrages' );
     die q(Kein Beitrag angegeben) unless $d;
     die qq{Beitrag ungültig, zu wenig Zeichen (min. 2)} if 2 >= length $d;
-    $f = _get_userid( $f, 'Autor des bestehenden Beitrages' );
+    die qq{Postid ungültig} unless $i =~ m/\A\d+\z/xms;
     my $sql = 'UPDATE '.$Ffc::Data::Prefix.'posts p SET p.text=?, p.posted=current_timestamp WHERE p.id=? AND p.from=? AND (p.to IS NULL OR p.to=p.from);';
     Ffc::Data::dbh()->do( $sql, undef, $d, $i, $f );
 }

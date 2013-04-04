@@ -43,7 +43,7 @@ sub check_call {    # alle aufrufoptionen durchprobieren
     }
     {
         eval { $code->(@okparams) };
-        ok(!$@, qq~good run of "$sname('~.join(q[', '], @okparams).qq~')" => "$@" went ok~);
+        ok(!$@, qq~good run of "$sname('~.join(q[', '], map { m/\n/xms ? (split("\n", $_, 2))[0].' ...' : $_ } @okparams).qq~')" => "$@" went ok~);
     }
 }
 
