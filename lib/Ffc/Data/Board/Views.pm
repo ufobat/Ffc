@@ -71,45 +71,55 @@ sub get_categories {
 
 sub get_notes { 
     my $userid = _get_userid( shift, 'Notizenliste' );
-    return _get_stuff( $userid, @_[ 0 .. 4 ], 'p.user_from=? AND p.user_to=p.user_from', $userid );
+    return _get_stuff( $userid, 'notes', @_[ 0 .. 3 ], 'p.user_from=? AND p.user_to=p.user_from', $userid );
 }
 sub get_forum { 
-    return _get_stuff( _get_userid( shift, 'Beitragsliste' ), @_[ 0 .. 4 ], 'p.user_to IS NULL' );
+    return _get_stuff( _get_userid( shift, 'Beitragsliste' ), 'forum', @_[ 0 .. 3 ], 'p.user_to IS NULL' );
 }
 sub get_msgs  {
     my $userid = _get_userid( shift, 'Privatnachrichtenliste' );
     my @params = ( $userid, $userid );
     my $where = '( p.user_from=? OR p.user_to=? ) AND p.user_from <> p.user_to';
-    if ( $_[5] ) {
-        my $userid = _get_userid( $_[5] );
+    if ( $_[4] ) {
+        my $userid = _get_userid( $_[4] );
         $where .= ' AND ( p.user_from=? OR p.user_to=? )';
         push @params, $userid, $userid;
     }
-    return _get_stuff( $userid, @_[ 0 .. 4 ], $where, @params );
+    return _get_stuff( $userid, 'msgs', @_[ 0 .. 3 ], $where, @params );
 }
 
 sub get_post {
     my $postid = shift;
+    my $act = shift;
+    die qq(Aktion nicht angegeben) unless $act;
+    die qq{Aktion unbekannt ("$act")} unless grep $act, qw(forum msgs notes);
     my $userid = _get_userid( shift );
+    die q{Keine ID für den Beitrag angegeben} unless $postid;
     die q{Ungültige ID für den Beitrag} unless $postid =~ m/\A\d+\z/xms;
     my $where = 'p.id=?';
-    my $data = _get_stuff( $userid, @_[ 0 .. 4 ], $where, $postid );
+    my $data = _get_stuff( $userid, $act, @_[ 0 .. 3 ], $where, $postid );
     die q{Kein Datensatz gefunden} unless @$data;
     return $data->[0];
 }
 
 sub _get_stuff {
     my $userid = shift;
+    my $act    = shift;
     my $page   = shift;
     my $query  = shift;
     my $cat    = shift;
-    my $act    = shift;
     my $c      = shift;
     my $where  = shift;
     my @params = @_;
     $page = 1 unless $page and $page =~ m/\A\d+\z/xms;
     my $q = $query ? q{AND p.textdata LIKE ?} : '';
     my $p = $Ffc::Data::Prefix;
+    if ( $cat ) {
+        check_category($cat);
+    }
+    else {
+        $cat = '';
+    }
     my $sql = << "EOSQL";
 SELECT p.id, p.textdata, p.posted, 
        c.name, COALESCE(c.short,''),

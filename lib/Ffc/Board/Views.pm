@@ -52,7 +52,6 @@ sub get_params {
         $page, 
         $session->{query},
         $session->{category},
-        $session->{act},
         $self;
 }
 
