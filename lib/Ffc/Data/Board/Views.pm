@@ -71,21 +71,21 @@ sub get_categories {
 
 sub get_notes { 
     my $userid = _get_userid( shift, 'Notizenliste' );
-    return _get_stuff( $userid, @_[ 0 .. 5 ], 'p.user_from=? AND p.user_to=p.user_from', $userid );
+    return _get_stuff( $userid, @_[ 0 .. 4 ], 'p.user_from=? AND p.user_to=p.user_from', $userid );
 }
 sub get_forum { 
-    return _get_stuff( _get_userid( shift, 'Beitragsliste' ), @_[ 0 .. 5 ], 'p.user_to IS NULL' );
+    return _get_stuff( _get_userid( shift, 'Beitragsliste' ), @_[ 0 .. 4 ], 'p.user_to IS NULL' );
 }
 sub get_msgs  {
     my $userid = _get_userid( shift, 'Privatnachrichtenliste' );
     my @params = ( $userid, $userid );
     my $where = '( p.user_from=? OR p.user_to=? ) AND p.user_from <> p.user_to';
-    if ( $_[6] ) {
-        my $userid = _get_userid( $_[6] );
+    if ( $_[5] ) {
+        my $userid = _get_userid( $_[5] );
         $where .= ' AND ( p.user_from=? OR p.user_to=? )';
         push @params, $userid, $userid;
     }
-    return _get_stuff( $userid, @_[ 0 .. 5 ], $where, @params );
+    return _get_stuff( $userid, @_[ 0 .. 4 ], $where, @params );
 }
 
 sub get_post {
@@ -93,7 +93,7 @@ sub get_post {
     my $userid = _get_userid( shift );
     die q{Ungültige ID für den Beitrag} unless $postid =~ m/\A\d+\z/xms;
     my $where = 'p.id=?';
-    my $data = _get_stuff( $userid, @_[ 0 .. 5 ], $where, $postid );
+    my $data = _get_stuff( $userid, @_[ 0 .. 4 ], $where, $postid );
     die q{Kein Datensatz gefunden} unless @$data;
     return $data->[0];
 }
@@ -101,7 +101,6 @@ sub get_post {
 sub _get_stuff {
     my $userid = shift;
     my $page   = shift;
-    my $lasts  = shift;
     my $query  = shift;
     my $cat    = shift;
     my $act    = shift;
@@ -109,7 +108,7 @@ sub _get_stuff {
     my $where  = shift;
     my @params = @_;
     $page = 1 unless $page and $page =~ m/\A\d+\z/xms;
-    my $q = $query ? q{AND p.text LIKE ?} : '';
+    my $q = $query ? q{AND p.textdata LIKE ?} : '';
     my $p = $Ffc::Data::Prefix;
     my $sql = << "EOSQL";
 SELECT p.id, p.textdata, p.posted, 

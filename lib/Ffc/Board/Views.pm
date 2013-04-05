@@ -50,7 +50,6 @@ sub get_params {
     return 
         $session->{user}, 
         $page, 
-        $session->{lastseen},
         $session->{query},
         $session->{category},
         $session->{act},
