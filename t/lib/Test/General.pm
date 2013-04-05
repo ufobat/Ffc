@@ -13,14 +13,14 @@ our ( @Users, @Categories, $Maxcatid, $Maxuserid, $Config, $App );
 
 sub test_get_max_postid {
     (
-        Ffc::Data::dbh()->selectall_arrayref(
+        Ffc::Data::dbh()->selectrow_array(
             'SELECT MAX("id") FROM ' . $Ffc::Data::Prefix . 'posts'
         )
     )[0];
 }
 sub test_get_max_categoryid {
     (
-        Ffc::Data::dbh()->selectall_arrayref(
+        Ffc::Data::dbh()->selectrow_array(
             'SELECT MAX("id") FROM ' . $Ffc::Data::Prefix . 'categories'
         )
     )[0];
@@ -28,7 +28,7 @@ sub test_get_max_categoryid {
 
 sub test_get_max_userid {
     (
-        Ffc::Data::dbh()->selectall_arrayref(
+        Ffc::Data::dbh()->selectrow_array(
             'SELECT MAX("id") FROM ' . $Ffc::Data::Prefix . 'users'
         )
     )[0];
@@ -55,13 +55,13 @@ sub test_prepare {
     return 1;
 }
 
-sub test_get_rand_category { $Categories[ int rand scalar @Categories ] }
-sub test_get_rand_user     { $Users[ int rand scalar @Users ] }
+sub test_get_rand_category { $Categories[ int rand $#Categories ] }
+sub test_get_rand_user     { $Users[ int rand $#Users ] }
 
 sub test_r {
     my @chars = ( 'a' .. 'z', 'A' .. 'Z', 0 .. 9 );
     return join '',
-      map { $chars[ int rand scalar @chars ] } 0 .. 7 + int rand 5;
+      map { $chars[ int rand $#chars ] } 0 .. 7 + int rand 5;
 }
 
 sub test_get_non_category_short {

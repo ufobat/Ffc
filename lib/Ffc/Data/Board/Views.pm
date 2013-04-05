@@ -71,10 +71,10 @@ sub get_categories {
 
 sub get_notes { 
     my $userid = _get_userid( shift, 'Notizenliste' );
-    return _get_stuff( $userid, 'notes', @_[ 0 .. 3 ], 'p.user_from=? AND p.user_to=p.user_from', $userid );
+    return _get_stuff( 'notes', $userid, @_[ 0 .. 3 ], 'p.user_from=? AND p.user_to=p.user_from', $userid );
 }
 sub get_forum { 
-    return _get_stuff( _get_userid( shift, 'Beitragsliste' ), 'forum', @_[ 0 .. 3 ], 'p.user_to IS NULL' );
+    return _get_stuff( 'forum', _get_userid( shift, 'Beitragsliste' ), @_[ 0 .. 3 ], 'p.user_to IS NULL' );
 }
 sub get_msgs  {
     my $userid = _get_userid( shift, 'Privatnachrichtenliste' );
@@ -85,26 +85,26 @@ sub get_msgs  {
         $where .= ' AND ( p.user_from=? OR p.user_to=? )';
         push @params, $userid, $userid;
     }
-    return _get_stuff( $userid, 'msgs', @_[ 0 .. 3 ], $where, @params );
+    return _get_stuff( 'msgs', $userid, @_[ 0 .. 3 ], $where, @params );
 }
 
 sub get_post {
-    my $postid = shift;
     my $act = shift;
     die qq(Aktion nicht angegeben) unless $act;
-    die qq{Aktion unbekannt ("$act")} unless grep $act, qw(forum msgs notes);
+    die qq{Aktion unbekannt ("$act")} unless $act =~ m/\A(?:forum|msgs|notes)\z/xms;
     my $userid = _get_userid( shift );
+    my $postid = shift;
     die q{Keine ID für den Beitrag angegeben} unless $postid;
-    die q{Ungültige ID für den Beitrag} unless $postid =~ m/\A\d+\z/xms;
+    die q{Ungültige ID für den Beitrag angegeben} unless $postid =~ m/\A\d+\z/xms;
     my $where = 'p.id=?';
-    my $data = _get_stuff( $userid, $act, @_[ 0 .. 3 ], $where, $postid );
+    my $data = _get_stuff( $act, $userid, @_[ 0 .. 3 ], $where, $postid );
     die q{Kein Datensatz gefunden} unless @$data;
     return $data->[0];
 }
 
 sub _get_stuff {
-    my $userid = shift;
     my $act    = shift;
+    my $userid = shift;
     my $page   = shift;
     my $query  = shift;
     my $cat    = shift;
@@ -115,7 +115,7 @@ sub _get_stuff {
     my $q = $query ? q{AND p.textdata LIKE ?} : '';
     my $p = $Ffc::Data::Prefix;
     if ( $cat ) {
-        check_category($cat);
+        Ffc::Data::General::check_category($cat);
     }
     else {
         $cat = '';

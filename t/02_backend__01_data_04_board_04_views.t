@@ -75,17 +75,14 @@ qq'counting code "$t->{name}" returned zero because the database is still empty'
         }
     }
 
-    sleep 2
+    sleep 1.1
       ; # Das System funktionert nur sekundengenau und gibt im Zweifelsfall immer mehr zurück
-    {
-        for (qw(forum msgs notes)) {
-            eval { Ffc::Data::Board::update_user_stats( $user->{name}, $_ ) };
-            diag(
-qq(update users status for act "$_" before next insert failed: $@)
-            ) if $@;
-        }
+    for (qw(forum msgs notes)) {
+        eval { Ffc::Data::Board::update_user_stats( $user->{name}, $_ ) };
+        diag(qq(update users status for act "$_" before next insert failed: $@))
+          if $@;
     }
-    sleep 2
+    sleep 1.1
       ; # Das System funktionert nur sekundengenau und gibt im Zweifelsfall immer mehr zurück
 
     for my $t (@tests) {
@@ -133,17 +130,14 @@ qq(update users status for act "$_" before next insert failed: $@)
 {
     note(q{sub get_categories( $username )});
     my $user = Mock::Testuser->new_active_user();
-    sleep 2
+    sleep 1.1
       ; # Das System funktionert nur sekundengenau und gibt im Zweifelsfall immer mehr zurück
-    {
-        for (qw(forum msgs notes)) {
-            eval { Ffc::Data::Board::update_user_stats( $user->{name}, $_ ) };
-            diag(
-qq(update users status for act "$_" before next insert failed: $@)
-            ) if $@;
-        }
+    for (qw(forum msgs notes)) {
+        eval { Ffc::Data::Board::update_user_stats( $user->{name}, $_ ) };
+        diag(qq(update users status for act "$_" before next insert failed: $@))
+          if $@;
     }
-    sleep 2
+    sleep 1.1
       ; # Das System funktionert nur sekundengenau und gibt im Zweifelsfall immer mehr zurück
     my @ret = check_call(
         \&Ffc::Data::Board::Views::get_categories,
@@ -176,19 +170,15 @@ qq(update users status for act "$_" before next insert failed: $@)
     for my $i ( 0 .. 2 )
     {    # run multiple tests to test creation of category-logging
         note("category count run number '$i'");
-        sleep 2
+        sleep 1.1
           ; # Das System funktionert nur sekundengenau und gibt im Zweifelsfall immer mehr zurück
-        {
-            for (qw(forum msgs notes)) {
-                eval {
-                    Ffc::Data::Board::update_user_stats( $user->{name}, $_ );
-                };
-                diag(
+        for (qw(forum msgs notes)) {
+            eval { Ffc::Data::Board::update_user_stats( $user->{name}, $_ ); };
+            diag(
 qq(update users status for act "$_" before next insert failed: $@)
-                ) if $@;
-            }
+            ) if $@;
         }
-        sleep 2
+        sleep 1.1
           ; # Das System funktionert nur sekundengenau und gibt im Zweifelsfall immer mehr zurück
         my $user2 = Mock::Testuser->new_active_user();
         my %catcounter;
@@ -230,31 +220,125 @@ qq(update users status for act "$_" before next insert failed: $@)
         }
 
         if ( $i < 2 ) {
-            sleep 2
+            sleep 1.1
               ; # Das System funktionert nur sekundengenau und gibt im Zweifelsfall immer mehr zurück
-            {
-                for (@cats) {
-                    eval {
-                        Ffc::Data::Board::update_user_stats( $user->{name},
-                            'forum', $_ );
-                    };
-                    diag("update users status before next insert failed: $@")
-                      if $@;
-                }
+            for (@cats) {
+                eval {
+                    Ffc::Data::Board::update_user_stats( $user->{name},
+                        'forum', $_ );
+                };
+                diag("update users status before next insert failed: $@")
+                  if $@;
             }
-            sleep 2;
+            sleep 1.1;
         }
     }
 }
+
 {
-    note(q{sub get_notes( $username )});
-}
-{
-    note(q{sub get_forum( $username )});
-}
-{
-    note(q{sub get_msgs( $username )});
-}
-{
-    note(q{sub get_post( $username )});
+    note('testing date retrieving');
+    sleep 1.1;    # works only on seconds scale
+    my $user = Mock::Testuser->new_active_user();
+    for (qw(forum msgs notes)) {
+        eval { Ffc::Data::Board::update_user_stats( $user->{name}, $_ ) };
+        diag(qq(update users status for act "$_" before next insert failed: $@))
+          if $@;
+    }
+    my $usertest = {
+        name     => 'user name',
+        good     => $user->{name},
+        bad      => [ '', '   ', Mock::Testuser::get_noneexisting_username() ],
+        errormsg => [
+            'Kein Benutzername angegeben',
+            'Benutzername ungültig',
+            'Benutzer unbekannt',
+        ],
+        emptyerror => 'Kein Benutzername angegeben',
+    };
+    my @paramstest = (
+        { name => 'page',  good => 1,                       noemptycheck => 1 },
+        { name => 'query', good => Test::General::test_r(), noemptycheck => 1 },
+        {
+            name     => 'category',
+            good     => Test::General::test_get_rand_category()->[2],
+            bad      => [ ' ', 'a', Test::General::test_get_non_category_short() ],
+            errormsg => ['Kategoriekürzel ungültig', 'Kategorie ungültig'],
+            noemptycheck => 1
+        },
+        {
+            name         => 'controller',
+            good         => Mock::Controller->new(),
+            noemptycheck => 1
+        },
+    );
+    {
+        note(
+q{sub get_post( $action, $username, $postid, $page, $search, $category, $controller )}
+        );
+        my $code     = \&Ffc::Data::Board::Views::get_post;
+        my $name     = 'get_post';
+        my $acttest = {
+            name       => 'action',
+            good       => 'forum',
+            bad        => [ '', '   ', 'aaaaaaaaaaaaa' ],
+            emptyerror => 'Aktion nicht angegeben',
+            errormsg   => [ 'Aktion nicht angegeben', 'Aktion unbekannt' ],
+        };
+        my $posttest = {
+            name => 'postid',
+            good => do {
+                my @ids = map { $_->[0] } @{
+                    Ffc::Data::dbh()->selectall_arrayref(
+                            'SELECT id FROM '
+                          . $Ffc::Data::Prefix
+                          . 'posts WHERE user_to IS NULL'
+                    )
+                };
+                $ids[ int rand $ids ];
+            },
+            bad        => [ '', '  ', 'aaaa', (Test::General::test_get_max_postid + 1)],
+            errormsg  => [q{Keine ID für den Beitrag angegeben}, (q{Ungültige ID für den Beitrag}) x 2, q{Kein Datensatz gefunden}],
+            emptyerror => q{Keine ID für den Beitrag angegeben},
+        };
+        my $post = check_call( $code, $name, $acttest, $usertest, $posttest,
+            @paramstest );
+        is(
+            $post->{raw},
+            (
+                Ffc::Data::dbh()->selectrow_array(
+                    'SELECT textdata FROM '
+                      . $Ffc::Data::Prefix
+                      . 'posts WHERE id=?',
+                    undef,
+                    $posttest->{good}
+                )
+              )[0],
+            'returned a single post ok'
+        );
+    }
+    die;
+    {
+        note(
+q{sub get_notes( $username, $page, $search, $category, $controller )}
+        );
+        my $code = \&Ffc::Data::Board::Views::get_notes;
+        my $name = 'get_notes';
+        check_call( $code, $name, $usertest, @paramstest );
+    }
+    {
+        note(
+q{sub get_forum( $username, $page, $search, $category, $controller )}
+        );
+        my $code = \&Ffc::Data::Board::Views::get_forum;
+        my $name = 'get_forum';
+        check_call( $code, $name, $usertest, @paramstest );
+    }
+    {
+        note(
+            q{sub get_msgs( $username, $page, $search, $category, $controller )}
+        );
+        my $code = \&Ffc::Data::Board::Views::get_msgs;
+        my $name = 'get_msgs';
+        check_call( $code, $name, $usertest, @paramstest );
+    }
 }

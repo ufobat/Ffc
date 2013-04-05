@@ -15,7 +15,7 @@ sub edit_form {
     $c->error_prepare;
     my $id   = $c->param('postid');
     my $s    = $c->session;
-    my $post = $c->or_nostring( sub { Ffc::Data::Board::Views::get_post($id, $s->{act}, $c->get_params($s) ) } );
+    my $post = $c->or_nostring( sub { Ffc::Data::Board::Views::get_post($s->{act}, $id, $c->get_params($s) ) } );
     $c->stash( post => $post ); $s->{category} = $post->{category} ? $post->{category}->{short} : '' if $post;
     $c->frontpage();
 }
@@ -29,7 +29,7 @@ sub delete_check {
     $c->get_counts();
     my $post;
     $c->error_handling( {
-        code => sub { $post = Ffc::Data::Board::Views::get_post($id, $s->{act}, $c->get_params($s)) },
+        code => sub { $post = Ffc::Data::Board::Views::get_post($s->{act}, $id, $c->get_params($s)) },
         msg  => 'Beitrag zum Löschen konnte nicht ermittelt werden',
         after_error => sub { $c->frontpage() },
         after_ok    => sub { $post->{active} = 1; $c->stash( post => $post ); $c->render('board/deletecheck') },
