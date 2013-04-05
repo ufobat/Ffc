@@ -15,7 +15,7 @@ use Ffc::Data::Board;
 use Ffc::Data::Board::Forms;
 srand;
 
-use Test::More tests => 19;
+use Test::More tests => 31;
 
 Test::General::test_prepare();
 
@@ -52,6 +52,14 @@ use_ok('Ffc::Data::Board::Views');
         }
     );
     for my $t (@tests) {
+        {
+            my $ret;
+            eval { $ret = $t->{code}->( $user->{name} ) };
+            ok( !$@, qq'counting code "$t->{name}" ran good' );
+            is( $ret, 0, qq'counting code "$t->{name}" returned zero because the database is still empty' );
+        }
+    }
+    for my $t (@tests) {
         my $cnt = 10 + int rand 30;
         $t->{count_before} = $cnt;
         for ( 1 .. $cnt ) {
@@ -64,8 +72,11 @@ use_ok('Ffc::Data::Board::Views');
         }
     }
     sleep 2;
-    Ffc::Data::Board::update_user_stats( $user->{name}, $_ )
-      for qw(forum msgs notes);
+    {
+        eval { Ffc::Data::Board::update_user_stats( $user->{name}, $_ ) }
+          for qw(forum msgs notes);
+        diag("update users status before next insert failed: $@") if $@;
+    }
     sleep 2;
     for my $t (@tests) {
         my $cnt = 10 + int rand 30;
@@ -81,7 +92,8 @@ use_ok('Ffc::Data::Board::Views');
     }
     for my $t (@tests) {
         note( $t->{note} );
-        $t->{count} = exists $t->{count} ? $t->{count}->($t) : $t->{count_after};
+        $t->{count} =
+          exists $t->{count} ? $t->{count}->($t) : $t->{count_after};
         check_call(
             $t->{code},
             $t->{name} => {
@@ -97,8 +109,13 @@ use_ok('Ffc::Data::Board::Views');
                 emptyerror => 'Kein Benutzername angegeben',
             },
         );
-        is( $t->{code}->( $user->{name} ),
-            $t->{count}, qq'counting of "$t->{name}" works' );
+        {
+            my $ret;
+            eval { $ret = $t->{code}->( $user->{name} ) };
+            ok( !$@, qq'counting code "$t->{name}" ran good' );
+            ok( $ret, qq'counting code "$t->{name}" returned something as expected' );
+            is( $ret, $t->{count}, qq'counting of "$t->{name}" works' );
+        }
     }
 }
 {
