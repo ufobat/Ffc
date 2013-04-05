@@ -20,12 +20,12 @@ SELECT c.name       AS name,
        COUNT(p1.id) AS cnt,
        1            AS sort
   FROM ${p}categories c
-  LEFT OUTER JOIN ${p}lastseenforum f ON  f.category  =  c.id 
-                                      AND f.userid    =  ?
-  LEFT OUTER JOIN ${p}posts p1        ON  p1.category =  c.id 
-                                      AND p1.posted   >= COALESCE(f.lastseen,0) 
-                                      AND p1.from     != f.userid
-                                      AND p1.to       IS NULL
+  LEFT OUTER JOIN ${p}lastseenforum f ON  f.category   =  c.id 
+                                      AND f.userid     =  ?
+  LEFT OUTER JOIN ${p}posts p1        ON  p1.category  =  c.id 
+                                      AND p1.posted    >= COALESCE(f.lastseen,0) 
+                                      AND p1.user_from != f.userid
+                                      AND p1.user_to   IS NULL
   GROUP BY c.id
 UNION
 SELECT 'Allgemein'  AS name,
@@ -33,21 +33,21 @@ SELECT 'Allgemein'  AS name,
        COUNT(p2.id) AS cnt,
        0            AS sort 
   FROM ${p}posts p2 
-  WHERE p2.category IS NULL 
-    AND p2.posted >= (SELECT u.lastseenforum FROM ${p}users u WHERE u.id=? LIMIT 1)
-    AND p2.from   != ?
-    AND p2.to     IS NULL
+  WHERE p2.category  IS NULL 
+    AND p2.posted    >= (SELECT u.lastseenforum FROM ${p}users u WHERE u.id=? LIMIT 1)
+    AND p2.user_from != ?
+    AND p2.user_to   IS NULL
   ORDER BY sort, name
 EOSQL
 }
 
 sub count_newmsgs {
     my $userid = _get_userid( shift, 'Privatnachrichtenzähler' );
-    my $sql = 'SELECT count(p.id) FROM '.$Ffc::Data::Prefix.'posts p INNER JOIN '.$Ffc::Data::Prefix.'users u ON u.id=p.to WHERE p.to IS NOT NULL AND p.to=? AND p.from <> p.to AND p.posted >= u.lastseenmsgs';
+    my $sql = 'SELECT count(p.id) FROM '.$Ffc::Data::Prefix.'posts p INNER JOIN '.$Ffc::Data::Prefix.'users u ON u.id=p.user_to WHERE p.user_to IS NOT NULL AND p.user_to=? AND p.user_from <> p.user_to AND p.posted >= u.lastseenmsgs';
     return (Ffc::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
 
-sub count_newpost {
+sub count_newposts {
     my $userid = _get_userid( shift, 'Beitragszähler' );
     my $sql = _get_categories_sql();
     $sql = "SELECT SUM(t.cnt) FROM ($sql) t";
@@ -56,7 +56,7 @@ sub count_newpost {
 
 sub count_notes {
     my $userid = _get_userid( shift, 'Notizenzähler' );
-    my $sql = 'SELECT count(p.id) FROM '.$Ffc::Data::Prefix.'posts p WHERE p.from=? AND p.to=p.from';
+    my $sql = 'SELECT count(p.id) FROM '.$Ffc::Data::Prefix.'posts p WHERE p.user_from=? AND p.user_to=p.user_from';
     return (Ffc::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
 }
 
@@ -68,18 +68,18 @@ sub get_categories {
 
 sub get_notes { 
     my $userid = _get_userid( shift, 'Notizenliste' );
-    return _get_stuff( $userid, @_[ 0 .. 5 ], 'p.from=? AND p.to=p.from', $userid );
+    return _get_stuff( $userid, @_[ 0 .. 5 ], 'p.user_from=? AND p.user_to=p.user_from', $userid );
 }
 sub get_forum { 
-    return _get_stuff( _get_userid( shift, 'Beitragsliste' ), @_[ 0 .. 5 ], 'p.to IS NULL' );
+    return _get_stuff( _get_userid( shift, 'Beitragsliste' ), @_[ 0 .. 5 ], 'p.user_to IS NULL' );
 }
 sub get_msgs  {
     my $userid = _get_userid( shift, 'Privatnachrichtenliste' );
     my @params = ( $userid, $userid );
-    my $where = '( p.from=? OR p.to=? ) AND p.from <> p.to';
+    my $where = '( p.user_from=? OR p.user_to=? ) AND p.user_from <> p.user_to';
     if ( $_[6] ) {
         my $userid = _get_userid( $_[6] );
-        $where .= ' AND ( p.from=? OR p.to=? )';
+        $where .= ' AND ( p.user_from=? OR p.user_to=? )';
         push @params, $userid, $userid;
     }
     return _get_stuff( $userid, @_[ 0 .. 5 ], $where, @params );
@@ -110,13 +110,13 @@ sub _get_stuff {
     my $p = $Ffc::Data::Prefix;
     my $l = _get_categories_sql();
     my $sql = << "EOSQL";
-SELECT p.id, p.text, p.posted, 
+SELECT p.id, p.textdata, p.posted, 
        c.name, COALESCE(c.short,''),
        f.id, f.name, f.active,
        t.id, t.name, t.active,
-       CASE WHEN p.from = p.to OR p.from = u.id
+       CASE WHEN f.id = t.id OR f.id = u.id
             THEN 0
-            ELSE CASE WHEN p.to IS NOT NULL
+            ELSE CASE WHEN t.id IS NOT NULL
                       THEN CASE WHEN p.posted >= t.lastseenmsgs THEN 1 ELSE 0 END
                       ELSE CASE WHEN p.category IS NULL
                                 THEN CASE WHEN p.posted >= u.lastseenforum THEN 1 ELSE 0 END
@@ -126,8 +126,8 @@ SELECT p.id, p.text, p.posted,
        END
   FROM             ${p}posts         p
   INNER       JOIN ${p}users         u ON u.id = ?
-  INNER       JOIN ${p}users         f ON f.id = p.from
-  LEFT  OUTER JOIN ${p}users         t ON t.id = p.to
+  INNER       JOIN ${p}users         f ON f.id = p.user_from
+  LEFT  OUTER JOIN ${p}users         t ON t.id = p.user_to
   LEFT  OUTER JOIN ${p}categories    c ON c.id = p.category
   LEFT  OUTER JOIN ${p}lastseenforum l ON c.id = l.category AND l.userid = u.id
   WHERE $where $q

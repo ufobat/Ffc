@@ -117,9 +117,9 @@ Ffc::Data::Board::Views::get_categories($user);
 sub get_counts {
     my $c = shift;
     my $user = $c->session()->{user};
-    $c->stash(notecount    => $c->or_zero(sub{Ffc::Data::Board::Views::count_notes(  $user)}));
-    $c->stash(newmsgscount => $c->or_zero(sub{Ffc::Data::Board::Views::count_newmsgs($user)}));
-    $c->stash(newpostcount => $c->or_zero(sub{Ffc::Data::Board::Views::count_newpost($user)}));
+    $c->stash(notecount    => $c->or_zero(sub{Ffc::Data::Board::Views::count_notes(   $user)}));
+    $c->stash(newmsgscount => $c->or_zero(sub{Ffc::Data::Board::Views::count_newmsgs( $user)}));
+    $c->stash(newpostcount => $c->or_zero(sub{Ffc::Data::Board::Views::count_newposts($user)}));
 }
 sub search {
     my $c = shift;

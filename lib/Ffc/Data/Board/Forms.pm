@@ -18,7 +18,7 @@ sub delete_post {
     die qq(Keine Postid angegeben) unless $id;
     die qq{Postid ungültig} unless $id =~ m/\A\d+\z/xms;
     my $dbh = Ffc::Data::dbh();
-    my $sql = sprintf 'DELETE FROM '.$Ffc::Data::Prefix.'posts WHERE %s=? and %s=? AND (%s IS NULL OR %s=%s);', map {$dbh->quote_identifier($_)} qw(id from to to from);
+    my $sql = sprintf 'DELETE FROM '.$Ffc::Data::Prefix.'posts WHERE id=? and user_from=? AND (user_to IS NULL OR user_from=user_to);';
     $dbh->do( $sql, undef, $id, $from );
 }
 
@@ -31,7 +31,7 @@ sub insert_post {
     $cid = _get_category_id($c) if $c;
     $t = _get_userid( $t, 'Empfänger des neuen Beitrages' ) if $t;
     my $dbh = Ffc::Data::dbh();
-    my $sql = 'INSERT INTO '.$Ffc::Data::Prefix.'posts ('.join(', ',map {$dbh->quote_identifier($_)} qw(from to text posted category)).') VALUES (?, ?, ?, current_timestamp, ?)';
+    my $sql = 'INSERT INTO '.$Ffc::Data::Prefix.'posts (user_from, user_to, textdata, posted, category) VALUES (?, ?, ?, current_timestamp, ?)';
     $dbh->do( $sql, undef, $f, $t, $d, $cid );
 }
 
@@ -43,9 +43,7 @@ sub update_post {
     die qq(Keine Postid angegeben) unless $i;
     die qq{Postid ungültig} unless $i =~ m/\A\d+\z/xms;
     my $dbh = Ffc::Data::dbh();
-    my $fromstr = $dbh->quote_identifier('from');
-    my $tostr = $dbh->quote_identifier('to');
-    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'posts SET text=?, posted=current_timestamp WHERE id=? AND '.$fromstr.'=? AND ('.$tostr.' IS NULL OR '.$tostr.'='.$fromstr.');';
+    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'posts SET textdata=?, posted=current_timestamp WHERE id=? AND user_from=? AND (user_to IS NULL OR user_from=user_to);';
     Ffc::Data::dbh()->do( $sql, undef, $d, $i, $f );
 }
 

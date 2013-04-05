@@ -14,10 +14,10 @@ CREATE TABLE "${Prefix}users" (
 
 CREATE TABLE "${Prefix}posts" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
-  "from" int(11) NOT NULL,
+  "user_from" int(11) NOT NULL,
   "posted" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "text" text NOT NULL,
-  "to" int(11),
+  "textdata" text NOT NULL,
+  "user_to" int(11),
   "category" bigint
 );
 
