@@ -41,10 +41,13 @@ sub check_call {    # alle aufrufoptionen durchprobieren
         }
         push @okparams, $par->{good};
     }
+    my @ret;
     {
-        eval { $code->(@okparams) };
-        ok(!$@, qq~good run of "$sname('~.join(q[', '], map { m/\n/xms ? (split("\n", $_, 2))[0].' ...' : $_ } @okparams).qq~')" => "$@" went ok~);
+        eval { @ret = $code->(@okparams) };
+        ok(!$@, qq~good run of "$sname('~.join(q[', '], map { m/\n/xms ? (split("\n", $_, 2))[0].' ...' : $_ } @okparams).qq~')" went ok~);
+        diag($@) if $@;
     }
+    return @ret;
 }
 
 sub just_call {

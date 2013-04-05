@@ -15,19 +15,6 @@ sub _get_username { &Ffc::Data::Auth::get_username }
 sub _get_categories_sql {
     my $p = $Ffc::Data::Prefix;
     return << "EOSQL";
-SELECT c.name       AS name, 
-       c.short      AS short,
-       COUNT(p1.id) AS cnt,
-       1            AS sort
-  FROM ${p}categories c
-  LEFT OUTER JOIN ${p}lastseenforum f ON  f.category   =  c.id 
-                                      AND f.userid     =  ?
-  LEFT OUTER JOIN ${p}posts p1        ON  p1.category  =  c.id 
-                                      AND p1.posted    >= COALESCE(f.lastseen,0) 
-                                      AND p1.user_from != f.userid
-                                      AND p1.user_to   IS NULL
-  GROUP BY c.id
-UNION
 SELECT 'Allgemein'  AS name,
        ''           AS short,
        COUNT(p2.id) AS cnt,
@@ -37,7 +24,23 @@ SELECT 'Allgemein'  AS name,
     AND p2.posted    >= (SELECT u.lastseenforum FROM ${p}users u WHERE u.id=? LIMIT 1)
     AND p2.user_from != ?
     AND p2.user_to   IS NULL
-  ORDER BY sort, name
+
+UNION
+
+SELECT c.name       AS name, 
+       c.short      AS short,
+       COUNT(p1.id) AS cnt,
+       1            AS sort
+  FROM ${p}categories c
+  LEFT OUTER JOIN ${p}lastseenforum f ON  f.category   =  c.id 
+                                      AND f.userid     =  ?
+  LEFT OUTER JOIN ${p}posts p1        ON  p1.category  =  c.id 
+                                      AND p1.posted    >= COALESCE(f.lastseen,0) 
+                                      AND p1.user_from != ?
+                                      AND p1.user_to   IS NULL
+  GROUP BY c.id
+
+ORDER BY sort, name
 EOSQL
 }
 
@@ -51,7 +54,7 @@ sub count_newposts {
     my $userid = _get_userid( shift, 'Beitragszähler' );
     my $sql = _get_categories_sql();
     $sql = "SELECT SUM(t.cnt) FROM ($sql) t";
-    return (Ffc::Data::dbh()->selectrow_array($sql, undef, ($userid) x 3 ))[0];
+    return (Ffc::Data::dbh()->selectrow_array($sql, undef, ($userid) x 4 ))[0];
 }
 
 sub count_notes {
@@ -63,7 +66,7 @@ sub count_notes {
 sub get_categories {
     my $userid = _get_userid( shift, 'Kategorieliste' );
     my $sql = _get_categories_sql();
-    return Ffc::Data::dbh()->selectall_arrayref($sql, undef, ($userid) x 3);
+    return Ffc::Data::dbh()->selectall_arrayref($sql, undef, ($userid) x 4);
 }
 
 sub get_notes { 
@@ -108,7 +111,6 @@ sub _get_stuff {
     $page = 1 unless $page and $page =~ m/\A\d+\z/xms;
     my $q = $query ? q{AND p.text LIKE ?} : '';
     my $p = $Ffc::Data::Prefix;
-    my $l = _get_categories_sql();
     my $sql = << "EOSQL";
 SELECT p.id, p.textdata, p.posted, 
        c.name, COALESCE(c.short,''),
