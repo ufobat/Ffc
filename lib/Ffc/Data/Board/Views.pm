@@ -71,6 +71,7 @@ sub get_categories {
 
 sub get_notes { 
     my $userid = _get_userid( shift, 'Notizenliste' );
+    $_[2] = '';
     return _get_stuff( 'notes', $userid, @_[ 0 .. 3 ], 'p.user_from=? AND p.user_to=p.user_from', $userid );
 }
 sub get_forum { 
@@ -85,6 +86,7 @@ sub get_msgs  {
         $where .= ' AND ( p.user_from=? OR p.user_to=? )';
         push @params, $userid, $userid;
     }
+    $_[2] = '';
     return _get_stuff( 'msgs', $userid, @_[ 0 .. 3 ], $where, @params );
 }
 
@@ -97,6 +99,7 @@ sub get_post {
     die q{Keine ID für den Beitrag angegeben} unless $postid;
     die q{Ungültige ID für den Beitrag angegeben} unless $postid =~ m/\A\d+\z/xms;
     my $where = 'p.id=?';
+    $_[2] = '' unless $act eq 'forum';
     my $data = _get_stuff( $act, $userid, @_[ 0 .. 3 ], $where, $postid );
     die q{Kein Datensatz gefunden} unless @$data;
     return $data->[0];
@@ -142,9 +145,20 @@ SELECT p.id, p.textdata, p.posted,
   LEFT  OUTER JOIN ${p}categories    c ON c.id = p.category
   LEFT  OUTER JOIN ${p}lastseenforum l ON c.id = l.category AND l.userid = u.id
   WHERE $where $q
+EOSQL
+    if ( $cat ) {
+        $sql .= << "EOSQL";
     AND ( c.short = ? OR ( ( ? = '' OR ? IS NULL ) AND p.category IS NULL) )
+EOSQL
+    }
+    $sql .= << "EOSQL";
   ORDER BY p.posted DESC LIMIT ? OFFSET ?
 EOSQL
+    push @params, "\%$query\%" if $query;
+    push @params, ( $cat, $cat, $cat ) if $cat;
+    push @params, $Ffc::Data::Limit, ( ( $page - 1 ) * $Ffc::Data::Limit );
+    unshift @params, $userid;
+#Test::More::diag(Data::Dumper::Dumper( { sql => $sql, userid => $userid, params => \@params, query => [( $query ? "\%$query\%" : () )], cat => [$cat, $cat, $cat]}));
     return [ map { my $d = $_;
             $d = {
                 text      => Ffc::Data::Formats::format_text($d->[1], $c),
@@ -179,10 +193,7 @@ EOSQL
                 || ( $d->{to} && $d->{to}->{chatable} ) 
                 ? 1 : 0;
             $d;
-        } @{ Ffc::Data::dbh()
-          ->selectall_arrayref( $sql, undef, $userid, @params, ( $query ? "\%$query\%" : () ), $cat, $cat, $cat,
-            $Ffc::Data::Limit,
-            ( ( $page - 1 ) * $Ffc::Data::Limit ) ) } ];
+        } @{ Ffc::Data::dbh()->selectall_arrayref( $sql, undef, @params ) } ];
 }
 
 1;

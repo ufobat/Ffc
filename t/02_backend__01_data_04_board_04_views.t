@@ -15,7 +15,7 @@ use Ffc::Data::Board;
 use Ffc::Data::Board::Forms;
 srand;
 
-use Test::More tests => 91;
+use Test::More tests => 137;
 
 Test::General::test_prepare();
 
@@ -238,7 +238,20 @@ qq(update users status for act "$_" before next insert failed: $@)
 {
     note('testing date retrieving');
     sleep 1.1;    # works only on seconds scale
-    my $user = Mock::Testuser->new_active_user();
+    my $user  = Mock::Testuser->new_active_user();
+    my $user2 = Mock::Testuser->new_active_user();
+    {
+        Ffc::Data::Board::Forms::insert_post( $user->{name},
+            Test::General::test_r(), undef, $user->{name} )
+          for 1 .. ( 10 + int rand 20 );
+        Ffc::Data::Board::Forms::insert_post( $user->{name},
+            Test::General::test_r(), undef, $user2->{name} )
+          for 1 .. ( 5 + int rand 10 );
+        Ffc::Data::Board::Forms::insert_post( $user2->{name},
+            Test::General::test_r(), undef, $user->{name} )
+          for 1 .. ( 5 + int rand 10 );
+    }
+
     for (qw(forum msgs notes)) {
         eval { Ffc::Data::Board::update_user_stats( $user->{name}, $_ ) };
         diag(qq(update users status for act "$_" before next insert failed: $@))
@@ -256,67 +269,166 @@ qq(update users status for act "$_" before next insert failed: $@)
         emptyerror => 'Kein Benutzername angegeben',
     };
     my @paramstest = (
-        { name => 'page',  good => 1,                       noemptycheck => 1 },
-        { name => 'query', good => Test::General::test_r(), noemptycheck => 1 },
-        {
-            name     => 'category',
-            good     => Test::General::test_get_rand_category()->[2],
-            bad      => [ ' ', 'a', Test::General::test_get_non_category_short() ],
-            errormsg => ['Kategoriekürzel ungültig', 'Kategorie ungültig'],
-            noemptycheck => 1
-        },
-        {
-            name         => 'controller',
-            good         => Mock::Controller->new(),
-            noemptycheck => 1
-        },
+        { name => 'page',  good => 1,  noemptycheck => 1 },
+        { name => 'query', good => '', noemptycheck => 1 },
     );
+    my $cattest = {
+        name => 'category',
+        good => Test::General::test_get_rand_category()->[2],
+        bad  => [ ' ', 'a', Test::General::test_get_non_category_short() ],
+        errormsg     => [ 'Kategoriekürzel ungültig', 'Kategorie ungültig' ],
+        noemptycheck => 1
+    };
+    my $controller     = Mock::Controller->new();
+    my $controllertest = {
+        name         => 'controller',
+        good         => $controller,
+        noemptycheck => 1
+    };
     {
         note(
 q{sub get_post( $action, $username, $postid, $page, $search, $category, $controller )}
         );
-        my $code     = \&Ffc::Data::Board::Views::get_post;
-        my $name     = 'get_post';
+        my $code    = \&Ffc::Data::Board::Views::get_post;
+        my $name    = 'get_post';
         my $acttest = {
             name       => 'action',
             good       => 'forum',
             bad        => [ '', '   ', 'aaaaaaaaaaaaa' ],
             emptyerror => 'Aktion nicht angegeben',
-            errormsg   => [ 'Aktion nicht angegeben', 'Aktion unbekannt' ],
+            errormsg => [ 'Aktion nicht angegeben', 'Aktion unbekannt' ],
         };
         my $posttest = {
             name => 'postid',
             good => do {
                 my @ids = map { $_->[0] } @{
                     Ffc::Data::dbh()->selectall_arrayref(
-                            'SELECT id FROM '
+                        'SELECT p.id FROM '
                           . $Ffc::Data::Prefix
-                          . 'posts WHERE user_to IS NULL'
+                          . 'posts p INNER JOIN '
+                          . $Ffc::Data::Prefix
+                          . 'categories c ON c.id=p.category WHERE p.user_to IS NULL AND c.short=?',
+                        undef, $cattest->{good}
                     )
                 };
-                $ids[ int rand $ids ];
+                $ids[ int rand $#ids ];
             },
-            bad        => [ '', '  ', 'aaaa', (Test::General::test_get_max_postid + 1)],
-            errormsg  => [q{Keine ID für den Beitrag angegeben}, (q{Ungültige ID für den Beitrag}) x 2, q{Kein Datensatz gefunden}],
+            bad      => [ '', '  ', 'aaaa' ],
+            errormsg => [
+                q{Keine ID für den Beitrag angegeben},
+                q{Ungültige ID für den Beitrag}
+            ],
             emptyerror => q{Keine ID für den Beitrag angegeben},
         };
-        my $post = check_call( $code, $name, $acttest, $usertest, $posttest,
-            @paramstest );
-        is(
-            $post->{raw},
-            (
-                Ffc::Data::dbh()->selectrow_array(
-                    'SELECT textdata FROM '
-                      . $Ffc::Data::Prefix
-                      . 'posts WHERE id=?',
-                    undef,
-                    $posttest->{good}
-                )
-              )[0],
-            'returned a single post ok'
-        );
+        {
+            my ($post) =
+              check_call( $code, $name, $acttest, $usertest, $posttest,
+                @paramstest, $cattest, $controllertest );
+            is(
+                $post->{raw},
+                (
+                    Ffc::Data::dbh()->selectrow_array(
+                        'SELECT textdata FROM '
+                          . $Ffc::Data::Prefix
+                          . 'posts WHERE id=?',
+                        undef,
+                        $posttest->{good}
+                    )
+                  )[0],
+                'returned a single post with category ok'
+            );
+        }
+        {
+            my @testmatrix = ( [ 0, 0 ], [ 1, 0 ], [ 0, 1 ], [ 1, 1 ], );
+            @testmatrix = map {
+                my $act = $_;
+                map { [ $act => @$_ ] } @testmatrix
+            } qw(forum notes msgs );
+            my $userid = Ffc::Data::Auth::get_userid( $user->{name} );
+            for my $t (@testmatrix) {
+
+                #diag(Dumper $t );
+                my ( $act, $has_where, $has_cat ) = @$t;
+                my $category = [ '', '', '' ];
+                my $query = '';
+                my @where;
+                my @params;
+
+                if ( $act eq 'notes' or $act eq 'msgs' ) {
+                    push @where,  'user_from=?';
+                    push @params, $userid;
+                }
+
+                if ( $act eq 'msgs' ) {
+                    $where[-1] .= ' OR user_to=?';
+                    $where[-1] = "( $where[-1] )";
+                    push @params, $userid;
+                }
+
+                if ( $act eq 'notes' ) {
+                    push @where,  'user_to=?';
+                    push @params, $userid;
+                }
+
+                $has_cat = 0 unless $act eq 'forum';
+                if ($has_cat) {
+                    push @where, 'category=?';
+                    $category = Test::General::test_get_rand_category();
+                    push @params, $category->[0];
+                }
+
+                #diag(Dumper { where => \@where, params => \@params } );
+                my $sql =
+                  'SELECT id, textdata FROM ' . $Ffc::Data::Prefix . 'posts';
+                if (@where) {
+                    $sql .= ' WHERE ' . join ' AND ', @where;
+                }
+                my $posts = [];
+                {
+                    eval {
+                        $posts = Ffc::Data::dbh()
+                          ->selectall_arrayref( $sql, undef, @params );
+                    };
+                    die qq~no post for test available~
+                      . Dumper {
+                        t        => $t,
+                        ategory  => $category,
+                        query    => $query,
+                        user     => $user,
+                        where    => \@where,
+                        params   => \@params,
+                        sql      => $sql,
+                        dollarat => $@
+                      }
+                      unless @$posts;
+                }
+                my $post = $posts->[ int rand @$posts ];
+                if ($has_where) {
+                    $query = substr( $post->[1], 0, length $post->[1] );
+                }
+                note(   qq~checking "get_post()" in act "$act" with~
+                      . ( $has_cat ? '' : 'out' )
+                      . q~ category and with~
+                      . ( $has_where ? '' : 'out' )
+                      . ' where' );
+
+#q{sub get_post( $action, $username, $postid, $page, $search, $category, $controller )}
+                {
+                    my $post_test;
+                    eval {
+                        $post_test = $code->(
+                            $act, $user->{name}, $post->[0], 1, $query,
+                            $category->[2], $controller
+                        );
+                    };
+                    ok( !$@, 'post fetched' );
+                    is( $post_test->{raw}, $post->[1], 'correct post fetched' );
+                }
+            }
+        }
     }
-    die;
+}
+__END__
     {
         note(
 q{sub get_notes( $username, $page, $search, $category, $controller )}
