@@ -33,7 +33,7 @@ use_ok('Ffc::Data::Formats');
 {
     note('checking format_text');
     my @chars = ('a'..'z', 0..9, '.');
-    my $zs = sub { join '', map({;$chars[int rand $#chars]} 0 .. 4 + int rand 8) };
+    my $zs = sub { join '', map({;$chars[int rand scalar @chars]} 0 .. 4 + int rand 8) };
     my $tu = sub { 'http://www.'.$zs->().'.de' };
     my $c = Mock::Controller->new();
     {

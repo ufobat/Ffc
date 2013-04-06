@@ -71,8 +71,9 @@ sub get_categories {
 
 sub get_notes { 
     my $userid = _get_userid( shift, 'Notizenliste' );
-    $_[2] = '';
-    return _get_stuff( 'notes', $userid, @_[ 0 .. 3 ], 'p.user_from=? AND p.user_to=p.user_from', $userid );
+    my @params = @_[0..3];
+    $params[2] = '';
+    return _get_stuff( 'notes', $userid, @params, 'p.user_from=? AND p.user_to=p.user_from', $userid );
 }
 sub get_forum { 
     return _get_stuff( 'forum', _get_userid( shift, 'Beitragsliste' ), @_[ 0 .. 3 ], 'p.user_to IS NULL' );
@@ -86,8 +87,9 @@ sub get_msgs  {
         $where .= ' AND ( p.user_from=? OR p.user_to=? )';
         push @params, $userid, $userid;
     }
-    $_[2] = '';
-    return _get_stuff( 'msgs', $userid, @_[ 0 .. 3 ], $where, @params );
+    my @params2 = @_[0..3];
+    $params2[2] = '';
+    return _get_stuff( 'msgs', $userid, @params2, $where, @params );
 }
 
 sub get_post {

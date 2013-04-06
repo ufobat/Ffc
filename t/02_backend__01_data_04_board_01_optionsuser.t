@@ -221,7 +221,7 @@ use_ok('Ffc::Data::Board::OptionsUser');
         my $user     = Test::General::test_get_rand_user();
         my $username = $user->{name};
         my $c        = Mock::Controller->new();
-        my $theme    = $Ffc::Data::Themes[ int rand $#Ffc::Data::Themes ];
+        my $theme    = $Ffc::Data::Themes[ int rand scalar @Ffc::Data::Themes ];
         my $illegal_theme = Test::General::test_r();
         $illegal_theme = Test::General::test_r()
           while $illegal_theme ~~ @Ffc::Data::Themes;
@@ -274,7 +274,7 @@ use_ok('Ffc::Data::Board::OptionsUser');
         for my $i ( 0 .. 9 ) {
             my $new_theme = '';
             $new_theme =
-              $Ffc::Data::Themes[ int rand $#Ffc::Data::Themes ]
+              $Ffc::Data::Themes[ int rand scalar @Ffc::Data::Themes ]
               while !$new_theme
               or $new_theme eq $theme;
             isnt( $theme, $new_theme,

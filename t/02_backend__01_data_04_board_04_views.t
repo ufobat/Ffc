@@ -15,7 +15,7 @@ use Ffc::Data::Board;
 use Ffc::Data::Board::Forms;
 srand;
 
-use Test::More tests => 137;
+use Test::More tests => 219;
 
 Test::General::test_prepare();
 
@@ -406,11 +406,6 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
                 if ($has_where) {
                     $query = substr( $post->[1], 0, length $post->[1] );
                 }
-                note(   qq~checking "get_post()" in act "$act" with~
-                      . ( $has_cat ? '' : 'out' )
-                      . q~ category and with~
-                      . ( $has_where ? '' : 'out' )
-                      . ' where' );
 
 #q{sub get_post( $action, $username, $postid, $page, $search, $category, $controller )}
                 {
@@ -422,35 +417,219 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
                         );
                     };
                     ok( !$@, 'post fetched' );
+                    diag(   qq~checking "get_post()" in act "$act" with~
+                          . ( $has_cat ? '' : 'out' )
+                          . q~ category and with~
+                          . ( $has_where ? '' : 'out' )
+                          . ' where' )
+                      if $@;
                     is( $post_test->{raw}, $post->[1], 'correct post fetched' );
                 }
             }
         }
     }
+
+    sub get_testcases {
+        my ( $code, $name, $secondparam, $wherestr, @params ) = @_;
+        note(
+qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
+        );
+        my $controller  = Mock::Controller->new();
+        my $has_cats    = 0;
+        my $privmsgs    = 0;
+        my $asnotes     = 0;
+        my $cattest     = { good => '', noemptycheck => 1, name => 'category' };
+        my $insert_code = sub {
+            my $notyou = shift;
+            my $userfrom = $user->{name};
+            if ( $notyou ) {
+                note('generating messages from a different user');
+                $userfrom = Mock::Testuser->new_active_user()->{name};
+            }
+            if ($secondparam) {
+                if ( $secondparam eq $userfrom ) {
+                    Ffc::Data::Board::Forms::insert_post( $user->{name},
+                        Test::General::test_r(), undef, $secondparam )
+                      for 0 .. ( ( 3 * $Ffc::Data::Limit ) + int rand 20 );
+                    $asnotes = 1;
+                }
+                else {
+                    $privmsgs = 1;
+                    for ( 0 .. ( ( 3 * $Ffc::Data::Limit ) + int rand 20 ) ) {
+                        if ( $notyou or int rand 2 ) {
+                            Ffc::Data::Board::Forms::insert_post( $secondparam,
+                                Test::General::test_r(), undef, $user->{name} );
+                        }
+                        else {
+                            Ffc::Data::Board::Forms::insert_post( $user->{name},
+                                Test::General::test_r(), undef, $secondparam );
+                        }
+                    }
+
+                }
+            }
+            else {
+                $has_cats = 1;
+                Ffc::Data::Board::Forms::insert_post( $userfrom,
+                    Test::General::test_r(), undef, undef )
+                  for 0 .. ( ( 3 * $Ffc::Data::Limit ) + int rand 20 );
+            }
+        };
+        $insert_code->();
+
+        my @ret = check_call( $code, $name, $usertest, @paramstest, $cattest,
+            $controllertest );
+        ok( @ret, 'something was returned' );
+        my $allposts = [];
+        {
+            note('fetching test data');
+            my $sql =
+                'SELECT id, textdata, user_from, user_to, category FROM '
+              . $Ffc::Data::Prefix
+              . "posts WHERE $wherestr ORDER BY id DESC";
+            eval {
+                $allposts =
+                  Ffc::Data::dbh()->selectall_arrayref( $sql, undef, @params );
+            };
+            ok( !$@, 'database query for getting postings for controlling' );
+            diag("$sql: $@") if $@;
+            ok( @$allposts, 'got something for controlling' );
+        }
+        my @privmsgs;
+        if ($privmsgs) {
+            my $secondparam = Ffc::Data::Auth::get_userid($secondparam);
+            @privmsgs =
+              grep { $secondparam == $_->[2] or $secondparam == $_->[3] }
+              @$allposts;
+        }
+        my $testpost = $allposts->[ int rand scalar @$allposts ];
+        my $pages    = int @$allposts / $Ffc::Data::Limit;
+        $pages++ if $pages < @$allposts / $Ffc::Data::Limit;
+        for my $i ( 1 .. 3 ) {
+            my @tposts = splice @$allposts, 0, $Ffc::Data::Limit;
+            my $ret = [];
+            {
+                eval {
+                    $ret = $code->( $user->{name}, $i, '', '', $controller );
+                };
+                ok( !$@, qq'code for "$name" on page "$i" ran ok' );
+                diag($@) if $@;
+            }
+            ok( @$ret, qq'code returned somethin' );
+            is( $#$ret, $#tposts, 'return count ok' );
+            my $errors = 0;
+            my @fields =
+              qw(text start raw active newpost timestamp ownpost category from to editable id iconspresent);
+            for my $i ( 0 .. $#ret ) {
+                for (@fields) {
+                    unless ( exists $ret->[$i]->{$_} ) {
+                        $errors++;
+                        diag("field '$_' not found in return hash");
+                    }
+                }
+                $errors++ unless $ret->[$i]->{raw} ne $tposts[1];
+            }
+            ok( !$errors, 'testdata retrieved ok' );
+        }
+        {
+            my $ret = [];
+            {
+                eval {
+                    $ret = $code->(
+                        $user->{name}, 1, $testpost->[1], '', $controller
+                    );
+                };
+                ok( !$@, qq'code for "$name" for query ran ok' );
+                diag($@) if $@;
+            }
+            ok( @$ret, qq'code returned somethin' );
+            is( @$ret, 1, 'return count ok' );
+            is( $ret->[0]->{raw},
+                $testpost->[1], 'return value is looking good' );
+        }
+        if ($privmsgs) {
+            my $ret = [];
+            {
+                eval {
+                    $ret = $code->(
+                        $user->{name}, 1, $testpost->[1], '', $controller,
+                        $secondparam
+                    );
+                };
+                ok( !$@,
+                    qq'code for "$name" for specific conversation ran ok' );
+                diag($@) if $@;
+            }
+            ok( @$ret, qq'code returned somethin' );
+            is( @$ret, 1, 'return count ok' );
+            my $errors = 0;
+            for my $r (@$ret) {
+                $errors++ unless grep { $r->{raw} eq $_->[1] } @privmsgs;
+            }
+            is( $errors, 0,
+                'all messages are private messages to the single contact' );
+        }
+        
+        if (not $asnotes) {
+            note('"newpost"-flag messages testen');
+              ; # Das System funktionert nur sekundengenau und gibt im Zweifelsfall immer mehr zurück
+            for (qw(forum msgs notes)) {
+                eval {
+                    Ffc::Data::Board::update_user_stats( $user->{name}, $_ );
+                };
+                diag(
+qq(update users status for act "$_" before next insert failed: $@)
+                ) if $@;
+            }
+            sleep 1.1;
+            $insert_code->(1);
+            my $ret = [];
+            {
+                eval {
+                    $ret = $code->(
+                        $user->{name}, 1, '', '', $controller,
+                        $secondparam
+                    );
+                };
+                ok( !$@,
+                    qq'code for "$name" for new messages ran ok' );
+                diag($@) if $@;
+            }
+            ok( @$ret, qq'code returned somethin' );
+            ok($ret->[0]->{newpost}, q(new messages are marked as such));
+        }
+
+        if ($has_cats) {
+            note('checking for categories');
+            diag('catgegorien testen!!!!');
+        }
+    }
+
+    note('let us test the "get_" functions very deeply');
+
+    {
+        my $code        = \&Ffc::Data::Board::Views::get_notes;
+        my $name        = 'get_notes';
+        my $secondparam = $user->{name};
+        my $where       = 'user_from=? and user_from=user_to';
+        my @params      = Ffc::Data::Auth::get_userid( $user->{name} );
+        get_testcases( $code, $name, $secondparam, $where, @params );
+    }
+    {
+        my $code        = \&Ffc::Data::Board::Views::get_msgs;
+        my $name        = 'get_msgs';
+        my $secondparam = $user2->{name};
+        my $where       = '( user_from=? OR user_to=? ) AND user_from<>user_to';
+        my @params      = ( Ffc::Data::Auth::get_userid( $user->{name} ) ) x 2;
+        get_testcases( $code, $name, $secondparam, $where, @params );
+    }
+    {
+        my $code        = \&Ffc::Data::Board::Views::get_forum;
+        my $name        = 'get_forum';
+        my $secondparam = undef;
+        my $where       = 'user_to IS NULL';
+        my @params      = ();
+        get_testcases( $code, $name, $secondparam, $where, @params );
+    }
 }
-__END__
-    {
-        note(
-q{sub get_notes( $username, $page, $search, $category, $controller )}
-        );
-        my $code = \&Ffc::Data::Board::Views::get_notes;
-        my $name = 'get_notes';
-        check_call( $code, $name, $usertest, @paramstest );
-    }
-    {
-        note(
-q{sub get_forum( $username, $page, $search, $category, $controller )}
-        );
-        my $code = \&Ffc::Data::Board::Views::get_forum;
-        my $name = 'get_forum';
-        check_call( $code, $name, $usertest, @paramstest );
-    }
-    {
-        note(
-            q{sub get_msgs( $username, $page, $search, $category, $controller )}
-        );
-        my $code = \&Ffc::Data::Board::Views::get_msgs;
-        my $name = 'get_msgs';
-        check_call( $code, $name, $usertest, @paramstest );
-    }
-}
+

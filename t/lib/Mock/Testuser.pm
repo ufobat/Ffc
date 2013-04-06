@@ -14,7 +14,7 @@ sub new_inactive_user  { shift->_new( 0, 0 ) }
 sub _new { bless _generate_testuser( @_[ 1, 2 ] ), $_[0] }
 
 sub randstr {
-    my $pick = sub { $_[0][ int rand $#{ $_[0] } ] };
+    my $pick = sub { $_[0][ int rand scalar @{ $_[0] } ] };
     my $alphachars = [ 'a' .. 'z', 'A' .. 'Z' ];
     my $allchars = [ 0 .. 9, '_', @$alphachars ];
     return join '', map( {
