@@ -15,7 +15,7 @@ use Ffc::Data::Board;
 use Ffc::Data::Board::Forms;
 srand;
 
-use Test::More tests => 219;
+use Test::More tests => 285;
 
 Test::General::test_prepare();
 
@@ -75,15 +75,7 @@ qq'counting code "$t->{name}" returned zero because the database is still empty'
         }
     }
 
-    sleep 1.1
-      ; # Das System funktionert nur sekundengenau und gibt im Zweifelsfall immer mehr zurück
-    for (qw(forum msgs notes)) {
-        eval { Ffc::Data::Board::update_user_stats( $user->{name}, $_ ) };
-        diag(qq(update users status for act "$_" before next insert failed: $@))
-          if $@;
-    }
-    sleep 1.1
-      ; # Das System funktionert nur sekundengenau und gibt im Zweifelsfall immer mehr zurück
+    Test::General::test_update_userstats($user);
 
     for my $t (@tests) {
         my $cnt = 10 + int rand 30;
@@ -130,15 +122,7 @@ qq'counting code "$t->{name}" returned zero because the database is still empty'
 {
     note(q{sub get_categories( $username )});
     my $user = Mock::Testuser->new_active_user();
-    sleep 1.1
-      ; # Das System funktionert nur sekundengenau und gibt im Zweifelsfall immer mehr zurück
-    for (qw(forum msgs notes)) {
-        eval { Ffc::Data::Board::update_user_stats( $user->{name}, $_ ) };
-        diag(qq(update users status for act "$_" before next insert failed: $@))
-          if $@;
-    }
-    sleep 1.1
-      ; # Das System funktionert nur sekundengenau und gibt im Zweifelsfall immer mehr zurück
+    Test::General::test_update_userstats($user);
     my @ret = check_call(
         \&Ffc::Data::Board::Views::get_categories,
         get_categories => {
@@ -170,16 +154,7 @@ qq'counting code "$t->{name}" returned zero because the database is still empty'
     for my $i ( 0 .. 2 )
     {    # run multiple tests to test creation of category-logging
         note("category count run number '$i'");
-        sleep 1.1
-          ; # Das System funktionert nur sekundengenau und gibt im Zweifelsfall immer mehr zurück
-        for (qw(forum msgs notes)) {
-            eval { Ffc::Data::Board::update_user_stats( $user->{name}, $_ ); };
-            diag(
-qq(update users status for act "$_" before next insert failed: $@)
-            ) if $@;
-        }
-        sleep 1.1
-          ; # Das System funktionert nur sekundengenau und gibt im Zweifelsfall immer mehr zurück
+        Test::General::test_update_userstats($user);
         my $user2 = Mock::Testuser->new_active_user();
         my %catcounter;
         for my $cat ( '', @cats ) {
@@ -220,17 +195,7 @@ qq(update users status for act "$_" before next insert failed: $@)
         }
 
         if ( $i < 2 ) {
-            sleep 1.1
-              ; # Das System funktionert nur sekundengenau und gibt im Zweifelsfall immer mehr zurück
-            for (@cats) {
-                eval {
-                    Ffc::Data::Board::update_user_stats( $user->{name},
-                        'forum', $_ );
-                };
-                diag("update users status before next insert failed: $@")
-                  if $@;
-            }
-            sleep 1.1;
+            Test::General::test_update_userstats($user, 1);
         }
     }
 }
@@ -252,11 +217,7 @@ qq(update users status for act "$_" before next insert failed: $@)
           for 1 .. ( 5 + int rand 10 );
     }
 
-    for (qw(forum msgs notes)) {
-        eval { Ffc::Data::Board::update_user_stats( $user->{name}, $_ ) };
-        diag(qq(update users status for act "$_" before next insert failed: $@))
-          if $@;
-    }
+    Test::General::test_update_userstats($user);
     my $usertest = {
         name     => 'user name',
         good     => $user->{name},
@@ -440,9 +401,9 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
         my $asnotes     = 0;
         my $cattest     = { good => '', noemptycheck => 1, name => 'category' };
         my $insert_code = sub {
-            my $notyou = shift;
+            my $notyou   = shift;
             my $userfrom = $user->{name};
-            if ( $notyou ) {
+            if ($notyou) {
                 note('generating messages from a different user');
                 $userfrom = Mock::Testuser->new_active_user()->{name};
             }
@@ -470,9 +431,12 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
             }
             else {
                 $has_cats = 1;
-                Ffc::Data::Board::Forms::insert_post( $userfrom,
-                    Test::General::test_r(), undef, undef )
-                  for 0 .. ( ( 3 * $Ffc::Data::Limit ) + int rand 20 );
+                for my $cat ( map( { $_->[2] } @Test::General::Categories ), undef ) {
+                    Ffc::Data::Board::Forms::insert_post( $userfrom,
+                        Test::General::test_r(), $cat, undef )
+#, note('adding forum post with category "'.($cat // '<undef>').'"')
+                      for 0 .. ( ( 3 * $Ffc::Data::Limit ) + int rand 20 );
+                }
             }
         };
         $insert_code->();
@@ -569,39 +533,46 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
             is( $errors, 0,
                 'all messages are private messages to the single contact' );
         }
-        
-        if (not $asnotes) {
-            note('"newpost"-flag messages testen');
-              ; # Das System funktionert nur sekundengenau und gibt im Zweifelsfall immer mehr zurück
-            for (qw(forum msgs notes)) {
-                eval {
-                    Ffc::Data::Board::update_user_stats( $user->{name}, $_ );
-                };
-                diag(
-qq(update users status for act "$_" before next insert failed: $@)
-                ) if $@;
-            }
-            sleep 1.1;
-            $insert_code->(1);
-            my $ret = [];
-            {
-                eval {
-                    $ret = $code->(
-                        $user->{name}, 1, '', '', $controller,
-                        $secondparam
-                    );
-                };
-                ok( !$@,
-                    qq'code for "$name" for new messages ran ok' );
-                diag($@) if $@;
-            }
-            ok( @$ret, qq'code returned somethin' );
-            ok($ret->[0]->{newpost}, q(new messages are marked as such));
-        }
 
-        if ($has_cats) {
-            note('checking for categories');
-            diag('catgegorien testen!!!!');
+        {
+            note('"newpost"-flag messages testen');
+            Test::General::test_update_userstats($user, $has_cats);
+            for my $cat ('', ($has_cats ? map({ $_->[2] } @Test::General::Categories) : ()) ) {
+                my $ret = [];
+                {
+                    eval {
+                        $ret = $code->(
+                            $user->{name}, 1, '', $cat, $controller, $secondparam
+                        );
+                    };
+                    ok( !$@, qq'code for "$name" for new messages ran ok' );
+                    diag($@) if $@;
+                }
+                ok( @$ret,                 qq'code returned somethin' );
+                ok( !$ret->[0]->{newpost}, qq(no new messages are available for "$name") );
+                diag( Dumper $ret ) if $ret->[0]->{newpost};
+            }
+            Test::General::test_update_userstats($user, $has_cats);
+            $insert_code->(1);
+            for my $cat ('', ($has_cats ? map({ $_->[2] } @Test::General::Categories) : ()) ) {
+                my $ret = [];
+                {
+                    eval {
+                        $ret = $code->(
+                            $user->{name}, 1, '', $cat, $controller, $secondparam
+                        );
+                    };
+                    ok( !$@, qq'code for "$name" for new messages ran ok' );
+                    diag($@) if $@;
+                }
+                ok( @$ret,                qq'code returned somethin' );
+                if ( $asnotes ) {
+                    ok( !$ret->[0]->{newpost}, q(new notes are not marked specially) );
+                }
+                else {
+                    ok( $ret->[0]->{newpost}, q(new messages are marked as such) );
+                }
+            }
         }
     }
 

@@ -18,6 +18,7 @@ sub test_get_max_postid {
         )
     )[0];
 }
+
 sub test_get_max_categoryid {
     (
         Ffc::Data::dbh()->selectrow_array(
@@ -42,7 +43,8 @@ sub test_prepare {
     $App->log->level('error');
     Ffc::Data::set_config($App);
     Mock::Database::prepare_testdatabase();
-    @Users = ( map { Mock::Testuser->new_active_user() } 8 .. 16 + int rand 16 );
+    @Users =
+      ( map { Mock::Testuser->new_active_user() } 8 .. 16 + int rand 16 );
     @Categories = @{
         Ffc::Data::dbh()->selectall_arrayref(
                 'SELECT "id", "name", "short" FROM '
@@ -77,7 +79,31 @@ sub test_get_non_username {
 }
 
 sub test_get_max_post {
-    return Ffc::Data::dbh()->selectrow_arrayref('SELECT p."id", p."textdata", p."user_from", p."user_to", p."category" FROM '.$Ffc::Data::Prefix.'posts p ORDER BY p."id" DESC');
+    return Ffc::Data::dbh()
+      ->selectrow_arrayref(
+'SELECT p."id", p."textdata", p."user_from", p."user_to", p."category" FROM '
+          . $Ffc::Data::Prefix
+          . 'posts p ORDER BY p."id" DESC' );
+}
+
+sub test_update_userstats {
+    my $user = shift;
+    my $has_cats = shift;
+    sleep 1.1;
+    for my $act (qw(forum msgs notes)) {
+        for my $cat ( '',
+            ( $has_cats ? map( { $_->[2] } @Categories) : () ) )
+        {
+            eval {
+                Ffc::Data::Board::update_user_stats( $user->{name}, $act,
+                    $cat );
+            };
+            diag(
+qq(update users status for act "$act" before next insert failed: $@)
+            ) if $@;
+        }
+    }
+    sleep 1.1;
 }
 
 1;
