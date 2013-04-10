@@ -35,7 +35,7 @@ our $DbTestdata =
 our $Favicon;
 our $DefaultConfig = {
     "cryptsalt"    => 1000 + int( rand 9999999 ),
-    "dsn"          => "DBI:SQLite:database=",
+    "dsn"          => "DBI:SQLite:database=:memory:",
     "user"         => "",
     "password"     => "",
     "dbprefix"     => '',

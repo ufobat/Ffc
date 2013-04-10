@@ -9,8 +9,7 @@ use Test::General;
 
 use Test::More tests => 34;
 
-use_ok('Ffc');
-my $t = Test::Mojo->new('Ffc');
+my $t = Test::General::test_prepare_frontend('Ffc');
 $t->get_ok('/')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
 
 note('sub switch_act( $app, $controller, $act, $category, $msgsuserid )');

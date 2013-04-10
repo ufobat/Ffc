@@ -7,6 +7,7 @@ use Mock::Config;
 use Mock::Database;
 use Mock::Testuser;
 use Mock::Controller::App;
+use Test::Mojo;
 use Test::More;
 
 our ( @Users, @Categories, $Maxcatid, $Maxuserid, $Config, $App );
@@ -35,16 +36,25 @@ sub test_get_max_userid {
     )[0];
 }
 
-sub test_prepare {
-
-    note('doing some preparations');
-    $Config = Mock::Config->new->{config};
-    $App    = Mojolicious->new();
-    $App->log->level('error');
-    Ffc::Data::set_config($App);
+sub test_prepare_frontend {
+    my $appname = shift;
+    $ENV{ASB_CONFIG} = test_r()
+        while !$ENV{ASB_CONFIG} or -e -r $ENV{ASB_CONFIG};
+    note(qq(using "$ENV{ASB_CONFIG}" - that should generate an in-memory database));
+    use_ok($appname);
+    my $t = Test::Mojo->new($appname);
     Mock::Database::prepare_testdatabase();
+    _generate_some_users();
+    _get_component_values();
+    return $t;
+}
+
+sub _generate_some_users {
     @Users =
       ( map { Mock::Testuser->new_active_user() } 8 .. 16 + int rand 16 );
+}
+
+sub _get_component_values {
     @Categories = @{
         Ffc::Data::dbh()->selectall_arrayref(
                 'SELECT "id", "name", "short" FROM '
@@ -54,6 +64,18 @@ sub test_prepare {
     };
     $Maxcatid  = test_get_max_categoryid();
     $Maxuserid = test_get_max_userid();
+}
+
+sub test_prepare {
+
+    note('doing some preparations');
+    $Config = Mock::Config->new->{config};
+    $App    = Mojolicious->new();
+    $App->log->level('error');
+    Ffc::Data::set_config($App);
+    Mock::Database::prepare_testdatabase();
+    _generate_some_users();
+    _get_component_values();
     return 1;
 }
 
