@@ -61,7 +61,7 @@ sub frontpage {
     $c->error_prepare;
 
     unless ( Ffc::Auth::check_login($c) ) {
-        return Ffc::Auth::login_form($c, 'Bitte melden Sie sich an');
+        return Ffc::Auth::logout($c, 'Bitte melden Sie sich an');
     }
 
     my $page   = $c->param('page')     // 1;
@@ -106,7 +106,7 @@ Ffc::Data::Board::Views::get_categories($user);
         code        => sub { Ffc::Data::Board::update_user_stats($user, $act, $cat) },
         msg         => 'Etwas ist intern schief gegangen, bitte versuchen Sie es später noch einmal.',
         after_error => sub { 
-            Ffc::Auth::login_form($c, 'Etwas ist intern schief gegangen, bitte melden Sie sich an') },
+            Ffc::Auth::logout($c, 'Etwas ist intern schief gegangen, bitte melden Sie sich an') },
     }) ) {
         $c->render('board/frontpage');
     }

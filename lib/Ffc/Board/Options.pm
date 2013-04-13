@@ -12,6 +12,9 @@ use Ffc::Data::General;
 use Ffc::Data::Board::OptionsUser;
 use Ffc::Data::Board::OptionsAdmin;
 
+sub _check_username { &Ffc::Data::Auth::check_username }
+sub _is_user_admin { Ffc::Data::Auth::is_user_admin( Ffc::Data::Auth::get_userid( @_ ) ) }
+
 sub options_form {
     my $c = shift;
     my $s = $c->session;
@@ -72,9 +75,12 @@ sub useradmin_save {
     my $username = $c->param('username');
     my $newpw1   = $c->param('newpw1');
     my $newpw2   = $c->param('newpw2');
-    my $isadmin  = $c->param('admin');
-    my $active   = $c->param('active');
-    if ( Ffc::Data::Auth::check_user( $username) ) {
+    my $isadmin  = $c->param('admin')  ? 1 : 0;
+    my $active   = $c->param('active') ? 1 : 0;
+    if ( not _is_user_admin( $admin ) ) {
+        $c->error_handling({plain => 'Nur Administratoren dürfen dass'});
+    }
+    elsif ( _check_username( $username ) ) {
 
         if ( $c->param('overwriteok') ) {
             $c->error_handling(

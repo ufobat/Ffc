@@ -20,15 +20,16 @@ sub login {
         $self->redirect_to('show');
         return 1;
     }
-    $self->login_form('Anmeldung fehlgeschlagen, Benutzername oder Passwort stimmen nicht.');
+    login_form($self, 'Anmeldung fehlgeschlagen, Benutzername oder Passwort stimmen nicht.');
     return; 
 }
 
 sub logout {
     my $self = shift;
+    my $msg = shift || 'Abmelden bestätigt, bitte melden Sie sich erneut an';
     my $s = $self->session;
     delete $s->{$_} for keys %$s;
-    $self->login_form('Abmelden bestätigt, bitte melden Sie sich erneut an');
+    login_form($self, $msg);
 }
 
 sub login_form {
