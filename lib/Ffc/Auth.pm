@@ -1,9 +1,9 @@
 package Ffc::Auth;
 use Mojo::Base 'Mojolicious::Controller';
 use utf8;
+use Ffc::Board;
 use Ffc::Data;
 use Ffc::Data::Auth;
-use Ffc::Board;
 use Ffc::Errors;
 
 sub _form_prepare {
@@ -26,12 +26,15 @@ sub login {
 
 sub logout {
     my $self = shift;
+    my $s = $self->session;
+    delete $s->{$_} for keys %$s;
     $self->login_form('Abmelden bestätigt, bitte melden Sie sich erneut an');
 }
 
 sub login_form {
     my $self = shift;
-    Ffc::Errors::prepare($self, 'Bitte melden Sie sich an');
+    my $msg = shift || 'Bitte melden Sie sich an';
+    Ffc::Errors::prepare($self, $msg);
     $self->app->switch_act( $self,  'auth' );
     _cancel_session( $self );
     _form_prepare( $self );
@@ -50,9 +53,9 @@ sub _cancel_session {
 sub check_login {
     my $self = shift;
     if ( my $s = $self->session ) {
-        if ( $s->{userid } ) {
+        if ( $s->{user} ) {
             $self->session( expiration => $Ffc::Data::SessionTimeout );
-            return 1 if $s->{userid};
+            return 1 if $s->{user};
         }
     }
     return 0;

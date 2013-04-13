@@ -29,7 +29,7 @@ sub startup {
 
     # Normal route to controller
     $routes->route('/logout')->to('auth#logout')->name('logout');
-    $routes->route('/login')->to('auth#login')->name('login');
+    $routes->route('/login')->via('post')->to('auth#login')->name('login');
     $routes->route('/')->to('board#frontpage')->name('show');
 
     # options

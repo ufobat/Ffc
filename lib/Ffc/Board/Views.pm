@@ -7,8 +7,8 @@ use utf8;
 
 use base 'Ffc::Board::Errors';
 
-use Ffc::Auth;
 use Ffc::Data::General;
+use Ffc::Auth;
 use Ffc::Data::Board;
 use Ffc::Data::Board::Views;
 
