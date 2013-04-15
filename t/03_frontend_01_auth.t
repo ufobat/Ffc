@@ -11,7 +11,7 @@ use Data::Dumper;
 use Test::Mojo;
 use Test::General;
 
-use Test::More tests => 55;
+use Test::More tests => 136;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 
@@ -20,6 +20,15 @@ $t->get_ok('/')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
 $t->get_ok('/msgs')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
 $t->get_ok('/notes')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
 $t->get_ok('/options')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/options')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/optionsadmin')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/search')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/category/aaa')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->get_ok('/delete/123')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/delete')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/new')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->get_ok('/edit/123')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/edit/123')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
 my $user = Test::General::test_get_rand_user();
 
 note('test login');
@@ -37,6 +46,15 @@ $t->get_ok('/logout')->status_is(200)->content_like(qr{Abmelden bestätigt, bitt
 $t->get_ok('/msgs')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
 $t->get_ok('/notes')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
 $t->get_ok('/options')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/options')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/optionsadmin')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/search')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/category/aaa')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->get_ok('/delete/123')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/delete')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/new')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->get_ok('/edit/123')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/edit/123')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
 
 note('test login with wrong password');
 $user->alter_password;
@@ -46,4 +64,13 @@ $t->get_ok('/')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
 $t->get_ok('/msgs')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
 $t->get_ok('/notes')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
 $t->get_ok('/options')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/options')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/optionsadmin')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/search')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/category/aaa')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->get_ok('/delete/123')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/delete')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/new')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->get_ok('/edit/123')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
+$t->post_ok('/edit/123')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
 
