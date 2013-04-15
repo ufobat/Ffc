@@ -9,6 +9,7 @@ use base 'Ffc::Board::Errors';
 
 use Ffc::Data::General;
 use Ffc::Auth;
+use Ffc::Board::Options;
 use Ffc::Data::Board;
 use Ffc::Data::Board::Views;
 
@@ -64,6 +65,11 @@ sub frontpage {
         return Ffc::Auth::logout($c, 'Bitte melden Sie sich an');
     }
 
+    my $act = $s->{act};
+    if ( $act eq 'options' ) {
+        return Ffc::Board::Options::options_form( $c );
+    }
+
     my $page   = $c->param('page')     // 1;
     my $postid = $c->param( 'postid' ) // '';
     my $user = $s->{user};
@@ -79,15 +85,13 @@ sub frontpage {
     }
     my @params = $c->get_params($s, $page);
     my $posts  = [];
-    my $act = $s->{act};
     my $cat = $s->{category};
     Ffc::Data::Board::Views::get_forum(@params);
     given ( $act ) {
-        when('forum'  ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_forum(@params)})}
-        when('notes'  ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_notes(@params)})}
-        when('msgs'   ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_msgs(@params,$s->{msgs_username})})}
-        when('options'){}
-        default        {$c->error_handling({plain=>qq("$act" unbekannt)})}
+        when('forum' ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_forum(@params)})}
+        when('notes' ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_notes(@params)})}
+        when('msgs'  ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_msgs(@params,$s->{msgs_username})})}
+        default       {$c->error_handling({plain=>qq("$act" unbekannt)})}
     }
     if ( $postid and $postid ne '' ) {
         my @post = grep { $_->{id} eq $postid } @$posts;

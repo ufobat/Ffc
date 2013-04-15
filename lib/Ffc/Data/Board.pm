@@ -44,7 +44,7 @@ sub update_user_stats {
         when ( 'forum' ) { _update_user_forum( $userid, @_ ) }
         when ( 'msgs'  ) { _update_user_msgs(  $userid, @_ ) }
         when ( 'notes' ) {}
-        default { die 'Abschnitt ungültig' }
+        default          { die 'Abschnitt ungültig' }
     }
     return 1;
 }
