@@ -38,6 +38,7 @@ our $DefaultConfig = {
     "dsn"          => "DBI:SQLite:database=:memory:",
     "user"         => "",
     "password"     => "",
+    "title"        => "Ffc",
     "dbprefix"     => '',
     "cookiesecret" => join( '',
         map { ( 'a' .. 'z', 'A' .. 'Z', 0 .. 9 )[ int rand 62 ] }
@@ -45,7 +46,7 @@ our $DefaultConfig = {
     "postlimit"       => 16,
     "pagelinkpreview" => 3,
     "sessiontimeout"  => 3600,
-    "debug"           => 0,
+    "debug"           => 1,
     "theme"           => "default",
     "acttitles"       => {
         "forum"   => 'Forum',
