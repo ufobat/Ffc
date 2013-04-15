@@ -61,10 +61,6 @@ sub frontpage {
     my $s = $c->session;
     $c->error_prepare;
 
-    unless ( Ffc::Auth::check_login($c) ) {
-        return Ffc::Auth::logout($c, 'Bitte melden Sie sich an');
-    }
-
     my $act = $s->{act};
     if ( $act eq 'options' ) {
         return Ffc::Board::Options::options_form( $c );

@@ -35,7 +35,7 @@ sub startup {
     my $loggedin = $routes->under(sub{
         $self = shift;
         unless ( Ffc::Auth::check_login($self) ) {
-            return Ffc::Auth::login_form( $self );
+            return Ffc::Auth::logout( $self, 'Bitte melden Sie sich an' );
         }
         return 1;
     });
