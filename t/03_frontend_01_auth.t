@@ -43,7 +43,7 @@ note('test login with wrong password');
 $user->alter_password;
 $t->post_ok( '/login',
     form => { user => $user->{name}, pass => $user->{password} } )
-  ->status_is(200)->content_like(qr'Benutzername oder Passwort ungültig,');
+  ->status_is(500)->content_like(qr'Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv');
 $t->get_ok('/')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
 $t->get_ok('/msgs')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
 $t->get_ok('/notes')->status_is(200)
