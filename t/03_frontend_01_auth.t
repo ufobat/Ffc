@@ -11,7 +11,7 @@ use Data::Dumper;
 use Test::Mojo;
 use Test::General;
 
-use Test::More tests => 43;
+use Test::More tests => 55;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 

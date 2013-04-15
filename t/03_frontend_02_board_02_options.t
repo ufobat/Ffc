@@ -114,6 +114,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
     }
     {
         note('benutzer erzeugen');
+        diag('komplett neue Benutzer erzeugen ist auch noch nicht getestet')
     }
     $t->get_ok('/logout');
 }
