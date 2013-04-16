@@ -12,7 +12,7 @@ use Test::Mojo;
 use Test::General;
 use Mock::Testuser;
 
-use Test::More tests => 367;
+use Test::More tests => 395;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 
@@ -66,7 +66,6 @@ my $t = Test::General::test_prepare_frontend('Ffc');
             $t->post_ok( '/options', form => { theme => $theme } )
               ->status_is(200)->content_like(qr{Einstellungen});
             $check_theme->($theme);
-            die;
         }
         {
             my $theme = $Ffc::Data::Themes[0];
@@ -79,7 +78,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
                   while !$newtheme
                   or grep { $newtheme eq $_ } @Ffc::Data::Themes;
                 $t->post_ok( '/options', form => { theme => $newtheme } )
-                  ->status_is(200)->content_like(qr{Einstellungen});
+                  ->status_is(500)->content_like(qr{Thema ungültig});
                 $check_theme->($theme);
             }
         }

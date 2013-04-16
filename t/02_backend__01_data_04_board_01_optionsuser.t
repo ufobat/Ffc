@@ -13,7 +13,7 @@ use Mock::Testuser;
 use Ffc::Data::Auth;
 srand;
 
-use Test::More tests => 98;
+use Test::More tests => 108;
 
 Test::General::test_prepare();
 
@@ -286,7 +286,8 @@ use_ok('Ffc::Data::Board::OptionsUser');
                 'called ok'
             );
             my $new_value = $get_value->();
-            isnt( $theme, $new_value, 'value changed' );
+            isnt( $theme, $new_value, 'old value does not work anymore' );
+            is($new_value, $new_theme, 'value has been changed' );
             $theme = $new_theme;
         }
     }
