@@ -56,7 +56,7 @@ sub update_theme {
     confess qq{Thema ungültig: $t} unless $t ~~ @Ffc::Data::Themes; 
     $s->{theme} = $t;
     my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET theme=? WHERE id=?';
-    Ffc::Data::dbh()->do($sql, undef, $t, $s->{user});
+    Ffc::Data::dbh()->do($sql, undef, $t, $userid);
     return 1;
 }
 

@@ -37,8 +37,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
         for my $c ( undef, 0, undef, 1, undef, 0, 1, 0, 1 ) {
             my $cv = $c ? 1 : 0;
             $t->post_ok( '/options', form => { show_images => $c } )
-              ->status_is(200)
-              ->content_like(qr{Einstellungen});
+              ->status_is(200)->content_like(qr{Einstellungen});
             my $reta = Ffc::Data::dbh()->selectall_arrayref(
                 'SELECT show_images FROM '
                   . $Ffc::Data::Prefix
@@ -51,6 +50,39 @@ my $t = Test::General::test_prepare_frontend('Ffc');
     }
     {
         diag('testing theme choice');
+        my $check_theme = sub {
+            my $theme = shift;
+            my $reta  = Ffc::Data::dbh()->selectall_arrayref(
+                'SELECT theme FROM '
+                  . $Ffc::Data::Prefix
+                  . 'users WHERE name=?',
+                undef, $user->{name}
+            );
+            ok( @$reta, 'got something from checking' );
+            is( $reta->[0]->[0], $theme, 'theme "'.($theme // '<undef>').'"ok in database' );
+        };
+        $check_theme->(undef);
+        for my $theme (@Ffc::Data::Themes) {
+            $t->post_ok( '/options', form => { theme => $theme } )
+              ->status_is(200)->content_like(qr{Einstellungen});
+            $check_theme->($theme);
+            die;
+        }
+        {
+            my $theme = $Ffc::Data::Themes[0];
+            $t->post_ok( '/options', form => { theme => $theme } )
+              ->status_is(200)->content_like(qr{Einstellungen});
+            $check_theme->($theme);
+            {
+                my $newtheme = '';
+                $newtheme = Test::General::test_r()
+                  while !$newtheme
+                  or grep { $newtheme eq $_ } @Ffc::Data::Themes;
+                $t->post_ok( '/options', form => { theme => $newtheme } )
+                  ->status_is(200)->content_like(qr{Einstellungen});
+                $check_theme->($theme);
+            }
+        }
     }
     {
         diag('testing email change');
@@ -58,7 +90,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
     {
         diag('testing password change');
     }
-    $t->get_ok('/logout');
+    $t->get_ok('/logout')->status_is(200);
 }
 
 {
