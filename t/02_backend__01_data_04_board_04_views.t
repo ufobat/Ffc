@@ -491,7 +491,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
                         diag("field '$_' not found in return hash");
                     }
                 }
-                $errors++ unless $ret->[$i]->{raw} ne $tposts[1];
+                $errors++ unless exists($ret->[$i]->{raw}) and exists($tposts[1]) and $ret->[$i]->{raw} and $tposts[1] and $ret->[$i]->{raw} ne $tposts[1];
             }
             ok( !$errors, 'testdata retrieved ok' );
         }
