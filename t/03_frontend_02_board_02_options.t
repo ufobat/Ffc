@@ -12,7 +12,7 @@ use Test::Mojo;
 use Test::General;
 use Mock::Testuser;
 
-use Test::More tests => 395;
+use Test::More tests => 422;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 
@@ -59,7 +59,9 @@ my $t = Test::General::test_prepare_frontend('Ffc');
                 undef, $user->{name}
             );
             ok( @$reta, 'got something from checking' );
-            is( $reta->[0]->[0], $theme, 'theme "'.($theme // '<undef>').'"ok in database' );
+            is( $reta->[0]->[0],
+                $theme,
+                'theme "' . ( $theme // '<undef>' ) . '"ok in database' );
         };
         $check_theme->(undef);
         for my $theme (@Ffc::Data::Themes) {
@@ -84,7 +86,47 @@ my $t = Test::General::test_prepare_frontend('Ffc');
         }
     }
     {
-        diag('testing email change');
+        note('testing email change');
+        my $check_email = sub {
+            my $email = shift;
+            my $reta  = Ffc::Data::dbh()->selectall_arrayref(
+                'SELECT email FROM '
+                  . $Ffc::Data::Prefix
+                  . 'users WHERE name=?',
+                undef, $user->{name}
+            );
+            ok( @$reta, 'got something from checking' );
+            is( $reta->[0]->[0],
+                $email,
+                'email "' . ( $email // '<undef>' ) . '" ok in database' );
+        };
+        my $oldemail = $user->{email};
+        $check_email->($oldemail);
+        my $test_email = sub {
+            my $newemail = shift // '';
+            my $error    = shift;
+            my $checkvalue = $oldemail;
+            $t->post_ok( '/options', form => { email => $newemail } );
+            if ($error) {
+                $t->status_is(500)->content_like(qr{$error});
+            }
+            else {
+                $t->status_is(200)->content_like(qr{Einstellungen});
+                $checkvalue = $newemail unless defined $error;
+            }
+            $check_email->($checkvalue);
+        };
+        $test_email->(undef,      0);
+        $test_email->('',         0);
+        $test_email->('a' x 1032, 'Neue Emailadresse ist zu lang');
+        $test_email->('aaaa',     'Neue Emailadresse schaut komisch aus');
+        {
+            my $newemail = '';
+            $newemail = Test::General::test_r() . '@' . Test::General::test_r() . '.org'
+              while not $newemail
+              or $newemail eq $oldemail;
+            $test_email->($newemail);
+        }
     }
     {
         diag('testing password change');
