@@ -188,7 +188,6 @@ my $t = Test::General::test_prepare_frontend('Ffc');
     }
     {
         note('benutzer erzeugen');
-        diag('komplett neue Benutzer erzeugen ist auch noch nicht getestet');
         my $check_user = sub {
             my $username = shift;
             my $ret      = Ffc::Data::dbh()->selectall_arrayref(
