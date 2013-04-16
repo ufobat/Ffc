@@ -13,7 +13,7 @@ use Test::Mojo;
 use Test::General;
 use Mock::Testuser;
 
-use Test::More tests => 814;
+use Test::More tests => 834;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 
@@ -67,7 +67,9 @@ my $t = Test::General::test_prepare_frontend('Ffc');
         $check_theme->(undef);
         for my $theme (@Ffc::Data::Themes) {
             $t->post_ok( '/options', form => { theme => $theme } )
-              ->status_is(200)->content_like(qr{Einstellungen});
+              ->status_is(200);
+            $t->content_like(qr{Einstellungen});
+            $t->content_like(qr{Thema geändert});
             $check_theme->($theme);
         }
         {
@@ -113,7 +115,10 @@ my $t = Test::General::test_prepare_frontend('Ffc');
             }
             else {
                 $t->status_is(200)->content_like(qr{Einstellungen});
-                $checkvalue = $newemail unless defined $error;
+                unless ( defined $error ) {
+                    $checkvalue = $newemail;
+                    $t->content_like(qr(Email-Adresse geändert));
+                }
             }
             $check_email->($checkvalue);
         };
@@ -145,6 +150,9 @@ my $t = Test::General::test_prepare_frontend('Ffc');
             }
             else {
                 $t->status_is(200)->content_like(qr{Einstellungen});
+                unless ( defined $error ) {
+                    $t->content_like(qr'Passwort geändert');
+                }
                 die qq("$oldpw", "$newpw1", "$newpw2", "$error") unless $t->status_is(200);
             }
         };
@@ -274,6 +282,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
                 newpw2      => $newpw
             }
         );
+        $t->status_is(200)->content_like(qr'Einstellungen')->content_like(qr(Passwort von &quot;$user->{name}&quot; geändert));
         ok( $check->(), 'new password works now' );
     }
     {
@@ -299,6 +308,8 @@ my $t = Test::General::test_prepare_frontend('Ffc');
                 { username => $user->{name}, active => $c, overwriteok => 1 } );
             is( $check->(), $c,
                 $c ? 'user is now active' : 'user is now inactive' );
+            my $tstring = qq(Benutzer &quot;$user->{name}&quot; ).($c ? 'aktiviert' : 'deaktiviert');
+            $t->status_is(200)->content_like(qr'Einstellungen')->content_like(qr($tstring));
         }
         ok( $check->(), 'user is active' );
     }
@@ -325,6 +336,8 @@ my $t = Test::General::test_prepare_frontend('Ffc');
                 { username => $user->{name}, admin => $c, overwriteok => 1 } );
             is( $check->(), $c,
                 $c ? 'user is now admin' : 'user is now no admin' );
+            my $tstring = qq(Adminstatus von &quot;$user->{name}&quot; ).($c ? 'aktiviert' : 'deaktiviert');
+            $t->status_is(200)->content_like(qr'Einstellungen')->content_like(qr($tstring));
         }
         ok( !$check->(), 'user is no admin' );
     }
