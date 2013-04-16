@@ -12,7 +12,7 @@ use Test::Mojo;
 use Test::General;
 use Mock::Testuser;
 
-use Test::More tests => 321;
+use Test::More tests => 367;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 
@@ -31,8 +31,33 @@ my $t = Test::General::test_prepare_frontend('Ffc');
     }
     $t->post_ok( '/optionsadmin',
         form => { overwriteok => 1, username => $user->{name}, active => 0 } )
-      ->content_like(qr{Nur Administratoren dürfen das});
-    diag('Da fehlt noch die Benutzergeschichte');
+      ->status_is(500)->content_like(qr{Nur Administratoren dürfen das});
+    {
+        note('testing show_images flag');
+        for my $c ( undef, 0, undef, 1, undef, 0, 1, 0, 1 ) {
+            my $cv = $c ? 1 : 0;
+            $t->post_ok( '/options', form => { show_images => $c } )
+              ->status_is(200)
+              ->content_like(qr{Einstellungen});
+            my $reta = Ffc::Data::dbh()->selectall_arrayref(
+                'SELECT show_images FROM '
+                  . $Ffc::Data::Prefix
+                  . 'users WHERE name=?',
+                undef, $user->{name}
+            );
+            ok( @$reta, 'got something from checking' );
+            is( $reta->[0]->[0], $cv, 'got the right thing from checking' );
+        }
+    }
+    {
+        diag('testing theme choice');
+    }
+    {
+        diag('testing email change');
+    }
+    {
+        diag('testing password change');
+    }
     $t->get_ok('/logout');
 }
 
@@ -303,10 +328,10 @@ qr(Das neue Passwort und dessen Wiederholung stimmen nicht überein)
                 );
                 $t->status_is(200);
                 my $ret = $check_user->($username);
-                ok( @$ret, 'user does exist now');
-                ok( $ret->[0], 'new id is available');
-                is( $ret->[1], $active, 'new user active status as expected');
-                is( $ret->[2], $admin, 'new user admin status as expected');
+                ok( @$ret,     'user does exist now' );
+                ok( $ret->[0], 'new id is available' );
+                is( $ret->[1], $active, 'new user active status as expected' );
+                is( $ret->[2], $admin,  'new user admin status as expected' );
             }
 
         }
