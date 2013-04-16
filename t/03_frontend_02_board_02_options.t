@@ -13,7 +13,7 @@ use Test::Mojo;
 use Test::General;
 use Mock::Testuser;
 
-use Test::More tests => 840;
+use Test::More tests => 846;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 
@@ -71,6 +71,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
             $t->content_like(qr{Einstellungen});
             $t->content_like(qr{Thema geändert});
             $t->content_like(qr($theme/css/style.css));
+            $t->get_ok('/')->content_like(qr($theme/css/style.css));
             $check_theme->($theme);
         }
         {
