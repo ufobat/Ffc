@@ -5,6 +5,8 @@ use strict;
 use warnings;
 use utf8;
 
+use Carp;
+
 use Ffc::Data;
 use Ffc::Data::Auth;
 use Ffc::Data::General;
@@ -44,7 +46,7 @@ sub update_user_stats {
         when ( 'forum' ) { _update_user_forum( $userid, @_ ) }
         when ( 'msgs'  ) { _update_user_msgs(  $userid, @_ ) }
         when ( 'notes' ) {}
-        default          { die 'Abschnitt ungültig' }
+        default          { confess 'Abschnitt ungültig' }
     }
     return 1;
 }

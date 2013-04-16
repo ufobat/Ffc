@@ -3,10 +3,12 @@ use utf8;
 use strict;
 use warnings;
 
+use Carp;
+
 sub handle_silent {
     # controller, code, errormessage
-    my $c    = shift or die 'no controller provided as first parameter';
-    my $code = shift or die 'no code provided as second parameter';
+    my $c    = shift or confess 'no controller provided as first parameter';
+    my $code = shift or confess 'no code provided as second parameter';
     local $@;
     eval { $code->() };
     if ( $@ ) {
@@ -19,8 +21,8 @@ sub handle_silent {
 
 sub handle {
     # controller, code, errormessage
-    my $c    = shift or die 'no controller provided as first parameter';
-    my $code = shift or die 'no code provided as second parameter';
+    my $c    = shift or confess 'no controller provided as first parameter';
+    my $code = shift or confess 'no code provided as second parameter';
     if ( $Ffc::Data::Debug ) {
         $code->();
         return 1;
@@ -44,14 +46,14 @@ sub handle {
 }
 
 sub handling {
-    my $c      = shift or die 'no controller provided as first parameter';
-    my $params = shift or die 'params not set for board error handling';
+    my $c      = shift or confess 'no controller provided as first parameter';
+    my $params = shift or confess 'params not set for board error handling';
     my ( $code, $msg, $after_ok, $after_error, $plain );
     if ( 'CODE' eq ref $params ) {
         $code = $params;
     }
     else {
-        die 'no hash params provided' unless 'HASH' eq ref $params;
+        confess 'no hash params provided' unless 'HASH' eq ref $params;
         $code        = $params->{code}; 
         $msg         = $params->{msg} // '';
         $after_ok    = $params->{after_ok};
@@ -59,12 +61,12 @@ sub handling {
         $plain       = $params->{plain};
     }
     if ( $plain ) {
-        handle( $c, sub { die $plain }, $plain );
+        handle( $c, sub { confess $plain }, $plain );
         $after_error->(@_) if $after_error and 'CODE' eq ref $after_error;
         return;
     }
-    die '"code" variable not set in error message' unless $code;
-    die '"code" is not a code reference' unless 'CODE' eq ref $code;
+    confess '"code" variable not set in error message' unless $code;
+    confess '"code" is not a code reference' unless 'CODE' eq ref $code;
     unless ( handle( $c, $code, $msg ) ) {
         $after_error->(@_) if $after_error and 'CODE' eq ref $after_error;
         return;
@@ -75,7 +77,7 @@ sub handling {
 
 sub _something {
     my $c = shift; my $code = shift; my $return;
-    die '"code" is not a code reference' unless 'CODE' eq ref $code;
+    confess '"code" is not a code reference' unless 'CODE' eq ref $code;
     handle_silent( $c, sub { $return = $code->() }, '' );
     return $return;
 }
@@ -85,7 +87,7 @@ sub or_zero     { _something( @_ ) // 0  }
 sub or_undef    { _something( @_ )       }
 
 sub prepare { 
-    die q{no mojolicious controller given} unless $_[0];
+    confess q{no mojolicious controller given} unless $_[0];
     $_[0]->stash( error => $_[1] // '' ) unless $_[0]->stash('error');
 }
 

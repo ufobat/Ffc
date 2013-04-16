@@ -5,6 +5,8 @@ use strict;
 use warnings;
 use utf8;
 
+use Carp;
+
 use Ffc::Data;
 use Ffc::Data::Auth;
 use Ffc::Data::Formats;
@@ -94,16 +96,16 @@ sub get_msgs  {
 
 sub get_post {
     my $act = shift;
-    die qq(Aktion nicht angegeben) unless $act;
-    die qq{Aktion unbekannt ("$act")} unless $act =~ m/\A(?:forum|msgs|notes)\z/xms;
+    confess qq(Aktion nicht angegeben) unless $act;
+    confess qq{Aktion unbekannt ("$act")} unless $act =~ m/\A(?:forum|msgs|notes)\z/xms;
     my $userid = _get_userid( shift );
     my $postid = shift;
-    die q{Keine ID für den Beitrag angegeben} unless $postid;
-    die q{Ungültige ID für den Beitrag angegeben} unless $postid =~ m/\A\d+\z/xms;
+    confess q{Keine ID für den Beitrag angegeben} unless $postid;
+    confess q{Ungültige ID für den Beitrag angegeben} unless $postid =~ m/\A\d+\z/xms;
     my $where = 'p.id=?';
     $_[2] = '' unless $act eq 'forum';
     my $data = _get_stuff( $act, $userid, @_[ 0 .. 3 ], $where, $postid );
-    die q{Kein Datensatz gefunden} unless @$data;
+    confess q{Kein Datensatz gefunden} unless @$data;
     return $data->[0];
 }
 

@@ -3,10 +3,12 @@ package Ffc::Data;
 use 5.010;
 use strict;
 use warnings;
+use utf8;
+
 use File::Spec;
 use File::Basename;
-use utf8;
 use DBI;
+use Carp;
 
 our $PasswordRegex = qr/\S{8,64}/xms;
 our $UsernameRegex = qr/\w{4,64}/xms;
@@ -81,7 +83,7 @@ our $DefaultConfig = {
         delete $config->{cryptsalt};
 
         $Prefix = $config->{dbprefix};
-        die q(Prefix invalid, needs to be something like /\\w{0,10}/)
+        confess q(Prefix invalid, needs to be something like /\\w{0,10}/)
           unless $Prefix =~ m/\A\w{0,10}/xms;
         $Limit           = $config->{postlimit};
         $Pagelinkpreview = $config->{pagelinkpreview};
@@ -92,7 +94,7 @@ our $DefaultConfig = {
         $Favicon         = $config->{favicon} if $config->{favicon};
         {
             opendir my $dh, $Themebasedir
-              or die qq(could not open theme directory $Themebasedir: $!);
+              or confess qq(could not open theme directory $Themebasedir: $!);
             while ( my $d = readdir $dh ) {
                 next if $d =~ m/\A\./xms;
                 next unless -d "$Themebasedir/$d";
@@ -133,4 +135,3 @@ our $DefaultConfig = {
 
 1;
 
-## Please see file perltidy.ERR

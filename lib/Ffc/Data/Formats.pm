@@ -4,6 +4,9 @@ use 5.010;
 use strict;
 use warnings;
 use utf8;
+
+use Carp;
+
 use Ffc::Data;
 
 our @Smilies = (
@@ -46,7 +49,7 @@ sub _xml_escape {
 sub format_text {
     my $s = shift // '';
     my $c = shift;
-    die 'Controller ungültig' unless $c;
+    confess 'Controller ungültig' unless $c;
     $s =~ s/\A\s+//gxmsi;
     $s =~ s/\s+\z//gxmsi;
     return '' unless $s;
