@@ -10,6 +10,7 @@
 %= include 'parts/menu'
 % }
 %= include 'parts/error'
+%= include 'parts/info'
 %= content
 %= include 'parts/footerlinks'
   </body>
