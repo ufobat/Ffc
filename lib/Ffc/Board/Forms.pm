@@ -40,8 +40,8 @@ sub delete_post {
     my $s = $c->session;
     $c->error_handling( { plain => "Privatnachrichten dürfen nicht gelöscht werden" } ) if $s->{act} eq 'msgs';
     $c->error_handling( { code => sub { Ffc::Data::Board::Forms::delete_post($s->{user}, $c->param('postid')) }, msg  => 'Beitrag konnte nicht gelöscht werden',
+    after_ok => sub { $c->info('Beitrag wurde gelöscht'); $c->frontpage() },
     } );
-    $c->redirect_to('show');
 }
 
 sub insert_post {
@@ -57,7 +57,7 @@ sub insert_post {
     $c->error_handling( {
         code        => sub { Ffc::Data::Board::Forms::insert_post(@params) }, 
         msg         => 'Beitrag ungültig, bitte erneut eingeben', 
-        after_ok    => sub { $c->frontpage() },
+        after_ok    => sub { $c->info('Beitrag wurde erstellt'); $c->frontpage() },
         after_error => sub { $c->edit_form() },
     } );
 }
@@ -75,7 +75,7 @@ sub update_post {
     $c->error_handling( {
         code        => sub { Ffc::Data::Board::Forms::update_post(@params) },
         msgs        => 'Beitrag ungültig, bitte erneut eingeben',
-        after_ok    => sub { $c->redirect_to('show') },
+        after_ok    => sub { $c->info('Beitrag wurde geändert'); $c->param(post => undef); $c->param(postid => undef); $c->frontpage() },
         after_error => sub { $c->edit_form() },
     } );
 }

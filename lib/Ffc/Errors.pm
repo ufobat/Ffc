@@ -38,7 +38,7 @@ sub handle {
             $log->error("user presented error message: " . ($msg // ''));
             my $error = $c->stash('error') // '';
             my $newerror = $msg // 'Fehler';
-            $c->stash(error => $error ? "$error\n\n$newerror" : $newerror);
+            $c->stash(error => $error ? "$error\n\n$newerror." : "$newerror.");
             return;
         }
     }
@@ -100,7 +100,7 @@ sub info {
     confess q{no mojolicious controller given} unless $c;
     my $newinfo = shift || return;
     my $info = $c->stash('info') // '';
-    $c->stash(info => $info ? "$info\n\n$newinfo" : $newinfo);
+    $c->stash(info => $info ? "$info\n\n$newinfo." : "$newinfo.");
 }
 
 1;

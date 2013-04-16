@@ -43,22 +43,26 @@ sub options_save {
     my $newpw2      = $c->param('newpw2');
     my $show_images = $c->param('show_images') || 0;
     my $theme       = $c->param('theme');
-    $c->error_handling(
-        sub {
+    $c->error_handling({
+        code => sub {
             Ffc::Data::Board::OptionsUser::update_email( $s->{user}, $email );
-        }
-    ) if $email;
-    $c->error_handling(
-        sub {
+        },
+        after_ok => sub { $c->info('Email-Adresse geändert') },
+    }) if $email;
+    $c->error_handling({
+        code => sub {
             Ffc::Data::Board::OptionsUser::update_password( $s->{user},
                 $oldpw, $newpw1, $newpw2 );
-        }
-      )
+        },
+        after_ok => sub { $c->info('Passwort geändert') },
+      })
       if $oldpw
       and $newpw1
       and $newpw2;
-    $c->error_handling(
-        sub { Ffc::Data::Board::OptionsUser::update_theme( $s, $theme ) } )
+    $c->error_handling({
+        code => sub { Ffc::Data::Board::OptionsUser::update_theme( $s, $theme ) },
+        after_ok => sub { $c->info('Thema geändert') },
+    })
       if $theme;
     $c->error_handling(
         sub {
@@ -83,25 +87,28 @@ sub useradmin_save {
     elsif ( $username and _check_user_exists( $username ) ) {
 
         if ( $c->param('overwriteok') ) {
-            $c->error_handling(
-                sub {
+            $c->error_handling({
+                code => sub {
                     Ffc::Data::Board::OptionsAdmin::admin_update_password(
                         $admin, $username, $newpw1, $newpw2 );
-                }
-              ) if $newpw1
+                },
+                after_ok => sub { $c->info(qq'Passwort von "$username" geändert') },
+              }) if $newpw1
               and $newpw2;
-            $c->error_handling(
-                sub {
+            $c->error_handling({
+                code => sub {
                     Ffc::Data::Board::OptionsAdmin::admin_update_active( $admin,
                         $username, $active );
-                }
-            );
-            $c->error_handling(
-                sub {
+                },
+                after_ok => sub { $c->info(qq'Benutzer "$username" '.($active ? 'aktiviert' : 'deaktiviert')) },
+            });
+            $c->error_handling({
+                code => sub {
                     Ffc::Data::Board::OptionsAdmin::admin_update_admin( $admin,
                         $username, $isadmin );
-                }
-            );
+                },
+                after_ok => sub { $c->info(qq'Adminstatus von "$username" '.($isadmin ? 'aktiviert' : 'deaktiviert')) },
+            });
         }
         else {
             $c->error_handling(
@@ -113,12 +120,13 @@ sub useradmin_save {
         }
     }
     else {
-        $c->error_handling(
-            sub {
+        $c->error_handling({
+            code => sub {
                 Ffc::Data::Board::OptionsAdmin::admin_create_user( $admin,
                     $username, $newpw1, $newpw2, $active, $isadmin );
-            }
-        );
+            },
+            after_ok => sub { $c->info(qq'Neuer Benutzer "$username" angelegt') },
+        });
     }
     $c->options_form();
 }

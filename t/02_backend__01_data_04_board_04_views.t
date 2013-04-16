@@ -283,7 +283,7 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
         };
         {
             my ($post) =
-              check_call( $code, $name, $acttest, $usertest, $posttest,
+              check_call( $code, $name, $acttest, $posttest, $usertest,
                 @paramstest, $cattest, $controllertest );
             is(
                 $post->{raw},
@@ -373,7 +373,7 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
                     my $post_test;
                     eval {
                         $post_test = $code->(
-                            $act, $user->{name}, $post->[0], 1, $query,
+                            $act, $post->[0], $user->{name}, 1, $query,
                             $category->[2], $controller
                         );
                     };

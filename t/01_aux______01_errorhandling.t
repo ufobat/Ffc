@@ -66,8 +66,8 @@ note('=== prepare ===');
             $p->( $c, $e, $i );
             for my $t ( [ 'error', $ce ], [ 'info', $ci ] ) {
                 my $n = $t->[0]; my $cv = $t->[1];
-                is( $c->{stash}->{$n},
-                    $cv, qq'$n-stash-variable createt with message as expected' );
+                like( $c->{stash}->{$n},
+                    qr($cv), qq'$n-stash-variable createt with message as expected' );
             }
             $p->( $c, $e, $i );
             for my $t ( [ 'error', $ce ], [ 'info', $ci ] ) {
@@ -190,8 +190,8 @@ note(q{=== handle ===});
                     'user presented error message: ' . $msg,
                     'empty user error catched'
                 );
-                is( $c->{stash}->{error},
-                    $msg, 'error message in stash reseived' );
+                like( $c->{stash}->{error},
+                    qr($msg), 'error message in stash reseived' );
             }
             else {
                 is(
