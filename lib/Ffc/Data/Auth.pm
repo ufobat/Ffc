@@ -74,6 +74,10 @@ sub check_username {
     confess shift() // $@ if $@;
     return 1;
 }
+sub check_user_exists { 
+    eval { get_userid( shift ) };
+    return $@ ? 0 : 1;
+}
 sub get_userid {
     my $username = shift;
     check_username_rules($username);

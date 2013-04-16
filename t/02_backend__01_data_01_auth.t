@@ -15,7 +15,7 @@ use Test::Callcheck;
 use Test::General;
 use Ffc::Data;
 
-use Test::More tests => 184;
+use Test::More tests => 198;
 
 BEGIN { use_ok('Ffc::Data::Auth') }
 
@@ -207,6 +207,24 @@ qq(checked for false administrational being of "$user->{pseudoname}")
         my ( $ok, $return, $error ) = just_call( $code, $newname );
         $return = $return->[0];
         ok( $error, qq'error is good for none existing user' );
+    }
+}
+
+{
+    note('TESTING check_user_exists( $username )');
+    my $code = \&Ffc::Data::Auth::check_user_exists;
+    for my $user (@users) {
+        my ( $ok, $return, $error ) = just_call( $code, $user->{name} );
+        $return = $return->[0];
+        ok( $return, qq'true return is good for "$user->{pseudoname}"' );
+        ok(!$error, qq'error is empty for "$user->{pseudoname}"' );
+    }
+    {
+        my $newname = Mock::Testuser::get_noneexisting_username();
+        my ( $ok, $return, $error ) = just_call( $code, $newname );
+        $return = $return->[0];
+        ok(!$return, qq'false for non existing user' );
+        ok(!$error, qq'error is empty for non existing user' );
     }
 }
 

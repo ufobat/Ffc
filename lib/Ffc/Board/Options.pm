@@ -12,7 +12,7 @@ use Ffc::Data::General;
 use Ffc::Data::Board::OptionsUser;
 use Ffc::Data::Board::OptionsAdmin;
 
-sub _check_username { &Ffc::Data::Auth::check_username }
+sub _check_user_exists { &Ffc::Data::Auth::check_user_exists }
 sub _is_user_admin { Ffc::Data::Auth::is_user_admin( Ffc::Data::Auth::get_userid( @_ ) ) }
 
 sub options_form {
@@ -80,7 +80,7 @@ sub useradmin_save {
     if ( not _is_user_admin( $admin ) ) {
         $c->error_handling({plain => 'Nur Administratoren dürfen dass'});
     }
-    elsif ( _check_username( $username ) ) {
+    elsif ( $username and _check_user_exists( $username ) ) {
 
         if ( $c->param('overwriteok') ) {
             $c->error_handling(
