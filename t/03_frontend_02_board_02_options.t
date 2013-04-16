@@ -8,11 +8,12 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Data::Dumper;
+use List::Util;
 use Test::Mojo;
 use Test::General;
 use Mock::Testuser;
 
-use Test::More tests => 422;
+use Test::More tests => 814;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 
@@ -129,7 +130,50 @@ my $t = Test::General::test_prepare_frontend('Ffc');
         }
     }
     {
-        diag('testing password change');
+        note('testing password change');
+        my $oldpw = $user->{password};
+        $user->alter_password;
+        my $newpw = $user->{password};
+        my $alter_pw = sub {
+            my $oldpw = shift;
+            my $newpw1 = shift;
+            my $newpw2 = shift;
+            my $error  = shift;
+            $t->post_ok( '/options', form => { oldpw => $oldpw, newpw1 => $newpw1, newpw2 => $newpw2 } );
+            if ($oldpw and $newpw1 and $newpw2 and $error) {
+                $t->status_is(500)->content_like(qr{$error});
+            }
+            else {
+                $t->status_is(200)->content_like(qr{Einstellungen});
+                die qq("$oldpw", "$newpw1", "$newpw2", "$error") unless $t->status_is(200);
+            }
+        };
+        my $test_oldpw = sub {
+            Ffc::Data::Auth::check_password( Ffc::Data::Auth::get_userid( $user->{name} ), $oldpw );
+        };
+        my $test_newpw = sub {
+            Ffc::Data::Auth::check_password( Ffc::Data::Auth::get_userid( $user->{name} ), $newpw );
+        };
+        my @testmatrix;
+        {
+            my @v = ( '', 'a', 'a' x 72, undef );
+            for my $x ( @v ) { for my $y ( @v ) { for my $z ( @v ) { push @testmatrix, [$x, $y, $z, 0] } } }
+            map { $_->[3] = 'Passwort ungültig'} grep { $_->[0] and $_->[1] and $_->[2] }  @testmatrix;
+        }
+        for my $pwset ( 
+            @testmatrix,
+            [$newpw, $newpw, $newpw, 'Das alte Passwort ist falsch'],
+            [$oldpw, $oldpw, $newpw, 'Das neue Passwort und dessen Wiederholung stimmen nicht überein'],
+            ) {
+            $alter_pw->( @$pwset );
+            ok( $test_oldpw->(), 'old password still working' );
+            ok(!$test_newpw->(), 'new password not working yet' );
+        }
+        {
+            $alter_pw->($oldpw, $newpw, $newpw);
+            ok(!$test_oldpw->(), 'old password not working anymore' );
+            ok( $test_newpw->(), 'new password now working' );
+        }
     }
     $t->get_ok('/logout')->status_is(200);
 }
