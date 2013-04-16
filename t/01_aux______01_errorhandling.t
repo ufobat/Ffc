@@ -11,7 +11,7 @@ use Data::Dumper;
 
 use Mock::Controller;
 
-use Test::More tests => 306;
+use Test::More tests => 347;
 
 srand;
 sub c  { Mock::Controller->new() }
@@ -42,16 +42,58 @@ note('=== prepare ===');
         my ( $r, $x, $c, $e ) = gs();
         $p->($c);
         ok( exists( $c->{stash}->{error} ), 'error-stash-variable created' );
+        ok( exists( $c->{stash}->{info} ),  'info-stash-variable created' );
     }
     {
         my ( $r, $x, $c, $e ) = gs();
-        $p->( $c, $r );
-        is( $c->{stash}->{error},
-            $r, 'error-stash-variable createt with message as expected' );
-        $p->( $c, $r );
-        is( $c->{stash}->{error},
-            $r, 'error-stash-variable createt after it allready exsisted' );
+        for my $t (
+            [ '', '' ],
+            [ '', $r ],
+            [ $r, '' ],
+            [ undef, '' ],
+            [ '',    undef ],
+            [ undef, undef ],
+            [ undef, $r ],
+            [ $r,    undef ],
+            [ $r,    $e ]
+          )
+        {
+            my $e = $t->[0];
+            my $i = $t->[1];
+            my $ce = $e // '';
+            my $ci = $i // '';
+            delete $c->{stash}->{$_} for qw(info error);
+            $p->( $c, $e, $i );
+            for my $t ( [ 'error', $ce ], [ 'info', $ci ] ) {
+                my $n = $t->[0]; my $cv = $t->[1];
+                is( $c->{stash}->{$n},
+                    $cv, qq'$n-stash-variable createt with message as expected' );
+            }
+            $p->( $c, $e, $i );
+            for my $t ( [ 'error', $ce ], [ 'info', $ci ] ) {
+                my $n = $t->[0]; my $cv = $t->[1];
+                is( $c->{stash}->{$n},
+                    $cv, qq'$n-stash-variable createt after it allready exsisted' );
+            }
+        }
     }
+}
+##############################################################################
+note('=== info ===');
+##############################################################################
+# - info string erzeugen
+{
+    my $icode = \&Ffc::Errors::info;
+    my ( $r, $x, $c, $e ) = gs();
+    my $s = $c->{stash};
+    ok(!$c->{stash}->{info}, 'no info available yet');
+    $icode->($c, $r);
+    ok($s->{info}, 'info available');
+    like($s->{info}, qr($r), 'info looks good #1');
+    unlike($s->{info}, qr($e), 'info looks good #2');
+    $icode->($c, $e);
+    like($s->{info}, qr($r), 'info looks good #3');
+    like($s->{info}, qr($e), 'info looks good #4');
 }
 
 ##############################################################################
@@ -129,22 +171,36 @@ note(q{=== handle ===});
         my $ret;
         my $code = sub { $x = $r; die $e; $y = $r };
         eval { $ret = $h->( $c, $code, ( $msg // () ) ) };
-        if ( $Ffc::Data::Debug ) {
+        if ($Ffc::Data::Debug) {
             ok( $@, 'bad code died in debug mode' );
             like( $@, qr/$e/, 'error message ok in debug mode' );
-            ok( !@$l, 'log is empty' );
+            ok( !@$l,                  'log is empty' );
             ok( !$c->{stash}->{error}, 'stash error empty' );
         }
         else {
-            ok( !$@,   'bad code died, death was unnoticed from the outside' );
-            like( $l->[0], qr{system error message: $e}, 'system error catched' );
-            if ( $msg ) {
-                is( $l->[1], 'user presented error message: ' . $msg, 'empty user error catched');
-                is( $c->{stash}->{error}, $msg, 'error message in stash reseived' );
+            ok( !$@, 'bad code died, death was unnoticed from the outside' );
+            like(
+                $l->[0],
+                qr{system error message: $e},
+                'system error catched'
+            );
+            if ($msg) {
+                is(
+                    $l->[1],
+                    'user presented error message: ' . $msg,
+                    'empty user error catched'
+                );
+                is( $c->{stash}->{error},
+                    $msg, 'error message in stash reseived' );
             }
             else {
-                is( $l->[1], 'user presented error message: ', 'empty user error catched');
-                like( $c->{stash}->{error}, qr/Fehler/i, 'error message in stash reseived' );
+                is(
+                    $l->[1],
+                    'user presented error message: ',
+                    'empty user error catched'
+                );
+                like( $c->{stash}->{error},
+                    qr/Fehler/i, 'error message in stash reseived' );
             }
         }
         ok( !$ret, 'bad code returns false' );
@@ -304,7 +360,8 @@ note(q{=== handling ===});
                 $checks->{after_ok}->{expected},
                 'after_ok did not run'
             ) if exists $params->{after_ok};
-            if ( $Ffc::Data::Debug ) {
+
+            if ($Ffc::Data::Debug) {
                 ok( $@,   'we died in debug mode' );
                 ok( !@$l, 'log is empty, as expected' );
                 isnt(
@@ -314,7 +371,7 @@ note(q{=== handling ===});
                 ) if exists $params->{after_error};
             }
             else {
-                ok( !$@,   'no one died, everything is fine' );
+                ok( !$@, 'no one died, everything is fine' );
                 cmp_ok( scalar(@$l), '>', 0, 'no errors reported' );
                 like(
                     $l->[0],
@@ -404,11 +461,12 @@ note(q{=== run code, return something special at errors, don't die ===});
             ok( !$@, 'no one died, everything is fine' );
             my $l = $c->app->log->error;
             ok( !$c->{stash}->{error}, 'no error in stash' );
-            ok( scalar(@$l), 'errors reported' );
+            ok( scalar(@$l),           'errors reported' );
             like( $l->[0], qr/$e/, 'correct errors reported' );
             is( $x, $r, 'errorprone code has been run, even if it died' );
             isnt( $y, $r, 'errorprone code has been run, but died ok' );
-            is_deeply( $ret, $nt, 'the call returned the expected default thingy' );
+            is_deeply( $ret, $nt,
+                'the call returned the expected default thingy' );
         }
     };
 ##############################################################################

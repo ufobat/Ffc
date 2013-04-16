@@ -87,8 +87,20 @@ sub or_zero     { _something( @_ ) // 0  }
 sub or_undef    { _something( @_ )       }
 
 sub prepare { 
-    confess q{no mojolicious controller given} unless $_[0];
-    $_[0]->stash( error => $_[1] // '' ) unless $_[0]->stash('error');
+    my $c = shift;
+    confess q{no mojolicious controller given} unless $c;
+    my $e = shift // '';
+    my $i = shift // '';
+    $c->stash( error => $e ) unless defined $c->stash('error');
+    $c->stash( info  => $i ) unless defined $c->stash('info');
+}
+
+sub info {
+    my $c = shift;
+    confess q{no mojolicious controller given} unless $c;
+    my $newinfo = shift || return;
+    my $info = $c->stash('info') // '';
+    $c->stash(info => $info ? "$info\n\n$newinfo" : $newinfo);
 }
 
 1;

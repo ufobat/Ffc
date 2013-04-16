@@ -7,6 +7,7 @@ use utf8;
 
 use Ffc::Errors;
 
+sub info           { &Ffc::Errors::info        }
 sub error_prepare  { &Ffc::Errors::prepare     }
 sub error_handling { &Ffc::Errors::handling    }
 sub or_nostring    { &Ffc::Errors::or_nostring }

@@ -23,7 +23,7 @@ sub stash {
         return $stash->{$key};
 
     }
-    return $stash->{$key} = $value if $key and $value;
+    return $stash->{$key} = $value if $key and defined $value;
     return;
 }
 

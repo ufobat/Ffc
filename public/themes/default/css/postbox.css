@@ -64,6 +64,11 @@ img.icon {
 }
 .error {
     color: #c30;
+}
+.info {
+    color: #3c0;
+}
+.info, .error {
     border: none;
     background: transparent;
 }

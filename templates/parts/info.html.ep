@@ -1,0 +1,3 @@
+% if ( $info ) {
+    <div class="postbox info"><%= $info %></div>
+% }
