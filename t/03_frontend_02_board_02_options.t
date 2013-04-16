@@ -49,7 +49,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
         }
     }
     {
-        diag('testing theme choice');
+        note('testing theme choice');
         my $check_theme = sub {
             my $theme = shift;
             my $reta  = Ffc::Data::dbh()->selectall_arrayref(
