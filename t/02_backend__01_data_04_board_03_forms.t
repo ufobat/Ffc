@@ -13,7 +13,7 @@ use Mock::Testuser;
 use Ffc::Data::Auth;
 srand;
 
-use Test::More tests => 59;
+use Test::More tests => 61;
 
 Test::General::test_prepare();
 
@@ -113,9 +113,9 @@ use_ok('Ffc::Data::Board::Forms');
             is( Ffc::Data::Auth::get_userid($user2),
                 $dat->[3], 'recipient is ok' )
               if $user2;
-            is( Ffc::Data::General::get_category_id($category),
-                $dat->[4], 'author is ok' )
-              if $category;
+            my $catid = undef;
+            $catid = Ffc::Data::General::get_category_id($category) if $category and not $user2;
+            is( $catid, $dat->[4], 'author is ok' )
         }
     }
 }

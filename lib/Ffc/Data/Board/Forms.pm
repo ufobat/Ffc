@@ -32,6 +32,7 @@ sub insert_post {
     my $cid = undef;
     $cid = _get_category_id($c) if $c;
     $t = _get_userid( $t, 'Empfänger des neuen Beitrages' ) if $t;
+    $cid = undef if $t; # bei Privatnachrichten und Notizen gibts keine Kategorien
     my $dbh = Ffc::Data::dbh();
     my $sql = 'INSERT INTO '.$Ffc::Data::Prefix.'posts (user_from, user_to, textdata, posted, category) VALUES (?, ?, ?, current_timestamp, ?)';
     $dbh->do( $sql, undef, $f, $t, $d, $cid );
