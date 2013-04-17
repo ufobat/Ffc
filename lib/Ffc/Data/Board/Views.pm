@@ -158,7 +158,7 @@ SELECT p.id, p.textdata, p.posted,
   LEFT  OUTER JOIN ${p}lastseenforum l ON c.id = l.category AND l.userid = u.id
   WHERE $where $q
     AND ( c.short = ? OR ( ( ? = '' OR ? IS NULL ) AND p.category IS NULL) )
-  ORDER BY p.posted DESC LIMIT ? OFFSET ?
+  ORDER BY p.posted DESC, p.id DESC LIMIT ? OFFSET ?
 EOSQL
     push @params, "\%$query\%" if $query;
     push @params, ( $cat, $cat, $cat );

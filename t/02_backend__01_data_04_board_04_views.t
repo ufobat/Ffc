@@ -522,7 +522,9 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
                     asnotes => $asnotes,
                     testpost => [map { $_->[1] } @tposts],
                     ret => [map { $_->{raw} } @$ret],
+                    all => [map { $_->[1] } @$allposts],
                 });
+                die;
             }
         }
         {
