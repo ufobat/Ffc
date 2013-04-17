@@ -74,11 +74,19 @@ sub get_categories {
 sub get_notes { 
     my $userid = _get_userid( shift, 'Notizenliste' );
     my @params = @_[0..3];
-    $params[2] = '';
+    $params[2] = undef;
     return _get_stuff( 'notes', $userid, @params, 'p.user_from=? AND p.user_to=p.user_from', $userid );
 }
 sub get_forum { 
-    return _get_stuff( 'forum', _get_userid( shift, 'Beitragsliste' ), @_[ 0 .. 3 ], 'p.user_to IS NULL' );
+    my $userid = _get_userid( shift, 'Privatnachrichtenliste' );
+    my @params = @_[ 0 .. 3 ];
+    if ( $params[2] ) {
+        Ffc::Data::General::check_category($params[2]);
+    }
+    else {
+        $params[2] = undef;
+    }
+    return _get_stuff( 'forum', $userid, @params, 'p.user_to IS NULL' );
 }
 sub get_msgs  {
     my $userid = _get_userid( shift, 'Privatnachrichtenliste' );
@@ -90,7 +98,7 @@ sub get_msgs  {
         push @params, $userid, $userid;
     }
     my @params2 = @_[0..3];
-    $params2[2] = '';
+    $params2[2] = undef;
     return _get_stuff( 'msgs', $userid, @params2, $where, @params );
 }
 
@@ -103,8 +111,13 @@ sub get_post {
     confess q{Ungültige ID für den Beitrag angegeben} unless $postid =~ m/\A\d+\z/xms;
     my $userid = _get_userid( shift );
     my $where = 'p.id=?';
-    $_[2] = '' unless $act eq 'forum';
-    my $data = _get_stuff( $act, $userid, @_[ 0 .. 3 ], $where, $postid );
+    my @params = @_[ 0 .. 3 ];
+    $params[2] = undef unless $params[2];
+    $params[2] = undef unless $act eq 'forum';
+    if ( $params[2] ) {
+        Ffc::Data::General::check_category($params[2]);
+    }
+    my $data = _get_stuff( $act, $userid, @params, $where, $postid );
     confess q{Kein Datensatz gefunden} unless @$data;
     return $data->[0];
 }
@@ -117,16 +130,11 @@ sub _get_stuff {
     my $cat    = shift;
     my $c      = shift;
     my $where  = shift;
+    $cat = undef unless $act eq 'forum';
     my @params = @_;
     $page = 1 unless $page and $page =~ m/\A\d+\z/xms;
     my $q = $query ? q{AND p.textdata LIKE ?} : '';
     my $p = $Ffc::Data::Prefix;
-    if ( $cat ) {
-        Ffc::Data::General::check_category($cat);
-    }
-    else {
-        $cat = '';
-    }
     my $sql = << "EOSQL";
 SELECT p.id, p.textdata, p.posted, 
        c.name, COALESCE(c.short,''),
@@ -149,17 +157,11 @@ SELECT p.id, p.textdata, p.posted,
   LEFT  OUTER JOIN ${p}categories    c ON c.id = p.category
   LEFT  OUTER JOIN ${p}lastseenforum l ON c.id = l.category AND l.userid = u.id
   WHERE $where $q
-EOSQL
-    if ( $cat ) {
-        $sql .= << "EOSQL";
     AND ( c.short = ? OR ( ( ? = '' OR ? IS NULL ) AND p.category IS NULL) )
-EOSQL
-    }
-    $sql .= << "EOSQL";
   ORDER BY p.posted DESC LIMIT ? OFFSET ?
 EOSQL
     push @params, "\%$query\%" if $query;
-    push @params, ( $cat, $cat, $cat ) if $cat;
+    push @params, ( $cat, $cat, $cat );
     push @params, $Ffc::Data::Limit, ( ( $page - 1 ) * $Ffc::Data::Limit );
     unshift @params, $userid;
 #Test::More::diag(Data::Dumper::Dumper( { sql => $sql, userid => $userid, params => \@params, query => [( $query ? "\%$query\%" : () )], cat => [$cat, $cat, $cat]}));

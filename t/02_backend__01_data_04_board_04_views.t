@@ -337,10 +337,13 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
                     $category = Test::General::test_get_rand_category();
                     push @params, $category->[0];
                 }
+                else {
+                    push @where, 'category IS NULL';
+                }
 
                 #diag(Dumper { where => \@where, params => \@params } );
                 my $sql =
-                  'SELECT id, textdata FROM ' . $Ffc::Data::Prefix . 'posts';
+                  'SELECT id, textdata, user_from, user_to, category, posted FROM ' . $Ffc::Data::Prefix . 'posts';
                 if (@where) {
                     $sql .= ' WHERE ' . join ' AND ', @where;
                 }
@@ -353,7 +356,7 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
                     die qq~no post for test available~
                       . Dumper {
                         t        => $t,
-                        ategory  => $category,
+                        category => $category,
                         query    => $query,
                         user     => $user,
                         where    => \@where,
@@ -374,15 +377,26 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
                     eval {
                         $post_test = $code->(
                             $act, $post->[0], $user->{name}, 1, $query,
-                            $category->[2], $controller
+                            $category->[2]||undef, $controller
                         );
                     };
                     ok( !$@, 'post fetched' );
-                    diag(   qq~checking "get_post()" in act "$act" with~
+                    diag(   qq~ERROR IN: checking "get_post()" in act "$act" with~
                           . ( $has_cat ? '' : 'out' )
                           . q~ category and with~
                           . ( $has_where ? '' : 'out' )
-                          . ' where' )
+                          . ' where, data is: '
+                      . Dumper {
+                        t        => $t,
+                        category => $category,
+                        query    => $query,
+                        user     => $user->{name},
+                        where    => \@where,
+                        params   => \@params,
+                        sql      => $sql,
+                        dollarat => $@,
+                        post     => $post,
+                      } )
                       if $@;
                     is( $post_test->{raw}, $post->[1], 'correct post fetched' );
                 }
@@ -392,6 +406,7 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
 
     sub get_testcases {
         my ( $code, $name, $secondparam, $wherestr, @params ) = @_;
+        #Ffc::Data::dbh()->do('DELETE FROM '.$Ffc::Data::Prefix.'posts');
         note(
 qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
         );
@@ -470,7 +485,9 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
         my $pages    = int @$allposts / $Ffc::Data::Limit;
         $pages++ if $pages < @$allposts / $Ffc::Data::Limit;
         for my $i ( 1 .. 3 ) {
-            my @tposts = splice @$allposts, 0, $Ffc::Data::Limit;
+            my $starti = ( $i - 1 ) * $Ffc::Data::Limit;
+            my $stoppi = $starti + $Ffc::Data::Limit - 1;
+            my @tposts = @$allposts[$starti .. $stoppi];
             my $ret = [];
             {
                 eval {
@@ -481,32 +498,48 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
             }
             ok( @$ret, qq'code returned somethin' );
             is( $#$ret, $#tposts, 'return count ok' );
-            my $errors = 0;
+            my @errors;
             my @fields =
               qw(text start raw active newpost timestamp ownpost category from to editable id iconspresent);
             for my $i ( 0 .. $#ret ) {
                 for (@fields) {
                     unless ( exists $ret->[$i]->{$_} ) {
-                        $errors++;
+                        push @errors, qq'field "$_" not available';
                         diag("field '$_' not found in return hash");
                     }
                 }
-                $errors++ unless exists($ret->[$i]->{raw}) and exists($tposts[1]) and $ret->[$i]->{raw} and $tposts[1] and $ret->[$i]->{raw} ne $tposts[1];
+                push @errors, 'raw data not available' unless exists($ret->[$i]->{raw}) and $ret->[$i]->{raw};
+                push @errors, 'checkpost unavailabe' unless exists($tposts[$i]) and $tposts[$i];
+                push @errors, 'raw data does not match checkpost textdata' unless $ret->[$i]->{raw} eq $tposts[$i]->[1];
+
             }
-            ok( !$errors, 'testdata retrieved ok' );
+            ok( !@errors, 'testdata retrieved ok' );
+            if ( @errors ) {
+                diag( Dumper \@errors);
+                diag( Dumper {
+                    cats => $has_cats,
+                    privmsgs => $privmsgs,
+                    asnotes => $asnotes,
+                    testpost => [map { $_->[1] } @tposts],
+                    ret => [map { $_->{raw} } @$ret],
+                });
+            }
         }
         {
             my $ret = [];
             {
                 eval {
                     $ret = $code->(
-                        $user->{name}, 1, $testpost->[1], '', $controller
+                        $user->{name}, 1, $testpost->[1], undef, $controller
                     );
                 };
                 ok( !$@, qq'code for "$name" for query ran ok' );
                 diag($@) if $@;
             }
             ok( @$ret, qq'code returned somethin' );
+            unless ( @$ret ) {
+                diag(Dumper { user => $user->{name}, page => 1, query => $testpost->[1], category => undef } );
+            }
             is( @$ret, 1, 'return count ok' );
             is( $ret->[0]->{raw},
                 $testpost->[1], 'return value is looking good' );

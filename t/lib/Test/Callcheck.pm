@@ -45,7 +45,7 @@ sub check_call {    # alle aufrufoptionen durchprobieren
     {
         eval { @ret = $code->(@okparams) };
         ok(!$@, qq~good run of "$sname('~.join(q[', '], map { m/\n/xms ? (split("\n", $_, 2))[0].' ...' : $_ } @okparams).qq~')" went ok~);
-        diag($@) if $@;
+        diag("ERROR: $@") if $@;
     }
     return @ret;
 }
