@@ -195,7 +195,7 @@ qq'counting code "$t->{name}" returned zero because the database is still empty'
         }
 
         if ( $i < 2 ) {
-            Test::General::test_update_userstats($user, 1);
+            Test::General::test_update_userstats( $user, 1 );
         }
     }
 }
@@ -343,7 +343,8 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
 
                 #diag(Dumper { where => \@where, params => \@params } );
                 my $sql =
-                  'SELECT id, textdata, user_from, user_to, category, posted FROM ' . $Ffc::Data::Prefix . 'posts';
+'SELECT id, textdata, user_from, user_to, category, posted FROM '
+                  . $Ffc::Data::Prefix . 'posts';
                 if (@where) {
                     $sql .= ' WHERE ' . join ' AND ', @where;
                 }
@@ -377,27 +378,28 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
                     eval {
                         $post_test = $code->(
                             $act, $post->[0], $user->{name}, 1, $query,
-                            $category->[2]||undef, $controller
+                            $category->[2] || undef, $controller
                         );
                     };
                     ok( !$@, 'post fetched' );
-                    diag(   qq~ERROR IN: checking "get_post()" in act "$act" with~
+                    diag(
+                        qq~ERROR IN: checking "get_post()" in act "$act" with~
                           . ( $has_cat ? '' : 'out' )
                           . q~ category and with~
                           . ( $has_where ? '' : 'out' )
                           . ' where, data is: '
-                      . Dumper {
-                        t        => $t,
-                        category => $category,
-                        query    => $query,
-                        user     => $user->{name},
-                        where    => \@where,
-                        params   => \@params,
-                        sql      => $sql,
-                        dollarat => $@,
-                        post     => $post,
-                      } )
-                      if $@;
+                          . Dumper {
+                            t        => $t,
+                            category => $category,
+                            query    => $query,
+                            user     => $user->{name},
+                            where    => \@where,
+                            params   => \@params,
+                            sql      => $sql,
+                            dollarat => $@,
+                            post     => $post,
+                          }
+                    ) if $@;
                     is( $post_test->{raw}, $post->[1], 'correct post fetched' );
                 }
             }
@@ -406,6 +408,7 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
 
     sub get_testcases {
         my ( $code, $name, $secondparam, $wherestr, @params ) = @_;
+
         #Ffc::Data::dbh()->do('DELETE FROM '.$Ffc::Data::Prefix.'posts');
         note(
 qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
@@ -446,10 +449,13 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
             }
             else {
                 $has_cats = 1;
-                for my $cat ( map( { $_->[2] } @Test::General::Categories ), undef ) {
+                for my $cat ( map( { $_->[2] } @Test::General::Categories ),
+                    undef )
+                {
                     Ffc::Data::Board::Forms::insert_post( $userfrom,
                         Test::General::test_r(), $cat, undef )
-#, note('adding forum post with category "'.($cat // '<undef>').'"')
+
+            #, note('adding forum post with category "'.($cat // '<undef>').'"')
                       for 0 .. ( ( 3 * $Ffc::Data::Limit ) + int rand 20 );
                 }
             }
@@ -487,8 +493,8 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
         for my $i ( 1 .. 3 ) {
             my $starti = ( $i - 1 ) * $Ffc::Data::Limit;
             my $stoppi = $starti + $Ffc::Data::Limit - 1;
-            my @tposts = @$allposts[$starti .. $stoppi];
-            my $ret = [];
+            my @tposts = @$allposts[ $starti .. $stoppi ];
+            my $ret    = [];
             {
                 eval {
                     $ret = $code->( $user->{name}, $i, '', '', $controller );
@@ -508,39 +514,62 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
                         diag("field '$_' not found in return hash");
                     }
                 }
-                push @errors, 'raw data not available' unless exists($ret->[$i]->{raw}) and $ret->[$i]->{raw};
-                push @errors, 'checkpost unavailabe' unless exists($tposts[$i]) and $tposts[$i];
-                push @errors, 'raw data does not match checkpost textdata' unless $ret->[$i]->{raw} eq $tposts[$i]->[1];
+                push @errors, 'raw data not available'
+                  unless exists( $ret->[$i]->{raw} )
+                  and $ret->[$i]->{raw};
+                push @errors, 'checkpost unavailabe'
+                  unless exists( $tposts[$i] )
+                  and $tposts[$i];
+                push @errors, 'raw data does not match checkpost textdata'
+                  unless $ret->[$i]->{raw} eq $tposts[$i]->[1];
 
             }
             ok( !@errors, 'testdata retrieved ok' );
-            if ( @errors ) {
-                diag( Dumper \@errors);
-                diag( Dumper {
-                    cats => $has_cats,
-                    privmsgs => $privmsgs,
-                    asnotes => $asnotes,
-                    testpost => [map { $_->[1] } @tposts],
-                    ret => [map { $_->{raw} } @$ret],
-                    all => [map { $_->[1] } @$allposts],
-                });
+            if (@errors) {
+                diag( Dumper \@errors );
+                diag(
+                    Dumper {
+                        cats     => $has_cats,
+                        privmsgs => $privmsgs,
+                        asnotes  => $asnotes,
+                        testpost => [ map { $_->[1] } @tposts ],
+                        ret      => [ map { $_->{raw} } @$ret ],
+                        all      => [ map { $_->[1] } @$allposts ],
+                    }
+                );
                 die;
             }
         }
         {
             my $ret = [];
+            my $catid = undef;
+            $catid = Ffc::Data::General::get_category_short($testpost->[4]) if $testpost->[4];
             {
                 eval {
                     $ret = $code->(
-                        $user->{name}, 1, $testpost->[1], undef, $controller
+                        $user->{name}, 0, $testpost->[1], $catid,
+                        $controller
                     );
                 };
                 ok( !$@, qq'code for "$name" for query ran ok' );
                 diag($@) if $@;
             }
             ok( @$ret, qq'code returned somethin' );
-            unless ( @$ret ) {
-                diag(Dumper { user => $user->{name}, page => 1, query => $testpost->[1], category => undef } );
+            unless (@$ret) {
+                diag(
+                    Dumper {
+                        fromall  => [ grep { $_->[1] eq $testpost->[1] } @$allposts ],
+                        user     => $user->{name},
+                        page     => 1,
+                        query    => $testpost->[1],
+                        category => undef,
+                        ret      => $ret,
+                        sub      => $name,
+                        cats     => $has_cats,
+                        privmsgs => $privmsgs,
+                        asnotes  => $asnotes,
+                    }
+                );
             }
             is( @$ret, 1, 'return count ok' );
             is( $ret->[0]->{raw},
@@ -571,41 +600,62 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
 
         {
             note('"newpost"-flag messages testen');
-            Test::General::test_update_userstats($user, $has_cats);
-            for my $cat ('', ($has_cats ? map({ $_->[2] } @Test::General::Categories) : ()) ) {
+            Test::General::test_update_userstats( $user, $has_cats );
+            for my $cat (
+                '',
+                (
+                    $has_cats
+                    ? map( { $_->[2] } @Test::General::Categories )
+                    : ()
+                )
+              )
+            {
                 my $ret = [];
                 {
                     eval {
                         $ret = $code->(
-                            $user->{name}, 1, '', $cat, $controller, $secondparam
+                            $user->{name}, 1, '', $cat, $controller,
+                            $secondparam
                         );
                     };
                     ok( !$@, qq'code for "$name" for new messages ran ok' );
                     diag($@) if $@;
                 }
-                ok( @$ret,                 qq'code returned somethin' );
-                ok( !$ret->[0]->{newpost}, qq(no new messages are available for "$name") );
+                ok( @$ret, qq'code returned somethin' );
+                ok( !$ret->[0]->{newpost},
+                    qq(no new messages are available for "$name") );
                 diag( Dumper $ret ) if $ret->[0]->{newpost};
             }
-            Test::General::test_update_userstats($user, $has_cats);
+            Test::General::test_update_userstats( $user, $has_cats );
             $insert_code->(1);
-            for my $cat ('', ($has_cats ? map({ $_->[2] } @Test::General::Categories) : ()) ) {
+            for my $cat (
+                '',
+                (
+                    $has_cats
+                    ? map( { $_->[2] } @Test::General::Categories )
+                    : ()
+                )
+              )
+            {
                 my $ret = [];
                 {
                     eval {
                         $ret = $code->(
-                            $user->{name}, 1, '', $cat, $controller, $secondparam
+                            $user->{name}, 1, '', $cat, $controller,
+                            $secondparam
                         );
                     };
                     ok( !$@, qq'code for "$name" for new messages ran ok' );
                     diag($@) if $@;
                 }
-                ok( @$ret,                qq'code returned somethin' );
-                if ( $asnotes ) {
-                    ok( !$ret->[0]->{newpost}, q(new notes are not marked specially) );
+                ok( @$ret, qq'code returned somethin' );
+                if ($asnotes) {
+                    ok( !$ret->[0]->{newpost},
+                        q(new notes are not marked specially) );
                 }
                 else {
-                    ok( $ret->[0]->{newpost}, q(new messages are marked as such) );
+                    ok( $ret->[0]->{newpost},
+                        q(new messages are marked as such) );
                 }
             }
         }

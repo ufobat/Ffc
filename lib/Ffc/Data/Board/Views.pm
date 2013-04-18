@@ -130,11 +130,15 @@ sub _get_stuff {
     my $cat    = shift;
     my $c      = shift;
     my $where  = shift;
-    $cat = undef unless $act eq 'forum';
     my @params = @_;
-    $page = 1 unless $page and $page =~ m/\A\d+\z/xms;
-    my $q = $query ? q{AND p.textdata LIKE ?} : '';
+    my $q = '';
     my $p = $Ffc::Data::Prefix;
+    $cat = undef unless $act eq 'forum';
+    $page = 1 unless $page and $page =~ m/\A\d+\z/xms;
+    if ( $query ) {
+        push @params, "\%$query\%";
+        $q = q{AND p.textdata LIKE ?};
+    }
     my $sql = << "EOSQL";
 SELECT p.id, p.textdata, p.posted, 
        c.name, COALESCE(c.short,''),
@@ -160,7 +164,6 @@ SELECT p.id, p.textdata, p.posted,
     AND ( c.short = ? OR ( ( ? = '' OR ? IS NULL ) AND p.category IS NULL) )
   ORDER BY p.posted DESC, p.id DESC LIMIT ? OFFSET ?
 EOSQL
-    push @params, "\%$query\%" if $query;
     push @params, ( $cat, $cat, $cat );
     push @params, $Ffc::Data::Limit, ( ( $page - 1 ) * $Ffc::Data::Limit );
     unshift @params, $userid;
