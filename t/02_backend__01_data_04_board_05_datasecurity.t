@@ -13,7 +13,7 @@ use Mock::Testuser;
 use Ffc::Data::Board::Forms;
 srand;
 
-use Test::More tests => 9361;
+use Test::More tests => 10261;
 
 Test::General::test_prepare();
 sub r { &Test::General::test_r }
@@ -126,6 +126,7 @@ sub run_code_not_returning { my ( $code, $user, $query, $cat, $p, $match ) = @_;
     }
 }
 
+sleep 1.1; # we want to count new posts
 run_through_all(sub{ # Testdaten einspielen
     my %p = @_;
     Ffc::Data::Board::Forms::insert_post($p{from}{name}, $p{text}, $p{cat}, $p{to}{name});
@@ -136,6 +137,7 @@ $Ffc::Data::Limit = scalar(@testdata) + 1;
 run_through_all(sub{ # Tests durchführen
     my %p = @_;
     note('check that the post will not be visible from wrong methods');
+
     for my $code ( @{$p{code_returns_not}} ) {
         for my $user ( map {$_->{name}} values %{$p{usertable}} ) {
             for my $cat ( undef, @{$p{categories}} ) {
@@ -144,11 +146,46 @@ run_through_all(sub{ # Tests durchführen
             }
         }
     }
-    note('check that the post will not be visible to the wrong users from the right methods');
-    note('check that the post will is visible to the right users from the right methods');
+
+    if ( @{$p{users_dont_see}} ) {
+        note('check that the post will not be visible to the wrong users from the right methods');
+        for my $user ( map {$_->{name}} @{$p{users_dont_see}} ) {
+            for my $cat ( undef, @{$p{categories}} ) {
+                run_code_not_returning($p{code_returns}, $user, undef,    $cat, \%p, $p{text}); # ohne query
+                run_code_not_returning($p{code_returns}, $user, $p{text}, $cat, \%p, $p{text}); # mit query
+            }
+        }
+    }
+    else {
+        note('everyone shall be able to see the post with the right method');
+    }
+
+    if ( $p{to} ) {
+        note(q[for notes and msgs categories are allways ignored, so we don't need to check them]);
+    }
+    else {
+        note('check that the post will not be visible to the right users from the right methods with the wrong categories');
+        for my $user ( map {$_->{name}} @{$p{users_see}} ) {
+            for my $cat ( grep {
+                    if ( defined $p{cat} ) {
+                        if ( !defined($_) or $p{cat} ne $_ ) { 1 } else { 0 }
+                    }
+                    else {
+                        if ( defined($_) ) { 1 } else { 0 }
+                    }
+                } undef, @{$p{categories}} ) {
+                run_code_not_returning($p{code_returns}, $user, undef,    $cat, \%p, $p{text}); # ohne query
+                run_code_not_returning($p{code_returns}, $user, $p{text}, $cat, \%p, $p{text}); # mit query
+            }
+        }
+    }
+    note('check that the post will be visible to the right users from the right methods with the right category');
+    for my $user ( map {$_->{name}} @{$p{users_see}} ) {
+        run_code_returning($p{code_returns}, $user, undef,    $p{cat}, \%p, $p{text}); # ohne query
+        run_code_returning($p{code_returns}, $user, $p{text}, $p{cat}, \%p, $p{text}); # mit query
+    }
 }, 1); # with notes
 
 diag('counts müssen auch noch alle getestet werden!!!');
-sleep 1.1; # just to be on the save side
 
 
