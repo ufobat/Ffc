@@ -8,7 +8,6 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Data::Dumper;
-use List::Util;
 use Test::Mojo;
 use Test::General;
 use Mock::Testuser;
