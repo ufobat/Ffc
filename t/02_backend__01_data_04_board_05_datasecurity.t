@@ -187,5 +187,57 @@ run_through_all(sub{ # Tests durchführen
 }, 1); # with notes
 
 diag('counts müssen auch noch alle getestet werden!!!');
+{
+    for my $user ( keys %usertable ) {
+        my $username = $usertable{$user}{name};
+        my $userid = Ffc::Data::Auth::get_userid($username);
+        note(qq'check counts for user "$user"');
+        {
+            my $privmsgs_count = Ffc::Data::Board::Views::count_newmsgs($username);
+            my $privmsgs_test = (Ffc::Data::dbh()->selectrow_array('SELECT COUNT(id) FROM '.$Ffc::Data::Prefix.'posts WHERE user_to IS NOT NULL AND user_to=? AND user_from<>user_to', undef, $userid))[0];
+            is($privmsgs_count, $privmsgs_test, 'new private message count is ok');
+        }
+        {
+            my $notes_count = Ffc::Data::Board::Views::count_notes($username);
+            my $notes_test = (Ffc::Data::dbh()->selectrow_array('SELECT COUNT(id) FROM '.$Ffc::Data::Prefix.'posts WHERE user_to IS NOT NULL AND user_to=? AND user_from=user_to', undef, $userid))[0];
+            is($notes_count, $notes_test, 'notes count is ok');
+        }
+        {
+            my $post_count = Ffc::Data::Board::Views::count_newposts($username);
+            my $post_test = (Ffc::Data::dbh()->selectrow_array('SELECT COUNT(id) FROM '.$Ffc::Data::Prefix.'posts WHERE user_to IS NULL AND user_from<>?', undef, $userid))[0];
+            is($post_count, $post_test, 'new posts count is ok');
+        }
+        {
+            my $cats_count = Ffc::Data::Board::Views::get_categories($username);
+            for my $cat ( undef, @Categories ) {
+                my @params = ( $userid );
+                my $sql = 'SELECT COUNT(p.id) FROM '.$Ffc::Data::Prefix.'posts p';
+                if ( defined $cat ) {
+                    $sql .= ' INNER JOIN '.$Ffc::Data::Prefix.'categories c ON c.id=p.category'
+                }
+                $sql .= ' WHERE user_from<>? AND user_to IS NULL';
+                if ( defined $cat ) {
+                    $sql .= ' AND c.short=?';
+                    push @params, $cat;
+                }
+                else {
+                    $sql .= ' AND p.category IS NULL';
+                }
 
+                my $cat_test = (Ffc::Data::dbh()->selectrow_array($sql, undef, @params))[0];
+
+                my $cat_count = do{
+                    if ( defined $cat ) {
+                        (grep { $_->[1] eq $cat } @$cats_count)[0][2];
+                    }
+                    else {
+                        (grep { $_->[1] eq '' } @$cats_count)[0][2];
+                    }
+                };
+
+                is($cat_count, $cat_test, qq'new category "'.($cat//'<undef>').'" count ok');
+            }
+        }
+    }
+}
 
