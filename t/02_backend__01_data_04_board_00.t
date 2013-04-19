@@ -156,7 +156,7 @@ use_ok('Ffc::Data::Board');
     my $before     = $get_lastseen->();
     my $before_cat = $get_lastseen_cat->();
     ok( !$before_cat, 'nothing yet to see' );
-    sleep 1.1;
+    sleep 2;
     ok(
         (
             just_call(
@@ -173,7 +173,7 @@ use_ok('Ffc::Data::Board');
     cmp_ok( $before->[0], 'eq', $after->[0], 'msgs lastseen ok (unaltered)' );
     cmp_ok( $before->[1], 'eq', $after->[1], 'forum lastseen ok (unaltered)' );
     ok( $after_first_cat, 'after first run, lastseenforum-stat was inserted' );
-    sleep 1.1;
+    sleep 2;
     ok(
         (
             just_call(
