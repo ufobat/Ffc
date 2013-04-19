@@ -13,7 +13,7 @@ use Mock::Testuser;
 use Ffc::Data::Board::Forms;
 srand;
 
-use Test::More tests => 10261;
+use Test::More tests => 10300;
 
 Test::General::test_prepare();
 sub r { &Test::General::test_r }
