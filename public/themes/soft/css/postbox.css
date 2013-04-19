@@ -74,6 +74,7 @@ img.icon {
 }
 .info, .error {
     border: none;
+    box-shadow: none;
     background: transparent;
 }
 .newpost {
