@@ -186,7 +186,6 @@ run_through_all(sub{ # Tests durchführen
     }
 }, 1); # with notes
 
-diag('counts müssen auch noch alle getestet werden!!!');
 {
     for my $user ( keys %usertable ) {
         my $username = $usertable{$user}{name};
