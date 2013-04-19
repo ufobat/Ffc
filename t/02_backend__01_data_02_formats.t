@@ -9,7 +9,7 @@ use Mock::Controller;
 use Test::Callcheck;
 srand;
 
-use Test::More tests => 58;
+use Test::More tests => 62;
 
 use_ok('Ffc::Data::Formats');
 
@@ -117,6 +117,8 @@ Notiz am Rande: !BBCodes! können mich mal kreuzweise am Arsch lecken, bin ferti
 ($testurl), $testimage
 _test1_, +test2+, -test3-, ~test4~, !test5!
 _test_1_, +test+2+, -test-3-, ~test~4~, !test!5!
+tongue: :P :-P =P :p :-p =p,
+ooo: :O :-O =O :o :-o =o,
 smile: :) :-) =),
 sad: :( :-( =(,
 crying: :,(,
@@ -130,7 +132,7 @@ down: -.-,
 nope: :/ :-/ :\\ :-\\ =/ =\\,
 sunny: B) B-) 8) 8-),
 cats: ^^,
- love: <3,
+love: <3,
 devilsmile: >:) >:-) >=),
 evilgrin: >:D >:-D >=D,
 angry: >:( >:-( >=(
@@ -145,6 +147,8 @@ sub controlstring_withimages {
 <p>(<a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a>), <a href="$testimage" title="Externes Bild" target="_blank"><img src="$testimage" class="extern" title="Externes Bild" /></a></p>
 <p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span></p>
 <p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span></p>
+<p>tongue: <img class="smiley" src="$url/themes//$theme/img/smileys/tongue.png" alt=":P" /> <img class="smiley" src="$url/themes//$theme/img/smileys/tongue.png" alt=":-P" /> <img class="smiley" src="$url/themes//$theme/img/smileys/tongue.png" alt="=P" /> <img class="smiley" src="$url/themes//$theme/img/smileys/tongue.png" alt=":p" /> <img class="smiley" src="$url/themes//$theme/img/smileys/tongue.png" alt=":-p" /> <img class="smiley" src="$url/themes//$theme/img/smileys/tongue.png" alt="=p" />,</p>
+<p>ooo: <img class="smiley" src="$url/themes//$theme/img/smileys/ooo.png" alt=":O" /> <img class="smiley" src="$url/themes//$theme/img/smileys/ooo.png" alt=":-O" /> <img class="smiley" src="$url/themes//$theme/img/smileys/ooo.png" alt="=O" /> <img class="smiley" src="$url/themes//$theme/img/smileys/ooo.png" alt=":o" /> <img class="smiley" src="$url/themes//$theme/img/smileys/ooo.png" alt=":-o" /> <img class="smiley" src="$url/themes//$theme/img/smileys/ooo.png" alt="=o" />,</p>
 <p>smile: <img class="smiley" src="$url/themes//$theme/img/smileys/smile.png" alt=":)" /> <img class="smiley" src="$url/themes//$theme/img/smileys/smile.png" alt=":-)" /> <img class="smiley" src="$url/themes//$theme/img/smileys/smile.png" alt="=)" />,</p>
 <p>sad: <img class="smiley" src="$url/themes//$theme/img/smileys/sad.png" alt=":(" /> <img class="smiley" src="$url/themes//$theme/img/smileys/sad.png" alt=":-(" /> <img class="smiley" src="$url/themes//$theme/img/smileys/sad.png" alt="=(" />,</p>
 <p>crying: <img class="smiley" src="$url/themes//$theme/img/smileys/crying.png" alt=":,(" />,</p>
@@ -172,6 +176,8 @@ sub controlstring_withoutimages {
 <p>(<a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a>), <a href="$testimage" title="Externes Bild" target="_blank"><img class="icon" src="$url/themes/$theme/img/icons/img.png" class="extern" title="Externes Bild" /> $testimage</a></p>
 <p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span></p>
 <p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span></p>
+<p>tongue::P:-P=P:p:-p=p,</p>
+<p>ooo::O:-O=O:o:-o=o,</p>
 <p>smile::):-)=),</p>
 <p>sad::(:-(=(,</p>
 <p>crying::,(,</p>

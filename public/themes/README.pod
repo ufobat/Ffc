@@ -36,6 +36,10 @@
 
 =over 8
 
+=item C<tongue.png>:      C<<< :P :-P =P :p :-p =p >>>
+
+=item C<ooo.png>:         C<<< :O :-O =O :o :-o =o >>>
+
 =item C<smile.png>:       C<<< :) :-) =) >>>
 
 =item C<sad.png>:         C<<< :( :-( =( >>>
