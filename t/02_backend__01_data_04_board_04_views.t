@@ -266,10 +266,16 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
                     Ffc::Data::dbh()->selectall_arrayref(
                         'SELECT p.id FROM '
                           . $Ffc::Data::Prefix
-                          . 'posts p INNER JOIN '
-                          . $Ffc::Data::Prefix
-                          . 'categories c ON c.id=p.category WHERE p.user_to IS NULL AND c.short=?',
-                        undef, $cattest->{good}
+                          . 'posts p'
+                          . ( $cattest->{good} ? ' INNER JOIN '
+                            . $Ffc::Data::Prefix
+                            . 'categories c ON c.id=p.category AND c.short=?'
+                            : ''
+                          ) 
+                          . ' WHERE p.user_to IS NULL'
+                          . ( $cattest->{good} ? '' : ' AND p.category IS NULL'
+                          ),
+                        undef, $cattest->{good} // ()
                     )
                 };
                 $ids[ int rand $#ids ];
