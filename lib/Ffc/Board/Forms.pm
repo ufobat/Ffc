@@ -13,10 +13,16 @@ use Ffc::Data::Board::Forms;
 sub edit_form {
     my $c = shift;
     $c->error_prepare;
-    my $id   = $c->param('postid');
-    my $s    = $c->session;
-    my $post = $c->or_nostring( sub { Ffc::Data::Board::Views::get_post($s->{act}, $id, $c->get_params($s) ) } );
-    $c->stash( post => $post ); $s->{category} = $post->{category} ? $post->{category}->{short} : '' if $post;
+    my $s = $c->session;
+    if ( $s->{act} eq 'msgs' ) {
+        $c->error_handling( { plain => "Privatnachrichten dürfen nicht geändert werden" } );
+    }
+    else {
+        my $id   = $c->param('postid');
+        my $s    = $c->session;
+        my $post = $c->or_nostring( sub { Ffc::Data::Board::Views::get_post($s->{act}, $id, $c->get_params($s) ) } );
+        $c->stash( post => $post ); $s->{category} = $post->{category} ? $post->{category}->{short} : '' if $post;
+    }
     $c->frontpage();
 }
 
@@ -24,16 +30,21 @@ sub delete_check {
     my $c = shift;
     $c->error_prepare;
     my $s = $c->session;
-    my $id = $c->param('postid');
-    $c->error_handling( { plain => "Privatnachrichten dürfen nicht gelöscht werden" } ) if $s->{act} eq 'msgs';
-    $c->get_counts();
-    my $post;
-    $c->error_handling( {
-        code => sub { $post = Ffc::Data::Board::Views::get_post($s->{act}, $id, $c->get_params($s)) },
-        msg  => 'Beitrag zum Löschen konnte nicht ermittelt werden',
-        after_error => sub { $c->frontpage() },
-        after_ok    => sub { $post->{active} = 1; $c->stash( post => $post ); $c->render('board/deletecheck') },
-    } );
+    if ( $s->{act} eq 'msgs' ) {
+        $c->error_handling( { plain => "Privatnachrichten dürfen nicht gelöscht werden" } );
+        $c->frontpage();
+    }
+    else {
+        my $id = $c->param('postid');
+        $c->get_counts();
+        my $post;
+        $c->error_handling( {
+            code => sub { $post = Ffc::Data::Board::Views::get_post($s->{act}, $id, $c->get_params($s)) },
+            msg  => 'Beitrag zum Löschen konnte nicht ermittelt werden',
+            after_error => sub { $c->frontpage() },
+            after_ok    => sub { $post->{active} = 1; $c->stash( post => $post ); $c->render('board/deletecheck') },
+        } );
+    }
 }
 sub delete_post {
     my $c = shift;
@@ -47,7 +58,8 @@ sub delete_post {
 sub insert_post {
     my $c = shift;
     my $s = $c->session;
-    my $text = $c->param('post')     =~ m/\A\s*(.+)\s*\z/xmsi ? $1 : '';
+    my $text = $c->param('post');
+    $c->error_handling({plain => 'Text des Beitrages ungültig'}) unless $text;
     my $from = $s->{user};
     my @params = ( $from, $text, $s->{category} );
     given ( $s->{act} ) {
@@ -65,7 +77,8 @@ sub insert_post {
 sub update_post {
     my $c = shift;
     my $s = $c->session;
-    my $text = $c->param('post')     =~ m/\A\s*(.+)\s*\z/xmsi ? $1 : '';
+    my $text = $c->param('post');
+    $c->error_handling({plain => 'Text des Beitrages ungültig'}) unless $text;
     my $postid = $c->param('postid');
     my $from = $s->{user};
     my @params = ( $from, $text, $postid );
