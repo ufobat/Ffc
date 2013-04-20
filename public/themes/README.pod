@@ -36,9 +36,9 @@
 
 =over 8
 
-=item C<what.png>:        C<<< O.O 0.0 >>>
+=item C<look.png>:        C<<< O.O 0.0 >>>
 
-=item C<look.png>:        C<<< o.O O.o O.ò ó.O >>>
+=item C<what.png>:        C<<< o.O O.o O.ò ó.O >>>
 
 =item C<tongue.png>:      C<<< :P :-P =P :p :-p =p >>>
 
