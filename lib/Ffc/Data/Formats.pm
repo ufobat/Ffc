@@ -10,11 +10,13 @@ use Carp;
 use Ffc::Data;
 
 our @Smilies = (
+    [ look       => ['O.O', '0.0'                                 ] ],
+    [ what       => ['o.O', 'O.o',  'O.ò',  'ó.O'                 ] ],
     [ smile      => [':)',  ':-)',  '=)',                         ] ],
     [ tongue     => [':P',  ':-P',  '=P',   ':p',  ':-p',  '=p'   ] ],
     [ ooo        => [':O',  ':-O',  '=O',   ':o',  ':-o',  '=o'   ] ],
     [ sad        => [':(',  ':-(',  '=(',                         ] ],
-    [ crying     => [':,(',                                       ] ],
+    [ crying     => [':,(', ':\'('                                ] ],
     [ sunny      => ['B)',  '8)',   'B-)',  '8-)',                ] ],
     [ twinkling  => [';)',  ';-)',                                ] ],
     [ laughting  => [':D',  '=D',   ':-D',  'LOL',                ] ],
@@ -57,8 +59,8 @@ sub format_text {
     return '' unless $s;
     _xml_escape($s);
     $s =~ s{(?<!\w)([\_\-\+\~\!])([\_\-\+\~\!\w]+)\g1(?!\w)}{_make_goody($1,$2)}gxmies;
-    $s =~ s{([\(\s]|\A)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3,$c)}gxmeis;
-    $s =~ s/([\(\s]|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxes;
+    $s =~ s{(\(|\s|\A)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3,$c)}gxmeis;
+    $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxes;
     $s =~ s{\n[\n\s]*}{</p>\n<p>}xgms;
     $s = "<p>$s</p>";
     return $s;
@@ -96,7 +98,7 @@ sub _make_smiley {
     my $s = shift // '';
     my $y = my $x = shift // return '';
     my $c = shift;
-    return "$x" unless $c->session()->{show_images};
+    return "$s$x" unless $c->session()->{show_images};
     $y =~ s/\&/&lt;/xmsg;
     $y =~ s/\>/&gt;/xmsg;
     $y =~ s/\</&lt;/xmsg;

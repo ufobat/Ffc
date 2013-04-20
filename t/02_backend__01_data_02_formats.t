@@ -9,7 +9,7 @@ use Mock::Controller;
 use Test::Callcheck;
 srand;
 
-use Test::More tests => 62;
+use Test::More tests => 66;
 
 use_ok('Ffc::Data::Formats');
 
@@ -117,11 +117,13 @@ Notiz am Rande: !BBCodes! können mich mal kreuzweise am Arsch lecken, bin ferti
 ($testurl), $testimage
 _test1_, +test2+, -test3-, ~test4~, !test5!
 _test_1_, +test+2+, -test-3-, ~test~4~, !test!5!
+look: O.O 0.0,
+what: o.O O.o O.ò ó.O,
 tongue: :P :-P =P :p :-p =p,
 ooo: :O :-O =O :o :-o =o,
 smile: :) :-) =),
 sad: :( :-( =(,
-crying: :,(,
+crying: :,( :'(,
 twinkling: ;) ;-),
 laughting: :D =D :-D LOL,
 rofl: XD X-D ROFL,
@@ -147,11 +149,13 @@ sub controlstring_withimages {
 <p>(<a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a>), <a href="$testimage" title="Externes Bild" target="_blank"><img src="$testimage" class="extern" title="Externes Bild" /></a></p>
 <p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span></p>
 <p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span></p>
+<p>look: <img class="smiley" src="$url/themes//$theme/img/smileys/look.png" alt="O.O" /> <img class="smiley" src="$url/themes//$theme/img/smileys/look.png" alt="0.0" />,</p>
+<p>what: <img class="smiley" src="$url/themes//$theme/img/smileys/what.png" alt="o.O" /> <img class="smiley" src="$url/themes//$theme/img/smileys/what.png" alt="O.o" /> <img class="smiley" src="$url/themes//$theme/img/smileys/what.png" alt="O.ò" /> <img class="smiley" src="$url/themes//$theme/img/smileys/what.png" alt="ó.O" />,</p>
 <p>tongue: <img class="smiley" src="$url/themes//$theme/img/smileys/tongue.png" alt=":P" /> <img class="smiley" src="$url/themes//$theme/img/smileys/tongue.png" alt=":-P" /> <img class="smiley" src="$url/themes//$theme/img/smileys/tongue.png" alt="=P" /> <img class="smiley" src="$url/themes//$theme/img/smileys/tongue.png" alt=":p" /> <img class="smiley" src="$url/themes//$theme/img/smileys/tongue.png" alt=":-p" /> <img class="smiley" src="$url/themes//$theme/img/smileys/tongue.png" alt="=p" />,</p>
 <p>ooo: <img class="smiley" src="$url/themes//$theme/img/smileys/ooo.png" alt=":O" /> <img class="smiley" src="$url/themes//$theme/img/smileys/ooo.png" alt=":-O" /> <img class="smiley" src="$url/themes//$theme/img/smileys/ooo.png" alt="=O" /> <img class="smiley" src="$url/themes//$theme/img/smileys/ooo.png" alt=":o" /> <img class="smiley" src="$url/themes//$theme/img/smileys/ooo.png" alt=":-o" /> <img class="smiley" src="$url/themes//$theme/img/smileys/ooo.png" alt="=o" />,</p>
 <p>smile: <img class="smiley" src="$url/themes//$theme/img/smileys/smile.png" alt=":)" /> <img class="smiley" src="$url/themes//$theme/img/smileys/smile.png" alt=":-)" /> <img class="smiley" src="$url/themes//$theme/img/smileys/smile.png" alt="=)" />,</p>
 <p>sad: <img class="smiley" src="$url/themes//$theme/img/smileys/sad.png" alt=":(" /> <img class="smiley" src="$url/themes//$theme/img/smileys/sad.png" alt=":-(" /> <img class="smiley" src="$url/themes//$theme/img/smileys/sad.png" alt="=(" />,</p>
-<p>crying: <img class="smiley" src="$url/themes//$theme/img/smileys/crying.png" alt=":,(" />,</p>
+<p>crying: <img class="smiley" src="$url/themes//$theme/img/smileys/crying.png" alt=":,(" /> <img class="smiley" src="$url/themes//$theme/img/smileys/crying.png" alt=":'(" />,</p>
 <p>twinkling: <img class="smiley" src="$url/themes//$theme/img/smileys/twinkling.png" alt=";)" /> <img class="smiley" src="$url/themes//$theme/img/smileys/twinkling.png" alt=";-)" />,</p>
 <p>laughting: <img class="smiley" src="$url/themes//$theme/img/smileys/laughting.png" alt=":D" /> <img class="smiley" src="$url/themes//$theme/img/smileys/laughting.png" alt="=D" /> <img class="smiley" src="$url/themes//$theme/img/smileys/laughting.png" alt=":-D" /> <img class="smiley" src="$url/themes//$theme/img/smileys/laughting.png" alt="LOL" />,</p>
 <p>rofl: <img class="smiley" src="$url/themes//$theme/img/smileys/rofl.png" alt="XD" /> <img class="smiley" src="$url/themes//$theme/img/smileys/rofl.png" alt="X-D" /> <img class="smiley" src="$url/themes//$theme/img/smileys/rofl.png" alt="ROFL" />,</p>
@@ -176,24 +180,26 @@ sub controlstring_withoutimages {
 <p>(<a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a>), <a href="$testimage" title="Externes Bild" target="_blank"><img class="icon" src="$url/themes/$theme/img/icons/img.png" class="extern" title="Externes Bild" /> $testimage</a></p>
 <p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span></p>
 <p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span></p>
-<p>tongue::P:-P=P:p:-p=p,</p>
-<p>ooo::O:-O=O:o:-o=o,</p>
-<p>smile::):-)=),</p>
-<p>sad::(:-(=(,</p>
-<p>crying::,(,</p>
-<p>twinkling:;);-),</p>
-<p>laughting::D=D:-DLOL,</p>
-<p>rofl:XDX-DROFL,</p>
-<p>unsure::|:-|=|,</p>
-<p>yes:(y)(Y),</p>
-<p>no:(n)(N),</p>
-<p>down:-.-,</p>
-<p>nope::/:-/:\\:-\\=/=\\,</p>
-<p>sunny:B)B-)8)8-),</p>
-<p>cats:^^,</p>
-<p>love:<3,</p>
-<p>devilsmile:>:)>:-)>=),</p>
-<p>evilgrin:>:D>:-D>=D,</p>
-<p>angry:>:(>:-(>=(</p>
+<p>look: O.O 0.0,</p>
+<p>what: o.O O.o O.ò ó.O,</p>
+<p>tongue: :P :-P =P :p :-p =p,</p>
+<p>ooo: :O :-O =O :o :-o =o,</p>
+<p>smile: :) :-) =),</p>
+<p>sad: :( :-( =(,</p>
+<p>crying: :,( :'(,</p>
+<p>twinkling: ;) ;-),</p>
+<p>laughting: :D =D :-D LOL,</p>
+<p>rofl: XD X-D ROFL,</p>
+<p>unsure: :| :-| =|,</p>
+<p>yes: (y) (Y),</p>
+<p>no: (n) (N),</p>
+<p>down: -.-,</p>
+<p>nope: :/ :-/ :\\ :-\\ =/ =\\,</p>
+<p>sunny: B) B-) 8) 8-),</p>
+<p>cats: ^^,</p>
+<p>love: <3,</p>
+<p>devilsmile: >:) >:-) >=),</p>
+<p>evilgrin: >:D >:-D >=D,</p>
+<p>angry: >:( >:-( >=(</p>
 EOSTRING
 }
