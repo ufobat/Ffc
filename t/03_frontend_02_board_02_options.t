@@ -12,7 +12,7 @@ use Test::Mojo;
 use Test::General;
 use Mock::Testuser;
 
-use Test::More tests => 846;
+use Test::More tests => 873;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 

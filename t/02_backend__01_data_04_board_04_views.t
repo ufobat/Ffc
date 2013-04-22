@@ -368,6 +368,7 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
                 }
 
                 push @where,  'user_from=?';
+                push @where,  '(user_to IS NULL OR  user_from=user_to)';
                 push @params, $userid;
 
                 #diag(Dumper { where => \@where, params => \@params } );
