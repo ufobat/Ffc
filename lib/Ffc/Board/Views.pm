@@ -7,6 +7,7 @@ use utf8;
 
 use base 'Ffc::Board::Errors';
 
+use Carp;
 use Ffc::Data::General;
 use Ffc::Auth;
 use Ffc::Board::Options;
@@ -82,15 +83,14 @@ sub frontpage {
     my @params = $c->get_params($s, $page);
     my $posts  = [];
     my $cat = $s->{category};
-    Ffc::Data::Board::Views::get_forum(@params);
     given ( $act ) {
         when('forum' ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_forum(@params)})}
         when('notes' ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_notes(@params)})}
         when('msgs'  ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_msgs(@params,$s->{msgs_username})})}
         default       {$c->error_handling({plain=>qq("$act" unbekannt)})}
     }
-    if ( $postid and $postid ne '' ) {
-        my @post = grep { $_->{id} eq $postid } @$posts;
+    if ( $postid ) {
+        my @post = grep { exists($_->{id}) and defined($_->{id}) and ( $_->{id} eq $postid ) } @$posts;
         if ( @post ) {
             $c->stash( post => $post[0] );
             $post[0]->{active} = 1;

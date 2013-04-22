@@ -46,8 +46,12 @@ sub update_post {
     confess qq(Keine Postid angegeben) unless $i;
     confess qq{Postid ungültig} unless $i =~ m/\A\d+\z/xms;
     my $dbh = Ffc::Data::dbh();
-    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'posts SET textdata=?, posted=current_timestamp WHERE id=? AND user_from=? AND (user_to IS NULL OR user_from=user_to);';
-    Ffc::Data::dbh()->do( $sql, undef, $d, $i, $f );
+    my $where = 'WHERE id=? AND user_from=? AND (user_to IS NULL OR user_from=user_to)';
+    #FIXME: does not work yet
+    #my $sql = 'SELECT COUNT(id) FROM '.$Ffc::Data::Prefix."posts $where";
+    #confess qq(Kein entsprechender Beitrag vom angegebenen Benutzer bekannt) unless ($dbh->selectrow_array($sql, undef, $i, $f))[0];
+    my $sql = 'UPDATE '.$Ffc::Data::Prefix."posts SET textdata=?, posted=current_timestamp $where;";
+    $dbh->do( $sql, undef, $d, $i, $f );
 }
 
 1;
