@@ -51,7 +51,7 @@ sub _generate_configfile {
     $config->{config}->{dsn} .= $config->{dbfile} = ':memory:';
     DBI->connect($config->{config}->{dsn}, $config->{config}->{username}, $config->{config}->{password} )
       or die qq(could not create database "$config->{config}->{dsn}": ).DBI->errstr;
-    ( my($cfh), $config->{configfile} ) = File::Temp::tempfile();
+    ( my($cfh), $config->{configfile} ) = File::Temp::tempfile(UNLINK => 1);
     print $cfh j($config->{config});
     close $cfh;
 
