@@ -105,12 +105,14 @@ sub get_msgs  {
 sub get_post {
     my $act = shift;
     confess qq(Aktion nicht angegeben) unless $act;
-    confess qq{Aktion unbekannt ("$act")} unless $act =~ m/\A(?:forum|msgs|notes)\z/xms;
+    confess qq{Aktion unbekannt ("$act") oder Privatnachricht (nicht änderbar)} unless $act =~ m/\A(?:forum|notes)\z/xms;
     my $postid = shift;
     confess q{Keine ID für den Beitrag angegeben} unless $postid;
     confess q{Ungültige ID für den Beitrag angegeben} unless $postid =~ m/\A\d+\z/xms;
     my $userid = _get_userid( shift );
-    my $where = 'p.id=?';
+    my $where = << 'EOWHERE';
+    p.id=? AND f.id=u.id AND ( t.id IS NULL OR t.id=f.id )
+EOWHERE
     my @params = @_[ 0 .. 3 ];
     $params[2] = undef unless $params[2];
     $params[2] = undef unless $act eq 'forum';

@@ -15,7 +15,7 @@ use Ffc::Data::Board;
 use Ffc::Data::Board::Forms;
 srand;
 
-use Test::More tests => 285;
+use Test::More tests => 297;
 
 Test::General::test_prepare();
 
@@ -206,6 +206,12 @@ qq'counting code "$t->{name}" returned zero because the database is still empty'
     my $user  = Mock::Testuser->new_active_user();
     my $user2 = Mock::Testuser->new_active_user();
     {
+        for my $cat ( undef, map { $_->[2] } @Test::General::Categories ) {
+            for ( 1 .. ( 10 + int rand 20 ) ) {
+                Ffc::Data::Board::Forms::insert_post( $user->{name},
+                    Test::General::test_r(), $cat, undef );
+            }
+        }
         Ffc::Data::Board::Forms::insert_post( $user->{name},
             Test::General::test_r(), undef, $user->{name} )
           for 1 .. ( 10 + int rand 20 );
@@ -262,22 +268,36 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
         my $posttest = {
             name => 'postid',
             good => do {
+                my $sql =
+                    'SELECT p.id FROM '
+                  . $Ffc::Data::Prefix
+                  . 'posts p'
+                  . (
+                    $cattest->{good}
+                    ? ' INNER JOIN '
+                      . $Ffc::Data::Prefix
+                      . 'categories c ON c.id=p.category AND c.short=?'
+                    : ''
+                  )
+                  . ' INNER JOIN '
+                  . $Ffc::Data::Prefix
+                  . 'users u ON p.user_from=u.id AND u.name=?'
+                  . ' WHERE p.user_to IS NULL'
+                  . ( $cattest->{good} ? '' : ' AND p.category IS NULL' );
                 my @ids = map { $_->[0] } @{
                     Ffc::Data::dbh()->selectall_arrayref(
-                        'SELECT p.id FROM '
-                          . $Ffc::Data::Prefix
-                          . 'posts p'
-                          . ( $cattest->{good} ? ' INNER JOIN '
-                            . $Ffc::Data::Prefix
-                            . 'categories c ON c.id=p.category AND c.short=?'
-                            : ''
-                          ) 
-                          . ' WHERE p.user_to IS NULL'
-                          . ( $cattest->{good} ? '' : ' AND p.category IS NULL'
-                          ),
-                        undef, $cattest->{good} // ()
+                        $sql, undef,
+                        $cattest->{good} // (), $usertest->{good}
                     )
                 };
+                die qq(nothing found for testing: $sql\n\n)
+                  . Dumper(
+                    {
+                        cattest  => $cattest->{good},
+                        acttext  => $acttest->{good},
+                        usertest => $user->{name}
+                    }
+                  ) unless @ids;
                 $ids[ int rand $#ids ];
             },
             bad      => [ '', '  ', 'aaaa' ],
@@ -347,6 +367,9 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
                     push @where, 'category IS NULL';
                 }
 
+                push @where,  'user_from=?';
+                push @params, $userid;
+
                 #diag(Dumper { where => \@where, params => \@params } );
                 my $sql =
 'SELECT id, textdata, user_from, user_to, category, posted FROM '
@@ -379,15 +402,21 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
                 }
 
 #q{sub get_post( $action, $username, $postid, $page, $search, $category, $controller )}
-                {
-                    my $post_test;
-                    eval {
-                        $post_test = $code->(
-                            $act, $post->[0], $user->{name}, 1, $query,
-                            $category->[2] || undef, $controller
-                        );
-                    };
-                    ok( !$@, 'post fetched' );
+                my $post_test;
+                eval {
+                    $post_test = $code->(
+                        $act, $post->[0], $user->{name}, 1, $query,
+                        $category->[2] || undef, $controller
+                    );
+                };
+                if ( $act eq 'msgs' ) {
+                    ok( $@,                  'errors thrown' );
+                    ok( !defined($post_test), 'no test post fetched' );
+                    like( $@, qr/Privatnachricht/, 'error ok');
+                }
+                else {
+                    ok( !$@,                 'post fetched' );
+                    ok( defined($post_test), 'test post ok' );
                     diag(
                         qq~ERROR IN: checking "get_post()" in act "$act" with~
                           . ( $has_cat ? '' : 'out' )
@@ -399,6 +428,7 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
                             category => $category,
                             query    => $query,
                             user     => $user->{name},
+                            userid   => $userid,
                             where    => \@where,
                             params   => \@params,
                             sql      => $sql,
@@ -547,14 +577,15 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
             }
         }
         {
-            my $ret = [];
+            my $ret   = [];
             my $catid = undef;
-            $catid = Ffc::Data::General::get_category_short($testpost->[4]) if $testpost->[4];
+            $catid = Ffc::Data::General::get_category_short( $testpost->[4] )
+              if $testpost->[4];
             {
                 eval {
                     $ret = $code->(
-                        $user->{name}, 0, $testpost->[1], $catid,
-                        $controller
+                        $user->{name}, 0, $testpost->[1],
+                        $catid,        $controller
                     );
                 };
                 ok( !$@, qq'code for "$name" for query ran ok' );
@@ -564,7 +595,8 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
             unless (@$ret) {
                 diag(
                     Dumper {
-                        fromall  => [ grep { $_->[1] eq $testpost->[1] } @$allposts ],
+                        fromall =>
+                          [ grep { $_->[1] eq $testpost->[1] } @$allposts ],
                         user     => $user->{name},
                         page     => 1,
                         query    => $testpost->[1],

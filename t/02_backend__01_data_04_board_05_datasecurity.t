@@ -13,7 +13,7 @@ use Mock::Testuser;
 use Ffc::Data::Board::Forms;
 srand;
 
-use Test::More tests => 10300;
+use Test::More tests => 10768;
 
 Test::General::test_prepare();
 sub r { &Test::General::test_r }
@@ -126,6 +126,23 @@ sub run_code_not_returning { my ( $code, $user, $query, $cat, $p, $match ) = @_;
     }
 }
 
+sub run_get_post { my ( $act, $user, $query, $cat ) = @_;
+    my $ret;
+    eval { $ret = get_post($act, $user, $query, $cat) };
+    return $ret, $@;
+}
+sub run_get_post_not_returning { my ( $act, $user, $query, $cat, $p, $match ) = @_;
+    my ( $ret, $error ) = run_get_post($act, $user, $query, $cat, $p);
+    ok($error, "errors reported");
+    ok(!defined($ret), 'nothing game back');
+    diag(Dumper $ret) if defined $ret;
+}
+sub run_get_post_returning { my ( $act, $user, $query, $cat, $p, $match ) = @_;
+    my ( $ret, $error ) = run_get_post($act, $user, $query, $cat, $p);
+    ok(!$error, 'no errors reported');
+    ok(defined($ret), 'something came back');
+    is($ret->{raw}, $match, 'the right thing came back');
+}
 sleep 1.1; # we want to count new posts
 run_through_all(sub{ # Testdaten einspielen
     my %p = @_;
@@ -183,6 +200,19 @@ run_through_all(sub{ # Tests durchführen
     for my $user ( map {$_->{name}} @{$p{users_see}} ) {
         run_code_returning($p{code_returns}, $user, undef,    $p{cat}, \%p, $p{text}); # ohne query
         run_code_returning($p{code_returns}, $user, $p{text}, $p{cat}, \%p, $p{text}); # mit query
+    }
+    note('check that only the author of a post outside a private message can see the single post');
+    my $act = defined($p{to}) ? 'notes' : 'forum';
+    $act = 'msgs' if $p{to} ne $p{from};
+    for my $user ( map { $_->{name} } values %usertable ) {
+        if ( $user eq $p{from} and $act ne 'msgs' ) {
+            run_get_post_returning($act, $user, undef,    $p{cat}, \%p, $p{text}); # ohne query
+            run_get_post_returning($act, $user, $p{text}, $p{cat}, \%p, $p{text}); # mit query
+        }
+        else {
+            run_get_post_not_returning($act, $user, undef,    $p{cat}, \%p, $p{text}); # ohne query
+            run_get_post_not_returning($act, $user, $p{text}, $p{cat}, \%p, $p{text}); # mit query
+        }
     }
 }, 1); # with notes
 
