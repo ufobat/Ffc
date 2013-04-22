@@ -233,25 +233,25 @@ qr(<textarea name="post" id="textinput"></textarea>)
             if ($is_msgs) {
                 $t->status_is(500)
                 ->content_like(
-                    qr(Privatnachrichten dürfen nicht gelöscht werden));
+                    qr(Privatnachrichten d.+rfen nicht gel.+scht werden));
             }
             else {
                 $t->status_is(200)
                 ->content_like(
-                    qr(Den oben angezeigten Beitrag wirklich löschen));
+                    qr(Den oben angezeigten Beitrag wirklich l.+schen));
             }
             $t->post_ok("/delete")->status_is(500);
             if ($is_msgs) {
-                $t->content_like( qr(Privatnachrichten dürfen nicht gelöscht werden));
+                $t->content_like( qr(Privatnachrichten d.+rfen nicht gel.+scht werden));
             }
             else {
-                $t->content_like(qr(Beitrag konnte nicht gelöscht werden));
+                $t->content_like(qr(Beitrag konnte nicht gel.+scht werden));
             }
             $t->post_ok("/delete", form => {postid => $msgid});
             if ($is_msgs) {
                 $t->status_is(500)
                 ->content_like(
-                    qr(Privatnachrichten dürfen nicht gelöscht werden));
+                    qr(Privatnachrichten d.+rfen nicht gel.+scht werden));
             }
             else {
                 $t->status_is(200)
