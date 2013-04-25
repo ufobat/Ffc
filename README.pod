@@ -22,6 +22,12 @@ simpler technischer Struktur.
 
 =over 4
 
+=item Stabilität
+
+=item Datensicherheit
+
+=item Vertraulichkeit
+
 =item Einfache Bedienung
 
 =item Schlanke Präsentation
