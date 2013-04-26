@@ -64,6 +64,10 @@ simpler technischer Struktur.
 
 =item Notizen für den eigenen Bedarf
 
+=item Dateiaustausch
+
+=item Email-Benachrichtigungen
+
 =back
 
 =back
