@@ -66,8 +66,6 @@ simpler technischer Struktur.
 
 =item Dateiaustausch
 
-=item Email-Benachrichtigungen
-
 =back
 
 =back
