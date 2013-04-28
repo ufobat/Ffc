@@ -79,6 +79,7 @@ sub checkall_tests {
 
 note('empty checks');
 checkall_tests();
+sleep 2;
 note('insert some test postings');
 note('checks with test postings');
 
