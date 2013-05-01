@@ -16,7 +16,7 @@ use Ffc::Data;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Forms;
 
-use Test::More tests => 997;
+use Test::More tests => 901;
 
 srand;
 my $t = Test::General::test_prepare_frontend('Ffc');
@@ -68,20 +68,20 @@ sub insert_tests {
     }
     sleep 2;
     for my $c (@checks) {
-        my $u    = $users{$c->[1]->{user}}->{name};
+        my $u    = $users{ $c->[1]->{user} }->{name};
         my $cats = Ffc::Data::Board::Views::get_categories($u);
-        $c->[1]->{notes} = Ffc::Data::Board::Views::count_notes(    $u );
-        $c->[1]->{msgs}  = Ffc::Data::Board::Views::count_newmsgs(  $u );
-        $c->[1]->{forum} = Ffc::Data::Board::Views::count_newposts( $u );
-        for my $cat ( @$cats ) {
-            $c->[1]->{categories}->{$cat->[1]}->[1] = $cat->[2];
+        $c->[1]->{notes} = Ffc::Data::Board::Views::count_notes($u);
+        $c->[1]->{msgs}  = Ffc::Data::Board::Views::count_newmsgs($u);
+        $c->[1]->{forum} = Ffc::Data::Board::Views::count_newposts($u);
+        for my $cat (@$cats) {
+            $c->[1]->{categories}->{ $cat->[1] }->[1] = $cat->[2];
         }
     }
 
 }
 
-sub check_page {
-    my ( $t, $u, $ck, $cat, $sleep ) = @_;
+sub check_header {
+    my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
     $t->content_like(qr~<span class="username">$u->{name}</span>~);
     if ( $ck->{forum} ) {
         $t->content_like(
@@ -97,12 +97,19 @@ sub check_page {
     else {
         $t->content_like(qr~>Nachrichten \($ck->{msgs}\)</span>~);
     }
-    if ( $ck->{msgs} ) {
-        $t->content_like(qr~>Notizen \(<span class="notecount">$ck->{notes}</span>\)</span>~);
+    if ( $ck->{notes} ) {
+        $t->content_like(
+            qr~>Notizen \(<span class="notecount">$ck->{notes}</span>\)</span>~
+        );
     }
     else {
         $t->content_like(qr~>Notizen \($ck->{notes}\)</span>~);
     }
+    $ck->{$act} = 0 unless $act eq 'forum';
+}
+
+sub check_categories {
+    my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
     my $cats = $ck->{categories};
     for my $k ( sort keys %$cats ) {
         my $n = $cats->{$k}->[0];
@@ -126,13 +133,38 @@ sub check_page {
             }
         }
     }
-    $ck->{forum} -= $cats->{$cat}->[1];
-    $cats->{$cat}->[1] = 0;
+}
+
+sub check_page {
+    my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
+    check_header( $t, $u, $ck, $cat, $sleep, $act );
+    check_categories( $t, $u, $ck, $cat, $sleep, $act ) if $act eq 'forum';
     sleep 2 if $sleep;
+}
+
+sub check_check {
+    my ($t, $sleep, $act, $ck, $u, $p) = @_;
+    if ( $act eq 'forum' ) {
+        for my $cat ( map { $_->[2] } @Test::General::Categories ) {
+            if ($cat) {
+                $t->get_ok("/category/$cat")->status_is(200);
+            }
+            else {
+                $t->get_ok("/$act")->status_is(200);
+            }
+            check_page( $t, $u, $p, $cat, $sleep, $act );
+            $p->{forum} -= $p->{categories}->{$cat}->[1];
+            $p->{categories}->{$cat}->[1] = 0;
+        }
+    }
+    else {
+        check_page( $t, $u, $p, '', $sleep, $act );
+    }
 }
 
 sub checkall_tests {
     my $sleep = shift;
+    my $act   = 'forum';
     for my $ck (@checks) {
         my $u = $ck->[0];
         my $p = $ck->[1];
@@ -140,12 +172,7 @@ sub checkall_tests {
             form => { user => $u->{name}, pass => $u->{password} } )
           ->status_is(302)
           ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
-        $t->get_ok('/')->status_is(200);
-        check_page( $t, $u, $p, '', $sleep );
-        for my $cat ( map { $_->[2] } @Test::General::Categories ) {
-            $t->get_ok("/category/$cat")->status_is(200);
-            check_page( $t, $u, $p, $cat, $sleep );
-        }
+        check_check($t, $sleep, $act, $ck, $u, $p);
         $t->get_ok('/logout')->status_is(200)
           ->content_like(qr'bitte melden Sie sich erneut an');
     }
