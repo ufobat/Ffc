@@ -44,24 +44,28 @@ my @checks = (
 my %users = map { $_->[1]->{user} => $_->[0] } @checks;
 
 my @testposts;
-for my $us (
-    [qw(u1 u2)], [qw(u1 u3)], [qw(u2 u1)], [qw(u3 u1)],
-    [qw(u2 u3)], [qw(u3 u2)]
-  )
-{
-    push @testposts, map { [ $us->[0], $us->[1], undef ] } 1 .. 5;
-}
-for my $u (qw(u1 u2 u3)) {
-    push @testposts, map { [ $u => $u, undef ] } 1 .. 5;
-}
-for my $cat ( undef, map { $_->[2] } @Test::General::Categories ) {
-    for my $u (qw(u1 u2 u3)) {
-        push @testposts, map { [ $u => undef, $cat ] } 1 .. 5;
+
+sub generate_testcases {
+    for my $us (
+        [qw(u1 u2)], [qw(u1 u3)], [qw(u2 u1)], [qw(u3 u1)],
+        [qw(u2 u3)], [qw(u3 u2)]
+      )
+    {
+        push @testposts, map { [ $us->[0], $us->[1], undef ] } 1 .. 5;
     }
+    for my $u (qw(u1 u2 u3)) {
+        push @testposts, map { [ $u => $u, undef ] } 1 .. 5;
+    }
+    for my $cat ( undef, map { $_->[2] } @Test::General::Categories ) {
+        for my $u (qw(u1 u2 u3)) {
+            push @testposts, map { [ $u => undef, $cat ] } 1 .. 5;
+        }
+    }
+    unshift @$_, Test::General::test_r() for @testposts;    # text
 }
-unshift @$_, Test::General::test_r() for @testposts;    # text
 
 sub insert_tests {
+    generate_testcases();
     for my $t (@testposts) {
         Ffc::Data::Board::Forms::insert_post( $users{ $t->[1] }->{name},
             $t->[0], $t->[3], ( $t->[2] ? $users{ $t->[2] }->{name} : undef ) );
@@ -158,6 +162,7 @@ sub check_check {
         }
     }
     else {
+        $t->get_ok("/$act")->status_is(200);
         check_page( $t, $u, $p, '', $sleep, $act );
     }
 }
