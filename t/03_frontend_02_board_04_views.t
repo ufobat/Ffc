@@ -16,7 +16,7 @@ use Ffc::Data;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Forms;
 
-use Test::More tests => 901;
+use Test::More tests => 1069;
 
 srand;
 my $t = Test::General::test_prepare_frontend('Ffc');
@@ -51,14 +51,14 @@ sub generate_testcases {
         [qw(u2 u3)], [qw(u3 u2)]
       )
     {
-        push @testposts, map { [ $us->[0], $us->[1], undef ] } 1 .. 5;
+        push @testposts, map { [ $us->[0], $us->[1], undef, 'msgs' ] } 1 .. 5;
     }
     for my $u (qw(u1 u2 u3)) {
-        push @testposts, map { [ $u => $u, undef ] } 1 .. 5;
+        push @testposts, map { [ $u => $u, undef, 'notes' ] } 1 .. 5;
     }
     for my $cat ( undef, map { $_->[2] } @Test::General::Categories ) {
         for my $u (qw(u1 u2 u3)) {
-            push @testposts, map { [ $u => undef, $cat ] } 1 .. 5;
+            push @testposts, map { [ $u => undef, $cat, 'forum' ] } 1 .. 5;
         }
     }
     unshift @$_, Test::General::test_r() for @testposts;    # text
@@ -139,22 +139,26 @@ sub check_categories {
     }
 }
 
+sub check_content {
+    my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
+    note(qq'content check for "$act"');
+    my @testcases = reverse grep { $act eq $_->[4] } @testposts;
+}
+
 sub check_page {
     my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
     check_header( $t, $u, $ck, $cat, $sleep, $act );
     check_categories( $t, $u, $ck, $cat, $sleep, $act ) if $act eq 'forum';
+    check_content( $t, $u, $ck, $cat, $sleep, $act );
     sleep 2 if $sleep;
 }
 
 sub check_check {
     my ($t, $sleep, $act, $ck, $u, $p) = @_;
     if ( $act eq 'forum' ) {
-        for my $cat ( map { $_->[2] } @Test::General::Categories ) {
+        for my $cat ( '', map { $_->[2] } @Test::General::Categories ) {
             if ($cat) {
                 $t->get_ok("/category/$cat")->status_is(200);
-            }
-            else {
-                $t->get_ok("/$act")->status_is(200);
             }
             check_page( $t, $u, $p, $cat, $sleep, $act );
             $p->{forum} -= $p->{categories}->{$cat}->[1];
@@ -169,7 +173,6 @@ sub check_check {
 
 sub checkall_tests {
     my $sleep = shift;
-    my $act   = 'forum';
     for my $ck (@checks) {
         my $u = $ck->[0];
         my $p = $ck->[1];
@@ -177,7 +180,10 @@ sub checkall_tests {
             form => { user => $u->{name}, pass => $u->{password} } )
           ->status_is(302)
           ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
-        check_check($t, $sleep, $act, $ck, $u, $p);
+        $t->get_ok('/')->status_is(200); # der redirect nach der anmeldung
+        check_check($t, $sleep, 'forum', $ck, $u, $p);
+        check_check($t, $sleep, 'msgs',  $ck, $u, $p);
+        check_check($t, $sleep, 'notes', $ck, $u, $p);
         $t->get_ok('/logout')->status_is(200)
           ->content_like(qr'bitte melden Sie sich erneut an');
     }
