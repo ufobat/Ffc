@@ -16,7 +16,7 @@ use Ffc::Data;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Forms;
 
-use Test::More tests => 1069;
+use Test::More tests => 3541;
 
 srand;
 my $t = Test::General::test_prepare_frontend('Ffc');
@@ -109,7 +109,7 @@ sub check_header {
     else {
         $t->content_like(qr~>Notizen \($ck->{notes}\)</span>~);
     }
-    $ck->{$act} = 0 unless $act eq 'forum';
+    $ck->{$act} = 0 if $act eq 'msgs';
 }
 
 sub check_categories {
@@ -142,7 +142,20 @@ sub check_categories {
 sub check_content {
     my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
     note(qq'content check for "$act"');
-    my @testcases = reverse grep { $act eq $_->[4] } @testposts;
+    my @testcases = reverse grep {
+        ( defined( $_->[3] ) and defined($cat) and $_->[3] eq $cat )
+          or ( !defined( $_->[3] ) and !defined($cat) )
+    } grep { $act eq $_->[4] } @testposts;
+    my $page = 0;
+    while ( my @tests = splice @testcases, 0, $Ffc::Data::Limit ) {
+        $page++;
+        $t->get_ok("/$page")->status_is(200) if $page > 1;
+        $t->content_like(qr(<span class="actpage">\[$page\]</span>));
+        for my $test (@tests) {
+            $t->content_like(qr(<p>$test->[0]</p>));
+#            die Dumper( { tests => [ map { "$_->[4] = $_->[0]" } @tests ], all   => [ map { "$_->[4] = $_->[0]" } @testposts ] });
+        }
+    }
 }
 
 sub check_page {
@@ -154,7 +167,7 @@ sub check_page {
 }
 
 sub check_check {
-    my ($t, $sleep, $act, $ck, $u, $p) = @_;
+    my ( $t, $sleep, $act, $ck, $u, $p ) = @_;
     if ( $act eq 'forum' ) {
         for my $cat ( '', map { $_->[2] } @Test::General::Categories ) {
             if ($cat) {
@@ -180,10 +193,12 @@ sub checkall_tests {
             form => { user => $u->{name}, pass => $u->{password} } )
           ->status_is(302)
           ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
-        $t->get_ok('/')->status_is(200); # der redirect nach der anmeldung
-        check_check($t, $sleep, 'forum', $ck, $u, $p);
-        check_check($t, $sleep, 'msgs',  $ck, $u, $p);
-        check_check($t, $sleep, 'notes', $ck, $u, $p);
+        $t->get_ok('/')->status_is(200);    # der redirect nach der anmeldung
+        check_check( $t, $sleep, 'forum', $ck, $u, $p );
+        check_check( $t, $sleep, 'msgs',  $ck, $u, $p );
+        check_check( $t, $sleep, 'notes', $ck, $u, $p );
+        $t->get_ok('/forum')->status_is(200); # das muss ja jetzt auch noch gehen
+        check_check( $t, $sleep, 'forum', $ck, $u, $p );
         $t->get_ok('/logout')->status_is(200)
           ->content_like(qr'bitte melden Sie sich erneut an');
     }
