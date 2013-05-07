@@ -16,7 +16,7 @@ use Ffc::Data;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Forms;
 
-use Test::More tests => 3541;
+use Test::More tests => 1369;
 
 srand;
 my $t = Test::General::test_prepare_frontend('Ffc');
@@ -38,10 +38,11 @@ my @checks = (
                     }
                 }
               ]
-    } 1 .. 3 ),
+    } 1 .. 2 ),
 );
 
 my %users = map { $_->[1]->{user} => $_->[0] } @checks;
+$users{u3} = Mock::Testuser->new_inactive_user();
 
 my @testposts;
 
@@ -146,15 +147,67 @@ sub check_content {
         ( defined( $_->[3] ) and defined($cat) and $_->[3] eq $cat )
           or ( !defined( $_->[3] ) and !defined($cat) )
     } grep { $act eq $_->[4] } @testposts;
+    check_pages( \@testcases, $t, $u, $ck, $cat, $sleep, $act );
+}
+
+sub check_pages {
+    my ( $testcases, $t, $u, $ck, $cat, $sleep, $act ) = @_;
+    my @testcases =()= @$testcases;
     my $page = 0;
     while ( my @tests = splice @testcases, 0, $Ffc::Data::Limit ) {
         $page++;
-        $t->get_ok("/$page")->status_is(200) if $page > 1;
+        if ( $page > 1 ) {
+            $t->get_ok("/$page")->status_is(200);
+            $t->content_unlike(qr(<textarea name="post" id="textinput"></textarea>));
+        }
+        else {
+            $t->content_like(qr(<textarea name="post" id="textinput"></textarea>)) unless $act eq 'msgs';
+        }
         $t->content_like(qr(<span class="actpage">\[$page\]</span>));
         for my $test (@tests) {
             $t->content_like(qr(<p>$test->[0]</p>));
-#            die Dumper( { tests => [ map { "$_->[4] = $_->[0]" } @tests ], all   => [ map { "$_->[4] = $_->[0]" } @testposts ] });
+            #die Dumper( { tests => [ map { "$_->[4] = $_->[0]" } @tests ], all   => [ map { "$_->[4] = $_->[0]" } @testposts ] });
+            note('testing buttons at posts');
+            my $url_editicon = $t->app->url_for("/themes/$Ffc::Data::Theme/img/icons/edit.png");
+            my $url_deleteicon = $t->app->url_for("/themes/$Ffc::Data::Theme/img/icons/delete.png");
+            my $url_msgicon = $t->app->url_for("/themes/$Ffc::Data::Theme/img/icons/msg.png");
+            if ( $users{$test->[1]}->{active} ) { # keine buttons an inaktiven nutzern
+                my $id = (Ffc::Data::dbh()->selectrow_array('SELECT id FROM '.$Ffc::Data::Prefix.'posts WHERE textdata=?', undef, $test->[0]))[0];
+                my $url_edit = $t->app->url_for('edit_form', postid => $id);
+                my $url_delete = $t->app->url_for('delete_check', postid => $id );
+                my $usermsgname = $test->[1] eq $u ? $users{$test->[2]}->{name} : $users{$test->[1]}->{name};
+                my $url_msg = $act eq 'msgs' ? $t->app->url_for('msgs_user', msgs_username => $usermsgname) : '';
+                my $editlink = qr~<a href="$url_edit" title="Beitrag bearbeiten">\s*<img src="$url_editicon" alt="Ändern"></a>~;
+                my $deletelink = qr~<a href="$url_delete" title="Beitrag löschen">\s*<img src="$url_deleteicon" alt="Löschen"></a>~;
+                my $msglink = qr~<a href="$url_msg" title="Dem Benutzer &quot;$usermsgname&quot; eine private Nachricht zukommen lassen">\s*<img src="$url_msgicon" alt="Nachricht"></a>~;
+                my $timestamp = qr(\s*\d+\.\d+\.\d+, \d+:\d+);
+                my $start = qr(<h2>\s*<span class="titleinfo">);
+                my $end = qr(\s*</span>:\s*</h2>\s*<p>$test->[0]</p>);
+                if ( $act eq 'notes' ) {
+                    $t->content_like(qr~$start$timestamp,\s*$editlink\s*$deletelink$end~);
+                }
+                if ( $act eq 'msgs' ) {
+                }
+                if ( $act eq 'forum' ) {
+                }
+            }
+            else {
+                $t->content_like(qr~<h2>\s*<span class="inactive">$users{$test->[1]}->{name}</span>\s*<span class="titleinfo">\(\s*\d+\.\d+\.\d+, \d+:\d+\s*\)</span>:\s*</h2>\s*<p>$t->[0]</p>~);
+            }
         }
+    }
+}
+
+sub check_msgs {
+    my ( $t, $u, $p, $cat, $sleep, $act ) = @_;
+    note('check user message system and correpsonding input forms and stuff');
+    my @testcases = reverse grep { $_->[4] eq 'msgs' and ( $p->{user} and ( $_->[1] and $p->{user} eq $_->[1] ) or ( $_->[2] and $p->{user} eq $_->[2] ) )} @testposts;
+    my %actusers = map {($_->[1] ne $p->{user} ? ($_->[1] => 1) : ()), ($_->[2] ne $p->{user} ? ($_->[2] => 1) : ())} @testcases;
+    $t->content_unlike(qr(<textarea name="post" id="textinput"></textarea>));
+    for my $user ( map {$users{$_}} keys %actusers ) {
+        $t->get_ok("/msgs/$user->{name}")->status_is(200);
+        $t->content_like(qr(<textarea name="post" id="textinput"></textarea>));
+        check_pages( \@testcases, $t, $u, $p, $cat, $sleep, $act );
     }
 }
 
@@ -163,6 +216,7 @@ sub check_page {
     check_header( $t, $u, $ck, $cat, $sleep, $act );
     check_categories( $t, $u, $ck, $cat, $sleep, $act ) if $act eq 'forum';
     check_content( $t, $u, $ck, $cat, $sleep, $act );
+    check_msgs( $t, $u, $ck, $cat, $sleep, $act ) if $act eq 'msgs';
     sleep 2 if $sleep;
 }
 
@@ -197,8 +251,9 @@ sub checkall_tests {
         check_check( $t, $sleep, 'forum', $ck, $u, $p );
         check_check( $t, $sleep, 'msgs',  $ck, $u, $p );
         check_check( $t, $sleep, 'notes', $ck, $u, $p );
+        sleep 2 if $sleep;
         $t->get_ok('/forum')->status_is(200); # das muss ja jetzt auch noch gehen
-        check_check( $t, $sleep, 'forum', $ck, $u, $p );
+        check_check( $t, 0, 'forum', $ck, $u, $p );
         $t->get_ok('/logout')->status_is(200)
           ->content_like(qr'bitte melden Sie sich erneut an');
     }
