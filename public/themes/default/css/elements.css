@@ -23,8 +23,8 @@ input[type="text"], input[type="password"] {
     min-height: 5em;
     max-height: 40em;
 }
-.postbox textarea:focus, .postbox:hover textarea {
-    height: 15em;
+.postbox textarea:focus {
+    height: 20em;
 }
 
 .divider {
