@@ -1,6 +1,6 @@
     <p class="footerlinks">
-        <a href="https://github.com/bedivere/Ffc" title="Zum Projekt auf GitHub" target="_blank">Projektwebseite</a> -
-        <a href="https://github.com/bedivere/Ffc/issues" title="Zum Bugtracker auf GitHub" target="_blank">Bugtracker</a> -
+        <a href="https://github.com/4FriendsForum/Ffc" title="Zum Projekt auf GitHub" target="_blank">Projektwebseite</a> -
+        <a href="https://github.com/4FriendsForum/Ffc/issues" title="Zum Bugtracker auf GitHub" target="_blank">Bugtracker</a> -
         <a href="http://mojolicio.us/" title="Webseite des Perl-Web-Frameworks Mojolicious besuchen" target="_blank">Created with Mojolicious</a> -
         <a href="http://www.perl.org" title="Webseite der Programmiersprache Perl besuchen" target="_blank">Powered by Perl</a>
     </p>
