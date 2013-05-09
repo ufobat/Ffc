@@ -2,7 +2,7 @@
 <div class="postbox ownpost postboxform">
 %= form_for $what => ( method => 'POST' ) => begin
 <p>
-%= submit_button 'Speichern', class => 'linkalike'
+%= submit_button 'Senden', class => 'linkalike'
 (<a href="<%= url_for 'show' %>" title="&Auml;nderung abbrechen">Abbrechen</a>)
 <span class="help">(_un_ter_, +fe+tt+, -du-rch-, ~kur~siv~, !auf!geregt!)</span>
 </p>
