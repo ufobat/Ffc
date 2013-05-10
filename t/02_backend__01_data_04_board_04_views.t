@@ -15,7 +15,7 @@ use Ffc::Data::Board;
 use Ffc::Data::Board::Forms;
 srand;
 
-use Test::More tests => 297;
+use Test::More tests => 306;
 
 Test::General::test_prepare();
 
@@ -725,6 +725,41 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
         my $where       = 'user_to IS NULL';
         my @params      = ();
         get_testcases( $code, $name, $secondparam, $where, @params );
+    }
+}
+{
+    note('test the privmsgs-userarray');
+    my $code = \&Ffc::Data::Board::Views::get_userlist;
+    my $user_s = Mock::Testuser->new_active_user();
+    my $user_a = Mock::Testuser->new_active_user();
+    my $user_i = Mock::Testuser->new_inactive_user();
+    check_call(
+        $code,
+        get_userlist => {
+            name => 'user name',
+            good => $user_s->{name},
+            bad =>
+              [ '', '   ', Mock::Testuser::get_noneexisting_username() ],
+            errormsg => [
+                'Kein Benutzername angegeben',
+                'Benutzername ungültig',
+                'Benutzer unbekannt',
+            ],
+            emptyerror => 'Kein Benutzername angegeben',
+        },
+    );
+    {
+        my $ret = $code->($user_s->{name});
+        ok(!grep({;$user_s->{name} eq $_->[0]} @$ret), 'session user not in user list');
+        ok( grep({;$user_a->{name} eq $_->[0]} @$ret), 'active users in user list');
+        ok(!grep({;$user_i->{name} eq $_->[0]} @$ret), 'inactive users not in user list');
+    }
+    sleep 2;
+    {
+        my $cnt = 10 + int rand 30;
+        Ffc::Data::Board::Forms::insert_post($user_a->{name}, Test::General::test_r(), undef, $user_s->{name}) for 1 .. $cnt;
+        my $ret = $code->($user_s->{name});
+        is((grep({;$user_a->{name} eq $_->[0]} @$ret))[0][1], $cnt, 'count in user list correct');
     }
 }
 
