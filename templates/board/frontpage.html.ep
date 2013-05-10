@@ -1,14 +1,14 @@
 % layout 'default';
+% if ( $page == 1 and ( act() ne 'msgs' or session->{msgs_username} ) ) {
+%= include 'parts/postboxform'
+% } 
 % if ( act() eq 'msgs' ) {
 %   if ( session->{msgs_username} ) {
-<div class="postbox msgsuserlist"><p>Konversationen mit &quot;<%= session->{user} %>&quot;</p></div>
+<div class="postbox msgsuserlist"><p>Konversationen mit &quot;<%= session->{msgs_username} %>&quot;</p></div>
 %   } else {
 %= include 'parts/userlistlinks'
 %   }
 % }
-% if ( $page == 1 and ( act() ne 'msgs' or session->{msgs_username} ) ) {
-%= include 'parts/postboxform'
-% } 
 % if ( act() eq 'forum' ) {
 <div class="postbox categorylinks"><p>
 %   my $counter = 0;

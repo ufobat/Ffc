@@ -16,7 +16,7 @@ use Ffc::Data;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Forms;
 
-use Test::More tests => 3227;
+use Test::More tests => 3231;
 
 srand;
 my $t = Test::General::test_prepare_frontend('Ffc');
@@ -298,8 +298,9 @@ sub check_msgs {
     }
     note('check msgs_username system for single conversations');
     for my $user ( keys %actusers ) {
-        $t->get_ok("/msgs/$users{$user}->{name}")->status_is(200);
+        $t->get_ok("/msgs/$users{$user}{name}")->status_is(200);
         $t->content_like(qr(<textarea name="post" id="textinput"></textarea>));
+        $t->content_like(qr(Konversationen mit \&quot;$users{$user}{name}\&quot;));
         my @testcases = grep { $_->[1] eq $user or $_->[2] eq $user } @testcases;
         check_pages( \@testcases, $t, $u, $p, $cat, $sleep, $act, $user );
     }
