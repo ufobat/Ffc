@@ -16,7 +16,7 @@ use Ffc::Data;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Forms;
 
-use Test::More tests => 3225;
+use Test::More tests => 3227;
 
 srand;
 my $t = Test::General::test_prepare_frontend('Ffc');
@@ -31,6 +31,7 @@ my @checks = (
                     forum      => 0,
                     msgs       => 0,
                     notes      => 0,
+                    msgs_users => {},
                     categories => {
                         map { $_->[2] => [ $_->[1], 0 ] }
                           [ '', 'Allgemeine Beiträge', '' ],
@@ -78,6 +79,7 @@ sub insert_tests {
         $c->[1]->{notes} = Ffc::Data::Board::Views::count_notes($u);
         $c->[1]->{msgs}  = Ffc::Data::Board::Views::count_newmsgs($u);
         $c->[1]->{forum} = Ffc::Data::Board::Views::count_newposts($u);
+        $c->[1]->{msgs_users} = { map {$_->[0] => $_->[1]} @{Ffc::Data::Board::Views::get_userlist($u)} };
         for my $cat (@$cats) {
             $c->[1]->{categories}->{ $cat->[1] }->[1] = $cat->[2];
         }
@@ -281,6 +283,20 @@ sub check_msgs {
           ( $_->[2] ne $p->{user} ? ( $_->[2] => 1 ) : () )
     } @testcases;
     $t->content_unlike(qr(<textarea name="post" id="textinput"></textarea>));
+    {
+        note('check msgs user list and news counter');
+        for my $u ( map {$users{$_}{name}} grep {$users{$_}{active}} keys %actusers ) {
+            my $c = $p->{msgs_users}->{$u};
+            my $url = $t->app->url_for(msgs_user => msgs_username => $u);
+            if ( $c ) {
+                $t->content_like(qr~<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*$u\s*\(\s*<span class="mark">$c</span>\s*\)\s*</a>~)
+            }
+            else {
+                $t->content_like(qr(<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*$u</a>))
+            }
+        }
+    }
+    note('check msgs_username system for single conversations');
     for my $user ( keys %actusers ) {
         $t->get_ok("/msgs/$users{$user}->{name}")->status_is(200);
         $t->content_like(qr(<textarea name="post" id="textinput"></textarea>));
