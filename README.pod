@@ -93,4 +93,10 @@ Archivierung und Komprimierung). Diese Datei wird dann über einen
 Beitragsindex referenziert im Dateisystem abgelegt und kann entsprechend
 von allen oder von den Zielpersonen des Beitrages abgerufen werden.
 
+=head1 Copyright und Lizenz
+
+Copyright (C) 2012-2013 by Markus Pinkert
+
+This application is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
+
 =cut
