@@ -59,12 +59,11 @@
 .postbox .category {
     white-space: nowrap;
 }
-img.smiley {
+img.smiley, img.icon {
     border: none;
     background: none;
-}
-img.icon {
-    border: none;
+    width: 1em;
+    height: 1em;
 }
 .error {
     color: #c30;
