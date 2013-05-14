@@ -1,8 +1,8 @@
 .menu {
     text-align: center;
     padding: 0.15em 0;
-    background: #333;
-    border: 1px #000 solid;
+    background: #ccc;
+    border: 1px #369 solid;
     border-top: none;
     white-space: nowrap;
 }
@@ -13,9 +13,6 @@
     display: inline;
 }
 .menu input[type="text"] {
-    background-color: #666;
-    border-color: #000;
-    color: #ccc;
     width: 7.5em;
 }
 .menu .activesearch {
@@ -27,7 +24,7 @@
     background: none;
 }
 .menu input.activesearch {
-    background-color: #630;
+    background-color: #fc9;
 }
 .menu a, .menu .linktext {
     text-decoration: none;
@@ -40,13 +37,12 @@
     color: #c93;
 }
 .menu .linktext { 
-    color: #69c;
+    color: #36c;
 }
 .menu .active .mark {
     color: #fc6;
 }
 .menu .active {
-    border-color: #69c;
-    color: #9cf;
-    background: #036;
+    border-color: #fff;
+    background: #fff;
 }
