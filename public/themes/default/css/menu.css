@@ -1,9 +1,6 @@
 .menu {
     text-align: center;
     padding: 0.15em 0;
-    background: #ccc;
-    border: 1px #369 solid;
-    border-top: none;
     white-space: nowrap;
 }
 .menu .name {
@@ -14,6 +11,7 @@
 }
 .menu input[type="text"] {
     width: 7.5em;
+    border-color: #369;
 }
 .menu .activesearch {
     border: 1px #963 solid;
@@ -31,18 +29,18 @@
     border: 1px transparent solid;
 }
 .menu .username, .menu .clock {
-    color: #666;
+    color: #333;
 }
 .menu .mark {
-    color: #c93;
+    color: #963;
 }
 .menu .linktext { 
-    color: #36c;
+    color: #036;
 }
 .menu .active .mark {
     color: #fc6;
 }
 .menu .active {
-    border-color: #fff;
-    background: #fff;
+    border-color: #369;
+    background: #ccc;
 }
