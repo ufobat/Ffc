@@ -79,3 +79,7 @@ img.smiley, img.icon {
 .newpost {
     border-color: #fc6;
 }
+.categorylinks, .msgsuserlist {
+    background: #eee;
+}
+
