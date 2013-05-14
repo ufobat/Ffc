@@ -21,6 +21,7 @@ use Test::More tests => 3231;
 srand;
 my $t = Test::General::test_prepare_frontend('Ffc');
 $Ffc::Data::Limit = 3;
+my $timestampre = qr~(?:(?:\d+.\d+.\d+,\s*)?\d+:\d+|neu|jetzt)~;
 
 my @checks = (
     map( {
@@ -175,28 +176,6 @@ sub check_pages {
         }
         for my $test (@tests) {
             $t->content_like(qr(<p>$test->[0]</p>));
-#            die Dumper(
-#                {
-#                    user => $ck->{user},
-#                    tests => [
-#                        map {
-#                            "$_->[4] = $_->[0], "
-#                              . ( $_->[1] // '<undef>' ) . ' => '
-#                              . ( $_->[2] // '<undef>' )
-#                        } @tests
-#                    ],
-#                    all => [
-#                        map {
-#                            "$_->[4] = $_->[0], "
-#                              . ( $_->[1] // '<undef>' ) . ' => '
-#                              . ( $_->[2] // '<undef>' )
-#                        } @testposts
-#                    ],
-#                    users => {
-#                        map { $_ => $users{$_}->{name} } keys %users
-#                    },
-#                }
-#            ) if $act eq 'msgs';
             my $url_editicon =
               $t->app->url_for("/themes/$Ffc::Data::Theme/img/icons/edit.png");
             my $url_deleteicon = $t->app->url_for(
@@ -224,14 +203,13 @@ qr~,\s*<a href="$url_edit" title="Beitrag bearbeiten">\s*<img src="$url_editicon
 qr~<a href="$url_delete" title="Beitrag l\&ouml;schen">\s*<img src="$url_deleteicon" alt="L\&ouml;schen" /></a>~;
                 my $msglink =
 qr~,\s*<a href="$url_msg"\s*title="Dem Benutzer &quot;$msguser&quot; eine private Nachricht zukommen lassen">\s*<img src="$url_msgicon" alt="Nachricht" /></a>~;
-                my $timestamp = qr(\s*\d+\.\d+\.\d+, \d+:\d+);
                 my $start     = qr(<h2>);
                 my $middle    = qr(<span class="titleinfo">);
                 my $end       = qr(</span>:\s*</h2>\s*<p>$test->[0]</p>);
 
                 if ( $act eq 'notes' ) {
                     $t->content_like(
-qr~$start\s*$middle\s*$timestamp\s*$editlink\s*$deletelink\s*$end~
+qr~$start\s*$middle\s*$timestampre\s*$editlink\s*$deletelink\s*$end~
                     );
                 }
                 note('testing buttons at posts');
@@ -244,18 +222,18 @@ qr~$start\s*$middle\s*$timestamp\s*$editlink\s*$deletelink\s*$end~
                         $user->{active} ? $user->{name} : qr~<span class="inactive">$user->{name}</span>~;
                     } 1, 2;
                     $t->content_like(
-qr~$start\s*$user[0]\s*→\s*$user[1]\s*$middle\s*\(\s*$timestamp\s*$msglink\s*\)\s*$end~
+qr~$start\s*$user[0]\s*→\s*$user[1]\s*$middle\s*\(\s*$timestampre\s*$msglink\s*\)\s*$end~
                     );
                 }
                 if ( $act eq 'forum' ) {
                     if ( $test->[1] eq $ck->{user} ) {
                         $t->content_like(
-qr~$start\s*$users{$test->[1]}->{name}\s*$middle\(\s*\s*$timestamp\s*$editlink\s*$deletelink\s*\)\s*$end~
+qr~$start\s*$users{$test->[1]}->{name}\s*$middle\(\s*\s*$timestampre\s*$editlink\s*$deletelink\s*\)\s*$end~
                         );
                     }
                     else {
                         $t->content_like(
-qr~$start\s*$users{$test->[1]}->{name}\s*$middle\(\s*\s*$timestamp\s*$msglink\s*\)\s*$end~
+qr~$start\s*$users{$test->[1]}->{name}\s*$middle\(\s*\s*$timestampre\s*$msglink\s*\)\s*$end~
                         );
                     }
                 }
@@ -263,7 +241,7 @@ qr~$start\s*$users{$test->[1]}->{name}\s*$middle\(\s*\s*$timestamp\s*$msglink\s*
             else {
                 note('testing that there are no buttons at post');
                 $t->content_like(
-qr~<h2>\s*<span class="inactive">$users{$test->[1]}->{name}</span>\s*<span class="titleinfo">\(\s*\d+\.\d+\.\d+, \d+:\d+\s*\)</span>:\s*</h2>\s*<p>$test->[0]</p>~
+qr~<h2>\s*<span class="inactive">$users{$test->[1]}->{name}</span>\s*<span class="titleinfo">\(\s*$timestampre\s*\)</span>:\s*</h2>\s*<p>$test->[0]</p>~
                 );
             }
         }
@@ -289,10 +267,10 @@ sub check_msgs {
             my $c = $p->{msgs_users}->{$u};
             my $url = $t->app->url_for(msgs_user => msgs_username => $u);
             if ( $c ) {
-                $t->content_like(qr~<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*$u\s*\(\s*<span class="mark">$c</span>\s*\)\s*</a>~)
+                $t->content_like(qr~<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*$u\s*\(\s*$timestampre\s*,\s*<span class="mark">$c</span>\s*\)\s*</a>~)
             }
             else {
-                $t->content_like(qr(<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*$u</a>))
+                $t->content_like(qr(<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*$u\s*\(\s*$timestampre\s*\)\s*</a>))
             }
         }
     }

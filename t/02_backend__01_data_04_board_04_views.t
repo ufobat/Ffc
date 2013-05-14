@@ -15,7 +15,7 @@ use Ffc::Data::Board;
 use Ffc::Data::Board::Forms;
 srand;
 
-use Test::More tests => 306;
+use Test::More tests => 307;
 
 Test::General::test_prepare();
 
@@ -733,6 +733,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
     my $user_s = Mock::Testuser->new_active_user();
     my $user_a = Mock::Testuser->new_active_user();
     my $user_i = Mock::Testuser->new_inactive_user();
+    my $time = sprintf '%02d:%02d', ( gmtime )[2,1];
     check_call(
         $code,
         get_userlist => {
@@ -760,6 +761,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
         Ffc::Data::Board::Forms::insert_post($user_a->{name}, Test::General::test_r(), undef, $user_s->{name}) for 1 .. $cnt;
         my $ret = $code->($user_s->{name});
         is((grep({;$user_a->{name} eq $_->[0]} @$ret))[0][1], $cnt, 'count in user list correct');
+        is((grep({;$user_a->{name} eq $_->[0]} @$ret))[0][2], $time, 'timestamp in user list correct');
     }
 }
 

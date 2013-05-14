@@ -16,7 +16,7 @@ use Test::General;
 use Ffc::Data::Auth;
 srand;
 
-use Test::More tests => 24;
+use Test::More tests => 27;
 
 Test::General::test_prepare();
 
@@ -66,7 +66,7 @@ use_ok('Ffc::Data::Board');
         (
             @{
                 $dbh->selectall_arrayref(
-                    'SELECT u.lastseenmsgs, u.lastseenforum FROM '
+                    'SELECT u.lastseenmsgs, u.lastseenforum, u.lastseen FROM '
                       . $Ffc::Data::Prefix
                       . 'users u WHERE u.id=?',
                     undef, $userid
@@ -87,6 +87,7 @@ use_ok('Ffc::Data::Board');
     my $after = $get_lastseen->();
     cmp_ok( $before->[0], 'lt', $after->[0], 'msgs lastseen ok (altered)' );
     cmp_ok( $before->[1], 'eq', $after->[1], 'forum lastseen ok (unaltered)' );
+    cmp_ok( $before->[2], 'lt', $after->[2], 'lastseen ok (altered)' );
 }
 {
     note(
@@ -100,7 +101,7 @@ use_ok('Ffc::Data::Board');
         (
             @{
                 $dbh->selectall_arrayref(
-                    'SELECT u.lastseenmsgs, u.lastseenforum FROM '
+                    'SELECT u.lastseenmsgs, u.lastseenforum, u.lastseen FROM '
                       . $Ffc::Data::Prefix
                       . 'users u WHERE u.id=?',
                     undef, $userid
@@ -123,6 +124,7 @@ use_ok('Ffc::Data::Board');
     my $after = $get_lastseen->();
     cmp_ok( $before->[0], 'eq', $after->[0], 'msgs lastseen ok (unaltered)' );
     cmp_ok( $before->[1], 'lt', $after->[1], 'forum lastseen ok (altered)' );
+    cmp_ok( $before->[2], 'lt', $after->[2], 'lastseen ok (altered)' );
 }
 {
     note(
@@ -137,7 +139,7 @@ use_ok('Ffc::Data::Board');
         (
             @{
                 $dbh->selectall_arrayref(
-                    'SELECT u.lastseenmsgs, u.lastseenforum FROM '
+                    'SELECT u.lastseenmsgs, u.lastseenforum, u.lastseen FROM '
                       . $Ffc::Data::Prefix
                       . 'users u WHERE u.id=?',
                     undef, $userid
@@ -172,6 +174,7 @@ use_ok('Ffc::Data::Board');
     my $after_first_cat = $get_lastseen_cat->();
     cmp_ok( $before->[0], 'eq', $after->[0], 'msgs lastseen ok (unaltered)' );
     cmp_ok( $before->[1], 'eq', $after->[1], 'forum lastseen ok (unaltered)' );
+    cmp_ok( $before->[2], 'lt', $after->[2], 'lastseen ok (altered)' );
     ok( $after_first_cat, 'after first run, lastseenforum-stat was inserted' );
     sleep 2;
     ok(

@@ -9,18 +9,19 @@ use Mock::Controller;
 use Test::Callcheck;
 srand;
 
-use Test::More tests => 66;
+use Test::More tests => 69;
 
 use_ok('Ffc::Data::Formats');
 
 {
     note('checking format_timestamp( $timestring )');
     my @timeok = ( int( rand 10000 ), map { int rand 100 } 0 .. 4 );
+    $timeok[0]-- if $timeok[0] == ( localtime )[5] + 1900; # im zweifelsfall ein jahr zuvor
     my $timeok_teststring =
         sprintf '%04d-%02d-%02d'
       . ( ' ' x ( 3 + int rand 8 ) )
       . '%02d:%02d:%02d', @timeok;
-    my $timeok_checkstring = sprintf '%d.%d.%d, %02d:%02d',
+    my $timeok_checkstring = sprintf '%02d.%02d.%04d, %02d:%02d',
       @timeok[ 2, 1, 0, 3, 4 ];
     my $timebad = ">>> " . int( rand 1000000 ) . " <<<";
     is( Ffc::Data::Formats::format_timestamp(),
@@ -29,6 +30,19 @@ use_ok('Ffc::Data::Formats');
         $timebad, 'bad time string just returned unaltered' );
     is( Ffc::Data::Formats::format_timestamp($timeok_teststring),
         $timeok_checkstring, 'good timestring returned like expected' );
+    is( Ffc::Data::Formats::format_timestamp('0000-00-00 00:00:00'), 'neu', 'new users shown correct' );
+    {
+        my @time = localtime; $time[5] += 1900; $time[4]++;
+        my $stamp = sprintf '%04d-%02d-%02d %02d:%02d:%02d', @time[5,4,3,2,1,0];
+        is( Ffc::Data::Formats::format_timestamp($stamp), 'jetzt', 'actual time correct' );
+    }
+    {
+        my @time = localtime; $time[5] += 1900; $time[4]++;
+        $time[1]++;
+        my $stamp = sprintf '%04d-%02d-%02d %02d:%02d:%02d', @time[5,4,3,2,1,0];
+        my $check = sprintf '%02d:%02d', @time[2,1];
+        is( Ffc::Data::Formats::format_timestamp($stamp), $check, 'actual time correct' );
+    }
 }
 {
     note('checking format_text');

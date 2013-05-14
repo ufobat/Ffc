@@ -3,6 +3,7 @@ CREATE TABLE "${Prefix}users" (
   "name" varchar(64) NOT NULL,
   "password" varchar(64) NOT NULL,
   "email" varchar(1024),
+  "lastseen" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "lastseenmsgs" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "lastseenforum" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "active" tinyint(1) NOT NULL DEFAULT '0',

@@ -28,15 +28,19 @@ sub _update_user_forum {
             $sql = 'INSERT INTO '.$Ffc::Data::Prefix.'lastseenforum (lastseen, userid, category) VALUES (current_timestamp, ?, ?)';
         }
         $dbh->do( $sql, undef, $userid, $category );
+        {
+            my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET lastseen=current_timestamp WHERE id=?;';
+            Ffc::Data::dbh()->do( $sql, undef, $userid );
+        }
     }
     else {
-        my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET lastseenforum=current_timestamp WHERE id=?;';
+        my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET lastseenforum=current_timestamp, lastseen=current_timestamp WHERE id=?;';
         Ffc::Data::dbh()->do( $sql, undef, $userid );
     }
 }
 
 sub _update_user_msgs {
-    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET lastseenmsgs=current_timestamp WHERE id=?;';
+    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET lastseenmsgs=current_timestamp, lastseen=current_timestamp WHERE id=?;';
     Ffc::Data::dbh()->do( $sql, undef, $_[0] );
 }
 # ( $userid, $act, $category )
