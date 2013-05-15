@@ -5,8 +5,8 @@
     color: #03f;
 }
 .postbox {
-    background: #fffaf0;
-    border: 1px #a9a9a9 solid;
+    background: #ddd;
+    border: 1px #369 solid;
     color: #000;
 }
 .postbox h2 {
@@ -14,7 +14,7 @@
     font-size: 0.75em;
 }
 .ownpost { 
-    background: #faf0e6;
+    background: #ccc;
 }
 .postbox, .pages {
     margin-top: 3px;
@@ -25,16 +25,10 @@
 .postbox a img {
     max-width: 256px;
     max-height: 128px;
-    border: 1px #9932cc solid;
-}
-.postbox a {
-    color: #9932cc;
-}
-.postbox a:hover {
-    color: #da70d6;
+    border: 1px #fff solid;
 }
 .postbox a:hover img {
-    border-color: #da70d6;
+    border-color: #00f;
 }
 .postbox .titleinfo a {
     display: inline-block;
@@ -80,6 +74,6 @@ img.smiley, img.icon {
     border-color: #fc6;
 }
 .categorylinks, .msgsuserlist {
-    background: #fffafa;
+    background: #eee;
 }
 

@@ -28,7 +28,7 @@ input[type="text"], input[type="password"] {
 }
 
 .divider {
-    color: #369;
+    color: #000;
 }
 .adminmark {
     color: #c33;
@@ -84,7 +84,7 @@ form th {
 }
 
 input.linkalike, .linkalike, a {
-    color: #9932cc;
+    color: #36c;
     text-decoration: underline;
     display: inline;
     border: none;
@@ -92,7 +92,7 @@ input.linkalike, .linkalike, a {
     font-size: 1em;
 }
 input.linkalike:hover, .linkalike:hover, a:hover {
-    color: #da70d6;
+    color: #00f;
     text-decoration: none;
     background: none;
 }

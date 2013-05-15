@@ -1,6 +1,13 @@
 .menu {
     text-align: center;
     padding: 0.15em 0;
+    background: #333;
+    border-bottom: 1px #000 solid;
+    box-shadow: 0 0 .25em #000;
+    width: 100%;
+    max-width: 100%;
+    position: fixed;
+    margin-top: -1.75em;
     white-space: nowrap;
 }
 .menu .name {
@@ -10,11 +17,13 @@
     display: inline;
 }
 .menu input[type="text"] {
+    background-color: #666;
+    border-color: #000;
+    color: #ccc;
     width: 7.5em;
-    border-color: #a9a9a9;
 }
 .menu .activesearch {
-    border: 1px #a52a2a solid;
+    border: 1px #963 solid;
 }
 .menu button {
     border: none;
@@ -22,25 +31,26 @@
     background: none;
 }
 .menu input.activesearch {
-    background-color: #ffe4e1;
+    background-color: #630;
 }
 .menu a, .menu .linktext {
     text-decoration: none;
     border: 1px transparent solid;
 }
 .menu .username, .menu .clock {
-    color: #333;
+    color: #666;
 }
 .menu .mark {
-    color: #963;
+    color: #c93;
 }
 .menu .linktext { 
-    color: #036;
+    color: #69c;
 }
 .menu .active .mark {
     color: #fc6;
 }
 .menu .active {
-    border-color: #a9a9a9;
-    background: #faf0e6;
+    border-color: #69c;
+    color: #9cf;
+    background: #036;
 }
