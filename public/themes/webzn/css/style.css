@@ -1,0 +1,155 @@
+body {
+    width: 64em;
+    margin: 0 auto;
+    background: #ccc;
+    font-family: sans-serif;
+    color: #000;
+}
+body > div {
+    background: #fff;
+    border: 1px #999 solid;
+    padding: .1em .5em .25em .5em;
+    box-shadow: .1em .1em .2em #999;
+    margin-top: .5em;
+}
+.postbox h2 {
+    font-size: .75em;
+    border-bottom: 1px #ccc solid;
+}
+.postbox img {
+    max-width: 256px;
+    max-height: 128px;
+    box-shadow: 1px 1px 2px #ccc;
+}
+.postbox a:hover img {
+    box-shadow: 1px 1px 2px #369;
+}
+.postbox h2 img {
+    box-shadow: none;
+}
+.postbox > p {
+    margin: 1em;
+}
+a, .linkalike {
+    color: #36c;
+    text-decoration: underline;
+    display: inline;
+    border: none;
+    background: none;
+    font-size: 1em;
+    font-family: sans-serif;
+}
+a:hover, .linkalike:hover {
+    color: #06f;
+    text-decoration: none;
+    cursor: pointer;
+}
+.pages {
+    text-align: right;
+}
+.pages, .menu {
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+.menu, .footerlinks {
+    text-align: center;
+}
+.menu {
+    white-space: nowrap;
+}
+form {
+    display: inline;
+    padding: 0;
+    margin: 0;
+}
+input, textarea, select {
+    border: 1px #999 solid;
+    background: #fff;
+    color: #006;
+}
+input:hover, textarea:hover, select:hover {
+    border-color: #99f;
+}
+input:focus, textarea:focus, select:focus {
+    border-color: #66c;
+}
+img.smiley, img.icon {
+    border: none;
+    box-shadow: none;
+    width: 1em;
+    height: 1em;
+}
+.postbox textarea {
+    width: 62em;
+    min-width: 62em;
+    max-width: 62em;
+    height: 5em;
+    min-height: 5em;
+    max-height: 62em;
+}
+.postbox textarea:focus {
+    height: 31em;
+}
+.postbox h2 a:hover img {
+    box-shadow: none;
+}
+.divider {
+    display: none;
+}
+.adminmark {
+    color: #c33;
+}
+.inactive {
+    color: #999;
+}
+.error {
+    color: #c30;
+}
+.info {
+    color: #060;
+}
+.info, .error {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+.newpost {
+    border-color: #fc6;
+}
+.categorylinks, .msgsuserlist, .postboxform {
+    background: #eee;
+}
+.categorylinks p, .msgsuserlist p, .postboxform p {
+    padding: 0 .5em;
+    margin: 0;
+}
+.menu {
+    border-bottom: 1px #999 solid;
+    margin: 0;
+    padding: .2em .5em;
+}
+.menu button {
+    border: none;
+    background: none;
+    display: inline;
+}
+.menu .linktext {
+    border-color: transparent;
+    border-style: solid;
+    border-width: 0 1px 1px 1px;
+    padding: .5em 1em;
+}
+.menu .active {
+    border-color: #999;
+    background: #fff;
+}
+.userlist {
+    width: 12em;
+    height: 15em;
+    overflow: scroll;
+}
+.userlist p {
+    margin: 0;
+}
+
