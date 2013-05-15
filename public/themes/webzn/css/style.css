@@ -119,6 +119,7 @@ img.smiley, img.icon {
 }
 .categorylinks, .msgsuserlist, .postboxform {
     background: #eee;
+    box-shadow: .1em .1em .2em #aaa;
 }
 .categorylinks p, .msgsuserlist p, .postboxform p {
     padding: 0 .5em;
