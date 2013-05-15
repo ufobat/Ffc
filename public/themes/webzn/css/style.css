@@ -128,7 +128,7 @@ img.smiley, img.icon {
 .menu {
     border-bottom: 1px #999 solid;
     margin: 0;
-    padding: 0 .5em;
+    padding: 1px .5em;
 }
 .menu button {
     border: none;
