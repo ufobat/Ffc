@@ -11,10 +11,10 @@
 }
 .menu input[type="text"] {
     width: 7.5em;
-    border-color: #369;
+    border-color: #a9a9a9;
 }
 .menu .activesearch {
-    border: 1px #963 solid;
+    border: 1px #a52a2a solid;
 }
 .menu button {
     border: none;
@@ -22,7 +22,7 @@
     background: none;
 }
 .menu input.activesearch {
-    background-color: #fc9;
+    background-color: #ffe4e1;
 }
 .menu a, .menu .linktext {
     text-decoration: none;
@@ -41,6 +41,6 @@
     color: #fc6;
 }
 .menu .active {
-    border-color: #369;
-    background: #ccc;
+    border-color: #a9a9a9;
+    background: #faf0e6;
 }

@@ -84,7 +84,7 @@ form th {
 }
 
 input.linkalike, .linkalike, a {
-    color: #36c;
+    color: #9932cc;
     text-decoration: underline;
     display: inline;
     border: none;
@@ -92,7 +92,7 @@ input.linkalike, .linkalike, a {
     font-size: 1em;
 }
 input.linkalike:hover, .linkalike:hover, a:hover {
-    color: #00f;
+    color: #da70d6;
     text-decoration: none;
     background: none;
 }
