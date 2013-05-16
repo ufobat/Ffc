@@ -28,8 +28,6 @@
 
 =item C<img.png> für Bildericon, wenn keine Bilder angezeigt werden sollen
 
-=item C<refresh.png> erklärt die Uhrzeit im Menü näher
-
 =back
 
 =item C<img/smileys/> (Gesichtchenbildchen):
