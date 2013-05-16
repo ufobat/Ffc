@@ -6,6 +6,7 @@ body {
     color: #000;
 }
 body > div {
+    border: 1px darkkhaki solid;
     background: #fff;
     padding: .1em .5em .25em .5em;
     margin-top: .75em;
@@ -136,8 +137,8 @@ img.smiley, img.icon {
 }
 .menu .linktext {
     border-color: transparent;
-    border-style: solid;
     border-width: 0 1px 1px 1px;
+    border-style: solid;
     padding: 1em;
 }
 .menu .active, body > div {
