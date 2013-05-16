@@ -1,19 +1,18 @@
 body {
     width: 64em;
     margin: 0 auto;
-    background: #ccc;
+    background: lemonchiffon;
     font-family: sans-serif;
     color: #000;
 }
 body > div {
     background: #fff;
-    border: 1px #999 solid;
     padding: .1em .5em .25em .5em;
     margin-top: .75em;
 }
 .postbox h2 {
     font-size: .75em;
-    border-bottom: 1px #ccc solid;
+    border-bottom: 1px lemonchiffon solid;
 }
 .postbox img {
     max-width: 256px;
@@ -30,7 +29,7 @@ body > div {
     margin: 1em;
 }
 input, textarea, select {
-    border: 1px #999 solid;
+    border: 1px darkkhaki solid;
     background: #fff;
     color: #006;
 }
@@ -115,14 +114,14 @@ img.smiley, img.icon {
     border-color: #fc6;
 }
 .categorylinks, .msgsuserlist, .postboxform {
-    background: #eee;
+    background: cornsilk;
 }
 .categorylinks p, .msgsuserlist p, .postboxform p {
     padding: 0 .5em;
     margin: 0;
 }
 .menu {
-    border-bottom: 1px #999 solid;
+    border-bottom: 1px darkkhaki solid;
     margin: 0 0 1.5em 0;
     padding: .2em;
     white-space: nowrap;
@@ -142,9 +141,9 @@ img.smiley, img.icon {
     padding: 1em;
 }
 .menu .active, body > div {
-    border-color: #999;
+    border-color: darkkhaki;
     background: #fff;
-    box-shadow: 0 .1em .3em #999;
+    box-shadow: 0 .1em .3em darkkhaki;
 }
 .userlist {
     width: 12em;
@@ -156,6 +155,6 @@ img.smiley, img.icon {
 }
 .help {
     font-size: .75em;
-    color: #999;
+    color: darkkhaki;
 }
 
