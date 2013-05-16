@@ -9,7 +9,6 @@ body > div {
     background: #fff;
     border: 1px #999 solid;
     padding: .1em .5em .25em .5em;
-    box-shadow: .1em .1em .2em #999;
     margin-top: .5em;
 }
 .postbox h2 {
@@ -54,9 +53,6 @@ a:hover, .linkalike:hover {
 }
 .menu, .footerlinks {
     text-align: center;
-}
-.menu {
-    white-space: nowrap;
 }
 form {
     display: inline;
@@ -119,7 +115,6 @@ img.smiley, img.icon {
 }
 .categorylinks, .msgsuserlist, .postboxform {
     background: #eee;
-    box-shadow: .1em .1em .2em #aaa;
 }
 .categorylinks p, .msgsuserlist p, .postboxform p {
     padding: 0 .5em;
@@ -127,8 +122,12 @@ img.smiley, img.icon {
 }
 .menu {
     border-bottom: 1px #999 solid;
-    margin: 0;
-    padding: 1px .5em;
+    margin: 0 0 1.5em 0;
+    padding: .2em .5em;
+    white-space: nowrap;
+}
+.menu input[type="text"] {
+    width: 7.5em;
 }
 .menu button {
     border: none;
@@ -139,11 +138,12 @@ img.smiley, img.icon {
     border-color: transparent;
     border-style: solid;
     border-width: 0 1px 1px 1px;
-    padding: .5em 1em;
+    padding: 1em;
 }
-.menu .active {
+.menu .active, body > div {
     border-color: #999;
     background: #fff;
+    box-shadow: 0 .1em .3em #999;
 }
 .userlist {
     width: 12em;
