@@ -158,4 +158,24 @@ img.smiley, img.icon {
     font-size: .75em;
     color: darkkhaki;
 }
+.mark {
+    color: #c63;
+}
+.alert {
+    color: #c00;
+    text-transform: uppercase;
+    font-weight: bolder;
+}
+.linethrough {
+    text-decoration: line-through;
+}
+.underline {
+    text-decoration: underline;
+}
+.bold {
+    font-weight: bolder;
+}
+.italic {
+    font-style: italic;
+}
 
