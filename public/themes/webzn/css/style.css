@@ -3,25 +3,25 @@ body {
     margin: 0 auto;
     background: lemonchiffon;
     font-family: sans-serif;
-    color: #000;
+    color: darkslategray;
 }
 body > div {
-    border: 1px darkkhaki solid;
-    background: #fff;
+    border: 1px palegoldenrod solid;
+    background: white;
     padding: .1em .5em .25em .5em;
     margin-top: .75em;
 }
 .postbox h2 {
     font-size: .75em;
-    border-bottom: 1px lemonchiffon solid;
+    border-bottom: 1px palegoldenrod solid;
 }
 .postbox img {
     max-width: 256px;
     max-height: 128px;
-    box-shadow: 1px 1px 2px #ccc;
+    box-shadow: 1px 1px 2px gainsboro;
 }
 .postbox a:hover img {
-    box-shadow: 1px 1px 2px #369;
+    box-shadow: 1px 1px 2px lightsteelblue;
 }
 .postbox h2 img {
     box-shadow: none;
@@ -30,18 +30,18 @@ body > div {
     margin: 1em;
 }
 input, textarea, select {
-    border: 1px darkkhaki solid;
-    background: #fff;
+    border: 1px palegoldenrod solid;
+    background: white;
     color: #006;
 }
 input:hover, textarea:hover, select:hover {
-    border-color: #99f;
+    border-color: lightsteelblue;
 }
 input:focus, textarea:focus, select:focus {
-    border-color: #66c;
+    border-color: steelblue;
 }
 a, .linkalike {
-    color: #36c;
+    color: steelblue;
     text-decoration: underline;
     display: inline;
     border: none;
@@ -51,7 +51,7 @@ a, .linkalike {
     box-shadow: none;
 }
 a:hover, .linkalike:hover {
-    color: #06f;
+    color: lightsteelblue;
     text-decoration: none;
     cursor: pointer;
 }
@@ -115,14 +115,14 @@ img.smiley, img.icon {
     border-color: #fc6;
 }
 .categorylinks, .msgsuserlist, .postboxform {
-    background: cornsilk;
+    background: ivory;
 }
 .categorylinks p, .msgsuserlist p, .postboxform p {
     padding: 0 .5em;
     margin: 0;
 }
 .menu {
-    border-bottom: 1px darkkhaki solid;
+    border-bottom: 1px palegoldenrod solid;
     margin: 0 0 1.5em 0;
     padding: .2em;
     white-space: nowrap;
@@ -142,9 +142,9 @@ img.smiley, img.icon {
     padding: 1em;
 }
 .menu .active, body > div {
-    border-color: darkkhaki;
+    border-color: palegoldenrod;
     background: #fff;
-    box-shadow: 0 .1em .3em darkkhaki;
+    box-shadow: 0 .1em .3em palegoldenrod;
 }
 .userlist {
     width: 12em;
@@ -156,7 +156,7 @@ img.smiley, img.icon {
 }
 .help {
     font-size: .75em;
-    color: darkkhaki;
+    color: palegoldenrod;
 }
 .mark {
     color: #c63;
