@@ -1,9 +1,9 @@
 body {
     width: 64em;
     margin: 0 auto;
-    background: silver;
+    background: gainsboro;
     font-family: sans-serif;
-    color: darkslategray;
+    color: black;
 }
 body > div {
     border: 1px gray solid;
