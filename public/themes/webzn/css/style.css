@@ -6,14 +6,14 @@ body {
     color: black;
 }
 body > div {
-    border: 1px gray solid;
+    border: 1px silver solid;
     background: white;
     padding: .1em .5em .25em .5em;
     margin-top: .75em;
 }
 .postbox h2 {
     font-size: .75em;
-    border-bottom: 1px gray solid;
+    border-bottom: 1px silver solid;
 }
 .postbox img {
     max-width: 256px;
@@ -21,7 +21,7 @@ body > div {
     box-shadow: 1px 1px 2px gainsboro;
 }
 .postbox a:hover img {
-    box-shadow: 1px 1px 2px purple;
+    box-shadow: 1px 1px 2px dodgerblue;
 }
 .postbox h2 img {
     box-shadow: none;
@@ -30,18 +30,18 @@ body > div {
     margin: 1em;
 }
 input, textarea, select {
-    border: 1px gray solid;
+    border: 1px silver solid;
     background: white;
     color: #006;
 }
 input:hover, textarea:hover, select:hover {
-    border-color: purple;
+    border-color: dodgerblue;
 }
 input:focus, textarea:focus, select:focus {
-    border-color: mediumblue;
+    border-color: steelblue;
 }
 a, .linkalike {
-    color: mediumblue;
+    color: steelblue;
     text-decoration: underline;
     display: inline;
     border: none;
@@ -51,7 +51,7 @@ a, .linkalike {
     box-shadow: none;
 }
 a:hover, .linkalike:hover {
-    color: purple;
+    color: dodgerblue;
     text-decoration: none;
     cursor: pointer;
 }
@@ -122,7 +122,7 @@ img.smiley, img.icon {
     margin: 0;
 }
 .menu {
-    border-bottom: 1px gray solid;
+    border-bottom: 1px silver solid;
     margin: 0 0 1.5em 0;
     padding: .2em;
     white-space: nowrap;
@@ -142,9 +142,9 @@ img.smiley, img.icon {
     padding: 1em;
 }
 .menu .active, body > div {
-    border-color: gray;
+    border-color: silver;
     background: #fff;
-    box-shadow: 0 .1em .3em gray;
+    box-shadow: 0 .1em .3em silver;
 }
 .userlist {
     width: 12em;
@@ -156,7 +156,7 @@ img.smiley, img.icon {
 }
 .help {
     font-size: .75em;
-    color: gray;
+    color: silver;
 }
 .mark {
     color: #c63;
