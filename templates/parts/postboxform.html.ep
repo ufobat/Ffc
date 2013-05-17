@@ -7,7 +7,7 @@
 <span class="help">(_un_ter_, +fe+tt+, -du-rch-, ~kur~siv~, !auf!geregt!)</span>
 </p>
 <p>
-    <textarea name="post" id="textinput"><%= $post ? ( ( $what eq 'insert_post' ) ? "[quote] $post->{raw} [/quote]" : $post->{raw} ) : '' %></textarea>
+    <textarea name="post" id="textinput" class="<%= $what %>"><%= $post ? ( ( $what eq 'insert_post' ) ? "[quote] $post->{raw} [/quote]" : $post->{raw} ) : '' %></textarea>
 </p>
 % end
 </div>
