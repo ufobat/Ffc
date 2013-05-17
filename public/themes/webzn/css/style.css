@@ -14,7 +14,7 @@ body > div {
 }
 .postbox h2 {
     font-size: .75em;
-    border-bottom: 1px tan solid;
+    border-bottom: 1px thistle solid;
 }
 .postbox img {
     max-width: 256px;
@@ -31,7 +31,7 @@ body > div {
     margin: 1em;
 }
 input, textarea, select {
-    border: 1px tan solid;
+    border: 1px thistle solid;
     background: white;
     color: #006;
 }
@@ -123,7 +123,7 @@ img.smiley, img.icon {
     margin: 0;
 }
 .menu {
-    border-bottom: 1px tan solid;
+    border-bottom: 1px thistle solid;
     margin: 0 0 1.5em 0;
     padding: .2em;
     white-space: nowrap;
@@ -143,7 +143,7 @@ img.smiley, img.icon {
     padding: 1em;
 }
 .menu .active, body > div {
-    border-color: tan;
+    border-color: thistle;
     background: #fff;
     box-shadow: 0 .1em .3em silver;
 }
@@ -157,7 +157,7 @@ img.smiley, img.icon {
 }
 .help {
     font-size: .75em;
-    color: tan;
+    color: thistle;
 }
 .mark {
     color: #c63;
