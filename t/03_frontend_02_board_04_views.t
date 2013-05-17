@@ -164,11 +164,11 @@ sub check_pages {
         if ( $page > 1 ) {
             $t->get_ok("/$page")->status_is(200);
             $t->content_unlike(
-                qr(<textarea name="post" id="textinput"></textarea>));
+                qr~<textarea name="post" id="textinput" class="(?:insert|update)_post"></textarea>~);
         }
         else {
             $t->content_like(
-                qr(<textarea name="post" id="textinput"></textarea>))
+                qr~<textarea name="post" id="textinput" class="(?:insert|update)_post"></textarea>~)
               unless $act eq 'msgs';
         }
         if ( $Ffc::Data::Limit <= @tests ) {
@@ -260,7 +260,7 @@ sub check_msgs {
         ( $_->[1]   ne $p->{user} ? ( $_->[1] => 1 ) : () ),
           ( $_->[2] ne $p->{user} ? ( $_->[2] => 1 ) : () )
     } @testcases;
-    $t->content_unlike(qr(<textarea name="post" id="textinput"></textarea>));
+    $t->content_unlike(qr~<textarea name="post" id="textinput" class="(?:insert|update)_post"></textarea>~);
     {
         note('check msgs user list and news counter');
         for my $u ( map {$users{$_}{name}} grep {$users{$_}{active}} keys %actusers ) {
@@ -277,7 +277,7 @@ sub check_msgs {
     note('check msgs_username system for single conversations');
     for my $user ( keys %actusers ) {
         $t->get_ok("/msgs/$users{$user}{name}")->status_is(200);
-        $t->content_like(qr(<textarea name="post" id="textinput"></textarea>));
+        $t->content_like(qr~<textarea name="post" id="textinput" class="(?:insert|update)_post"></textarea>~);
         $t->content_like(qr(Konversationen mit \&quot;$users{$user}{name}\&quot;));
         my @testcases = grep { $_->[1] eq $user or $_->[2] eq $user } @testcases;
         check_pages( \@testcases, $t, $u, $p, $cat, $sleep, $act, $user );
