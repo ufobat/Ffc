@@ -58,7 +58,8 @@ sub _xml_escape {
 sub format_text {
     my $s = shift // '';
     my $c = shift;
-    confess 'Controller ungültig' unless $c;
+    confess('Controller ungültig') unless $c;
+    my $u = $c->session()->{user} // '';
     $s =~ s/\A\s+//gxmsi;
     $s =~ s/\s+\z//gxmsi;
     return '' unless $s;
@@ -66,6 +67,7 @@ sub format_text {
     $s =~ s{(?<!\w)([\_\-\+\~\!])([\_\-\+\~\!\w]+)\g1(?!\w)}{_make_goody($1,$2)}gxmies;
     $s =~ s{(\(|\s|\A)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3,$c)}gxmeis;
     $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxes;
+    $s =~ s{$u}{<span class="username">$u</span>}xmsi if $u;
     $s =~ s{\n[\n\s]*}{</p>\n<p>}xgms;
     $s = "<p>$s</p>";
     return $s;

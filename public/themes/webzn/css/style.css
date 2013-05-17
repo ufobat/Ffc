@@ -181,4 +181,9 @@ img.smiley, img.icon {
 .quote {
     color: dimgrey;
 }
-
+.postbox .username {
+    font-weight: bolder;
+}
+.activepost {
+    background: gainsboro;
+}
