@@ -178,4 +178,7 @@ img.smiley, img.icon {
 .italic {
     font-style: italic;
 }
+.quote {
+    color: dimgrey;
+}
 

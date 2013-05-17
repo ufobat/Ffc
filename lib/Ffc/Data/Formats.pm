@@ -53,7 +53,7 @@ sub _xml_escape {
     $_[0] =~ s/\&/\&amp;/gxm;
     $_[0] =~ s/\<(?=[^3])/\&lt;/gxm;
     $_[0] =~ s/\>(?=[^\:\=])/\&gt;/gxm;
-    $_[0] =~ s/"/\&quot;/gxm;
+    $_[0] =~ s{"([^"]*?)"}{„<span class="quote">$1</span>“}gxm;
 }
 sub format_text {
     my $s = shift // '';

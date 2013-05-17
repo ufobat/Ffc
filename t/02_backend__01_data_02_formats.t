@@ -9,7 +9,7 @@ use Mock::Controller;
 use Test::Callcheck;
 srand;
 
-use Test::More tests => 69;
+use Test::More tests => 71;
 
 use_ok('Ffc::Data::Formats');
 
@@ -128,7 +128,11 @@ MarkupTests:
 
 Notiz am Rande: !BBCodes! können mich mal kreuzweise am Arsch lecken, bin fertig mit den sinnlosen Drecksdingern. Die kommen hier nie, nie nie rein!
 
+
 ($testurl), $testimage
+
+Und "Hier, in dieser :) ... $testurl ... achso" und da" oder so.
+
 _test1_, +test2+, -test3-, ~test4~, !test5!
 _test_1_, +test+2+, -test-3-, ~test~4~, !test!5!
 look: O.O 0.0,
@@ -161,6 +165,7 @@ sub controlstring_withimages {
 <p>MarkupTests:</p>
 <p>Notiz am Rande: <span class="alert">BBCodes !!!</span> können mich mal kreuzweise am Arsch lecken, bin fertig mit den sinnlosen Drecksdingern. Die kommen hier nie, nie nie rein!</p>
 <p>(<a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a>), <a href="$testimage" title="Externes Bild" target="_blank"><img src="$testimage" class="extern" title="Externes Bild" /></a></p>
+<p>Und „<span class="quote">Hier, in dieser <img class="smiley" src="$url/themes//$theme/img/smileys/smile.png" alt=":)" /> ... <a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a> ... achso</span>“ und da" oder so.</p>
 <p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span></p>
 <p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span></p>
 <p>look: <img class="smiley" src="$url/themes//$theme/img/smileys/look.png" alt="O.O" /> <img class="smiley" src="$url/themes//$theme/img/smileys/look.png" alt="0.0" />,</p>
@@ -192,6 +197,7 @@ sub controlstring_withoutimages {
 <p>MarkupTests:</p>
 <p>Notiz am Rande: <span class="alert">BBCodes !!!</span> können mich mal kreuzweise am Arsch lecken, bin fertig mit den sinnlosen Drecksdingern. Die kommen hier nie, nie nie rein!</p>
 <p>(<a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a>), <a href="$testimage" title="Externes Bild" target="_blank"><img class="icon" src="$url/themes/$theme/img/icons/img.png" class="extern" title="Externes Bild" /> $testimage</a></p>
+<p>Und „<span class="quote">Hier, in dieser :) ... <a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a> ... achso</span>“ und da" oder so.</p>
 <p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span></p>
 <p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span></p>
 <p>look: O.O 0.0,</p>
