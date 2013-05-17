@@ -87,7 +87,7 @@ img.smiley, img.icon {
     max-height: 54em;
 }
 .postbox textarea:focus {
-    height: 31em;
+    height: 32em;
 }
 .postbox h2 a:hover img {
     box-shadow: none;
@@ -187,4 +187,7 @@ img.smiley, img.icon {
 }
 .activepost {
     background: gainsboro;
+}
+textarea.update_post {
+    height: 32em;
 }
