@@ -198,11 +198,11 @@ sub check_pages {
                 $msguser = $users{$test->[1]}->{name} unless $act eq 'msgs';
                 my $url_msg = $t->app->url_for( 'msgs_user', msgs_username => $msguser );
                 my $editlink =
-qr~,\s*<a href="$url_edit" title="Beitrag bearbeiten">\s*<img src="$url_editicon" alt="\&Auml;ndern" /></a>~;
+qr~,\s*<a href="$url_edit" title="Beitrag bearbeiten">\s*(?:<img src="$url_editicon" alt="\&Auml;ndern" />|Bearbeiten)</a>(?:\s*,\s*)?~;
                 my $deletelink =
-qr~<a href="$url_delete" title="Beitrag l\&ouml;schen">\s*<img src="$url_deleteicon" alt="L\&ouml;schen" /></a>~;
+qr~<a href="$url_delete" title="Beitrag l\&ouml;schen">\s*(?:<img src="$url_deleteicon" alt="L\&ouml;schen" />|L&ouml;schen)</a>~;
                 my $msglink =
-qr~,\s*<a href="$url_msg"\s*title="Dem Benutzer &quot;$msguser&quot; eine private Nachricht zukommen lassen">\s*<img src="$url_msgicon" alt="Nachricht" /></a>~;
+qr~,\s*<a href="$url_msg"\s*title="Dem Benutzer &quot;$msguser&quot; eine private Nachricht zukommen lassen">\s*(?:<img src="$url_msgicon" alt="Nachricht" />|Privatnachricht)</a>~;
                 my $start     = qr(<h2>);
                 my $middle    = qr(<span class="titleinfo">);
                 my $end       = qr(</span>:\s*</h2>\s*<p>$test->[0]</p>);

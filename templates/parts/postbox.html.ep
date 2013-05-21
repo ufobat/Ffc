@@ -19,16 +19,14 @@
 % unless ( $post->{active} ) {
           <%= $post->{timestamp} %><%= $post->{iconspresent}  ? ',' : '' %>
 % if ( $post->{editable} ) {
-          <a href="<%= url_for edit_form     => postid => $post->{id} %>" title="Beitrag bearbeiten">
-            <img src="<%= url_for $Ffc::Data::Themedir.session()->{theme}.'/img/icons/edit.png' %>" alt="&Auml;ndern" /></a>
-          <a href="<%= url_for delete_check  => postid => $post->{id} %>" title="Beitrag l&ouml;schen">
-            <img src="<%= url_for $Ffc::Data::Themedir.session()->{theme}.'/img/icons/delete.png' %>" alt="L&ouml;schen" /></a>
+          <a href="<%= url_for edit_form     => postid => $post->{id} %>" title="Beitrag bearbeiten">Bearbeiten</a>,
+          <a href="<%= url_for delete_check  => postid => $post->{id} %>" title="Beitrag l&ouml;schen">L&ouml;schen</a>
 % }
 % for my $w (qw(from to)) {
 %   if ( $post->{$w} and $post->{$w}->{chatable} ) {
           <a href="<%= url_for msgs_user => msgs_username => $post->{$w}->{name} %>"
             title="Dem Benutzer &quot;<%= $post->{$w}->{name} %>&quot; eine private Nachricht zukommen lassen">
-            <img src="<%= url_for $Ffc::Data::Themedir.session()->{theme}.'/img/icons/msg.png' %>" alt="Nachricht" /></a>
+            Privatnachricht</a>
 %   } 
 % }
 % } else {
