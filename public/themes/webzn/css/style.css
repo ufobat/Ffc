@@ -40,7 +40,7 @@ input:hover, textarea:hover, select:hover {
     border-color: dodgerblue;
 }
 input:focus, textarea:focus, select:focus {
-    border-color: steelblue;
+    border-color: lightsteelblue;
 }
 a, .linkalike {
     color: steelblue;
