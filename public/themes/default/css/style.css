@@ -120,7 +120,7 @@ img.smiley, img.icon {
     background: whitesmoke;
 }
 .categorylinks p, .msgsuserlist p, .postboxform p {
-    padding: 0 .5em;
+    padding: .25em .5em;
     margin: 0;
 }
 .menu {
