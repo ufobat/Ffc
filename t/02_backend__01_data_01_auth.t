@@ -15,7 +15,7 @@ use Test::Callcheck;
 use Test::General;
 use Ffc::Data;
 
-use Test::More tests => 198;
+use Test::More tests => 222;
 
 BEGIN { use_ok('Ffc::Data::Auth') }
 
@@ -258,11 +258,13 @@ qq(checked for false administrational being of "$user->{pseudoname}")
         get_userid =>
           Mock::Testuser::get_username_check_hash( $activeuser->{name} ), 
         );
-    for my $user (@users) {
-        my ( $ok, $return, $error ) = just_call( $code, $user->{name} );
-        $return = $return->[0];
-        is( $return, $user->{id},
-            qq'user id returned ok for "$user->{pseudoname}"' );
+    for ( 0 .. 2 ) {
+        for my $user (@users) {
+            my ( $ok, $return, $error ) = just_call( $code, $user->{name} );
+            $return = $return->[0];
+            is( $return, $user->{id},
+                qq'user id returned ok for "$user->{pseudoname}"' );
+        }
     }
     {
         my $newname = Mock::Testuser::get_noneexisting_username();
@@ -282,11 +284,13 @@ qq(checked for false administrational being of "$user->{pseudoname}")
     check_call( $code,
         get_username =>
           Mock::Testuser::get_userid_check_hash( $activeuser->{id} ), );
-    for my $user (@users) {
-        my ( $ok, $return, $error ) = just_call( $code, $user->{id} );
-        $return = $return->[0];
-        is( $return, $user->{name},
-            qq'user name returned ok for "$user->{pseudoname}"' );
+    for ( 0 .. 2 ) {
+        for my $user (@users) {
+            my ( $ok, $return, $error ) = just_call( $code, $user->{id} );
+            $return = $return->[0];
+            is( $return, $user->{name},
+                qq'user name returned ok for "$user->{pseudoname}"' );
+        }
     }
     {
         my $newid = Mock::Testuser::get_noneexisting_userid();

@@ -78,22 +78,27 @@ sub check_user_exists {
     eval { get_userid( shift ) };
     return $@ ? 0 : 1;
 }
+our %UserIds;
 sub get_userid {
     my $username = shift;
     check_username_rules($username);
+    return $UserIds{$username} if exists $UserIds{$username};
     my $sql = 'SELECT u.id FROM '.$Ffc::Data::Prefix.'users u WHERE u.name = ?';
-    $username = Ffc::Data::dbh()->selectall_arrayref($sql, undef, $username);
-    confess qq(Benutzer unbekannt).($_[0] ? " ($_[0])" : '') unless @$username and $username->[0]->[0];
-    return $username->[0]->[0];
+    my $userid = Ffc::Data::dbh()->selectall_arrayref($sql, undef, $username);
+    confess qq(Benutzer unbekannt).($_[0] ? " ($_[0])" : '') unless @$userid and $userid->[0]->[0];
+    $UserIds{$username} = $userid->[0]->[0];
+    return $userid->[0]->[0];
 }
-
+our %UserNames;
 sub get_username {
     my $userid = shift;
     check_userid_rules( $userid, $_[0] );
+    return $UserNames{$userid} if exists $UserNames{$userid};
     my $sql = 'SELECT u.name FROM '.$Ffc::Data::Prefix.'users u WHERE u.id=?';
-    $userid = Ffc::Data::dbh()->selectall_arrayref($sql, undef, $userid);
-    confess qq(Benutzer unbekannt).($_[0] ? " ($_[0])" : '') unless @$userid and $userid->[0]->[0];
-    return $userid->[0]->[0];
+    my $username = Ffc::Data::dbh()->selectall_arrayref($sql, undef, $userid);
+    confess qq(Benutzer unbekannt).($_[0] ? " ($_[0])" : '') unless @$username and $username->[0]->[0];
+    $UserNames{$userid} = $username->[0]->[0];
+    return $username->[0]->[0];
 }
 
 1;
