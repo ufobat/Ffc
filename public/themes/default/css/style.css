@@ -32,7 +32,7 @@ body > div {
     margin: 1em;
 }
 input, textarea, select {
-    border: 1px lightsteelblue solid;
+    border: 1px silver solid;
     background: white;
     color: #006;
 }
