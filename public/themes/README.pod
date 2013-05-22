@@ -16,14 +16,6 @@
 
 =item C<bye.png> als Beendenbutton im Menü
 
-=item C<delete.png> als Löschen-Knopf
-
-=item C<edit.png> als Bearbeiten-Button
-
-=item C<msgs.png> als Chat-Knopf
-
-=item C<options.png> für den Link zu den Optionen im Menü
-
 =item C<search.png> für den Suchenbutton im Menü
 
 =item C<img.png> für Bildericon, wenn keine Bilder angezeigt werden sollen
