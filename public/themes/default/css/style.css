@@ -144,7 +144,7 @@ img.smiley, img.icon {
     padding: 1em;
 }
 .menu .active, body > div {
-    border-color: lightsteelblue;
+    border-color: steelblue;
     background: #fff;
     box-shadow: 0 .1em .3em silver;
 }
