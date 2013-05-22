@@ -88,7 +88,7 @@ sub test_get_rand_user     { $Users[ int rand scalar @Users ] }
     my $g = sub { join '', map { $chars[ int rand scalar @chars ] } 0 .. 7 + int rand 5 };
     sub test_r {
         my $s = '';
-        $s = $g->() while grep /$s/, @teststr;
+        $s = $g->() while grep /$s/i, @teststr;
         return $s;
     }
 }

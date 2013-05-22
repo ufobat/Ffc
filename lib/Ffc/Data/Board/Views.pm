@@ -152,7 +152,7 @@ sub _get_stuff {
     $page = 1 unless $page and $page =~ m/\A\d+\z/xms;
     if ( $query ) {
         push @params, "\%$query\%";
-        $q = q{AND p.textdata LIKE ?};
+        $q = q{AND UPPER(p.textdata) LIKE UPPER(?)};
     }
     my $sql = << "EOSQL";
 SELECT p.id, p.textdata, p.posted, 
