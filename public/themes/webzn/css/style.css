@@ -189,7 +189,7 @@ img.smiley, img.icon {
 .activepost {
     background: gainsboro;
 }
-.activesearch {
+input.activesearch {
     border-color: #c63;
 }
 textarea.update_post {
