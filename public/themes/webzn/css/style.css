@@ -189,6 +189,9 @@ img.smiley, img.icon {
 .activepost {
     background: gainsboro;
 }
+.activesearch {
+    border-color: #c63;
+}
 textarea.update_post {
     height: 32em;
 }
