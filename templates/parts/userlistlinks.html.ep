@@ -4,9 +4,7 @@
 %   for my $user ( @$userlist ) { $counter++;
    <%== $counter > 1 ? '/ ' : '' %>
    <a href="<%= url_for msgs_user => msgs_username => $user->[0] %>" title="Privatnachrichten an &quot;<%= $user->[0] %>&quot; lesen und schreiben">
-       <%= $user->[0] %>
-       (<%= $user->[2] %><% if ( $user->[1] ) { %>, <span class="mark"><%= $user->[1] %></span><% } %>)
-       </a>
+       <%= $user->[0] %> (<%= $user->[2] %><% if ( $user->[1] ) { %>, <span class="mark"><%= $user->[1] %></span><% } %>)</a>
 %   }
 % }
 </p></div>
