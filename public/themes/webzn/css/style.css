@@ -20,7 +20,7 @@ body > div {
 .postbox img {
     max-width: 256px;
     max-height: 128px;
-    box-shadow: 1px 1px 2px gainsboro;
+    box-shadow: 1px 1px 2px silver;
 }
 .postbox a:hover img {
     box-shadow: 1px 1px 2px dodgerblue;
@@ -32,15 +32,15 @@ body > div {
     margin: 1em;
 }
 input, textarea, select {
-    border: 1px steelblue solid;
+    border: 1px lightsteelblue solid;
     background: white;
     color: #006;
 }
 input:hover, textarea:hover, select:hover {
-    border-color: dodgerblue;
+    border-color: steelblue;
 }
 input:focus, textarea:focus, select:focus {
-    border-color: lightsteelblue;
+    border-color: dodgerblue;
 }
 a, .linkalike {
     color: steelblue;
@@ -144,7 +144,7 @@ img.smiley, img.icon {
     padding: 1em;
 }
 .menu .active, body > div {
-    border-color: steelblue;
+    border-color: lightsteelblue;
     background: #fff;
     box-shadow: 0 .1em .3em silver;
 }
