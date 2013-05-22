@@ -14,8 +14,6 @@
 
 =over 8
 
-=item C<bye.png> als Beendenbutton im Menü
-
 =item C<search.png> für den Suchenbutton im Menü
 
 =item C<img.png> für Bildericon, wenn keine Bilder angezeigt werden sollen

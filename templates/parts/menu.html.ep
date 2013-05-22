@@ -12,7 +12,5 @@
     <span class="divider">-</span>
     <a href="<%= url_for 'options_form' %>" title="Einstellungen für diese Plattform anpassen"><span class="username linktext linkoptions<%= act() eq 'options' ? ' active activeoptions' : '' %>"><%= session()->{user} %></span></a>
     
-    <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linktext linklogout"><img src="<%= url_for $Ffc::Data::Themedir.session()->{theme}.'/img/icons/bye.png' %>" alt="[X]" /></span></a>
-    <span class="divider">-</span>
-    <a href="<%= url_for 'show' %>" title="Seite jetzt neu laden"><span class="clock">Aktualisieren</span></a>
+    <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linktext linklogout">Abmelden</span></a>
 </div>
