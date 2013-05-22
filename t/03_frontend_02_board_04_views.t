@@ -90,7 +90,7 @@ sub insert_tests {
 
 sub check_header {
     my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
-    $t->content_like(qr~<span class="username">$u->{name}</span>~);
+    $t->content_like(qr~<span class="username[\w\s]+">$u->{name}</span>~);
     if ( $ck->{forum} ) {
         $t->content_like(
             qr~>Forum \(<span class="mark">$ck->{forum}</span>\)</span>~);
