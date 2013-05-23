@@ -196,5 +196,5 @@ textarea.update_post {
     font-weight: normal;
 }
 input[type="text"], textarea {
-    box-shadow: inset .05em .05em .2em gainsboro;
+    box-shadow: inset 0 .05em .2em gainsboro;
 }
