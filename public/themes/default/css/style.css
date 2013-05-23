@@ -142,7 +142,7 @@ img.smiley, img.icon {
 }
 .menu .linktext:hover {
     border-color: dodgerblue;
-    box-shadow: 0 .1em .3em silver;
+    box-shadow: 0 .05em .15em silver;
     background: whitesmoke;
 }
 .menu .active, body > div, .menu .active:hover {
