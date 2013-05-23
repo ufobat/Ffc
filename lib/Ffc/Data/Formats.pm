@@ -91,7 +91,7 @@ sub _make_link {
         else {
             my $url_xmlencode = $url;
             _xml_escape($url_xmlencode);
-            return qq~$start<a href="$url" title="Externes Bild" target="_blank"><img class="icon" src="~.$c->url_for("$t/img/icons/img.png").qq~" class="extern" title="Externes Bild" /> $url_xmlencode</a>$end~;
+            return qq~$start<a href="$url" title="Externes Bild" target="_blank">$url_xmlencode</a>$end~;
         }
     }
     else {

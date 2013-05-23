@@ -10,14 +10,6 @@
 
 =item C<img/favicon.png> für das Favoritenicon
 
-=item C<img/icons/> (diverse Aktionsbuttons und so):
-
-=over 8
-
-=item C<img.png> für Bildericon, wenn keine Bilder angezeigt werden sollen
-
-=back
-
 =item C<img/smileys/> (Gesichtchenbildchen):
 
 =over 8
