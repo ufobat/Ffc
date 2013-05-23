@@ -195,3 +195,6 @@ textarea.update_post {
 .titleinfo {
     font-weight: normal;
 }
+input[type="text"], textarea {
+    box-shadow: inset .05em .05em .2em gainsboro;
+}
