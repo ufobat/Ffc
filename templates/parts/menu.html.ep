@@ -7,7 +7,7 @@
     <span class="divider">-</span>
 %= form_for search => ( method => 'POST' ) => begin
 %= text_field query => session()->{query}, session()->{query} ? (class => 'activesearch') : ()
-    <button type="submit"><img src="<%= url_for $Ffc::Data::Themedir.session()->{theme}.'/img/icons/search.png' %>" alt="Einstellungen" /></button>
+    <button type="submit" class="linkalike">Suche</button>
 % end
     <span class="divider">-</span>
     <a href="<%= url_for 'options_form' %>" title="Einstellungen für diese Plattform anpassen"><span class="username linktext linkoptions<%= act() eq 'options' ? ' active activeoptions' : '' %>"><%= session()->{user} %></span></a>

@@ -140,9 +140,14 @@ img.smiley, img.icon {
     border-style: solid;
     padding: 1em;
 }
-.menu .active, body > div {
+.menu .linktext:hover {
+    border-color: dodgerblue;
+    box-shadow: 0 .1em .3em silver;
+    background: whitesmoke;
+}
+.menu .active, body > div, .menu .active:hover {
     border-color: steelblue;
-    background: #fff;
+    background: white;
     box-shadow: 0 .1em .3em silver;
 }
 .userlist {
