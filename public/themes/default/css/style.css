@@ -140,11 +140,6 @@ img.smiley, img.icon {
     border-style: solid;
     padding: 1em;
 }
-.menu .linktext:hover {
-    border-color: dodgerblue;
-    box-shadow: 0 .05em .15em silver;
-    background: whitesmoke;
-}
 .menu .active, body > div, .menu .active:hover {
     border-color: steelblue;
     background: white;
