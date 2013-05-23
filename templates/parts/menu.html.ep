@@ -11,6 +11,6 @@
 % end
     <span class="divider">-</span>
     <a href="<%= url_for 'options_form' %>" title="Einstellungen für diese Plattform anpassen"><span class="username linktext linkoptions<%= act() eq 'options' ? ' active activeoptions' : '' %>"><%= session()->{user} %></span></a>
-    
+    <span class="divider">-</span>
     <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linktext linklogout">Abmelden</span></a>
 </div>
