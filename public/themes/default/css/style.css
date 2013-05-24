@@ -1,7 +1,7 @@
 body {
     width: 56em;
     margin: 0 auto;
-    background: gainsboro;
+    background: url('../img/hg.png') no-repeat 0 0 gainsboro;
     font-family: sans-serif;
     color: black;
 }
@@ -121,7 +121,7 @@ img.smiley, img.icon {
     margin: 0;
 }
 .menu {
-    border-bottom: 1px silver solid;
+    border-bottom: 1px steelblue solid;
     margin: 0 0 1.5em 0;
     padding: .2em;
     white-space: nowrap;
