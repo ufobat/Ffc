@@ -145,6 +145,8 @@ sub _get_stuff {
     my $cat    = shift;
     my $c      = shift;
     my $where  = shift;
+    my $s      = $c->session;
+    my $msgu   = $s->{msgs_username} || ''; 
     my @params = @_;
     my $q = '';
     my $p = $Ffc::Data::Prefix;
@@ -205,9 +207,10 @@ EOSQL
                           active   => $d->[$_->[3]], 
                           chatable => 
                             (    $d->[$_->[3]]
+                              && $act          ne 'notes'
                               && $d->[$_->[1]] != $userid 
-                              && $act          ne 'notes' )
-                            ? 1 : 0, 
+                              && $msgu         ne $d->[$_->[2]]
+                            ) ? 1 : 0, 
                         } )
                       : ( $_->[0] => undef ) }
                       ([from => 5,6,7], [to => 8,9,10]) ),

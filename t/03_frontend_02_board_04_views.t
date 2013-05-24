@@ -201,14 +201,15 @@ sub check_pages {
                 )[0];
                 my $url_edit = $t->app->url_for( 'edit_form', postid => $id );
                 my $url_delete = $t->app->url_for( 'delete_check', postid => $id );
+                my $sessmsguser = $msguser;
                 $msguser = $users{$test->[1]}->{name} unless $act eq 'msgs';
                 my $url_msg = $t->app->url_for( 'msgs_user', msgs_username => $msguser );
                 my $editlink =
 qr~,\s*<a href="$url_edit" title="Beitrag bearbeiten">\s*(?:<img src="$url_editicon" alt="\&Auml;ndern" />|Bearbeiten)</a>(?:\s*,\s*)?~;
                 my $deletelink =
 qr~<a href="$url_delete" title="Beitrag l\&ouml;schen">\s*(?:<img src="$url_deleteicon" alt="L\&ouml;schen" />|L&ouml;schen)</a>~;
-                my $msglink =
-qr~,\s*<a href="$url_msg"\s*title="Dem Benutzer &quot;$msguser&quot; eine private Nachricht zukommen lassen">\s*(?:<img src="$url_msgicon" alt="Nachricht" />|Privatnachricht)</a>~;
+                my $msglink = ( $act eq 'msgs' && $sessmsguser && $sessmsguser eq $msguser ) ? '' :
+qr~,\s*<a href="$url_msg"\s*title="Dem Benutzer &quot;$msguser&quot; eine private Nachricht zukommen lassen">\s*(?:<img src="$url_msgicon" alt="Nachricht" />|Privatnachrichten)</a>~;
                 my $avatar    = qr(<div class="avatar">\s*$users{$test->[1]}->{name}\s*</div>);
                 my $start     = qr(<h2>\s*$avatar);
                 my $middle    = qr(<span class="titleinfo">);
