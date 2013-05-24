@@ -126,7 +126,6 @@ our $DefaultConfig = {
         );
         $app->defaults(error => '');
         $app->defaults(info => '');
-        $app->defaults(footerlinks => $Footerlinks);
         $app->defaults( $_ => '' ) for qw(notecount newpostcount newmsgscount);
         $app->defaults( categories => [] );
         return 1;
