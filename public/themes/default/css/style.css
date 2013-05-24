@@ -128,6 +128,7 @@ img.smiley, img.icon {
 }
 .menu input[type="text"] {
     width: 7.5em;
+    background: whitesmoke;
 }
 .menu button {
     border: none;
