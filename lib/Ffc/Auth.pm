@@ -6,17 +6,9 @@ use Ffc::Data;
 use Ffc::Data::Auth;
 use Ffc::Errors;
 
-sub _form_prepare {
-    my $self = shift;
-    $self->stash( $_ => '' ) for qw(notecount newpostcount newmsgscount);
-    $self->stash( categories => [] );
-    $self->stash( footerlinks => $Ffc::Data::Footerlinks );
-}
-
 sub login {
     my $self = shift;
     $self->app->switch_act( $self, 'forum' );
-    _form_prepare( $self );
     if ( $self->_get_relevant_data() ) {
         $self->redirect_to('show');
         return 1;
@@ -36,10 +28,9 @@ sub logout {
 sub login_form {
     my $self = shift;
     my $msg = shift || 'Bitte melden Sie sich an';
-    Ffc::Errors::prepare($self, $msg);
     $self->app->switch_act( $self,  'auth' );
     _cancel_session( $self );
-    _form_prepare( $self );
+    $self->stash(error => $msg);
     $self->render( 'auth/loginform');
     return 0;
 }

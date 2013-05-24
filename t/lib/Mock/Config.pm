@@ -20,6 +20,7 @@ sub new {
     configfile => '',
     dbfile   => '',
     config => {
+        "cookiename"   => r(),
         "cookiesecret" => r(),
         "dsn"           => "DBI:SQLite:database=",
         "user"          => "",

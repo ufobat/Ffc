@@ -11,7 +11,7 @@ use Data::Dumper;
 
 use Mock::Controller;
 
-use Test::More tests => 347;
+use Test::More tests => 307;
 
 srand;
 sub c  { Mock::Controller->new() }
@@ -22,62 +22,6 @@ sub gs { r(), '', c(), r() }
 BEGIN { use_ok('Ffc::Errors'); }
 ##############################################################################
 
-##############################################################################
-note('=== prepare ===');
-##############################################################################
-# - stash für fehlerbehandlung vorbereiten
-# - sollte mittlerweile automatisch passieren
-{
-    my $p = sub { &Ffc::Errors::prepare };
-    {
-        eval { $p->() };
-        ok( $@, 'dies when prepared without controller' );
-        like(
-            $@,
-            qr/no mojolicious controller given/,
-            'barks correctly, when prepared without controller'
-        );
-    }
-    {
-        my ( $r, $x, $c, $e ) = gs();
-        $p->($c);
-        ok( exists( $c->{stash}->{error} ), 'error-stash-variable created' );
-        ok( exists( $c->{stash}->{info} ),  'info-stash-variable created' );
-    }
-    {
-        my ( $r, $x, $c, $e ) = gs();
-        for my $t (
-            [ '', '' ],
-            [ '', $r ],
-            [ $r, '' ],
-            [ undef, '' ],
-            [ '',    undef ],
-            [ undef, undef ],
-            [ undef, $r ],
-            [ $r,    undef ],
-            [ $r,    $e ]
-          )
-        {
-            my $e = $t->[0];
-            my $i = $t->[1];
-            my $ce = $e // '';
-            my $ci = $i // '';
-            delete $c->{stash}->{$_} for qw(info error);
-            $p->( $c, $e, $i );
-            for my $t ( [ 'error', $ce ], [ 'info', $ci ] ) {
-                my $n = $t->[0]; my $cv = $t->[1];
-                like( $c->{stash}->{$n},
-                    qr($cv), qq'$n-stash-variable createt with message as expected' );
-            }
-            $p->( $c, $e, $i );
-            for my $t ( [ 'error', $ce ], [ 'info', $ci ] ) {
-                my $n = $t->[0]; my $cv = $t->[1];
-                is( $c->{stash}->{$n},
-                    $cv, qq'$n-stash-variable createt after it allready exsisted' );
-            }
-        }
-    }
-}
 ##############################################################################
 note('=== info ===');
 ##############################################################################

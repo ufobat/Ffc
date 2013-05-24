@@ -43,6 +43,7 @@ our $DefaultConfig = {
     "password"     => "",
     "title"        => "Ffc",
     "dbprefix"     => '',
+    "cookiename"   => join( '', map { ('a' .. 'z', 'A' .. 'Z')[int rand 23] } ( 0 .. 5 + int rand 10 )),
     "cookiesecret" => join( '',
         map { ( 'a' .. 'z', 'A' .. 'Z', 0 .. 9 )[ int rand 62 ] }
           ( 0 .. int( rand 128 ) ) ),
@@ -100,6 +101,7 @@ our $DefaultConfig = {
         $Debug           = $config->{debug};
         $Favicon         = $config->{favicon} if $config->{favicon};
         $Footerlinks     = $config->{footerlinks} if $config->{footerlinks};
+        $app->sessions->cookie_name($config->{cookiename} // 'Ffc');
         {
             opendir my $dh, $Themebasedir
               or confess qq(could not open theme directory $Themebasedir: $!);
@@ -122,6 +124,11 @@ our $DefaultConfig = {
             map( { $_ => "\u$_" } qw(auth forum notes msgs) ),
             %{ $config->{acttitles} }
         );
+        $app->defaults(error => '');
+        $app->defaults(info => '');
+        $app->defaults(footerlinks => $Footerlinks);
+        $app->defaults( $_ => '' ) for qw(notecount newpostcount newmsgscount);
+        $app->defaults( categories => [] );
         return 1;
     }
 

@@ -10,7 +10,7 @@ use Data::Dumper;
 use Mojolicious;
 use Mock::Config;
 
-use Test::More tests => 36;
+use Test::More tests => 37;
 
 srand;
 
@@ -86,6 +86,7 @@ ok( Ffc::Data::set_config($app), 'config set returned true' );
     like($Ffc::Data::DefaultConfigPath, qr/ffc\.json/, 'default config looks good');
     like($Ffc::Data::DbTemplate, qr/database.sql/, 'database template file looks good');
     like($Ffc::Data::DbTestdata, qr/testdata.sql/, 'testdata file looks good');
+    is($app->sessions->cookie_name, $config->{cookiename}, 'cookie name ok');
 
     my @themes;
     {

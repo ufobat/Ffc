@@ -60,7 +60,6 @@ sub get_params {
 sub frontpage {
     my $c = shift;
     my $s = $c->session;
-    $c->error_prepare;
 
     my $act = $s->{act};
     if ( $act eq 'options' ) {

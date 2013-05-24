@@ -29,7 +29,6 @@ sub handle {
     }
     else {
         my $msg  = shift;
-        prepare($c);
         local $@;
         eval { $code->() };
         if ( $@ ) {
@@ -85,15 +84,6 @@ sub or_empty    { _something( @_ ) // [] }
 sub or_nostring { _something( @_ ) // '' }
 sub or_zero     { _something( @_ ) // 0  }
 sub or_undef    { _something( @_ )       }
-
-sub prepare { 
-    my $c = shift;
-    confess q{no mojolicious controller given} unless $c;
-    my $e = shift // '';
-    my $i = shift // '';
-    $c->stash( error => $e ) unless defined $c->stash('error');
-    $c->stash( info  => $i ) unless defined $c->stash('info');
-}
 
 sub info {
     my $c = shift;

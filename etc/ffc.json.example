@@ -1,4 +1,5 @@
 {
+    "cookiename":"Ffc",
     "cookiesecret": "geh doch heim",
     "dsn":"DBI:SQLite:database=/tmp/testdb.sqlite",
     "user":"",
