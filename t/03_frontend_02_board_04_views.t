@@ -209,7 +209,8 @@ qr~,\s*<a href="$url_edit" title="Beitrag bearbeiten">\s*(?:<img src="$url_editi
 qr~<a href="$url_delete" title="Beitrag l\&ouml;schen">\s*(?:<img src="$url_deleteicon" alt="L\&ouml;schen" />|L&ouml;schen)</a>~;
                 my $msglink =
 qr~,\s*<a href="$url_msg"\s*title="Dem Benutzer &quot;$msguser&quot; eine private Nachricht zukommen lassen">\s*(?:<img src="$url_msgicon" alt="Nachricht" />|Privatnachricht)</a>~;
-                my $start     = qr(<h2>);
+                my $avatar    = qr(<div class="avatar">\s*$users{$test->[1]}->{name}\s*</div>);
+                my $start     = qr(<h2>\s*$avatar);
                 my $middle    = qr(<span class="titleinfo">);
                 my $end       = qr(</span>:\s*</h2>\s*<p>$test->[0]</p>);
 
@@ -247,7 +248,7 @@ qr~$start\s*$users{$test->[1]}->{name}\s*$middle\(\s*\s*$timestampre\s*$msglink\
             else {
                 note('testing that there are no buttons at post');
                 $t->content_like(
-qr~<h2>\s*<span class="inactive">$users{$test->[1]}->{name}</span>\s*<span class="titleinfo">\(\s*$timestampre\s*\)</span>:\s*</h2>\s*<p>$test->[0]</p>~
+qr~<h2>\s*<div class="avatar">\s*$users{$test->[1]}->{name}\s*</div>\s*<span class="inactive">$users{$test->[1]}->{name}</span>\s*<span class="titleinfo">\(\s*$timestampre\s*\)</span>:\s*</h2>\s*<p>$test->[0]</p>~
                 );
             }
         }
