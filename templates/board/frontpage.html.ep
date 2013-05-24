@@ -4,7 +4,10 @@
 % } 
 % if ( act() eq 'msgs' ) {
 %   if ( session->{msgs_username} ) {
-<div class="postbox msgsuserlist"><p>Konversationen mit &quot;<%= session->{msgs_username} %>&quot;</p></div>
+<div class="postbox msgsuserlist"><p>
+    Konversationen mit &quot;<%= session->{msgs_username} %>&quot;
+    (<a href="<%= url_for 'switch', act => 'msgs' %>" title="Nachrichten mit allen Benutzern anzeigen">alle Nachrichten anzeigen</a>)
+</p></div>
 %   } else {
 %= include 'parts/userlistlinks'
 %   }
