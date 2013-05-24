@@ -10,6 +10,7 @@ sub _form_prepare {
     my $self = shift;
     $self->stash( $_ => '' ) for qw(notecount newpostcount newmsgscount);
     $self->stash( categories => [] );
+    $self->stash( footerlinks => $Ffc::Data::Footerlinks );
 }
 
 sub login {

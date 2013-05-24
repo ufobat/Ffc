@@ -16,7 +16,7 @@ use Ffc::Data;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Forms;
 
-use Test::More tests => 3231;
+use Test::More tests => 3583;
 
 srand;
 my $t = Test::General::test_prepare_frontend('Ffc');
@@ -88,6 +88,12 @@ sub insert_tests {
 
 }
 
+sub check_footer {
+    my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
+    for my $e ( @$Ffc::Data::Footerlinks ) {
+        $t->content_like(qr~<a href="$e->[1]" title="$e->[2]" target="_blank">$e->[0]</a>~);
+    }
+}
 sub check_header {
     my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
     $t->content_like(qr~<span class="username[\w\s]+">$u->{name}</span>~);
@@ -287,6 +293,7 @@ sub check_msgs {
 sub check_page {
     my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
     check_header( $t, $u, $ck, $cat, $sleep, $act );
+    check_footer( $t, $u, $ck, $cat, $sleep, $act );
     check_categories( $t, $u, $ck, $cat, $sleep, $act ) if $act eq 'forum';
     check_content( $t, $u, $ck, $cat, $sleep, $act );
     check_msgs( $t, $u, $ck, $cat, $sleep, $act ) if $act eq 'msgs';

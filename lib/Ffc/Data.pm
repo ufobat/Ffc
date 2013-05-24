@@ -27,6 +27,7 @@ our $Debug = 0;
 our $SessionTimeout;
 our $Theme;
 our @Themes;
+our $Footerlinks = [];
 our $Themedir = '/themes/';
 our $Themebasedir =
   File::Basename::dirname(__FILE__) . '/../../public' . $Themedir;
@@ -56,7 +57,13 @@ our $DefaultConfig = {
         "msgs"    => 'Privatnachrichten',
         "auth"    => 'Anmeldung',
         "options" => 'Einstellungen',
-    }
+    },
+    "footerlinks" => [
+        ["Projektwebseite" => "https://github.com/4FriendsForum/Ffc","Zur Projektwebseite dieser Forensoftware"],
+        ["Bugtracker" => "https://github.com/4FriendsForum/Ffc/issues","zum Bug- und Issuetracker der Forensoftware"],
+        ["Created with Mojolicious" => "http://mojolicio.us/","Zur Webseite des hier verwendeten Frameworks Mojolicious"],
+        ["Powered by Perl" => "http://www.perl.org/","Zur Webseite der hier verwendeten Programmiersprache Perl"]
+    ]
 };
 {
     my $dbh;
@@ -92,6 +99,7 @@ our $DefaultConfig = {
         $Theme           = $config->{theme};
         $Debug           = $config->{debug};
         $Favicon         = $config->{favicon} if $config->{favicon};
+        $Footerlinks     = $config->{footerlinks} if $config->{footerlinks};
         {
             opendir my $dh, $Themebasedir
               or confess qq(could not open theme directory $Themebasedir: $!);

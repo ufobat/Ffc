@@ -7,6 +7,7 @@ use utf8;
 
 use base 'Ffc::Board::Errors';
 
+use Ffc::Data;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Forms;
 
@@ -29,6 +30,7 @@ sub edit_form {
 sub delete_check {
     my $c = shift;
     $c->error_prepare;
+    $c->stash( footerlinks => $Ffc::Data::Footerlinks );
     my $s = $c->session;
     if ( $s->{act} eq 'msgs' ) {
         $c->error_handling( { plain => "Privatnachrichten dürfen nicht gelöscht werden" } );

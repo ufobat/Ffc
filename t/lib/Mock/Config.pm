@@ -41,7 +41,8 @@ sub new {
             "msgs"    => r(),
             "auth"    => r(),
             "options" => r(),
-        }
+        },
+        "footerlinks"     => [ map { [r() => r(), r()] } 0 .. 3 + int rand 5 ],
     }};
     return bless( $config, $class )->_generate_configfile;
 }

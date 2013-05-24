@@ -10,7 +10,7 @@ use Data::Dumper;
 use Mojolicious;
 use Mock::Config;
 
-use Test::More tests => 34;
+use Test::More tests => 36;
 
 srand;
 
@@ -102,4 +102,7 @@ ok( Ffc::Data::set_config($app), 'config set returned true' );
 
     ok( keys(%Ffc::Data::Acttitles), 'custom activity titles are available');
     is_deeply( \%Ffc::Data::Acttitles, $config->{acttitles}, 'custom activity titles from config ok' );
+
+    ok( @$Ffc::Data::Footerlinks, 'footerlinks are available');
+    is_deeply( $Ffc::Data::Footerlinks, $config->{footerlinks}, 'footer links from config ok' );
 }

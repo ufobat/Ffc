@@ -19,6 +19,7 @@ sub options_form {
     my $c = shift;
     my $s = $c->session;
     $c->error_prepare;
+    $c->stash( footerlinks => $Ffc::Data::Footerlinks );
     my $email;
     $c->error_handling(
         sub { $email = Ffc::Data::General::get_useremail( $s->{user} ) } );

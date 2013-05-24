@@ -105,6 +105,7 @@ Ffc::Data::Board::Views::get_categories($user);
     $c->stash( categories => ($act eq 'forum') 
             ? $c->or_empty( sub { Ffc::Data::Board::Views::get_categories($user) } ) 
             : [] );
+    $c->stash( footerlinks => $Ffc::Data::Footerlinks );
     if ( $c->error_handling({
         code        => sub { Ffc::Data::Board::update_user_stats($user, $act, $cat) },
         msg         => 'Etwas ist intern schief gegangen, bitte versuchen Sie es später noch einmal.',
