@@ -98,26 +98,57 @@ sub check_header {
     my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
     $t->content_like(qr~<span class="username[\w\s]+">$u->{name}</span>~);
     if ( $ck->{forum} ) {
-        $t->content_like(
-            qr~>Forum \(<span class="mark">$ck->{forum}</span>\)</span>~);
+        if ( $ck->{forum} ) {
+            $t->content_like(
+                qr~>Forum \(<span class="mark">$ck->{forum}</span>\)</span>~);
+        }
+        else {
+            $t->content_like(
+                qr~>Forum</span>~);
+        }
     }
     else {
-        $t->content_like(qr~>Forum \($ck->{forum}\)</span>~);
+        if ( $ck->{forum} ) {
+            $t->content_like(qr~>Forum \($ck->{forum}\)</span>~);
+        }
+        else {
+            $t->content_like(qr~>Forum</span>~);
+        }
     }
     if ( $ck->{msgs} ) {
-        $t->content_like(
-            qr~>Nachrichten \(<span class="mark">$ck->{msgs}</span>\)</span>~);
+        if ( $ck->{msgs} ) {
+            $t->content_like(
+                qr~>Nachrichten \(<span class="mark">$ck->{msgs}</span>\)</span>~);
+        }
+        else {
+            $t->content_like(qr~>Nachrichten</span>~);
+        }
     }
     else {
-        $t->content_like(qr~>Nachrichten \($ck->{msgs}\)</span>~);
+        if ( $ck->{msgs} ) {
+            $t->content_like(qr~>Nachrichten \($ck->{msgs}\)</span>~);
+        }
+        else {
+            $t->content_like(qr~>Nachrichten</span>~);
+        }
     }
     if ( $ck->{notes} ) {
-        $t->content_like(
-            qr~>Notizen \(<span class="notecount">$ck->{notes}</span>\)</span>~
-        );
+        if ( $ck->{notes} ) {
+            $t->content_like(
+                qr~>Notizen \(<span class="notecount">$ck->{notes}</span>\)</span>~
+            );
+        }
+        else {
+            $t->content_like( qr~>Notizen</span>~);
+        }
     }
     else {
-        $t->content_like(qr~>Notizen \($ck->{notes}\)</span>~);
+        if ( $ck->{notes} ) {
+            $t->content_like(qr~>Notizen \($ck->{notes}\)</span>~);
+        }
+        else {
+            $t->content_like( qr~>Notizen</span>~);
+        }
     }
     $ck->{$act} = 0 if $act eq 'msgs';
 }
