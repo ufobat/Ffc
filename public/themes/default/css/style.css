@@ -20,10 +20,10 @@ body > div {
 .postbox img {
     max-width: 256px;
     max-height: 128px;
-    box-shadow: 1px 1px 2px silver;
+    box-shadow: .1em .1em .2em silver;
 }
 .postbox a:hover img {
-    box-shadow: 1px 1px 2px dodgerblue;
+    box-shadow: .1em .1em .2em dodgerblue;
 }
 .postbox > p {
     margin: 1em;
@@ -144,7 +144,7 @@ img.smiley, img.icon {
 .menu .active, body > div, .menu .active:hover {
     border-color: steelblue;
     background: white;
-    box-shadow: 0 .1em .3em silver;
+    box-shadow: .1em .1em .3em silver;
 }
 .userlist {
     width: 12em;
@@ -197,7 +197,7 @@ textarea.update_post {
     font-weight: normal;
 }
 input[type="password"], input[type="text"], textarea {
-    box-shadow: inset 0 .05em .2em gainsboro;
+    box-shadow: inset .05em .05em .2em gainsboro;
 }
 .postbox .avatar {
     color: gainsboro;
@@ -208,7 +208,7 @@ input[type="password"], input[type="text"], textarea {
     float: right;
     font-size: 1em;
     border: .3em white solid;
-    box-shadow: 0 .1em .2em gainsboro;
+    box-shadow: .1em .1em .2em gainsboro;
     font-family: serif;
     font-style: italic;
     width: 5em;
