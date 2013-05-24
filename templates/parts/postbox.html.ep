@@ -1,5 +1,6 @@
 <div class="postbox <%= act() %><%= $post->{ownpost} ? ' '.act().'ownpost ownpost' : '' %><%= $post->{active} ? ' activepost' : '' %><%= $post->{newpost} ? ' newpost' : '' %>">
     <h2>
+        <div class="avatar"><%= $post->{from}->{name} %></div>
 % if ( act() ne 'notes' ) {
 %   if ( $post->{from}->{active} ) {
         <%= $post->{from}->{name} %>

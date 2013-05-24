@@ -76,4 +76,6 @@ img.smiley, img.icon {
 .categorylinks, .msgsuserlist {
     background: #eee;
 }
-
+.postbox .avatar {
+    display: none;
+}
