@@ -212,4 +212,6 @@ input[type="password"], input[type="text"], textarea {
     font-size: 3em;
     border: 3px white solid;
     box-shadow: 0 .1em .2em gainsboro;
+    font-family: serif;
+    font-style: italic;
 }
