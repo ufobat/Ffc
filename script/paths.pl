@@ -72,6 +72,7 @@ my @public = qw(
     lib/Ffc/Data/Board/Views.pm
     lib/Ffc/Data/Board/OptionsAdmin.pm
     lib/Ffc/Data/Board/Forms.pm
+    lib/Ffc/Data/Board/Avatars.pm
     lib/Ffc/Data/General.pm
     lib/Ffc/Data.pm
     lib/Ffc/Errors.pm

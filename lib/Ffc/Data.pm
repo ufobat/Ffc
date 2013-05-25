@@ -17,6 +17,9 @@ our $CategoryRegex = qr/\w{1,64}/xms;
 our $DefaultConfigPath = join '/',
   File::Spec->splitdir( File::Basename::dirname(__FILE__) ), '..', '..', 'etc',
   'ffc.json';
+our $FileDir = File::Basename::dirname(__FILE__) . '/../data';
+our $AvatarDir = "$FileDir/avatars";
+our $UploadDir = "$FileDir/uploads";
 our $Prefix         = '';
 our $Fullpostnumber = 7;
 our $Limit;
