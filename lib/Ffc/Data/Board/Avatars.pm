@@ -44,7 +44,7 @@ sub upload_avatar {
     _set_avatarfile( $userid, $file );
 }
 
-sub download_avatar_path {
+sub get_avatar_path {
     my ( $username ) = @_;
     my ( $userid, $avatarfile ) = _get_avatarfile( $username );
     return unless $avatarfile;
