@@ -25,20 +25,19 @@ sub _set_avatarfile {
 }
 
 sub upload_avatar {
-    my ( $c, $username, $parameter ) = @_;
+    my ( $username, $newfile, $move_to_code ) = @_;
     my ( $userid, $avatarfile ) = _get_avatarfile( $username );
     if ( $avatarfile ) {
         my $oldpath = "$Ffc::Data::AvatarDir/$avatarfile";
         unlink $oldpath or croak qq(could not delete old avatar file for user "$username": $!) if -e $oldpath;
     }
-    my $newfile = $c->param( $paramter );
-    return unless $newfile;
+    croak qq(file name paramterer needed) unless $newfile;
     croak qq(need an image file: jpeg, bmp, gif, png) unless $newfile =~ m/\.(gif|bmp|jpe?g|png)\z/xmsi;
     my $ext = lc $1;
     my $file = "$username.$ext";
     $newpath = "$Ffc::Data::AvatarDir/$file";
     croak qq(new avatar for user "$username" allready exists somehow) if -e $newpath;
-    $newfile->move_to( $newpath ) or croak qq(could not overwrite avatar for user "$username": $!);
+    $move_to_code->( $newpath ) or croak qq(could not move avatar file for user "$username": $!);
     `chmod '660' '$newpath'`;
     `chgrp 'www' '$newpath'`;
     _set_avatarfile( $userid, $file );
