@@ -9,7 +9,6 @@ use Carp;
 
 use Ffc::Data;
 use Ffc::Data::Auth;
-use File::Path qw(make_path);
 
 sub _get_avatarfile {
     my $username = shift;
@@ -20,32 +19,36 @@ sub _get_avatarfile {
 
 }
 
+sub _set_avatarfile {
+    my ( $userid, $file ) = @_;
+    Ffc::Data::dbh()->do('UPDATE '.$Ffc::Data::Prefix.'users SET avatar=? WHERE id=?', undef, $file, $userid);
+}
+
 sub upload_avatar {
     my ( $c, $username, $parameter ) = @_;
     my ( $userid, $avatarfile ) = _get_avatarfile( $username );
-    my $path = "$Ffc::Data::AvatarDir/$username";
-    make_path $path;
-    `chmod '770' '$path'`;
     if ( $avatarfile ) {
-        my $oldpath = "$path/$avatarfile";
-        unlink $oldpath if -e $oldpath;
-        croak qq(could not delete old avatar for user "$username": $!) if -e $oldpath;
+        my $oldpath = "$Ffc::Data::AvatarDir/$avatarfile";
+        unlink $oldpath or croak qq(could not delete old avatar file for user "$username": $!) if -e $oldpath;
     }
-    {
-        my $newfile = $c->param( $paramter );
-        return unless $newfile;
-        $newpath = "$path/" . $newfile->name;
-        croak qq(new avatar for user "$username" allready exists somehow) if -e $newpath;
-        $newfile->move_to( $newpath ) or croak qq(could not overwrite avatar for user "$username": $!);
-        `chmod '660' '$newpath'`;
-    }
+    my $newfile = $c->param( $paramter );
+    return unless $newfile;
+    croak qq(need an image file: jpeg, bmp, gif, png) unless $newfile =~ m/\.(gif|bmp|jpe?g|png)\z/xmsi;
+    my $ext = lc $1;
+    my $file = "$username.$ext";
+    $newpath = "$Ffc::Data::AvatarDir/$file";
+    croak qq(new avatar for user "$username" allready exists somehow) if -e $newpath;
+    $newfile->move_to( $newpath ) or croak qq(could not overwrite avatar for user "$username": $!);
+    `chmod '660' '$newpath'`;
+    `chgrp 'www' '$newpath'`;
+    _set_avatarfile( $userid, $file );
 }
 
 sub download_avatar_path {
     my ( $username ) = @_;
     my ( $userid, $avatarfile ) = _get_avatarfile( $username );
     return unless $avatarfile;
-    my $path = "$Ffc::Data::AvatarDir/$username/$avatarfile";
+    my $path = "$Ffc::Data::AvatarDir/$avatarfile";
     return unless -e $path;
     return $path;
 }
