@@ -49,6 +49,8 @@ my @closed = qw(
     t/var/testdata.sql
     t/var/database.sql
     t/02_backend__01_data_04_board_00.t
+    data/uploads/uploads_placed_here
+    data/avatars/avatar_pics_placed_here
 );
 
 my @public = qw(
@@ -165,11 +167,17 @@ my @public = qw(
     public/themes/blau/img/smileys/laughting.png
 );
 
+my @open = qw(
+    data
+    data/uploads
+    data/avatars
+);
+
 sub processpath {
     my ( $paths, $dirmod, $filemod ) = @_;
     for my $path ( @$paths ) {
         my $abspath = File::Spec->catdir( File::Spec->splitpath( $FindBin::Bin  ), '..', File::Spec->splitpath( $path ) );
-        say qq(processing "$abspath");
+        say qq(    $abspath);
         `chgrp '$wwwgroup' '$abspath'`;
         if ( -d $abspath ) {
             `chmod '$dirmod' '$abspath'`;
@@ -180,8 +188,14 @@ sub processpath {
     }
 }
 
+say '####### plublic executable files';
 processpath(\@publicexec, '750', '750');
+say '####### plublic readable files and directories';
 processpath(\@public,     '750', '640');
+say '####### closed executables files';
 processpath(\@closedexec, '700', '700');
+say '####### closed readable files and directories';
 processpath(\@closed,     '700', '600');
+say '####### openly writable files and directories';
+processpath(\@open,       '770', '660');
 
