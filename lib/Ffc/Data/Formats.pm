@@ -110,7 +110,7 @@ sub _make_smiley {
     $y =~ s/\>/&gt;/xmsg;
     $y =~ s/\</&lt;/xmsg;
     my $ext = 'png';
-    $ext = 'svg' if $Smiley{$x} eq 'smile';
+#    $ext = 'svg' if $Smiley{$x} eq 'smile';
     return qq~$s<img class="smiley" src="~
         . $c->url_for("$Ffc::Data::Themedir/".$c->session()->{theme}."/img/smileys/$Smiley{$x}.$ext")
         . qq~" alt="$y" />~;
