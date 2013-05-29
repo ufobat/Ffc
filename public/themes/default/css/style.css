@@ -142,6 +142,7 @@ img.smiley, img.icon {
     border-width: 0 1px 1px 1px;
     border-style: solid;
     padding: 1em;
+    border-radius: .25em;
 }
 .menu .active, body > div, .menu .active:hover {
     border-color: steelblue;
