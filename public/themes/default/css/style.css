@@ -11,6 +11,7 @@ body > div {
     background: white;
     padding: .1em .5em .25em .5em;
     margin-top: .75em;
+    border-radius: .25em;
 }
 .postbox h2 {
     font-size: .75em;
@@ -122,9 +123,10 @@ img.smiley, img.icon {
 }
 .menu {
     border-bottom: 1px steelblue solid;
-    margin: 0 0 1.5em 0;
+    margin: 0 .25em 1.5em .25em;
     padding: .2em;
     white-space: nowrap;
+    border-radius: 0;
 }
 .menu input[type="text"] {
     width: 7.5em;
