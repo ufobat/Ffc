@@ -12,7 +12,7 @@ use Test::Mojo;
 use Test::General;
 use Mock::Testuser;
 
-use Test::More tests => 742;
+use Test::More tests => 724;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 
@@ -64,7 +64,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
                 'theme "' . ( $theme // '<undef>' ) . '"ok in database' );
         };
         $check_theme->(undef);
-        for my $theme (@Ffc::Data::Themes) {
+        for my $theme (@Ffc::Data::Themes[0,1]) {
             $t->post_ok( '/options_theme_save', form => { theme => $theme } )
               ->status_is(200);
             $t->content_like(qr{Einstellungen});
