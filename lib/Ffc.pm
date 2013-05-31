@@ -46,8 +46,11 @@ sub startup {
 
     # options
     $loggedin->route('/options')->via('get')->to('board#options_form')->name('options_form');
-    $loggedin->route('/options')->via('post')->to('board#options_save')->name('options_save');
-    $loggedin->route('/optionsadmin')->via('post')->to('board#useradmin_save')->name('useradmin_save');
+    $loggedin->route('/options_email_save')->via('post')->to('board#options_email_save')->name('options_email_save');
+    $loggedin->route('/options_password_save')->via('post')->to('board#options_password_save')->name('options_password_save');
+    $loggedin->route('/options_showimages_save')->via('post')->to('board#options_showimages_save')->name('options_showimages_save');
+    $loggedin->route('/options_theme_save')->via('post')->to('board#options_theme_save')->name('options_theme_save');
+    $loggedin->route('/optionsadmin_save')->via('post')->to('board#useradmin_save')->name('useradmin_save');
 
     # search
     $loggedin->route('/search')->via('post')->to('board#search')->name('search');

@@ -33,42 +33,53 @@ sub options_form {
     $c->render('board/optionsform');
 }
 
-sub options_save {
-    my $c           = shift;
-    my $s           = $c->session;
-    my $email       = $c->param('email');
-    my $oldpw       = $c->param('oldpw');
-    my $newpw1      = $c->param('newpw1');
-    my $newpw2      = $c->param('newpw2');
-    my $show_images = $c->param('show_images') || 0;
-    my $theme       = $c->param('theme');
+sub options_email_save {
+    my $c     = shift;
+    my $email = $c->param('email');
     $c->error_handling({
         code => sub {
-            Ffc::Data::Board::OptionsUser::update_email( $s->{user}, $email );
+            Ffc::Data::Board::OptionsUser::update_email( $c->session->{user}, $email );
         },
         after_ok => sub { $c->info('Email-Adresse geändert') },
-    }) if $email;
+    });
+    $c->options_form();
+}
+
+sub options_password_save {
+    my $c      = shift;
+    my $oldpw  = $c->param('oldpw');
+    my $newpw1 = $c->param('newpw1');
+    my $newpw2 = $c->param('newpw2');
     $c->error_handling({
         code => sub {
-            Ffc::Data::Board::OptionsUser::update_password( $s->{user},
+            Ffc::Data::Board::OptionsUser::update_password( $c->session->{user},
                 $oldpw, $newpw1, $newpw2 );
         },
         after_ok => sub { $c->info('Passwort geändert') },
-      })
-      if $oldpw
-      and $newpw1
-      and $newpw2;
+      });
+    $c->options_form();
+}
+
+sub options_theme_save {
+    my $c     = shift;
+    my $theme = $c->param('theme');
+
     $c->error_handling({
-        code => sub { Ffc::Data::Board::OptionsUser::update_theme( $s, $theme ) },
+        code => sub { Ffc::Data::Board::OptionsUser::update_theme( $c->session, $theme ) },
         after_ok => sub { $c->info('Thema geändert') },
-    })
-      if $theme;
-    $c->error_handling(
-        sub {
-            Ffc::Data::Board::OptionsUser::update_show_images( $s,
-                $show_images );
-        }
-    );
+    });
+    $c->options_form();
+}
+
+sub options_showimages_save {
+    my $c           = shift;
+    my $show_images = $c->param('show_images');
+    $c->error_handling({
+        code => sub {
+            Ffc::Data::Board::OptionsUser::update_show_images( $c->session, $show_images ? 1 : 0 );
+        },
+        after_ok => sub { $c->info('Bilderanzeige geändert') },
+    });
     $c->options_form();
 }
 

@@ -11,13 +11,10 @@ use Data::Dumper;
 use Test::Mojo;
 use Test::General;
 
-use Test::More tests => 154;
+use Test::More tests => 184;
 
-my $t = Test::General::test_prepare_frontend('Ffc');
-{
-    note('test without login');
-    $t->get_ok('/logout')->status_is(200)
-       ->content_like(qr{melden Sie sich});
+my $t_notloggedin = sub {
+    my $t = shift;
     $t->get_ok('/')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
     $t->get_ok('/msgs')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
@@ -25,9 +22,15 @@ my $t = Test::General::test_prepare_frontend('Ffc');
       ->content_like(qr{Bitte melden Sie sich an});
     $t->get_ok('/options')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/options')->status_is(200)
+    $t->post_ok('/options_email_save')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/optionsadmin')->status_is(200)
+    $t->post_ok('/options_password_save')->status_is(200)
+      ->content_like(qr{Bitte melden Sie sich an});
+    $t->post_ok('/options_theme_save')->status_is(200)
+      ->content_like(qr{Bitte melden Sie sich an});
+    $t->post_ok('/options_showimages_save')->status_is(200)
+      ->content_like(qr{Bitte melden Sie sich an});
+    $t->post_ok('/optionsadmin_save')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
     $t->post_ok('/search')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
@@ -43,6 +46,14 @@ my $t = Test::General::test_prepare_frontend('Ffc');
       ->content_like(qr{Bitte melden Sie sich an});
     $t->post_ok('/edit/123')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
+};
+
+my $t = Test::General::test_prepare_frontend('Ffc');
+{
+    note('test without login');
+    $t->get_ok('/logout')->status_is(200)
+       ->content_like(qr{melden Sie sich});
+    $t_notloggedin->($t);
     $t->get_ok('/logout')->status_is(200)
        ->content_like(qr{melden Sie sich});
 }
@@ -70,30 +81,7 @@ my $user = Test::General::test_get_rand_user();
     note('test logout');
     $t->get_ok('/logout')->status_is(200)
        ->content_like(qr{melden Sie sich});
-    $t->get_ok('/msgs')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->get_ok('/notes')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->get_ok('/options')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/options')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/optionsadmin')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/search')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/category/aaa')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->get_ok('/delete/123')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/delete')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/new')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->get_ok('/edit/123')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/edit/123')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
+    $t_notloggedin->($t);
     $t->get_ok('/logout')->status_is(200)
        ->content_like(qr{melden Sie sich});
 }
@@ -107,30 +95,6 @@ my $user = Test::General::test_get_rand_user();
       ->status_is(500)
       ->content_like(
         qr'Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv');
-    $t->get_ok('/')->status_is(200)->content_like(qr{Bitte melden Sie sich an});
-    $t->get_ok('/msgs')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->get_ok('/notes')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->get_ok('/options')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/options')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/optionsadmin')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/search')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/category/aaa')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->get_ok('/delete/123')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/delete')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/new')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->get_ok('/edit/123')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/edit/123')->status_is(200)
-      ->content_like(qr{Bitte melden Sie sich an});
+    $t_notloggedin->($t);
 }
 

@@ -20,7 +20,8 @@ CREATE TABLE "${Prefix}posts" (
   "posted" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "textdata" text NOT NULL,
   "user_to" int(11),
-  "category" bigint
+  "category" bigint,
+  "formattedtext" text
 );
 
 CREATE TABLE "${Prefix}categories" (
