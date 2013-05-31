@@ -30,6 +30,7 @@ body > div {
     margin: 1em;
 }
 input, textarea, select {
+    font-size: 1em;
     border: 1px silver solid;
     background: white;
     color: #006;
