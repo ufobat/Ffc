@@ -1,4 +1,4 @@
-% if ( @$posts == $Ffc::Data::Limit ) {
+% if ( $page > 1 or @$posts == $Ffc::Data::Limit ) {
 <div class="pages">
 % my $plp = $Ffc::Data::Pagelinkpreview;
 % if ( $page > $plp + 1 ) {
