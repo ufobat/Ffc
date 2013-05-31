@@ -94,7 +94,7 @@ our $DefaultConfig = {
         delete $config->{cryptsalt};
 
         $Prefix = $config->{dbprefix};
-        confess q(Prefix invalid, needs to be something like /\\w{0,10}/)
+        croak q(Prefix invalid, needs to be something like /\\w{0,10}/)
           unless $Prefix =~ m/\A\w{0,10}/xms;
         $Limit           = $config->{postlimit};
         $Pagelinkpreview = $config->{pagelinkpreview};
@@ -107,7 +107,7 @@ our $DefaultConfig = {
         $app->sessions->cookie_name($config->{cookiename} // 'Ffc');
         {
             opendir my $dh, $Themebasedir
-              or confess qq(could not open theme directory $Themebasedir: $!);
+              or croak qq(could not open theme directory $Themebasedir: $!);
             while ( my $d = readdir $dh ) {
                 next if $d =~ m/\A\./xms;
                 next unless -d "$Themebasedir/$d";

@@ -58,7 +58,7 @@ sub _xml_escape {
 sub format_text {
     my $s = shift // '';
     my $c = shift;
-    confess('Controller ungültig') unless $c;
+    croak('Controller ungültig') unless $c;
     my $u = $c->session()->{user} // '';
     $s =~ s/\A\s+//gxmsi;
     $s =~ s/\s+\z//gxmsi;

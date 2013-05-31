@@ -245,7 +245,7 @@ qr~<textarea name="post" id="textinput" class="(?:insert|update)_post"></textare
                 $t->content_like( qr(Privatnachrichten d.+rfen nicht gel.+scht werden));
             }
             else {
-                $t->content_like(qr(Beitrag konnte nicht gel.+scht werden));
+                $t->content_like(qr(Keine Postid angegeben|Beitrag konnte nicht gel.+scht werden));
             }
             $t->post_ok("/delete", form => {postid => $msgid});
             if ($is_msgs) {

@@ -9,7 +9,7 @@ my $wwwgroup = 'www';
 
 my @publicexec = qw( script/ffc );
 
-my @closedexec = qw( script/inituser.pl script/paths.pl script/reformat.pl );
+my @closedexec = qw( script/inituser.pl script/paths.pl );
 
 my @closed = qw(
     .git

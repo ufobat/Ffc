@@ -7,8 +7,8 @@ use Carp;
 
 sub handle_silent {
     # controller, code, errormessage
-    my $c    = shift or confess 'no controller provided as first parameter';
-    my $code = shift or confess 'no code provided as second parameter';
+    my $c    = shift or croak 'no controller provided as first parameter';
+    my $code = shift or croak 'no code provided as second parameter';
     local $@;
     eval { $code->() };
     if ( $@ ) {
@@ -21,8 +21,8 @@ sub handle_silent {
 
 sub handle {
     # controller, code, errormessage
-    my $c    = shift or confess 'no controller provided as first parameter';
-    my $code = shift or confess 'no code provided as second parameter';
+    my $c    = shift or croak 'no controller provided as first parameter';
+    my $code = shift or croak 'no code provided as second parameter';
     if ( $Ffc::Data::Debug ) {
         $code->();
         return 1;
@@ -36,7 +36,7 @@ sub handle {
             $log->error("system error message: $@");
             $log->error("user presented error message: " . ($msg // ''));
             my $error = $c->stash('error') // '';
-            my $newerror = $msg // 'Fehler';
+            my $newerror = $msg || $@ || 'Fehler';
             $c->stash(error => $error ? "$error\n\n$newerror." : "$newerror.");
             return;
         }
@@ -45,14 +45,14 @@ sub handle {
 }
 
 sub handling {
-    my $c      = shift or confess 'no controller provided as first parameter';
-    my $params = shift or confess 'params not set for board error handling';
+    my $c      = shift or croak 'no controller provided as first parameter';
+    my $params = shift or croak 'params not set for board error handling';
     my ( $code, $msg, $after_ok, $after_error, $plain );
     if ( 'CODE' eq ref $params ) {
         $code = $params;
     }
     else {
-        confess 'no hash params provided' unless 'HASH' eq ref $params;
+        croak 'no hash params provided' unless 'HASH' eq ref $params;
         $code        = $params->{code}; 
         $msg         = $params->{msg} // '';
         $after_ok    = $params->{after_ok};
@@ -60,12 +60,12 @@ sub handling {
         $plain       = $params->{plain};
     }
     if ( $plain ) {
-        handle( $c, sub { confess $plain }, $plain );
+        handle( $c, sub { croak $plain }, $plain );
         $after_error->(@_) if $after_error and 'CODE' eq ref $after_error;
         return;
     }
-    confess '"code" variable not set in error message' unless $code;
-    confess '"code" is not a code reference' unless 'CODE' eq ref $code;
+    croak '"code" variable not set in error message' unless $code;
+    croak '"code" is not a code reference' unless 'CODE' eq ref $code;
     unless ( handle( $c, $code, $msg ) ) {
         $after_error->(@_) if $after_error and 'CODE' eq ref $after_error;
         return;
@@ -76,7 +76,7 @@ sub handling {
 
 sub _something {
     my $c = shift; my $code = shift; my $return;
-    confess '"code" is not a code reference' unless 'CODE' eq ref $code;
+    croak '"code" is not a code reference' unless 'CODE' eq ref $code;
     handle_silent( $c, sub { $return = $code->() }, '' );
     return $return;
 }
@@ -87,7 +87,7 @@ sub or_undef    { _something( @_ )       }
 
 sub info {
     my $c = shift;
-    confess q{no mojolicious controller given} unless $c;
+    croak q{no mojolicious controller given} unless $c;
     my $newinfo = shift || return;
     my $info = $c->stash('info') // '';
     $c->stash(info => $info ? "$info\n\n$newinfo." : "$newinfo.");

@@ -144,7 +144,7 @@ note(q{=== handle ===});
                     'empty user error catched'
                 );
                 like( $c->{stash}->{error},
-                    qr/Fehler/i, 'error message in stash reseived' );
+                    qr/$e/i, 'error message in stash reseived' );
             }
         }
         ok( !$ret, 'bad code returns false' );

@@ -41,6 +41,7 @@ sub options_email_save {
             Ffc::Data::Board::OptionsUser::update_email( $c->session->{user}, $email );
         },
         after_ok => sub { $c->info('Email-Adresse geändert') },
+        msg => 'Die Emailadresse konnte nicht geändert werden, eventuell ist sie ungültig',
     });
     $c->options_form();
 }
@@ -56,6 +57,7 @@ sub options_password_save {
                 $oldpw, $newpw1, $newpw2 );
         },
         after_ok => sub { $c->info('Passwort geändert') },
+        msg => 'Das Passwort konnte nicht geändert werden. Entweder stimmt das alte Passwort nicht, was zur Bestätigung angegeben werden muss oder ist das neue Passwort ungültig (muss zwischen 8 und 64 Zeichen lang sein und darf keine Leerzeichen enthalten). Eventuell stimmt das neue Passwort auch mit dessen Wiederholung nicht überein',
       });
     $c->options_form();
 }
@@ -67,6 +69,7 @@ sub options_theme_save {
     $c->error_handling({
         code => sub { Ffc::Data::Board::OptionsUser::update_theme( $c->session, $theme ) },
         after_ok => sub { $c->info('Thema geändert') },
+        msg => 'Das Thema konnte nicht geändert werden, vielleicht ist es ein ungültiges oder nicht verfügbares Thema',
     });
     $c->options_form();
 }
@@ -79,6 +82,7 @@ sub options_showimages_save {
             Ffc::Data::Board::OptionsUser::update_show_images( $c->session, $show_images ? 1 : 0 );
         },
         after_ok => sub { $c->info('Bilderanzeige geändert') },
+        msg => 'Das Ändern der Bildanzeige ist fehlgeschlagen',
     });
     $c->options_form();
 }

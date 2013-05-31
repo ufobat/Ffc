@@ -11,22 +11,22 @@ use Ffc::Data;
 
 sub check_password_rules {
     my $pass = shift;
-    confess qq(Kein Passwort angegeben) unless $pass;
-    confess qq[Passwort ungültig (8 - 64 Zeichen)] unless $pass =~ m/\A$Ffc::Data::PasswordRegex\z/xms;
+    croak qq(Kein Passwort angegeben) unless $pass;
+    croak qq[Passwort ungültig (8 - 64 Zeichen)] unless $pass =~ m/\A$Ffc::Data::PasswordRegex\z/xms;
     return 1;
 }
 
 sub check_username_rules {
     my $user = shift;
-    confess shift() // qq(Kein Benutzername angegeben) unless $user;
-    confess shift() // qq[Benutzername ungültig (4 - 64 alphanumerische Zeichen)] unless $user =~ m/\A$Ffc::Data::UsernameRegex\z/xms;
+    croak shift() // qq(Kein Benutzername angegeben) unless $user;
+    croak shift() // qq[Benutzername ungültig (4 - 64 alphanumerische Zeichen)] unless $user =~ m/\A$Ffc::Data::UsernameRegex\z/xms;
     return 1;
 }
 
 sub check_userid_rules {
     my $userid = shift;
-    confess qq(Keine Benutzerid angegeben) unless $userid;
-    confess qq{Benutzer ungültig} unless $userid =~ m/\A\d+\z/xms;
+    croak qq(Keine Benutzerid angegeben) unless $userid;
+    croak qq{Benutzer ungültig} unless $userid =~ m/\A\d+\z/xms;
     return 1;
 }
 
@@ -44,7 +44,7 @@ sub get_userdata_for_login { # for login only
     check_password_rules($pass);
     my $sql = 'SELECT u.id, u.lastseenmsgs, u.admin, u.show_images, u.theme FROM '.$Ffc::Data::Prefix.'users u WHERE u.name=? AND u.password=? AND u.active=1';
     my $data = Ffc::Data::dbh()->selectall_arrayref( $sql, undef, $user, crypt($pass, Ffc::Data::cryptsalt()));
-    confess qq{Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv} unless @$data;
+    croak qq{Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv} unless @$data;
     return @{$data->[0]};
 }
 
@@ -66,12 +66,12 @@ sub is_user_admin {
 
 sub check_userid { 
     eval { get_username( shift ) };
-    confess shift() // $@ if $@;
+    croak shift() // $@ if $@;
     return 1;
 }
 sub check_username { 
     eval { get_userid( shift ) };
-    confess shift() // $@ if $@;
+    croak shift() // $@ if $@;
     return 1;
 }
 sub check_user_exists { 
@@ -85,7 +85,7 @@ sub get_userid {
     return $UserIds{$username} if exists $UserIds{$username};
     my $sql = 'SELECT u.id FROM '.$Ffc::Data::Prefix.'users u WHERE u.name = ?';
     my $userid = Ffc::Data::dbh()->selectall_arrayref($sql, undef, $username);
-    confess qq(Benutzer unbekannt).($_[0] ? " ($_[0])" : '') unless @$userid and $userid->[0]->[0];
+    croak qq(Benutzer unbekannt).($_[0] ? " ($_[0])" : '') unless @$userid and $userid->[0]->[0];
     $UserIds{$username} = $userid->[0]->[0];
     return $userid->[0]->[0];
 }
@@ -96,7 +96,7 @@ sub get_username {
     return $UserNames{$userid} if exists $UserNames{$userid};
     my $sql = 'SELECT u.name FROM '.$Ffc::Data::Prefix.'users u WHERE u.id=?';
     my $username = Ffc::Data::dbh()->selectall_arrayref($sql, undef, $userid);
-    confess qq(Benutzer unbekannt).($_[0] ? " ($_[0])" : '') unless @$username and $username->[0]->[0];
+    croak qq(Benutzer unbekannt).($_[0] ? " ($_[0])" : '') unless @$username and $username->[0]->[0];
     $UserNames{$userid} = $username->[0]->[0];
     return $username->[0]->[0];
 }

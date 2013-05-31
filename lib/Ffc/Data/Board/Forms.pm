@@ -17,8 +17,8 @@ sub _get_category_id { &Ffc::Data::General::get_category_id }
 sub delete_post {
     my ( $from, $id ) = @_;
     $from = _get_userid( $from, 'Auto des zu löschenden Beitrages' );
-    confess qq(Keine Postid angegeben) unless $id;
-    confess qq{Postid ungültig} unless $id =~ m/\A\d+\z/xms;
+    croak qq(Keine Postid angegeben) unless $id;
+    croak qq{Postid ungültig} unless $id =~ m/\A\d+\z/xms;
     my $dbh = Ffc::Data::dbh();
     my $sql = sprintf 'DELETE FROM '.$Ffc::Data::Prefix.'posts WHERE id=? and user_from=? AND (user_to IS NULL OR user_from=user_to);';
     $dbh->do( $sql, undef, $id, $from );
@@ -27,8 +27,8 @@ sub delete_post {
 sub insert_post {
     my ( $f, $d, $c, $t ) = @_;
     $f = _get_userid( $f, 'Autor des neuen Beitrages' );
-    confess q(Kein Beitrag angegeben) unless $d;
-    confess qq{Beitrag ungültig, zu wenig Zeichen (min. 2)} if 2 >= length $d;
+    croak q(Kein Beitrag angegeben) unless $d;
+    croak qq{Beitrag ungültig, zu wenig Zeichen (min. 2)} if 2 >= length $d;
     my $cid = undef;
     $cid = _get_category_id($c) if $c;
     $t = _get_userid( $t, 'Empfänger des neuen Beitrages' ) if $t;
@@ -41,15 +41,15 @@ sub insert_post {
 sub update_post {
     my ( $f, $d, $i ) = @_;
     $f = _get_userid( $f, 'Autor des bestehenden Beitrages' );
-    confess q(Kein Beitrag angegeben) unless $d;
-    confess qq{Beitrag ungültig, zu wenig Zeichen (min. 2)} if 2 >= length $d;
-    confess qq(Keine Postid angegeben) unless $i;
-    confess qq{Postid ungültig} unless $i =~ m/\A\d+\z/xms;
+    croak q(Kein Beitrag angegeben) unless $d;
+    croak qq{Beitrag ungültig, zu wenig Zeichen (min. 2)} if 2 >= length $d;
+    croak qq(Keine Postid angegeben) unless $i;
+    croak qq{Postid ungültig} unless $i =~ m/\A\d+\z/xms;
     my $dbh = Ffc::Data::dbh();
     my $where = 'WHERE id=? AND user_from=? AND (user_to IS NULL OR user_from=user_to)';
     #FIXME: does not work yet
     #my $sql = 'SELECT COUNT(id) FROM '.$Ffc::Data::Prefix."posts $where";
-    #confess qq(Kein entsprechender Beitrag vom angegebenen Benutzer bekannt) unless ($dbh->selectrow_array($sql, undef, $i, $f))[0];
+    #croak qq(Kein entsprechender Beitrag vom angegebenen Benutzer bekannt) unless ($dbh->selectrow_array($sql, undef, $i, $f))[0];
     my $sql = 'UPDATE '.$Ffc::Data::Prefix."posts SET textdata=?, posted=current_timestamp $where;";
     $dbh->do( $sql, undef, $d, $i, $f );
 }
