@@ -161,7 +161,6 @@ SELECT p.id, p.textdata, p.posted,
        c.name, COALESCE(c.short,''),
        f.id, f.name, f.active,
        t.id, t.name, t.active,
-       p.formattedtext,
        CASE WHEN f.id = t.id OR f.id = u.id
             THEN 0
             ELSE CASE WHEN t.id IS NOT NULL
@@ -188,11 +187,11 @@ EOSQL
 #Test::More::diag(Data::Dumper::Dumper( { sql => $sql, userid => $userid, params => \@params, query => [( $query ? "\%$query\%" : () )], cat => [$cat, $cat, $cat]}));
     return [ map { my $d = $_;
             $d = {
-                text      => ( $d->[11] || Ffc::Data::Formats::format_text($d->[1], $c) ),
+                text      => Ffc::Data::Formats::format_text($d->[1], $c),
                 start     => Ffc::Data::Formats::format_text(do {(split /\n/, $d->[1])[0] // ''}, $c),
                 raw       => $d->[1],
                 active    => 0,
-                newpost   => $d->[12],
+                newpost   => $d->[11],
                 timestamp => Ffc::Data::Formats::format_timestamp($d->[2]),
                 ownpost   => $d->[5] == $userid ? 1 : 0,
                 category  => $d->[3] # kategorie
