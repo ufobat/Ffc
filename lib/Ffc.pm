@@ -50,6 +50,9 @@ sub startup {
     $loggedin->route('/options_password_save')->via('post')->to('board#options_password_save')->name('options_password_save');
     $loggedin->route('/options_showimages_save')->via('post')->to('board#options_showimages_save')->name('options_showimages_save');
     $loggedin->route('/options_theme_save')->via('post')->to('board#options_theme_save')->name('options_theme_save');
+    $loggedin->route('/options_avatar_save')->via('post')->to('board#options_avatar_save')->name('options_avatar_save');
+
+    # admin options
     $loggedin->route('/optionsadmin_save')->via('post')->to('board#useradmin_save')->name('useradmin_save');
 
     # search

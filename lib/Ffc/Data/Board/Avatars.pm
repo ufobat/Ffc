@@ -22,25 +22,26 @@ sub _get_avatarfile {
 sub _set_avatarfile {
     my ( $userid, $file ) = @_;
     Ffc::Data::dbh()->do('UPDATE '.$Ffc::Data::Prefix.'users SET avatar=? WHERE id=?', undef, $file, $userid);
+    return $file;
 }
 
 sub upload_avatar {
     my ( $username, $newfile, $move_to_code ) = @_;
     my ( $userid, $avatarfile ) = _get_avatarfile( $username );
-    if ( $avatarfile ) {
-        my $oldpath = "$Ffc::Data::AvatarDir/$avatarfile";
-        unlink $oldpath or croak qq(could not delete old avatar file for user "$username": $!) if -e $oldpath;
-    }
     croak qq(file name paramterer needed) unless $newfile;
     croak qq(need an image file: jpeg, bmp, gif, png) unless $newfile =~ m/\.(gif|bmp|jpe?g|png)\z/xmsi;
     my $ext = lc $1;
     my $file = "$username.$ext";
-    $newpath = "$Ffc::Data::AvatarDir/$file";
+    my $newpath = "$Ffc::Data::AvatarDir/$file";
+    if ( $avatarfile ) {
+        my $oldpath = "$Ffc::Data::AvatarDir/$avatarfile";
+        unlink $oldpath or croak qq(could not delete old avatar file for user "$username": $!) if -e $oldpath;
+    }
     croak qq(new avatar for user "$username" allready exists somehow) if -e $newpath;
     $move_to_code->( $newpath ) or croak qq(could not move avatar file for user "$username": $!);
     `chmod '660' '$newpath'`;
     `chgrp 'www' '$newpath'`;
-    _set_avatarfile( $userid, $file );
+    return _set_avatarfile( $userid, $file );
 }
 
 sub get_avatar_path {
@@ -51,4 +52,6 @@ sub get_avatar_path {
     return unless -e $path;
     return $path;
 }
+
+1;
 

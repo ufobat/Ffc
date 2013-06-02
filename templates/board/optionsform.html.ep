@@ -36,6 +36,14 @@
 % end
 </div> 
 % }
+<div class="postbox options">
+    <h2>Einstellungen zum Aussehen des Forums</h2>
+    <% if ( $avatar ) { %><p><img src="<%= url_for show_avatar => $avatar %>" alt="Avatar" %></p><% } %>
+%= form_for options_avatar_save => ( method => 'POST', enctype => 'multipart/form-data' ) => begin 
+    <input type="file" name="avatarfile" accept="image/*" />
+    <button type="submit" class="linkalike">Avatar hochladen</button>
+% end
+</div>
 % if ( session()->{admin} ) {
 <div class="postbox options">
     <h2>Benutzerverwaltung <span class="titleinfo">(Vorsicht, kompliziert!)</span></h2>

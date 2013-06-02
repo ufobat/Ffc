@@ -9,6 +9,7 @@ use base 'Ffc::Board::Errors';
 
 use Ffc::Data::Auth;
 use Ffc::Data::General;
+use Ffc::Data::Board::Avatars;
 use Ffc::Data::Board::OptionsUser;
 use Ffc::Data::Board::OptionsAdmin;
 
@@ -27,6 +28,7 @@ sub options_form {
     $c->stash( email    => $email    // '' );
     $c->stash( userlist => $userlist // '' );
     $c->stash( themes   => \@Ffc::Data::Themes );
+    $c->stash( avatar   => Ffc::Data::Board::Avatars::get_avatar_path( $s->{user} ) );
     delete $s->{msgs_username};
     $c->get_counts();
     $c->app->switch_act( $c, 'options' );
@@ -84,6 +86,13 @@ sub options_showimages_save {
         after_ok => sub { $c->info('Bilderanzeige geändert') },
         msg => 'Das Ändern der Bildanzeige ist fehlgeschlagen',
     });
+    $c->options_form();
+}
+
+sub options_avatar_save {
+    my $c          = shift;
+    my $avatarfile = $c->param('avatarfile');
+    Ffc::Data::Board::Avatars::upload_avatar($c->session->{user}, $avatarfile->filename, sub{ $avatarfile->move_to(@_) });
     $c->options_form();
 }
 
