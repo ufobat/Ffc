@@ -10,7 +10,7 @@
     <h2>Eigenes Passwort ändern</h2>
 %= form_for options_password_save => ( method => 'POST' ) => begin 
     <p><input type="password" name="oldpw" value="" /> (Altes Passwort zur Bestätigung)</p>
-    <p><input type="password" name="newpw1" value="" /> (Neues Passwort)</p>
+    <p><input type="password" name="newpw1" value="" /> (Neues Passwort, 8 bis 64 Zeichen lang, alles außer Leerzeichen erlaubt)</p>
     <p><input type="password" name="newpw2" value="" /> (Neues Passwort wiederholt eingeben zur Bestätigung)</p>
     <p><button type="submit" class="linkalike">Passwort ändern</button></p>
 % end
