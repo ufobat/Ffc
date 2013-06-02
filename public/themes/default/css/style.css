@@ -105,12 +105,13 @@ img.smiley, img.icon {
     color: #c30;
 }
 .info {
-    color: #060;
+    color: darkgreen;
+    border-color: forestgreen;
+    background: palegreen;
 }
-.info, .error {
-    border: none;
-    background: transparent;
-    box-shadow: none;
+.error {
+    border-color: firebrick;
+    background: peachpuff;
 }
 .newpost {
     border-color: #fc6;
