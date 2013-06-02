@@ -38,8 +38,6 @@ simpler technischer Struktur.
 
 =item Featuritis
 
-=item Avatare (ja, die sind rausgefallen)
-
 =back
 
 =item Datenaustauschplattform für alle Teilbereiche

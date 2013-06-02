@@ -219,7 +219,6 @@ input[type="password"], input[type="text"], textarea {
     height: 5em;
     overflow: hidden;
     text-align: center;
-    display: none;
 }
 .options form {
     display: block;

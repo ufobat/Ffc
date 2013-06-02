@@ -46,6 +46,11 @@ my @checks = (
 my %users = map { $_->[1]->{user} => $_->[0] } @checks;
 $users{u3} = Mock::Testuser->new_inactive_user();
 
+Ffc::Data::dbh()->do('UPDATE '.$Ffc::Data::Prefix.'users SET avatar=? WHERE name=?', undef, 1, $users{u1}->{name});
+$users{u1}->{avatar} = 1;
+$users{u2}->{avatar} = 0;
+$users{u3}->{avatar} = 0;
+
 my @testposts;
 
 sub generate_testcases {
@@ -241,7 +246,13 @@ qr~,\s*<a href="$url_edit" title="Beitrag bearbeiten">\s*(?:<img src="$url_editi
 qr~<a href="$url_delete" title="Beitrag l\&ouml;schen">\s*(?:<img src="$url_deleteicon" alt="L\&ouml;schen" />|L&ouml;schen)</a>~;
                 my $msglink = ( $act eq 'msgs' && $sessmsguser && $sessmsguser eq $msguser ) ? '' :
 qr~,\s*<a href="$url_msg"\s*title="Dem Benutzer &quot;$msguser&quot; eine private Nachricht zukommen lassen">\s*(?:<img src="$url_msgicon" alt="Nachricht" />|Privatnachrichten)</a>~;
-                my $avatar    = qr(<div class="avatar">\s*$users{$test->[1]}->{name}\s*</div>);
+                my $avatar = do {
+                    if ( $act ne 'notes' and $users{$test->[1]}->{avatar} ) {
+                        my $avatarurl = $t->app->url_for('show_avatar', username => $users{$test->[1]}->{name});
+                        qr(<img class="avatar" src="$avatarurl" alt="Avatar für Benutzer &quot;$users{$test->[1]}->{name}&quot;" />);
+                    }
+                    else { '' }
+                };
                 my $start     = qr(<h2>\s*$avatar);
                 my $middle    = qr(<span class="titleinfo">);
                 my $end       = qr(</span>:\s*</h2>\s*<p>$test->[0]</p>);
@@ -280,7 +291,7 @@ qr~$start\s*$users{$test->[1]}->{name}\s*$middle\(\s*\s*$timestampre\s*$msglink\
             else {
                 note('testing that there are no buttons at post');
                 $t->content_like(
-qr~<h2>\s*<div class="avatar">\s*$users{$test->[1]}->{name}\s*</div>\s*<span class="inactive">$users{$test->[1]}->{name}</span>\s*<span class="titleinfo">\(\s*$timestampre\s*\)</span>:\s*</h2>\s*<p>$test->[0]</p>~
+qr~<h2>\s*<span class="inactive">$users{$test->[1]}->{name}</span>\s*<span class="titleinfo">\(\s*$timestampre\s*\)</span>:\s*</h2>\s*<p>$test->[0]</p>~
                 );
             }
         }
