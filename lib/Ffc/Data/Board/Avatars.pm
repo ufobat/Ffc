@@ -52,7 +52,7 @@ sub get_avatar_path {
     return unless $avatarfile;
     my $path = "$Ffc::Data::AvatarDir/$avatarfile";
     return unless -e $path;
-    return $path;
+    return "$Ffc::Data::AvatarUrl/$avatarfile";
 }
 
 1;

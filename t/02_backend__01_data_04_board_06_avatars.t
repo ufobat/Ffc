@@ -97,7 +97,7 @@ ok( -e $check, 'avatar file exists');
             emptyerror => 'Kein Benutzername angegeben',
         },
     );
-    is( $ret[0], "$Ffc::Data::AvatarDir/$avatarfile", 'avatar file name returned' );
+    is( $ret[0], "$Ffc::Data::AvatarUrl/$avatarfile", 'avatar file name returned' );
 }
 
 END { unlink $check; unlink $testfile }

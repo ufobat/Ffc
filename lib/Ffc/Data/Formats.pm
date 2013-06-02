@@ -83,7 +83,6 @@ sub _make_goody {
 
 sub _make_link {
     my ( $start, $url, $end, $c ) = @_;
-    my $t = $Ffc::Data::Themedir.$c->session()->{theme};
     if ( $url =~ m(jpe?g|gif|bmp|png\z)xmsi ) {
         if ( $c->session()->{show_images} ) {
             return qq~$start<a href="$url" title="Externes Bild" target="_blank"><img src="$url" class="extern" title="Externes Bild" /></a>$end~;

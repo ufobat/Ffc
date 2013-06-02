@@ -41,10 +41,12 @@ my @closed = qw(
     t/lib/Mock/Controller/App.pm
     t/lib/Mock/Controller/Log.pm
     t/02_backend__01_data_04_board_03_forms.t
-    t/02_backend__01_data_04_board_05_datasecurity.t
     t/02_backend__01_data_04_board_04_views.t
+    t/02_backend__01_data_04_board_05_datasecurity.t
+    t/02_backend__01_data_04_board_06_avatars.t
     t/03_frontend_01_auth.t
     t/03_frontend_02_board_04_views.t
+    t/03_frontend_02_board_05_avatars.t
     t/var
     t/var/testdata.sql
     t/var/database.sql
@@ -109,6 +111,7 @@ my @public = qw(
     public/themes/default/css
     public/themes/default/css/style.css
     public/themes/default/img
+    public/themes/default/img/avatar.png
     public/themes/default/img/hg.png
     public/themes/default/img/favicon.png
     public/themes/default/img/smileys
@@ -135,38 +138,34 @@ my @public = qw(
     public/themes/default/img/smileys/twinkling.png
     public/themes/default/img/smileys/laughting.png
     public/themes/README.pod
-    public/themes/blau
-    public/themes/blau/css
-    public/themes/blau/css/elements.css
-    public/themes/blau/css/postbox.css
-    public/themes/blau/css/menu.css
-    public/themes/blau/css/body.css
-    public/themes/blau/css/style.css
-    public/themes/blau/img
-    public/themes/blau/img/hg.png
-    public/themes/blau/img/favicon.png
-    public/themes/blau/img/smileys
-    public/themes/blau/img/smileys/devilsmile.png
-    public/themes/blau/img/smileys/unsure.png
-    public/themes/blau/img/smileys/look.png
-    public/themes/blau/img/smileys/sad.png
-    public/themes/blau/img/smileys/angry.png
-    public/themes/blau/img/smileys/smile.png
-    public/themes/blau/img/smileys/down.png
-    public/themes/blau/img/smileys/what.png
-    public/themes/blau/img/smileys/evilgrin.png
-    public/themes/blau/img/smileys/tongue.png
-    public/themes/blau/img/smileys/ooo.png
-    public/themes/blau/img/smileys/cats.png
-    public/themes/blau/img/smileys/nope.png
-    public/themes/blau/img/smileys/no.png
-    public/themes/blau/img/smileys/sunny.png
-    public/themes/blau/img/smileys/crying.png
-    public/themes/blau/img/smileys/rofl.png
-    public/themes/blau/img/smileys/love.png
-    public/themes/blau/img/smileys/yes.png
-    public/themes/blau/img/smileys/twinkling.png
-    public/themes/blau/img/smileys/laughting.png
+    public/themes/nostyle
+    public/themes/nostyle/css
+    public/themes/nostyle/css/style.css
+    public/themes/nostyle/img
+    public/themes/nostyle/img/avatar.png
+    public/themes/nostyle/img/favicon.png
+    public/themes/nostyle/img/smileys
+    public/themes/nostyle/img/smileys/devilsmile.png
+    public/themes/nostyle/img/smileys/unsure.png
+    public/themes/nostyle/img/smileys/look.png
+    public/themes/nostyle/img/smileys/sad.png
+    public/themes/nostyle/img/smileys/angry.png
+    public/themes/nostyle/img/smileys/smile.png
+    public/themes/nostyle/img/smileys/down.png
+    public/themes/nostyle/img/smileys/what.png
+    public/themes/nostyle/img/smileys/evilgrin.png
+    public/themes/nostyle/img/smileys/tongue.png
+    public/themes/nostyle/img/smileys/ooo.png
+    public/themes/nostyle/img/smileys/cats.png
+    public/themes/nostyle/img/smileys/nope.png
+    public/themes/nostyle/img/smileys/no.png
+    public/themes/nostyle/img/smileys/sunny.png
+    public/themes/nostyle/img/smileys/crying.png
+    public/themes/nostyle/img/smileys/rofl.png
+    public/themes/nostyle/img/smileys/love.png
+    public/themes/nostyle/img/smileys/yes.png
+    public/themes/nostyle/img/smileys/twinkling.png
+    public/themes/nostyle/img/smileys/laughting.png
 );
 
 my @open = qw(

@@ -13,6 +13,7 @@ use Ffc::Auth;
 use Ffc::Board::Options;
 use Ffc::Data::Board;
 use Ffc::Data::Board::Views;
+use Ffc::Data::Board::Avatars;
 
 sub _switch_category {
     my ( $c, $cat ) = @_;
@@ -128,5 +129,12 @@ sub search {
     $c->frontpage();
 }
 
-1;
+sub show_avatar {
+    my $c = shift;
+    $c->render_static(
+            Ffc::Data::Board::Avatars::get_avatar_path($c->param('username'))
+         || "$Ffc::Data::Themedir/".$c->session->{theme}.'/img/avatar.png'
+    );
+}
 
+1;

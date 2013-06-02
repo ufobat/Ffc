@@ -55,6 +55,9 @@ sub startup {
     # admin options
     $loggedin->route('/optionsadmin_save')->via('post')->to('board#useradmin_save')->name('useradmin_save');
 
+    # user avatars
+    $loggedin->route('/show_avatar/:username', username => $Ffc::Data::UsernameRegex)->to('board#show_avatar')->name('show_avatar');
+
     # search
     $loggedin->route('/search')->via('post')->to('board#search')->name('search');
 
