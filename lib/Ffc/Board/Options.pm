@@ -28,7 +28,7 @@ sub options_form {
     $c->stash( email    => $email    // '' );
     $c->stash( userlist => $userlist // '' );
     $c->stash( themes   => \@Ffc::Data::Themes );
-    $c->stash( avatar   => Ffc::Data::Board::Avatars::get_avatar_path( $s->{user} ) );
+    $c->stash( avatar   => Ffc::Data::Board::Avatars::get_avatar_path( $s->{user} ) // '' );
     delete $s->{msgs_username};
     $c->get_counts();
     $c->app->switch_act( $c, 'options' );
