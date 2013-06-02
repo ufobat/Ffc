@@ -28,8 +28,10 @@ sub _set_avatarfile {
 sub upload_avatar {
     my ( $username, $newfile, $move_to_code ) = @_;
     my ( $userid, $avatarfile ) = _get_avatarfile( $username );
-    croak qq(file name paramterer needed) unless $newfile;
-    croak qq(need an image file: jpeg, bmp, gif, png) unless $newfile =~ m/\.(gif|bmp|jpe?g|png)\z/xmsi;
+    croak qq(Avatardateiname fehlt) unless $newfile;
+    croak qq(Avatar muss eine Bilddatei sein: jpeg, bmp, gif, png) unless $newfile =~ m/\.(gif|bmp|jpe?g|png)\z/xmsi;
+    croak qq(Weiß nicht, was ich mit der Avatardatei machen muss) unless $move_to_code;
+    croak qq(Benötige eine Code-Referenz, um mit der Avatardatei umgehen zu können) unless 'CODE' eq ref $move_to_code;
     my $ext = lc $1;
     my $file = "$username.$ext";
     my $newpath = "$Ffc::Data::AvatarDir/$file";
