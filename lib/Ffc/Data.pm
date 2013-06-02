@@ -30,6 +30,7 @@ our $Debug = 0;
 our $SessionTimeout;
 our $Theme;
 our @Themes;
+our $Testing = 0;
 our $Footerlinks = [];
 our $Themedir = '/themes/';
 our $Themebasedir =
@@ -89,6 +90,7 @@ our $DefaultConfig = {
               $app->plugin( JSONConfig => { default => $DefaultConfig } );
         }
         $app->secret( $config->{cookiesecret} );
+        $app->sessions->secure($Testing ? 1 : 0);
         delete $config->{cookiesecret};
         $cryptsalt = $config->{cryptsalt};
         delete $config->{cryptsalt};

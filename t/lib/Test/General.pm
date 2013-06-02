@@ -43,6 +43,7 @@ sub test_prepare_frontend {
     note(qq(using "$ENV{ASB_CONFIG}" - that should generate an in-memory database));
     use_ok($appname);
     my $t = Test::Mojo->new($appname);
+    $Ffc::Data::Testing = 1;
     Mock::Database::prepare_testdatabase();
     _generate_some_users();
     _get_component_values();
