@@ -41,18 +41,23 @@ sub upload_form {
 
 sub upload {
     my $c = shift;
-    my $s = $c->session;
+    my $file = $c->param('attachedfile');
     $c->error_handling(
         {
             code => sub {
-                Ffc::Data::Board::Upload::upload( $s->{user},
-                    $c->param('postid') );
+                Ffc::Data::Board::Upload::upload( $c->session->{user},
+                    $c->param('postid'),
+                    $file->filename,
+                    $c->param('description'),
+                    sub { $file->move_to(@_) },
+                );
             },
             msg => 'Datei konnte nicht hochgeladen werden',
             after_ok =>
               sub { $c->info('Datei wurde hochgeladen'); $c->frontpage() },
         }
     );
+    $c->frontpage();
 }
 
 sub get_attachement {

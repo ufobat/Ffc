@@ -152,7 +152,7 @@ img.smiley, img.icon {
     box-shadow: .1em .1em .3em lightsteelblue;
 }
 .userlist {
-    width: 12em;
+    width: 42em;
     height: 15em;
     overflow: scroll;
 }
@@ -162,6 +162,9 @@ img.smiley, img.icon {
 .help {
     font-size: .75em;
     color: silver;
+}
+input.description {
+    width: 20em;
 }
 .mark {
     color: #c63;

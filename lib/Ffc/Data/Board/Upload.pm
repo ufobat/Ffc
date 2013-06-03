@@ -12,7 +12,7 @@ use Ffc::Data::Auth;
 use Ffc::Data::General;
 
 sub upload {
-    my ( $username, $postid, $move_to_code ) = @_;
+    my ( $username, $postid, $newfile, $description, $move_to_code ) = @_;
 }
 
 sub delete_upload {
