@@ -77,6 +77,9 @@ sub startup {
     # upload something
     $loggedin->route('/upload/:postid', postid => qr(\d+))->via('get')->to('board#upload_form')->name('upload_form');
     $loggedin->route('/upload')->via('post')->to('board#upload')->name('upload');
+    # delete an attachement
+    $loggedin->route('/delete_attachement/:postid', postid => qr(\d+))->via('get')->to('board#delete_attachement_check')->name('delete_attachement_check');
+    $loggedin->route('/delete_attachement')->via('post')->to('board#delete_attachement')->name('delete_attachement');
 
     # delete something
     $loggedin->route('/delete/:postid', postid => qr(\d+))->via('get')->to('board#delete_check')->name('delete_check');
