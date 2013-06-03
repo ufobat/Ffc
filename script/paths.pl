@@ -65,6 +65,7 @@ my @public = qw(
     lib/Ffc/Board/Options.pm
     lib/Ffc/Board/Views.pm
     lib/Ffc/Board/Forms.pm
+    lib/Ffc/Board/Upload.pm
     lib/Ffc/Board/Errors.pm
     lib/Ffc/Data
     lib/Ffc/Data/Board.pm
@@ -75,6 +76,7 @@ my @public = qw(
     lib/Ffc/Data/Board/Views.pm
     lib/Ffc/Data/Board/OptionsAdmin.pm
     lib/Ffc/Data/Board/Forms.pm
+    lib/Ffc/Data/Board/Upload.pm
     lib/Ffc/Data/Board/Avatars.pm
     lib/Ffc/Data/General.pm
     lib/Ffc/Data.pm
@@ -89,6 +91,7 @@ my @public = qw(
     templates/board/optionsform.html.ep
     templates/board/frontpage.html.ep
     templates/board/deletecheck.html.ep
+    templates/board/uploadform.html.ep
     templates/parts
     templates/parts/postboxform.html.ep
     templates/parts/categorylink.html.ep

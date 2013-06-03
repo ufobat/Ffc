@@ -1,0 +1,13 @@
+% layout 'default';
+%= include 'parts/postbox', post => $post, postid => ''
+<div class="postbox uploadform">
+  <h2>Eine Datei zum gezeigten Posting hochladen</h2>
+  <p>
+%= form_for 'upload' => ( method => 'POST' ) => begin
+%= hidden_field postid => $postid
+    <input type="file" name="attachedfile" />
+    <button type="submit" class="linkalike" title="Datei hochladen">Datei zum Posting hochladen</button>
+% end
+  </p>
+  <p><a href="<%= url_for 'show' %>" title="L&ouml;schaktion abbrechen und zur&uuml;ck zur &Uuml;bersicht">Nein, doch nicht, halt, zur&uuml;ck zur &Uuml;bersicht!</a></p>
+</div>

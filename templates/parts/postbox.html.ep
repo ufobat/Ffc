@@ -22,8 +22,9 @@
 % unless ( $post->{active} ) {
           <%= $post->{timestamp} %><%= $post->{iconspresent}  ? ',' : '' %>
 % if ( $post->{editable} ) {
-          <a href="<%= url_for edit_form     => postid => $post->{id} %>" title="Beitrag bearbeiten">Bearbeiten</a>,
-          <a href="<%= url_for delete_check  => postid => $post->{id} %>" title="Beitrag l&ouml;schen">L&ouml;schen</a>
+          <a href="<%= url_for edit_form    => postid => $post->{id} %>" title="Beitrag bearbeiten">Bearbeiten</a>,
+          <a href="<%= url_for delete_check => postid => $post->{id} %>" title="Beitrag l&ouml;schen">L&ouml;schen</a>
+          <a href="<%= url_for upload_form  => postid => $post->{id} %>" title="Dateianlage zum Beitrag hochladen">Anlage hinzuf&uuml;gen</a>
 % }
 % for my $w (qw(from to)) {
 %   if ( $post->{$w} and $post->{$w}->{chatable} ) {

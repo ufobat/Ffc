@@ -66,16 +66,22 @@ sub startup {
     # switch context
     $loggedin->route('/:act', act => [qw(forum notes msgs)])->to('board#switch_act')->name('switch');
 
-    # delete something
-    $loggedin->route('/delete/:postid', postid => qr(\d+))->via('get')->to('board#delete_check')->name('delete_check');
-    $loggedin->route('/delete')->via('post')->to('board#delete_post')->name('delete_post');
     # create something
     $loggedin->route('/new')->via('post')->to('board#insert_post')->name('insert_post');
+    
     # update something
     my $edit = $loggedin->route('/edit');
     $edit->route('/:postid', postid => qr(\d+))->via('get' )->to('board#edit_form')->name('edit_form');
     $edit->route('/:postid', postid => qr(\d+))->via('post')->to('board#update_post'  )->name('update_post');
 
+    # upload something
+    $loggedin->route('/upload/:postid', postid => qr(\d+))->via('get')->to('board#upload_form')->name('upload_form');
+    $loggedin->route('/upload')->via('post')->to('board#upload')->name('upload');
+
+    # delete something
+    $loggedin->route('/delete/:postid', postid => qr(\d+))->via('get')->to('board#delete_check')->name('delete_check');
+    $loggedin->route('/delete')->via('post')->to('board#delete_post')->name('delete_post');
+    
     # conversation with single user
     $loggedin->route('/msgs/:msgs_username', msgs_username => $Ffc::Data::UsernameRegex)->to('board#msgs_user')->name('msgs_user');
 
