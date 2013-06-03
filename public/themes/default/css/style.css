@@ -1,5 +1,5 @@
 body {
-    width: 56em;
+    max-width: 56em;
     margin: 0 auto;
     background: url('../img/hg.png') no-repeat 0 0 gainsboro;
     font-family: sans-serif;
