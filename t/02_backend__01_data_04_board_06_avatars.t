@@ -50,7 +50,7 @@ ok( !Ffc::Data::Board::Avatars::get_avatar_path( $user->{name} ),
 ok( !check_avatar(), 'no avatar in database for user' );
 
 #############################################################################
-diag 'first run';
+note 'first run';
 {
     my @ret = check_call(
         \&Ffc::Data::Board::Avatars::upload_avatar,
@@ -108,7 +108,7 @@ ok( -e $check1, 'avatar file exists');
 }
 
 #############################################################################
-diag 'second run';
+note 'second run';
 
 {
     my $ret;
