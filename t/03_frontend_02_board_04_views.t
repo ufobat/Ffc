@@ -16,7 +16,7 @@ use Ffc::Data;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Forms;
 
-use Test::More tests => 3583;
+use Test::More tests => 3595;
 
 srand;
 my $t = Test::General::test_prepare_frontend('Ffc');
@@ -28,12 +28,13 @@ my @checks = (
             ;
               [
                 Mock::Testuser->new_active_user() => {
-                    user       => "u$_",
-                    forum      => 0,
-                    msgs       => 0,
-                    notes      => 0,
-                    msgs_users => {},
-                    categories => {
+                    user        => "u$_",
+                    forum       => 0,
+                    msgs        => 0,
+                    notes       => 0,
+                    msgs_users  => {},
+                    show_images => 1,
+                    categories  => {
                         map { $_->[2] => [ $_->[1], 0 ] }
                           [ '', 'Allgemeine Beiträge', '' ],
                         @Test::General::Categories
@@ -50,6 +51,8 @@ Ffc::Data::dbh()->do('UPDATE '.$Ffc::Data::Prefix.'users SET avatar=? WHERE name
 $users{u1}->{avatar} = 1;
 $users{u2}->{avatar} = 0;
 $users{u3}->{avatar} = 0;
+
+$users{u2}->{show_images} = 0;
 
 my @testposts;
 
@@ -247,7 +250,7 @@ qr~<a href="$url_delete" title="Beitrag l\&ouml;schen">\s*(?:<img src="$url_dele
                 my $msglink = ( $act eq 'msgs' && $sessmsguser && $sessmsguser eq $msguser ) ? '' :
 qr~,\s*<a href="$url_msg"\s*title="Dem Benutzer &quot;$msguser&quot; eine private Nachricht zukommen lassen">\s*(?:<img src="$url_msgicon" alt="Nachricht" />|Privatnachrichten)</a>~;
                 my $avatar = do {
-                    if ( $act ne 'notes' and $users{$test->[1]}->{avatar} ) {
+                    if ( $act ne 'notes' and $users{$test->[1]}->{avatar} and $ck->{show_images} ) {
                         my $avatarurl = $t->app->url_for('show_avatar', username => $users{$test->[1]}->{name});
                         qr(<img class="avatar" src="$avatarurl" alt="Avatar für Benutzer &quot;$users{$test->[1]}->{name}&quot;" />);
                     }
@@ -371,7 +374,9 @@ sub checkall_tests {
             form => { user => $u->{name}, pass => $u->{password} } )
           ->status_is(302)
           ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
-        $t->get_ok('/')->status_is(200);    # der redirect nach der anmeldung
+        $t->post_ok( '/options_showimages_save', form => { show_images => $ck->[1]->{show_images} } )
+            ->status_is(200)->content_like(qr{Einstellungen});
+        $t->get_ok('/forum')->status_is(200);    # zurück auf start
         check_check( $t, $sleep, 'forum', $ck, $u, $p );
         check_check( $t, $sleep, 'msgs',  $ck, $u, $p );
         check_check( $t, $sleep, 'notes', $ck, $u, $p );
