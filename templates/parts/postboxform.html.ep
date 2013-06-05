@@ -1,6 +1,6 @@
 % my $what = ($post && $post->{id} ? 'update' : 'insert').'_post';
 <div class="postbox ownpost postboxform">
-%= form_for $what => ( method => 'POST' ) => begin
+%= form_for $what => ( method => 'POST', 'accept-charset' => 'UTF-8' ) => begin
 <p>
 %= submit_button 'Senden', class => 'linkalike'
 (<a href="<%= url_for 'show' %>" title="&Auml;nderung abbrechen">Abbrechen</a>)
