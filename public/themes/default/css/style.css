@@ -230,3 +230,6 @@ input[type="password"], input[type="text"], textarea {
     padding-bottom: .5em;
     margin-left: 1em;
 }
+.postboxform input[type="submit"]:focus {
+    color: transparent;
+}
