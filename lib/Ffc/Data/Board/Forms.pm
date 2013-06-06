@@ -50,7 +50,7 @@ sub update_post {
     #FIXME: does not work yet
     #my $sql = 'SELECT COUNT(id) FROM '.$Ffc::Data::Prefix."posts $where";
     #croak qq(Kein entsprechender Beitrag vom angegebenen Benutzer bekannt) unless ($dbh->selectrow_array($sql, undef, $i, $f))[0];
-    my $sql = 'UPDATE '.$Ffc::Data::Prefix."posts SET textdata=?, posted=current_timestamp $where;";
+    my $sql = 'UPDATE '.$Ffc::Data::Prefix."posts SET textdata=? $where;";
     $dbh->do( $sql, undef, $d, $i, $f );
 }
 
