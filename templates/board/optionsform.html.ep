@@ -42,6 +42,7 @@
 %= form_for options_avatar_save => ( method => 'POST', enctype => 'multipart/form-data' ) => begin 
     <input type="file" name="avatarfile" accept="image/*" />
     <button type="submit" class="linkalike">Avatar hochladen</button>
+    <p>(Benutzeravatare sind kleine Bildchen, die neben den Beiträgen angezeigt werden, um optisch den Autoren des jeweiligen Beitrages hervorzuheben. Diese Avatarbildchen sollten nach Möglichkeit nicht zu groß sein (128px Seitenlänge sind da genug), damit auch Benutzer mit langsameren Internetverbindungen in den Genuß dieses Features kommen. Aus Designgründen werden diese Bildchen quadratisch dargestellt. Daher sollten die Bildchen, die man hochlädt, nach Möglichkeit ebenfalls Quadratisch sein, sonst kommt es zu unschönen Verzerrungen in der Anzeige.</p>
 % end
 </div>
 % if ( session()->{admin} ) {
