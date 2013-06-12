@@ -140,8 +140,8 @@ img.smiley, img.icon {
     border-color: transparent;
     border-width: 0 1px 1px 1px;
     border-style: solid;
-    padding: 1em;
-    border-radius: .25em;
+    padding: 1em .5em;
+    border-radius: 0 0 .25em .25em;
 }
 .menu .active, body > div, .menu .active:hover {
     border-color: steelblue;
