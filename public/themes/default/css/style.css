@@ -155,6 +155,7 @@ img.smiley, img.icon {
 .categorylinks .active {
     color: white;
     background: steelblue;
+    border-radius: .2em;
 }
 .userlist {
     width: 12em;
