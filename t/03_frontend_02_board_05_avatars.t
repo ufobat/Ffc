@@ -33,7 +33,7 @@ $t->post_ok( '/login',
   ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
 
 $t->post_ok(
-    '/options_avatar_save',
+    '/options/avatar_save',
     form => {
         avatarfile => {
             filename => $testfile,
