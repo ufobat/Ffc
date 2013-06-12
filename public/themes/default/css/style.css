@@ -113,9 +113,6 @@ img.smiley, img.icon {
     border-color: firebrick;
     background: peachpuff;
 }
-.newpost {
-    border-color: #fc6;
-}
 .categorylinks, .msgsuserlist, .postboxform {
     background: whitesmoke;
 }
@@ -143,13 +140,22 @@ img.smiley, img.icon {
     border-color: transparent;
     border-width: 0 1px 1px 1px;
     border-style: solid;
-    padding: 1em;
-    border-radius: .25em;
+    padding: 1em .5em;
+    border-radius: 0 0 .25em .25em;
 }
 .menu .active, body > div, .menu .active:hover {
     border-color: steelblue;
     background: white;
     box-shadow: .1em .1em .3em lightsteelblue;
+}
+.newpost {
+    border-color: palevioletred;
+    box-shadow: .1em .1em .3em palevioletred;
+}
+.categorylinks .active {
+    color: white;
+    background: steelblue;
+    border-radius: .2em;
 }
 .userlist {
     width: 42em;
@@ -167,7 +173,7 @@ input.description {
     width: 20em;
 }
 .mark {
-    color: #c63;
+    color: palevioletred;
 }
 .alert {
     color: #c00;

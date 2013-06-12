@@ -22,13 +22,13 @@ my $t_notloggedin = sub {
       ->content_like(qr{Bitte melden Sie sich an});
     $t->get_ok('/options')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/options_email_save')->status_is(200)
+    $t->post_ok('/options/email_save')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/options_password_save')->status_is(200)
+    $t->post_ok('/options/password_save')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/options_theme_save')->status_is(200)
+    $t->post_ok('/options/theme_save')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/options_showimages_save')->status_is(200)
+    $t->post_ok('/options/showimages_save')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
     $t->post_ok('/optionsadmin_save')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});

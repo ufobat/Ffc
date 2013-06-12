@@ -46,11 +46,11 @@ sub startup {
 
     # options
     $loggedin->route('/options')->via('get')->to('board#options_form')->name('options_form');
-    $loggedin->route('/options_email_save')->via('post')->to('board#options_email_save')->name('options_email_save');
-    $loggedin->route('/options_password_save')->via('post')->to('board#options_password_save')->name('options_password_save');
-    $loggedin->route('/options_showimages_save')->via('post')->to('board#options_showimages_save')->name('options_showimages_save');
-    $loggedin->route('/options_theme_save')->via('post')->to('board#options_theme_save')->name('options_theme_save');
-    $loggedin->route('/options_avatar_save')->via('post')->to('board#options_avatar_save')->name('options_avatar_save');
+    $loggedin->route('/options/email_save')->via('post')->to('board#options_email_save')->name('options_email_save');
+    $loggedin->route('/options/password_save')->via('post')->to('board#options_password_save')->name('options_password_save');
+    $loggedin->route('/options/showimages_save')->via('post')->to('board#options_showimages_save')->name('options_showimages_save');
+    $loggedin->route('/options/theme_save')->via('post')->to('board#options_theme_save')->name('options_theme_save');
+    $loggedin->route('/options/avatar_save')->via('post')->to('board#options_avatar_save')->name('options_avatar_save');
 
     # admin options
     $loggedin->route('/optionsadmin_save')->via('post')->to('board#useradmin_save')->name('useradmin_save');

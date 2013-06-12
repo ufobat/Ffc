@@ -376,7 +376,7 @@ sub checkall_tests {
             form => { user => $u->{name}, pass => $u->{password} } )
           ->status_is(302)
           ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
-        $t->post_ok( '/options_showimages_save', form => { show_images => $ck->[1]->{show_images} } )
+        $t->post_ok( '/options/showimages_save', form => { show_images => $ck->[1]->{show_images} } )
             ->status_is(200)->content_like(qr{Einstellungen});
         $t->get_ok('/forum')->status_is(200);    # zurück auf start
         check_check( $t, $sleep, 'forum', $ck, $u, $p );

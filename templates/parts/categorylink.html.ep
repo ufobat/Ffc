@@ -1,11 +1,5 @@
 % if ( act() eq 'forum' and not ( session->{category} or $cat->[1] ) or ( session->{category} and session->{category} eq $cat->[1] ) ) {
-<span class="active">
-%   if ( $cat->[1] ) {
-<%= $cat->[0] %><%= $cat->[2] ? " ($cat->[2])" : '' %>
-%   } else {
-Allgemeine Beiträge<%= $cat->[2] ? " ($cat->[2])" : '' %>
-%   }
-</span>
+<span class="active"><% if ( $cat->[1] ) { %><%= $cat->[0] %><%= $cat->[2] ? " ($cat->[2])" : '' %><% } else { %>Allgemeine Beiträge<%= $cat->[2] ? " ($cat->[2])" : '' %><% } %></span>
 % } else {
 %   if ( $cat->[1] ) {
 <a href="<%= url_for 'category', category => $cat->[1] %>" title="Beiträge der Kategorie &quot;<%= $cat->[0] %>&quot; anzeigen" class="category<%== $cat->[1] ? " category_$cat->[1]" : '' %>"><%= $cat->[0] %><% if ($cat->[2]) { %> (<span class="mark"><%= $cat->[2] %></span>)<% } %></a>
