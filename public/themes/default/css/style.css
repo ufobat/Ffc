@@ -113,9 +113,6 @@ img.smiley, img.icon {
     border-color: firebrick;
     background: peachpuff;
 }
-.newpost {
-    border-color: #fc6;
-}
 .categorylinks, .msgsuserlist, .postboxform {
     background: whitesmoke;
 }
@@ -150,6 +147,14 @@ img.smiley, img.icon {
     border-color: steelblue;
     background: white;
     box-shadow: .1em .1em .3em lightsteelblue;
+}
+.newpost {
+    border-color: palevioletred;
+    box-shadow: .1em .1em .3em palevioletred;
+}
+.categorylinks .active {
+    color: white;
+    background: steelblue;
 }
 .userlist {
     width: 12em;
