@@ -20,10 +20,10 @@ sub startup {
         my %params = @_;
         $c->url_for( $path,
             map { 
-                if ( $params{$_} ) {
+                if ( exists $params{$_} ) {
                     ( $_ => $params{$_} )
                 }
-                elsif ( $c->stash($_) ) {
+                elsif ( defined $c->stash($_) ) {
                     ( $_ => $c->stash($_) )
                 }
                 else {
@@ -67,7 +67,7 @@ sub startup {
 
     # logged in
     $loggedin->route('/logout')->to('auth#logout')->name('logout');
-    $loggedin->route('/')->to('board#frontpage')->name('show');
+    $loggedin->route('/')->to('board#frontpage')->name('frontpage');
 
     # options
     my $options = $loggedin->route('/options');
@@ -119,11 +119,11 @@ sub startup {
     $act->complete_set;
 
     # conversation with single user
-    my $user = $act->route('/user/:msgs_username', msgs_username => $Ffc::Data::UsernameRegex)->to('board#msgs_user')->name('msgs_user');
+    my $user = $act->route('/user/:msgs_username', msgs_username => $Ffc::Data::UsernameRegex)->name('usermsgs');
     $user->complete_set;
 
     # display special category
-    my $category = $act->route('/category/:category', category => $Ffc::Data::CategoryRegex)->to('board#switch_category')->name('category');
+    my $category = $act->route('/category/:category', category => $Ffc::Data::CategoryRegex)->name('category');
     $category->complete_set;
 
 }

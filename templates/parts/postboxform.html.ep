@@ -1,6 +1,6 @@
 % my $what = ($post && $post->{id} ? 'update' : 'insert').'_post';
 <div class="postbox ownpost postboxform">
-%= form_for $what => ( method => 'POST', 'accept-charset' => 'UTF-8' ) => begin
+<form action="<%= url_for_me $what %>" accept-charset="UTF-8" method="POST">
 <p>
 %= submit_button 'Senden', class => 'linkalike'
 (<a href="<%= url_for_me 'show' %>" title="&Auml;nderung abbrechen">Abbrechen</a>)
@@ -30,5 +30,5 @@ werden und werden nach Möglichkeit automatisch ersetzt.
 Zitate werden einfach in doppelte Anführungszeichen eingeschlossen."
     ><%= $post ? ( ( $what eq 'insert_post' ) ? "[quote] $post->{raw} [/quote]" : $post->{raw} ) : '' %></textarea>
 </p>
-% end
+</form>
 </div>

@@ -15,15 +15,20 @@ use Ffc::Data::Board;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Avatars;
 
+sub get_params {
+    my $c = shift;
+    return
+        $c->stash('act'),
+        $c->stash('page'),
+        $c->stash('postid'),
+        $c->stash('msgs_username'),
+        $c->stash('category');
+}
+
 sub frontpage {
     my $c = shift;
     my $s = $c->session;
-
-    my $act           = $c->stash('act');
-    my $page          = $c->stash('page');
-    my $postid        = $c->stash('postid');
-    my $msgs_username = $c->stash('msgs_username');
-    my $cat           = $c->stash('category');
+    my ( $act, $page, $postid,$msgs_username, $cat ) = $c->get_params();           
 
     if ( $act eq 'options' ) {
         return Ffc::Board::Options::options_form( $c );
