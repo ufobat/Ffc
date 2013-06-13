@@ -153,7 +153,7 @@ img.smiley, img.icon {
     box-shadow: .1em .1em .3em palevioletred;
 }
 .categorylinks .active {
-    color: white;
+    color: whitesmoke;
     background: steelblue;
     border-radius: .2em;
 }
