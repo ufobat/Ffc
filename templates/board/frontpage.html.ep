@@ -3,10 +3,10 @@
 %= include 'parts/postboxform'
 % } 
 % if ( $act eq 'msgs' ) {
-%   if ( session->{msgs_username} ) {
+%   if ( $msgs_username ) {
 <div class="postbox msgsuserlist"><p>
-    Konversationen mit &quot;<%= session->{msgs_username} %>&quot;
-    (<a href="<%= url_for 'switch', act => 'msgs' %>" title="Nachrichten mit allen Benutzern anzeigen">alle Nachrichten anzeigen</a>)
+    Konversationen mit &quot;<%= $msgs_username %>&quot;
+    (<a href="<%= url_for_me 'show', act => 'msgs' %>" title="Nachrichten mit allen Benutzern anzeigen">alle Nachrichten anzeigen</a>)
 </p></div>
 %   } else {
 %= include 'parts/userlistlinks'

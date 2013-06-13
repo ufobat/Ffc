@@ -3,7 +3,7 @@
 %= form_for $what => ( method => 'POST', 'accept-charset' => 'UTF-8' ) => begin
 <p>
 %= submit_button 'Senden', class => 'linkalike'
-(<a href="<%= url_for 'show' %>" title="&Auml;nderung abbrechen">Abbrechen</a>)
+(<a href="<%= url_for_me 'show' %>" title="&Auml;nderung abbrechen">Abbrechen</a>)
 <span class="help"></span>
 </p>
 <p>

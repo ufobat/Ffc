@@ -8,5 +8,5 @@
     <button type="submit" class="linkalike" title="L&ouml;schen best&auml;tigen">Ja, weg damit, ich will das nicht mehr sehen!</button>
 % end
   </p>
-  <p><a href="<%= url_for 'show' %>" title="L&ouml;schaktion abbrechen und zur&uuml;ck zur &Uuml;bersicht">Nein, doch nicht, halt, zur&uuml;ck zur &Uuml;bersicht!</a></p>
+  <p><a href="<%= url_for_me 'show' %>" title="L&ouml;schaktion abbrechen und zur&uuml;ck zur &Uuml;bersicht">Nein, doch nicht, halt, zur&uuml;ck zur &Uuml;bersicht!</a></p>
 </div>

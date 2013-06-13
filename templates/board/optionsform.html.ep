@@ -38,7 +38,7 @@
 % }
 <div class="postbox options">
     <h2>Benutzeravatar verwalten</h2>
-    <p><img src="<%= url_for show_avatar => username => session()->{user} %>" alt="Avatarbild des Benutzers &quot;<%= session()->{user} %>&quot;" %></p>
+    <p><img src="<%= url_for_me show_avatar => username => session()->{user} %>" alt="Avatarbild des Benutzers &quot;<%= session()->{user} %>&quot;" %></p>
 %= form_for options_avatar_save => ( method => 'POST', enctype => 'multipart/form-data' ) => begin 
     <input type="file" name="avatarfile" accept="image/*" />
     <button type="submit" class="linkalike">Avatar hochladen</button>

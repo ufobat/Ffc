@@ -2,7 +2,7 @@
 <div class="pages">
 % my $plp = $Ffc::Data::Pagelinkpreview;
 % if ( $page > $plp + 1 ) {
-    <a href="<%= url_for show_page => page => 1 %>" title="Zur ersten Seite gehen">[1]</a>
+    <a href="<%= url_for_me show_page => page => 1 %>" title="Zur ersten Seite gehen">[1]</a>
 % }
 % if ( $page > $plp + 2 ) {
     ...

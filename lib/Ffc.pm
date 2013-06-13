@@ -12,7 +12,7 @@ sub startup {
     Ffc::Data::set_config($app);
 
     $app->helper( theme => sub { $Ffc::Data::Theme } );
-    $app->helper( acttitle => sub { $Ffc::Data::Acttitles{shift->session->{act}} // 'Unbekannt' } );
+    $app->helper( acttitle => sub { $Ffc::Data::Acttitles{shift->stash('act')} // 'Unbekannt' } );
     $app->helper( error => sub { shift->session->{error} // '' } );
     $app->helper( url_for_me => sub {
         my $c = shift;
@@ -48,8 +48,8 @@ sub startup {
         my $act = $c->param('act') // 'forum';
         $c->stash(act => $act);
 
-        my $page = $c->param('page')     // 1;
-        $page    = 1  unless $page   =~ m/\A\d+\z/xms;
+        my $page = $c->param('page') // 1;
+        $page    = 1  unless $page =~ m/\A\d+\z/xms;
         $c->stash(page   => $page);
 
         my $postid = $c->param( 'postid' ) // '';
