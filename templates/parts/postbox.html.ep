@@ -1,15 +1,15 @@
-<div class="postbox <%= act() %><%= $post->{ownpost} ? ' '.act().'ownpost ownpost' : '' %><%= $post->{active} ? ' activepost' : '' %><%= $post->{newpost} ? ' newpost' : '' %>">
+<div class="postbox <%= $act %><%= $post->{ownpost} ? ' '.$act.'ownpost ownpost' : '' %><%= $post->{active} ? ' activepost' : '' %><%= $post->{newpost} ? ' newpost' : '' %>">
     <h2>
-% if ( act() ne 'notes' and $post->{avatar} and session()->{show_images} ) {
+% if ( $act ne 'notes' and $post->{avatar} and session()->{show_images} ) {
         <img class="avatar" src="<%= url_for 'show_avatar', username => $post->{avatar} %>" alt="Avatar für Benutzer &quot;<%= $post->{avatar} %>&quot;" />
 % }
-% if ( act() ne 'notes' ) {
+% if ( $act ne 'notes' ) {
 %   if ( $post->{from}->{active} ) {
         <%= $post->{from}->{name} %>
 %   } else {
         <span class="inactive"><%= $post->{from}->{name} %></span>
 %   } 
-%   if ( act() eq 'msgs' ) {
+%   if ( $act eq 'msgs' ) {
         → 
 %     if ( $post->{to}->{active} ) {
         <%= $post->{to}->{name} %>
@@ -18,7 +18,7 @@
 %     } 
 %   } 
 % }
-        <span class="titleinfo"><%= act() eq 'notes' ? '' : '(' %>
+        <span class="titleinfo"><%= $act eq 'notes' ? '' : '(' %>
 % unless ( $post->{active} ) {
           <%= $post->{timestamp} %><%= $post->{iconspresent}  ? ',' : '' %>
 % if ( $post->{editable} ) {
@@ -35,7 +35,7 @@
 % } else {
             <%= $post->{timestamp} %>, in Bearbeitung
 % }
-        <%= act() eq 'notes' ? '' : ')' %></span>:
+        <%= $act eq 'notes' ? '' : ')' %></span>:
     </h2>
 % unless ( $post->{active} ) {
     <%== $post->{text} %>

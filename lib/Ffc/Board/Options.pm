@@ -13,12 +13,15 @@ use Ffc::Data::Board::Avatars;
 use Ffc::Data::Board::OptionsUser;
 use Ffc::Data::Board::OptionsAdmin;
 
+use Ffc::Board::Views;
+
 sub _check_user_exists { &Ffc::Data::Auth::check_user_exists }
 sub _is_user_admin { Ffc::Data::Auth::is_user_admin( Ffc::Data::Auth::get_userid( @_ ) ) }
 
 sub options_form {
     my $c = shift;
     my $s = $c->session;
+
     my $email;
     $c->error_handling(
         sub { $email = Ffc::Data::General::get_useremail( $s->{user} ) } );

@@ -1,4 +1,4 @@
-% if ( act() eq 'forum' and not ( session->{category} or $cat->[1] ) or ( session->{category} and session->{category} eq $cat->[1] ) ) {
+% if ( $act eq 'forum' and not ( session->{category} or $cat->[1] ) or ( session->{category} and session->{category} eq $cat->[1] ) ) {
 <span class="active"><% if ( $cat->[1] ) { %><%= $cat->[0] %><%= $cat->[2] ? " ($cat->[2])" : '' %><% } else { %>Allgemeine Beiträge<%= $cat->[2] ? " ($cat->[2])" : '' %><% } %></span>
 % } else {
 %   if ( $cat->[1] ) {
