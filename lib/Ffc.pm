@@ -18,6 +18,10 @@ sub startup {
         my $c = shift;
         my $path = shift;
         my %params = @_;
+
+        $path .= '_category' if $params{category}      or $c->stash('category');
+        $path .= '_usermsgs' if $params{msgs_username} or $c->stash('msgs_username');
+
         $c->url_for( $path,
             map { 
                 if ( exists $params{$_} ) {
@@ -89,25 +93,27 @@ sub startup {
 
     $routes->add_shortcut(complete_set => sub {
         my $r = shift;
+        my $name = shift;
+        $name = $name ? "_$name" : '';
 
         # just show the act
-        $r->route('/')->to('board#frontpage')->name('show');
+        $r->route('/')->to('board#frontpage')->name("show$name");
 
         # pagination
-        $r->route('/:page', page => qr(\d+))->to('board#frontpage')->name('show_page');
+        $r->route('/:page', page => qr(\d+))->to('board#frontpage')->name("show_page$name");
 
         # delete something
         my $delete = $r->route('/delete');
-        $delete->route('/:postid', postid => qr(\d+))->via('get')->to('board#delete_check')->name('delete_check');
-        $delete->route('/')->via('post')->to('board#delete_post')->name('delete_post');
+        $delete->route('/:postid', postid => qr(\d+))->via('get')->to('board#delete_check')->name("delete_check$name");
+        $delete->route('/')->via('post')->to('board#delete_post')->name("delete_post$name");
 
         # create something
-        $r->route('/new')->via('post')->to('board#insert_post')->name('insert_post');
+        $r->route('/new')->via('post')->to('board#insert_post')->name("insert_post$name");
 
         # update something
         my $edit = $r->route('/edit');
-        $edit->route('/:postid', postid => qr(\d+))->via('get' )->to('board#edit_form')->name('edit_form');
-        $edit->route('/:postid', postid => qr(\d+))->via('post')->to('board#update_post'  )->name('update_post');
+        $edit->route('/:postid', postid => qr(\d+))->via('get' )->to('board#edit_form')->name("edit_form$name");
+        $edit->route('/:postid', postid => qr(\d+))->via('post')->to('board#update_post'  )->name("update_post$name");
 
         return $r;
     });
@@ -116,15 +122,15 @@ sub startup {
     my $act = $loggedin->route('/:act', act => [qw(forum notes msgs)]);
 
     # just the actual frontpage
-    $act->complete_set;
+    $act->complete_set();
 
     # conversation with single user
-    my $user = $act->route('/user/:msgs_username', msgs_username => $Ffc::Data::UsernameRegex)->name('usermsgs');
-    $user->complete_set;
+    my $user = $act->route('/user/:msgs_username', msgs_username => $Ffc::Data::UsernameRegex)->name('usermsgs_bridge');
+    $user->complete_set('usermsg');
 
     # display special category
-    my $category = $act->route('/category/:category', category => $Ffc::Data::CategoryRegex)->name('category');
-    $category->complete_set;
+    my $category = $act->route('/category/:category', category => $Ffc::Data::CategoryRegex)->name('category_bridge');
+    $category->complete_set('category');
 
 }
 

@@ -27,7 +27,7 @@
 % }
 % for my $w (qw(from to)) {
 %   if ( $post->{$w} and $post->{$w}->{chatable} ) {
-          <a href="<%= url_for_me usermsgs => act => 'msgs', msgs_username => $post->{$w}->{name} %>"
+          <a href="<%= url_for_me show => act => 'msgs', msgs_username => $post->{$w}->{name} %>"
             title="Dem Benutzer &quot;<%= $post->{$w}->{name} %>&quot; eine private Nachricht zukommen lassen">
             Privatnachrichten</a>
 %   } 

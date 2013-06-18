@@ -8,7 +8,6 @@ use Ffc::Errors;
 
 sub login {
     my $self = shift;
-    $self->app->switch_act( $self, 'forum' );
     if ( $self->_get_relevant_data() ) {
         $self->redirect_to('show');
         return 1;
@@ -28,7 +27,6 @@ sub logout {
 sub login_form {
     my $self = shift;
     my $msg = shift || 'Bitte melden Sie sich an';
-    $self->app->switch_act( $self,  'auth' );
     _cancel_session( $self );
     $self->stash(error => $msg);
     $self->render( 'auth/loginform');

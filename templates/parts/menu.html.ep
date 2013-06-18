@@ -2,9 +2,9 @@
     <a href="<%= url_for_me 'show' %>" title="Anzeige aktualisieren"><span class="linktext linkforum">Aktualisieren</span></a>
     <a href="<%= url_for_me 'show', act => 'forum' %>" title="Nachrichten für alle angemeldeten Benutzer in der Art einer öffentlichen Diskussion"><span class="linktext linkforum<%= $act eq 'forum' ? ' active activeforum' : '' %>">Forum<% if ( $newpostcount ) { %> (<span class="mark"><%= $newpostcount %></span>)<% } %></span></a>
     <span class="divider">-</span>
-    <a href="<%= url_for_me 'show', act => 'msgs' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkmsgs<%= $act eq 'msgs' ? ' active activemsgs' : '' %>">Nachrichten<% if ( $newmsgscount ) { %> (<span class="mark"><%= $newmsgscount %></span>)<% } %></span></a>
+    <a href="<%= url_for_me 'show', act => 'msgs', category => '', msgs_username => '' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkmsgs<%= $act eq 'msgs' ? ' active activemsgs' : '' %>">Nachrichten<% if ( $newmsgscount ) { %> (<span class="mark"><%= $newmsgscount %></span>)<% } %></span></a>
     <span class="divider">-</span>
-    <a href="<%= url_for_me 'show', act => 'notes' %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= $act eq 'notes' ? ' active activenotes' : '' %>">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
+    <a href="<%= url_for_me 'show', act => 'notes', category => '', msgs_username => '' %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= $act eq 'notes' ? ' active activenotes' : '' %>">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
     <span class="divider">-</span>
 %= form_for search => ( method => 'POST' ) => begin
 %= text_field query => session()->{query}, session()->{query} ? (class => 'activesearch') : ()
