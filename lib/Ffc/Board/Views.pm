@@ -88,7 +88,7 @@ sub frontpage {
         when('notes' ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_notes(@params)})}
         when('msgs'  ){
             $posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_msgs(@params,$s->{msgs_username})});
-            $c->stash(userlist => $c->or_empty(sub{Ffc::Data::Board::Views::get_userlist($user)})) unless $s->{msgs_username};
+            $c->stash(userlist => $c->or_empty(sub{Ffc::Data::Board::Views::get_userlist($user)}));
         }
         default       {$c->error_handling({plain=>qq("$act" unbekannt)})}
     }
