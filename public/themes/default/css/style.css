@@ -11,7 +11,6 @@ body > div {
     background: white;
     padding: .1em .5em .25em .5em;
     margin-top: .75em;
-    border-radius: .25em;
 }
 .postbox h2 {
     font-size: .75em;
@@ -125,7 +124,6 @@ img.smiley, img.icon {
     margin: 0 1em 1.5em 1em;
     padding: .2em;
     white-space: nowrap;
-    border-radius: 0;
 }
 .menu input[type="text"] {
     width: 7.5em;
@@ -141,7 +139,6 @@ img.smiley, img.icon {
     border-width: 0 1px 1px 1px;
     border-style: solid;
     padding: 1em .5em;
-    border-radius: 0 0 .25em .25em;
 }
 .menu .active, body > div, .menu .active:hover {
     border-color: steelblue;
@@ -155,7 +152,6 @@ img.smiley, img.icon {
 .categorylinks .active, .msgsuserlist .active {
     color: whitesmoke;
     background: steelblue;
-    border-radius: .2em;
 }
 .userlist {
     width: 12em;
