@@ -57,10 +57,11 @@ sub get_userlist {
     my $sql = 'SELECT 
         u2.name,
         (SELECT COUNT(p.id) AS cnt FROM '.$Ffc::Data::Prefix.'posts p WHERE p.user_to IS NOT NULL AND p.user_to = u1.id AND p.posted >= u1.lastseenmsgs AND p.user_from=u2.id),
-        u2.lastseen
+        u2.lastseen,
+        u2.active
     FROM '.$Ffc::Data::Prefix.'users u2
     INNER JOIN '.$Ffc::Data::Prefix.'users u1 ON u1.id = ?
-    WHERE u2.active = 1 and u2.id <> u1.id
+    WHERE u2.id <> u1.id
     ORDER BY u2.name';
     return [ map {$_->[2] = Ffc::Data::Formats::format_timestamp($_->[2]); $_} @{ Ffc::Data::dbh()->selectall_arrayref( $sql, undef, $userid ) } ];
 }

@@ -28,7 +28,7 @@ Smilies können direkt in ihrer Textrepräsentation eingegeben
 werden und werden nach Möglichkeit automatisch ersetzt.
 
 Zitate werden einfach in doppelte Anführungszeichen eingeschlossen."
-    ><%= $post ? ( ( $what eq 'insert_post' ) ? "[quote] $post->{raw} [/quote]" : $post->{raw} ) : '' %></textarea>
+    ><%= $post ? $post->{raw} : '' %></textarea>
 </p>
 % end
 </div>

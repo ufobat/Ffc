@@ -333,7 +333,7 @@ sub check_msgs {
         $t->get_ok("/msgs/$users{$user}{name}")->status_is(200);
         $t->content_like(
                 qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+title=".+"\s*></textarea>~s);
-        $t->content_like(qr(Konversationen mit \&quot;$users{$user}{name}\&quot;));
+        $t->content_like(qr~<span\s+class="active(?:\s+inactive)?">\s*$users{$user}{name}\s+\(\s*$timestampre\s*\)\s*</span>~) if $p->{msgs_users}->{$users{$user}{name}};
         my @testcases = grep { $_->[1] eq $user or $_->[2] eq $user } @testcases;
         check_pages( \@testcases, $t, $u, $p, $cat, $sleep, $act, $user );
     }

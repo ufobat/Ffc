@@ -15,7 +15,7 @@ use Ffc::Data::Board;
 use Ffc::Data::Board::Forms;
 srand;
 
-use Test::More tests => 307;
+use Test::More tests => 309;
 
 Test::General::test_prepare();
 
@@ -753,7 +753,10 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
         my $ret = $code->($user_s->{name});
         ok(!grep({;$user_s->{name} eq $_->[0]} @$ret), 'session user not in user list');
         ok( grep({;$user_a->{name} eq $_->[0]} @$ret), 'active users in user list');
-        ok(!grep({;$user_i->{name} eq $_->[0]} @$ret), 'inactive users not in user list');
+        ok( grep({;$user_a->{name} eq $_->[0] and $_->[3]} @$ret), 'active users in user list and marked as active');
+        ok( grep({;$user_i->{name} eq $_->[0]} @$ret), 'inactive users in user list');
+        ok( grep({;$user_i->{name} eq $_->[0] and not $_->[3] } @$ret), 'inactive users in user list and marked as inactive');
+        #ok(!grep({;$user_i->{name} eq $_->[0]} @$ret), 'inactive users not in user list'); # all users are in the list, just in case for old msgs
     }
     sleep 2;
     {
