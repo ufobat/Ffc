@@ -33,7 +33,6 @@ sub options_form {
     $c->stash( themes   => \@Ffc::Data::Themes );
     delete $s->{msgs_username};
     $c->get_counts();
-    $c->app->switch_act( $c, 'options' );
     $c->render('board/optionsform');
 }
 

@@ -4,6 +4,8 @@ use Ffc::Auth;
 use Ffc::Data;
 use Ffc::Data::Auth;
 
+our @Keys = qw(act page category msgs_username postid);
+
 # This method will run once at server start
 sub startup {
     my $self = shift;
@@ -12,28 +14,43 @@ sub startup {
     Ffc::Data::set_config($app);
 
     $app->helper( theme => sub { $Ffc::Data::Theme } );
-    $app->helper( acttitle => sub { $Ffc::Data::Acttitles{shift->stash('act')} // 'Unbekannt' } );
+    $app->helper( acttitle => sub { $Ffc::Data::Acttitles{shift->stash('act') // 'forum'} // 'Unbekannt' } );
     $app->helper( error => sub { shift->session->{error} // '' } );
     $app->helper( url_for_me => sub {
         my $c = shift;
         my $path = shift;
         my %params = @_;
+        %params = map { $_ => exists($params{$_}) ? $params{$_} // $c->stash($_) : $c->stash($_) } @Keys;
+        $params{act} = 'forum' unless $params{act};
 
-        $path .= '_category' if $params{category}      or $c->stash('category');
-        $path .= '_usermsgs' if $params{msgs_username} or $c->stash('msgs_username');
+        if ( $params{act} eq 'forum' and $params{category} ) {
+            $path .= '_category';
+        }
+        else {
+            delete $params{category};
+        }
+        if ( $params{act} eq 'msgs' and $params{msgs_username} and not $path eq 'show_avatar' ) {
+            $path .= '_msgs';
+        }
+        else { 
+            delete $params{msgs_username};
+        }
 
         $c->url_for( $path,
             map { 
-                if ( exists $params{$_} ) {
-                    ( $_ => $params{$_} )
+                if (
+                        ( $_ eq 'category' and $params{act} ne 'forum' ) or
+                        ( $_ eq 'msgs_username' and $params{act} ne 'msgs' )
+                    ) {
+                    ()
                 }
-                elsif ( defined $c->stash($_) ) {
-                    ( $_ => $c->stash($_) )
+                elsif ( exists $params{$_} and $params{$_} ) {
+                    ( $_ => $params{$_} )
                 }
                 else {
                     ()
                 }
-            } qw(act page category msgs_username postid)
+            } @Keys
         );
     } );
 
@@ -126,7 +143,7 @@ sub startup {
 
     # conversation with single user
     my $user = $act->route('/user/:msgs_username', msgs_username => $Ffc::Data::UsernameRegex)->name('usermsgs_bridge');
-    $user->complete_set('usermsg');
+    $user->complete_set('msgs');
 
     # display special category
     my $category = $act->route('/category/:category', category => $Ffc::Data::CategoryRegex)->name('category_bridge');
