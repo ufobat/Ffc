@@ -86,18 +86,20 @@ sub get_categories {
 
 sub get_notes { 
     my $userid = _get_userid( shift, 'Notizenliste' );
-    my @params = @_[0..3];
+    my @params = @_[0..4];
     $params[2] = undef;
+    $params[3] = undef;
     return _get_stuff( 'notes', $userid, @params, 'p.user_from=? AND p.user_to=p.user_from', $userid );
 }
 sub get_forum { 
-    my $userid = _get_userid( shift, 'Privatnachrichtenliste' );
-    my @params = @_[ 0 .. 3 ];
-    if ( $params[2] ) {
-        Ffc::Data::General::check_category($params[2]);
+    my $userid = _get_userid( shift, 'Forenbeiträge' );
+    my @params = @_[ 0 .. 4 ];
+    $params[2] = undef;
+    if ( $params[3] ) {
+        Ffc::Data::General::check_category($params[3]);
     }
     else {
-        $params[2] = undef;
+        $params[3] = undef;
     }
     return _get_stuff( 'forum', $userid, @params, 'p.user_to IS NULL' );
 }
@@ -105,13 +107,13 @@ sub get_msgs  {
     my $userid = _get_userid( shift, 'Privatnachrichtenliste' );
     my @params = ( $userid, $userid );
     my $where = '( p.user_from=? OR p.user_to=? ) AND p.user_from <> p.user_to';
-    if ( $_[4] ) {
-        my $userid = _get_userid( $_[4] );
+    if ( $_[2] ) {
+        my $userid = _get_userid( $_[2] );
         $where .= ' AND ( p.user_from=? OR p.user_to=? )';
         push @params, $userid, $userid;
     }
-    my @params2 = @_[0..3];
-    $params2[2] = undef;
+    my @params2 = @_[0..4];
+    $params2[3] = undef;
     return _get_stuff( 'msgs', $userid, @params2, $where, @params );
 }
 
@@ -126,11 +128,17 @@ sub get_post {
     my $where = << 'EOWHERE';
     p.id=? AND f.id=u.id AND ( t.id IS NULL OR t.id=f.id )
 EOWHERE
-    my @params = @_[ 0 .. 3 ];
+    my @params = @_[ 0 .. 4 ];
+    #die Data::Dumper::Dumper({act => $act, userid => $userid, params => [@params[0..3]], where => $where, postid => $postid});
     $params[2] = undef unless $params[2];
-    $params[2] = undef unless $act eq 'forum';
+    $params[2] = undef unless $act eq 'msgs';
     if ( $params[2] ) {
-        Ffc::Data::General::check_category($params[2]);
+        Ffc::Data::Auth::check_username($params[2]);
+    }
+    $params[3] = undef unless $params[3];
+    $params[3] = undef unless $act eq 'forum';
+    if ( $params[3] ) {
+        Ffc::Data::General::check_category($params[3]);
     }
     my $data = _get_stuff( $act, $userid, @params, $where, $postid );
     croak q{Kein Datensatz gefunden} unless @$data;
@@ -142,11 +150,10 @@ sub _get_stuff {
     my $userid = shift;
     my $page   = shift;
     my $query  = shift;
+    my $msgu   = shift // '';
     my $cat    = shift;
     my $c      = shift;
     my $where  = shift;
-    my $s      = $c->session;
-    my $msgu   = $s->{msgs_username} || ''; 
     my @params = @_;
     my $q = '';
     my $p = $Ffc::Data::Prefix;
@@ -185,7 +192,7 @@ EOSQL
     push @params, ( $cat, $cat, $cat );
     push @params, $Ffc::Data::Limit, ( ( $page - 1 ) * $Ffc::Data::Limit );
     unshift @params, $userid;
-#Test::More::diag(Data::Dumper::Dumper( { sql => $sql, userid => $userid, params => \@params, query => [( $query ? "\%$query\%" : () )], cat => [$cat, $cat, $cat]}));
+#die Data::Dumper::Dumper( { sql => $sql, userid => $userid, params => \@params, query => [( $query ? "\%$query\%" : () )], cat => [$cat, $cat, $cat]});
     return [ map { my $d = $_;
             $d = {
                 text      => Ffc::Data::Formats::format_text($d->[1], $c),

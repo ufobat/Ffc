@@ -18,17 +18,20 @@ use Ffc::Data::Board::Avatars;
 sub get_params {
     my $c = shift;
     return
-        $c->stash('act'),
+        $c->session->{user},
         $c->stash('page'),
-        $c->stash('postid'),
+        $c->session->{query},
         $c->stash('msgs_username'),
-        $c->stash('category');
+        $c->stash('category'),
+        $c;
 }
 
 sub frontpage {
     my $c = shift;
     my $s = $c->session;
-    my ( $act, $page, $postid,$msgs_username, $cat ) = $c->get_params();           
+    my $act = $c->stash('act');
+    my ( $page, $query, $msgs_username, $cat ) = $c->get_params();           
+    my $postid = $c->stash('postid');
 
     if ( $act eq 'options' ) {
         return Ffc::Board::Options::options_form( $c );
@@ -42,7 +45,8 @@ sub frontpage {
         $c->stash($k => '') unless $d;
     }
     my $posts  = [];
-    my @params = ($user, $page, $s->{query}, $cat, $c);
+    my @params = $c->get_params(); #($user, $page, $s->{query}, $cat, $c);
+    Ffc::Data::Board::Views::get_forum(@params);
     given ( $act ) {
         when('forum' ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_forum(@params)})}
         when('notes' ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_notes(@params)})}

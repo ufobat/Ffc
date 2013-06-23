@@ -31,7 +31,7 @@ sub options_form {
     $c->stash( email    => $email    // '' );
     $c->stash( userlist => $userlist // '' );
     $c->stash( themes   => \@Ffc::Data::Themes );
-    delete $s->{msgs_username};
+    $c->stash( act      => 'options' );
     $c->get_counts();
     $c->render('board/optionsform');
 }

@@ -13,14 +13,13 @@ use Ffc::Data::Board::Forms;
 
 sub edit_form {
     my $c = shift;
-    my $s = $c->session;
     my $act = $c->stash('act');
     if ( $act eq 'msgs' ) {
         $c->error_handling( { plain => "Privatnachrichten dürfen nicht geändert werden" } );
     }
     else {
         my $id   = $c->stash('postid');
-        my $post = $c->or_nostring( sub { Ffc::Data::Board::Views::get_post($act, $id, $c->get_params($c) ) } );
+        my $post = $c->or_nostring( sub { Ffc::Data::Board::Views::get_post($act, $id, $c->get_params() ) } );
         $c->stash( post => $post );
     }
     $c->frontpage();
@@ -28,8 +27,7 @@ sub edit_form {
 
 sub delete_check {
     my $c = shift;
-    my $act = $c->stash('act');
-    my $s = $c->session;
+    my $act = $c->param('act');
     if ( $act eq 'msgs' ) {
         $c->error_handling( { plain => "Privatnachrichten dürfen nicht gelöscht werden" } );
         $c->frontpage();
@@ -38,8 +36,9 @@ sub delete_check {
         my $id = $c->stash('postid');
         $c->get_counts();
         my $post;
+Ffc::Data::Board::Views::get_post($act, $id, $c->get_params());
         $c->error_handling( {
-            code => sub { $post = Ffc::Data::Board::Views::get_post($act, $id, $c->get_params($c)) },
+            code => sub { $post = Ffc::Data::Board::Views::get_post($act, $id, $c->get_params()) },
             msg  => 'Beitrag zum Löschen konnte nicht ermittelt werden',
             after_error => sub { $c->frontpage() },
             after_ok    => sub { $post->{active} = 1; $c->stash( post => $post ); $c->render('board/deletecheck') },
