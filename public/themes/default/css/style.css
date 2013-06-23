@@ -154,7 +154,7 @@ img.smiley, img.icon {
     background: steelblue;
 }
 .userlist {
-    width: 12em;
+    width: 42em;
     height: 15em;
     overflow: scroll;
 }
@@ -164,6 +164,9 @@ img.smiley, img.icon {
 .help {
     font-size: .75em;
     color: silver;
+}
+input.description {
+    width: 20em;
 }
 .mark {
     color: palevioletred;

@@ -93,8 +93,17 @@ sub options_showimages_save {
 sub options_avatar_save {
     my $c          = shift;
     my $avatarfile = $c->param('avatarfile');
-    Ffc::Data::Board::Avatars::upload_avatar($c->session->{user}, $avatarfile->filename, sub{ $avatarfile->move_to(@_) });
-    $c->options_form();
+    $c->error_handling(
+        {
+            code => sub {
+                Ffc::Data::Board::Avatars::upload_avatar($c->session->{user}, $avatarfile->filename, sub{ $avatarfile->move_to(@_) });
+            },
+            msg => 'Datei konnte nicht hochgeladen werden',
+            after_ok =>
+              sub { $c->info('Datei wurde hochgeladen'); $c->frontpage() },
+        }
+    );
+    $c->frontpage;
 }
 
 sub useradmin_save {

@@ -196,15 +196,18 @@ EOSQL
 #die Data::Dumper::Dumper( { sql => $sql, userid => $userid, params => \@params, query => [( $query ? "\%$query\%" : () )], cat => [$cat, $cat, $cat]});
     return [ map { my $d = $_;
             $d = {
-                text      => Ffc::Data::Formats::format_text($d->[1], $c),
-                start     => Ffc::Data::Formats::format_text(do {(split /\n/, $d->[1])[0] // ''}, $c),
-                raw       => $d->[1],
-                active    => 0,
-                avatar    => $d->[11] ? $d->[6] : '',
-                newpost   => $d->[12],
-                timestamp => Ffc::Data::Formats::format_timestamp($d->[2]),
-                ownpost   => $d->[5] == $userid ? 1 : 0,
-                category  => $d->[3] # kategorie
+                text       => Ffc::Data::Formats::format_text($d->[1], $c),
+                start      => Ffc::Data::Formats::format_text(do {(split /\n/, $d->[1])[0] // ''}, $c),
+                raw        => $d->[1],
+                active     => 0,
+                avatar     => $d->[11] ? $d->[6] : '',
+                newpost    => $d->[12],
+                timestamp  => Ffc::Data::Formats::format_timestamp($d->[2]),
+                ( $d->[5] == $userid 
+                    ? (ownpost => 1, uploadable => 1) 
+                    : (ownpost => 0, uploadable => 0) ),
+                ownpost    => $d->[5] == $userid ? 1 : 0,
+                category   => $d->[3] # kategorie
                     ? { name => $d->[3], short => $d->[4] }
                     : undef,
                 $d->[5] == $userid && $act ne 'msgs' # editierbarkeit
