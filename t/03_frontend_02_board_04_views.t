@@ -207,7 +207,16 @@ sub check_pages {
     while ( my @tests = splice @testcases, 0, $Ffc::Data::Limit ) {
         $page++;
         if ( $page > 1 ) {
-            $t->get_ok("/$page")->status_is(200);
+            if ( $act eq 'forum' and $cat ) {
+                $t->get_ok("/$act/category/$cat/$page");
+            }
+            elsif ( $act eq 'msgs' and $msguser ) {
+                $t->get_ok("/$act/user/$msguser/$page");
+            }
+            else {
+                $t->get_ok("/$act/$page");
+            }
+            $t->status_is(200);
             $t->content_unlike(
                 qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+title=".+"\s*></textarea>~s);
         }
@@ -238,11 +247,11 @@ sub check_pages {
                         $test->[0]
                     )
                 )[0];
-                my $url_edit = $t->app->url_for( 'edit_form', postid => $id );
-                my $url_delete = $t->app->url_for( 'delete_check', postid => $id );
+                my $url_edit = $t->app->url_for_me( 'edit_form', act => $act, category => $cat, postid => $id );
+                my $url_delete = $t->app->url_for_me( 'delete_check', act => $act, category => $cat, postid => $id );
                 my $sessmsguser = $msguser;
                 $msguser = $users{$test->[1]}->{name} unless $act eq 'msgs';
-                my $url_msg = $t->app->url_for( 'msgs_user', msgs_username => $msguser );
+                my $url_msg = $t->app->url_for_me( 'show', act => 'msgs', cat => '', msgs_username => $msguser );
                 my $editlink =
 qr~,\s*<a href="$url_edit" title="Beitrag bearbeiten">\s*(?:<img src="$url_editicon" alt="\&Auml;ndern" />|Bearbeiten)</a>(?:\s*,\s*)?~;
                 my $deletelink =
@@ -319,7 +328,7 @@ sub check_msgs {
         note('check msgs user list and news counter');
         for my $u ( map {$users{$_}{name}} grep {$users{$_}{active}} keys %actusers ) {
             my $c = $p->{msgs_users}->{$u};
-            my $url = $t->app->url_for(msgs_user => msgs_username => $u);
+            my $url = $t->app->url_for_me(show => act => 'msgs', msgs_username => $u);
             if ( $c ) {
                 $t->content_like(qr~<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*$u\s*\(\s*$timestampre\s*,\s*<span class="mark">$c</span>\s*\)\s*</a>~)
             }
@@ -330,7 +339,7 @@ sub check_msgs {
     }
     note('check msgs_username system for single conversations');
     for my $user ( keys %actusers ) {
-        $t->get_ok("/msgs/$users{$user}{name}")->status_is(200);
+        $t->get_ok("/msgs/user/$users{$user}{name}")->status_is(200);
         $t->content_like(
                 qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+title=".+"\s*></textarea>~s);
         $t->content_like(qr(Konversationen mit \&quot;$users{$user}{name}\&quot;));
@@ -354,7 +363,8 @@ sub check_check {
     if ( $act eq 'forum' ) {
         for my $cat ( '', map { $_->[2] } @Test::General::Categories ) {
             if ($cat) {
-                $t->get_ok("/category/$cat")->status_is(200);
+                note(qq(get into category "$cat"));
+                $t->get_ok("/forum/category/$cat")->status_is(200);
             }
             check_page( $t, $u, $p, $cat, $sleep, $act );
             $p->{forum} -= $p->{categories}->{$cat}->[1];

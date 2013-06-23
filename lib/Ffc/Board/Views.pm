@@ -30,7 +30,7 @@ sub frontpage {
     my $c = shift;
     my $s = $c->session;
     my $act = $c->stash('act');
-    my ( $page, $query, $msgs_username, $cat ) = $c->get_params();           
+    my ( $userp, $page, $query, $msgs_username, $cat ) = $c->get_params();           
     my $postid = $c->stash('postid');
 
     if ( $act eq 'options' ) {
