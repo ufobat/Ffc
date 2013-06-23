@@ -239,6 +239,7 @@ qq'counting code "$t->{name}" returned zero because the database is still empty'
         { name => 'page',  good => 1,  noemptycheck => 1 },
         { name => 'query', good => '', noemptycheck => 1 },
     );
+    my $msgsusertest = { good => '', noemptycheck => 1 };
     my $cattest = {
         name => 'category',
         good => Test::General::test_get_rand_category()->[2],
@@ -310,7 +311,7 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
         {
             my ($post) =
               check_call( $code, $name, $acttest, $posttest, $usertest,
-                @paramstest, $cattest, $controllertest );
+                @paramstest, $msgsusertest, $cattest, $controllertest );
             is(
                 $post->{raw},
                 (
@@ -407,7 +408,7 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
                 eval {
                     $post_test = $code->(
                         $act, $post->[0], $user->{name}, 1, $query,
-                        $category->[2] || undef, $controller
+                        undef, $category->[2] || undef, $controller
                     );
                 };
                 if ( $act eq 'msgs' ) {
@@ -450,11 +451,12 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
         note(
 qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
         );
-        my $controller  = Mock::Controller->new();
-        my $has_cats    = 0;
-        my $privmsgs    = 0;
-        my $asnotes     = 0;
-        my $cattest     = { good => '', noemptycheck => 1, name => 'category' };
+        my $controller   = Mock::Controller->new();
+        my $has_cats     = 0;
+        my $privmsgs     = 0;
+        my $asnotes      = 0;
+        my $cattest      = { good => '', noemptycheck => 1, name => 'category' };
+        my $msgsusertest = { good => '', noemptycheck => 1, name => 'msgsuser' };
         my $insert_code = sub {
             my $notyou   = shift;
             my $userfrom = $user->{name};
@@ -499,7 +501,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
         };
         $insert_code->();
 
-        my @ret = check_call( $code, $name, $usertest, @paramstest, $cattest,
+        my @ret = check_call( $code, $name, $usertest, @paramstest, $msgsusertest, $cattest,
             $controllertest );
         ok( @ret, 'something was returned' );
         my $allposts = [];
@@ -534,7 +536,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
             my $ret    = [];
             {
                 eval {
-                    $ret = $code->( $user->{name}, $i, '', '', $controller );
+                    $ret = $code->( $user->{name}, $i, '', '', '', $controller );
                 };
                 ok( !$@, qq'code for "$name" on page "$i" ran ok' );
                 diag($@) if $@;
@@ -585,7 +587,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
             {
                 eval {
                     $ret = $code->(
-                        $user->{name}, 0, $testpost->[1],
+                        $user->{name}, 0, $testpost->[1], '',
                         $catid,        $controller
                     );
                 };
@@ -619,7 +621,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
             {
                 eval {
                     $ret = $code->(
-                        $user->{name}, 1, $testpost->[1], '', $controller,
+                        $user->{name}, 1, $testpost->[1], '', '', $controller,
                         $secondparam
                     );
                 };
@@ -653,7 +655,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
                 {
                     eval {
                         $ret = $code->(
-                            $user->{name}, 1, '', $cat, $controller,
+                            $user->{name}, 1, '', '', $cat, $controller,
                             $secondparam
                         );
                     };
@@ -680,7 +682,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
                 {
                     eval {
                         $ret = $code->(
-                            $user->{name}, 1, '', $cat, $controller,
+                            $user->{name}, 1, '', '', $cat, $controller,
                             $secondparam
                         );
                     };
@@ -751,7 +753,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
     );
     {
         my $ret = $code->($user_s->{name});
-        ok(!grep({;$user_s->{name} eq $_->[0]} @$ret), 'session user not in user list');
+        ok(!grep({;$user_s->{name} eq $_->[0]} @$ret),  'session user not in user list');
         ok( grep({;$user_a->{name} eq $_->[0]} @$ret), 'active users in user list');
         ok( grep({;$user_a->{name} eq $_->[0] and $_->[3]} @$ret), 'active users in user list and marked as active');
         ok( grep({;$user_i->{name} eq $_->[0]} @$ret), 'inactive users in user list');

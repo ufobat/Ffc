@@ -13,12 +13,15 @@ use Ffc::Data::Board::Avatars;
 use Ffc::Data::Board::OptionsUser;
 use Ffc::Data::Board::OptionsAdmin;
 
+use Ffc::Board::Views;
+
 sub _check_user_exists { &Ffc::Data::Auth::check_user_exists }
 sub _is_user_admin { Ffc::Data::Auth::is_user_admin( Ffc::Data::Auth::get_userid( @_ ) ) }
 
 sub options_form {
     my $c = shift;
     my $s = $c->session;
+
     my $email;
     $c->error_handling(
         sub { $email = Ffc::Data::General::get_useremail( $s->{user} ) } );
@@ -28,9 +31,8 @@ sub options_form {
     $c->stash( email    => $email    // '' );
     $c->stash( userlist => $userlist // '' );
     $c->stash( themes   => \@Ffc::Data::Themes );
-    delete $s->{msgs_username};
+    $c->stash( act      => 'options' );
     $c->get_counts();
-    $c->app->switch_act( $c, 'options' );
     $c->render('board/optionsform');
 }
 

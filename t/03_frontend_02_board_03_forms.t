@@ -66,9 +66,10 @@ for my $test (@testmatrix) {
     my $is_notes = ( $to and $from eq $to ) ? 1 : 0;
     my $is_msgs = ( $to and $from ne $to ) ? 1 : 0;
     my $is_forum = ( $is_notes or $is_msgs ) ? 0 : 1;
+    my $act = 'forum'; $act = 'msgs' if $is_msgs; $act = 'notes' if $is_notes;
     my $reset = sub {
         $t->get_ok('/forum')->status_is(200)->content_like(qr(Forum));
-        $t->get_ok("/category/$cat")->status_is(200) if $cat;
+        $t->get_ok("/forum/category/$cat")->status_is(200) if $cat;
         $t->get_ok('/notes')->status_is(200)->content_like(qr(Notizen))
           if $is_notes;
         $t->get_ok('/msgs')->status_is(200)->content_like(qr(Privatnachrichten))
@@ -78,16 +79,16 @@ for my $test (@testmatrix) {
         note(qq(testing the insert));
         $reset->();
         my $origtext = Test::General::test_r();
-        $t->post_ok('/new')->status_is(500)
+        $t->post_ok("/$act/new")->status_is(500)
           ->content_like(qr(Text des Beitrages ungültig));
-        $t->post_ok( '/new', form => { post => '' } )->status_is(500)
+        $t->post_ok( "/$act/new", form => { post => '' } )->status_is(500)
           ->content_like(qr(Text des Beitrages ungültig));
         if ($is_msgs) {
-            $t->post_ok( '/new', form => { post => $origtext } )
-              ->status_is(200)->content_unlike(qr($origtext));
-            $t->get_ok("/msgs/$to_name")->status_is(200);
+            $t->post_ok( "/msgs/user/$to_name/new", form => { post => $origtext } )
+              ->status_is(200)->content_like(qr($origtext));
+            $t->get_ok("/msgs/user/$to_name")->status_is(200);
         }
-        $t->post_ok( '/new', form => { post => $origtext } )->status_is(200)
+        $t->post_ok( "/$act/new", form => { post => $origtext } )->status_is(200)
           ->content_like(qr($origtext));
 
         my $msgid = -1;
@@ -109,7 +110,7 @@ for my $test (@testmatrix) {
 
         note(qq(testing an update));
         $reset->();
-        $t->get_ok("/edit/$msgid");
+        $t->get_ok("/$act/edit/$msgid");
         if ($is_msgs) {
             $t->status_is(500)
               ->content_like(
@@ -124,7 +125,7 @@ for my $test (@testmatrix) {
         }
         my $newtext = $origtext;
         $newtext = Test::General::test_r() while $newtext eq $origtext;
-        $t->post_ok( "/edit/$msgid", form => { post => $newtext } );
+        $t->post_ok( "/$act/edit/$msgid", form => { post => $newtext } );
         if ($is_msgs) {
             $t->status_is(500)->content_unlike(qr(Beitrag wurde geändert))
               ->content_like(
@@ -172,7 +173,7 @@ for my $test (@testmatrix) {
             $reset->();
             my $newtext2 = $newtext;
             $newtext2 = Test::General::test_r() while $newtext eq $newtext2;
-            $t->get_ok("/edit/$msgid");
+            $t->get_ok("/$act/edit/$msgid");
             if ($is_msgs) {
                 $t->status_is(500)
                   ->content_like(
@@ -184,7 +185,7 @@ for my $test (@testmatrix) {
 qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+title=".+"\s*></textarea>~s
                   );
             }
-            $t->post_ok("/edit/$msgid", form => {post => $newtext2});
+            $t->post_ok("/$act/edit/$msgid", form => {post => $newtext2});
             if ($is_msgs) {
                 $t->status_is(500)
                 ->content_like(
@@ -202,7 +203,7 @@ qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+t
                 isnt( $posts->[0]->[0], $newtext2, 'post is unchanged');
             }
             note(qq(testing to delete from different user as failure));
-            $t->get_ok("/delete/$msgid");
+            $t->get_ok("/$act/delete/$msgid");
             if ($is_msgs) {
                 $t->status_is(500)
                 ->content_like(
@@ -229,7 +230,7 @@ qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+t
               ->status_is(302)
               ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
             $reset->();
-            $t->get_ok("/delete/$msgid");
+            $t->get_ok("/$act/delete/$msgid");
             if ($is_msgs) {
                 $t->status_is(500)
                 ->content_like(
@@ -240,14 +241,14 @@ qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+t
                 ->content_like(
                     qr(Den oben angezeigten Beitrag wirklich l.+schen));
             }
-            $t->post_ok("/delete")->status_is(500);
+            $t->post_ok("/$act/delete")->status_is(500);
             if ($is_msgs) {
                 $t->content_like( qr(Privatnachrichten d.+rfen nicht gel.+scht werden));
             }
             else {
                 $t->content_like(qr(Keine Postid angegeben|Beitrag konnte nicht gel.+scht werden));
             }
-            $t->post_ok("/delete", form => {postid => $msgid});
+            $t->post_ok("/$act/delete", form => {postid => $msgid});
             if ($is_msgs) {
                 $t->status_is(500)
                 ->content_like(

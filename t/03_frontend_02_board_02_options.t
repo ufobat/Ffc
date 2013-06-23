@@ -29,7 +29,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
         $c->content_like(qr(Einstellungen));
         $c->content_unlike(qr(Benutzerverwaltung));
     }
-    $t->post_ok( '/optionsadmin_save',
+    $t->post_ok( '/options/admin_save',
         form => { overwriteok => 1, username => $user->{name}, active => 0 } )
       ->status_is(500)->content_like(qr{Nur Administratoren dürfen das});
     {
@@ -201,7 +201,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
         $c->content_like(qr(Benutzerverwaltung));
     }
     my $call = sub {
-        $t->post_ok( '/optionsadmin_save', form => shift );
+        $t->post_ok( '/options/admin_save', form => shift );
         for my $p (@_) {
             given ( ref $p ) {
                 when ('SCALAR') { $t->content_like(qr{$p}) }

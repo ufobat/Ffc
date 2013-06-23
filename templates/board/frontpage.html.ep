@@ -1,11 +1,11 @@
 % layout 'default';
-% if ( $page == 1 and ( act() ne 'msgs' or session->{msgs_username} ) ) {
+% if ( $page == 1 and ( $act ne 'msgs' or $msgs_username ) ) {
 %= include 'parts/postboxform'
 % } 
-% if ( act() eq 'msgs' ) {
+% if ( $act eq 'msgs' ) {
 %= include 'parts/userlistlinks'
 % }
-% if ( act() eq 'forum' ) {
+% if ( $act eq 'forum' ) {
 <div class="postbox categorylinks"><p>
 %   my $counter = 0;
 %   for ( @$categories ) { $counter++;
