@@ -12,52 +12,52 @@ use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Upload;
 
 sub upload_form {
-    my $c = shift;
-    $c->stash( footerlinks => $Ffc::Data::Footerlinks );
-    my $s = $c->session;
-    else {
-        my $id = $c->param('postid');
-        $c->get_counts();
-        my $post;
-        $c->error_handling(
-            {
-                code => sub {
-                    $post =
-                      Ffc::Data::Board::Views::get_post( $s->{act}, $id,
-                        $c->get_params($s) );
-                },
-                msg =>
-'Beitrag, zu dem etwas hochgeladen wurde, konnte nicht ermittelt werden',
-                after_error => sub { $c->frontpage() },
-                after_ok    => sub {
-                    $post->{active} = 1;
-                    $c->stash( post => $post );
-                    $c->render('board/upload_form');
-                },
-            }
-        );
-    }
+#    my $c = shift;
+#    $c->stash( footerlinks => $Ffc::Data::Footerlinks );
+#    my $s = $c->session;
+#    else {
+#        my $id = $c->param('postid');
+#        $c->get_counts();
+#        my $post;
+#        $c->error_handling(
+#            {
+#                code => sub {
+#                    $post =
+#                      Ffc::Data::Board::Views::get_post( $s->{act}, $id,
+#                        $c->get_params($s) );
+#                },
+#                msg =>
+#'Beitrag, zu dem etwas hochgeladen wurde, konnte nicht ermittelt werden',
+#                after_error => sub { $c->frontpage() },
+#                after_ok    => sub {
+#                    $post->{active} = 1;
+#                    $c->stash( post => $post );
+#                    $c->render('board/upload_form');
+#                },
+#            }
+#        );
+#    }
 }
 
 sub upload {
-    my $c = shift;
-    my $file = $c->param('attachedfile');
-    $c->error_handling(
-        {
-            code => sub {
-                Ffc::Data::Board::Upload::upload( $c->session->{user},
-                    $c->param('postid'),
-                    $file->filename,
-                    $c->param('description'),
-                    sub { $file->move_to(@_) },
-                );
-            },
-            msg => 'Datei konnte nicht hochgeladen werden',
-            after_ok =>
-              sub { $c->info('Datei wurde hochgeladen'); $c->frontpage() },
-        }
-    );
-    $c->frontpage();
+#    my $c = shift;
+#    my $file = $c->param('attachedfile');
+#    $c->error_handling(
+#        {
+#            code => sub {
+#                Ffc::Data::Board::Upload::upload( $c->session->{user},
+#                    $c->param('postid'),
+#                    $file->filename,
+#                    $c->param('description'),
+#                    sub { $file->move_to(@_) },
+#                );
+#            },
+#            msg => 'Datei konnte nicht hochgeladen werden',
+#            after_ok =>
+#              sub { $c->info('Datei wurde hochgeladen'); $c->frontpage() },
+#        }
+#    );
+#    $c->frontpage();
 }
 
 sub get_attachement {

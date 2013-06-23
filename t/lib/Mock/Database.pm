@@ -47,9 +47,7 @@ sub run_sqlscript {
        split /;/, $template;
     };
     return unless @sql;
-    for my $sql ( @sql ) {
-        $dbh->do($sql);
-    }
+    $dbh->do( $_ ) for @sql;
 }
 
 1;

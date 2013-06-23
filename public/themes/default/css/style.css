@@ -1,7 +1,7 @@
 body {
     max-width: 56em;
     margin: 0 auto;
-    background: url('../img/hg.png') no-repeat 0 0 fixed gainsboro;
+    background: url('../img/hg.png') no-repeat 0 0 gainsboro;
     font-family: sans-serif;
     color: black;
 }
@@ -154,7 +154,7 @@ img.smiley, img.icon {
     background: steelblue;
 }
 .userlist {
-    width: 42em;
+    width: 12em;
     height: 15em;
     overflow: scroll;
 }
@@ -164,9 +164,6 @@ img.smiley, img.icon {
 .help {
     font-size: .75em;
     color: silver;
-}
-input.description {
-    width: 20em;
 }
 .mark {
     color: palevioletred;

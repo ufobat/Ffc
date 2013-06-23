@@ -23,4 +23,5 @@ sub get_atachement_path {
     my ( $username, $postid, $atachementnr ) = @_;
 }
 
+1;
 
