@@ -21,10 +21,10 @@ body > div {
     max-width: 256px;
     max-height: 128px;
     box-shadow: .1em .1em .2em silver;
-    border: 2px white solid;
+    border: 1px black solid;
 }
 .postbox a:hover img {
-    box-shadow: .1em .1em .2em dodgerblue;
+    border-color: dodgerblue;
 }
 .postbox > p {
     margin: 1em;
