@@ -82,12 +82,12 @@ img.smiley, img.icon {
     width: 54em;
     min-width: 54em;
     max-width: 54em;
-    height: 5em;
-    min-height: 5em;
+    height: 4em;
+    min-height: 4em;
     max-height: 54em;
 }
 .postbox textarea:focus {
-    height: 32em;
+    height: 24em;
 }
 .postbox h2 a:hover img {
     box-shadow: none;
@@ -199,7 +199,7 @@ input.activesearch {
     border-color: #c63;
 }
 textarea.update_post {
-    height: 32em;
+    height: 24em;
 }
 .titleinfo {
     font-weight: normal;
