@@ -15,7 +15,7 @@ use Ffc::Data::Board;
 use Ffc::Data::Board::Forms;
 srand;
 
-use Test::More tests => 309;
+use Test::More tests => 311;
 
 Test::General::test_prepare();
 
@@ -139,6 +139,7 @@ qq'counting code "$t->{name}" returned zero because the database is still empty'
     );
     ok( @ret, 'something was returned' );
     my @cats = map { $_->[2] } @Test::General::Categories;
+    cmp_ok(scalar( @{ $ret[0] } ), '>', 0, 'category count ok');
     is(
         scalar( @{ $ret[0] } ),
         ( scalar(@cats) + 1 ),
@@ -150,6 +151,7 @@ qq'counting code "$t->{name}" returned zero because the database is still empty'
         is( $r->[2], 0,
             qq'return value of "$r->[1]" is zero before the actual inserts' );
     }
+    is(join('', @cats), join('', map {$_->[1]} @{ $ret[0] }), 'category order is ok');
 
     for my $i ( 0 .. 2 )
     {    # run multiple tests to test creation of category-logging

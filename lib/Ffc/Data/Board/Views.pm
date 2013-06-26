@@ -32,7 +32,7 @@ UNION
 SELECT c.name       AS name, 
        c.short      AS short,
        COUNT(p1.id) AS cnt,
-       1            AS sort
+       c.sort + 1   AS sort
   FROM ${p}categories c
   LEFT OUTER JOIN ${p}lastseenforum f ON  f.category   =  c.id 
                                       AND f.userid     =  ?

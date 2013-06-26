@@ -27,6 +27,7 @@ CREATE TABLE "${Prefix}categories" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
   "name" varchar(64) NOT NULL,
   "short" varchar(8),
+  "sort" smallint not null default 0,
   UNIQUE ("name")
 );
 
