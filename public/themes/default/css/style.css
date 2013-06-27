@@ -1,5 +1,5 @@
 body {
-    max-width: 56em;
+    max-width: 52em;
     margin: 0 auto;
     background: url('../img/hg.png') no-repeat 0 0 gainsboro;
     font-family: sans-serif;
@@ -79,9 +79,9 @@ img.smiley, img.icon {
     height: 1em;
 }
 .postbox textarea {
-    width: 54em;
-    min-width: 54em;
-    max-width: 54em;
+    width: 50em;
+    min-width: 50em;
+    max-width: 50em;
     height: 4em;
     min-height: 4em;
     max-height: 54em;

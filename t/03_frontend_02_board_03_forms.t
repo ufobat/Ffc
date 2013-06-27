@@ -116,12 +116,12 @@ for my $test (@testmatrix) {
               ->content_like(
                 qr(Privatnachrichten dürfen nicht geändert werden))
               ->content_unlike(
-                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+title=".+"\s*>$origtext</textarea>~s);
+                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*>$origtext</textarea>~s);
         }
         else {
             $t->status_is(200)
               ->content_like(
-                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+title=".+"\s*>$origtext</textarea>~s);
+                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*>$origtext</textarea>~s);
         }
         my $newtext = $origtext;
         $newtext = Test::General::test_r() while $newtext eq $origtext;
@@ -182,7 +182,7 @@ for my $test (@testmatrix) {
             else {
                 $t->status_is(200)
                   ->content_like(
-qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+title=".+"\s*></textarea>~s
+qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*></textarea>~s
                   );
             }
             $t->post_ok("/$act/edit/$msgid", form => {post => $newtext2});
@@ -194,7 +194,7 @@ qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+t
             else {
                 $t->status_is(200)
                   ->content_like(
-qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+title=".+"\s*></textarea>~s
+qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*></textarea>~s
                   );
             }
             {

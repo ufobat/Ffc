@@ -218,11 +218,11 @@ sub check_pages {
             }
             $t->status_is(200);
             $t->content_unlike(
-                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+title=".+"\s*></textarea>~s);
+                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*></textarea>~s);
         }
         else {
             $t->content_like(
-                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+title=".+"\s*></textarea>~s)
+                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*></textarea>~s)
               unless $act eq 'msgs';
         }
         if ( $Ffc::Data::Limit <= @tests ) {
@@ -323,7 +323,7 @@ sub check_msgs {
           ( $_->[2] ne $p->{user} ? ( $_->[2] => 1 ) : () )
     } @testcases;
     $t->content_unlike(
-                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+title=".+"\s*></textarea>~s);
+                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*></textarea>~s);
     {
         note('check msgs user list and news counter');
         for my $u ( map {$users{$_}{name}} grep {$users{$_}{active}} keys %actusers ) {
@@ -341,7 +341,7 @@ sub check_msgs {
     for my $user ( keys %actusers ) {
         $t->get_ok("/msgs/user/$users{$user}{name}")->status_is(200);
         $t->content_like(
-                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+title=".+"\s*></textarea>~s);
+                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*></textarea>~s);
         $t->content_like(qr~<span\s+class="active(?:\s+inactive)?">\s*$users{$user}{name}\s+\(\s*$timestampre\s*\)\s*</span>~) if $p->{msgs_users}->{$users{$user}{name}};
         my @testcases = grep { $_->[1] eq $user or $_->[2] eq $user } @testcases;
         check_pages( \@testcases, $t, $u, $p, $cat, $sleep, $act, $user );

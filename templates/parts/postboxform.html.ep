@@ -4,30 +4,13 @@
 <p>
 %= submit_button 'Senden', class => 'linkalike'
 (<a href="<%= url_for_me 'show' %>" title="&Auml;nderung abbrechen">Abbrechen</a>)
-<span class="help"></span>
+<span class="help">(<a href="<%= url_for 'help' %>" target="_blank">Hilfe</a>)</span>
 </p>
 <p>
     <textarea 
         name="post" 
         id="textinput" 
         class="<%= $what %>"
-        title="Textformatierungen:
-
-Folgende Formatierungsmöglichkeiten bestehen. 
-Sie funktionieren derzeit nur für Buchstaben und Wörter. 
-Anstatt von Leerzeichen zwischen Wörtern müssen die 
-entsprechenden Formatierungszeichen verwendet werden.
-
-  _un_ter_ : Unterstreichungen
-  +fe+tt+ : Fettschrift
-  -du-rch- : Durchstreichung
-  ~kur~siv~ : Schrägschrift
-  !auf!geregt! : Spezielle Auszeichnung für wirklich wichtige Dinge
-  
-Smilies können direkt in ihrer Textrepräsentation eingegeben 
-werden und werden nach Möglichkeit automatisch ersetzt.
-
-Zitate werden einfach in doppelte Anführungszeichen eingeschlossen."
     ><%= $post ? $post->{raw} : '' %></textarea>
 </p>
 </form>

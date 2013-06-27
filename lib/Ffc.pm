@@ -90,6 +90,9 @@ sub startup {
     $loggedin->route('/logout')->to('auth#logout')->name('logout');
     $loggedin->route('/')->to('board#frontpage')->name('frontpage');
 
+    # display help
+    $loggedin->route('/help')->to('board#help')->name('help');
+
     # options
     my $options = $loggedin->route('/options');
     $options->route('/')->via('get')->to('board#options_form')->name('options_form');

@@ -1,0 +1,57 @@
+% layout 'login';
+% title 'Hilfe';
+<div class="postbox helptext">
+    <h2>Textformatierungen</h2>
+    <p>Folgende Formatierungsmöglichkeiten bestehen. Sie funktionieren derzeit nur für Buchstaben und Wörter. Anstatt von Leerzeichen zwischen Wörtern müssen die entsprechenden Formatierungszeichen verwendet werden.</p> 
+    <ul>
+        <li><code>_un_ter_</code>: Unterstreichungen</li>
+        <li><code>+fe+tt+</code>: Fettschrift</li>
+        <li><code>-du-rch-</code>: Durchstreichung</li>
+        <li><code>~kur~siv~</code>: Schrägschrift</li>
+        <li><code>!auf!geregt!</code>: Spezielle Auszeichnung für wirklich wichtige Dinge</li>
+    <ul>
+</div>
+<div class="postbox helptext">
+    <h2>Links</h2>
+    <p>Links werden weitestgehend automatisch erkannt und entsprechend als Links markiert, sobald sie im Text auftauchen.</p>
+</div>
+<div class="postbox helptext">
+    <h2>Bilder</h2>
+    <p>Bilder werden weitestgehend automatisch erkannt und entsprechend als Vorschaubilder markiert, sobald sie im Text auftauchen.</p>
+    <p>Die Vorschau wird dabei lediglich verkleinert dargestellt, im Hintergrund wird das Bild vollständig geladen. Deswegen ist es ratsam, die Bilder nicht zu groß zu wählen, aus Rücksicht auf Mitbenutzer mit smalen Internetleitungen (mobiles Surfen, Arbeitsplatz).</p>
+    <p>In den Optionen kann über ein entsprechendes Häkchen eingestellt werden, dass die Vorschaubilder nicht angezeigt werden und nur als Links repräsentiert werden, was zum Beispiel am Arbeitsplatz durchaus sinnvoll sein kann.</p>
+    <p>Bilder werden generell mit einem Link versehen, der diese Bilder auf einer Extra-Seite in Vollgröße anzeigt im Browser, wenn man auf das Bild klickt.</p>
+</div>
+<div class="postbox helptext">
+    <h2>Smileys</h2>
+    <p>Smileys können direkt in ihrer Textrepräsentation eingegeben werden und werden nach Möglichkeit automatisch ersetzt.</p>
+    <p>Folgende Smileys werden erkannt:</p>
+    <ul>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/look.png" %>" /> (Erstaunt guggen): <code>O.O 0.0</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/what.png" %>" /> (Fragend dreinblicken): <code>o.O O.o O.ò ó.O</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/tongue.png" %>" /> (Frech werden): <code>:P :-P =P :p :-p =p</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/ooo.png" %>" /> (Überraschung andeuten): <code>:O :-O =O :o :-o =o</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/smile.png" %>" /> (Lächeln): <code>:) :-) =)</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/sad.png" %>" /> (Traurig sein): <code>:( :-( =(</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/crying.png" %>" /> (Weinen): <code>:'( :,(</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/twinkling.png" %>" /> (Zwinkern): <code>;) ;-)</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/laughting.png" %>" /> (Lachen): <code>:D =D :-D LOL</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/rofl.png" %>" /> (Sich einen Ast ablachen): <code>XD X-D ROFL</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/unsure.png" %>" /> (Unsicherheit zur Schau tragen): <code>:| :-| =|</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/yes.png" %>" /> (Zustimmen): <code>(y) (Y)</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/no.png" %>" /> (Ablehnen): <code>(n) (N)</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/down.png" %>" /> (Resigniert zu Boden schauen): <code>-.-</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/nope.png" %>" /> (Zweifeln): <code>:/ :-/ :\ :-\ =/ =\</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/sunny.png" %>" /> (Die Sonne aus dem Heck scheinen lassen): <code>B) B-) 8) 8-)</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/cats.png" %>" /> (Die beliebten Katzenaugen): <code>^^</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/love.png" %>" /> (Ein kitschiges Herz): <code>&lt;3</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/devilsmile.png" %>" /> (Diabolisches Lächeln): <code>&gt;:) &gt;:-) &gt;=)</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/angry.png" %>" /> (Wütend sein): <code>&gt;:( &gt;:-( &gt;=(</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/evilgrin.png" %>" /> (Böse Lachen): <code>&gt;:D &gt;:-D &gt;=D</code></a></li>
+    </ul>
+</div>
+<div class="postbox helptext">
+    <h2>Zitate</h2>
+    <p>Zitate werden einfach in doppelte Anführungszeichen eingeschlossen.</p>
+</div>
+
