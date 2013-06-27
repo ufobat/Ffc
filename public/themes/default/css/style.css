@@ -28,6 +28,7 @@ body > div {
 }
 .postbox > p {
     margin: 1em;
+    text-align: justify;
 }
 input, textarea, select {
     font-size: 1em;
