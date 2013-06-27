@@ -4,11 +4,11 @@
     <h2>Textformatierungen</h2>
     <p>Folgende Formatierungsmöglichkeiten bestehen. Sie funktionieren derzeit nur für Buchstaben und Wörter. Anstatt von Leerzeichen zwischen Wörtern müssen die entsprechenden Formatierungszeichen verwendet werden.</p> 
     <ul>
-        <li><code>_un_ter_</code>: Unterstreichungen</li>
-        <li><code>+fe+tt+</code>: Fettschrift</li>
-        <li><code>-du-rch-</code>: Durchstreichung</li>
-        <li><code>~kur~siv~</code>: Schrägschrift</li>
-        <li><code>!auf!geregt!</code>: Spezielle Auszeichnung für wirklich wichtige Dinge</li>
+        <li><code>_un_ter_</code>: <span class="underline">Unterstreichungen</span></li>
+        <li><code>+fe+tt+</code>: <span class="bold">Fettschrift</span></li>
+        <li><code>-du-rch-</code>: <span class="linethrough">Durchstreichung</span></li>
+        <li><code>~kur~siv~</code>: <span class="italic">Schrägschrift</span></li>
+        <li><code>!auf!geregt!</code>: <span class="alert">Spezielle Auszeichnung für wirklich wichtige Dinge</span></li>
     <ul>
 </div>
 <div class="postbox helptext">
@@ -52,6 +52,6 @@
 </div>
 <div class="postbox helptext">
     <h2>Zitate</h2>
-    <p>Zitate werden einfach in doppelte Anführungszeichen eingeschlossen.</p>
+    <p><code>"Zitate"</code> werden einfach in doppelte „<span class="quote">Anführungszeichen</span>“ eingeschlossen.</p>
 </div>
 
