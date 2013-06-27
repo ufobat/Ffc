@@ -10,7 +10,7 @@
     <button type="submit" class="linkalike">Suche</button>
 % end
     <span class="divider">-</span>
-    <a href="<%= url_for_me 'options_form' %>" title="Einstellungen für diese Plattform anpassen"><span class="username linktext linkoptions<%= $act eq 'options' ? ' active activeoptions' : '' %>"><%= session()->{user} %></span></a>
+    <a href="<%= url_for_me 'options_form' %>" title="Einstellungen diese Plattform anpassen"><span class="username linktext linkoptions<%= $act eq 'options' ? ' active activeoptions' : '' %>">Optionen</span></a>
     <span class="divider">-</span>
     <a href="<%= url_for_me 'logout' %>" title="Vom System abmelden"><span class="linkalike linklogout">Abmelden</span></a>
 </div>
