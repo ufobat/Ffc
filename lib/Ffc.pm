@@ -53,6 +53,23 @@ sub startup {
             } @Keys
         );
     } );
+    $app->helper( redirect_to_show => sub {
+        my $c = shift;
+        my $act = $c->stash('act');
+        my $cat = $c->stash('category');
+        my $usr = $c->stash('msgs_username');
+        my %params = ( act => $act );
+        my $to = 'show';
+        if ( $cat and $act eq 'forum' ) {
+            $to .= '_category';
+            $params{category} = $cat;
+        }
+        if ( $usr and $act eq 'msgs' ) {
+            $to .= "_msgs";
+            $params{msgs_user} = $usr;
+        }
+        $c->redirect_to( $to, %params );
+    } );
 
     # Router
     my $routes = $self->routes;

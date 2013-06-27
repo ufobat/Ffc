@@ -11,7 +11,7 @@ use Data::Dumper;
 
 use Mock::Controller;
 
-use Test::More tests => 307;
+use Test::More tests => 313;
 
 srand;
 sub c  { Mock::Controller->new() }
@@ -29,8 +29,26 @@ note('=== info ===');
 {
     my $icode = \&Ffc::Errors::info;
     my ( $r, $x, $c, $e ) = gs();
+    my $f = $c->{flash};
+    ok(!$f->{info}, 'no info available yet');
+    $icode->($c, $r);
+    ok($f->{info}, 'info available');
+    like($f->{info}, qr($r), 'info looks good #1');
+    unlike($f->{info}, qr($e), 'info looks good #2');
+    $icode->($c, $e);
+    like($f->{info}, qr($r), 'info looks good #3');
+    like($f->{info}, qr($e), 'info looks good #4');
+}
+
+##############################################################################
+note('=== info_stash ===');
+##############################################################################
+# - info string erzeugen
+{
+    my $icode = \&Ffc::Errors::info_stash;
+    my ( $r, $x, $c, $e ) = gs();
     my $s = $c->{stash};
-    ok(!$c->{stash}->{info}, 'no info available yet');
+    ok(!$s->{info}, 'no info available yet');
     $icode->($c, $r);
     ok($s->{info}, 'info available');
     like($s->{info}, qr($r), 'info looks good #1');

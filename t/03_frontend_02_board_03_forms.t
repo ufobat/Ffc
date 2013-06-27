@@ -13,7 +13,7 @@ use Test::General;
 use Mock::Testuser;
 use Ffc::Data::Board::Views;
 
-use Test::More tests => 5561;
+use Test::More tests => 6221;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 
@@ -61,7 +61,7 @@ for my $test (@testmatrix) {
     $t->post_ok( '/login',
         form => { user => $from->{name}, pass => $from->{password} } )
       ->status_is(302)
-      ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
+      ->header_like( Location => qr{\Ahttps?://localhost:\d+/}xms );
 
     my $is_notes = ( $to and $from eq $to ) ? 1 : 0;
     my $is_msgs = ( $to and $from ne $to ) ? 1 : 0;
@@ -84,12 +84,17 @@ for my $test (@testmatrix) {
         $t->post_ok( "/$act/new", form => { post => '' } )->status_is(500)
           ->content_like(qr(Text des Beitrages ungültig));
         if ($is_msgs) {
-            $t->post_ok( "/msgs/user/$to_name/new", form => { post => $origtext } )
-              ->status_is(200)->content_like(qr($origtext));
+            $t->post_ok( "/msgs/user/$to_name/new", form => { post => $origtext } );
+            $t->status_is(302)
+             ->header_like( Location => qr{\Ahttps?://localhost:\d+}xms );
+            $t->get_ok("/msgs/user/$to_name");
+            $t->status_is(200)->content_like(qr($origtext));
             $t->get_ok("/msgs/user/$to_name")->status_is(200);
         }
-        $t->post_ok( "/$act/new", form => { post => $origtext } )->status_is(200)
-          ->content_like(qr($origtext));
+        $t->post_ok( "/$act/new", form => { post => $origtext } );
+        $t->status_is(302)
+          ->header_like( Location => qr{\Ahttps?://localhost:\d+/}xms );
+        $t->get_ok("/$act")->status_is(200)->content_like(qr($origtext))->content_like(qr'Beitrag wurde erstellt');
 
         my $msgid = -1;
         {
@@ -145,6 +150,9 @@ for my $test (@testmatrix) {
             );
         }
         else {
+            $t->status_is(302)
+             ->header_like( Location => qr{\Ahttps?://localhost:\d+/}xms );
+            $t->get_ok("/$act");
             $t->status_is(200)->content_like(qr(Beitrag wurde geändert));
             is(
                 (
@@ -168,7 +176,7 @@ for my $test (@testmatrix) {
             $t->post_ok( '/login',
                 form => { user => $u3->{name}, pass => $u3->{password} } )
               ->status_is(302)
-              ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
+              ->header_like( Location => qr{\Ahttps?://localhost:\d+/}xms );
             note(qq(testing update from different user as failure));
             $reset->();
             my $newtext2 = $newtext;
@@ -192,6 +200,9 @@ qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*>
                     qr(Privatnachrichten dürfen nicht geändert werden));
             }
             else {
+                $t->status_is(302)
+                  ->header_like( Location => qr{\Ahttps?://localhost:\d+/}xms );
+                $t->get_ok("/$act");
                 $t->status_is(200)
                   ->content_like(
 qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*></textarea>~s
@@ -228,7 +239,7 @@ qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*>
             $t->post_ok( '/login',
                 form => { user => $from->{name}, pass => $from->{password} } )
               ->status_is(302)
-              ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
+              ->header_like( Location => qr{\Ahttps?://localhost:\d+/}xms );
             $reset->();
             $t->get_ok("/$act/delete/$msgid");
             if ($is_msgs) {
@@ -238,7 +249,7 @@ qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*>
             }
             else {
                 $t->status_is(200)
-                ->content_like(
+                  ->content_like(
                     qr(Den oben angezeigten Beitrag wirklich l.+schen));
             }
             $t->post_ok("/$act/delete")->status_is(500);
@@ -255,8 +266,11 @@ qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*>
                     qr(Privatnachrichten d.+rfen nicht gel.+scht werden));
             }
             else {
+                $t->status_is(302)
+                  ->header_like( Location => qr{\Ahttps?://localhost:\d+/}xms );
+                $t->get_ok("/$act");
                 $t->status_is(200)
-                ->content_like(
+                  ->content_like(
                     qr(Beitrag wurde gelöscht));
             }
             my $posts = Ffc::Data::dbh()->selectall_arrayref('SELECT textdata FROM '.$Ffc::Data::Prefix.'posts WHERE id=?', undef, $msgid);

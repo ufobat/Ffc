@@ -85,12 +85,19 @@ sub or_nostring { _something( @_ ) // '' }
 sub or_zero     { _something( @_ ) // 0  }
 sub or_undef    { _something( @_ )       }
 
-sub info {
+sub info_stash {
     my $c = shift;
     croak q{no mojolicious controller given} unless $c;
     my $newinfo = shift || return;
     my $info = $c->stash('info') // '';
     $c->stash(info => $info ? "$info\n\n$newinfo." : "$newinfo.");
+}
+sub info {
+    my $c = shift;
+    croak q{no mojolicious controller given} unless $c;
+    my $newinfo = shift || return;
+    my $info = $c->flash('info') // '';
+    $c->flash(info => $info ? "$info\n\n$newinfo." : "$newinfo.");
 }
 
 1;
