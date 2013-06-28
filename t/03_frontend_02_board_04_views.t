@@ -16,7 +16,7 @@ use Ffc::Data;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Forms;
 
-use Test::More tests => 3595;
+use Test::More tests => 3683;
 
 srand;
 my $t = Test::General::test_prepare_frontend('Ffc');
@@ -104,6 +104,7 @@ sub check_footer {
 }
 sub check_header {
     my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
+    $t->content_like(qr~<title>$Ffc::Data::Title \($ck->{forum}/$ck->{msgs}\) - $Ffc::Data::Acttitles{$act}</title>~);
     $t->content_like(qr~<span class="[\w\s]+">(?:$u->{name}|Optionen)</span>~);
     if ( $ck->{forum} ) {
         if ( $ck->{forum} ) {
