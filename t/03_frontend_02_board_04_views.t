@@ -104,7 +104,7 @@ sub check_footer {
 }
 sub check_header {
     my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
-    $t->content_like(qr~<span class="username[\w\s]+">(?:$u->{name}|Optionen)</span>~);
+    $t->content_like(qr~<span class="[\w\s]+">(?:$u->{name}|Optionen)</span>~);
     if ( $ck->{forum} ) {
         if ( $ck->{forum} ) {
             $t->content_like(

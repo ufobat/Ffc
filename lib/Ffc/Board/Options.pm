@@ -103,7 +103,7 @@ sub options_avatar_save {
               sub { $c->info_stash('Datei wurde hochgeladen'); $c->frontpage() },
         }
     );
-    $c->frontpage;
+    $c->options_form();
 }
 
 sub useradmin_save {
