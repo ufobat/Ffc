@@ -67,6 +67,7 @@ for my $test (@testmatrix) {
     my $is_msgs = ( $to and $from ne $to ) ? 1 : 0;
     my $is_forum = ( $is_notes or $is_msgs ) ? 0 : 1;
     my $act = 'forum'; $act = 'msgs' if $is_msgs; $act = 'notes' if $is_notes;
+    $act .= "/category/$cat" if $act eq 'forum' and $cat;
     my $reset = sub {
         $t->get_ok('/forum')->status_is(200)->content_like(qr(Forum));
         $t->get_ok("/forum/category/$cat")->status_is(200) if $cat;
@@ -103,9 +104,11 @@ for my $test (@testmatrix) {
                     Ffc::Data::dbh()->selectrow_array(
                         'SELECT id FROM '
                           . $Ffc::Data::Prefix
-                          . 'posts WHERE textdata=?',
+                          . 'posts WHERE textdata=?'
+                          . ( ($act =~ m{\A/forum}xms and $cat) ? ' AND category=?' : ''),
                         undef,
-                        $origtext
+                        $origtext,
+                        ( ($act =~ m{\A/forum}xms and $cat) ? $cats{$cat} : () ),
                     )
                 )[0];
             };
@@ -142,7 +145,7 @@ for my $test (@testmatrix) {
                           . $Ffc::Data::Prefix
                           . 'posts WHERE id=?',
                         undef,
-                        $msgid
+                        $msgid,
                     )
                 )[0],
                 $origtext,
@@ -159,9 +162,11 @@ for my $test (@testmatrix) {
                     Ffc::Data::dbh()->selectrow_array(
                         'SELECT textdata FROM '
                           . $Ffc::Data::Prefix
-                          . 'posts WHERE id=?',
+                          . 'posts WHERE id=?'
+                          . ( ($act =~ m{\A/forum}xms and $cat) ? ' AND category=?' : ''),
                         undef,
-                        $msgid
+                        $msgid,
+                        ( ($act =~ m{\A/forum}xms and $cat) ? $cats{$cat} : () ),
                     )
                 )[0],
                 $newtext,
