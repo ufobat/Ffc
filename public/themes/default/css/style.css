@@ -80,11 +80,11 @@ img.smiley, img.icon {
     height: 1em;
 }
 .postbox textarea {
-    width: 50em;
-    min-width: 50em;
-    max-width: 50em;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
     height: 4em;
-    min-height: 4em;
+    min-height: 2em;
     max-height: 54em;
 }
 .postbox textarea:focus {
