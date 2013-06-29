@@ -16,7 +16,7 @@ use Ffc::Data;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Forms;
 
-use Test::More tests => 3683;
+use Test::More tests => 3795;
 
 srand;
 my $t = Test::General::test_prepare_frontend('Ffc');
@@ -346,6 +346,9 @@ sub check_msgs {
         $t->content_like(qr~<span\s+class="active(?:\s+inactive)?">\s*$users{$user}{name}\s+\(\s*$timestampre\s*\)\s*</span>~) if $p->{msgs_users}->{$users{$user}{name}};
         my @testcases = grep { $_->[1] eq $user or $_->[2] eq $user } @testcases;
         check_pages( \@testcases, $t, $u, $p, $cat, $sleep, $act, $user );
+        #$t->get_ok("/notes")->status_is(200); # weil ich die kategorieansicht nicht mit tracke, muss das immer in der übersicht landen
+        #$t->get_ok("/msgs")->status_is(200);
+        #$t->content_like(qr~<span class="active(?: inactive)?">$users{$user}{name}~);
     }
 }
 
@@ -371,6 +374,17 @@ sub check_check {
             $p->{forum} -= $p->{categories}->{$cat}->[1];
             $p->{categories}->{$cat}->[1] = 0;
         }
+        $t->get_ok('/notes')->status_is(200);
+        $t->get_ok('/forum')->status_is(200);
+        $t->content_like(qr{<span class="active">Kategorie \&quot;$Test::General::Categories[-1][2]\&quot;});
+        {
+            my $i = 1 + int rand @Test::General::Categories - 2;
+            $t->get_ok("/forum/category/$Test::General::Categories[$i][2]")->status_is(200);
+            $t->get_ok('/notes')->status_is(200);
+            $t->get_ok('/forum')->status_is(200);
+            $t->content_like(qr{<span class="active">Kategorie \&quot;$Test::General::Categories[$i][2]\&quot;});
+        }
+        $t->get_ok('/forum')->status_is(200);
     }
     else {
         $t->get_ok("/$act")->status_is(200);

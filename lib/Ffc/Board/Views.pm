@@ -31,6 +31,20 @@ sub frontpage {
     my $s = $c->session;
     my $act = $c->stash('act');
     my ( $userp, $page, $query, $msgs_username, $cat ) = $c->get_params();           
+
+    {
+        my $prev_act = $s->{prev_act} // 'forum';
+        if ( $prev_act ne $act ) {
+            if ( $act eq 'forum' ) {
+                $c->stash('category' => $cat = $s->{prev_category});
+            }
+            $s->{prev_act} = $act;
+        }
+        if ( $act eq 'forum' ) {
+            $s->{prev_category} = $cat;
+        }
+    }
+
     my $postid = $c->stash('postid');
 
     if ( $act eq 'options' ) {
@@ -38,7 +52,6 @@ sub frontpage {
     }
 
     my $user = $s->{user};
-    my $userid = Ffc::Data::Auth::get_userid($user);
     
     for my $k ( qw(error post) ) {
         my $d = $c->stash($k);
@@ -46,7 +59,6 @@ sub frontpage {
     }
     my $posts  = [];
     my @params = $c->get_params(); #($user, $page, $s->{query}, $cat, $c);
-    Ffc::Data::Board::Views::get_forum(@params);
     given ( $act ) {
         when('forum' ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_forum(@params)})}
         when('notes' ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_notes(@params)})}
