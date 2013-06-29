@@ -237,4 +237,6 @@ a:focus, .linkalike:focus {
 .menu a:focus {
     color: lightsteelblue;
 }
-
+.send {
+    font-weight: bolder;
+}

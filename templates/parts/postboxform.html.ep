@@ -2,7 +2,7 @@
 <div class="postbox ownpost postboxform">
 <form action="<%= url_for_me $what %>" accept-charset="UTF-8" method="POST">
 <p>
-%= submit_button 'Senden', class => 'linkalike'
+%= submit_button 'Senden', class => 'linkalike send'
 (<a href="<%= url_for_me 'show' %>" title="&Auml;nderung abbrechen">Abbrechen</a>)
 <span class="help">(<a href="<%= url_for 'help' %>" target="_blank">Hilfe</a>)</span>
 </p>
