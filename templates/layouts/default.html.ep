@@ -15,7 +15,7 @@
                 || '<%= $act %>' == 'msgs' )
               && document.getElementById('textinput').value == '' 
             )
-                location.reload();
+                location.reload(true);
         }, <%= $Ffc::Data::RefreshInterval %>);
     </script>
   </head>
