@@ -10,7 +10,7 @@ use Data::Dumper;
 use Mojolicious;
 use Mock::Config;
 
-use Test::More tests => 37;
+use Test::More tests => 39;
 
 srand;
 
@@ -106,4 +106,7 @@ ok( Ffc::Data::set_config($app), 'config set returned true' );
 
     ok( @$Ffc::Data::Footerlinks, 'footerlinks are available');
     is_deeply( $Ffc::Data::Footerlinks, $config->{footerlinks}, 'footer links from config ok' );
+
+    ok( $Ffc::Data::RefreshInterval, 'refresh interval available');
+    is( $Ffc::Data::RefreshInterval, $config->{refreshinterval} * 60 * 1000, 'refresn interval set correctly');
 }

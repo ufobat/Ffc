@@ -4,6 +4,20 @@
     <title><%= $Ffc::Data::Title %> (<%= $newpostcount %>/<%= $newmsgscount %>) - <%= acttitle() %></title>
     <%= stylesheet $Ffc::Data::Themedir.session()->{theme}.'/css/style.css' %>
     <link rel="icon" type="image/ico" href="<%= $Ffc::Data::Favicon || url_for_me $Ffc::Data::Themedir.session()->{theme}.'/img/favicon.png' %>" />
+    <script type="text/javascript">
+        var hasfocus=1;
+        document.onfocus =function(){ hasfocus=1 };
+        document.onblur  =function(){ hasfocus=0 };
+        window.setInterval(function(){
+            if ( hasfocus == 0 
+              && ( '<%= $act %>' == 'forum' 
+                || '<%= $act %>' == 'notes' 
+                || '<%= $act %>' == 'msgs' )
+              && document.getElementById('textinput').value == '' 
+            )
+                location.reload();
+        }, <%= $Ffc::Data::RefreshInterval %>);
+    </script>
   </head>
   <body>
 % if ( session()->{user} ) {

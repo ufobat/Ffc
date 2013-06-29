@@ -34,6 +34,7 @@ our $SessionTimeout;
 our $Theme;
 our @Themes;
 our $Testing = 0;
+our $RefreshInterval = 10 * 60 * 1000;
 our $Footerlinks = [];
 our $Themedir = '/themes/';
 our $Themebasedir =
@@ -57,6 +58,7 @@ our $DefaultConfig = {
     "postlimit"       => 16,
     "pagelinkpreview" => 3,
     "sessiontimeout"  => 3600,
+    "refreshinterval" => 5,
     "debug"           => 1,
     "theme"           => "default",
     "acttitles"       => {
@@ -109,6 +111,7 @@ our $DefaultConfig = {
         $Debug           = $config->{debug};
         $Favicon         = $config->{favicon} if $config->{favicon};
         $Footerlinks     = $config->{footerlinks} if $config->{footerlinks};
+        $RefreshInterval = $config->{refreshinterval} * 60 * 1000 if $config->{refreshinterval};
         $app->sessions->cookie_name($config->{cookiename} // 'Ffc');
         {
             opendir my $dh, $Themebasedir
