@@ -10,6 +10,7 @@
     "title":"Alternatives Einfaches Brett",
     "pagelinkpreview":2,
     "sessiontimeout":3600,
+    "commoncattitle":"Allgemeine Beiträge",
     "refreshinterval":5,
     "theme":"default",
     "debug":0,

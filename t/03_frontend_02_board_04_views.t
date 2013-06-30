@@ -36,7 +36,7 @@ my @checks = (
                     show_images => 1,
                     categories  => {
                         map { $_->[2] => [ $_->[1], 0 ] }
-                          [ '', 'Allgemeine Beiträge', '' ],
+                          [ '', $Ffc::Data::CommonCatTitle, '' ],
                         @Test::General::Categories
                     }
                 }

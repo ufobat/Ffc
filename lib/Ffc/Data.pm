@@ -37,6 +37,7 @@ our $Testing = 0;
 our $RefreshInterval = 10 * 60 * 1000;
 our $Footerlinks = [];
 our $Themedir = '/themes/';
+our $CommonCatTitle = 'Allgemeine Beiträge';
 our $Themebasedir =
   File::Basename::dirname(__FILE__) . '/../../public' . $Themedir;
 our $DbTemplate =
@@ -61,6 +62,7 @@ our $DefaultConfig = {
     "refreshinterval" => 5,
     "debug"           => 1,
     "theme"           => "default",
+    "commoncattitle"  => 'Allgemeine Beiträge',
     "acttitles"       => {
         "forum"   => 'Forum',
         "notes"   => 'Notizen',
@@ -112,6 +114,7 @@ our $DefaultConfig = {
         $Favicon         = $config->{favicon} if $config->{favicon};
         $Footerlinks     = $config->{footerlinks} if $config->{footerlinks};
         $RefreshInterval = $config->{refreshinterval} * 60 * 1000 if $config->{refreshinterval};
+        $CommonCatTitle  = $config->{commoncattitle} if $config->{commoncattitle};
         $app->sessions->cookie_name($config->{cookiename} // 'Ffc');
         {
             opendir my $dh, $Themebasedir

@@ -36,6 +36,7 @@ sub new {
         "sessiontimeout"  => int( rand 10000 ),
         "refreshinterval" => int( 70000 + rand 10000 ),
         "theme"           => r(),
+        "commoncattitle"  => r(),
         "debug"           => 0,
         "acttitles"       => {
             "forum"   => r(),
