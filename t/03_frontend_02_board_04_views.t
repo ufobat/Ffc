@@ -16,7 +16,7 @@ use Ffc::Data;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Forms;
 
-use Test::More tests => 3795;
+use Test::More tests => 4773;
 
 srand;
 my $t = Test::General::test_prepare_frontend('Ffc');
@@ -103,7 +103,7 @@ sub check_footer {
     }
 }
 sub check_header {
-    my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
+    my ( $t, $u, $ck, $cat, $sleep, $act, $autoreload ) = @_;
     $t->content_like(qr~<title>$Ffc::Data::Title \($ck->{forum}/$ck->{msgs}\) - $Ffc::Data::Acttitles{$act}</title>~);
     $t->content_like(qr~<span class="[\w\s]+">(?:$u->{name}|Optionen)</span>~);
     if ( $ck->{forum} ) {
@@ -159,7 +159,7 @@ sub check_header {
             $t->content_like( qr~>Notizen</span>~);
         }
     }
-    $ck->{$act} = 0 if $act eq 'msgs';
+    $ck->{$act} = 0 if $act eq 'msgs' and not $autoreload;
 }
 
 sub check_categories {
@@ -190,13 +190,13 @@ sub check_categories {
 }
 
 sub check_content {
-    my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
+    my ( $t, $u, $ck, $cat, $sleep, $act, $autoreload ) = @_;
     note(qq'content check for "$act"');
     my @testcases = reverse grep {
              ( defined( $_->[3] ) and defined($cat) and $_->[3] eq $cat )
           or ( !defined( $_->[3] ) and !defined($cat) )
     } grep { $act eq $_->[4] } @testposts;
-    check_pages( \@testcases, $t, $u, $ck, $cat, $sleep, $act );
+    check_pages( \@testcases, $t, $u, $ck, $cat, $sleep, $act ) unless $autoreload;
 }
 
 sub check_pages {
@@ -312,7 +312,7 @@ qr~<h2>\s*<span class="inactive">$users{$test->[1]}->{name}</span>\s*<span class
 }
 
 sub check_msgs {
-    my ( $t, $u, $p, $cat, $sleep, $act ) = @_;
+    my ( $t, $u, $p, $cat, $sleep, $act, $autoreload ) = @_;
     note('check user message system and correpsonding input forms and stuff');
     my @testcases = reverse grep {
         $_->[4] eq 'msgs'
@@ -340,60 +340,60 @@ sub check_msgs {
     }
     note('check msgs_username system for single conversations');
     for my $user ( keys %actusers ) {
-        $t->get_ok("/msgs/user/$users{$user}{name}")->status_is(200);
+        $t->get_ok("/msgs/user/$users{$user}{name}$autoreload")->status_is(200);
         $t->content_like(
                 qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*></textarea>~s);
         $t->content_like(qr~<span\s+class="active(?:\s+inactive)?">\s*$users{$user}{name}\s+\(\s*$timestampre\s*\)\s*</span>~) if $p->{msgs_users}->{$users{$user}{name}};
         my @testcases = grep { $_->[1] eq $user or $_->[2] eq $user } @testcases;
-        check_pages( \@testcases, $t, $u, $p, $cat, $sleep, $act, $user );
-        #$t->get_ok("/notes")->status_is(200); # weil ich die kategorieansicht nicht mit tracke, muss das immer in der übersicht landen
-        #$t->get_ok("/msgs")->status_is(200);
-        #$t->content_like(qr~<span class="active(?: inactive)?">$users{$user}{name}~);
+        check_pages( \@testcases, $t, $u, $p, $cat, $sleep, $act, $user ) unless $autoreload;
     }
 }
 
 sub check_page {
-    my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
-    check_header( $t, $u, $ck, $cat, $sleep, $act );
-    check_footer( $t, $u, $ck, $cat, $sleep, $act );
-    check_categories( $t, $u, $ck, $cat, $sleep, $act ) if $act eq 'forum';
-    check_content( $t, $u, $ck, $cat, $sleep, $act );
-    check_msgs( $t, $u, $ck, $cat, $sleep, $act ) if $act eq 'msgs';
+    my ( $t, $u, $ck, $cat, $sleep, $act, $autoreload ) = @_;
+    check_header( $t, $u, $ck, $cat, $sleep, $act, $autoreload );
+    check_footer( $t, $u, $ck, $cat, $sleep, $act, $autoreload );
+    check_categories( $t, $u, $ck, $cat, $sleep, $act, $autoreload ) if $act eq 'forum';
+    check_content( $t, $u, $ck, $cat, $sleep, $act, $autoreload );
+    check_msgs( $t, $u, $ck, $cat, $sleep, $act, $autoreload ) if $act eq 'msgs';
     sleep 2 if $sleep;
 }
 
 sub check_check {
-    my ( $t, $sleep, $act, $ck, $u, $p ) = @_;
+    my ( $t, $sleep, $act, $ck, $u, $p, $autoreload ) = @_;
     if ( $act eq 'forum' ) {
         for my $cat ( '', map { $_->[2] } @Test::General::Categories ) {
             if ($cat) {
                 note(qq(get into category "$cat"));
-                $t->get_ok("/forum/category/$cat")->status_is(200);
+                $t->get_ok("/forum/category/$cat$autoreload")->status_is(200);
             }
-            check_page( $t, $u, $p, $cat, $sleep, $act );
-            $p->{forum} -= $p->{categories}->{$cat}->[1];
-            $p->{categories}->{$cat}->[1] = 0;
+            check_page( $t, $u, $p, $cat, $sleep, $act, $autoreload );
+            unless ( $autoreload ) {
+                $p->{forum} -= $p->{categories}->{$cat}->[1];
+                $p->{categories}->{$cat}->[1] = 0;
+            }
         }
-        $t->get_ok('/notes')->status_is(200);
-        $t->get_ok('/forum')->status_is(200);
+        $t->get_ok("/notes$autoreload")->status_is(200);
+        $t->get_ok("/forum$autoreload")->status_is(200);
         $t->content_like(qr{<span class="active">Kategorie \&quot;$Test::General::Categories[-1][2]\&quot;});
         {
             my $i = 1 + int rand @Test::General::Categories - 2;
-            $t->get_ok("/forum/category/$Test::General::Categories[$i][2]")->status_is(200);
-            $t->get_ok('/notes')->status_is(200);
-            $t->get_ok('/forum')->status_is(200);
+            $t->get_ok("/forum/category/$Test::General::Categories[$i][2]$autoreload")->status_is(200);
+            $t->get_ok("/notes$autoreload")->status_is(200);
+            $t->get_ok("/forum$autoreload")->status_is(200);
             $t->content_like(qr{<span class="active">Kategorie \&quot;$Test::General::Categories[$i][2]\&quot;});
         }
-        $t->get_ok('/forum')->status_is(200);
+        $t->get_ok("/forum$autoreload")->status_is(200);
     }
     else {
-        $t->get_ok("/$act")->status_is(200);
-        check_page( $t, $u, $p, '', $sleep, $act );
+        $t->get_ok("/$act$autoreload")->status_is(200);
+        check_page( $t, $u, $p, '', $sleep, $act, $autoreload );
     }
 }
 
 sub checkall_tests {
     my $sleep = shift;
+    my $autoreload = shift() ? '/autoreload' : '';
     for my $ck (@checks) {
         my $u = $ck->[0];
         my $p = $ck->[1];
@@ -403,25 +403,27 @@ sub checkall_tests {
           ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
         $t->post_ok( '/options/showimages_save', form => { show_images => $ck->[1]->{show_images} } )
             ->status_is(200)->content_like(qr{Einstellungen});
-        $t->get_ok('/forum')->status_is(200);    # zurück auf start
-        check_check( $t, $sleep, 'forum', $ck, $u, $p );
-        check_check( $t, $sleep, 'msgs',  $ck, $u, $p );
-        check_check( $t, $sleep, 'notes', $ck, $u, $p );
+        $t->get_ok("/forum$autoreload")->status_is(200);    # zurück auf start
+        check_check( $t, $sleep, 'forum', $ck, $u, $p, $autoreload );
+        check_check( $t, $sleep, 'msgs',  $ck, $u, $p, $autoreload );
+        check_check( $t, $sleep, 'notes', $ck, $u, $p, $autoreload );
         sleep 2 if $sleep;
-        $t->get_ok('/forum')->status_is(200)
+        $t->get_ok("/forum$autoreload")->status_is(200)
           ;                                 # das muss ja jetzt auch noch gehen
-        check_check( $t, 0, 'forum', $ck, $u, $p );
+        check_check( $t, 0, 'forum', $ck, $u, $p, $autoreload );
         $t->get_ok('/logout')->status_is(200)
           ->content_like(qr'bitte melden Sie sich erneut an');
     }
 }
 
 note('empty checks');
-checkall_tests(0);
+checkall_tests(0,0);
 sleep 2;
 note('insert some test postings');
 insert_tests();
 sleep 2;
-note('checks with test postings');
-checkall_tests(1);
+note('checks with test postings in autoreload mode');
+checkall_tests(1,1);
+note('checks with test postings as normal user');
+checkall_tests(1,0);
 

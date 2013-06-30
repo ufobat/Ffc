@@ -106,6 +106,7 @@ sub startup {
     # logged in
     $loggedin->route('/logout')->to('auth#logout')->name('logout');
     $loggedin->route('/')->to('board#frontpage')->name('frontpage');
+    $loggedin->route('/autoreload')->to('board#frontpage_autoreload')->name('frontpage_autoreload');
 
     # display help
     $loggedin->route('/help')->to('board#help')->name('help');
@@ -135,6 +136,8 @@ sub startup {
 
         # just show the act
         $r->route('/')->to('board#frontpage')->name("show$name");
+        # show it without userupdate
+        $r->route('/autoreload')->to('board#frontpage_autoreload')->name("show${name}_autoreload");
 
         # pagination
         $r->route('/:page', page => qr(\d+))->to('board#frontpage')->name("show_page$name");

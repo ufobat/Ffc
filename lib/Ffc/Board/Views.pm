@@ -26,7 +26,10 @@ sub get_params {
         $c;
 }
 
-sub frontpage {
+sub frontpage            { _frontpage(0, @_) }
+sub frontpage_autoreload { _frontpage(1, @_) }
+sub _frontpage {
+    my $reload = shift;
     my $c = shift;
     my $s = $c->session;
     my $act = $c->stash('act');
@@ -81,7 +84,7 @@ sub frontpage {
             ? $c->or_empty( sub { Ffc::Data::Board::Views::get_categories($user) } ) 
             : [] );
     $c->stash( footerlinks => $Ffc::Data::Footerlinks );
-    if ( $c->error_handling({
+    if ( $reload or $c->error_handling({
         code        => sub { Ffc::Data::Board::update_user_stats($user, $act, $cat) },
         msg         => 'Etwas ist intern schief gegangen, bitte versuchen Sie es später noch einmal.',
         after_error => sub { 
