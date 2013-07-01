@@ -10,15 +10,15 @@
         document.onblur  =function(){ hasfocus=0 };
         window.setInterval(function(){
             if ( hasfocus == 0 
+              && document.getElementById('textinput').value == '' 
               && ( '<%= $act %>' == 'forum' 
                 || '<%= $act %>' == 'notes' 
                 || '<%= $act %>' == 'msgs' )
-              && document.getElementById('textinput').value == '' 
-            )
-                if ( !location.href.match(/autoreload$/) ) {
+            ) {
+                if ( !location.href.match(/autoreload$/) )
                     location.href = location.href + '/autoreload';
-                }
                 location.reload(true);
+            }
         }, <%= $Ffc::Data::RefreshInterval %>);
     </script>
   </head>
