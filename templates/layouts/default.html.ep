@@ -15,12 +15,10 @@
                 || '<%= $act %>' == 'msgs' )
               && document.getElementById('textinput').value == '' 
             )
-                if ( location.href.match(/autoreload$/) ) {
-                    location.href = location.href;
-                }
-                else {
+                if ( !location.href.match(/autoreload$/) ) {
                     location.href = location.href + '/autoreload';
                 }
+                location.reload();
         }, <%= $Ffc::Data::RefreshInterval %>);
     </script>
   </head>
