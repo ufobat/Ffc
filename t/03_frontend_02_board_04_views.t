@@ -81,7 +81,7 @@ sub insert_tests {
         Ffc::Data::Board::Forms::insert_post( $users{ $t->[1] }->{name},
             $t->[0], $t->[3], ( $t->[2] ? $users{ $t->[2] }->{name} : undef ) );
     }
-    sleep 2;
+    sleep 1.1;
     for my $c (@checks) {
         my $u    = $users{ $c->[1]->{user} }->{name};
         my $cats = Ffc::Data::Board::Views::get_categories($u);
@@ -356,7 +356,7 @@ sub check_page {
     check_categories( $t, $u, $ck, $cat, $sleep, $act, $autoreload ) if $act eq 'forum';
     check_content( $t, $u, $ck, $cat, $sleep, $act, $autoreload );
     check_msgs( $t, $u, $ck, $cat, $sleep, $act, $autoreload ) if $act eq 'msgs';
-    sleep 2 if $sleep;
+    sleep 1.1 if $sleep;
 }
 
 sub check_check {
@@ -407,7 +407,7 @@ sub checkall_tests {
         check_check( $t, $sleep, 'forum', $ck, $u, $p, $autoreload );
         check_check( $t, $sleep, 'msgs',  $ck, $u, $p, $autoreload );
         check_check( $t, $sleep, 'notes', $ck, $u, $p, $autoreload );
-        sleep 2 if $sleep;
+        sleep 1.1 if $sleep;
         $t->get_ok("/forum$autoreload")->status_is(200)
           ;                                 # das muss ja jetzt auch noch gehen
         check_check( $t, 0, 'forum', $ck, $u, $p, $autoreload );
@@ -418,10 +418,10 @@ sub checkall_tests {
 
 note('empty checks');
 checkall_tests(0,0);
-sleep 2;
+sleep 1.1;
 note('insert some test postings');
 insert_tests();
-sleep 2;
+sleep 1.1;
 note('checks with test postings in autoreload mode');
 checkall_tests(1,1);
 note('checks with test postings as normal user');

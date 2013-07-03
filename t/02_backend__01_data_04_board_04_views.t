@@ -762,7 +762,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
         ok( grep({;$user_i->{name} eq $_->[0] and not $_->[3] } @$ret), 'inactive users in user list and marked as inactive');
         #ok(!grep({;$user_i->{name} eq $_->[0]} @$ret), 'inactive users not in user list'); # all users are in the list, just in case for old msgs
     }
-    sleep 2;
+    sleep 1.1;
     {
         my $cnt = 10 + int rand 30;
         Ffc::Data::Board::Forms::insert_post($user_a->{name}, Test::General::test_r(), undef, $user_s->{name}) for 1 .. $cnt;
