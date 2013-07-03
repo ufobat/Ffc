@@ -237,9 +237,9 @@ a:focus, .linkalike:focus {
 .menu a:focus {
     color: lightsteelblue;
 }
-.send {
+.send, .msgsuserlist .username {
     font-weight: bolder;
 }
-.msgsuserlist .username {
-    font-weight: bolder;
+.msgsuserlist .userinfo {
+    font-size: .75em;
 }
