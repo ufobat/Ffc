@@ -331,10 +331,10 @@ sub check_msgs {
             my $c = $p->{msgs_users}->{$u};
             my $url = $t->app->url_for_me(show => act => 'msgs', msgs_username => $u);
             if ( $c ) {
-                $t->content_like(qr~<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*$u\s*\(\s*$timestampre\s*,\s*<span class="mark">$c</span>\s*\)\s*</a>~)
+                $t->content_like(qr~<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*<span\s+class="username">\s*$u\s*</span>\s*\(\s*$timestampre\s*,\s*<span class="mark">$c</span>\s*\)\s*</a>~)
             }
             else {
-                $t->content_like(qr(<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*$u\s*\(\s*$timestampre\s*\)\s*</a>))
+                $t->content_like(qr(<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*<span\s+class="username">\s*$u\s*</span>\s*\(\s*$timestampre\s*\)\s*</a>))
             }
         }
     }
@@ -343,7 +343,7 @@ sub check_msgs {
         $t->get_ok("/msgs/user/$users{$user}{name}$autoreload")->status_is(200);
         $t->content_like(
                 qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*></textarea>~s);
-        $t->content_like(qr~<span\s+class="active(?:\s+inactive)?">\s*$users{$user}{name}\s+\(\s*$timestampre\s*\)\s*</span>~) if $p->{msgs_users}->{$users{$user}{name}};
+        $t->content_like(qr~<span\s+class="active(?:\s+inactive)?">\s*<span\s+class="username">\s*$users{$user}{name}\s*</span>\s+\(\s*$timestampre\s*\)\s*</span>~) if $p->{msgs_users}->{$users{$user}{name}};
         my @testcases = grep { $_->[1] eq $user or $_->[2] eq $user } @testcases;
         check_pages( \@testcases, $t, $u, $p, $cat, $sleep, $act, $user ) unless $autoreload;
     }

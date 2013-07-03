@@ -240,3 +240,6 @@ a:focus, .linkalike:focus {
 .send {
     font-weight: bolder;
 }
+.msgsuserlist .username {
+    font-weight: bolder;
+}

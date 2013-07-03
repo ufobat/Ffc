@@ -6,10 +6,10 @@
 %       $counter++;
    <%== $counter > 1 ? '/ ' : '' %>
 %       if ( $msgs_username and $msgs_username eq $user->[0] ) {
-   <span class="active<%= $user->[3] ? '' : ' inactive' %>"><%= $user->[0] %> (<%= $user->[2] %>)</span>
+   <span class="active<%= $user->[3] ? '' : ' inactive' %>"><span class="username"><%= $user->[0] %></span> (<%= $user->[2] %>)</span>
 %       } else { 
    <a href="<%= url_for_me show => msgs_username => $user->[0] %>" title="Privatnachrichten an &quot;<%= $user->[0] %>&quot; lesen und schreiben">
-       <%= $user->[0] %> (<%= $user->[2] %><% if ( $user->[1] ) { %>, <span class="mark"><%= $user->[1] %></span><% } %><%= $user->[3] ? '' : ', inaktiv' %>)</a>
+       <span class="username"><%= $user->[0] %></span> (<%= $user->[2] %><% if ( $user->[1] ) { %>, <span class="mark"><%= $user->[1] %></span><% } %><%= $user->[3] ? '' : ', inaktiv' %>)</a>
 %       }
 %     }
 %   }
