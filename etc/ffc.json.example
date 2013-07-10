@@ -4,7 +4,7 @@
     "dsn":"DBI:SQLite:database=/tmp/testdb.sqlite",
     "user":"",
     "password":"",
-    "dbprefix":"asb_",
+    "dbprefix":"ffc_",
     "cryptsalt":"123456789",
     "postlimit":"10",
     "title":"Alternatives Einfaches Brett",
