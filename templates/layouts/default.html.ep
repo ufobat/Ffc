@@ -6,23 +6,31 @@
     <link rel="icon" type="image/ico" href="<%= $Ffc::Data::Favicon || url_for $Ffc::Data::Themedir.session()->{theme}.'/img/favicon.png' %>" />
     <script type="text/javascript">
         hasfocus=1;
-        document.onfocus =function(){ hasfocus=1 };
-        document.onblur  =function(){ hasfocus=0 };
-        window.setInterval(function(){
-            if ( hasfocus == 0 
-              && document.getElementById('textinput').value == '' 
-              && ( '<%= $act %>' == 'forum' 
-                || '<%= $act %>' == 'notes' 
-                || '<%= $act %>' == 'msgs' )
-            ) {
-                if ( !location.href.match(/autoreload$/) )
-                    location.href = location.href + '/autoreload';
-                location.reload(true);
-            }
-        }, <%= $Ffc::Data::RefreshInterval %>);
+        function get_focus(ereignis)  { hasfocus=1; return "got focus"  }
+        function lose_focus(ereignis) { hasfocus=0; return "lost focus" }
+        function got_loaded(ereignis) {
+            document.addEventListener('focus', get_focus,  false);
+            document.addEventListener('blur',  lose_focus, false);
+            window.setInterval(function(){
+                if ( hasfocus == 0 
+                  && ( 
+                     ! document.getElementById('textinput')
+                    || document.getElementById('textinput').value == ''
+                  )
+                  && ( '<%= $act %>' == 'forum' 
+                    || '<%= $act %>' == 'notes' 
+                    || '<%= $act %>' == 'msgs' )
+                ) {
+                    if ( !location.href.match(/autoreload$/) )
+                        location.href = location.href + '/autoreload';
+                    location.reload(true);
+                }
+            }, <%= $Ffc::Data::RefreshInterval %>);
+            return "loaded ...";
+        }
     </script>
   </head>
-  <body>
+  <body onload="got_loaded()">
 % if ( session()->{user} ) {
 %= include 'parts/menu'
 % }
