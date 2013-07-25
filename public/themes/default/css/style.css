@@ -150,7 +150,7 @@ img.smiley, img.icon {
     background: whitesmoke;
 }
 .postbox {
-    box-shadow: 1px 1px 3px darkgrey;
+    box-shadow: .1em .1em .3em darkgrey;
 }
 .menu .active:hover {
     border-color: dodgerblue;
