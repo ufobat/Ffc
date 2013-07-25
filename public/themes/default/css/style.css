@@ -247,6 +247,7 @@ a:focus, .linkalike:focus {
 .send, .msgsuserlist .username {
     font-weight: bolder;
 }
-.msgsuserlist .userinfo {
+.msgsuserlist .userinfo, .footerlinks {
     font-size: .75em;
 }
+
