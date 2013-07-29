@@ -23,6 +23,7 @@ Mein 11" "Notebook" ist toll! oder nicht?
 Mein "11" Notebook" ist tool! oder doch?
 "Halli
 Galli"
+https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&x=ypsilon
 ~;
 
     my $controlstring = qq~<p>„<span class="quote">Hallo Welt</span>“ blabla.</p>
@@ -30,7 +31,8 @@ Galli"
 <p>„<span class="quote">a</span>“</p>
 <p>Mein „<span class="quote">11</span>“ Notebook" ist tool! oder doch?</p>
 <p>"Halli</p>
-<p>Galli"</p>~;
+<p>Galli"</p>
+<p><a href="https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&amp;x=ypsilon" title="Externe Webseite" target="_blank">https://abcde.f…p;amp;x=ypsilon</a></p>~;
 
     is(Ffc::Data::Formats::format_text($teststring, $c), $controlstring);
 }

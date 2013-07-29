@@ -37,6 +37,7 @@ sub new {
         "refreshinterval" => int( 70000 + rand 10000 ),
         "theme"           => r(),
         "commoncattitle"  => r(),
+        "urlshorten"      => 32 + int( rand 20 ),
         "debug"           => 0,
         "acttitles"       => {
             "forum"   => r(),

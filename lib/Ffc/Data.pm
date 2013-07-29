@@ -31,6 +31,7 @@ our %Acttitles;
 our $Title;
 our $Debug = 0;
 our $SessionTimeout;
+our $URLShorten = 30;
 our $Theme;
 our @Themes;
 our $Testing = 0;
@@ -115,6 +116,7 @@ our $DefaultConfig = {
         $Footerlinks     = $config->{footerlinks} if $config->{footerlinks};
         $RefreshInterval = $config->{refreshinterval} * 60 * 1000 if $config->{refreshinterval};
         $CommonCatTitle  = $config->{commoncattitle} if $config->{commoncattitle};
+        $URLShorten      = $config->{urlshorten} if $config->{urlshorten};
         $app->sessions->cookie_name($config->{cookiename} // 'Ffc');
         {
             opendir my $dh, $Themebasedir

@@ -91,14 +91,25 @@ sub _make_link {
         else {
             my $url_xmlencode = $url;
             _xml_escape($url_xmlencode);
+            _stripped_url($url_xmlencode);
             return qq~$start<a href="$url" title="Externes Bild" target="_blank">$url_xmlencode</a>$end~;
         }
     }
     else {
         my $url_xmlencode = $url;
         _xml_escape($url_xmlencode);
+        _stripped_url($url_xmlencode);
         return qq~$start<a href="$url" title="Externe Webseite" target="_blank">$url_xmlencode</a>$end~;
     }
+}
+
+sub _stripped_url {
+    if ( $Ffc::Data::URLShorten < length $_[0] ) {
+        my $d = int( ( length($_[0]) - $Ffc::Data::URLShorten ) / 2 );
+        my $h = int( length($_[0]) / 2 );
+        $_[0] = substr($_[0], 0, $h - $d) . '…' . substr($_[0], $h + $d);
+    }
+    return $_[0];
 }
 
 sub _make_smiley {

@@ -12,6 +12,8 @@ srand;
 use Test::More tests => 71;
 
 use_ok('Ffc::Data::Formats');
+$Ffc::Data::URLShorten = 1024;
+note("url shortened to $Ffc::Data::URLShorten");
 
 {
     note('checking format_timestamp( $timestring )');
