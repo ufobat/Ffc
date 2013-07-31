@@ -58,12 +58,15 @@ sub delete_post {
 sub insert_post {
     my $c = shift;
     my $act = $c->stash('act');
-    my $cat = $c->stash('category');
+    if ( $act ne 'notes' and check_for_updates($c) ) {
+        $c->info_stash('Ein neuer Beitrag wurde zwischenzeitlich durch einen anderen Benutzer erstellt');
+        return $c->edit_form();
+    }
     my $s = $c->session;
     my $text = $c->param('post');
     $c->error_handling({plain => 'Text des Beitrages ungültig'}) unless $text;
     my $from = $s->{user};
-    my @params = ( $from, $text, $cat );
+    my @params = ( $from, $text, $c->stash('category') );
     given ( $act ) {
         when ( 'notes' ) { push @params, $from }
         when ( 'msgs'  ) { push @params, $c->stash('msgs_username') }
@@ -79,6 +82,10 @@ sub insert_post {
 sub update_post {
     my $c = shift;
     my $act = $c->stash('act');
+    if ( $act ne 'notes' and check_for_updates($c) ) {
+        $c->info_stash('Ein neuer Beitrag wurde zwischenzeitlich durch einen anderen Benutzer erstellt');
+        return $c->edit_form();
+    }
     my $s = $c->session;
     my $text = $c->param('post');
     $c->error_handling({plain => 'Text des Beitrages ungültig'}) unless $text;
@@ -94,6 +101,15 @@ sub update_post {
         after_ok    => sub { $c->info('Beitrag wurde geändert'); $c->param(post => undef); $c->stash(postid => undef); $c->redirect_to_show() },
         after_error => sub { $c->edit_form() },
     } );
+}
+
+sub check_for_updates {
+    my $c = shift;
+    return #$c->or_zero(sub{
+        Ffc::Data::Board::Views::check_for_updates(
+            $c->session()->{user}, $c->stash('act'), $c->stash('category'), $c->stash('msgs_username')
+        )
+    #});
 }
 
 1;

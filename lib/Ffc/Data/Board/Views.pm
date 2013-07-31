@@ -10,6 +10,7 @@ use Carp;
 use Ffc::Data;
 use Ffc::Data::Auth;
 use Ffc::Data::Formats;
+use Ffc::Data::General;
 
 sub _get_userid { &Ffc::Data::Auth::get_userid }
 sub _get_username { &Ffc::Data::Auth::get_username }
@@ -44,6 +45,72 @@ SELECT c.name       AS name,
 
 ORDER BY sort, name
 EOSQL
+}
+
+sub check_for_updates {
+    my $userid = _get_userid( shift, 'Prüfung auf neue Beiträge' );
+    my $act = shift;
+    my $cat = shift;
+    my $msgsuser = shift;
+    return 0 if $act eq 'notes';
+    my @param;
+    my $sql = '';
+    given ( $act ) {
+        when ( 'forum' ) {
+            if ( $cat ) {
+                push @param, Ffc::Data::General::get_category_id($cat);
+                $sql = << "EOSQL";
+SELECT COUNT(p.id)
+FROM       ${Ffc::Data::Prefix}posts p 
+INNER JOIN ${Ffc::Data::Prefix}users u ON u.id = ? AND p.user_from != u.id
+INNER JOIN ${Ffc::Data::Prefix}lastseenforum f ON p.category = f.category AND f.userid = u.id
+WHERE p.posted   >= COALESCE(f.lastseen,0)
+  AND p.user_to  IS NULL
+  AND p.category IS NOT NULL
+  AND p.category = ?
+EOSQL
+            }
+            else {
+                $sql = << "EOSQL";
+SELECT COUNT(p.id)
+FROM       ${Ffc::Data::Prefix}posts p 
+INNER JOIN ${Ffc::Data::Prefix}users u ON u.id = ? AND p.user_from != u.id
+WHERE p.posted   >= COALESCE(u.lastseenforum, 0)
+  AND p.user_to  IS NULL
+  AND p.category IS NULL
+EOSQL
+            }
+        }
+        when ( 'msgs'  ) {
+            if ( $msgsuser ) {
+                push @param, _get_userid( $msgsuser );
+                $sql = << "EOSQL";
+SELECT COUNT(p.id)
+FROM       ${Ffc::Data::Prefix}posts p 
+INNER JOIN ${Ffc::Data::Prefix}users u ON u.id = ? AND p.user_from != u.id
+WHERE p.posted    >= COALESCE(u.lastseenmsgs, 0)
+  AND p.user_to   =  u.id
+  AND p.user_to   IS NOT NULL
+  AND p.user_from =  ?
+EOSQL
+            }
+            else {
+                $sql = << "EOSQL";
+SELECT COUNT(p.id)
+FROM       ${Ffc::Data::Prefix}posts p 
+INNER JOIN ${Ffc::Data::Prefix}users u ON u.id = ? AND p.user_from != u.id
+WHERE p.posted    >= COALESCE(u.lastseenmsgs, 0)
+  AND p.user_to   =  u.id
+  AND p.user_to   IS NOT NULL
+EOSQL
+            }
+        }
+        default {$sql = ''}
+    }
+    return 0 unless $sql;
+    my $cnt = (Ffc::Data::dbh()->selectrow_array($sql, undef, $userid, @param))[0];
+    warn "$cnt:  $sql" if $cnt;
+    return $cnt;
 }
 
 sub count_newmsgs {

@@ -53,7 +53,6 @@ sub _xml_escape {
     $_[0] =~ s/\&/\&amp;/gxm;
     $_[0] =~ s/\<(?=[^3])/\&lt;/gxm;
     $_[0] =~ s/\>(?=[^\:\=])/\&gt;/gxm;
-    $_[0] =~ s{(\A|\s)"(\S.*?\S|\S)"(\W|\z)}{$1„<span class="quote">$2</span>“$3}gxm;
 }
 sub format_text {
     my $s = shift // '';
@@ -64,6 +63,7 @@ sub format_text {
     $s =~ s/\s+\z//gxmsi;
     return '' unless $s;
     _xml_escape($s);
+    $s =~ s{(\A|\s)"(\S.*?\S|\S)"(\W|\z)}{$1„<span class="quote">$2</span>“$3}gxm;
     $s =~ s{$u}{<span class="username">$u</span>}xmsi if $u;
     $s =~ s{(?<!\w)([\_\-\+\~\!])([\_\-\+\~\!\w]+)\g1(?!\w)}{_make_goody($1,$2)}gxmies;
     $s =~ s{(\(|\s|\A)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3,$c)}gxmeis;

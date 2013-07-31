@@ -70,7 +70,7 @@ for my $test (@testmatrix) {
     $act .= "/category/$cat" if $act eq 'forum' and $cat;
     my $reset = sub {
         $t->get_ok('/forum')->status_is(200)->content_like(qr(Forum));
-        $t->get_ok("/forum/category/$cat")->status_is(200) if $cat;
+        $t->get_ok("/$act")->status_is(200) if $cat;
         $t->get_ok('/notes')->status_is(200)->content_like(qr(Notizen))
           if $is_notes;
         $t->get_ok('/msgs')->status_is(200)->content_like(qr(Privatnachrichten))
@@ -198,6 +198,7 @@ for my $test (@testmatrix) {
 qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*></textarea>~s
                   );
             }
+            $reset->();
             $t->post_ok("/$act/edit/$msgid", form => {post => $newtext2});
             if ($is_msgs) {
                 $t->status_is(500)
@@ -206,7 +207,8 @@ qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*>
             }
             else {
                 $t->status_is(302)
-                  ->header_like( Location => qr{\Ahttps?://localhost:\d+/}xms );
+                  ->header_like( Location => qr{\Ahttps?://localhost:\d+/}xms )
+                  ->content_is('');
                 $t->get_ok("/$act");
                 $t->status_is(200)
                   ->content_like(
