@@ -137,13 +137,15 @@ img.smiley, img.icon {
 }
 .menu .linktext {
     border-color: transparent;
-    border-width: 0 1px 1px 1px;
     border-style: solid;
     padding: .5em .5em .75em .5em;
 }
 .menu .active, body > div, .menu .active:hover {
     background: white;
     border: 1px lightslategray solid;
+}
+.menu .linktext {
+    border-width: 0 1px 1px 1px;
 }
 .menu .active {
     border-color: slategray;
