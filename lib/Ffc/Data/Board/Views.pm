@@ -49,7 +49,8 @@ EOSQL
 
 sub check_for_updates {
     my $userid = _get_userid( shift, 'Prüfung auf neue Beiträge' );
-    my $act = shift;
+    my $act = shift or die 'Keine Aktion angegeben';
+    die 'Aktion unbekannt' unless $act =~ m/\Aforum|msgs|notes\z/xms;
     my $cat = shift;
     my $msgsuser = shift;
     return 0 if $act eq 'notes';
@@ -61,9 +62,9 @@ sub check_for_updates {
                 push @param, Ffc::Data::General::get_category_id($cat);
                 $sql = << "EOSQL";
 SELECT COUNT(p.id)
-FROM       ${Ffc::Data::Prefix}posts p 
-INNER JOIN ${Ffc::Data::Prefix}users u ON u.id = ? AND p.user_from != u.id
-INNER JOIN ${Ffc::Data::Prefix}lastseenforum f ON p.category = f.category AND f.userid = u.id
+FROM            ${Ffc::Data::Prefix}posts         p
+INNER JOIN      ${Ffc::Data::Prefix}users         u ON u.id       = ?          AND p.user_from <> u.id
+LEFT OUTER JOIN ${Ffc::Data::Prefix}lastseenforum f ON p.category = f.category AND f.userid     = u.id
 WHERE p.posted   >= COALESCE(f.lastseen,0)
   AND p.user_to  IS NULL
   AND p.category IS NOT NULL
@@ -74,7 +75,7 @@ EOSQL
                 $sql = << "EOSQL";
 SELECT COUNT(p.id)
 FROM       ${Ffc::Data::Prefix}posts p 
-INNER JOIN ${Ffc::Data::Prefix}users u ON u.id = ? AND p.user_from != u.id
+INNER JOIN ${Ffc::Data::Prefix}users u ON u.id = ? AND p.user_from <> u.id
 WHERE p.posted   >= COALESCE(u.lastseenforum, 0)
   AND p.user_to  IS NULL
   AND p.category IS NULL
@@ -87,7 +88,7 @@ EOSQL
                 $sql = << "EOSQL";
 SELECT COUNT(p.id)
 FROM       ${Ffc::Data::Prefix}posts p 
-INNER JOIN ${Ffc::Data::Prefix}users u ON u.id = ? AND p.user_from != u.id
+INNER JOIN ${Ffc::Data::Prefix}users u ON u.id = ? AND p.user_from <> u.id
 WHERE p.posted    >= COALESCE(u.lastseenmsgs, 0)
   AND p.user_to   =  u.id
   AND p.user_to   IS NOT NULL
@@ -98,7 +99,7 @@ EOSQL
                 $sql = << "EOSQL";
 SELECT COUNT(p.id)
 FROM       ${Ffc::Data::Prefix}posts p 
-INNER JOIN ${Ffc::Data::Prefix}users u ON u.id = ? AND p.user_from != u.id
+INNER JOIN ${Ffc::Data::Prefix}users u ON u.id = ? AND p.user_from <> u.id
 WHERE p.posted    >= COALESCE(u.lastseenmsgs, 0)
   AND p.user_to   =  u.id
   AND p.user_to   IS NOT NULL
@@ -109,7 +110,7 @@ EOSQL
     }
     return 0 unless $sql;
     my $cnt = (Ffc::Data::dbh()->selectrow_array($sql, undef, $userid, @param))[0];
-    warn "$cnt:  $sql" if $cnt;
+    #warn "$cnt (@param):  $sql" if $cnt;
     return $cnt;
 }
 

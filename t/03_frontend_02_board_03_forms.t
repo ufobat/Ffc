@@ -13,7 +13,7 @@ use Test::General;
 use Mock::Testuser;
 use Ffc::Data::Board::Views;
 
-use Test::More tests => 6221;
+use Test::More tests => 6629;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 
@@ -187,6 +187,7 @@ for my $test (@testmatrix) {
             my $newtext2 = $newtext;
             $newtext2 = Test::General::test_r() while $newtext eq $newtext2;
             $t->get_ok("/$act/edit/$msgid");
+            sleep 1.1;
             if ($is_msgs) {
                 $t->status_is(500)
                   ->content_like(
@@ -207,8 +208,7 @@ qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*>
             }
             else {
                 $t->status_is(302)
-                  ->header_like( Location => qr{\Ahttps?://localhost:\d+/}xms )
-                  ->content_is('');
+                  ->header_like( Location => qr{\Ahttps?://localhost:\d+/}xms );
                 $t->get_ok("/$act");
                 $t->status_is(200)
                   ->content_like(

@@ -15,7 +15,7 @@ use Ffc::Data::Board;
 use Ffc::Data::Board::Forms;
 srand;
 
-use Test::More tests => 311;
+use Test::More tests => 345;
 
 Test::General::test_prepare();
 
@@ -770,5 +770,65 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
         is((grep({;$user_a->{name} eq $_->[0]} @$ret))[0][1], $cnt, 'count in user list correct');
         is((grep({;$user_a->{name} eq $_->[0]} @$ret))[0][2], $time, 'timestamp in user list correct');
     }
+}
+
+{
+    note('check for new messages');
+    my $user  = Mock::Testuser->new_active_user();
+    my $user2 = Mock::Testuser->new_active_user();
+    check_call(
+        \&Ffc::Data::Board::Views::check_for_updates,
+        check_for_updates => {
+            name => 'user name',
+            good => $user->{name},
+            bad =>
+              [ '', '   ', Mock::Testuser::get_noneexisting_username() ],
+            errormsg => [
+                'Kein Benutzername angegeben',
+                'Benutzername ungültig',
+                'Benutzer unbekannt',
+            ],
+            emptyerror => 'Kein Benutzername angegeben',
+        },
+        {
+            name       => 'action',
+            good       => 'forum',
+            bad        => [ '', '   ', 'aaaaaaaaaaaaa' ],
+            emptyerror => 'Keine Aktion angegeben',
+            errormsg => [ 'Keine Aktion angegeben', 'Aktion unbekannt' ],
+        },
+        {
+            name => 'category',
+            good => Test::General::test_get_rand_category()->[2],
+            bad  => [ ' ', 'a', Test::General::test_get_non_category_short() ],
+            errormsg     => [ 'Kategoriekürzel ungültig', 'Kategorie ungültig' ],
+            noemptycheck => 1
+        },
+        {
+            name => 'user-from name',
+            good => $user2->{name},
+            bad =>
+              [ '   ', Mock::Testuser::get_noneexisting_username() ],
+            errormsg => [ '', '', 'Benutzer unbekannt' ],
+            noemptycheck => 1
+        },
+    );
+    my $insert = sub {
+        Ffc::Data::Board::Forms::insert_post( $user->{name}, 'abcd', undef, $user2->{name} );
+        Ffc::Data::Board::Forms::insert_post( $user->{name}, 'abcd', $_->[2], undef ) for @Test::General::Categories;
+    };
+    my $check = sub {
+        my $cnt = shift;
+        is(Ffc::Data::Board::Views::check_for_updates($user2->{name}, 'msgs', undef, $user->{name}), $cnt, 'update msgs check ok');
+        is(Ffc::Data::Board::Views::check_for_updates($user2->{name}, 'forum', $_->[2]), $cnt, qq'update cat "$_->[2]" check ok')
+            for @Test::General::Categories;
+    };
+    $insert->() for 0..2;
+    sleep 2;
+    Test::General::test_update_userstats($user2, 1);
+    $check->(0);
+    sleep 2;
+    $insert->() for 0..2;
+    $check->(3);
 }
 
