@@ -13,11 +13,12 @@ use Ffc::Data::Board::Forms;
 
 sub edit_form {
     my $c = shift;
+    my $rewrite = shift // 0;
     my $act = $c->stash('act');
     if ( $act eq 'msgs' ) {
         $c->error_handling( { plain => "Privatnachrichten dürfen nicht geändert werden" } );
     }
-    else {
+    elsif ( not $rewrite ) {
         my $id   = $c->stash('postid');
         my $post = $c->or_nostring( sub { Ffc::Data::Board::Views::get_post($act, $id, $c->get_params() ) } );
         $c->stash( post => $post );
@@ -60,7 +61,8 @@ sub insert_post {
     my $act = $c->stash('act');
     if ( $act ne 'notes' and check_for_updates($c) ) {
         $c->info_stash('Ein neuer Beitrag wurde zwischenzeitlich durch einen anderen Benutzer erstellt');
-        return $c->edit_form();
+        $c->stash(post => {raw => $c->param('post')});
+        return $c->edit_form(1);
     }
     my $s = $c->session;
     my $text = $c->param('post');
@@ -84,7 +86,8 @@ sub update_post {
     my $act = $c->stash('act');
     if ( $act ne 'notes' and check_for_updates($c) ) {
         $c->info_stash('Ein neuer Beitrag wurde zwischenzeitlich durch einen anderen Benutzer erstellt');
-        return $c->edit_form();
+        $c->stash(post => {raw => $c->param('post')});
+        return $c->edit_form(1);
     }
     my $s = $c->session;
     my $text = $c->param('post');

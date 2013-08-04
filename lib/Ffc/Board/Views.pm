@@ -74,7 +74,7 @@ sub _frontpage {
     if ( $postid ) {
         my @post = grep { exists($_->{id}) and defined($_->{id}) and ( $_->{id} eq $postid ) } @$posts;
         if ( @post ) {
-            $c->stash( post => $post[0] );
+            $post[0]->{raw} = $c->stash('post') if $c->stash('post');
             $post[0]->{active} = 1;
         }
     }
