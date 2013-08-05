@@ -55,15 +55,16 @@ sub check_for_updates {
     my $msgsuser = shift;
     return 0 if $act eq 'notes';
     my @param;
-    my $sql = '';
+    my $sql = << "EOSQL";
+SELECT COUNT(p.id)
+FROM       ${Ffc::Data::Prefix}posts p 
+INNER JOIN ${Ffc::Data::Prefix}users u ON u.id = ? AND p.user_from <> u.id
+EOSQL
     given ( $act ) {
         when ( 'forum' ) {
             if ( $cat ) {
                 push @param, Ffc::Data::General::get_category_id($cat);
-                $sql = << "EOSQL";
-SELECT COUNT(p.id)
-FROM            ${Ffc::Data::Prefix}posts         p
-INNER JOIN      ${Ffc::Data::Prefix}users         u ON u.id       = ?          AND p.user_from <> u.id
+                $sql .= << "EOSQL";
 LEFT OUTER JOIN ${Ffc::Data::Prefix}lastseenforum f ON p.category = f.category AND f.userid     = u.id
 WHERE p.posted   >= COALESCE(f.lastseen,0)
   AND p.user_to  IS NULL
@@ -72,10 +73,7 @@ WHERE p.posted   >= COALESCE(f.lastseen,0)
 EOSQL
             }
             else {
-                $sql = << "EOSQL";
-SELECT COUNT(p.id)
-FROM       ${Ffc::Data::Prefix}posts p 
-INNER JOIN ${Ffc::Data::Prefix}users u ON u.id = ? AND p.user_from <> u.id
+                $sql .= << "EOSQL";
 WHERE p.posted   >= COALESCE(u.lastseenforum, 0)
   AND p.user_to  IS NULL
   AND p.category IS NULL
@@ -85,10 +83,7 @@ EOSQL
         when ( 'msgs'  ) {
             if ( $msgsuser ) {
                 push @param, _get_userid( $msgsuser );
-                $sql = << "EOSQL";
-SELECT COUNT(p.id)
-FROM       ${Ffc::Data::Prefix}posts p 
-INNER JOIN ${Ffc::Data::Prefix}users u ON u.id = ? AND p.user_from <> u.id
+                $sql .= << "EOSQL";
 WHERE p.posted    >= COALESCE(u.lastseenmsgs, 0)
   AND p.user_to   =  u.id
   AND p.user_to   IS NOT NULL
@@ -96,10 +91,7 @@ WHERE p.posted    >= COALESCE(u.lastseenmsgs, 0)
 EOSQL
             }
             else {
-                $sql = << "EOSQL";
-SELECT COUNT(p.id)
-FROM       ${Ffc::Data::Prefix}posts p 
-INNER JOIN ${Ffc::Data::Prefix}users u ON u.id = ? AND p.user_from <> u.id
+                $sql .= << "EOSQL";
 WHERE p.posted    >= COALESCE(u.lastseenmsgs, 0)
   AND p.user_to   =  u.id
   AND p.user_to   IS NOT NULL
