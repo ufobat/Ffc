@@ -15,7 +15,7 @@ use Ffc::Data::Board;
 use Ffc::Data::Board::Forms;
 srand;
 
-use Test::More tests => 345;
+use Test::More tests => 347;
 
 Test::General::test_prepare();
 
@@ -776,6 +776,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
     note('check for new messages');
     my $user  = Mock::Testuser->new_active_user();
     my $user2 = Mock::Testuser->new_active_user();
+    my $user3 = Mock::Testuser->new_active_user();
     check_call(
         \&Ffc::Data::Board::Views::check_for_updates,
         check_for_updates => {
@@ -819,6 +820,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
     };
     my $check = sub {
         my $cnt = shift;
+        is(Ffc::Data::Board::Views::check_for_updates($user3->{name}, 'msgs', undef, $user->{name}), 0, 'update msgs check ok');
         is(Ffc::Data::Board::Views::check_for_updates($user2->{name}, 'msgs', undef, $user->{name}), $cnt, 'update msgs check ok');
         is(Ffc::Data::Board::Views::check_for_updates($user2->{name}, 'forum', $_->[2]), $cnt, qq'update cat "$_->[2]" check ok')
             for @Test::General::Categories;
