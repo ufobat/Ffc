@@ -15,7 +15,7 @@ sub edit_form {
     my $c = shift;
     my $rewrite = shift // 0;
     my $act = $c->stash('act');
-    if ( $act eq 'msgs' ) {
+    if ( $act eq 'msgs' and not $rewrite ) {
         $c->error_handling( { plain => "Privatnachrichten dürfen nicht geändert werden" } );
     }
     elsif ( not $rewrite ) {
