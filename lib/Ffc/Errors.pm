@@ -35,9 +35,7 @@ sub handle {
             my $log = $c->app->log;
             $log->error("system error message: $@");
             $log->error("user presented error message: " . ($msg // ''));
-            my $error = $c->stash('error') // '';
-            my $newerror = $msg || $@ || 'Fehler';
-            $c->stash(error => $error ? "$error\n\n$newerror." : "$newerror.");
+            error_stash($c, $msg || $@);
             return;
         }
     }
@@ -98,6 +96,13 @@ sub info {
     my $newinfo = shift || return;
     my $info = $c->flash('info') // '';
     $c->flash(info => $info ? "$info\n\n$newinfo." : "$newinfo.");
+}
+sub error_stash {
+    my $c = shift;
+    my $msg = shift;
+    my $error = $c->stash('error') // '';
+    my $newerror = $msg || 'Fehler';
+    $c->stash(error => $error ? "$error\n\n$newerror." : "$newerror.");
 }
 
 1;
