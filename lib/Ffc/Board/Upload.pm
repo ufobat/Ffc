@@ -15,28 +15,26 @@ sub upload_form {
     my $c = shift;
     $c->stash( footerlinks => $Ffc::Data::Footerlinks );
     my $s = $c->session;
-    else {
-        my $id = $c->param('postid');
-        $c->get_counts();
-        my $post;
-        $c->error_handling(
-            {
-                code => sub {
-                    $post =
-                      Ffc::Data::Board::Views::get_post( $s->{act}, $id,
-                        $c->get_params($s) );
-                },
-                msg =>
+    my $id = $c->param('postid');
+    $c->get_counts();
+    my $post;
+    $c->error_handling(
+        {
+            code => sub {
+                $post =
+                  Ffc::Data::Board::Views::get_post( $s->{act}, $id,
+                    $c->get_params($s) );
+            },
+            msg =>
 'Beitrag, zu dem etwas hochgeladen wurde, konnte nicht ermittelt werden',
-                after_error => sub { $c->frontpage() },
-                after_ok    => sub {
-                    $post->{active} = 1;
-                    $c->stash( post => $post );
-                    $c->render('board/upload_form');
-                },
-            }
-        );
-    }
+            after_error => sub { $c->frontpage() },
+            after_ok    => sub {
+                $post->{active} = 1;
+                $c->stash( post => $post );
+                $c->render('board/uploadform');
+            },
+        }
+    );
 }
 
 sub upload {
@@ -58,6 +56,14 @@ sub upload {
         }
     );
     $c->frontpage();
+}
+
+sub upload_delete_check {
+    my $c = shift;
+}
+
+sub upload_delete {
+    my $c = shift;
 }
 
 sub get_attachement {
