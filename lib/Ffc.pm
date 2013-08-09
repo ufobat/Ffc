@@ -145,7 +145,17 @@ sub startup {
         # create something
         $r->route('/new')->via('post')->to('board#insert_post')->name("insert_post$name");
 
-        if ( $name ne 'msgs' ) { # Privatnachrichten dürfen nicht geändert werden
+        # file uploads
+        {
+            my $upload = $r->route('/upload');
+            $upload->route('/:postid', postid => qr(\d+))->via('get')->to('board#upload_form')->name("upload_form$name");
+            $upload->route('/:postid', postid => qr(\d+))->via('post')->to('board#upload')->name("upload$name");
+            my $uploaddelete = $upload->route('/delete');
+            $uploaddelete->route('/:uploadid', uploadid => qr(\d+))->via('get')->to('board#upload_delete_check')->name("upload_delete_check$name");
+            $uploaddelete->route('/:uploadid', uploadid => qr(\d+))->via('post')->to('board#upload_delete')->name("upload_delete$name");
+        }
+
+        if ( $name ne '_msgs' ) { # private messages are immutable
             # update something
             my $edit = $r->route('/edit');
             $edit->route('/:postid', postid => qr(\d+))->via('get' )->to('board#edit_form')->name("edit_form$name");
