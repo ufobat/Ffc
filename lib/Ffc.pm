@@ -142,18 +142,20 @@ sub startup {
         # pagination
         $r->route('/:page', page => qr(\d+))->to('board#frontpage')->name("show_page$name");
 
-        # delete something
-        my $delete = $r->route('/delete');
-        $delete->route('/:postid', postid => qr(\d+))->via('get')->to('board#delete_check')->name("delete_check$name");
-        $delete->route('/')->via('post')->to('board#delete_post')->name("delete_post$name");
-
         # create something
         $r->route('/new')->via('post')->to('board#insert_post')->name("insert_post$name");
 
-        # update something
-        my $edit = $r->route('/edit');
-        $edit->route('/:postid', postid => qr(\d+))->via('get' )->to('board#edit_form')->name("edit_form$name");
-        $edit->route('/:postid', postid => qr(\d+))->via('post')->to('board#update_post'  )->name("update_post$name");
+        if ( $name ne 'msgs' ) { # Privatnachrichten dürfen nicht geändert werden
+            # update something
+            my $edit = $r->route('/edit');
+            $edit->route('/:postid', postid => qr(\d+))->via('get' )->to('board#edit_form')->name("edit_form$name");
+            $edit->route('/:postid', postid => qr(\d+))->via('post')->to('board#update_post'  )->name("update_post$name");
+
+            # delete something
+            my $delete = $r->route('/delete');
+            $delete->route('/:postid', postid => qr(\d+))->via('get')->to('board#delete_check')->name("delete_check$name");
+            $delete->route('/')->via('post')->to('board#delete_post')->name("delete_post$name");
+        }
 
         return $r;
     });
