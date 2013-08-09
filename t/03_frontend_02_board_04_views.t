@@ -16,7 +16,7 @@ use Ffc::Data;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Forms;
 
-use Test::More tests => 3595;
+use Test::More tests => 4773;
 
 srand;
 my $t = Test::General::test_prepare_frontend('Ffc');
@@ -36,7 +36,7 @@ my @checks = (
                     show_images => 1,
                     categories  => {
                         map { $_->[2] => [ $_->[1], 0 ] }
-                          [ '', 'Allgemeine Beiträge', '' ],
+                          [ '', $Ffc::Data::CommonCatTitle, '' ],
                         @Test::General::Categories
                     }
                 }
@@ -81,7 +81,7 @@ sub insert_tests {
         Ffc::Data::Board::Forms::insert_post( $users{ $t->[1] }->{name},
             $t->[0], $t->[3], ( $t->[2] ? $users{ $t->[2] }->{name} : undef ) );
     }
-    sleep 2;
+    sleep 1.1;
     for my $c (@checks) {
         my $u    = $users{ $c->[1]->{user} }->{name};
         my $cats = Ffc::Data::Board::Views::get_categories($u);
@@ -103,8 +103,9 @@ sub check_footer {
     }
 }
 sub check_header {
-    my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
-    $t->content_like(qr~<span class="username[\w\s]+">$u->{name}</span>~);
+    my ( $t, $u, $ck, $cat, $sleep, $act, $autoreload ) = @_;
+    $t->content_like(qr~<title>$Ffc::Data::Title \($ck->{forum}/$ck->{msgs}\) - $Ffc::Data::Acttitles{$act}</title>~);
+    $t->content_like(qr~<span class="[\w\s]+">(?:$u->{name}|Optionen)</span>~);
     if ( $ck->{forum} ) {
         if ( $ck->{forum} ) {
             $t->content_like(
@@ -158,7 +159,7 @@ sub check_header {
             $t->content_like( qr~>Notizen</span>~);
         }
     }
-    $ck->{$act} = 0 if $act eq 'msgs';
+    $ck->{$act} = 0 if $act eq 'msgs' and not $autoreload;
 }
 
 sub check_categories {
@@ -189,13 +190,13 @@ sub check_categories {
 }
 
 sub check_content {
-    my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
+    my ( $t, $u, $ck, $cat, $sleep, $act, $autoreload ) = @_;
     note(qq'content check for "$act"');
     my @testcases = reverse grep {
              ( defined( $_->[3] ) and defined($cat) and $_->[3] eq $cat )
           or ( !defined( $_->[3] ) and !defined($cat) )
     } grep { $act eq $_->[4] } @testposts;
-    check_pages( \@testcases, $t, $u, $ck, $cat, $sleep, $act );
+    check_pages( \@testcases, $t, $u, $ck, $cat, $sleep, $act ) unless $autoreload;
 }
 
 sub check_pages {
@@ -207,13 +208,22 @@ sub check_pages {
     while ( my @tests = splice @testcases, 0, $Ffc::Data::Limit ) {
         $page++;
         if ( $page > 1 ) {
-            $t->get_ok("/$page")->status_is(200);
+            if ( $act eq 'forum' and $cat ) {
+                $t->get_ok("/$act/category/$cat/$page");
+            }
+            elsif ( $act eq 'msgs' and $msguser ) {
+                $t->get_ok("/$act/user/$msguser/$page");
+            }
+            else {
+                $t->get_ok("/$act/$page");
+            }
+            $t->status_is(200);
             $t->content_unlike(
-                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+title=".+"\s*></textarea>~s);
+                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*></textarea>~s);
         }
         else {
             $t->content_like(
-                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+title=".+"\s*></textarea>~s)
+                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*></textarea>~s)
               unless $act eq 'msgs';
         }
         if ( $Ffc::Data::Limit <= @tests ) {
@@ -238,11 +248,11 @@ sub check_pages {
                         $test->[0]
                     )
                 )[0];
-                my $url_edit = $t->app->url_for( 'edit_form', postid => $id );
-                my $url_delete = $t->app->url_for( 'delete_check', postid => $id );
+                my $url_edit = $t->app->url_for_me( 'edit_form', act => $act, category => $cat, postid => $id );
+                my $url_delete = $t->app->url_for_me( 'delete_check', act => $act, category => $cat, postid => $id );
                 my $sessmsguser = $msguser;
                 $msguser = $users{$test->[1]}->{name} unless $act eq 'msgs';
-                my $url_msg = $t->app->url_for( 'msgs_user', msgs_username => $msguser );
+                my $url_msg = $t->app->url_for_me( 'show', act => 'msgs', cat => '', msgs_username => $msguser );
                 my $editlink =
 qr~,\s*<a href="$url_edit" title="Beitrag bearbeiten">\s*(?:<img src="$url_editicon" alt="\&Auml;ndern" />|Bearbeiten)</a>(?:\s*,\s*)?~;
                 my $deletelink =
@@ -302,7 +312,7 @@ qr~<h2>\s*<span class="inactive">$users{$test->[1]}->{name}</span>\s*<span class
 }
 
 sub check_msgs {
-    my ( $t, $u, $p, $cat, $sleep, $act ) = @_;
+    my ( $t, $u, $p, $cat, $sleep, $act, $autoreload ) = @_;
     note('check user message system and correpsonding input forms and stuff');
     my @testcases = reverse grep {
         $_->[4] eq 'msgs'
@@ -314,61 +324,76 @@ sub check_msgs {
           ( $_->[2] ne $p->{user} ? ( $_->[2] => 1 ) : () )
     } @testcases;
     $t->content_unlike(
-                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+title=".+"\s*></textarea>~s);
+                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*></textarea>~s);
     {
         note('check msgs user list and news counter');
         for my $u ( map {$users{$_}{name}} grep {$users{$_}{active}} keys %actusers ) {
             my $c = $p->{msgs_users}->{$u};
-            my $url = $t->app->url_for(msgs_user => msgs_username => $u);
+            my $url = $t->app->url_for_me(show => act => 'msgs', msgs_username => $u);
             if ( $c ) {
-                $t->content_like(qr~<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*$u\s*\(\s*$timestampre\s*,\s*<span class="mark">$c</span>\s*\)\s*</a>~)
+                $t->content_like(qr~<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*<span\s+class="username">\s*$u\s*</span>\s*<span\s+class="userinfo">\s*\(\s*$timestampre\s*,\s*<span class="mark">$c</span>\s*\)\s*</span>\s*</a>~)
             }
             else {
-                $t->content_like(qr(<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*$u\s*\(\s*$timestampre\s*\)\s*</a>))
+                $t->content_like(qr(<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*<span\s+class="username">\s*$u\s*</span>\s*<span\s+class="userinfo">\s*\(\s*$timestampre\s*\)\s*</span>\s*</a>))
             }
         }
     }
     note('check msgs_username system for single conversations');
     for my $user ( keys %actusers ) {
-        $t->get_ok("/msgs/$users{$user}{name}")->status_is(200);
+        $t->get_ok("/msgs/user/$users{$user}{name}$autoreload")->status_is(200);
         $t->content_like(
-                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s+title=".+"\s*></textarea>~s);
-        $t->content_like(qr(Konversationen mit \&quot;$users{$user}{name}\&quot;));
+                qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*></textarea>~s);
+        $t->content_like(qr~<span\s+class="active(?:\s+inactive)?">\s*<span\s+class="username">\s*$users{$user}{name}\s*</span>\s+<span\s+class="userinfo">\s*\(\s*$timestampre\s*\)\s*</span>\s*</span>~) if $p->{msgs_users}->{$users{$user}{name}};
         my @testcases = grep { $_->[1] eq $user or $_->[2] eq $user } @testcases;
-        check_pages( \@testcases, $t, $u, $p, $cat, $sleep, $act, $user );
+        check_pages( \@testcases, $t, $u, $p, $cat, $sleep, $act, $user ) unless $autoreload;
     }
 }
 
 sub check_page {
-    my ( $t, $u, $ck, $cat, $sleep, $act ) = @_;
-    check_header( $t, $u, $ck, $cat, $sleep, $act );
-    check_footer( $t, $u, $ck, $cat, $sleep, $act );
-    check_categories( $t, $u, $ck, $cat, $sleep, $act ) if $act eq 'forum';
-    check_content( $t, $u, $ck, $cat, $sleep, $act );
-    check_msgs( $t, $u, $ck, $cat, $sleep, $act ) if $act eq 'msgs';
-    sleep 2 if $sleep;
+    my ( $t, $u, $ck, $cat, $sleep, $act, $autoreload ) = @_;
+    check_header( $t, $u, $ck, $cat, $sleep, $act, $autoreload );
+    check_footer( $t, $u, $ck, $cat, $sleep, $act, $autoreload );
+    check_categories( $t, $u, $ck, $cat, $sleep, $act, $autoreload ) if $act eq 'forum';
+    check_content( $t, $u, $ck, $cat, $sleep, $act, $autoreload );
+    check_msgs( $t, $u, $ck, $cat, $sleep, $act, $autoreload ) if $act eq 'msgs';
+    sleep 1.1 if $sleep;
 }
 
 sub check_check {
-    my ( $t, $sleep, $act, $ck, $u, $p ) = @_;
+    my ( $t, $sleep, $act, $ck, $u, $p, $autoreload ) = @_;
     if ( $act eq 'forum' ) {
         for my $cat ( '', map { $_->[2] } @Test::General::Categories ) {
             if ($cat) {
-                $t->get_ok("/category/$cat")->status_is(200);
+                note(qq(get into category "$cat"));
+                $t->get_ok("/forum/category/$cat$autoreload")->status_is(200);
             }
-            check_page( $t, $u, $p, $cat, $sleep, $act );
-            $p->{forum} -= $p->{categories}->{$cat}->[1];
-            $p->{categories}->{$cat}->[1] = 0;
+            check_page( $t, $u, $p, $cat, $sleep, $act, $autoreload );
+            unless ( $autoreload ) {
+                $p->{forum} -= $p->{categories}->{$cat}->[1];
+                $p->{categories}->{$cat}->[1] = 0;
+            }
         }
+        $t->get_ok("/notes$autoreload")->status_is(200);
+        $t->get_ok("/forum$autoreload")->status_is(200);
+        $t->content_like(qr{<span class="active">Kategorie \&quot;$Test::General::Categories[-1][2]\&quot;});
+        {
+            my $i = 1 + int rand @Test::General::Categories - 2;
+            $t->get_ok("/forum/category/$Test::General::Categories[$i][2]$autoreload")->status_is(200);
+            $t->get_ok("/notes$autoreload")->status_is(200);
+            $t->get_ok("/forum$autoreload")->status_is(200);
+            $t->content_like(qr{<span class="active">Kategorie \&quot;$Test::General::Categories[$i][2]\&quot;});
+        }
+        $t->get_ok("/forum$autoreload")->status_is(200);
     }
     else {
-        $t->get_ok("/$act")->status_is(200);
-        check_page( $t, $u, $p, '', $sleep, $act );
+        $t->get_ok("/$act$autoreload")->status_is(200);
+        check_page( $t, $u, $p, '', $sleep, $act, $autoreload );
     }
 }
 
 sub checkall_tests {
     my $sleep = shift;
+    my $autoreload = shift() ? '/autoreload' : '';
     for my $ck (@checks) {
         my $u = $ck->[0];
         my $p = $ck->[1];
@@ -376,27 +401,29 @@ sub checkall_tests {
             form => { user => $u->{name}, pass => $u->{password} } )
           ->status_is(302)
           ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
-        $t->post_ok( '/options_showimages_save', form => { show_images => $ck->[1]->{show_images} } )
+        $t->post_ok( '/options/showimages_save', form => { show_images => $ck->[1]->{show_images} } )
             ->status_is(200)->content_like(qr{Einstellungen});
-        $t->get_ok('/forum')->status_is(200);    # zurück auf start
-        check_check( $t, $sleep, 'forum', $ck, $u, $p );
-        check_check( $t, $sleep, 'msgs',  $ck, $u, $p );
-        check_check( $t, $sleep, 'notes', $ck, $u, $p );
-        sleep 2 if $sleep;
-        $t->get_ok('/forum')->status_is(200)
+        $t->get_ok("/forum$autoreload")->status_is(200);    # zurück auf start
+        check_check( $t, $sleep, 'forum', $ck, $u, $p, $autoreload );
+        check_check( $t, $sleep, 'msgs',  $ck, $u, $p, $autoreload );
+        check_check( $t, $sleep, 'notes', $ck, $u, $p, $autoreload );
+        sleep 1.1 if $sleep;
+        $t->get_ok("/forum$autoreload")->status_is(200)
           ;                                 # das muss ja jetzt auch noch gehen
-        check_check( $t, 0, 'forum', $ck, $u, $p );
+        check_check( $t, 0, 'forum', $ck, $u, $p, $autoreload );
         $t->get_ok('/logout')->status_is(200)
           ->content_like(qr'bitte melden Sie sich erneut an');
     }
 }
 
 note('empty checks');
-checkall_tests(0);
-sleep 2;
+checkall_tests(0,0);
+sleep 1.1;
 note('insert some test postings');
 insert_tests();
-sleep 2;
-note('checks with test postings');
-checkall_tests(1);
+sleep 1.1;
+note('checks with test postings in autoreload mode');
+checkall_tests(1,1);
+note('checks with test postings as normal user');
+checkall_tests(1,0);
 

@@ -1,3 +1,3 @@
-% if ( $info ) {
-    <div class="postbox info"><%= $info %></div>
+% if ( flash('info') // $info ) {
+    <div class="postbox info"><%= flash('info') // $info %></div>
 % }

@@ -29,14 +29,14 @@ my $t = Test::General::test_prepare_frontend('Ffc');
         $c->content_like(qr(Einstellungen));
         $c->content_unlike(qr(Benutzerverwaltung));
     }
-    $t->post_ok( '/optionsadmin_save',
+    $t->post_ok( '/options/admin_save',
         form => { overwriteok => 1, username => $user->{name}, active => 0 } )
       ->status_is(500)->content_like(qr{Nur Administratoren dürfen das});
     {
         note('testing show_images flag');
         for my $c ( undef, 0, undef, 1, undef, 0, 1, 0, 1 ) {
             my $cv = $c ? 1 : 0;
-            $t->post_ok( '/options_showimages_save', form => { show_images => $c } )
+            $t->post_ok( '/options/showimages_save', form => { show_images => $c } )
               ->status_is(200)->content_like(qr{Einstellungen});
             my $reta = Ffc::Data::dbh()->selectall_arrayref(
                 'SELECT show_images FROM '
@@ -65,7 +65,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
         };
         $check_theme->(undef);
         for my $theme (@Ffc::Data::Themes[0,1]) {
-            $t->post_ok( '/options_theme_save', form => { theme => $theme } )
+            $t->post_ok( '/options/theme_save', form => { theme => $theme } )
               ->status_is(200);
             $t->content_like(qr{Einstellungen});
             $t->content_like(qr{Thema geändert});
@@ -75,7 +75,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
         }
         {
             my $theme = $Ffc::Data::Themes[0];
-            $t->post_ok( '/options_theme_save', form => { theme => $theme } )
+            $t->post_ok( '/options/theme_save', form => { theme => $theme } )
               ->status_is(200)->content_like(qr{Einstellungen});
             $check_theme->($theme);
             {
@@ -83,7 +83,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
                 $newtheme = Test::General::test_r()
                   while !$newtheme
                   or grep { $newtheme eq $_ } @Ffc::Data::Themes;
-                $t->post_ok( '/options_theme_save', form => { theme => $newtheme } )
+                $t->post_ok( '/options/theme_save', form => { theme => $newtheme } )
                   ->status_is(500)->content_like(qr{Thema ungültig});
                 $t->get_ok('/')->status_is(200)->content_like(qr($theme/css/style.css));
                 $check_theme->($theme);
@@ -111,7 +111,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
             my $newemail = shift // '';
             my $error    = shift;
             my $checkvalue = $oldemail;
-            $t->post_ok( '/options_email_save', form => { email => $newemail } );
+            $t->post_ok( '/options/email_save', form => { email => $newemail } );
             if ($error) {
                 $t->status_is(500)->content_like(qr{$error});
             }
@@ -144,7 +144,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
             my $newpw1 = shift;
             my $newpw2 = shift;
             my $error  = shift;
-            $t->post_ok( '/options_password_save', form => { oldpw => $oldpw, newpw1 => $newpw1, newpw2 => $newpw2 } );
+            $t->post_ok( '/options/password_save', form => { oldpw => $oldpw, newpw1 => $newpw1, newpw2 => $newpw2 } );
             if (not defined $error or $error) {
                 $t->status_is(500);
                 if ( $error ) {
@@ -201,7 +201,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
         $c->content_like(qr(Benutzerverwaltung));
     }
     my $call = sub {
-        $t->post_ok( '/optionsadmin_save', form => shift );
+        $t->post_ok( '/options/admin_save', form => shift );
         for my $p (@_) {
             given ( ref $p ) {
                 when ('SCALAR') { $t->content_like(qr{$p}) }

@@ -17,6 +17,7 @@ my @closed = qw(
     etc/ffc.json.example
     t
     t/02_backend__01_data_02_formats.t
+    t/02_backend__01_data_05_formats2.t
     t/02_backend__01_data_04_board_01_optionsuser.t
     t/03_frontend_02_board_02_options.t
     t/03_frontend_02_board_00.t

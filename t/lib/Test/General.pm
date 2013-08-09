@@ -60,7 +60,8 @@ sub _get_component_values {
         Ffc::Data::dbh()->selectall_arrayref(
                 'SELECT "id", "name", "short" FROM '
               . $Ffc::Data::Prefix
-              . 'categories'
+              . 'categories '
+              . 'order by "sort", "name"'
         )
     };
     $Maxcatid  = test_get_max_categoryid();

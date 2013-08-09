@@ -1,17 +1,13 @@
 body {
-    max-width: 56em;
+    max-width: 46em;
     margin: 0 auto;
     background: url('../img/hg.png') no-repeat 0 0 gainsboro;
     font-family: sans-serif;
     color: black;
 }
 body > div {
-    border-width: 1px;
-    border-style: solid;
-    background: white;
-    padding: .1em .5em .25em .5em;
-    margin-top: .75em;
-    border-radius: .25em;
+    padding: .25em .5em 1em .5em;
+    margin-top: .5em;
 }
 .postbox h2 {
     font-size: .75em;
@@ -21,13 +17,17 @@ body > div {
 .postbox img {
     max-width: 256px;
     max-height: 128px;
-    box-shadow: .1em .1em .2em silver;
+    border: 1px dimgrey solid;
 }
 .postbox a:hover img {
-    box-shadow: .1em .1em .2em dodgerblue;
+    border-color: dodgerblue;
 }
 .postbox > p {
     margin: 1em;
+    text-align: justify;
+}
+body > .msgs > p, body > .forum > p, body > .notes > p {
+    text-indent: 1em;
 }
 input, textarea, select {
     font-size: 1em;
@@ -79,15 +79,15 @@ img.smiley, img.icon {
     height: 1em;
 }
 .postbox textarea {
-    width: 54em;
-    min-width: 54em;
-    max-width: 54em;
-    height: 5em;
-    min-height: 5em;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    height: 4em;
+    min-height: 2em;
     max-height: 54em;
 }
 .postbox textarea:focus {
-    height: 32em;
+    height: 24em;
 }
 .postbox h2 a:hover img {
     box-shadow: none;
@@ -113,22 +113,18 @@ img.smiley, img.icon {
     border-color: firebrick;
     background: peachpuff;
 }
-.newpost {
-    border-color: #fc6;
-}
 .categorylinks, .msgsuserlist, .postboxform {
     background: whitesmoke;
+    padding-bottom: .5em;
 }
 .categorylinks p, .msgsuserlist p, .postboxform p {
     padding: .25em .5em;
     margin: 0;
 }
 .menu {
-    border-bottom: 1px steelblue solid;
-    margin: 0 1em 1.5em 1em;
+    margin: 0 1em 1em 1em;
     padding: .2em;
     white-space: nowrap;
-    border-radius: 0;
 }
 .menu input[type="text"] {
     width: 7.5em;
@@ -141,18 +137,36 @@ img.smiley, img.icon {
 }
 .menu .linktext {
     border-color: transparent;
-    border-width: 0 1px 1px 1px;
     border-style: solid;
-    padding: 1em;
-    border-radius: .25em;
+    padding: .5em .5em .75em .5em;
 }
 .menu .active, body > div, .menu .active:hover {
-    border-color: steelblue;
     background: white;
-    box-shadow: .1em .1em .3em lightsteelblue;
+    border: 1px lightslategray solid;
+}
+.menu .linktext {
+    border-width: 0 1px 1px 1px;
+}
+.menu .active {
+    border-color: slategray;
+    background: whitesmoke;
+}
+.postbox {
+    box-shadow: .1em .1em .3em darkgrey;
+}
+.menu .active:hover {
+    border-color: dodgerblue;
+}
+.newpost {
+    border-color: palevioletred;
+    box-shadow: .1em .1em .3em palevioletred;
+}
+.categorylinks .active, .msgsuserlist .active {
+    color: whitesmoke;
+    background: steelblue;
 }
 .userlist {
-    width: 42em;
+    width: 12em;
     height: 15em;
     overflow: scroll;
 }
@@ -163,11 +177,8 @@ img.smiley, img.icon {
     font-size: .75em;
     color: silver;
 }
-input.description {
-    width: 20em;
-}
 .mark {
-    color: #c63;
+    color: palevioletred;
 }
 .alert {
     color: #c00;
@@ -199,7 +210,7 @@ input.activesearch {
     border-color: #c63;
 }
 textarea.update_post {
-    height: 32em;
+    height: 24em;
 }
 .titleinfo {
     font-weight: normal;
@@ -215,8 +226,7 @@ input[type="password"], input[type="text"], textarea {
     font-weight: bolder;
     float: right;
     font-size: 1em;
-    border: .3em white solid;
-    box-shadow: .1em .1em .2em gainsboro;
+    box-shadow: none;
     font-family: serif;
     font-style: italic;
     width: 5em;
@@ -235,5 +245,11 @@ a:focus, .linkalike:focus {
 }
 .menu a:focus {
     color: lightsteelblue;
+}
+.send, .msgsuserlist .username {
+    font-weight: bolder;
+}
+.msgsuserlist .userinfo, .footerlinks {
+    font-size: .75em;
 }
 

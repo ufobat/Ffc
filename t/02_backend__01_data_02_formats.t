@@ -12,6 +12,8 @@ srand;
 use Test::More tests => 71;
 
 use_ok('Ffc::Data::Formats');
+$Ffc::Data::URLShorten = 1024;
+note("url shortened to $Ffc::Data::URLShorten");
 
 {
     note('checking format_timestamp( $timestring )');
@@ -130,7 +132,7 @@ MarkupTests:
 Notiz am Rande: !BBCodes! können mich mal kreuzweise am Arsch lecken, bin fertig mit den sinnlosen Drecksdingern. Die kommen hier nie, nie nie rein!
 
 
-($testurl), $testimage
+($testurl"), $testimage
 
 Und "Hier, in dieser :) ... $testurl ... achso" und da" oder, $testuser, so.
 
@@ -165,7 +167,7 @@ sub controlstring_withimages {
     return << "EOSTRING";
 <p>MarkupTests:</p>
 <p>Notiz am Rande: <span class="alert">BBCodes !!!</span> können mich mal kreuzweise am Arsch lecken, bin fertig mit den sinnlosen Drecksdingern. Die kommen hier nie, nie nie rein!</p>
-<p>(<a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a>), <a href="$testimage" title="Externes Bild" target="_blank"><img src="$testimage" class="extern" title="Externes Bild" /></a></p>
+<p>(<a href="$testurl\%22" title="Externe Webseite" target="_blank">$testurl\%22</a>), <a href="$testimage" title="Externes Bild" target="_blank"><img src="$testimage" class="extern" title="Externes Bild" /></a></p>
 <p>Und „<span class="quote">Hier, in dieser <img class="smiley" src="$url/themes//$theme/img/smileys/smile.png" alt=":)" /> ... <a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a> ... achso</span>“ und da" oder, <span class="username">$testuser</span>, so.</p>
 <p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span></p>
 <p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span></p>
@@ -197,7 +199,7 @@ sub controlstring_withoutimages {
     return << "EOSTRING";
 <p>MarkupTests:</p>
 <p>Notiz am Rande: <span class="alert">BBCodes !!!</span> können mich mal kreuzweise am Arsch lecken, bin fertig mit den sinnlosen Drecksdingern. Die kommen hier nie, nie nie rein!</p>
-<p>(<a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a>), <a href="$testimage" title="Externes Bild" target="_blank">$testimage</a></p>
+<p>(<a href="$testurl\%22" title="Externe Webseite" target="_blank">$testurl\%22</a>), <a href="$testimage" title="Externes Bild" target="_blank">$testimage</a></p>
 <p>Und „<span class="quote">Hier, in dieser :) ... <a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a> ... achso</span>“ und da" oder, <span class="username">$testuser</span>, so.</p>
 <p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span></p>
 <p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span></p>

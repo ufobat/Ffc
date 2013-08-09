@@ -53,7 +53,6 @@ sub _xml_escape {
     $_[0] =~ s/\&/\&amp;/gxm;
     $_[0] =~ s/\<(?=[^3])/\&lt;/gxm;
     $_[0] =~ s/\>(?=[^\:\=])/\&gt;/gxm;
-    $_[0] =~ s{"([^"]*?)"}{„<span class="quote">$1</span>“}gxm;
 }
 sub format_text {
     my $s = shift // '';
@@ -64,10 +63,11 @@ sub format_text {
     $s =~ s/\s+\z//gxmsi;
     return '' unless $s;
     _xml_escape($s);
+    $s =~ s{(\A|\s)"(\S.*?\S|\S)"(\W|\z)}{$1„<span class="quote">$2</span>“$3}gxm;
+    $s =~ s{$u}{<span class="username">$u</span>}xmsi if $u;
     $s =~ s{(?<!\w)([\_\-\+\~\!])([\_\-\+\~\!\w]+)\g1(?!\w)}{_make_goody($1,$2)}gxmies;
     $s =~ s{(\(|\s|\A)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3,$c)}gxmeis;
     $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxes;
-    $s =~ s{$u}{<span class="username">$u</span>}xmsi if $u;
     $s =~ s{\n[\n\s]*}{</p>\n<p>}xgms;
     $s = "<p>$s</p>";
     return $s;
@@ -83,6 +83,7 @@ sub _make_goody {
 
 sub _make_link {
     my ( $start, $url, $end, $c ) = @_;
+    $url =~ s/"/\%22/xms;
     if ( $url =~ m(jpe?g|gif|bmp|png\z)xmsi ) {
         if ( $c->session()->{show_images} ) {
             return qq~$start<a href="$url" title="Externes Bild" target="_blank"><img src="$url" class="extern" title="Externes Bild" /></a>$end~;
@@ -90,14 +91,25 @@ sub _make_link {
         else {
             my $url_xmlencode = $url;
             _xml_escape($url_xmlencode);
+            _stripped_url($url_xmlencode);
             return qq~$start<a href="$url" title="Externes Bild" target="_blank">$url_xmlencode</a>$end~;
         }
     }
     else {
         my $url_xmlencode = $url;
         _xml_escape($url_xmlencode);
+        _stripped_url($url_xmlencode);
         return qq~$start<a href="$url" title="Externe Webseite" target="_blank">$url_xmlencode</a>$end~;
     }
+}
+
+sub _stripped_url {
+    if ( $Ffc::Data::URLShorten < length $_[0] ) {
+        my $d = int( ( length($_[0]) - $Ffc::Data::URLShorten ) / 2 );
+        my $h = int( length($_[0]) / 2 );
+        $_[0] = substr($_[0], 0, $h - $d) . '…' . substr($_[0], $h + $d);
+    }
+    return $_[0];
 }
 
 sub _make_smiley {

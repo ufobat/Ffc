@@ -28,7 +28,7 @@ sub setup_testdata {
     for ( 0 .. 8 ) {
         my $short = Test::General::test_r();
         my $name = qq(Kategorie "$short");
-        my $sql = qq~insert into "${Ffc::Data::Prefix}categories" ("name", "short") values ('$name', '$short')~;
+        my $sql = qq~insert into "${Ffc::Data::Prefix}categories" ("name", "short", "sort") values ('$name', '$short', '$_')~;
         $dbh->do( $sql );
     }
     run_sqlscript( $Ffc::Data::DbTestdata );
@@ -47,9 +47,7 @@ sub run_sqlscript {
        split /;/, $template;
     };
     return unless @sql;
-    for my $sql ( @sql ) {
-        $dbh->do($sql);
-    }
+    $dbh->do( $_ ) for @sql;
 }
 
 1;

@@ -4,15 +4,7 @@ use Ffc::Auth;
 use Ffc::Data;
 use Ffc::Data::Auth;
 
-sub switch_act { 
-    return unless $_[1] and $_[1]->isa('Mojolicious::Controller');
-    my $s = $_[1]->session;
-    $s->{act} = $_[2] // 'forum';
-    $s->{act} = 'forum' unless $s->{act} =~ m/\A(?:forum|notes|msgs|options)\z/xms;
-    $s->{category} = undef;
-    delete $s->{msgs_username};
-    return 1;
-}
+our @Keys = qw(act page category msgs_username postid);
 
 # This method will run once at server start
 sub startup {
@@ -21,10 +13,63 @@ sub startup {
     my $app  = $self->app;
     Ffc::Data::set_config($app);
 
-    $app->helper( act => sub { shift->session->{act} // 'forum' } );
     $app->helper( theme => sub { $Ffc::Data::Theme } );
-    $app->helper( acttitle => sub { $Ffc::Data::Acttitles{shift->session->{act}} // 'Unbekannt' } );
+    $app->helper( acttitle => sub { $Ffc::Data::Acttitles{shift->stash('act') // 'forum'} // 'Unbekannt' } );
     $app->helper( error => sub { shift->session->{error} // '' } );
+    $app->helper( url_for_me => sub {
+        my $c = shift;
+        my $path = shift;
+        my %params = @_;
+        %params = map { $_ => exists($params{$_}) ? $params{$_} // $c->stash($_) : $c->stash($_) } @Keys;
+        $params{act} = 'forum' unless $params{act};
+
+        if ( $params{act} eq 'forum' and $params{category} ) {
+            $path .= '_category';
+        }
+        else {
+            delete $params{category};
+        }
+        if ( $params{act} eq 'msgs' and $params{msgs_username} and not $path eq 'show_avatar' ) {
+            $path .= '_msgs';
+        }
+        else { 
+            delete $params{msgs_username};
+        }
+
+        $c->url_for( $path,
+            map { 
+                if (
+                        ( $_ eq 'category' and $params{act} ne 'forum' ) or
+                        ( $_ eq 'msgs_username' and $params{act} ne 'msgs' )
+                    ) {
+                    ()
+                }
+                elsif ( exists $params{$_} and $params{$_} ) {
+                    ( $_ => $params{$_} )
+                }
+                else {
+                    ()
+                }
+            } @Keys
+        );
+    } );
+    $app->helper( redirect_to_show => sub {
+        my $c = shift;
+        my $act = $c->stash('act');
+        my $cat = $c->stash('category');
+        my $usr = $c->stash('msgs_username');
+        my %params = ( act => $act );
+        my $to = 'show';
+        if ( $cat and $act eq 'forum' ) {
+            $to .= '_category';
+            $params{category} = $cat;
+        }
+        if ( $usr and $act eq 'msgs' ) {
+            $to .= "_msgs";
+            $params{msgs_user} = $usr;
+        }
+        $c->redirect_to( $to, %params );
+    } );
 
     # Router
     my $routes = $self->routes;
@@ -33,27 +78,50 @@ sub startup {
     $routes->route('/login')->via('post')->to('auth#login')->name('login');
 
     my $loggedin = $routes->under(sub{
-        $self = shift;
-        unless ( Ffc::Auth::check_login($self) ) {
-            return Ffc::Auth::logout( $self, 'Bitte melden Sie sich an' );
+        my $c = shift;
+        unless ( Ffc::Auth::check_login($c) ) {
+            return Ffc::Auth::logout( $c, 'Bitte melden Sie sich an' );
         }
+
+        my $act = $c->param('act') // 'forum';
+        $c->stash(act => $act);
+
+        my $page = $c->param('page') // 1;
+        $page    = 1  unless $page =~ m/\A\d+\z/xms;
+        $c->stash(page   => $page);
+
+        my $postid = $c->param( 'postid' ) // '';
+        $postid    = '' unless $postid =~ m/\A\d+\z/xms;
+        $c->stash(postid => $postid);
+
+        my $msgs_username = $c->param('msgs_username') // '';
+        $c->stash( msgs_username => $msgs_username );
+
+        my $cat = $c->param('category') // '';
+        $c->stash(category => $cat);
+
         return 1;
     });
 
     # logged in
     $loggedin->route('/logout')->to('auth#logout')->name('logout');
-    $loggedin->route('/')->to('board#frontpage')->name('show');
+    $loggedin->route('/')->to('board#frontpage')->name('frontpage');
+    $loggedin->route('/autoreload')->to('board#frontpage_autoreload')->name('frontpage_autoreload');
+
+    # display help
+    $loggedin->route('/help')->to('board#help')->name('help');
 
     # options
-    $loggedin->route('/options')->via('get')->to('board#options_form')->name('options_form');
-    $loggedin->route('/options_email_save')->via('post')->to('board#options_email_save')->name('options_email_save');
-    $loggedin->route('/options_password_save')->via('post')->to('board#options_password_save')->name('options_password_save');
-    $loggedin->route('/options_showimages_save')->via('post')->to('board#options_showimages_save')->name('options_showimages_save');
-    $loggedin->route('/options_theme_save')->via('post')->to('board#options_theme_save')->name('options_theme_save');
-    $loggedin->route('/options_avatar_save')->via('post')->to('board#options_avatar_save')->name('options_avatar_save');
+    my $options = $loggedin->route('/options');
+    $options->route('/')->via('get')->to('board#options_form')->name('options_form');
+    $options->route('/email_save')->via('post')->to('board#options_email_save')->name('options_email_save');
+    $options->route('/password_save')->via('post')->to('board#options_password_save')->name('options_password_save');
+    $options->route('/showimages_save')->via('post')->to('board#options_showimages_save')->name('options_showimages_save');
+    $options->route('/theme_save')->via('post')->to('board#options_theme_save')->name('options_theme_save');
+    $options->route('/avatar_save')->via('post')->to('board#options_avatar_save')->name('options_avatar_save');
 
     # admin options
-    $loggedin->route('/optionsadmin_save')->via('post')->to('board#useradmin_save')->name('useradmin_save');
+    $options->route('/admin_save')->via('post')->to('board#useradmin_save')->name('useradmin_save');
 
     # user avatars
     $loggedin->route('/show_avatar/:username', username => $Ffc::Data::UsernameRegex)->to('board#show_avatar')->name('show_avatar');
@@ -61,35 +129,48 @@ sub startup {
     # search
     $loggedin->route('/search')->via('post')->to('board#search')->name('search');
 
-    # back to the first page
-    $loggedin->route('/:page', page => qr(\d+))->to('board#frontpage')->name('show_page');
-    # switch context
-    $loggedin->route('/:act', act => [qw(forum notes msgs)])->to('board#switch_act')->name('switch');
+    $routes->add_shortcut(complete_set => sub {
+        my $r = shift;
+        my $name = shift;
+        $name = $name ? "_$name" : '';
 
-    # create something
-    $loggedin->route('/new')->via('post')->to('board#insert_post')->name('insert_post');
-    
-    # update something
-    my $edit = $loggedin->route('/edit');
-    $edit->route('/:postid', postid => qr(\d+))->via('get' )->to('board#edit_form')->name('edit_form');
-    $edit->route('/:postid', postid => qr(\d+))->via('post')->to('board#update_post'  )->name('update_post');
+        # just show the act
+        $r->route('/')->to('board#frontpage')->name("show$name");
+        # show it without userupdate
+        $r->route('/autoreload')->to('board#frontpage_autoreload')->name("show${name}_autoreload");
 
-    # upload something
-    $loggedin->route('/upload/:postid', postid => qr(\d+))->via('get')->to('board#upload_form')->name('upload_form');
-    $loggedin->route('/upload')->via('post')->to('board#upload')->name('upload');
-    # delete an attachement
-    $loggedin->route('/delete_attachement/:postid', postid => qr(\d+))->via('get')->to('board#delete_attachement_check')->name('delete_attachement_check');
-    $loggedin->route('/delete_attachement')->via('post')->to('board#delete_attachement')->name('delete_attachement');
+        # pagination
+        $r->route('/:page', page => qr(\d+))->to('board#frontpage')->name("show_page$name");
 
-    # delete something
-    $loggedin->route('/delete/:postid', postid => qr(\d+))->via('get')->to('board#delete_check')->name('delete_check');
-    $loggedin->route('/delete')->via('post')->to('board#delete_post')->name('delete_post');
-    
+        # delete something
+        my $delete = $r->route('/delete');
+        $delete->route('/:postid', postid => qr(\d+))->via('get')->to('board#delete_check')->name("delete_check$name");
+        $delete->route('/')->via('post')->to('board#delete_post')->name("delete_post$name");
+
+        # create something
+        $r->route('/new')->via('post')->to('board#insert_post')->name("insert_post$name");
+
+        # update something
+        my $edit = $r->route('/edit');
+        $edit->route('/:postid', postid => qr(\d+))->via('get' )->to('board#edit_form')->name("edit_form$name");
+        $edit->route('/:postid', postid => qr(\d+))->via('post')->to('board#update_post'  )->name("update_post$name");
+
+        return $r;
+    });
+
+    # context
+    my $act = $loggedin->route('/:act', act => [qw(forum notes msgs)]);
+
+    # just the actual frontpage
+    $act->complete_set();
+
     # conversation with single user
-    $loggedin->route('/msgs/:msgs_username', msgs_username => $Ffc::Data::UsernameRegex)->to('board#msgs_user')->name('msgs_user');
+    my $user = $act->route('/user/:msgs_username', msgs_username => $Ffc::Data::UsernameRegex)->name('usermsgs_bridge');
+    $user->complete_set('msgs');
 
     # display special category
-    $loggedin->route('/category/:category', category => $Ffc::Data::CategoryRegex)->to('board#switch_category')->name('category');
+    my $category = $act->route('/category/:category', category => $Ffc::Data::CategoryRegex)->name('category_bridge');
+    $category->complete_set('category');
 
 }
 

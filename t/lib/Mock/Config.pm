@@ -34,7 +34,10 @@ sub new {
         "title"           => r(),
         "pagelinkpreview" => int( rand 15 ),
         "sessiontimeout"  => int( rand 10000 ),
+        "refreshinterval" => int( 70000 + rand 10000 ),
         "theme"           => r(),
+        "commoncattitle"  => r(),
+        "urlshorten"      => 32 + int( rand 20 ),
         "debug"           => 0,
         "acttitles"       => {
             "forum"   => r(),

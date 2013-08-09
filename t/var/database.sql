@@ -27,6 +27,7 @@ CREATE TABLE "${Prefix}categories" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
   "name" varchar(64) NOT NULL,
   "short" varchar(8),
+  "sort" smallint not null default 0,
   UNIQUE ("name")
 );
 
@@ -41,5 +42,5 @@ CREATE TABLE "${Prefix}attachements" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
   "postid" int(11) NOT NULL,
   "number" integer not null default 0,
-  "description" varchar(256),
+  "description" varchar(256)
 );

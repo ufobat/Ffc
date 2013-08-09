@@ -1,10 +1,17 @@
 <div class="postbox msgsuserlist"><p>
 % {
 %   my $counter = 0;
-%   for my $user ( @$userlist ) { $counter++;
+%   for my $user ( @$userlist ) {
+%     if ( $user->[3] or $user->[1] or ( $msgs_username and $msgs_username eq $user->[0] ) ) {
+%       $counter++;
    <%== $counter > 1 ? '/ ' : '' %>
-   <a href="<%= url_for msgs_user => msgs_username => $user->[0] %>" title="Privatnachrichten an &quot;<%= $user->[0] %>&quot; lesen und schreiben">
-       <%= $user->[0] %> (<%= $user->[2] %><% if ( $user->[1] ) { %>, <span class="mark"><%= $user->[1] %></span><% } %>)</a>
+%       if ( $msgs_username and $msgs_username eq $user->[0] ) {
+   <span class="active<%= $user->[3] ? '' : ' inactive' %>"><span class="username"><%= $user->[0] %></span> <span class="userinfo">(<%= $user->[2] %>)</span></span>
+%       } else { 
+   <a href="<%= url_for_me show => msgs_username => $user->[0] %>" title="Privatnachrichten an &quot;<%= $user->[0] %>&quot; lesen und schreiben">
+       <span class="username"><%= $user->[0] %></span> <span class="userinfo">(<%= $user->[2] %><% if ( $user->[1] ) { %>, <span class="mark"><%= $user->[1] %></span><% } %><%= $user->[3] ? '' : ', inaktiv' %>)</span></a>
+%       }
+%     }
 %   }
 % }
 </p></div>

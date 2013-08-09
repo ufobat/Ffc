@@ -11,7 +11,7 @@ use Data::Dumper;
 
 use Mock::Controller;
 
-use Test::More tests => 307;
+use Test::More tests => 319;
 
 srand;
 sub c  { Mock::Controller->new() }
@@ -23,14 +23,50 @@ BEGIN { use_ok('Ffc::Errors'); }
 ##############################################################################
 
 ##############################################################################
+note('=== error ===');
+##############################################################################
+# - info string erzeugen
+{
+    my $icode = \&Ffc::Errors::error_stash;
+    my ( $r, $x, $c, $e ) = gs();
+    my $f = $c->{stash};
+    ok(!$f->{error}, 'no error available yet');
+    $icode->($c, $r);
+    ok($f->{error}, 'error available');
+    like($f->{error}, qr($r), 'error looks good #1');
+    unlike($f->{error}, qr($e), 'error looks good #2');
+    $icode->($c, $e);
+    like($f->{error}, qr($r), 'error looks good #3');
+    like($f->{error}, qr($e), 'error looks good #4');
+}
+
+##############################################################################
 note('=== info ===');
 ##############################################################################
 # - info string erzeugen
 {
     my $icode = \&Ffc::Errors::info;
     my ( $r, $x, $c, $e ) = gs();
+    my $f = $c->{flash};
+    ok(!$f->{info}, 'no info available yet');
+    $icode->($c, $r);
+    ok($f->{info}, 'info available');
+    like($f->{info}, qr($r), 'info looks good #1');
+    unlike($f->{info}, qr($e), 'info looks good #2');
+    $icode->($c, $e);
+    like($f->{info}, qr($r), 'info looks good #3');
+    like($f->{info}, qr($e), 'info looks good #4');
+}
+
+##############################################################################
+note('=== info_stash ===');
+##############################################################################
+# - info string erzeugen
+{
+    my $icode = \&Ffc::Errors::info_stash;
+    my ( $r, $x, $c, $e ) = gs();
     my $s = $c->{stash};
-    ok(!$c->{stash}->{info}, 'no info available yet');
+    ok(!$s->{info}, 'no info available yet');
     $icode->($c, $r);
     ok($s->{info}, 'info available');
     like($s->{info}, qr($r), 'info looks good #1');
@@ -135,7 +171,7 @@ note(q{=== handle ===});
                     'empty user error catched'
                 );
                 like( $c->{stash}->{error},
-                    qr($msg), 'error message in stash reseived' );
+                    qr($msg), 'error message in stash received' );
             }
             else {
                 is(
@@ -144,7 +180,7 @@ note(q{=== handle ===});
                     'empty user error catched'
                 );
                 like( $c->{stash}->{error},
-                    qr/$e/i, 'error message in stash reseived' );
+                    qr/$e/i, 'error message in stash received' );
             }
         }
         ok( !$ret, 'bad code returns false' );

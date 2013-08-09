@@ -97,16 +97,16 @@ sub run_through_all {
     }
 }
 
-sub run_code { my ( $code, $user, $query, $cat, $p ) = @_;
+sub run_code { my ( $code, $user, $query, $to, $cat, $p ) = @_;
     my $ret = [];
-    eval { $ret = $code->($user, 1, $query, $cat, $p->{controller}) };
+    eval { $ret = $code->($user, 1, $query, $to, $cat, $p->{controller}) };
     ok(!$@, 'code ran ok');
     diag("ERROR: $@") if $@;
     return $ret;
 }
 
-sub run_code_returning { my ( $code, $user, $query, $cat, $p, $match ) = @_;
-    my $ret = run_code($code, $user, $query, $cat, $p);
+sub run_code_returning { my ( $code, $user, $query, $to, $cat, $p, $match ) = @_;
+    my $ret = run_code($code, $user, $query, $to, $cat, $p);
     if ( $match ) {
         my @good = grep { $match eq $_->{raw} } @$ret;
         ok(@good, 'code returned the desired post');
@@ -115,8 +115,8 @@ sub run_code_returning { my ( $code, $user, $query, $cat, $p, $match ) = @_;
         ok(@$ret, 'code returned something');
     }
 }
-sub run_code_not_returning { my ( $code, $user, $query, $cat, $p, $match ) = @_;
-    my $ret = run_code($code, $user, $query, $cat, $p);
+sub run_code_not_returning { my ( $code, $user, $query, $to, $cat, $p, $match ) = @_;
+    my $ret = run_code($code, $user, $query, $to, $cat, $p);
     if ( $match ) {
         my @good = grep { $match eq $_->{raw} } @$ret;
         ok(!@good, 'code returned the post also it should have not');
@@ -126,19 +126,19 @@ sub run_code_not_returning { my ( $code, $user, $query, $cat, $p, $match ) = @_;
     }
 }
 
-sub run_get_post { my ( $act, $user, $query, $cat ) = @_;
+sub run_get_post { my ( $act, $user, $query, $to, $cat ) = @_;
     my $ret;
-    eval { $ret = get_post($act, $user, $query, $cat) };
+    eval { $ret = get_post($act, $user, $query, $to, $cat) };
     return $ret, $@;
 }
-sub run_get_post_not_returning { my ( $act, $user, $query, $cat, $p, $match ) = @_;
-    my ( $ret, $error ) = run_get_post($act, $user, $query, $cat, $p);
+sub run_get_post_not_returning { my ( $act, $user, $query, $to, $cat, $p, $match ) = @_;
+    my ( $ret, $error ) = run_get_post($act, $user, $query, $to, $cat, $p);
     ok($error, "errors reported");
     ok(!defined($ret), 'nothing game back');
     diag(Dumper $ret) if defined $ret;
 }
-sub run_get_post_returning { my ( $act, $user, $query, $cat, $p, $match ) = @_;
-    my ( $ret, $error ) = run_get_post($act, $user, $query, $cat, $p);
+sub run_get_post_returning { my ( $act, $user, $query, $to, $cat, $p, $match ) = @_;
+    my ( $ret, $error ) = run_get_post($act, $user, $query, $to, $cat, $p);
     ok(!$error, 'no errors reported');
     ok(defined($ret), 'something came back');
     is($ret->{raw}, $match, 'the right thing came back');
@@ -158,8 +158,8 @@ run_through_all(sub{ # Tests durchführen
     for my $code ( @{$p{code_returns_not}} ) {
         for my $user ( map {$_->{name}} values %{$p{usertable}} ) {
             for my $cat ( undef, @{$p{categories}} ) {
-                run_code_not_returning($code, $user, undef,    $cat, \%p, $p{text}); # ohne query
-                run_code_not_returning($code, $user, $p{text}, $cat, \%p, $p{text}); # mit query
+                run_code_not_returning($code, $user, undef,    undef, $cat, \%p, $p{text}); # ohne query
+                run_code_not_returning($code, $user, $p{text}, undef, $cat, \%p, $p{text}); # mit query
             }
         }
     }
@@ -168,8 +168,8 @@ run_through_all(sub{ # Tests durchführen
         note('check that the post will not be visible to the wrong users from the right methods');
         for my $user ( map {$_->{name}} @{$p{users_dont_see}} ) {
             for my $cat ( undef, @{$p{categories}} ) {
-                run_code_not_returning($p{code_returns}, $user, undef,    $cat, \%p, $p{text}); # ohne query
-                run_code_not_returning($p{code_returns}, $user, $p{text}, $cat, \%p, $p{text}); # mit query
+                run_code_not_returning($p{code_returns}, $user, undef,    undef, $cat, \%p, $p{text}); # ohne query
+                run_code_not_returning($p{code_returns}, $user, $p{text}, undef, $cat, \%p, $p{text}); # mit query
             }
         }
     }
@@ -191,27 +191,27 @@ run_through_all(sub{ # Tests durchführen
                         if ( defined($_) ) { 1 } else { 0 }
                     }
                 } undef, @{$p{categories}} ) {
-                run_code_not_returning($p{code_returns}, $user, undef,    $cat, \%p, $p{text}); # ohne query
-                run_code_not_returning($p{code_returns}, $user, $p{text}, $cat, \%p, $p{text}); # mit query
+                run_code_not_returning($p{code_returns}, $user, undef,    undef, $cat, \%p, $p{text}); # ohne query
+                run_code_not_returning($p{code_returns}, $user, $p{text}, undef, $cat, \%p, $p{text}); # mit query
             }
         }
     }
     note('check that the post will be visible to the right users from the right methods with the right category');
     for my $user ( map {$_->{name}} @{$p{users_see}} ) {
-        run_code_returning($p{code_returns}, $user, undef,    $p{cat}, \%p, $p{text}); # ohne query
-        run_code_returning($p{code_returns}, $user, $p{text}, $p{cat}, \%p, $p{text}); # mit query
+        run_code_returning($p{code_returns}, $user, undef,    undef, $p{cat}, \%p, $p{text}); # ohne query
+        run_code_returning($p{code_returns}, $user, $p{text}, undef, $p{cat}, \%p, $p{text}); # mit query
     }
     note('check that only the author of a post outside a private message can see the single post');
     my $act = defined($p{to}) ? 'notes' : 'forum';
     $act = 'msgs' if $p{to} ne $p{from};
     for my $user ( map { $_->{name} } values %usertable ) {
         if ( $user eq $p{from} and $act ne 'msgs' ) {
-            run_get_post_returning($act, $user, undef,    $p{cat}, \%p, $p{text}); # ohne query
-            run_get_post_returning($act, $user, $p{text}, $p{cat}, \%p, $p{text}); # mit query
+            run_get_post_returning($act, $user, undef,    undef, $p{cat}, \%p, $p{text}); # ohne query
+            run_get_post_returning($act, $user, $p{text}, undef, $p{cat}, \%p, $p{text}); # mit query
         }
         else {
-            run_get_post_not_returning($act, $user, undef,    $p{cat}, \%p, $p{text}); # ohne query
-            run_get_post_not_returning($act, $user, $p{text}, $p{cat}, \%p, $p{text}); # mit query
+            run_get_post_not_returning($act, $user, undef,    undef, $p{cat}, \%p, $p{text}); # ohne query
+            run_get_post_not_returning($act, $user, $p{text}, undef, $p{cat}, \%p, $p{text}); # mit query
         }
     }
 }, 1); # with notes

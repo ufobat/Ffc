@@ -7,15 +7,19 @@ use Mock::Controller::App;
 use Mojo::Base 'Mojolicious::Controller';
 
 sub new {
-    bless { url => '', session => {}, stash => {}, app => Mock::Controller::App->new() },
+    bless { url => '', session => {}, stash => {}, flash => {}, app => Mock::Controller::App->new() },
       shift;
 }
 sub url_for { shift->{url} . shift }
 sub session { shift->{session} }
 sub app     { shift->{app} }
 
-sub stash {
-    my $stash = shift->{stash};
+sub stash { shift->_stash('stash', @_) }
+sub flash { shift->_stash('flash', @_) }
+sub _stash {
+    my $c = shift;
+    my $skey = shift;
+    my $stash = $c->{$skey};
     my $key   = shift;
     my $value = shift;
     if ( $key and not defined $value ) {

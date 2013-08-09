@@ -15,98 +15,76 @@ use Ffc::Data::Board;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Avatars;
 
-sub _switch_category {
-    my ( $c, $cat ) = @_;
-    $c->error_handling({
-        code        => sub { Ffc::Data::General::check_category($cat) },
-        msg         => 'Die gewählte Kategorie ist ungültig.',
-        after_error => sub { $c->session->{category} = '' },
-        after_ok    => sub { $c->session->{category} = $cat },
-    });
-}
-
-sub switch_category {
-    my $c = shift;
-    $c->app->switch_act($c, 'forum');
-    _switch_category($c,$c->param('category'));
-    $c->frontpage();
-}
-
-sub msgs_user {
-    my $c = shift;
-    my $s = $c->session;
-    $c->app->switch_act($c, 'msgs');
-    $s->{msgs_username} = $c->param('msgs_username');
-    delete($s->{msgs_username}) unless $s->{msgs_username};
-    $c->frontpage();
-}
-
-sub switch_act {
-    my $c = shift;
-    $c->app->switch_act($c, $c->param('act'));
-    $c->frontpage();
-}
-
 sub get_params {
-    my ( $self, $session, $page ) = @_;
-    $page = 1 unless $page and $page =~ m/\A\d+\z/xms;
-    return 
-        $session->{user}, 
-        $page, 
-        $session->{query},
-        $session->{category},
-        $self;
+    my $c = shift;
+    return
+        $c->session->{user},
+        $c->stash('page'),
+        $c->session->{query},
+        $c->stash('msgs_username'),
+        $c->stash('category'),
+        $c;
 }
 
-sub frontpage {
+sub frontpage            { _frontpage(0, @_) }
+sub frontpage_autoreload { _frontpage(1, @_) }
+sub _frontpage {
+    my $reload = shift;
     my $c = shift;
     my $s = $c->session;
+    my $act = $c->stash('act');
+    my ( $userp, $page, $query, $msgs_username, $cat ) = $c->get_params();           
 
-    my $act = $s->{act};
+    {
+        my $prev_act = $s->{prev_act} // 'forum';
+        if ( $prev_act ne $act ) {
+            if ( $act eq 'forum' ) {
+                $c->stash('category' => $cat = $s->{prev_category});
+            }
+            $s->{prev_act} = $act;
+        }
+        if ( $act eq 'forum' ) {
+            $s->{prev_category} = $cat;
+        }
+    }
+
+    my $postid = $c->stash('postid');
+
     if ( $act eq 'options' ) {
         return Ffc::Board::Options::options_form( $c );
     }
 
-    my $page   = $c->param('page')     // 1;
-    my $postid = $c->param( 'postid' ) // '';
     my $user = $s->{user};
-    my $userid = Ffc::Data::Auth::get_userid($user);
-    $page   = 1  unless $page   =~ m/\A\d+\z/xms;
-    $postid = '' unless $postid =~ m/\A\d+\z/xms;
-    $c->stash(page   => $page);
-    $c->stash(postid => $postid);
     
-    for my $k ( qw(error post msgs_username) ) {
+    for my $k ( qw(error post) ) {
         my $d = $c->stash($k);
         $c->stash($k => '') unless $d;
     }
-    my @params = $c->get_params($s, $page);
     my $posts  = [];
-    my $cat = $s->{category};
+    my @params = $c->get_params(); #($user, $page, $s->{query}, $cat, $c);
     given ( $act ) {
         when('forum' ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_forum(@params)})}
         when('notes' ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_notes(@params)})}
         when('msgs'  ){
-            $posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_msgs(@params,$s->{msgs_username})});
-            $c->stash(userlist => $c->or_empty(sub{Ffc::Data::Board::Views::get_userlist($user)})) unless $s->{msgs_username};
+            $c->stash(userlist => $c->or_empty(sub{Ffc::Data::Board::Views::get_userlist($user)}));
+            $posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_msgs(@params,$msgs_username)});
         }
         default       {$c->error_handling({plain=>qq("$act" unbekannt)})}
     }
     if ( $postid ) {
         my @post = grep { exists($_->{id}) and defined($_->{id}) and ( $_->{id} eq $postid ) } @$posts;
         if ( @post ) {
-            $c->stash( post => $post[0] );
+            $post[0]->{raw} = $c->stash('post') if $c->stash('post');
             $post[0]->{active} = 1;
         }
     }
     $c->stash( posts => $posts);
     $c->get_counts;
-Ffc::Data::Board::Views::get_categories($user);
     $c->stash( categories => ($act eq 'forum') 
             ? $c->or_empty( sub { Ffc::Data::Board::Views::get_categories($user) } ) 
             : [] );
     $c->stash( footerlinks => $Ffc::Data::Footerlinks );
-    if ( $c->error_handling({
+    if ( $reload or $c->error_handling({
         code        => sub { Ffc::Data::Board::update_user_stats($user, $act, $cat) },
         msg         => 'Etwas ist intern schief gegangen, bitte versuchen Sie es später noch einmal.',
         after_error => sub { 

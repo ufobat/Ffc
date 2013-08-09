@@ -15,7 +15,7 @@ use Ffc::Data::Board;
 use Ffc::Data::Board::Forms;
 srand;
 
-use Test::More tests => 307;
+use Test::More tests => 347;
 
 Test::General::test_prepare();
 
@@ -139,6 +139,7 @@ qq'counting code "$t->{name}" returned zero because the database is still empty'
     );
     ok( @ret, 'something was returned' );
     my @cats = map { $_->[2] } @Test::General::Categories;
+    cmp_ok(scalar( @{ $ret[0] } ), '>', 0, 'category count ok');
     is(
         scalar( @{ $ret[0] } ),
         ( scalar(@cats) + 1 ),
@@ -150,6 +151,7 @@ qq'counting code "$t->{name}" returned zero because the database is still empty'
         is( $r->[2], 0,
             qq'return value of "$r->[1]" is zero before the actual inserts' );
     }
+    is(join('', @cats), join('', map {$_->[1]} @{ $ret[0] }), 'category order is ok');
 
     for my $i ( 0 .. 2 )
     {    # run multiple tests to test creation of category-logging
@@ -239,6 +241,7 @@ qq'counting code "$t->{name}" returned zero because the database is still empty'
         { name => 'page',  good => 1,  noemptycheck => 1 },
         { name => 'query', good => '', noemptycheck => 1 },
     );
+    my $msgsusertest = { good => '', noemptycheck => 1 };
     my $cattest = {
         name => 'category',
         good => Test::General::test_get_rand_category()->[2],
@@ -310,7 +313,7 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
         {
             my ($post) =
               check_call( $code, $name, $acttest, $posttest, $usertest,
-                @paramstest, $cattest, $controllertest );
+                @paramstest, $msgsusertest, $cattest, $controllertest );
             is(
                 $post->{raw},
                 (
@@ -407,7 +410,7 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
                 eval {
                     $post_test = $code->(
                         $act, $post->[0], $user->{name}, 1, $query,
-                        $category->[2] || undef, $controller
+                        undef, $category->[2] || undef, $controller
                     );
                 };
                 if ( $act eq 'msgs' ) {
@@ -450,11 +453,12 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
         note(
 qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
         );
-        my $controller  = Mock::Controller->new();
-        my $has_cats    = 0;
-        my $privmsgs    = 0;
-        my $asnotes     = 0;
-        my $cattest     = { good => '', noemptycheck => 1, name => 'category' };
+        my $controller   = Mock::Controller->new();
+        my $has_cats     = 0;
+        my $privmsgs     = 0;
+        my $asnotes      = 0;
+        my $cattest      = { good => '', noemptycheck => 1, name => 'category' };
+        my $msgsusertest = { good => '', noemptycheck => 1, name => 'msgsuser' };
         my $insert_code = sub {
             my $notyou   = shift;
             my $userfrom = $user->{name};
@@ -499,7 +503,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
         };
         $insert_code->();
 
-        my @ret = check_call( $code, $name, $usertest, @paramstest, $cattest,
+        my @ret = check_call( $code, $name, $usertest, @paramstest, $msgsusertest, $cattest,
             $controllertest );
         ok( @ret, 'something was returned' );
         my $allposts = [];
@@ -534,7 +538,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
             my $ret    = [];
             {
                 eval {
-                    $ret = $code->( $user->{name}, $i, '', '', $controller );
+                    $ret = $code->( $user->{name}, $i, '', '', '', $controller );
                 };
                 ok( !$@, qq'code for "$name" on page "$i" ran ok' );
                 diag($@) if $@;
@@ -585,7 +589,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
             {
                 eval {
                     $ret = $code->(
-                        $user->{name}, 0, $testpost->[1],
+                        $user->{name}, 0, $testpost->[1], '',
                         $catid,        $controller
                     );
                 };
@@ -619,7 +623,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
             {
                 eval {
                     $ret = $code->(
-                        $user->{name}, 1, $testpost->[1], '', $controller,
+                        $user->{name}, 1, $testpost->[1], '', '', $controller,
                         $secondparam
                     );
                 };
@@ -653,7 +657,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
                 {
                     eval {
                         $ret = $code->(
-                            $user->{name}, 1, '', $cat, $controller,
+                            $user->{name}, 1, '', '', $cat, $controller,
                             $secondparam
                         );
                     };
@@ -680,7 +684,7 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
                 {
                     eval {
                         $ret = $code->(
-                            $user->{name}, 1, '', $cat, $controller,
+                            $user->{name}, 1, '', '', $cat, $controller,
                             $secondparam
                         );
                     };
@@ -751,11 +755,14 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
     );
     {
         my $ret = $code->($user_s->{name});
-        ok(!grep({;$user_s->{name} eq $_->[0]} @$ret), 'session user not in user list');
+        ok(!grep({;$user_s->{name} eq $_->[0]} @$ret),  'session user not in user list');
         ok( grep({;$user_a->{name} eq $_->[0]} @$ret), 'active users in user list');
-        ok(!grep({;$user_i->{name} eq $_->[0]} @$ret), 'inactive users not in user list');
+        ok( grep({;$user_a->{name} eq $_->[0] and $_->[3]} @$ret), 'active users in user list and marked as active');
+        ok( grep({;$user_i->{name} eq $_->[0]} @$ret), 'inactive users in user list');
+        ok( grep({;$user_i->{name} eq $_->[0] and not $_->[3] } @$ret), 'inactive users in user list and marked as inactive');
+        #ok(!grep({;$user_i->{name} eq $_->[0]} @$ret), 'inactive users not in user list'); # all users are in the list, just in case for old msgs
     }
-    sleep 2;
+    sleep 1.1;
     {
         my $cnt = 10 + int rand 30;
         Ffc::Data::Board::Forms::insert_post($user_a->{name}, Test::General::test_r(), undef, $user_s->{name}) for 1 .. $cnt;
@@ -763,5 +770,67 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
         is((grep({;$user_a->{name} eq $_->[0]} @$ret))[0][1], $cnt, 'count in user list correct');
         is((grep({;$user_a->{name} eq $_->[0]} @$ret))[0][2], $time, 'timestamp in user list correct');
     }
+}
+
+{
+    note('check for new messages');
+    my $user  = Mock::Testuser->new_active_user();
+    my $user2 = Mock::Testuser->new_active_user();
+    my $user3 = Mock::Testuser->new_active_user();
+    check_call(
+        \&Ffc::Data::Board::Views::check_for_updates,
+        check_for_updates => {
+            name => 'user name',
+            good => $user->{name},
+            bad =>
+              [ '', '   ', Mock::Testuser::get_noneexisting_username() ],
+            errormsg => [
+                'Kein Benutzername angegeben',
+                'Benutzername ungültig',
+                'Benutzer unbekannt',
+            ],
+            emptyerror => 'Kein Benutzername angegeben',
+        },
+        {
+            name       => 'action',
+            good       => 'forum',
+            bad        => [ '', '   ', 'aaaaaaaaaaaaa' ],
+            emptyerror => 'Keine Aktion angegeben',
+            errormsg => [ 'Keine Aktion angegeben', 'Aktion unbekannt' ],
+        },
+        {
+            name => 'category',
+            good => Test::General::test_get_rand_category()->[2],
+            bad  => [ ' ', 'a', Test::General::test_get_non_category_short() ],
+            errormsg     => [ 'Kategoriekürzel ungültig', 'Kategorie ungültig' ],
+            noemptycheck => 1
+        },
+        {
+            name => 'user-from name',
+            good => $user2->{name},
+            bad =>
+              [ '   ', Mock::Testuser::get_noneexisting_username() ],
+            errormsg => [ '', '', 'Benutzer unbekannt' ],
+            noemptycheck => 1
+        },
+    );
+    my $insert = sub {
+        Ffc::Data::Board::Forms::insert_post( $user->{name}, 'abcd', undef, $user2->{name} );
+        Ffc::Data::Board::Forms::insert_post( $user->{name}, 'abcd', $_->[2], undef ) for @Test::General::Categories;
+    };
+    my $check = sub {
+        my $cnt = shift;
+        is(Ffc::Data::Board::Views::check_for_updates($user3->{name}, 'msgs', undef, $user->{name}), 0, 'update msgs check ok');
+        is(Ffc::Data::Board::Views::check_for_updates($user2->{name}, 'msgs', undef, $user->{name}), $cnt, 'update msgs check ok');
+        is(Ffc::Data::Board::Views::check_for_updates($user2->{name}, 'forum', $_->[2]), $cnt, qq'update cat "$_->[2]" check ok')
+            for @Test::General::Categories;
+    };
+    $insert->() for 0..2;
+    sleep 2;
+    Test::General::test_update_userstats($user2, 1);
+    $check->(0);
+    sleep 2;
+    $insert->() for 0..2;
+    $check->(3);
 }
 

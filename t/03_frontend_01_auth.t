@@ -22,29 +22,29 @@ my $t_notloggedin = sub {
       ->content_like(qr{Bitte melden Sie sich an});
     $t->get_ok('/options')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/options_email_save')->status_is(200)
+    $t->post_ok('/options/email_save')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/options_password_save')->status_is(200)
+    $t->post_ok('/options/password_save')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/options_theme_save')->status_is(200)
+    $t->post_ok('/options/theme_save')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/options_showimages_save')->status_is(200)
+    $t->post_ok('/options/showimages_save')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/optionsadmin_save')->status_is(200)
+    $t->post_ok('/options/admin_save')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
     $t->post_ok('/search')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/category/aaa')->status_is(200)
+    $t->post_ok('/forum/category/aaa')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
-    $t->get_ok('/delete/123')->status_is(200)
+    $t->get_ok('/forum/delete/123')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/delete')->status_is(200)
+    $t->post_ok('/forum/delete')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/new')->status_is(200)
+    $t->post_ok('/forum/new')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
-    $t->get_ok('/edit/123')->status_is(200)
+    $t->get_ok('/forum/edit/123')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
-    $t->post_ok('/edit/123')->status_is(200)
+    $t->post_ok('/forum/edit/123')->status_is(200)
       ->content_like(qr{Bitte melden Sie sich an});
 };
 
