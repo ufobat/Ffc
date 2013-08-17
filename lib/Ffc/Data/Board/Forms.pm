@@ -22,6 +22,7 @@ sub delete_post {
     my $dbh = Ffc::Data::dbh();
     my $sql = sprintf 'DELETE FROM '.$Ffc::Data::Prefix.'posts WHERE id=? and user_from=? AND (user_to IS NULL OR user_from=user_to);';
     $dbh->do( $sql, undef, $id, $from );
+    carp qq(Anhänge werden noch nicht gelöscht!!!);
 }
 
 sub insert_post {

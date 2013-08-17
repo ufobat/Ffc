@@ -231,6 +231,8 @@ sub check_pages {
         }
         for my $test (@tests) {
             $t->content_like(qr(<p>$test->[0]</p>));
+            my $url_attacheicon =
+              $t->app->url_for("/themes/$Ffc::Data::Theme/img/icons/attache.png");
             my $url_editicon =
               $t->app->url_for("/themes/$Ffc::Data::Theme/img/icons/edit.png");
             my $url_deleteicon = $t->app->url_for(
@@ -250,13 +252,16 @@ sub check_pages {
                 )[0];
                 my $url_edit = $t->app->url_for_me( 'edit_form', act => $act, category => $cat, postid => $id );
                 my $url_delete = $t->app->url_for_me( 'delete_check', act => $act, category => $cat, postid => $id );
+                my $url_attache = $t->app->url_for_me( 'upload_form', act => $act, category => $cat, postid => $id );
                 my $sessmsguser = $msguser;
                 $msguser = $users{$test->[1]}->{name} unless $act eq 'msgs';
                 my $url_msg = $t->app->url_for_me( 'show', act => 'msgs', cat => '', msgs_username => $msguser );
                 my $editlink =
 qr~,\s*<a href="$url_edit" title="Beitrag bearbeiten">\s*(?:<img src="$url_editicon" alt="\&Auml;ndern" />|Bearbeiten)</a>(?:\s*,\s*)?~;
                 my $deletelink =
-qr~<a href="$url_delete" title="Beitrag l\&ouml;schen">\s*(?:<img src="$url_deleteicon" alt="L\&ouml;schen" />|L&ouml;schen)</a>~;
+qr~<a href="$url_delete" title="Beitrag l\&ouml;schen">\s*(?:<img src="$url_deleteicon" alt="L\&ouml;schen" />|L&ouml;schen)</a>(?:\s*,\s*)?~;
+                my $attachelink =
+qr~<a href="$url_attache" title="Datei an den Beitrag anf\&uuml;gen">\s*(?:<img src="$url_attacheicon" alt="Anh\&auml;ngen" />|Anhang)</a>(?:\s*,\s*)?~;
                 my $msglink = ( $act eq 'msgs' && $sessmsguser && $sessmsguser eq $msguser ) ? '' :
 qr~,\s*<a href="$url_msg"\s*title="Dem Benutzer &quot;$msguser&quot; eine private Nachricht zukommen lassen">\s*(?:<img src="$url_msgicon" alt="Nachricht" />|Privatnachrichten)</a>~;
                 my $avatar = do {
@@ -272,7 +277,7 @@ qr~,\s*<a href="$url_msg"\s*title="Dem Benutzer &quot;$msguser&quot; eine privat
 
                 if ( $act eq 'notes' ) {
                     $t->content_like(
-qr~$start\s*$middle\s*$timestampre\s*$editlink\s*$deletelink\s*$end~
+qr~$start\s*$middle\s*$timestampre\s*$editlink\s*$deletelink\s*$attachelink\s*$end~
                     );
                 }
                 note('testing buttons at posts');
@@ -291,7 +296,7 @@ qr~$start\s*$user[0]\s*→\s*$user[1]\s*$middle\s*\(\s*$timestampre\s*$msglink\s
                 if ( $act eq 'forum' ) {
                     if ( $test->[1] eq $ck->{user} ) {
                         $t->content_like(
-qr~$start\s*$users{$test->[1]}->{name}\s*$middle\(\s*\s*$timestampre\s*$editlink\s*$deletelink\s*\)\s*$end~
+qr~$start\s*$users{$test->[1]}->{name}\s*$middle\(\s*\s*$timestampre\s*$editlink\s*$deletelink\s*$attachelink\s*\)\s*$end~
                         );
                     }
                     else {
