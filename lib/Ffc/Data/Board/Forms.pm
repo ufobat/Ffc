@@ -10,6 +10,7 @@ use Carp;
 use Ffc::Data;
 use Ffc::Data::Auth;
 use Ffc::Data::General;
+use Ffc::Data::Board::Upload;
 
 sub _get_userid { &Ffc::Data::Auth::get_userid }
 sub _get_category_id { &Ffc::Data::General::get_category_id }
@@ -20,9 +21,15 @@ sub delete_post {
     croak qq(Keine Postid angegeben) unless $id;
     croak qq{Postid ungültig} unless $id =~ m/\A\d+\z/xms;
     my $dbh = Ffc::Data::dbh();
-    my $sql = sprintf 'DELETE FROM '.$Ffc::Data::Prefix.'posts WHERE id=? and user_from=? AND (user_to IS NULL OR user_from=user_to);';
-    $dbh->do( $sql, undef, $id, $from );
-    carp qq(Anhänge werden noch nicht gelöscht!!!);
+    for my $r ( @{ $dbh->selectall_arrayref('SELECT number FROM '.$Ffc::Data::Prefix.'attachements WHERE postid=?', undef, $id) } ) {
+        my $path = Ffc::Data::Board::Uploads::make_path($id, $r->[0]);
+        if ( -e $path ) {
+            unlink $path or croak qq(could not delete attachement number "$r->[0]" for post: $!);
+        }
+        $dbh->do( 'DELETE FROM '.$Ffc::Data::Prefix.'attachements WHERE postid=? AND number=?', undef, $id, $r->[0] );
+    }
+    $dbh->do('DELETE FROM '.$Ffc::Data::Prefix.'posts WHERE id=? and user_from=? AND (user_to IS NULL OR user_from=user_to)', undef, $id, $from );
+    return 1;
 }
 
 sub insert_post {

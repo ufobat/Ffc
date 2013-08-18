@@ -11,7 +11,7 @@ use Ffc::Data;
 use Ffc::Data::Auth;
 use Ffc::Data::General;
 
-sub _make_path {
+sub make_path {
     my ( $postid, $anum ) = @_;
     return sprintf '%s/%d-%d', $Ffc::Data::UploadDir, $postid, $anum;
 }
@@ -54,13 +54,20 @@ sub get_attachement {
     my ( $postid, $attachementnr ) = @_;
     die qq(Ungültiger Beitrag) unless $postid        and $postid        =~ m/\A\d+\z/xms;
     die qq(Ungültiger Anhang)  unless $attachementnr and $attachementnr =~ m/\A\d+\z/xms;
-    my ( $realpath, $filename, $description );
+    my $ret = Ffc::Data::dbh()->selectall_arrayref('SELECT a.filename, a.description FROM '.$Ffc::Data::Prefix.'attachements a INNER JOIN '.$Ffc::Data::Prefix.'posts p ON a.postid=p.id WHERE a.postid=? AND a.number=? AND ( p.user_from=? OR ( p.user_to IS NULL OR p.user_to=? )', undef, $postid, $attachementnr, $userid, $userid );
+    croak qq(Anhang Nummer "$attachementnr" ist unbekannt) unless @$ret;
+    my $path = make_path($postid, $attachementnr);
+    croak qq(Anhang Nummer "$attachementnr" gibt es nicht) unless -e -r $path;
+    return @{ $ret->[0] }, $path;
 }
 
 sub get_attachement_list {
     my $userid = Ffc::Data::Auth::get_userid( shift );
     my $postid = shift;
     die qq(Ungültiger Beitrag) unless $postid and $postid =~ m/\A\d+\z/xms;
+    my $ret = Ffc::Data::dbh()->selectall_arrayref('SELECT a.filename, a.description, a.number FROM '.$Ffc::Data::Prefix.'attachements a INNER JOIN '.$Ffc::Data::Prefix.'posts p ON a.postid=p.id WHERE a.postid=? AND ( p.user_from=? OR ( p.user_to IS NULL OR p.user_to=? )', undef, $postid, $userid, $userid );
+    push @$_, make_path($postid, $_->[2]) for @$ret;
+    return grep { -e -r $_->[3] } @$ret;
 }
 
 1;

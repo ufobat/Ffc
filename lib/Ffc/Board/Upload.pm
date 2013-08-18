@@ -69,7 +69,7 @@ sub upload_delete {
 sub get_attachement {
     my $c = shift;
     $c->render_static(
-            Ffc::Data::Board::Upload::get_attachement_path($c->param('username'))
+            Ffc::Data::Board::Upload::get_attachement_path($c->session->{user})
          || "$Ffc::Data::Themedir/".$c->session->{theme}.'/img/nofile.png'
     );
 }
