@@ -13,6 +13,8 @@ use Ffc::Data::General;
 
 sub make_path {
     my ( $postid, $anum ) = @_;
+    die qq(Ungültiger Beitrag) unless $postid and $postid =~ m/\A\d+\z/xms;
+    die qq(Ungültiger Anhang)  unless $anum   and $anum   =~ m/\A\d+\z/xms;
     return sprintf '%s/%d-%d', $Ffc::Data::UploadDir, $postid, $anum;
 }
 
