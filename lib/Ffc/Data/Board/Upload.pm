@@ -67,7 +67,7 @@ sub get_attachement_list {
     die qq(Ungültiger Beitrag) unless $postid and $postid =~ m/\A\d+\z/xms;
     my $ret = Ffc::Data::dbh()->selectall_arrayref('SELECT a.filename, a.description, a.number FROM '.$Ffc::Data::Prefix.'attachements a INNER JOIN '.$Ffc::Data::Prefix.'posts p ON a.postid=p.id WHERE a.postid=? AND ( p.user_from=? OR ( p.user_to IS NULL OR p.user_to=? )', undef, $postid, $userid, $userid );
     push @$_, make_path($postid, $_->[2]) for @$ret;
-    return grep { -e -r $_->[3] } @$ret;
+    return [ grep { -e -r $_->[3] } @$ret ];
 }
 
 1;
