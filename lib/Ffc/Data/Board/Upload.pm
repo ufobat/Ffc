@@ -40,7 +40,7 @@ sub delete_upload {
     die qq(Ungültiger Beitrag) unless $postid        and $postid        =~ m/\A\d+\z/xms;
     die qq(Ungültiger Anhang)  unless $attachementnr and $attachementnr =~ m/\A\d+\z/xms;
     my $dbh = Ffc::Data::dbh();
-    unless ( $dbh->selectrow_arrayref('SELECT COUNT(a.id) FROM '.$Ffc::Data::Prefix.'posts p INNER JOIN '.$Ffc::Data::Prefix.'attachements a ON p.id = a.postid WHERE p.user_from=? AND p.id=? AND a.id=?', undef, $userid, $postid, $attachementnr)->[0] ) {
+    unless ( $dbh->selectrow_arrayref('SELECT COUNT(a.id) FROM '.$Ffc::Data::Prefix.'posts p INNER JOIN '.$Ffc::Data::Prefix.'attachements a ON p.id = a.postid WHERE p.user_from=? AND p.id=? AND a.number=?', undef, $userid, $postid, $attachementnr)->[0] ) {
         croak qq(Anhang ungültig oder Benutzer nicht berechtigt, den genannten Anhang zu löschen);
     }
     my $path = make_path($postid, $attachementnr);
