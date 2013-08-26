@@ -30,7 +30,8 @@ my @closed = qw(
     t/02_backend__01_data_04_board_04_views.t
     t/02_backend__01_data_04_board_05_datasecurity.t
     t/02_backend__01_data_04_board_06_avatars.t
-    t/02_backend__01_data_04_board_07_uploads.t
+    t/02_backend__01_data_04_board_07_uploads_01_functions.t
+    t/02_backend__01_data_04_board_07_uploads_02_datasecurity.t
     t/02_backend__01_data_05_formats2.t
     t/03_frontend_00.t
     t/03_frontend_01_auth.t
