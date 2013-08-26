@@ -15,7 +15,7 @@ use File::Temp;
 use File::Copy;
 srand;
 
-use Test::More tests => 49;
+use Test::More tests => 129;
 
 Test::General::test_prepare();
 sub r { &Test::General::test_r }
@@ -54,6 +54,7 @@ sub get_testfile {
     my $teststr = r();
     print $testfh $teststr; 
     close $testfh;
+    push @del, $testfile;
     return $testfile, $teststr;
 }
 my ( $testfile1, $teststr1 ) = get_testfile();
@@ -142,8 +143,126 @@ my $postid3 = Test::General::test_get_max_postid();
     is $ret[1], 'descr1', 'description ok';
     is $ret[2], $del[-1], 'real path ok';
 }
-note '[ $filename, $descr, $number ] = sub get_attachement_list( $username, $postid )';
-note '$one = sub delete_upload( $username, $postid, $attachementnr )';
+{
+    note '[ $filename, $descr, $number ] = sub get_attachement_list( $username, $postid )';
+    my @ret = check_call(
+        \&Ffc::Data::Board::Upload::get_attachement_list,
+        get_attachement_list =>
+        {
+            name => 'username',
+            good => $user1->{name},
+            bad  => ['', ' ', Test::General::test_get_non_username(), $user3->{name}],
+            emptyerror => 'Kein Benutzername angegeben',
+            errormsg   => ['Kein Benutzername angegeben', 'Benutzername ungültig', 'Benutzer unbekannt', 'Ungültiger Beitrag'],
+        },
+        {
+            name => 'postid',
+            good => $postid3,
+            bad  => ['', ' ', 'as'],
+            emptyerror => 'Ungültiger Beitrag',
+            errormsg => [('Ungültiger Beitrag') x 3],
+        },
+    );
+    is $ret[0][0][0], 'newfile1.dat', 'filename ok';
+    is $ret[0][0][1], 'descr1', 'description ok';
+    is $ret[0][0][2], 1, 'attachement number ok';
+    is $ret[0][0][3], $del[-1], 'real path ok';
+}
+{
+    note '$one = sub delete_upload( $username, $postid, $attachementnr )';
+    my $attid = Ffc::Data::dbh()->selectall_arrayref('SELECT MAX(a.number) FROM '.$Ffc::Data::Prefix.'attachements a WHERE a.postid=?', undef, $postid3)->[0]->[0];
+    my $delfile = $del[-1];
+    Ffc::Data::Board::Upload::upload($user1->{name}, $postid3, 'newfile2.dat', 'descr2', sub { push @del, $_[0]; copy $testfile2, $_[0] } );
+    my @ret = check_call(
+        \&Ffc::Data::Board::Upload::delete_upload,
+        delete_upload =>
+        {
+            name => 'username',
+            good => $user1->{name},
+            bad  => ['', ' ', Test::General::test_get_non_username(), $user3->{name}],
+            emptyerror => 'Kein Benutzername angegeben',
+            errormsg   => ['Kein Benutzername angegeben', 'Benutzername ungültig', 'Benutzer unbekannt', 'Ungültiger Beitrag'],
+        },
+        {
+            name => 'postid',
+            good => $postid3,
+            bad  => ['', ' ', 'as', $postid3 + 1],
+            emptyerror => 'Ungültiger Beitrag',
+            errormsg => [('Ungültiger Beitrag') x 3, 'Ungültiger Anhang'],
+        },
+        {
+            name => 'attid',
+            good => $attid,
+            bad  => ['', ' ', 'as'],
+            emptyerror => 'Ungültiger Anhang',
+        },
+    );
+    ok !-e $delfile, 'file deleted';
+    ok -e $del[-1], 'other file still exists';
+    my $ret = Ffc::Data::dbh()->selectall_arrayref('SELECT a.number, a.filename FROM '.$Ffc::Data::Prefix.'attachements a WHERE a.postid=?', undef, $postid3);
+    is @$ret, 1, 'attachement count ok';
+    is $ret->[0]->[0], 2, 'attachement number ok';
+    is $ret->[0]->[1], 'newfile2.dat', 'attachement filename ok';
+}
+{
+    note '$one = sub delete_attachements( $username, $postid )';
+    my @check;
+    Ffc::Data::Board::Upload::upload($user1->{name}, $postid1, 'newfile3.dat', 'descr3', sub { push @del, $_[0]; copy $testfile2, $_[0] } );
+    push @check, $del[-1];
+    Ffc::Data::Board::Upload::upload($user1->{name}, $postid1, 'newfile4.dat', 'descr4', sub { push @del, $_[0]; copy $testfile2, $_[0] } );
+    push @check, $del[-1];
+    Ffc::Data::Board::Upload::upload($user1->{name}, $postid1, 'newfile5.dat', 'descr5', sub { push @del, $_[0]; copy $testfile2, $_[0] } );
+    push @check, $del[-1];
+    my @ret = check_call(
+        \&Ffc::Data::Board::Upload::delete_attachements,
+        delete_upload =>
+        {
+            name => 'username',
+            good => $user1->{name},
+            bad  => ['', ' ', Test::General::test_get_non_username(), $user3->{name}],
+            emptyerror => 'Kein Benutzername angegeben',
+            errormsg   => ['Kein Benutzername angegeben', 'Benutzername ungültig', 'Benutzer unbekannt', 'Ungültiger Beitrag'],
+        },
+        {
+            name => 'postid',
+            good => $postid1,
+            bad  => ['', ' ', 'as'],
+            emptyerror => 'Ungültiger Beitrag',
+        },
+    );
+    is $ret[0], 3, 'delete count ok';
+    ok !-e $_, 'file deleted' for @check;
+    my $ret = Ffc::Data::dbh()->selectall_arrayref('SELECT COUNT(a.number) FROM '.$Ffc::Data::Prefix.'attachements a WHERE a.postid=?', undef, $postid1);
+    is $ret->[0]->[0], 0, 'attachement count ok';
+}
+{
+    note 'delete post';
+    Ffc::Data::Board::Upload::upload($user1->{name}, $postid1, 'newfile6.dat', 'descr6', sub { push @del, $_[0]; copy $testfile3, $_[0] } );
+    check_call(
+        \&Ffc::Data::Board::Forms::delete_post,
+        delete_post => {
+            name => 'user name',
+            good => $user1->{name},
+            bad  => [ '', '   ', Mock::Testuser::get_noneexisting_username() ],
+            errormsg => [
+                'Kein Benutzername angegeben',
+                'Benutzername ungültig',
+                'Benutzer unbekannt',
+            ],
+            emptyerror => 'Kein Benutzername angegeben',
+        },
+        {
+            name => 'post id',
+            good => $postid1,
+            bad  => [ '', '  ', 'aaaa' ],
+            errormsg   => [ 'Keine Postid angegeben', 'Postid ungültig' ],
+            emptyerror => 'Keine Postid angegeben',
+        },
+    );
+    ok(!(Ffc::Data::dbh()->selectrow_array('SELECT COUNT(id) FROM '.$Ffc::Data::Prefix.'posts WHERE id=?', undef, $postid1 ))[0], 'posting does not exist after deletion anymore' );
+    ok(!(Ffc::Data::dbh()->selectrow_array('SELECT COUNT(number) FROM '.$Ffc::Data::Prefix.'attachements WHERE postid=?', undef, $postid1 ))[0], 'attachements do not exist after deletion anymore' );
+    ok !-e $del[-1], 'attachement is deleted together with the post';
+}
 
-unlink $_ for @del;
+END { unlink $_ for @del }
 

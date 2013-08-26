@@ -40,14 +40,30 @@ sub delete_upload {
     die qq(Ungültiger Beitrag) unless $postid        and $postid        =~ m/\A\d+\z/xms;
     die qq(Ungültiger Anhang)  unless $attachementnr and $attachementnr =~ m/\A\d+\z/xms;
     my $dbh = Ffc::Data::dbh();
-    unless ( $dbh->selectrow_arrayref('SELECT COUNT(a.id) FROM '.$Ffc::Data::Prefix.'posts p INNER JOIN '.$Ffc::Data::Prefix.'attachements a ON p.id = a.postid WHERE p.user_from=? AND p.id=? AND a.id=?', undef, $userid, $postid, $attachementnr)->[0]->[0] ) {
+    unless ( $dbh->selectrow_arrayref('SELECT COUNT(a.id) FROM '.$Ffc::Data::Prefix.'posts p INNER JOIN '.$Ffc::Data::Prefix.'attachements a ON p.id = a.postid WHERE p.user_from=? AND p.id=? AND a.id=?', undef, $userid, $postid, $attachementnr)->[0] ) {
         croak qq(Anhang ungültig oder Benutzer nicht berechtigt, den genannten Anhang zu löschen);
     }
     my $path = make_path($postid, $attachementnr);
     unlink $path or croak qq(could not delete uploaded file "$path": $!);
     $dbh->do('DELETE FROM '.$Ffc::Data::Prefix.'attachements WHERE postid=? AND number=?', undef, $postid, $attachementnr);
-    $dbh->do('UPDATE '.$Ffc::Data::Prefix.'attachements SET number = number - 1 WHERE postid=? AND number>', undef, $postid, $attachementnr);
     return 1;
+}
+
+sub delete_attachements {
+    my $userid = Ffc::Data::Auth::get_userid( shift );
+    my $postid = shift;
+    die qq(Ungültiger Beitrag) unless $postid and $postid =~ m/\A\d+\z/xms;
+    my $dbh = Ffc::Data::dbh();
+    unless ( $dbh->selectrow_arrayref('SELECT COUNT(p.id) FROM '.$Ffc::Data::Prefix.'posts p WHERE p.user_from=? AND p.id=?', undef, $userid, $postid)->[0] ) {
+        croak 'Benutzer darf den Beitrag nicht löschen';
+    }
+    for my $r ( @{ $dbh->selectall_arrayref('SELECT number FROM '.$Ffc::Data::Prefix.'attachements WHERE postid=?', undef, $postid) } ) {
+        my $path = make_path($postid, $r->[0]);
+        if ( -e $path ) {
+            unlink $path or croak qq(could not delete attachement number "$r->[0]" for post: $!);
+        }
+    }
+    $dbh->do( 'DELETE FROM '.$Ffc::Data::Prefix.'attachements WHERE postid=?', undef, $postid );
 }
 
 sub get_attachement {
@@ -66,7 +82,8 @@ sub get_attachement_list {
     my $userid = Ffc::Data::Auth::get_userid( shift );
     my $postid = shift;
     die qq(Ungültiger Beitrag) unless $postid and $postid =~ m/\A\d+\z/xms;
-    my $ret = Ffc::Data::dbh()->selectall_arrayref('SELECT a.filename, a.description, a.number FROM '.$Ffc::Data::Prefix.'attachements a INNER JOIN '.$Ffc::Data::Prefix.'posts p ON a.postid=p.id WHERE a.postid=? AND ( p.user_from=? OR ( p.user_to IS NULL OR p.user_to=? )', undef, $postid, $userid, $userid );
+    my $ret = Ffc::Data::dbh()->selectall_arrayref('SELECT a.filename, a.description, a.number FROM '.$Ffc::Data::Prefix.'attachements a INNER JOIN '.$Ffc::Data::Prefix.'posts p ON a.postid=p.id WHERE a.postid=? AND ( p.user_from=? OR ( p.user_to IS NULL OR p.user_to=? ) )', undef, $postid, $userid, $userid );
+    return [] unless @$ret;
     push @$_, make_path($postid, $_->[2]) for @$ret;
     return [ grep { -e -r $_->[3] } @$ret ];
 }

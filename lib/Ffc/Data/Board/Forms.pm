@@ -16,18 +16,12 @@ sub _get_userid { &Ffc::Data::Auth::get_userid }
 sub _get_category_id { &Ffc::Data::General::get_category_id }
 
 sub delete_post {
-    my ( $from, $id ) = @_;
-    $from = _get_userid( $from, 'Auto des zu löschenden Beitrages' );
+    my ( $username, $id ) = @_;
+    my $from = _get_userid( $username, 'Autor des zu löschenden Beitrages' );
     croak qq(Keine Postid angegeben) unless $id;
     croak qq{Postid ungültig} unless $id =~ m/\A\d+\z/xms;
+    Ffc::Data::Board::Upload::delete_attachements($username, $id);
     my $dbh = Ffc::Data::dbh();
-    for my $r ( @{ $dbh->selectall_arrayref('SELECT number FROM '.$Ffc::Data::Prefix.'attachements WHERE postid=?', undef, $id) } ) {
-        my $path = Ffc::Data::Board::Uploads::make_path($id, $r->[0]);
-        if ( -e $path ) {
-            unlink $path or croak qq(could not delete attachement number "$r->[0]" for post: $!);
-        }
-        $dbh->do( 'DELETE FROM '.$Ffc::Data::Prefix.'attachements WHERE postid=? AND number=?', undef, $id, $r->[0] );
-    }
     $dbh->do('DELETE FROM '.$Ffc::Data::Prefix.'posts WHERE id=? and user_from=? AND (user_to IS NULL OR user_from=user_to)', undef, $id, $from );
     return 1;
 }
