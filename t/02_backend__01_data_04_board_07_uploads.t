@@ -15,10 +15,11 @@ use File::Temp;
 use File::Copy;
 srand;
 
-use Test::More tests => 47;
+use Test::More tests => 49;
 
 Test::General::test_prepare();
 sub r { &Test::General::test_r }
+my @del;
 
 use_ok('Ffc::Data::Board::Upload');
 
@@ -56,6 +57,8 @@ sub get_testfile {
     return $testfile, $teststr;
 }
 my ( $testfile1, $teststr1 ) = get_testfile();
+my ( $testfile2, $teststr2 ) = get_testfile();
+my ( $testfile3, $teststr3 ) = get_testfile();
 
 my $poststr1 = r();
 my $poststr2 = r();
@@ -99,13 +102,17 @@ my $postid3 = Test::General::test_get_max_postid();
         },
         {
             name => 'move_to_code',
-            good => sub { copy $testfile1, $_[0] },
+            good => sub { push @del, $_[0]; copy $testfile1, $_[0] },
             bad  => ['', ' ', 'asd'],
             emptyerror => 'Weiß nicht, was ich mit der Datei machen soll',
         },
     );
+    ok $ret[0], 'upload successful';
+    ok -e $del[-1], 'file created';
 }
 note '( $filename, $descr, $path ) = sub get_attachement( $username, $postid, $attachementnr )';
 note '[ $filename, $descr, $number ] = sub get_attachement_list( $username, $postid )';
 note '$one = sub delete_upload( $username, $postid, $attachementnr )';
+
+unlink $_ for @del;
 
