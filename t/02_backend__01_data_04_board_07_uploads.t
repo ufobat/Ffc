@@ -84,7 +84,7 @@ my $postid3 = Test::General::test_get_max_postid();
         },
         {
             name => 'postid',
-            good => $postid1,
+            good => $postid3,
             bad  => ['', ' ', 'as', $postid3 + 1],
             emptyerror => 'Ungültiger Beitrag',
             errormsg   => [],
@@ -110,7 +110,38 @@ my $postid3 = Test::General::test_get_max_postid();
     ok $ret[0], 'upload successful';
     ok -e $del[-1], 'file created';
 }
-note '( $filename, $descr, $path ) = sub get_attachement( $username, $postid, $attachementnr )';
+{
+    note '( $filename, $descr, $path ) = sub get_attachement( $username, $postid, $attachementnr )';
+    my $attid = Ffc::Data::dbh()->selectall_arrayref('SELECT MAX(a.number) FROM '.$Ffc::Data::Prefix.'attachements a WHERE a.postid=?', undef, $postid3)->[0]->[0];
+    my @ret = check_call(
+        \&Ffc::Data::Board::Upload::get_attachement,
+        get_attachement =>
+        {
+            name => 'username',
+            good => $user1->{name},
+            bad  => ['', ' ', Test::General::test_get_non_username(), $user3->{name}],
+            emptyerror => 'Kein Benutzername angegeben',
+            errormsg   => ['Kein Benutzername angegeben', 'Benutzername ungültig', 'Benutzer unbekannt', 'Ungültiger Beitrag'],
+        },
+        {
+            name => 'postid',
+            good => $postid3,
+            bad  => ['', ' ', 'as', $postid3 + 1],
+            emptyerror => 'Ungültiger Beitrag',
+            errormsg => [('Ungültiger Beitrag') x 3, 'Ungültiger Anhang'],
+        },
+        {
+            name => 'attid',
+            good => $attid,
+            bad  => ['', ' ', 'as', $attid + 1],
+            emptyerror => 'Ungültiger Anhang',
+            errormsg => [('Ungültiger Anhang') x 3, sprintf 'Anhang Nummer "%d" ist unbekannt', $attid + 1],
+        },
+    );
+    is $ret[0], 'newfile1.dat', 'filename ok';
+    is $ret[1], 'descr1', 'description ok';
+    is $ret[2], $del[-1], 'real path ok';
+}
 note '[ $filename, $descr, $number ] = sub get_attachement_list( $username, $postid )';
 note '$one = sub delete_upload( $username, $postid, $attachementnr )';
 
