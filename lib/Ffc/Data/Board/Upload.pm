@@ -21,17 +21,16 @@ sub make_path {
 sub upload {
     my $userid = Ffc::Data::Auth::get_userid( shift );
     my ( $postid, $newfile, $description, $move_to_code ) = @_;
-    croak qq(Dateiname fehlt) unless $newfile;
-    $description = '' unless $description;
-    croak qq(Weiß nicht, was ich mit der Datei machen soll) unless $move_to_code and 'CODE' eq ref $move_to_code;
     die qq(Ungültiger Beitrag) unless $postid and $postid =~ m/\A\d+\z/xms;
-    die qq(Dateiname ungültig) unless $newfile and $newfile =~ m/\A[-\.\w]{1,255}\z/xms;
-    die qq(Beschreibung ungültig) if $description and $description !~ m/\A.{1,255}\z/xms;
     my $dbh = Ffc::Data::dbh();
+    die qq(Ungültiger Beitrag für den Benutzer um Anhänge dran zu hängen) unless $dbh->selectall_arrayref('SELECT COUNT(p.id) FROM '.$Ffc::Data::Prefix.'posts p WHERE p.user_from=? AND p.id=?', undef, $userid, $postid)->[0]->[0];
+    die qq(Dateiname ungültig) unless $newfile and $newfile =~ m/\A[-\.\w]{1,255}\z/xms;
+    $description = $newfile unless $description and $description !~ m/\A.{1,255}\z/xms;
+    croak qq(Weiß nicht, was ich mit der Datei machen soll) unless $move_to_code and 'CODE' eq ref $move_to_code;
     my $anum = 1 + $dbh->selectall_arrayref('SELECT COUNT(a.id) FROM '.$Ffc::Data::Prefix.'posts p LEFT OUTER JOIN '.$Ffc::Data::Prefix.'attachements a ON a.postid=p.id WHERE p.user_from=? and p.id=?', undef, $userid, $postid)->[0]->[0];
-    my $newpath = _make_path($postid, $anum);
-    $move_to_code->($newpath) or croak qq(could not move upload file to upload storage directory "$Ffc::Data::UploadDir": $!);
-    $dbh->('INSERT INTO '.$Ffc::Data::Prefix.'attachements (postid, number, filename, description) VALUES (?,?,?,?)', undef, $postid, $anum, $newpath, $description);
+    my $newpath = make_path($postid, $anum);
+    $move_to_code->($newpath) or croak qq(Kann die Anhangsdatei nicht im Speicher "$Ffc::Data::UploadDir" ablegen: $!);
+    $dbh->do('INSERT INTO '.$Ffc::Data::Prefix.'attachements (postid, number, filename, description) VALUES (?,?,?,?)', undef, $postid, $anum, $newpath, $description);
     return 1;
 }
 
@@ -44,7 +43,7 @@ sub delete_upload {
     unless ( $dbh->selectrow_arrayref('SELECT COUNT(a.id) FROM '.$Ffc::Data::Prefix.'posts p INNER JOIN '.$Ffc::Data::Prefix.'attachements a ON p.id = a.postid WHERE p.user_from=? AND p.id=? AND a.id=?', undef, $userid, $postid, $attachementnr)->[0]->[0] ) {
         croak qq(Anhang ungültig oder Benutzer nicht berechtigt, den genannten Anhang zu löschen);
     }
-    my $path = _make_path($postid, $attachementnr);
+    my $path = make_path($postid, $attachementnr);
     unlink $path or croak qq(could not delete uploaded file "$path": $!);
     $dbh->do('DELETE FROM '.$Ffc::Data::Prefix.'attachements WHERE postid=? AND number=?', undef, $postid, $attachementnr);
     $dbh->do('UPDATE '.$Ffc::Data::Prefix.'attachements SET number = number - 1 WHERE postid=? AND number>', undef, $postid, $attachementnr);
