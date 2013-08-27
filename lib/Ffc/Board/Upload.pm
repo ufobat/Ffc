@@ -68,10 +68,18 @@ sub upload_delete {
 
 sub get_attachement {
     my $c = shift;
-    $c->render_static(
-            Ffc::Data::Board::Upload::get_attachement_path($c->session->{user})
-         || "$Ffc::Data::Themedir/".$c->session->{theme}.'/img/nofile.png'
-    );
+    my $postid = $c->param('postid');
+    my $number = $c->param('number');
+    my $user   = $c->session()->{user};
+    my $attachement = $c->or_empty(sub { Ffc::Data::Board::Upload::get_attachement($user, $postid, $number) });
+    my $path;
+    if ( @$attachement and -e $attachement->[2] ) {
+        $path = $attachement->[2];
+    }
+    else {
+        $path = "$Ffc::Data::Themedir/".$c->session->{theme}.'/img/nofile.png';
+    }
+    $c->render_static($path);
 }
 
 1;

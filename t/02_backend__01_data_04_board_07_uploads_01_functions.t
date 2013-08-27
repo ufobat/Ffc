@@ -15,7 +15,7 @@ use File::Temp;
 use File::Copy;
 srand;
 
-use Test::More tests => 131;
+use Test::More tests => 163;
 
 Test::General::test_prepare();
 sub r { &Test::General::test_r }
@@ -48,6 +48,27 @@ for ( 1..3 ) {
         },
     );
     is $ret[0], "$Ffc::Data::UploadDir/$postid-$anum", 'path ok';
+}
+for ( 1..3 ) {
+    note '$dir = sub make_path( $postid, $anum )';
+    my ( $postid, $anum ) = map { 3 + int rand 99 } 0 .. 1;
+    my @ret = check_call(
+        \&Ffc::Data::Board::Upload::make_url,
+        make_path =>
+        {
+            name => 'postid',
+            good => $postid,
+            bad  => ['', ' ', 'as'],
+            emptyerror => 'Ungültiger Beitrag',
+        },
+        {
+            name => 'anum',
+            good => $anum,
+            bad  => ['', ' ', 'as'],
+            emptyerror => 'Ungültiger Anhang',
+        },
+    );
+    is $ret[0], "$Ffc::Data::UploadUrl/$postid-$anum", 'path ok';
 }
 
 sub get_testfile {
@@ -140,9 +161,10 @@ my $postid3 = Test::General::test_get_max_postid();
             errormsg => [('Ungültiger Anhang') x 3, sprintf 'Anhang Nummer "%d" ist unbekannt', $attid + 1],
         },
     );
-    is $ret[0], 'newfile1.dat', 'filename ok';
-    is $ret[1], 'descr1', 'description ok';
-    is $ret[2], $del[-1], 'real path ok';
+    is $ret[0][0], 'newfile1.dat', 'filename ok';
+    is $ret[0][1], 'descr1', 'description ok';
+    like $ret[0][2], qr/$Ffc::Data::UploadUrl/, 'url ok';
+    is $ret[0][3], $del[-1], 'real path ok';
 }
 {
     note '[ $filename, $descr, $number ] = sub get_attachement_list( $username, $postid )';
@@ -168,7 +190,8 @@ my $postid3 = Test::General::test_get_max_postid();
     is $ret[0][0][1], 'descr1', 'description ok';
     is $ret[0][0][2], 1, 'attachement number ok';
     is $ret[0][0][3], $postid3, 'postid ok';
-    is $ret[0][0][4], $del[-1], 'real path ok';
+    like $ret[0][0][4], qr/$Ffc::Data::UploadUrl/, 'url ok';
+    is $ret[0][0][5], $del[-1], 'real path ok';
 }
 {
     note '$one = sub delete_upload( $username, $postid, $attachementnr )';

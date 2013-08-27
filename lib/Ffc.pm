@@ -4,7 +4,7 @@ use Ffc::Auth;
 use Ffc::Data;
 use Ffc::Data::Auth;
 
-our @Keys = qw(act page category msgs_username postid);
+our @Keys = qw(act page category msgs_username postid number);
 
 # This method will run once at server start
 sub startup {
@@ -149,8 +149,11 @@ sub startup {
         {
             my $upload = $r->route('/upload');
             $upload->route('/show/:postid/:number', postid => qr(\d+), number => qr(\d+))->via('get')->to('board#get_attachement')->name("upload_show$name");
-            $upload->route('/add/:postid', postid => qr(\d+))->via('get')->to('board#upload_form')->name("upload_form$name");
-            $upload->route('/add/:postid', postid => qr(\d+))->via('post')->to('board#upload')->name("upload$name");
+
+            my $uploadadd = $upload->route('/add');
+            $uploadadd->route('/:postid', postid => qr(\d+))->via('get')->to('board#upload_form')->name("upload_form$name");
+            $uploadadd->route('/:postid', postid => qr(\d+))->via('post')->to('board#upload')->name("upload$name");
+            
             my $uploaddelete = $upload->route('/delete/:postid', postid => qr(\d+));
             $uploaddelete->route('/:number', number => qr(\d+))->via('get')->to('board#upload_delete_check')->name("upload_delete_check$name");
             $uploaddelete->route('/:number', number => qr(\d+))->via('post')->to('board#upload_delete')->name("upload_delete$name");
