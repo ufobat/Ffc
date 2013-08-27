@@ -150,9 +150,9 @@ sub startup {
             my $upload = $r->route('/upload');
             $upload->route('/:postid', postid => qr(\d+))->via('get')->to('board#upload_form')->name("upload_form$name");
             $upload->route('/:postid', postid => qr(\d+))->via('post')->to('board#upload')->name("upload$name");
-            my $uploaddelete = $upload->route('/delete');
-            $uploaddelete->route('/:uploadid', uploadid => qr(\d+))->via('get')->to('board#upload_delete_check')->name("upload_delete_check$name");
-            $uploaddelete->route('/:uploadid', uploadid => qr(\d+))->via('post')->to('board#upload_delete')->name("upload_delete$name");
+            my $uploaddelete = $upload->route('/delete/:postid', postid => qr(\d+));
+            $uploaddelete->route('/:number', number => qr(\d+))->via('get')->to('board#upload_delete_check')->name("upload_delete_check$name");
+            $uploaddelete->route('/:number', number => qr(\d+))->via('post')->to('board#upload_delete')->name("upload_delete$name");
         }
 
         if ( $name ne '_msgs' ) { # private messages are immutable

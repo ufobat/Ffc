@@ -27,7 +27,7 @@ sub upload {
     die qq(Dateiname ungültig) unless $newfile and $newfile =~ m/\A[-\.\w]{1,255}\z/xms;
     $description = $newfile unless $description and $description =~ m/\A.{1,255}\z/xms;
     croak qq(Weiß nicht, was ich mit der Datei machen soll) unless $move_to_code and 'CODE' eq ref $move_to_code;
-    my $anum = 1 + $dbh->selectall_arrayref('SELECT COUNT(a.id) FROM '.$Ffc::Data::Prefix.'posts p LEFT OUTER JOIN '.$Ffc::Data::Prefix.'attachements a ON a.postid=p.id WHERE p.user_from=? and p.id=?', undef, $userid, $postid)->[0]->[0];
+    my $anum = 1 + $dbh->selectall_arrayref('SELECT COUNT(a.number) FROM '.$Ffc::Data::Prefix.'posts p LEFT OUTER JOIN '.$Ffc::Data::Prefix.'attachements a ON a.postid=p.id WHERE p.user_from=? and p.id=?', undef, $userid, $postid)->[0]->[0];
     my $newpath = make_path($postid, $anum);
     $move_to_code->($newpath) or croak qq(Kann die Anhangsdatei nicht im Speicher "$Ffc::Data::UploadDir" ablegen: $!);
     $dbh->do('INSERT INTO '.$Ffc::Data::Prefix.'attachements (postid, number, filename, description) VALUES (?,?,?,?)', undef, $postid, $anum, $newfile, $description);
@@ -40,7 +40,7 @@ sub delete_upload {
     die qq(Ungültiger Beitrag) unless $postid        and $postid        =~ m/\A\d+\z/xms;
     die qq(Ungültiger Anhang)  unless $attachementnr and $attachementnr =~ m/\A\d+\z/xms;
     my $dbh = Ffc::Data::dbh();
-    unless ( $dbh->selectrow_arrayref('SELECT COUNT(a.id) FROM '.$Ffc::Data::Prefix.'posts p INNER JOIN '.$Ffc::Data::Prefix.'attachements a ON p.id = a.postid WHERE p.user_from=? AND p.id=? AND a.number=?', undef, $userid, $postid, $attachementnr)->[0] ) {
+    unless ( $dbh->selectrow_arrayref('SELECT COUNT(a.number) FROM '.$Ffc::Data::Prefix.'posts p INNER JOIN '.$Ffc::Data::Prefix.'attachements a ON p.id = a.postid WHERE p.user_from=? AND p.id=? AND a.number=?', undef, $userid, $postid, $attachementnr)->[0] ) {
         croak qq(Anhang ungültig oder Benutzer nicht berechtigt, den genannten Anhang zu löschen);
     }
     my $path = make_path($postid, $attachementnr);

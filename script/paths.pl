@@ -94,6 +94,7 @@ my @public = qw(
     public/themes/default/css
     public/themes/default/css/style.css
     public/themes/default/img
+    public/themes/default/img/nofile.png
     public/themes/default/img/avatar.png
     public/themes/default/img/favicon.png
     public/themes/default/img/hg.png
@@ -124,6 +125,7 @@ my @public = qw(
     public/themes/nostyle/css
     public/themes/nostyle/css/style.css
     public/themes/nostyle/img
+    public/themes/nostyle/img/nofile.png
     public/themes/nostyle/img/avatar.png
     public/themes/nostyle/img/favicon.png
     public/themes/nostyle/img/smileys

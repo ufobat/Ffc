@@ -2,7 +2,7 @@
 %= include 'parts/postbox', post => $post, postid => ''
 <div class="postbox uploadform">
   <h2>Eine Datei zum gezeigten Posting hochladen</h2>
-%= form_for 'upload' => ( method => 'POST' ) => begin
+%= form_for 'upload' => ( method => 'POST', enctype => 'multipart/form-data' ) => begin
 %= hidden_field postid => $postid
   <p><input type="file" name="attachedfile" /></p>
   <p><input type="text" name="description" class="description" /></p>

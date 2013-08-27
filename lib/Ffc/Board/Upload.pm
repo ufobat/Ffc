@@ -52,10 +52,10 @@ sub upload {
             },
             msg => 'Datei konnte nicht hochgeladen werden',
             after_ok =>
-              sub { $c->info('Datei wurde hochgeladen'); $c->frontpage() },
+              sub { $c->info('Datei wurde hochgeladen'); $c->redirect_to_show() },
         }
     );
-    $c->frontpage();
+    $c->redirect_to_show();
 }
 
 sub upload_delete_check {
