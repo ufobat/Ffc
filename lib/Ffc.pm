@@ -148,8 +148,9 @@ sub startup {
         # file uploads
         {
             my $upload = $r->route('/upload');
-            $upload->route('/:postid', postid => qr(\d+))->via('get')->to('board#upload_form')->name("upload_form$name");
-            $upload->route('/:postid', postid => qr(\d+))->via('post')->to('board#upload')->name("upload$name");
+            $upload->route('/show/:postid/:number', postid => qr(\d+), number => qr(\d+))->via('get')->to('board#get_attachement')->name("upload_show$name");
+            $upload->route('/add/:postid', postid => qr(\d+))->via('get')->to('board#upload_form')->name("upload_form$name");
+            $upload->route('/add/:postid', postid => qr(\d+))->via('post')->to('board#upload')->name("upload$name");
             my $uploaddelete = $upload->route('/delete/:postid', postid => qr(\d+));
             $uploaddelete->route('/:number', number => qr(\d+))->via('get')->to('board#upload_delete_check')->name("upload_delete_check$name");
             $uploaddelete->route('/:number', number => qr(\d+))->via('post')->to('board#upload_delete')->name("upload_delete$name");

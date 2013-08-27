@@ -79,13 +79,14 @@ sub get_attachement {
 }
 
 sub get_attachement_list {
-    my $userid = Ffc::Data::Auth::get_userid( shift );
+    my $userid = shift;
+    Ffc::Data::Auth::check_userid_rules($userid);
     my $postid = shift;
     die qq(Ungültiger Beitrag) unless $postid and $postid =~ m/\A\d+\z/xms;
-    my $ret = Ffc::Data::dbh()->selectall_arrayref('SELECT a.filename, a.description, a.number FROM '.$Ffc::Data::Prefix.'attachements a INNER JOIN '.$Ffc::Data::Prefix.'posts p ON a.postid=p.id WHERE a.postid=? AND ( p.user_from=? OR ( p.user_to IS NULL OR p.user_to=? ) )', undef, $postid, $userid, $userid );
+    my $ret = Ffc::Data::dbh()->selectall_arrayref('SELECT a.filename, a.description, a.number, a.postid FROM '.$Ffc::Data::Prefix.'attachements a INNER JOIN '.$Ffc::Data::Prefix.'posts p ON a.postid=p.id WHERE a.postid=? AND ( p.user_from=? OR ( p.user_to IS NULL OR p.user_to=? ) )', undef, $postid, $userid, $userid );
     return [] unless @$ret;
     push @$_, make_path($postid, $_->[2]) for @$ret;
-    return [ grep { -e -r $_->[3] } @$ret ];
+    return [ grep { -e -r $_->[4] } @$ret ];
 }
 
 1;

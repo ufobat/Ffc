@@ -1,0 +1,6 @@
+% if ( session->{show_images} and $att->[0] =~ m/(?:png|jpg|jpeg|bmp|gif)\z/xmsi ) {
+<img class="extern" src="<%= url_for_me 'upload_show', postid => $att->[3], number => $att->[2] %>" alt="<%= $att->[1] %>" /> <%= $att->[1] %>
+% } else {
+<a href="<%= url_for_me 'upload_show', postid => $att->[3], number => $att->[2] %>" title="<%= $att->[1] %>"><%= $att->[0] %><% if ($att->[0] ne $att->[1]) { %>, <%= $att->[1] %><% } %></a>
+% }
+<% if ( $ownpost ) { %> (<a href="<%= url_for_me upload_delete_check => postid => $att->[3], number => $att->[2] %>" title="Anhäng entfernen">Löschen</a>)<% } %>

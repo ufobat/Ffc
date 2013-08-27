@@ -159,6 +159,7 @@ my @public = qw(
     templates/board/deletecheck.html.ep
     templates/board/frontpage.html.ep
     templates/board/optionsform.html.ep
+    templates/parts/attachement.html.ep
     templates/board/uploadform.html.ep
     templates/layouts
     templates/layouts/default.html.ep

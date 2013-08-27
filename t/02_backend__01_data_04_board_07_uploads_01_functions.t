@@ -15,7 +15,7 @@ use File::Temp;
 use File::Copy;
 srand;
 
-use Test::More tests => 129;
+use Test::More tests => 131;
 
 Test::General::test_prepare();
 sub r { &Test::General::test_r }
@@ -26,6 +26,7 @@ use_ok('Ffc::Data::Board::Upload');
 my $user1 = Mock::Testuser->new_active_user();
 my $user2 = Mock::Testuser->new_active_user();
 my $user3 = Mock::Testuser->new_active_user();
+$_->{id} = Ffc::Data::Auth::get_userid($_->{name}) for $user1, $user2, $user3;
 
 for ( 1..3 ) {
     note '$dir = sub make_path( $postid, $anum )';
@@ -149,11 +150,11 @@ my $postid3 = Test::General::test_get_max_postid();
         \&Ffc::Data::Board::Upload::get_attachement_list,
         get_attachement_list =>
         {
-            name => 'username',
-            good => $user1->{name},
-            bad  => ['', ' ', Test::General::test_get_non_username(), $user3->{name}],
-            emptyerror => 'Kein Benutzername angegeben',
-            errormsg   => ['Kein Benutzername angegeben', 'Benutzername ungültig', 'Benutzer unbekannt', 'Ungültiger Beitrag'],
+            name => 'userid',
+            good => $user1->{id},
+            bad  => ['', ' ', 'aa', Mock::Testuser::get_noneexisting_userid(), $user3->{id}],
+            emptyerror => 'Keine Benutzerid angegeben',
+            errormsg   => ['Keine Benutzerid angegeben', 'Benutzer ungültig', 'Benutzer ungültig', 'Ungültiger Beitrag'],
         },
         {
             name => 'postid',
@@ -166,7 +167,8 @@ my $postid3 = Test::General::test_get_max_postid();
     is $ret[0][0][0], 'newfile1.dat', 'filename ok';
     is $ret[0][0][1], 'descr1', 'description ok';
     is $ret[0][0][2], 1, 'attachement number ok';
-    is $ret[0][0][3], $del[-1], 'real path ok';
+    is $ret[0][0][3], $postid3, 'postid ok';
+    is $ret[0][0][4], $del[-1], 'real path ok';
 }
 {
     note '$one = sub delete_upload( $username, $postid, $attachementnr )';

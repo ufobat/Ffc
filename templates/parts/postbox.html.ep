@@ -40,6 +40,16 @@
     </h2>
 % unless ( $post->{active} ) {
     <%== $post->{text} %>
+%   if ( @{ $post->{attachements} } ) {
+    <h3 class="attachementtitle">Anhänge:</h3>
+    <ul class="attachements">
+%   }
+%   for ( @{ $post->{attachements} } ) {
+      <li><%= include 'parts/attachement', att => $_, ownpost => $post->{ownpost} %></li>
+%   }
+%   if ( @{ $post->{attachements} } ) {
+    </ul>
+%   }
 % } else {
     <%== $post->{start} %>
 % }

@@ -11,6 +11,7 @@ use Ffc::Data;
 use Ffc::Data::Auth;
 use Ffc::Data::Formats;
 use Ffc::Data::General;
+use Ffc::Data::Board::Upload;
 
 sub _get_userid { &Ffc::Data::Auth::get_userid }
 sub _get_username { &Ffc::Data::Auth::get_username }
@@ -220,6 +221,7 @@ sub _get_stuff {
     my $p = $Ffc::Data::Prefix;
     $cat = undef unless $act eq 'forum';
     $page = 1 unless $page and $page =~ m/\A\d+\z/xms;
+    my $user   = $c->session->{user};
     if ( $query ) {
         push @params, "\%$query\%";
         $q = q{AND UPPER(p.textdata) LIKE UPPER(?)};
@@ -256,13 +258,14 @@ EOSQL
 #die Data::Dumper::Dumper( { sql => $sql, userid => $userid, params => \@params, query => [( $query ? "\%$query\%" : () )], cat => [$cat, $cat, $cat]});
     return [ map { my $d = $_;
             $d = {
-                text       => Ffc::Data::Formats::format_text($d->[1], $c),
-                start      => Ffc::Data::Formats::format_text(do {(split /\n/, $d->[1])[0] // ''}, $c),
-                raw        => $d->[1],
-                active     => 0,
-                avatar     => $d->[11] ? $d->[6] : '',
-                newpost    => $d->[12],
-                timestamp  => Ffc::Data::Formats::format_timestamp($d->[2]),
+                text         => Ffc::Data::Formats::format_text($d->[1], $c),
+                start        => Ffc::Data::Formats::format_text(do {(split /\n/, $d->[1])[0] // ''}, $c),
+                raw          => $d->[1],
+                active       => 0,
+                avatar       => $d->[11] ? $d->[6] : '',
+                newpost      => $d->[12],
+                timestamp    => Ffc::Data::Formats::format_timestamp($d->[2]),
+                attachements => Ffc::Data::Board::Upload::get_attachement_list($userid, $d->[0]),
                 ( $d->[5] == $userid 
                     ? (ownpost => 1, uploadable => 1) 
                     : (ownpost => 0, uploadable => 0) ),

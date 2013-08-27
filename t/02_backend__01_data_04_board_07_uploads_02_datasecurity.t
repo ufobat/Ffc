@@ -25,6 +25,7 @@ use_ok('Ffc::Data::Board::Upload');
 my $u1 = Mock::Testuser->new_active_user();
 my $u2 = Mock::Testuser->new_active_user();
 my $u3 = Mock::Testuser->new_active_user();
+$_->{id} = Ffc::Data::Auth::get_userid($_->{name}) for $u1, $u2, $u3;
 
 my @del;
 
@@ -76,7 +77,7 @@ for my $t ( @testmatrix ) {
     note 'check who can see';
     for my $u ( @$avail ) {
         note '[ $filename, $descr, $number ] = sub get_attachement_list( $username, $postid )';
-        my $ret = Ffc::Data::Board::Upload::get_attachement_list($u->{name}, $postid);
+        my $ret = Ffc::Data::Board::Upload::get_attachement_list($u->{id}, $postid);
         is @$ret, 3, 'correct count of attachements';
         note '( $filename, $descr, $path ) = sub get_attachement( $username, $postid, $attachementnr )';
         my @ret = Ffc::Data::Board::Upload::get_attachement($u->{name}, $postid, $attid);
@@ -87,7 +88,7 @@ for my $t ( @testmatrix ) {
     note q[check who can't see];
     for my $u ( @$hidden ) {
         note '[ $filename, $descr, $number ] = sub get_attachement_list( $username, $postid )';
-        my $ret = Ffc::Data::Board::Upload::get_attachement_list($u->{name}, $postid);
+        my $ret = Ffc::Data::Board::Upload::get_attachement_list($u->{id}, $postid);
         is @$ret, 0, 'correct count of attachements';
         note '( $filename, $descr, $path ) = sub get_attachement( $username, $postid, $attachementnr )';
         eval { Ffc::Data::Board::Upload::get_attachement($u->{name}, $postid, $attid) };

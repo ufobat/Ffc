@@ -9,9 +9,17 @@ body > div {
     padding: .25em .5em 1em .5em;
     margin-top: .5em;
 }
+.attachementtitle {
+    font-weight: normal;
+}
 .postbox h2 {
-    font-size: .75em;
     border-bottom: 1px silver solid;
+}
+.attachements {
+    font-size: .75em;
+}
+.postbox h2, .attachementtitle {
+    font-size: .75em;
     color: #666;
 }
 .postbox img {
