@@ -74,9 +74,11 @@ sub get_attachement {
     my $attachement = $c->or_empty(sub { Ffc::Data::Board::Upload::get_attachement($user, $postid, $number) });
     my $path;
     if ( @$attachement and -e $attachement->[2] ) {
+        $c->res->headers->header('Content-Disposition' => "attachment;filename=$attachement->[0]");
         $path = $attachement->[2];
     }
     else {
+        $c->res->headers->header('Content-Disposition' => "attachment;filename=nofile.png");
         $path = "$Ffc::Data::Themedir/".$c->session->{theme}.'/img/nofile.png';
     }
     $c->render_static($path);
