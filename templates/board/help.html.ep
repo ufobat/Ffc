@@ -1,6 +1,11 @@
 % layout 'login';
 % title 'Hilfe';
 <div class="postbox helptext">
+    <h2>Beiträge erstellen</h2>
+    <p>Über das Textfeld im oberen Bereich der Webseite können Beiträge erstellt werden. Diese erscheinen dann in der ausgewählten Kategorie. Bei Privatnachrichten muss vorher ein Konversationsteilnehmer ausgewählt werden.</p>
+    <p>Wird zwischenzeitlich ein Beitrag von einem anderen Benutzer in der selben Kategorie oder Konversation erstellt, während man selber einen Beitrag schreibt, erscheint eine Warnung. Dann kann man den Beitrag gegebenenfalls noch einmal überarbeiten, muss ihn aber dann noch einmal explizit speichern.</p>
+</div>
+<div class="postbox helptext">
     <h2>Textformatierungen</h2>
     <p>Folgende Formatierungsmöglichkeiten bestehen. Sie funktionieren derzeit nur für Buchstaben und Wörter. Anstatt von Leerzeichen zwischen Wörtern müssen die entsprechenden Formatierungszeichen verwendet werden.</p> 
     <ul>
@@ -21,6 +26,19 @@
     <p>Die Vorschau wird dabei lediglich verkleinert dargestellt, im Hintergrund wird das Bild vollständig geladen. Deswegen ist es ratsam, die Bilder nicht zu groß zu wählen, aus Rücksicht auf Mitbenutzer mit smalen Internetleitungen (mobiles Surfen, Arbeitsplatz).</p>
     <p>In den Optionen kann über ein entsprechendes Häkchen eingestellt werden, dass die Vorschaubilder nicht angezeigt werden und nur als Links repräsentiert werden, was zum Beispiel am Arbeitsplatz durchaus sinnvoll sein kann.</p>
     <p>Bilder werden generell mit einem Link versehen, der diese Bilder auf einer Extra-Seite in Vollgröße anzeigt im Browser, wenn man auf das Bild klickt.</p>
+</div>
+<div class="postbox helptext">
+    <h2>Dateianhänge</h2>
+    <p>Anhänge können an bestehende Beiträge angefügt werden. Dazu muss zuerst der Beitrag erstellt werden, anschließend kann über den Link "Anhang" eine neue Datei hinzugefügt werden. Dieser Datei kann man Wahlweise auch eine Beschreibung mitgeben. Gibt man keine Beschreibung an, wird als Beschreibung der Dateiname verwendet.</p>
+    <p>Anhänge werden unterhalb des Beitrages angezeigt. Bilder werden dabei als kleinere Vorschau angezeigt, falls unter Optionen die Bildanzeige aktiviert ist (Standard). Anhänge werden außerdem mit einem Download-Link hinterlegt, sodass man sie direkt mit einem Klick herunterladen kann.</p>
+    <p>Für das Löschen von eigenen Anhängen ist neben dem Anhang ein entsprechender Link ("Löschen") hinterlegt, welcher über eine Bestätigungsseite den Anhang komplett entfernt. Wird ein Beitrag gelöscht, werden sämltiche Anhänge ebenfalls gelöscht.</p>
+</div>
+<div class="postbox helptext">
+    <h2>Beiträge bearbeiten und löschen</h2>
+    <p>Bei bestimmten Beiträgen gibt es neben den Beiträgen die Möglichkeit, diese Beiträge zu Bearbeiten oder zu löschen.</p>
+    <p>Löschen geht über eine Bestätigungsseite und entfernt auch sämtliche Anhänge.</p>
+    <p>Bearbeiten zeigt den Beitrag in der Textbox an.</p>
+    <p>Private Nachrichten können weder gelöscht noch geändert werden.</p>
 </div>
 <div class="postbox helptext">
     <h2>Smileys</h2>
