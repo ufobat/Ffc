@@ -4,8 +4,8 @@
   <h2>Eine Datei zum gezeigten Posting hochladen</h2>
 %= form_for 'upload' => ( method => 'POST', enctype => 'multipart/form-data' ) => begin
 %= hidden_field postid => $postid
-  <p><input type="file" name="attachedfile" /></p>
-  <p><input type="text" name="description" class="description" /></p>
+  <p>Anhangsdatei: <input type="file" name="attachedfile" /></p>
+  <p>Beschreibung: <input type="text" name="description" class="description" /></p>
   <p><button type="submit" class="linkalike" title="Datei hochladen">Datei zum Posting hochladen</button></p>
 % end
   <p><a href="<%= url_for 'show' %>" title="L&ouml;schaktion abbrechen und zur&uuml;ck zur &Uuml;bersicht">Nein, doch nicht, halt, zur&uuml;ck zur &Uuml;bersicht!</a></p>
