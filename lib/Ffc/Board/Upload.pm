@@ -60,10 +60,36 @@ sub upload {
 
 sub upload_delete_check {
     my $c = shift;
+    $c->stash( footerlinks => $Ffc::Data::Footerlinks );
+    my $s = $c->session;
+    my $id = $c->param('postid');
+    my $attid = $c->param('number');
+    $c->get_counts();
+    my $post;
+    $c->error_handling(
+        {
+            code => sub {
+                $post =
+                  Ffc::Data::Board::Views::get_post( $s->{act}, $id,
+                    $c->get_params($s) );
+            },
+            msg =>
+'Beitrag, zu dem etwas hochgeladen wurde, konnte nicht ermittelt werden',
+            after_error => sub { $c->frontpage() },
+            after_ok    => sub {
+                $post->{active} = 1;
+                $c->stash( post => $post );
+                $c->render('board/uploaddeletecheck');
+            },
+        }
+    );
 }
 
 sub upload_delete {
     my $c = shift;
+    $c->error_handling( { code => sub { Ffc::Data::Board::Upload::delete_upload($c->session()->{user}, $c->param('postid'), $c->param('number')) }, msg  => 'Anhang konnte nicht gelöscht werden',
+        after_ok => sub { $c->info('Ahnang wurde gelöscht'); $c->redirect_to_show() },
+    } );
 }
 
 sub get_attachement {

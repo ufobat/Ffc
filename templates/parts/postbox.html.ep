@@ -44,7 +44,7 @@
     <h3 class="attachementtitle">Anhänge:</h3>
 %   }
 %   for ( @{ $post->{attachements} } ) {
-      <%= include 'parts/attachement', att => $_, ownpost => $post->{ownpost} %>
+      <%= include 'parts/attachement', att => $_, ownpost => $post->{ownpost}, deletable => 1 %>
 %   }
 % } else {
     <%== $post->{start} %>
