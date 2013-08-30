@@ -87,8 +87,20 @@ sub upload_delete_check {
 
 sub upload_delete {
     my $c = shift;
-    $c->error_handling( { code => sub { Ffc::Data::Board::Upload::delete_upload($c->session()->{user}, $c->param('postid'), $c->param('number')) }, msg  => 'Anhang konnte nicht gelöscht werden',
-        after_ok => sub { $c->info('Ahnang wurde gelöscht'); $c->redirect_to_show() },
+    $c->error_handling( { 
+        code        => sub { 
+            Ffc::Data::Board::Upload::delete_upload(
+                $c->session()->{user}, 
+                $c->param('postid'), 
+                $c->param('number'),
+            );
+        }, 
+        msg         => 'Anhang konnte nicht gelöscht werden',
+        after_error => sub { $c->frontpage() },
+        after_ok    => sub { 
+            $c->info('Ahnang wurde gelöscht'); 
+            $c->redirect_to_show();
+        },
     } );
 }
 

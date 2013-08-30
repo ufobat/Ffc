@@ -41,6 +41,7 @@ my @closed = qw(
     t/03_frontend_02_board_03_forms.t
     t/03_frontend_02_board_04_views.t
     t/03_frontend_02_board_05_avatars.t
+    t/03_frontend_02_board_06_uploads.t 
     t/lib
     t/lib/Mock
     t/lib/Mock/Config.pm
