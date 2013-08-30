@@ -15,17 +15,63 @@ use File::Temp;
 use File::Copy;
 srand;
 
-use Test::More tests => 5;
+use Test::More tests => 355;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 sub r { &Test::General::test_r }
 
-my $u1 = Mock::Testuser->new_active_user();
-my $u2 = Mock::Testuser->new_active_user();
-my $u3 = Mock::Testuser->new_active_user();
-$_->{id} = Ffc::Data::Auth::get_userid($_->{name}) for $u1, $u2, $u3;
+my @users = map { 
+    my $u = Mock::Testuser->new_active_user();
+    $u->{id} = Ffc::Data::Auth::get_userid($u->{name});
+    $u;
+} 0 .. 2;
 
 my @del;
+
+for my $tc ( 
+    # [ from => to ]
+    [ 0 => undef ], [ 1 => undef ], [ 2 => undef ],
+
+    [ 0 => 0 ], [ 1 => 1 ], [ 2 => 2 ],
+    
+    [ 0 => 1 ], [ 0 => 2 ],
+    [ 1 => 0 ], [ 1 => 2 ],
+    [ 2 => 0 ], [ 2 => 1 ],
+) {
+    my $from = $users[$tc->[0]];
+    my $to   = $tc->[1] ? $users[$tc->[1]] : undef;
+    my $is_msgs = ( defined($to) and ($to->{name} ne $from->{name}) ) ? 1 : 0;
+    my $is_note = ( defined($to) and not $is_msgs ) ? 1 : 0;
+    my $is_forum = defined($to) ? 0 : 1;
+    my ( @visible, @hidden );
+    unless ( $is_forum ) {
+        push @visible, $from;
+        push @visible, $to if $is_msgs;
+        @hidden = grep { my $u = $_; not grep { $u->{name} eq $_->{name} } @visible } @users;
+    }
+
+    note qq(Autor "$from->{name}" von ) . (
+        $is_forum
+            ? 'allgemeinem Beitrag'
+            : ( $is_note ? 'eigener Notiz' : qq(Privatnachricht an "$to->{name}") )
+        );
+    note 'Sichtbar fuer:   "' . join('", "', map {$_->{name}} @visible) . '"' unless $is_forum;
+    note 'Unsichtbar fuer: "' . join('", "', map {$_->{name}} @hidden) . '"' if @hidden;
+
+    if ( $is_forum ) {
+        for my $cat ( '', map {$_->[2]} @Test::General::Categories ) {
+            check_forum($from, $cat, \@users);
+        }
+    }
+    if ( $is_msgs ) {
+        check_msgs($from, $to, \@visible, \@hidden);
+    }
+    if ( $is_note ) {
+        check_note($from, \@hidden);
+    }
+
+    $t->get_ok('/logout')->status_is(200);
+}
 
 sub get_testfile {
     my ( $testfh, $testfile ) = File::Temp::tempfile(SUFFIX => '.dat', CLEANUP => 1);
@@ -36,29 +82,30 @@ sub get_testfile {
     return $testfile, $teststr;
 }
 
-my @testmatrix = (
-#    from, to, available, hidden
-    [ $u1, undef, [$u1, $u2, $u3], []         ],
-    [ $u1, $u2,   [$u1, $u2],      [$u3]      ],
-    [ $u1, $u1,   [$u1],           [$u2, $u3] ],
-);
 
-$t->get_ok('/logout');
-$t->post_ok( '/login',
-    form => { user => $u1->{name}, pass => $u1->{password} } )
-  ->status_is(302)
-  ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
+sub login {
+    my $user = shift;
+    $t->get_ok('/logout')->status_is(200);
+    $t->post_ok( '/login',
+        form => { user => $user->{name}, pass => $user->{password} } )
+      ->status_is(302)
+      ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
+}
 
-#$t->post_ok(
-#    '/options/avatar_save',
-#    form => {
-#        avatarfile => {
-#            filename => $testfile,
-#            file     => Mojo::Asset::Memory->new->add_chunk($teststr),
-#            content_type => 'image/png',
-#        }
-#    }
-#)->status_is(200);
+sub check_forum {
+    my ( $from, $cat, $visible ) = @_;
+    login($from);
+}
+
+sub check_msgs {
+    my ( $from, $to, $visible, $hidden ) = @_;
+    login($from);
+}
+
+sub check_note {
+    my ( $from, $hidden ) = @_;
+    login($from);
+}
 
 END { unlink $_ for @del }
 
