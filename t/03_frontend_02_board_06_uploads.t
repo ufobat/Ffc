@@ -70,7 +70,7 @@ for my $tc (
         check_note($from, \@hidden);
     }
 
-    $t->get_ok('/logout')->status_is(200);
+    logout();
 }
 
 sub get_testfile {
@@ -82,10 +82,10 @@ sub get_testfile {
     return $testfile, $teststr;
 }
 
-
+sub logout { $t->get_ok('/logout')->status_is(200) }
 sub login {
     my $user = shift;
-    $t->get_ok('/logout')->status_is(200);
+    logout();
     $t->post_ok( '/login',
         form => { user => $user->{name}, pass => $user->{password} } )
       ->status_is(302)

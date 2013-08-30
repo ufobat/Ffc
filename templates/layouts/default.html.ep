@@ -30,7 +30,8 @@
         }
     </script>
   </head>
-  <body onload="got_loaded()">
+  <!-- body onload="got_loaded()" !-->
+  <body>
 % if ( session()->{user} ) {
 %= include 'parts/menu'
 % }
