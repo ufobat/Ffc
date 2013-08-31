@@ -15,7 +15,7 @@ use File::Temp;
 use File::Copy;
 srand;
 
-use Test::More tests => 355;
+use Test::More tests => 13435;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 sub r { &Test::General::test_r }
@@ -73,6 +73,60 @@ for my $tc (
     logout();
 }
 
+sub test_upload {
+    my ( $from, $cat, $to, $url ) = @_;
+    my $text = r();
+    Ffc::Data::Board::Forms::insert_post( $from->{name}, $text, $cat, $to );
+    my $postid = Test::General::test_get_max_postid();
+    $t->get_ok($url)->status_is(200)->content_like(qr/$text/);
+    my @uploads;
+    for my $i ( 1 .. 3 ) {
+        my ( $testfile, $teststr ) = get_testfile();
+        note qq(testing the upload of "$testfile");
+        my $desc = r();
+        $t->get_ok("$url/upload/add/$postid")->status_is(200)->content_like(qr/$text/);
+        $t->post_ok(
+            "$url/upload/add/$postid",
+            form => {
+                description => $desc,
+                attachedfile => {
+                    filename => $testfile,
+                    file     => Mojo::Asset::Memory->new->add_chunk($teststr),
+                }
+            }
+        )->status_is(302)->header_like( Location => qr{\Ahttps?://localhost:\d+$url\z}xms );
+
+        my $path = Ffc::Data::Board::Upload::make_path( $postid, $i );
+        ok( -e $path, qq'file does exist now: $path' );
+
+        my $aurl = "$url/upload/show/$postid/$i";
+        push @del, $path;
+        my @upload = ( $from, $url, $postid, $i, $aurl, $desc, $testfile, $teststr );
+        check_upload_ok($from, \@upload);
+        push @uploads, \@upload;
+    }
+    return \@uploads;
+}
+
+sub check_upload_hidden {
+    my $user = shift;
+    my ( $author, $url, $postid, $anum, $aurl, $desc, $testfile, $teststr ) = @{ shift() };
+}
+sub check_upload_ok {
+    my $user = shift;
+    my ( $author, $url, $postid, $anum, $aurl, $desc, $testfile, $teststr ) = @{ shift() };
+    note qq(checking the upload of "$testfile");
+    logout();
+    login($user);
+    $t->get_ok($url)->status_is(200)
+      ->content_like(qr/$aurl/)
+      ->content_like(qr/$desc/)
+      ->content_like(qr/$testfile/);
+    $t->get_ok($aurl)->status_is(200)
+      ->content_like(qr/$teststr/)
+      ->header_is('Content-Disposition' => "attachment;filename=$testfile");
+}
+
 sub get_testfile {
     my ( $testfh, $testfile ) = File::Temp::tempfile(SUFFIX => '.dat', CLEANUP => 1);
     my $teststr = r();
@@ -92,9 +146,26 @@ sub login {
       ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
 }
 
+sub check_upload_array_ok {
+    my ( $uploads, $visible, $hidden ) = @_;
+    for my $upload ( @$uploads ) {
+        for my $user ( @$visible ) {
+            check_upload_ok($user, $upload);
+        }
+        for my $user ( @$hidden ) {
+            check_upload_hidden($user, $upload);
+        }
+    }
+}
+
 sub check_forum {
     my ( $from, $cat, $visible ) = @_;
     login($from);
+    my $url = '/forum';
+    $url .= "/category/$cat" if $cat;
+    $t->get_ok($url)->status_is(200);
+    my $uploads = test_upload($from, $cat, undef, $url);
+    check_upload_array_ok($uploads, $visible, []);
 }
 
 sub check_msgs {

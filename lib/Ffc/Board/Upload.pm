@@ -38,15 +38,15 @@ sub upload_form {
 }
 
 sub upload {
-    my $c = shift;
-    my $file = $c->param('attachedfile');
+    my $c      = shift;
+    my $file   = $c->param('attachedfile');
+    my $postid = $c->param('postid');
+    my $desc   = $c->param('description');
     $c->error_handling(
         {
             code => sub {
                 Ffc::Data::Board::Upload::upload( $c->session->{user},
-                    $c->param('postid'),
-                    $file->filename,
-                    $c->param('description'),
+                    $postid, $file->filename, $desc,
                     sub { $file->move_to(@_) },
                 );
             },
@@ -111,7 +111,7 @@ sub get_attachement {
     my $user   = $c->session()->{user};
     my $attachement = $c->or_empty(sub { Ffc::Data::Board::Upload::get_attachement($user, $postid, $number) });
     my $path;
-    if ( @$attachement and -e $attachement->[2] ) {
+    if ( @$attachement and -e $attachement->[3] ) {
         $c->res->headers->header('Content-Disposition' => "attachment;filename=$attachement->[0]");
         $path = $attachement->[2];
     }

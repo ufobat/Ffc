@@ -116,7 +116,7 @@ my $postid3 = Test::General::test_get_max_postid();
             name => 'newfile',
             good => 'newfile1.dat',
             bad  => [''],
-            emptyerror => 'Dateiname ungültig',
+            emptyerror => 'Dateiname "" ungültig',
         },
         {
             name => 'description',

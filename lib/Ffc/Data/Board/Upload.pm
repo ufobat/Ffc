@@ -32,7 +32,7 @@ sub upload {
     die qq(Ungültiger Beitrag) unless $postid and $postid =~ m/\A\d+\z/xms;
     my $dbh = Ffc::Data::dbh();
     die qq(Ungültiger Beitrag für den Benutzer um Anhänge dran zu hängen) unless $dbh->selectall_arrayref('SELECT COUNT(p.id) FROM '.$Ffc::Data::Prefix.'posts p WHERE p.user_from=? AND p.id=?', undef, $userid, $postid)->[0]->[0];
-    die qq(Dateiname ungültig) unless $newfile and $newfile =~ m/\A[-\.\w]{1,255}\z/xms;
+    die q(Dateiname ").($newfile // '').q(" ungültig) unless $newfile and $newfile =~ m/\A.{1,1024}\z/xms;
     $description = $newfile unless $description and $description =~ m/\A.{1,255}\z/xms;
     croak qq(Weiß nicht, was ich mit der Datei machen soll) unless $move_to_code and 'CODE' eq ref $move_to_code;
     my $anum = 1 + $dbh->selectall_arrayref('SELECT COUNT(a.number) FROM '.$Ffc::Data::Prefix.'posts p LEFT OUTER JOIN '.$Ffc::Data::Prefix.'attachements a ON a.postid=p.id WHERE p.user_from=? and p.id=?', undef, $userid, $postid)->[0]->[0];
