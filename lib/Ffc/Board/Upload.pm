@@ -27,7 +27,7 @@ sub upload_form {
             },
             msg =>
 'Beitrag, zu dem etwas hochgeladen wurde, konnte nicht ermittelt werden',
-            after_error => sub { $c->frontpage() },
+            after_error => sub { $c->stash(postid => ''); $c->frontpage() },
             after_ok    => sub {
                 $post->{active} = 1;
                 $c->stash( post => $post );

@@ -15,7 +15,7 @@ use File::Temp;
 use File::Copy;
 srand;
 
-use Test::More tests => 13435;
+use Test::More tests => 13839;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 sub r { &Test::General::test_r }
@@ -63,9 +63,9 @@ for my $tc (
             check_forum($from, $cat, \@users);
         }
     }
-    if ( $is_msgs ) {
-        check_msgs($from, $to, \@visible, \@hidden);
-    }
+    #if ( $is_msgs ) {
+    #    check_msgs($from, $to, \@visible, \@hidden);
+    #}
     if ( $is_note ) {
         check_note($from, \@hidden);
     }
@@ -76,7 +76,7 @@ for my $tc (
 sub test_upload {
     my ( $from, $cat, $to, $url ) = @_;
     my $text = r();
-    Ffc::Data::Board::Forms::insert_post( $from->{name}, $text, $cat, $to );
+    Ffc::Data::Board::Forms::insert_post( $from->{name}, $text, $cat, ( $to ? $to->{name} : undef ) );
     my $postid = Test::General::test_get_max_postid();
     $t->get_ok($url)->status_is(200)->content_like(qr/$text/);
     my @uploads;
@@ -111,6 +111,14 @@ sub test_upload {
 sub check_upload_hidden {
     my $user = shift;
     my ( $author, $url, $postid, $anum, $aurl, $desc, $testfile, $teststr ) = @{ shift() };
+    note qq(checking the hiddebility of upload of "$testfile");
+    logout();
+    login($user);
+    $t->get_ok($url)->status_is(200)
+      ->content_unlike(qr/$aurl/)
+      ->content_unlike(qr/$desc/)
+      ->content_unlike(qr/$testfile/);
+    $t->get_ok($aurl)->status_is(200)->header_is('Content-disposition' => 'attachment;filename=nofile.png');
 }
 sub check_upload_ok {
     my $user = shift;
@@ -171,11 +179,21 @@ sub check_forum {
 sub check_msgs {
     my ( $from, $to, $visible, $hidden ) = @_;
     login($from);
+    my $url = "/msgs/user/$to->{name}";
+    $t->get_ok($url)->status_is(200);
+    my $uploads = test_upload($from, undef, $to, $url);
+    my $aurl = "/msgs/user/$from->{name}";
+    $_->[1] = $aurl for @$uploads;
+    check_upload_array_ok($uploads, $visible, $hidden);
 }
 
 sub check_note {
     my ( $from, $hidden ) = @_;
     login($from);
+    my $url = "/notes";
+    $t->get_ok($url)->status_is(200);
+    my $uploads = test_upload($from, undef, $from, $url);
+    check_upload_array_ok($uploads, [$from], $hidden);
 }
 
 END { unlink $_ for @del }

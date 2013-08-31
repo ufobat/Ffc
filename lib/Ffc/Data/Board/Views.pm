@@ -270,12 +270,12 @@ EOSQL
                     ? (ownpost => 1, uploadable => 1) 
                     : (ownpost => 0, uploadable => 0) ),
                 ownpost    => $d->[5] == $userid ? 1 : 0,
+                id         => $d->[0], # id
                 category   => $d->[3] # kategorie
                     ? { name => $d->[3], short => $d->[4] }
                     : undef,
                 $d->[5] == $userid && $act ne 'msgs' # editierbarkeit
-                    ? (editable => 1, id => $d->[0]) 
-                    : (editable => 0, id => undef),
+                    ? (editable => 1) : (editable => 0),
                 map( { $d->[$_->[1]] 
                       ? ( $_->[0] => { 
                           id       => $d->[$_->[1]], 

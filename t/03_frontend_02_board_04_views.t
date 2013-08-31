@@ -252,7 +252,7 @@ sub check_pages {
                 )[0];
                 my $url_edit = $t->app->url_for_me( 'edit_form', act => $act, category => $cat, postid => $id );
                 my $url_delete = $t->app->url_for_me( 'delete_check', act => $act, category => $cat, postid => $id );
-                my $url_attache = $t->app->url_for_me( 'upload_form', act => $act, category => $cat, postid => $id );
+                my $url_attache = $t->app->url_for_me( 'upload_form', act => $act, category => $cat, postid => $id, msgs_username => $msguser );
                 my $sessmsguser = $msguser;
                 $msguser = $users{$test->[1]}->{name} unless $act eq 'msgs';
                 my $url_msg = $t->app->url_for_me( 'show', act => 'msgs', cat => '', msgs_username => $msguser );
@@ -290,7 +290,7 @@ qr~$start\s*$middle\s*$timestampre\s*$editlink\s*$deletelink\s*$attachelink\s*$e
                         $user->{active} ? $user->{name} : qr~<span class="inactive">$user->{name}</span>~;
                     } 1, 2;
                     $t->content_like(
-qr~$start\s*$user[0]\s*→\s*$user[1]\s*$middle\s*\(\s*$timestampre\s*$msglink\s*\)\s*$end~
+qr~$start\s*$user[0]\s*→\s*$user[1]\s*$middle\s*\(\s*$timestampre\s*$msglink\s*(?:,\s*$attachelink)?\s*\)\s*$end~
                     );
                 }
                 if ( $act eq 'forum' ) {

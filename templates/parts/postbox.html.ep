@@ -23,8 +23,7 @@
           <%= $post->{timestamp} %><%= $post->{iconspresent}  ? ',' : '' %>
 % if ( $post->{editable} ) {
           <a href="<%= url_for_me edit_form     => postid => $post->{id} %>" title="Beitrag bearbeiten">Bearbeiten</a>,
-          <a href="<%= url_for_me delete_check  => postid => $post->{id} %>" title="Beitrag l&ouml;schen">L&ouml;schen</a>,
-          <a href="<%= url_for_me upload_form   => postid => $post->{id} %>" title="Datei an den Beitrag anf&uuml;gen">Anhang</a>
+          <a href="<%= url_for_me delete_check  => postid => $post->{id} %>" title="Beitrag l&ouml;schen">L&ouml;schen</a>
 % }
 % for my $w (qw(from to)) {
 %   if ( $post->{$w} and $post->{$w}->{chatable} ) {
@@ -33,6 +32,9 @@
             Privatnachrichten</a>
 %   } 
 % }
+%   if ( $post->{uploadable} ) {
+          , <a href="<%= url_for_me upload_form   => postid => $post->{id} %>" title="Datei an den Beitrag anf&uuml;gen">Anhang</a>
+%   }
 % } else {
             <%= $post->{timestamp} %>, in Bearbeitung
 % }
