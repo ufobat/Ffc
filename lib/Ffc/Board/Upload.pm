@@ -21,9 +21,12 @@ sub upload_form {
     $c->error_handling(
         {
             code => sub {
+                eval {
                 $post =
                   Ffc::Data::Board::Views::get_post( $s->{act}, $id,
                     $c->get_params($s) );
+                };
+                $c->info_stash($@);
             },
             msg =>
 'Beitrag, zu dem etwas hochgeladen wurde, konnte nicht ermittelt werden',

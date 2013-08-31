@@ -413,35 +413,28 @@ q{sub get_post( $action, $username, $postid, $page, $search, $category, $control
                         undef, $category->[2] || undef, $controller
                     );
                 };
-                if ( $act eq 'msgs' ) {
-                    ok( $@,                  'errors thrown' );
-                    ok( !defined($post_test), 'no test post fetched' );
-                    like( $@, qr/Privatnachricht/, 'error ok');
-                }
-                else {
-                    ok( !$@,                 'post fetched' );
-                    ok( defined($post_test), 'test post ok' );
-                    diag(
-                        qq~ERROR IN: checking "get_post()" in act "$act" with~
-                          . ( $has_cat ? '' : 'out' )
-                          . q~ category and with~
-                          . ( $has_where ? '' : 'out' )
-                          . ' where, data is: '
-                          . Dumper {
-                            t        => $t,
-                            category => $category,
-                            query    => $query,
-                            user     => $user->{name},
-                            userid   => $userid,
-                            where    => \@where,
-                            params   => \@params,
-                            sql      => $sql,
-                            dollarat => $@,
-                            post     => $post,
-                          }
-                    ) if $@;
-                    is( $post_test->{raw}, $post->[1], 'correct post fetched' );
-                }
+                ok( !$@,                 'post fetched' );
+                ok( defined($post_test), 'test post ok' );
+                diag(
+                    qq~ERROR IN: checking "get_post()" in act "$act" with~
+                      . ( $has_cat ? '' : 'out' )
+                      . q~ category and with~
+                      . ( $has_where ? '' : 'out' )
+                      . ' where, data is: '
+                      . Dumper {
+                        t        => $t,
+                        category => $category,
+                        query    => $query,
+                        user     => $user->{name},
+                        userid   => $userid,
+                        where    => \@where,
+                        params   => \@params,
+                        sql      => $sql,
+                        dollarat => $@,
+                        post     => $post,
+                      }
+                ) if $@;
+                is( $post_test->{raw}, $post->[1], 'correct post fetched' );
             }
         }
     }

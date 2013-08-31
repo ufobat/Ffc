@@ -182,13 +182,13 @@ sub get_msgs  {
 sub get_post {
     my $act = shift;
     croak qq(Aktion nicht angegeben) unless $act;
-    croak qq{Aktion unbekannt ("$act") oder Privatnachricht (nicht änderbar)} unless $act =~ m/\A(?:forum|notes)\z/xms;
+    croak qq{Aktion unbekannt ("$act")} unless $act =~ m/\A(?:msgs|forum|notes)\z/xms;
     my $postid = shift;
     croak q{Keine ID für den Beitrag angegeben} unless $postid;
     croak q{Ungültige ID für den Beitrag angegeben} unless $postid =~ m/\A\d+\z/xms;
     my $userid = _get_userid( shift );
     my $where = << 'EOWHERE';
-    p.id=? AND f.id=u.id AND ( t.id IS NULL OR t.id=f.id )
+    p.id=? AND f.id=u.id
 EOWHERE
     my @params = @_[ 0 .. 4 ];
     #die Data::Dumper::Dumper({act => $act, userid => $userid, params => [@params[0..3]], where => $where, postid => $postid});
