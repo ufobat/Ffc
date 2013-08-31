@@ -15,7 +15,7 @@ use File::Temp;
 use File::Copy;
 srand;
 
-use Test::More tests => 14719;
+use Test::More tests => 17293;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 sub r { &Test::General::test_r }
@@ -103,6 +103,12 @@ sub test_upload {
         push @del, $path;
         my @upload = ( $from, $url, $postid, $i, $aurl, $desc, $testfile, $teststr );
         check_upload_ok($from, \@upload);
+        logout();
+        $t->get_ok($aurl)->status_is(200)
+          ->content_like(qr/Bitte melden Sie sich an/)
+          ->content_unlike(qr/$teststr/);
+        logout();
+        login($from);
         push @uploads, \@upload;
     }
     return \@uploads;
