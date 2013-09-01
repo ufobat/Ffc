@@ -15,7 +15,7 @@ use File::Temp;
 use File::Copy;
 srand;
 
-use Test::More tests => 163;
+use Test::More tests => 165;
 
 Test::General::test_prepare();
 sub r { &Test::General::test_r }
@@ -28,6 +28,7 @@ my $user2 = Mock::Testuser->new_active_user();
 my $user3 = Mock::Testuser->new_active_user();
 $_->{id} = Ffc::Data::Auth::get_userid($_->{name}) for $user1, $user2, $user3;
 
+#############################################################################
 for ( 1..3 ) {
     note '$dir = sub make_path( $postid, $anum )';
     my ( $postid, $anum ) = map { 3 + int rand 99 } 0 .. 1;
@@ -49,8 +50,9 @@ for ( 1..3 ) {
     );
     is $ret[0], "$Ffc::Data::UploadDir/$postid-$anum", 'path ok';
 }
+#############################################################################
 for ( 1..3 ) {
-    note '$dir = sub make_path( $postid, $anum )';
+    note '$dir = sub make_url( $postid, $anum )';
     my ( $postid, $anum ) = map { 3 + int rand 99 } 0 .. 1;
     my @ret = check_call(
         \&Ffc::Data::Board::Upload::make_url,
@@ -71,6 +73,7 @@ for ( 1..3 ) {
     is $ret[0], "$Ffc::Data::UploadUrl/$postid-$anum", 'path ok';
 }
 
+#############################################################################
 sub get_testfile {
     my ( $testfh, $testfile ) = File::Temp::tempfile(SUFFIX => '.dat', CLEANUP => 1);
     my $teststr = r();
@@ -82,6 +85,9 @@ sub get_testfile {
 my ( $testfile1, $teststr1 ) = get_testfile();
 my ( $testfile2, $teststr2 ) = get_testfile();
 my ( $testfile3, $teststr3 ) = get_testfile();
+my ( $testfile4, $teststr4 ) = get_testfile();
+my ( $testfile5, $teststr5 ) = get_testfile();
+my ( $testfile6, $teststr6 ) = get_testfile();
 
 my $poststr1 = r();
 my $poststr2 = r();
@@ -93,6 +99,7 @@ my $postid2 = Test::General::test_get_max_postid();
 Ffc::Data::Board::Forms::insert_post($user1->{name}, $poststr3, undef, $user2->{name});
 my $postid3 = Test::General::test_get_max_postid();
 
+#############################################################################
 {
     note '$one = sub upload( $username, $postid, $newfile, $descr, $move_to_code )';
     my @ret = check_call(
@@ -133,6 +140,7 @@ my $postid3 = Test::General::test_get_max_postid();
     ok $ret[0], 'upload successful';
     ok -e $del[-1], 'file created';
 }
+#############################################################################
 {
     note '( $filename, $descr, $path ) = sub get_attachement( $username, $postid, $attachementnr )';
     my $attid = Ffc::Data::dbh()->selectall_arrayref('SELECT MAX(a.number) FROM '.$Ffc::Data::Prefix.'attachements a WHERE a.postid=?', undef, $postid3)->[0]->[0];
@@ -166,6 +174,7 @@ my $postid3 = Test::General::test_get_max_postid();
     like $ret[0][2], qr/$Ffc::Data::UploadUrl/, 'url ok';
     is $ret[0][3], $del[-1], 'real path ok';
 }
+#############################################################################
 {
     note '[ $filename, $descr, $number ] = sub get_attachement_list( $username, $postid )';
     my @ret = check_call(
@@ -193,6 +202,7 @@ my $postid3 = Test::General::test_get_max_postid();
     like $ret[0][0][4], qr/$Ffc::Data::UploadUrl/, 'url ok';
     is $ret[0][0][5], $del[-1], 'real path ok';
 }
+#############################################################################
 {
     note '$one = sub delete_upload( $username, $postid, $attachementnr )';
     my $attid = Ffc::Data::dbh()->selectall_arrayref('SELECT MAX(a.number) FROM '.$Ffc::Data::Prefix.'attachements a WHERE a.postid=?', undef, $postid3)->[0]->[0];
@@ -229,6 +239,20 @@ my $postid3 = Test::General::test_get_max_postid();
     is $ret->[0]->[0], 2, 'attachement number ok';
     is $ret->[0]->[1], 'newfile2.dat', 'attachement filename ok';
 }
+#############################################################################
+{
+    note '$one = sub delete_upload( $username, $postid, $attachementnr ) # Logic check';
+    Ffc::Data::Board::Upload::upload($user1->{name}, $postid1, 'newcfile4.dat', 'descr3', sub { push @del, $_[0]; copy $testfile4, $_[0] } );
+    my $attid1 = Ffc::Data::dbh()->selectall_arrayref('SELECT MAX(a.number) FROM '.$Ffc::Data::Prefix.'attachements a WHERE a.postid=?', undef, $postid1)->[0]->[0];
+    Ffc::Data::Board::Upload::upload($user1->{name}, $postid1, 'newcfile4.dat', 'descr4', sub { push @del, $_[0]; copy $testfile5, $_[0] } );
+    my $attid2 = Ffc::Data::dbh()->selectall_arrayref('SELECT MAX(a.number) FROM '.$Ffc::Data::Prefix.'attachements a WHERE a.postid=?', undef, $postid1)->[0]->[0];
+    cmp_ok $attid1, '<', $attid2, 'new upload has higher number';
+    Ffc::Data::Board::Upload::delete_upload($user1->{name}, $postid1, $attid1);
+    Ffc::Data::Board::Upload::upload($user1->{name}, $postid1, 'newcfile4.dat', 'descr4', sub { push @del, $_[0]; copy $testfile6, $_[0] } );
+    my $attid3 = Ffc::Data::dbh()->selectall_arrayref('SELECT MAX(a.number) FROM '.$Ffc::Data::Prefix.'attachements a WHERE a.postid=?', undef, $postid1)->[0]->[0];
+    cmp_ok $attid2, '<', $attid3, 'new upload has higher number';
+}
+#############################################################################
 {
     note '$one = sub delete_attachements( $username, $postid )';
     my @check;
@@ -255,11 +279,12 @@ my $postid3 = Test::General::test_get_max_postid();
             emptyerror => 'Ungültiger Beitrag',
         },
     );
-    is $ret[0], 3, 'delete count ok';
+    is $ret[0], 5, 'delete count ok';
     ok !-e $_, 'file deleted' for @check;
     my $ret = Ffc::Data::dbh()->selectall_arrayref('SELECT COUNT(a.number) FROM '.$Ffc::Data::Prefix.'attachements a WHERE a.postid=?', undef, $postid1);
     is $ret->[0]->[0], 0, 'attachement count ok';
 }
+#############################################################################
 {
     note 'delete post';
     Ffc::Data::Board::Upload::upload($user1->{name}, $postid1, 'newfile6.dat', 'descr6', sub { push @del, $_[0]; copy $testfile3, $_[0] } );
@@ -288,6 +313,6 @@ my $postid3 = Test::General::test_get_max_postid();
     ok(!(Ffc::Data::dbh()->selectrow_array('SELECT COUNT(number) FROM '.$Ffc::Data::Prefix.'attachements WHERE postid=?', undef, $postid1 ))[0], 'attachements do not exist after deletion anymore' );
     ok !-e $del[-1], 'attachement is deleted together with the post';
 }
-
+#############################################################################
 END { unlink $_ for @del }
 
