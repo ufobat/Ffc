@@ -15,7 +15,7 @@ use File::Temp;
 use File::Copy;
 srand;
 
-use Test::More tests => 17293;
+use Test::More tests => 18225;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 sub r { &Test::General::test_r }
@@ -73,6 +73,41 @@ for my $tc (
     logout();
 }
 
+sub test_upload_do {
+    my ( $from, $postid, $text, $url, $i ) = @_;
+    my ( $testfile, $teststr ) = get_testfile();
+    logout();
+    login($from);
+    note qq(testing the upload of "$testfile");
+    my $desc = r();
+    $t->get_ok("$url/upload/add/$postid")->status_is(200)->content_like(qr/$text/);
+    $t->post_ok(
+        "$url/upload/add/$postid",
+        form => {
+            description => $desc,
+            attachedfile => {
+                filename => $testfile,
+                file     => Mojo::Asset::Memory->new->add_chunk($teststr),
+            }
+        }
+    )->status_is(302)->header_like( Location => qr{\Ahttps?://localhost:\d+$url\z}xms );
+
+    my $path = Ffc::Data::Board::Upload::make_path( $postid, $i );
+    ok( -e $path, qq'file does exist now: $path' );
+
+    my $aurl = "$url/upload/show/$postid/$i";
+    push @del, $path;
+    my @upload = ( $from, $url, $postid, $i, $aurl, $desc, $testfile, $teststr, $path );
+    check_upload_ok($from, \@upload);
+    logout();
+    $t->get_ok($aurl)->status_is(200)
+      ->content_like(qr/Bitte melden Sie sich an/)
+      ->content_unlike(qr/$teststr/);
+    logout();
+    login($from);
+    return \@upload;
+}
+
 sub test_upload {
     my ( $from, $cat, $to, $url ) = @_;
     my $text = r();
@@ -80,37 +115,25 @@ sub test_upload {
     my $postid = Test::General::test_get_max_postid();
     $t->get_ok($url)->status_is(200)->content_like(qr/$text/);
     my @uploads;
-    for my $i ( 1 .. 3 ) {
-        my ( $testfile, $teststr ) = get_testfile();
-        note qq(testing the upload of "$testfile");
-        my $desc = r();
-        $t->get_ok("$url/upload/add/$postid")->status_is(200)->content_like(qr/$text/);
-        $t->post_ok(
-            "$url/upload/add/$postid",
-            form => {
-                description => $desc,
-                attachedfile => {
-                    filename => $testfile,
-                    file     => Mojo::Asset::Memory->new->add_chunk($teststr),
-                }
-            }
-        )->status_is(302)->header_like( Location => qr{\Ahttps?://localhost:\d+$url\z}xms );
-
-        my $path = Ffc::Data::Board::Upload::make_path( $postid, $i );
-        ok( -e $path, qq'file does exist now: $path' );
-
-        my $aurl = "$url/upload/show/$postid/$i";
-        push @del, $path;
-        my @upload = ( $from, $url, $postid, $i, $aurl, $desc, $testfile, $teststr );
-        check_upload_ok($from, \@upload);
-        logout();
-        $t->get_ok($aurl)->status_is(200)
-          ->content_like(qr/Bitte melden Sie sich an/)
-          ->content_unlike(qr/$teststr/);
-        logout();
-        login($from);
-        push @uploads, \@upload;
+    my $upload1 = test_upload_do( $from, $postid, $text, $url, 1 );
+    my $upload2 = test_upload_do( $from, $postid, $text, $url, 2 );
+    {
+        my $delurl = "$url/upload/delete/$postid/1";
+        $t->get_ok($delurl)
+          ->status_is(200)
+          ->content_like(qr/$text/)
+          ->content_like(qr/$upload1->[4]/)
+          ->content_like(qr/$upload1->[5]/)
+          ->content_like(qr/Anhang wirklich löschen/);
+        $t->post_ok($delurl) 
+          ->status_is(302)
+          ->header_like( Location => qr{\Ahttps?://localhost:\d+$url\z}xms );
+        ok !-e $upload1->[7], 'file deleted';
+        check_upload_hidden($from, $upload1);
+        check_upload_ok($from, $upload2);
     }
+    my $upload3 = test_upload_do( $from, $postid, $text, $url, 3 );
+    push @uploads, $upload2, $upload3;
     return \@uploads;
 }
 
