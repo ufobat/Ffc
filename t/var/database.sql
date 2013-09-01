@@ -18,6 +18,7 @@ CREATE TABLE "${Prefix}posts" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
   "user_from" int(11) NOT NULL,
   "posted" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "altered" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "textdata" text NOT NULL,
   "user_to" int(11),
   "category" bigint

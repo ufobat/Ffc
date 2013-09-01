@@ -25,7 +25,7 @@ SELECT 'Allgemein'  AS name,
        0            AS sort 
   FROM ${p}posts p2 
   WHERE p2.category  IS NULL 
-    AND p2.posted    >= (SELECT u.lastseenforum FROM ${p}users u WHERE u.id=? LIMIT 1)
+    AND p2.altered   >= (SELECT u.lastseenforum FROM ${p}users u WHERE u.id=? LIMIT 1)
     AND p2.user_from != ?
     AND p2.user_to   IS NULL
 
@@ -39,7 +39,7 @@ SELECT c.name       AS name,
   LEFT OUTER JOIN ${p}lastseenforum f ON  f.category   =  c.id 
                                       AND f.userid     =  ?
   LEFT OUTER JOIN ${p}posts p1        ON  p1.category  =  c.id 
-                                      AND p1.posted    >= COALESCE(f.lastseen,0) 
+                                      AND p1.altered   >= COALESCE(f.lastseen,0) 
                                       AND p1.user_from != ?
                                       AND p1.user_to   IS NULL
   GROUP BY c.id
@@ -67,7 +67,7 @@ EOSQL
                 push @param, Ffc::Data::General::get_category_id($cat);
                 $sql .= << "EOSQL";
 LEFT OUTER JOIN ${Ffc::Data::Prefix}lastseenforum f ON p.category = f.category AND f.userid     = u.id
-WHERE p.posted   >= COALESCE(f.lastseen,0)
+WHERE p.altered  >= COALESCE(f.lastseen,0)
   AND p.user_to  IS NULL
   AND p.category IS NOT NULL
   AND p.category = ?
@@ -75,7 +75,7 @@ EOSQL
             }
             else {
                 $sql .= << "EOSQL";
-WHERE p.posted   >= COALESCE(u.lastseenforum, 0)
+WHERE p.altered  >= COALESCE(u.lastseenforum, 0)
   AND p.user_to  IS NULL
   AND p.category IS NULL
 EOSQL
@@ -93,7 +93,7 @@ EOSQL
             }
             else {
                 $sql .= << "EOSQL";
-WHERE p.posted    >= COALESCE(u.lastseenmsgs, 0)
+WHERE p.altered   >= COALESCE(u.lastseenmsgs, 0)
   AND p.user_to   =  u.id
   AND p.user_to   IS NOT NULL
 EOSQL
@@ -203,7 +203,12 @@ EOWHERE
         Ffc::Data::General::check_category($params[3]);
     }
     my $data = _get_stuff( $act, $userid, @params, $where, $postid );
-    croak q{Kein Datensatz gefunden} unless @$data;
+    unless ( @$data ) {
+        #my @params = ( $act, $userid, @params, $where, $postid );
+        #local $" = '", "';
+        #croak qq{Kein Datensatz gefunden: "@params"};
+        croak qq{Kein Datensatz gefunden};
+    }
     return $data->[0];
 }
 
@@ -235,10 +240,10 @@ SELECT p.id, p.textdata, p.posted,
        CASE WHEN f.id = t.id OR f.id = u.id
             THEN 0
             ELSE CASE WHEN t.id IS NOT NULL
-                      THEN CASE WHEN p.posted >= t.lastseenmsgs THEN 1 ELSE 0 END
+                      THEN CASE WHEN p.altered >= t.lastseenmsgs THEN 1 ELSE 0 END
                       ELSE CASE WHEN p.category IS NULL
-                                THEN CASE WHEN p.posted >= u.lastseenforum THEN 1 ELSE 0 END
-                                ELSE CASE WHEN p.posted >= l.lastseen THEN 1 ELSE 0 END
+                                THEN CASE WHEN p.altered >= u.lastseenforum THEN 1 ELSE 0 END
+                                ELSE CASE WHEN p.altered >= l.lastseen THEN 1 ELSE 0 END
                            END
                  END
        END

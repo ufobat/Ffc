@@ -15,7 +15,7 @@ use Ffc::Data::Board;
 use Ffc::Data::Board::Forms;
 srand;
 
-use Test::More tests => 347;
+use Test::More tests => 379;
 
 Test::General::test_prepare();
 
@@ -809,12 +809,13 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
     );
     my $insert = sub {
         Ffc::Data::Board::Forms::insert_post( $user->{name}, 'abcd', undef, $user2->{name} );
-        Ffc::Data::Board::Forms::insert_post( $user->{name}, 'abcd', $_->[2], undef ) for @Test::General::Categories;
+        Ffc::Data::Board::Forms::insert_post( $user->{name}, 'abcd', $_->[2], undef ) for [undef, '', ''], @Test::General::Categories;
     };
     my $check = sub {
         my $cnt = shift;
+        my $msgcnt = shift // $cnt;
         is(Ffc::Data::Board::Views::check_for_updates($user3->{name}, 'msgs', undef, $user->{name}), 0, 'update msgs check ok');
-        is(Ffc::Data::Board::Views::check_for_updates($user2->{name}, 'msgs', undef, $user->{name}), $cnt, 'update msgs check ok');
+        is(Ffc::Data::Board::Views::check_for_updates($user2->{name}, 'msgs', undef, $user->{name}), $msgcnt, 'update msgs check ok');
         is(Ffc::Data::Board::Views::check_for_updates($user2->{name}, 'forum', $_->[2]), $cnt, qq'update cat "$_->[2]" check ok')
             for @Test::General::Categories;
     };
@@ -825,5 +826,32 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
     sleep 2;
     $insert->() for 0..2;
     $check->(3);
+    Test::General::test_update_userstats($user2, 1);
+    sleep 2;
+    $check->(0);
+
+    note 'check for updates';
+    my $update = sub {
+        my @posts;
+        my $pid1 = Ffc::Data::dbh()->selectall_arrayref('SELECT MAX(id) FROM '.$Ffc::Data::Prefix.'posts WHERE user_from=? AND user_to IS NULL AND category IS NULL', undef, Ffc::Data::Auth::get_userid($user->{name}))->[0]->[0];
+        Ffc::Data::Board::Forms::update_post($user->{name}, 'defg', $pid1);
+        push @posts, [$pid1, ''];
+        for my $cat ( @Test::General::Categories ) {
+            my $pidc = Ffc::Data::dbh()->selectall_arrayref('SELECT MAX(id) FROM '.$Ffc::Data::Prefix.'posts WHERE user_from=? AND user_to IS NULL AND category=?', undef, Ffc::Data::Auth::get_userid($user->{name}), $cat->[0])->[0]->[0];
+            Ffc::Data::Board::Forms::update_post($user->{name}, 'defg', $pidc);
+            push @posts, [$pidc, $cat->[2]];
+        };
+        return \@posts;
+    };
+    Test::General::test_update_userstats($user2, 1);
+    sleep 2;
+    my $posts = $update->();
+    $check->(1, 0);
+    for my $pa ( @$posts ) {
+        my $posts;
+        eval { $posts = Ffc::Data::Board::Views::get_forum($user2->{name}, 1, '', undef, $pa->[1], Mock::Controller->new()) };
+        diag qq(postid="$pa->[0]", cat="$pa->[1]", error: $@) if $@;
+        ok scalar(grep( {; $_->{newpost} } @$posts )), qq(post in cat "$pa->[1]" marked as altered);
+    }
 }
 

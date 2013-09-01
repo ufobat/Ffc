@@ -36,7 +36,7 @@ sub insert_post {
     $t = _get_userid( $t, 'Empfänger des neuen Beitrages' ) if $t;
     $cid = undef if $t; # bei Privatnachrichten und Notizen gibts keine Kategorien
     my $dbh = Ffc::Data::dbh();
-    my $sql = 'INSERT INTO '.$Ffc::Data::Prefix.'posts (user_from, user_to, textdata, posted, category) VALUES (?, ?, ?, current_timestamp, ?)';
+    my $sql = 'INSERT INTO '.$Ffc::Data::Prefix.'posts (user_from, user_to, textdata, posted, altered, category) VALUES (?, ?, ?, current_timestamp, current_timestamp, ?)';
     $dbh->do( $sql, undef, $f, $t, $d, $cid );
 }
 
@@ -52,7 +52,7 @@ sub update_post {
     #FIXME: does not work yet
     #my $sql = 'SELECT COUNT(id) FROM '.$Ffc::Data::Prefix."posts $where";
     #croak qq(Kein entsprechender Beitrag vom angegebenen Benutzer bekannt) unless ($dbh->selectrow_array($sql, undef, $i, $f))[0];
-    my $sql = 'UPDATE '.$Ffc::Data::Prefix."posts SET textdata=? $where;";
+    my $sql = 'UPDATE '.$Ffc::Data::Prefix."posts SET textdata=?, altered=current_timestamp $where;";
     $dbh->do( $sql, undef, $d, $i, $f );
 }
 
