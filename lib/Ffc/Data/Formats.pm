@@ -66,7 +66,7 @@ sub format_text {
     $s =~ s{(\A|\s)"(\S.*?\S|\S)"(\W|\z)}{$1„<span class="quote">$2</span>“$3}gxm;
     $s =~ s{$u}{<span class="username">$u</span>}xmsi if $u;
     $s =~ s{(?<!\w)([\_\-\+\~\!])([\_\-\+\~\!\w]+)\g1(?!\w)}{_make_goody($1,$2)}gxmies;
-    $s =~ s{(\(|\s|\A)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3,$c)}gxmeis;
+    $s =~ s{((?:[\(\s]|\A)?)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3,$c)}gxmeis;
     $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxes;
     $s =~ s{\n[\n\s]*}{</p>\n<p>}xgms;
     $s = "<p>$s</p>";
