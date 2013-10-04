@@ -17,12 +17,14 @@ sub _get_userid { &Ffc::Data::Auth::get_userid }
 sub _get_username { &Ffc::Data::Auth::get_username }
 
 sub _get_categories_sql {
+    my $notall = shift() ? ("\n".(' ' x 38).'AND f.show       =  1') : ''; # only get all categories if explicitly asked for
     my $p = $Ffc::Data::Prefix;
     return << "EOSQL";
 SELECT 'Allgemein'  AS name,
        ''           AS short,
        COUNT(p2.id) AS cnt,
-       0            AS sort 
+       0            AS sort ,
+       1            AS show
   FROM ${p}posts p2 
   WHERE p2.category  IS NULL 
     AND p2.altered   >= (SELECT u.lastseenforum FROM ${p}users u WHERE u.id=? LIMIT 1)
@@ -34,10 +36,11 @@ UNION
 SELECT c.name       AS name, 
        c.short      AS short,
        COUNT(p1.id) AS cnt,
-       c.sort + 1   AS sort
+       c.sort + 1   AS sort,
+       f.show       AS show
   FROM ${p}categories c
   LEFT OUTER JOIN ${p}lastseenforum f ON  f.category   =  c.id 
-                                      AND f.userid     =  ?
+                                      AND f.userid     =  ?$notall
   LEFT OUTER JOIN ${p}posts p1        ON  p1.category  =  c.id 
                                       AND p1.altered   >= COALESCE(f.lastseen,0) 
                                       AND p1.user_from != ?
@@ -138,6 +141,12 @@ sub count_notes {
     my $userid = _get_userid( shift, 'Notizenzähler' );
     my $sql = 'SELECT count(p.id) FROM '.$Ffc::Data::Prefix.'posts p WHERE p.user_from=? AND p.user_to=p.user_from';
     return (Ffc::Data::dbh()->selectrow_array($sql, undef, $userid))[0];
+}
+
+sub get_all_categories {
+    my $userid = _get_userid( shift, 'Kategorieliste' );
+    my $sql = _get_categories_sql('all'); # get all categories
+    return Ffc::Data::dbh()->selectall_arrayref($sql, undef, ($userid) x 4);
 }
 
 sub get_categories {

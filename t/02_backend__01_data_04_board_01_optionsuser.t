@@ -13,7 +13,7 @@ use Mock::Testuser;
 use Ffc::Data::Auth;
 srand;
 
-use Test::More tests => 108;
+use Test::More tests => 124;
 
 Test::General::test_prepare();
 
@@ -292,5 +292,53 @@ use_ok('Ffc::Data::Board::OptionsUser');
         }
     }
 
+}
+{
+    note('sub update_show_category( $username, $categoryshor, $checkbox )');
+    my $user = Mock::Testuser->new_active_user();
+    my $userid = Ffc::Data::Auth::get_userid( $user->{name}, 'angemeldeter Benutzer für Kategorieanzeigeswitchtest' );
+    my $cat = $Test::General::Categories[0][2];
+    my $dbh = Ffc::Data::dbh();
+    is( ( $dbh->selectrow_array('SELECT COUNT(f.userid) FROM '.$Ffc::Data::Prefix.'lastseenforum f WHERE f.userid = ?', undef, $userid))[0], 0, 'no entry for new user in category-check' );
+    check_call(
+        \&Ffc::Data::Board::OptionsUser::update_show_category,
+        update_show_category => {
+            name => 'username',
+            good => $user->{name},
+            bad  => [
+                '',
+                Mock::Testuser::get_noneexisting_username(),
+            ],
+            errormsg => [
+                'Kein Benutzername angegeben',
+                'Benutzer unbekannt',
+            ],
+            emptyerror => 'Kein Benutzername angegeben',
+        },
+        {
+            name => 'category short',
+            good => $cat,
+            bad  => [
+                '',
+                Test::General::test_get_non_category_short()
+            ],
+            errormsg => [
+                'Kategorie nicht angegeben',
+                'Kategorie ungültig',
+            ],
+            emptyerror => 'Kategorie nicht angegeben',
+        },
+        {
+            name       => 'boolean (0/1)checkbox value',
+            good       => 0,
+            bad        => [ '', 4, 'asd', '   ' ],
+            errormsg   => [ 'Kategorie-Anzeigeswitch muss 0 oder 1 sein' ],
+            emptyerror => 'Kategorie-Anzeigeswitch nicht angegeben',
+        },
+    );
+    is( ( $dbh->selectrow_array('SELECT COUNT(f.userid) FROM '.$Ffc::Data::Prefix.'lastseenforum f WHERE f.userid = ?', undef, $userid))[0], 1, 'one entry for new user in category-check' );
+    is( ( $dbh->selectrow_array('SELECT f.show FROM '.$Ffc::Data::Prefix.'lastseenforum f WHERE f.userid = ?', undef, $userid))[0], 0, 'zero as entry for new user in category-show' );
+    Ffc::Data::Board::OptionsUser::update_show_category($user->{name}, $cat, 1);
+    is( ( $dbh->selectrow_array('SELECT f.show FROM '.$Ffc::Data::Prefix.'lastseenforum f WHERE f.userid = ?', undef, $userid))[0], 1, 'zero as entry for new user in category-show' );
 }
 

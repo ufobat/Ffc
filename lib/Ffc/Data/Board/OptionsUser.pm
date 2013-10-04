@@ -60,5 +60,23 @@ sub update_theme {
     return 1;
 }
 
+sub update_show_category {
+    my $userid = _get_userid( shift, 'angemeldeter Benutzer für Anzeigeschalter für Kategorien' );
+    my $cat = shift;
+    croak q{Kategorie nicht angegeben} unless $cat;
+    my $cid = Ffc::Data::General::get_category_id($cat);
+    my $x = shift;
+    croak q{Kategorie-Anzeigeswitch nicht angegeben} unless defined $x;
+    croak q{Kategorie-Anzeigeswitch muss 0 oder 1 sein} unless $x =~ m/\A[01]\z/xms;
+    my $sql = 'SELECT COUNT(l.userid) FROM '.$Ffc::Data::Prefix.'lastseenforum l WHERE l.userid=? AND l.category=?';
+    my $dbh = Ffc::Data::dbh();
+    my $ret = ( $dbh->selectrow_array($sql, undef, $userid, $cid) )[0];
+    $sql = $ret
+         ? 'UPDATE '.$Ffc::Data::Prefix.'lastseenforum SET show = ? WHERE userid = ? AND category = ?'
+         : 'INSERT INTO '.$Ffc::Data::Prefix.'lastseenforum (lastseen, show, userid, category) VALUES (0, ?, ?, ?)';
+    $dbh->do( $sql, undef, $x, $userid, $cid );
+    return 1;
+}
+
 1;
 

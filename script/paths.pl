@@ -27,7 +27,8 @@ my @closed = qw(
     t/02_backend__01_data_04_board_01_optionsuser.t
     t/02_backend__01_data_04_board_02_optionsadmin.t
     t/02_backend__01_data_04_board_03_forms.t
-    t/02_backend__01_data_04_board_04_views.t
+    t/02_backend__01_data_04_board_04_views_00.t
+    t/02_backend__01_data_04_board_04_views_01_categoryhide.t
     t/02_backend__01_data_04_board_05_datasecurity.t
     t/02_backend__01_data_04_board_06_avatars.t
     t/02_backend__01_data_04_board_07_uploads_01_functions.t
