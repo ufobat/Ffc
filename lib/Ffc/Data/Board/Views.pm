@@ -17,13 +17,13 @@ sub _get_userid { &Ffc::Data::Auth::get_userid }
 sub _get_username { &Ffc::Data::Auth::get_username }
 
 sub _get_categories_sql {
-    my $notall = shift() ? ("\n".(' ' x 38).'AND f.show       =  1') : ''; # only get all categories if explicitly asked for
+    my $notall = shift() ? '' : "\n  HAVING f.show = 1" ; # only get all categories if explicitly asked for
     my $p = $Ffc::Data::Prefix;
     return << "EOSQL";
 SELECT 'Allgemein'  AS name,
        ''           AS short,
        COUNT(p2.id) AS cnt,
-       0            AS sort ,
+       0            AS sort,
        1            AS show
   FROM ${p}posts p2 
   WHERE p2.category  IS NULL 
@@ -33,19 +33,19 @@ SELECT 'Allgemein'  AS name,
 
 UNION
 
-SELECT c.name       AS name, 
-       c.short      AS short,
-       COUNT(p1.id) AS cnt,
-       c.sort + 1   AS sort,
-       f.show       AS show
+SELECT c.name             AS name, 
+       c.short            AS short,
+       COUNT(p1.id)       AS cnt,
+       c.sort + 1         AS sort,
+       COALESCE(f.show,1) AS show
   FROM ${p}categories c
   LEFT OUTER JOIN ${p}lastseenforum f ON  f.category   =  c.id 
-                                      AND f.userid     =  ?$notall
+                                      AND f.userid     =  ?
   LEFT OUTER JOIN ${p}posts p1        ON  p1.category  =  c.id 
                                       AND p1.altered   >= COALESCE(f.lastseen,0) 
                                       AND p1.user_from != ?
                                       AND p1.user_to   IS NULL
-  GROUP BY c.id
+  GROUP BY c.id$notall
 
 ORDER BY sort, name
 EOSQL

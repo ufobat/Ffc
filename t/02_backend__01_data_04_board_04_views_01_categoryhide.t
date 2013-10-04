@@ -16,7 +16,7 @@ use Ffc::Data::Board::Forms;
 use Ffc::Data::Board::OptionsUser;
 srand;
 
-use Test::More tests => 47;
+use Test::More tests => 51;
 
 Test::General::test_prepare();
 
@@ -75,5 +75,39 @@ use_ok('Ffc::Data::Board::Views');
 #        diag "catid=$catid, userid=$userid, return=$ret";
         is $ret, 1, 'category show switch is ok (1)';
     }
+
+    $_->[3] = 0 for @Test::General::Categories[0 .. 4];
+    $_->[3] = 1 for @Test::General::Categories[5 .. 8];
+
+    {
+        # id name short
+        my $check = [ [ 'Allgemein', '', 1 ], 
+            map { [ $_->[1], $_->[2], $_->[3] ] } 
+            sort { $a->[2] cmp $b->[2] } 
+            @Test::General::Categories ];
+        # name short count sort show
+        my $cats = [ map { [ $_->[0], $_->[1], $_->[4] ] }
+            sort { $a->[1] cmp $b->[1] }
+            @{ Ffc::Data::Board::Views::get_all_categories($user->{name}) } ];
+        is $#$cats, 9, 'category count for "get_all_categories" ok';
+        is_deeply $cats, $check, 'categories array ok';
+        # use Data::Dumper; diag Dumper $cats, $check;
+    }
+    {
+        # id name short
+        my $check = [ [ 'Allgemein', '', 1 ], 
+            map { [ $_->[1], $_->[2], $_->[3] ] } 
+            sort { $a->[2] cmp $b->[2] } 
+            @Test::General::Categories[5 .. 8] ];
+        # name short count sort show
+        my $cats = [ map { [ $_->[0], $_->[1], $_->[4] ] }
+            sort { $a->[1] cmp $b->[1] }
+            @{ Ffc::Data::Board::Views::get_categories($user->{name}) } ];
+        is $#$cats, 4, 'category count for "get_categories" ok';
+        is_deeply $cats, $check, 'categories array ok';
+        # use Data::Dumper; diag Dumper $cats, $check;
+    }
+
     my $user2 = Mock::Testuser->new_active_user();
+# counts!!!
 }
