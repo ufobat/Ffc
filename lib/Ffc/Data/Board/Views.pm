@@ -17,7 +17,7 @@ sub _get_userid { &Ffc::Data::Auth::get_userid }
 sub _get_username { &Ffc::Data::Auth::get_username }
 
 sub _get_categories_sql {
-    my $notall = shift() ? '' : "\n  HAVING f.show = 1" ; # only get all categories if explicitly asked for
+    my $notall = shift() ? '' : "\n  WHERE COALESCE(f.show,1) = 1" ; # only get all categories if explicitly asked for
     my $p = $Ffc::Data::Prefix;
     return << "EOSQL";
 SELECT 'Allgemein'  AS name,
@@ -44,8 +44,8 @@ SELECT c.name             AS name,
   LEFT OUTER JOIN ${p}posts p1        ON  p1.category  =  c.id 
                                       AND p1.altered   >= COALESCE(f.lastseen,0) 
                                       AND p1.user_from != ?
-                                      AND p1.user_to   IS NULL
-  GROUP BY c.id$notall
+                                      AND p1.user_to   IS NULL$notall
+  GROUP BY c.id
 
 ORDER BY sort, name
 EOSQL

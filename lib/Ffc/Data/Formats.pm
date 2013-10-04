@@ -43,6 +43,7 @@ sub format_timestamp {
         $t = sprintf '%02d.%02d.%04d, %02d:%02d', $3, $2, $1, $4, $5;
         return 'neu' if $t eq '00.00.0000, 00:00';
         my @time = localtime; $time[5] += 1900; $time[4]++;
+#        $time[3]-- if $time[2] < 2;$time[2] -= 2; # FIXME Zeitzonenzeuch
         my $time = sprintf '%02d.%02d.%04d', @time[3,4,5];
         return 'jetzt' if $t eq sprintf "$time, \%02d:\%02d", @time[2,1];
         return substr $t, 12, 5 if $t =~ m/\A$time/xms;
