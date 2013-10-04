@@ -32,9 +32,10 @@ our @Smilies = (
     [ evilgrin   => ['>:D', '>=D',  '>:-D',                       ] ],
     [ nope       => [':/',  ':-/',  '=/',   ':\\', ':-\\', '=\\', ] ],
 );
-our %Smiley           = map {my ($n,$l)=($_->[0],$_->[1]); map {$_=>$n} @$l} @Smilies;
-our $SmileyRe         = join '|', map {s{([\^\<\-\.\:\\\/\(\)\=\|\,])}{\\$1}gxms; $_} keys %Smiley;
-our %Goodies          = qw( _ underline - linethrough + bold ~ italic ! alert);
+our %Smiley     = map {my ($n,$l)=($_->[0],$_->[1]); map {$_=>$n} @$l} @Smilies;
+our $SmileyRe   = join '|', map {s{([\^\<\-\.\:\\\/\(\)\=\|\,])}{\\$1}gxms; $_} keys %Smiley;
+our %Goodies    = qw( _ underline - linethrough + bold ~ italic ! alert);
+our %NonGoodies = qw(* emotion);
 
 sub format_timestamp {
     my $t = shift // return '';
@@ -65,7 +66,7 @@ sub format_text {
     _xml_escape($s);
     $s =~ s{(\A|\s)"(\S.*?\S|\S)"(\W|\z)}{$1„<span class="quote">$2</span>“$3}gxm;
     $s =~ s{$u}{<span class="username">$u</span>}xmsi if $u;
-    $s =~ s{(?<!\w)([\_\-\+\~\!])([\_\-\+\~\!\w]+)\g1(?!\w)}{_make_goody($1,$2)}gxmies;
+    $s =~ s{(?<!\w)([\_\-\+\~\!\*])([\_\-\+\~\!\w\*]+)\g1(?!\w)}{_make_goody($1,$2)}gxmies;
     $s =~ s{((?:[\(\s]|\A)?)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3,$c)}gxmeis;
     $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxes;
     $s =~ s{\n[\n\s]*}{</p>\n<p>}xgms;
@@ -78,7 +79,15 @@ sub _make_goody {
     my $rem = "\\$marker";
     $string =~ s/$rem/ /gms;
     $string .= ' !!!' if $marker eq '!';
-    return qq~<span class="$Goodies{$marker}">$string</span>~;
+    if ( exists $Goodies{$marker} ) {
+        return qq~<span class="$Goodies{$marker}">$string</span>~;
+    }
+    elsif ( exists $NonGoodies{$marker} ) {
+        return qq~<span class="$NonGoodies{$marker}">$marker$string$marker</span>~;
+    }
+    else {
+        return "$marker$string$marker";
+    }
 }
 
 sub _make_link {

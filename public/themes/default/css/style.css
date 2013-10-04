@@ -220,6 +220,11 @@ img.smiley, img.icon {
 .quote {
     color: dimgrey;
 }
+.emotion {
+    color: dimgrey;
+    vertical-align: text-top;
+    font-size: .75em;
+}
 .postbox .username {
     font-weight: bolder;
 }
