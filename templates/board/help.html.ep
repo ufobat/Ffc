@@ -14,6 +14,7 @@
         <li><code>-du-rch-</code>: <span class="linethrough">Durchstreichung</span></li>
         <li><code>~kur~siv~</code>: <span class="italic">Schrägschrift</span></li>
         <li><code>!auf!geregt!</code>: <span class="alert">Spezielle Auszeichnung für wirklich wichtige Dinge</span></li>
+        <li><code>*emo*tional*</code>: <span class="emotional">Spoezielle Auszeichnung für *emotionale* Anmerkungen</span></li>
     <ul>
 </div>
 <div class="postbox helptext">
