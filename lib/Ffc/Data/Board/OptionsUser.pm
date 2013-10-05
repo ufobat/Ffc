@@ -72,8 +72,8 @@ sub update_show_category {
     my $dbh = Ffc::Data::dbh();
     my $ret = ( $dbh->selectrow_array($sql, undef, $userid, $cid) )[0];
     $sql = $ret
-         ? 'UPDATE '.$Ffc::Data::Prefix.'lastseenforum SET show = ? WHERE userid = ? AND category = ?'
-         : 'INSERT INTO '.$Ffc::Data::Prefix.'lastseenforum (lastseen, show, userid, category) VALUES (0, ?, ?, ?)';
+         ? 'UPDATE '.$Ffc::Data::Prefix.'lastseenforum SET show_cat = ? WHERE userid = ? AND category = ?'
+         : 'INSERT INTO '.$Ffc::Data::Prefix.'lastseenforum (lastseen, show_cat, userid, category) VALUES (0, ?, ?, ?)';
     $dbh->do( $sql, undef, $x, $userid, $cid );
     return 1;
 }

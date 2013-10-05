@@ -25,7 +25,7 @@ sub _update_user_forum {
             $sql = 'UPDATE '.$Ffc::Data::Prefix.'lastseenforum SET lastseen=current_timestamp WHERE userid=? AND category=?';
         }
         else {
-            $sql = 'INSERT INTO '.$Ffc::Data::Prefix.'lastseenforum (lastseen, userid, category, show) VALUES (current_timestamp, ?, ?, 1)';
+            $sql = 'INSERT INTO '.$Ffc::Data::Prefix.'lastseenforum (lastseen, userid, category, show_cat) VALUES (current_timestamp, ?, ?, 1)';
         }
         $dbh->do( $sql, undef, $userid, $category );
         {

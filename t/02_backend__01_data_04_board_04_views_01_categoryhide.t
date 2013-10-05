@@ -60,18 +60,18 @@ use_ok('Ffc::Data::Board::Views');
     my $userid = Ffc::Data::Auth::get_userid( $user->{name}, 'angemeldeter Benutzer für Kategorieanzeige' );
     Test::General::test_update_userstats($user, 1);
     for my $catid ( map { $_->[0] } @Test::General::Categories ) {
-        my $ret = ( Ffc::Data::dbh()->selectall_arrayref('SELECT l.show FROM '.$Ffc::Data::Prefix.'lastseenforum l WHERE l.userid=? AND l.category=?', undef, $userid, $catid) )->[0]->[0];
+        my $ret = ( Ffc::Data::dbh()->selectall_arrayref('SELECT l.show_cat FROM '.$Ffc::Data::Prefix.'lastseenforum l WHERE l.userid=? AND l.category=?', undef, $userid, $catid) )->[0]->[0];
 #        diag "catid=$catid, userid=$userid, return=$ret";
         is $ret, 1, 'category show switch is ok (1)';
     }
     for my $cat ( @Test::General::Categories[0..4] ) {
         Ffc::Data::Board::OptionsUser::update_show_category($user->{name}, $cat->[2], 0);
-        my $ret = ( Ffc::Data::dbh()->selectall_arrayref('SELECT l.show FROM '.$Ffc::Data::Prefix.'lastseenforum l WHERE l.userid=? AND l.category=?', undef, $userid, $cat->[0]) )->[0]->[0];
+        my $ret = ( Ffc::Data::dbh()->selectall_arrayref('SELECT l.show_cat FROM '.$Ffc::Data::Prefix.'lastseenforum l WHERE l.userid=? AND l.category=?', undef, $userid, $cat->[0]) )->[0]->[0];
 #        diag "catid=$catid, userid=$userid, return=$ret";
         is $ret, 0, 'category show switch is ok (0)';
     }
     for my $catid ( map { $_->[0] } @Test::General::Categories[5..8] ) {
-        my $ret = ( Ffc::Data::dbh()->selectall_arrayref('SELECT l.show FROM '.$Ffc::Data::Prefix.'lastseenforum l WHERE l.userid=? AND l.category=?', undef, $userid, $catid) )->[0]->[0];
+        my $ret = ( Ffc::Data::dbh()->selectall_arrayref('SELECT l.show_cat FROM '.$Ffc::Data::Prefix.'lastseenforum l WHERE l.userid=? AND l.category=?', undef, $userid, $catid) )->[0]->[0];
 #        diag "catid=$catid, userid=$userid, return=$ret";
         is $ret, 1, 'category show switch is ok (1)';
     }

@@ -337,8 +337,8 @@ use_ok('Ffc::Data::Board::OptionsUser');
         },
     );
     is( ( $dbh->selectrow_array('SELECT COUNT(f.userid) FROM '.$Ffc::Data::Prefix.'lastseenforum f WHERE f.userid = ?', undef, $userid))[0], 1, 'one entry for new user in category-check' );
-    is( ( $dbh->selectrow_array('SELECT f.show FROM '.$Ffc::Data::Prefix.'lastseenforum f WHERE f.userid = ?', undef, $userid))[0], 0, 'zero as entry for new user in category-show' );
+    is( ( $dbh->selectrow_array('SELECT f.show_cat FROM '.$Ffc::Data::Prefix.'lastseenforum f WHERE f.userid = ?', undef, $userid))[0], 0, 'zero as entry for new user in category-show' );
     Ffc::Data::Board::OptionsUser::update_show_category($user->{name}, $cat, 1);
-    is( ( $dbh->selectrow_array('SELECT f.show FROM '.$Ffc::Data::Prefix.'lastseenforum f WHERE f.userid = ?', undef, $userid))[0], 1, 'zero as entry for new user in category-show' );
+    is( ( $dbh->selectrow_array('SELECT f.show_cat FROM '.$Ffc::Data::Prefix.'lastseenforum f WHERE f.userid = ?', undef, $userid))[0], 1, 'zero as entry for new user in category-show' );
 }
 

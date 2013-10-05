@@ -17,14 +17,14 @@ sub _get_userid { &Ffc::Data::Auth::get_userid }
 sub _get_username { &Ffc::Data::Auth::get_username }
 
 sub _get_categories_sql {
-    my $notall = shift() ? '' : "\n  WHERE COALESCE(f.show,1) = 1" ; # only get all categories if explicitly asked for
+    my $notall = shift() ? '' : "\n  WHERE COALESCE(f.show_cat,1) = 1" ; # only get all categories if explicitly asked for
     my $p = $Ffc::Data::Prefix;
     return << "EOSQL";
 SELECT 'Allgemein'  AS name,
        ''           AS short,
        COUNT(p2.id) AS cnt,
        0            AS sort,
-       1            AS show
+       1            AS show_cat
   FROM ${p}posts p2 
   WHERE p2.category  IS NULL 
     AND p2.altered   >= (SELECT u.lastseenforum FROM ${p}users u WHERE u.id=? LIMIT 1)
@@ -37,7 +37,7 @@ SELECT c.name             AS name,
        c.short            AS short,
        COUNT(p1.id)       AS cnt,
        c.sort + 1         AS sort,
-       COALESCE(f.show,1) AS show
+       COALESCE(f.show_cat,1) AS show_cat
   FROM ${p}categories c
   LEFT OUTER JOIN ${p}lastseenforum f ON  f.category   =  c.id 
                                       AND f.userid     =  ?
@@ -70,11 +70,11 @@ EOSQL
                 push @param, Ffc::Data::General::get_category_id($cat);
                 $sql .= << "EOSQL";
 LEFT OUTER JOIN ${Ffc::Data::Prefix}lastseenforum f ON p.category = f.category AND f.userid     = u.id
-WHERE p.altered          >=     COALESCE(f.lastseen,0)
-  AND p.user_to          IS     NULL
-  AND p.category         IS NOT NULL
-  AND COALESCE(f.show,1) =      1
-  AND p.category         =      ?
+WHERE p.altered              >=     COALESCE(f.lastseen,0)
+  AND p.user_to              IS     NULL
+  AND p.category             IS NOT NULL
+  AND COALESCE(f.show_cat,1) =      1
+  AND p.category             =      ?
 EOSQL
             }
             else {

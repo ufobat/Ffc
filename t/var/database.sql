@@ -36,7 +36,7 @@ CREATE TABLE "${Prefix}lastseenforum" (
   "userid" integer NOT NULL,
   "category" integer NOT NULL,
   "lastseen" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "show" smallint NOT NULL DEFAULT 1,
+  "show_cat" smallint NOT NULL DEFAULT 1,
   PRIMARY KEY ("userid", "category")
 );
 
