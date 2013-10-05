@@ -70,10 +70,11 @@ EOSQL
                 push @param, Ffc::Data::General::get_category_id($cat);
                 $sql .= << "EOSQL";
 LEFT OUTER JOIN ${Ffc::Data::Prefix}lastseenforum f ON p.category = f.category AND f.userid     = u.id
-WHERE p.altered  >= COALESCE(f.lastseen,0)
-  AND p.user_to  IS NULL
-  AND p.category IS NOT NULL
-  AND p.category = ?
+WHERE p.altered          >=     COALESCE(f.lastseen,0)
+  AND p.user_to          IS     NULL
+  AND p.category         IS NOT NULL
+  AND COALESCE(f.show,1) =      1
+  AND p.category         =      ?
 EOSQL
             }
             else {

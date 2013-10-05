@@ -16,7 +16,7 @@ use Ffc::Data::Board::Forms;
 use Ffc::Data::Board::OptionsUser;
 srand;
 
-use Test::More tests => 51;
+use Test::More tests => 66;
 
 Test::General::test_prepare();
 
@@ -109,5 +109,40 @@ use_ok('Ffc::Data::Board::Views');
     }
 
     my $user2 = Mock::Testuser->new_active_user();
-# counts!!!
+    my %catcounts = ();
+    for my $cat ( '', map { $_->[2] } @Test::General::Categories ) {
+        $catcounts{$cat} = 3 + int rand 10;
+        Ffc::Data::Board::Forms::insert_post($user2->{name}, Test::General::test_r(), $cat) for 1 .. $catcounts{$cat};
+    }
+    my $tocount = 3 + int rand 10;
+    my $fromcount = 3 + int rand 10; # obligatorisch
+    my $notecount = 3 + int rand 10;
+    my $notecount2 = 3 + int rand 10; # obligatorisch
+    Ffc::Data::Board::Forms::insert_post($user2->{name}, Test::General::test_r(), undef, $user->{name}) for 1 .. $tocount;
+    Ffc::Data::Board::Forms::insert_post($user->{name}, Test::General::test_r(), undef, $user2->{name}) for 1 .. $fromcount;
+    Ffc::Data::Board::Forms::insert_post($user->{name}, Test::General::test_r(), undef, $user->{name}) for 1 .. $notecount;
+    Ffc::Data::Board::Forms::insert_post($user2->{name}, Test::General::test_r(), undef, $user2->{name}) for 1 .. $notecount2;
+    
+    # counts testen
+    my $forumcount = do {
+        my $sum = 0;
+        $sum += $catcounts{$_}
+            for '', map { $_->[2] }
+                @Test::General::Categories[5..8];
+        $sum;
+    };
+    {
+        is Ffc::Data::Board::Views::check_for_updates($user->{name}, 'msgs'),  $tocount, 
+            'sum of counts in msgs overall is ok';
+        is Ffc::Data::Board::Views::check_for_updates($user->{name}, 'notes'), 0,
+            'sum of counts in notes overall is ok';
+        for my $cat ( ['', '', '', 1], @Test::General::Categories ) {
+            is Ffc::Data::Board::Views::check_for_updates($user->{name}, 'forum', $cat->[2]),
+                ( $cat->[3] ? $catcounts{$cat->[2]} : 0 ),
+                qq'sum of counts in forum in cat "$cat->[2]" is ok';
+        }
+        is Ffc::Data::Board::Views::count_newmsgs( $user->{name} ), $tocount, 'count_newsmsgs ok';
+        is Ffc::Data::Board::Views::count_notes( $user->{name} ), $notecount, 'count of notes ok';
+        is Ffc::Data::Board::Views::count_newposts( $user->{name} ), $forumcount, 'count of overall forum posts ok';
+    }
 }
