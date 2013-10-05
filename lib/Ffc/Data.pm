@@ -10,7 +10,7 @@ use File::Basename;
 use DBI;
 use Carp;
 
-our $PasswordRegex = qr/\S{8,64}/xms;
+our $PasswordRegex = qr/.{8,64}/xms;
 our $UsernameRegex = qr/\w{4,64}/xms;
 our $CategoryRegex = qr/\w{1,64}/xms;
 

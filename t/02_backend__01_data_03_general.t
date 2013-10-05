@@ -23,7 +23,7 @@ sub get_noneexisting_username { &Mock::Testuser::get_noneexisting_username }
 sub test_get_rand_user { &Test::General::test_get_rand_user }
 sub test_get_rand_category { &Test::General::test_get_rand_category }
 
-use Test::More tests => 50;
+use Test::More tests => 47;
 
 use_ok('Ffc::Data::General');
 
@@ -38,7 +38,7 @@ use_ok('Ffc::Data::General');
         check_password_change => {
             name => 'new password',
             good => $new_password,
-            bad  => [ '', '        ', substr( $new_password, 0, 5 ) ],
+            bad  => [ '', substr( $new_password, 0, 5 ) ],
             errormsg   => [ 'Kein Passwort', 'Passwort ungültig' ],
             emptyerror => 'Kein Passwort',
         },
@@ -46,7 +46,7 @@ use_ok('Ffc::Data::General');
             name => 'new password repeat',
             good => $new_password,
             bad =>
-              [ $old_password, '', '        ', substr( $new_password, 0, 5 ) ],
+              [ $old_password, '', substr( $new_password, 0, 5 ) ],
             errormsg => [
                 'Das neue Passwort und dessen Wiederholung stimmen nicht',
                 'Kein Passwort',
@@ -57,7 +57,7 @@ use_ok('Ffc::Data::General');
         {
             name         => 'old password',
             good         => $old_password,
-            bad          => [ '        ', substr( $old_password, 0, 5 ) ],
+            bad          => [ substr( $old_password, 0, 5 ) ],
             errormsg     => ['Passwort ungültig'],
             noemptycheck => 1,
         },
