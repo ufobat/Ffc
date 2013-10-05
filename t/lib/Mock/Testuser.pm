@@ -72,7 +72,7 @@ sub get_password_check_hash {
     return {
         name => 'password',
         good => $password,
-        bad  => [ '', 'aa', 'a' x 72, ' ' x 16, 'aaaa aaa', 'aa_$ _ddd', ],
+        bad  => [ '', 'aa', 'a' x 72 ],
         emptyerror => 'Kein Passwort',
         errormsg   => [ 'Kein Passwort', 'Passwort ungültig' ],
     };

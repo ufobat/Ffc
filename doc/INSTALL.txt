@@ -1,0 +1,9 @@
+Installationsanleitung
+======================
+
+1. Datei unter "ect/ffc.json.example" nach "etc/ffc.json" kopieren und Inhalt (Konfiguration) anpassen (JSON-Syntax)
+2. Datenbank entsprechend dem Schema unter "doc/db-schemas/database_sqlite.sql" für das eigene relationale Datenbankmanagementsystem erstellen, die Zeichenketten "${Prefix}" sind dabei mit dem entsprechenden Eintrag "dbprefix" aus der Konfigurationsdatei "etc/ffc.json" zu ersetzen
+3. Das Script "script/paths.pl" ausführen, damit die Berechtigungen passen
+4. Das Script "script/inituser.pl" ausführen, das fragt paar Sachen ab, um einen Administrator-Benutzer zu erstellen, alle übrigen Benutzer können von diesem Benutzer aus über die Weboberfläche unter Optionen später noch erstellt werden
+5. "script/ffc" entsprechend der Anleitung auf den Mojolicious-Webseiten für die eigene Serverumgebung als Anwendung konfigurieren
+

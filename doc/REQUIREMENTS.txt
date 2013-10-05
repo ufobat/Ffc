@@ -1,0 +1,8 @@
+Vorraussetzungen
+================
+
+* Linux-Server mit Webserver
+* Perl (>= 5.12)
+* Mojolicious (>= 1.0)
+* DBI + passenden Treiber für das eigene relationale Datenbankmanagementsystem
+

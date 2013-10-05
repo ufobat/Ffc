@@ -15,6 +15,11 @@ my @closed = qw(
     data/avatars/avatar_pics_placed_here
     data/uploads/uploads_placed_here
     etc/ffc.json.example
+    doc
+    doc/db-schemas
+    doc/INSTALL.txt
+    doc/REQUIREMENTS.txt
+    doc/db-schemas/database_sqlite.sql
     .git
     README.pod
     t
@@ -56,7 +61,6 @@ my @closed = qw(
     t/lib/Test/Callcheck.pm
     t/lib/Test/General.pm
     t/var
-    t/var/database.sql
     t/var/testdata.sql
 );
 
@@ -200,14 +204,14 @@ sub processpath {
     }
 }
 
-say '####### plublic executable files';
+say '   #### plublic executable files';
 processpath(\@publicexec, '750', '750');
-say '####### plublic readable files and directories';
+say '   #### plublic readable files and directories';
 processpath(\@public,     '750', '640');
-say '####### closed executables files';
+say '   #### closed executables files';
 processpath(\@closedexec, '700', '700');
-say '####### closed readable files and directories';
+say '   #### closed readable files and directories';
 processpath(\@closed,     '700', '600');
-say '####### openly writable files and directories';
+say '   #### openly writable files and directories';
 processpath(\@open,       '770', '660');
 

@@ -42,7 +42,7 @@ our $CommonCatTitle = 'Allgemeine Beiträge';
 our $Themebasedir =
   File::Basename::dirname(__FILE__) . '/../../public' . $Themedir;
 our $DbTemplate =
-  File::Basename::dirname(__FILE__) . '/../../t/var/database.sql';
+  File::Basename::dirname(__FILE__) . '/../../doc/db-schemas/database_sqlite.sql';
 our $DbTestdata =
   File::Basename::dirname(__FILE__) . '/../../t/var/testdata.sql';
 our $Favicon;

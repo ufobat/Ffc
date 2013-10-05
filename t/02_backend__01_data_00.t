@@ -86,8 +86,8 @@ ok( Ffc::Data::set_config($app), 'config set returned true' );
     like($Ffc::Data::DefaultConfigPath, qr/$FindBin::Bin/, 'default config inside project directory');
     like($Ffc::Data::DefaultConfigPath, qr/etc/, 'default config in something with "etc" in it');
     like($Ffc::Data::DefaultConfigPath, qr/ffc\.json/, 'default config looks good');
-    like($Ffc::Data::DbTemplate, qr/database.sql/, 'database template file looks good');
-    like($Ffc::Data::DbTestdata, qr/testdata.sql/, 'testdata file looks good');
+    like($Ffc::Data::DbTemplate, qr/database_sqlite\.sql/, 'database template file looks good');
+    like($Ffc::Data::DbTestdata, qr/testdata\.sql/, 'testdata file looks good');
     is($app->sessions->cookie_name, $config->{cookiename}, 'cookie name ok');
 
     my @themes;
