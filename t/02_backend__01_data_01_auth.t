@@ -15,7 +15,7 @@ use Test::Callcheck;
 use Test::General;
 use Ffc::Data;
 
-use Test::More tests => 222;
+use Test::More tests => 210;
 
 BEGIN { use_ok('Ffc::Data::Auth') }
 

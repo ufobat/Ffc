@@ -119,6 +119,7 @@ sub startup {
     $options->route('/showimages_save')->via('post')->to('board#options_showimages_save')->name('options_showimages_save');
     $options->route('/theme_save')->via('post')->to('board#options_theme_save')->name('options_theme_save');
     $options->route('/avatar_save')->via('post')->to('board#options_avatar_save')->name('options_avatar_save');
+    $options->route('/showcat_save')->via('post')->to('board#options_showcat_save')->name('options_showcat_save');
 
     # admin options
     $options->route('/admin_save')->via('post')->to('board#useradmin_save')->name('useradmin_save');

@@ -13,7 +13,7 @@ use Mock::Testuser;
 use Ffc::Data::Auth;
 srand;
 
-use Test::More tests => 124;
+use Test::More tests => 121;
 
 Test::General::test_prepare();
 
@@ -105,14 +105,14 @@ use_ok('Ffc::Data::Board::OptionsUser');
         {
             name         => 'old password',
             good         => $old_password,
-            bad          => [ '        ', substr( $old_password, 0, 5 ) ],
+            bad          => [ substr( $old_password, 0, 5 ) ],
             errormsg     => ['Passwort ungültig'],
             noemptycheck => 1,
         },
         {
             name => 'new password',
             good => $new_password,
-            bad  => [ '', '        ', substr( $new_password, 0, 5 ) ],
+            bad  => [ '', substr( $new_password, 0, 5 ) ],
             errormsg   => [ 'Kein Passwort', 'Passwort ungültig' ],
             emptyerror => 'Kein Passwort',
         },
@@ -120,7 +120,7 @@ use_ok('Ffc::Data::Board::OptionsUser');
             name => 'new password repeat',
             good => $new_password,
             bad =>
-              [ $old_password, '', '        ', substr( $new_password, 0, 5 ) ],
+              [ $old_password, '', substr( $new_password, 0, 5 ) ],
             errormsg => [
                 'Das neue Passwort und dessen Wiederholung stimmen nicht',
                 'Kein Passwort',

@@ -5,7 +5,7 @@
 % if ( $act eq 'msgs' ) {
 %= include 'parts/userlistlinks'
 % }
-% if ( $act eq 'forum' ) {
+% if ( $act eq 'forum' and 0 < $#$categories ) {
 <div class="postbox categorylinks"><p>
 %   my $counter = 0;
 %   for ( @$categories ) { $counter++;

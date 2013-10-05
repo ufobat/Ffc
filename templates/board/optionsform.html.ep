@@ -10,7 +10,7 @@
     <h2>Eigenes Passwort ändern</h2>
 %= form_for options_password_save => ( method => 'POST' ) => begin 
     <p><input type="password" name="oldpw" value="" /> (Altes Passwort zur Bestätigung)</p>
-    <p><input type="password" name="newpw1" value="" /> (Neues Passwort, 8 bis 64 Zeichen lang, alles außer Leerzeichen erlaubt)</p>
+    <p><input type="password" name="newpw1" value="" /> (Neues Passwort, 8 bis 64 Zeichen lang)</p>
     <p><input type="password" name="newpw2" value="" /> (Neues Passwort wiederholt eingeben zur Bestätigung)</p>
     <p><button type="submit" class="linkalike">Passwort ändern</button></p>
 % end
@@ -43,6 +43,17 @@
     <input type="file" name="avatarfile" accept="image/*" />
     <button type="submit" class="linkalike">Avatar hochladen</button>
     <p>(Benutzeravatare sind kleine Bildchen, die neben den Beiträgen angezeigt werden, um optisch den Autoren des jeweiligen Beitrages hervorzuheben. Diese Avatarbildchen sollten nach Möglichkeit nicht zu groß sein (128px Seitenlänge sind da genug), damit auch Benutzer mit langsameren Internetverbindungen in den Genuß dieses Features kommen. Aus Designgründen werden diese Bildchen quadratisch dargestellt. Daher sollten die Bildchen, die man hochlädt, nach Möglichkeit ebenfalls Quadratisch sein, sonst kommt es zu unschönen Verzerrungen in der Anzeige.</p>
+% end
+</div>
+<div class="postbox options">
+    <h2>Kategorien wahlweise ausblenden</h2>
+    <p>Im Folgenden können Sie entscheiden, welche der möglichen Kategorien Sie sich anzeigen lassen möchten. Um eine Kategorie anzuzeigen, muss in der Liste einfach das entsprechende Häkchen vor der Kategorie gesetzt sein. Ist es nicht gesetzt, wird die Kategorie ausgeblendet.</p>
+%= form_for options_showcat_save => ( method => 'POST' ) => begin 
+% for my $cat ( @$categories ) { next unless $cat->[1];
+    <p><input type="checkbox" name="show_cat_<%= $cat->[1] %>" value="1"<%== $cat->[4] ? ' checked="checked"' : '' %> /> &quot;<span class="bold"><%= $cat->[0] %></span>&quot; anzeigen</p>
+% }
+    <button type="submit" class="linkalike">Kategorieanzeige speichern</button>
+    <button type="reset" class="linkalike">Nicht gespeicherte Änderungen verwerfen</button>
 % end
 </div>
 % if ( session()->{admin} ) {

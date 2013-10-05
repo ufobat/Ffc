@@ -9,6 +9,7 @@ use base 'Ffc::Board::Errors';
 
 use Ffc::Data::Auth;
 use Ffc::Data::General;
+use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Avatars;
 use Ffc::Data::Board::OptionsUser;
 use Ffc::Data::Board::OptionsAdmin;
@@ -28,10 +29,11 @@ sub options_form {
     my $userlist;
     $c->error_handling( sub { $userlist = Ffc::Data::General::get_userlist() }
     );
-    $c->stash( email    => $email    // '' );
-    $c->stash( userlist => $userlist // '' );
-    $c->stash( themes   => \@Ffc::Data::Themes );
-    $c->stash( act      => 'options' );
+    $c->stash( email      => $email    // '' );
+    $c->stash( userlist   => $userlist // '' );
+    $c->stash( themes     => \@Ffc::Data::Themes );
+    $c->stash( act        => 'options' );
+    $c->stash( categories => Ffc::Data::Board::Views::get_all_categories($s->{user}) );
     $c->get_counts();
     $c->render('board/optionsform');
 }
@@ -103,6 +105,18 @@ sub options_avatar_save {
               sub { $c->info_stash('Datei wurde hochgeladen'); $c->frontpage() },
         }
     );
+    $c->options_form();
+}
+
+sub options_showcat_save {
+    my $c = shift;
+    my $user = $c->session()->{user};
+    my $cats = Ffc::Data::Board::Views::get_all_categories( $user );
+    for my $cat ( @$cats ) {
+        next unless $cat->[1];
+        my $x = $c->param("show_cat_$cat->[1]") ? 1 : 0;
+        Ffc::Data::Board::OptionsUser::update_show_category( $user, $cat->[1], $x );
+    }
     $c->options_form();
 }
 

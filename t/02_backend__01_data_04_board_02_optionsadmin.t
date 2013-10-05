@@ -13,7 +13,7 @@ use Mock::Testuser;
 use Ffc::Data::Auth;
 srand;
 
-use Test::More tests => 139;
+use Test::More tests => 135;
 
 Test::General::test_prepare();
 
@@ -57,7 +57,7 @@ use_ok('Ffc::Data::Board::OptionsAdmin');
         {
             name => 'new password',
             good => $new_password,
-            bad  => [ '', '        ', substr( $new_password, 0, 5 ) ],
+            bad  => [ '', substr( $new_password, 0, 5 ) ],
             errormsg   => [ 'Kein Passwort', 'Passwort ungültig' ],
             emptyerror => 'Kein Passwort',
         },
@@ -65,7 +65,7 @@ use_ok('Ffc::Data::Board::OptionsAdmin');
             name => 'new password repeat',
             good => $new_password,
             bad =>
-              [ $old_password, '', '        ', substr( $new_password, 0, 5 ) ],
+              [ $old_password, '', substr( $new_password, 0, 5 ) ],
             errormsg => [
                 'Das neue Passwort und dessen Wiederholung stimmen nicht',
                 'Kein Passwort',
@@ -260,14 +260,14 @@ qq(Benutzer "$user_exists->{name}" existiert bereits und darf nicht neu angelegt
         {
             name => 'new password',
             good => $new_password,
-            bad  => [ '', '        ', substr( $new_password, 0, 5 ) ],
+            bad  => [ '', substr( $new_password, 0, 5 ) ],
             errormsg   => [ 'Kein Passwort', 'Passwort ungültig' ],
             emptyerror => 'Kein Passwort',
         },
         {
             name => 'new password repeat',
             good => $new_password,
-            bad  => [ '', '        ', substr( $new_password, 0, 5 ) ],
+            bad  => [ '', substr( $new_password, 0, 5 ) ],
             errormsg   => [ 'Kein Passwort', 'Passwort ungültig', ],
             emptyerror => 'Kein Passwort',
         },
