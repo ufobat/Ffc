@@ -45,7 +45,8 @@ my @closed = qw(
     t/03_frontend_02_board_01_errors.t
     t/03_frontend_02_board_02_options.t
     t/03_frontend_02_board_03_forms.t
-    t/03_frontend_02_board_04_views.t
+    t/03_frontend_02_board_04_views_00.t
+    t/03_frontend_02_board_04_views_01_categoryhide.t
     t/03_frontend_02_board_05_avatars.t
     t/03_frontend_02_board_06_uploads.t 
     t/lib
