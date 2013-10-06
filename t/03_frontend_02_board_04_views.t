@@ -15,8 +15,9 @@ use Mock::Testuser;
 use Ffc::Data;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Forms;
+use Ffc::Data::Board::OptionsUser;
 
-use Test::More tests => 4773;
+use Test::More tests => 4798;
 
 srand;
 my $t = Test::General::test_prepare_frontend('Ffc');
@@ -432,3 +433,23 @@ checkall_tests(1,1);
 note('checks with test postings as normal user');
 checkall_tests(1,0);
 
+{
+    note 'category hide tests';
+    my $user = Mock::Testuser->new_active_user();
+    my %cats = map { $_->[1] => $_->[4] } grep { $_->[1] } @{ Ffc::Data::Board::Views::get_all_categories( $user->{name} ) };
+    $t->post_ok( '/login',
+            form => { user => $user->{name}, pass => $user->{password} } )
+          ->status_is(302)
+          ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
+    $t->get_ok('/forum')->status_is(200);
+    $t->content_like(qr(/forum/category/$_)) for keys %cats;
+    for my $c ( ( keys %cats )[0..4] ) {
+        Ffc::Data::Board::OptionsUser::update_show_category( $user->{name}, $c, 0 );
+        $cats{$c} = 0;
+    }
+    $t->get_ok('/forum')->status_is(200);
+    $cats{$_}
+      ? $t->content_like(qr"/forum/category/$_")
+      : $t->content_unlike(qr"/forum/category/$_")
+        for keys %cats;
+}
