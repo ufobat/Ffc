@@ -115,7 +115,15 @@ sub options_showcat_save {
     for my $cat ( @$cats ) {
         next unless $cat->[1];
         my $x = $c->param("show_cat_$cat->[1]") ? 1 : 0;
-        Ffc::Data::Board::OptionsUser::update_show_category( $user, $cat->[1], $x );
+        $c->error_handling( {
+            code => sub { Ffc::Data::Board::OptionsUser::update_show_category( $user, $cat->[1], $x ) },
+            msg  => qq'Sichtbarkeit der Kategorie "$cat->[0]" konnte nicht geändert werden',
+            after_ok => sub { $c->info_stash(
+                $x
+                ? qq'Kategorie "$cat->[0]" ist jetzt sichtbar'
+                : qq'Kategorie "$cat->[0]" wird jetzt versteckt'
+            ) },
+        });
     }
     $c->options_form();
 }
