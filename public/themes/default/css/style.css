@@ -279,4 +279,7 @@ a:focus, .linkalike:focus {
 .msgsuserlist .userinfo, .footerlinks, .postboxform .send, .postboxform a {
     font-size: .75em;
 }
+a.newposts {
+    text-shadow: .1em .1em .2em palevioletred;
+}
 
