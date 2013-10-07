@@ -280,6 +280,6 @@ a:focus, .linkalike:focus {
     font-size: .75em;
 }
 a.newposts {
-    text-shadow: .1em .1em .2em palevioletred;
+    font-weight: bolder;
 }
 
