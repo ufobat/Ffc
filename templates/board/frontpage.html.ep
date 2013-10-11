@@ -1,18 +1,24 @@
 % layout 'default';
+<div class="postbox headbox">
 % if ( $page == 1 and ( $act ne 'msgs' or $msgs_username ) ) {
 %= include 'parts/postboxform'
-% } 
+% } elsif ( $page > 1 ) {
+<p>
+Seite <%= $page %>,
+<a href="<%= url_for_me 'show_page', page => 1 %>" title="Zur ersten Seite zur&uuml;ck gehen">zur&uuml;ck zur ersten Seite</a>
+% }
 % if ( $act eq 'msgs' ) {
 %= include 'parts/userlistlinks'
 % }
 % if ( $act eq 'forum' and 0 < $#$categories ) {
-<div class="postbox categorylinks"><p>
+<p>
 %   my $counter = 0;
 %   for ( @$categories ) { $counter++;
    <%== $counter > 1 ? '/ ' : '' %><%= include 'parts/categorylink', cat => $_ %>
 %   }
-</p></div>
+</p>
 % }
+</div>
 % for ( @$posts ) {
 %= include 'parts/postbox', post => $_
 % }

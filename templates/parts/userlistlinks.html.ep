@@ -1,4 +1,4 @@
-<div class="postbox msgsuserlist"><p>
+<p>
 % {
 %   my $counter = 0;
 %   for my $user ( @$userlist ) {
@@ -14,4 +14,4 @@
 %     }
 %   }
 % }
-</p></div>
+</p>

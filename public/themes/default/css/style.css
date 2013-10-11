@@ -127,11 +127,11 @@ img.smiley, img.icon {
     border-color: firebrick;
     background: peachpuff;
 }
-.categorylinks, .msgsuserlist, .postboxform {
+.headbox {
     background: whitesmoke;
     padding-bottom: .5em;
 }
-.categorylinks p, .msgsuserlist p, .postboxform p {
+.headbox p {
     padding: .25em .5em;
     margin: 0;
 }
@@ -181,7 +181,7 @@ img.smiley, img.icon {
         box-shadow: .1em .1em .3em palevioletred;
     }
 }
-.categorylinks .active, .msgsuserlist .active {
+.headbox .active {
     color: whitesmoke;
     background: steelblue;
 }
@@ -273,10 +273,10 @@ a:focus, .linkalike:focus {
 .menu a:focus {
     color: lightsteelblue;
 }
-.send, .msgsuserlist .username {
+.send, .headbox .username {
     font-weight: bolder;
 }
-.msgsuserlist .userinfo, .footerlinks, .postboxform .send, .postboxform a {
+.headbox .userinfo, .footerlinks, .postboxform .send, .postboxform a {
     font-size: .75em;
 }
 a.newposts {

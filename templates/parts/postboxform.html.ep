@@ -1,5 +1,4 @@
 % my $what = ($post && $post->{id} ? 'update' : 'insert').'_post';
-<div class="postbox ownpost postboxform">
 <form action="<%= url_for_me $what %>" accept-charset="UTF-8" method="POST">
 <p>
 %= submit_button 'Senden', class => 'linkalike send'
@@ -14,4 +13,3 @@
     ><%= $post ? $post->{raw} : '' %></textarea>
 </p>
 </form>
-</div>
