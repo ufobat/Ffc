@@ -6,3 +6,4 @@ Makefile
 MYMETA.json
 MYMETA.yml
 data/*
+public/custom/*

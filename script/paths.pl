@@ -14,6 +14,7 @@ my @closedexec = qw( script/inituser.pl script/paths.pl );
 my @closed = qw(
     data/avatars/avatar_pics_placed_here
     data/uploads/uploads_placed_here
+    public/custom/custom_static_content_placed_here
     etc/ffc.json.example
     doc
     doc/db-schemas
@@ -96,6 +97,7 @@ my @public = qw(
     log
     log/development.log
     public
+    public/custom
     public/themes
     public/themes/default
     public/themes/default/css
