@@ -9,7 +9,7 @@ use Mock::Controller;
 use Test::Callcheck;
 srand;
 
-use Test::More tests => 75;
+use Test::More tests => 77;
 
 use_ok('Ffc::Data::Formats');
 $Ffc::Data::URLShorten = 1024;
@@ -139,6 +139,8 @@ Hallo $testurl Hallo ($testurl) Hallo
 
 Und "Hier, in dieser :) ... $testurl ... achso" und da" oder, $testuser, so.
 
+Achso \@$testuser: $testuser oder http://www.$testuser.de weil ja!
+
 _test1_, +test2+, -test3-, ~test4~, !test5!, *test6*
 _test_1_, +test+2+, -test-3-, ~test~4~, !test!5!, *test*6*
 look: O.O 0.0,
@@ -174,6 +176,7 @@ sub controlstring_withimages {
 <p>Hallo <a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a> Hallo (<a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a>) Hallo</p>
 <p>(<a href="$testurl\%22" title="Externe Webseite" target="_blank">$testurl\%22</a>), <a href="$testimage" title="Externes Bild" target="_blank"><img src="$testimage" class="extern" title="Externes Bild" /></a></p>
 <p>Und „<span class="quote">Hier, in dieser <img class="smiley" src="$url/themes//$theme/img/smileys/smile.png" alt=":)" /> ... <a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a> ... achso</span>“ und da" oder, <span class="username">$testuser</span>, so.</p>
+<p>Achso <span class="username"><span class="alert">@</span>$testuser</span>: <span class="username">$testuser</span> oder <a href="http://www.$testuser.de" title="Externe Webseite" target="_blank">http://www.$testuser.de</a> weil ja!</p>
 <p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span>, <span class="emotion">*test6*</span></p>
 <p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span>, <span class="emotion">*test 6*</span></p>
 <p>look: <img class="smiley" src="$url/themes//$theme/img/smileys/look.png" alt="O.O" /> <img class="smiley" src="$url/themes//$theme/img/smileys/look.png" alt="0.0" />,</p>
@@ -208,6 +211,7 @@ sub controlstring_withoutimages {
 <p>Hallo <a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a> Hallo (<a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a>) Hallo</p>
 <p>(<a href="$testurl\%22" title="Externe Webseite" target="_blank">$testurl\%22</a>), <a href="$testimage" title="Externes Bild" target="_blank">$testimage</a></p>
 <p>Und „<span class="quote">Hier, in dieser :) ... <a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a> ... achso</span>“ und da" oder, <span class="username">$testuser</span>, so.</p>
+<p>Achso <span class="username"><span class="alert">@</span>$testuser</span>: <span class="username">$testuser</span> oder <a href="http://www.$testuser.de" title="Externe Webseite" target="_blank">http://www.$testuser.de</a> weil ja!</p>
 <p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span>, <span class="emotion">*test6*</span></p>
 <p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span>, <span class="emotion">*test 6*</span></p>
 <p>look: O.O 0.0,</p>
