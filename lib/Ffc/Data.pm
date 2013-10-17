@@ -7,6 +7,7 @@ use utf8;
 
 use File::Spec;
 use File::Basename;
+use Encode;
 use DBI;
 use Carp;
 
@@ -115,7 +116,7 @@ our $DefaultConfig = {
         $Favicon         = $config->{favicon} if $config->{favicon};
         $Footerlinks     = $config->{footerlinks} if $config->{footerlinks};
         $RefreshInterval = $config->{refreshinterval} * 60 * 1000 if $config->{refreshinterval};
-        $CommonCatTitle  = $config->{commoncattitle} if $config->{commoncattitle};
+        $CommonCatTitle  = encode( 'UTF-8', $config->{commoncattitle} || $CommonCatTitle);
         $URLShorten      = $config->{urlshorten} if $config->{urlshorten};
         $app->sessions->cookie_name($config->{cookiename} // 'Ffc');
         {

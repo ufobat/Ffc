@@ -20,7 +20,7 @@ sub _get_categories_sql {
     my $notall = shift() ? '' : "\n  WHERE COALESCE(f.show_cat,1) = 1" ; # only get all categories if explicitly asked for
     my $p = $Ffc::Data::Prefix;
     return << "EOSQL";
-SELECT 'Allgemein'  AS name,
+SELECT ?            AS name,
        ''           AS short,
        COUNT(p2.id) AS cnt,
        0            AS sort,
@@ -135,7 +135,7 @@ sub count_newposts {
     my $userid = _get_userid( shift, 'Beitragszähler' );
     my $sql = _get_categories_sql();
     $sql = "SELECT SUM(t.cnt) FROM ($sql) t";
-    return (Ffc::Data::dbh()->selectrow_array($sql, undef, ($userid) x 4 ))[0];
+    return (Ffc::Data::dbh()->selectrow_array($sql, undef, $Ffc::Data::CommonCatTitle, ($userid) x 4 ))[0];
 }
 
 sub count_notes {
@@ -147,13 +147,13 @@ sub count_notes {
 sub get_all_categories {
     my $userid = _get_userid( shift, 'Kategorieliste' );
     my $sql = _get_categories_sql('all'); # get all categories
-    return Ffc::Data::dbh()->selectall_arrayref($sql, undef, ($userid) x 4);
+    return Ffc::Data::dbh()->selectall_arrayref($sql, undef, $Ffc::Data::CommonCatTitle, ($userid) x 4);
 }
 
 sub get_categories {
     my $userid = _get_userid( shift, 'Kategorieliste' );
     my $sql = _get_categories_sql();
-    return Ffc::Data::dbh()->selectall_arrayref($sql, undef, ($userid) x 4);
+    return Ffc::Data::dbh()->selectall_arrayref($sql, undef, $Ffc::Data::CommonCatTitle, ($userid) x 4);
 }
 
 sub get_notes { 

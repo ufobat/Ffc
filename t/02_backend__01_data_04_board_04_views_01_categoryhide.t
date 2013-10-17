@@ -78,10 +78,12 @@ use_ok('Ffc::Data::Board::Views');
 
     $_->[3] = 0 for @Test::General::Categories[0 .. 4];
     $_->[3] = 1 for @Test::General::Categories[5 .. 8];
+    my $ccat = $Ffc::Data::CommonCatTitle;
+    #do { use Encode; encode('UTF-8', $Ffc::Data::CommonCatTitle) };
 
     {
         # id name short
-        my $check = [ [ 'Allgemein', '', 1 ], 
+        my $check = [ [ $ccat, '', 1 ], 
             map { [ $_->[1], $_->[2], $_->[3] ] } 
             sort { $a->[2] cmp $b->[2] } 
             @Test::General::Categories ];
@@ -95,7 +97,7 @@ use_ok('Ffc::Data::Board::Views');
     }
     {
         # id name short
-        my $check = [ [ 'Allgemein', '', 1 ], 
+        my $check = [ [ $ccat, '', 1 ], 
             map { [ $_->[1], $_->[2], $_->[3] ] } 
             sort { $a->[2] cmp $b->[2] } 
             @Test::General::Categories[5 .. 8] ];
