@@ -38,9 +38,9 @@ sub test_get_max_userid {
 
 sub test_prepare_frontend {
     my $appname = shift;
-    $ENV{ASB_CONFIG} = test_r()
-        while !$ENV{ASB_CONFIG} or -e -r $ENV{ASB_CONFIG};
-    note(qq(using "$ENV{ASB_CONFIG}" - that should generate an in-memory database));
+    $ENV{FFC_CONFIG} = test_r()
+        while !$ENV{FFC_CONFIG} or -e -r $ENV{FFC_CONFIG};
+    note(qq(using "$ENV{FFC_CONFIG}" - that should generate an in-memory database));
     use_ok($appname);
     my $t = Test::Mojo->new($appname);
     $Ffc::Data::Testing = 1;

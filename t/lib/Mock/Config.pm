@@ -39,6 +39,7 @@ sub new {
         "commoncattitle"  => r(),
         "urlshorten"      => 32 + int( rand 20 ),
         "debug"           => 0,
+        "mode"            => r(),
         "acttitles"       => {
             "forum"   => r(),
             "notes"   => r(),
@@ -60,12 +61,12 @@ sub _generate_configfile {
     print $cfh j($config->{config});
     close $cfh;
 
-    ( $ENV{ASB_CONFIG}, $ENV{ASB_DATABASE} ) = ( $config->{configfile}, $config->{dbfile} );
+    ( $ENV{FFC_CONFIG}, $ENV{ASB_DATABASE} ) = ( $config->{configfile}, $config->{dbfile} );
     return $config;
 }
 
 END {
-    for (qw(ASB_CONFIG ASB_DATABASE)) {
+    for (qw(FFC_CONFIG ASB_DATABASE)) {
         unlink $ENV{$_} if exists $ENV{$_};
     }
 }

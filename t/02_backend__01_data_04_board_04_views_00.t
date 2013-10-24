@@ -10,6 +10,7 @@ use Test::Callcheck;
 use Test::General;
 use Mock::Controller;
 use Mock::Testuser;
+use Ffc::Data::Formats;
 use Ffc::Data::Auth;
 use Ffc::Data::Board;
 use Ffc::Data::Board::Forms;
@@ -730,7 +731,8 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
     my $user_s = Mock::Testuser->new_active_user();
     my $user_a = Mock::Testuser->new_active_user();
     my $user_i = Mock::Testuser->new_inactive_user();
-    my $time = sprintf '%02d:%02d', ( gmtime )[2,1];
+    my $time = Ffc::Data::Formats::format_timestamp(Ffc::Data::dbh()->selectall_arrayref('SELECT u.lastseen FROM '.$Ffc::Data::Prefix.'users u WHERE u.name=?', undef, $user_a->{name})->[0]->[0]);
+    
     check_call(
         $code,
         get_userlist => {

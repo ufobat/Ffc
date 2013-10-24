@@ -16,6 +16,7 @@
     "debug":0,
     "favicon":"http://www.favicons.org/favicon.png",
     "urlshorten":30,
+    "mode":"development",
     "acttitles":{
         "forum":"Forenboard",
         "notes":"Notizen",

@@ -40,6 +40,7 @@ our $RefreshInterval = 10 * 60 * 1000;
 our $Footerlinks = [];
 our $Themedir = '/themes/';
 our $CommonCatTitle = 'Allgemeine Beiträge';
+our $Mode = 'development';
 our $Themebasedir =
   File::Basename::dirname(__FILE__) . '/../../public' . $Themedir;
 our $DbTemplate =
@@ -65,6 +66,7 @@ our $DefaultConfig = {
     "debug"           => 1,
     "theme"           => "default",
     "commoncattitle"  => 'Allgemeine Beiträge',
+    "mode"            => 'development',
     "acttitles"       => {
         "forum"   => 'Forum',
         "notes"   => 'Notizen',
@@ -89,10 +91,10 @@ our $DefaultConfig = {
 
     sub set_config {
         my $app = shift;
-        if ( -e -r ( $ENV{ASB_CONFIG} // $DefaultConfigPath ) ) {
+        if ( -e -r ( $ENV{FFC_CONFIG} // $DefaultConfigPath ) ) {
             $config =
               $app->plugin( JSONConfig =>
-                  { file => $ENV{ASB_CONFIG} // $DefaultConfigPath } );
+                  { file => $ENV{FFC_CONFIG} // $DefaultConfigPath } );
         }
         else {
             $config =
@@ -118,7 +120,9 @@ our $DefaultConfig = {
         $RefreshInterval = $config->{refreshinterval} * 60 * 1000 if $config->{refreshinterval};
         $CommonCatTitle  = encode( 'UTF-8', $config->{commoncattitle} || $CommonCatTitle);
         $URLShorten      = $config->{urlshorten} if $config->{urlshorten};
+        $Mode            = $config->{mode} if $config->{mode};
         $app->sessions->cookie_name($config->{cookiename} // 'Ffc');
+        $app->mode($Mode);
         {
             opendir my $dh, $Themebasedir
               or croak qq(could not open theme directory $Themebasedir: $!);

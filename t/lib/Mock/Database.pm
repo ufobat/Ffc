@@ -17,8 +17,8 @@ sub prepare_testdatabase {
 }
 
 sub setup_database {
-    $ENV{ASB_CONFIG} = Test::General::test_r()
-        while !$ENV{ASB_CONFIG} or -e -r $ENV{ASB_CONFIG};
+    $ENV{FFC_CONFIG} = Test::General::test_r()
+        while !$ENV{FFC_CONFIG} or -e -r $ENV{FFC_CONFIG};
     Ffc::Data::set_config(Mojolicious->new());
     run_sqlscript( $Ffc::Data::DbTemplate );
 }
