@@ -9,7 +9,7 @@ use Mock::Controller;
 use Test::Callcheck;
 srand;
 
-use Test::More tests => 77;
+use Test::More tests => 79;
 
 use_ok('Ffc::Data::Formats');
 $Ffc::Data::URLShorten = 1024;
@@ -164,6 +164,7 @@ love: <3,
 devilsmile: >:) >:-) >=),
 evilgrin: >:D >:-D >=D,
 angry: >:( >:-( >=(
+facepalm: m(
 EOSTRING
 }
 
@@ -200,6 +201,7 @@ sub controlstring_withimages {
 <p>devilsmile: <img class="smiley" src="$url/themes//$theme/img/smileys/devilsmile.png" alt="&gt;:)" /> <img class="smiley" src="$url/themes//$theme/img/smileys/devilsmile.png" alt="&gt;:-)" /> <img class="smiley" src="$url/themes//$theme/img/smileys/devilsmile.png" alt="&gt;=)" />,</p>
 <p>evilgrin: <img class="smiley" src="$url/themes//$theme/img/smileys/evilgrin.png" alt="&gt;:D" /> <img class="smiley" src="$url/themes//$theme/img/smileys/evilgrin.png" alt="&gt;:-D" /> <img class="smiley" src="$url/themes//$theme/img/smileys/evilgrin.png" alt="&gt;=D" />,</p>
 <p>angry: <img class="smiley" src="$url/themes//$theme/img/smileys/angry.png" alt="&gt;:(" /> <img class="smiley" src="$url/themes//$theme/img/smileys/angry.png" alt="&gt;:-(" /> <img class="smiley" src="$url/themes//$theme/img/smileys/angry.png" alt="&gt;=(" /></p>
+<p>facepalm: <img class="smiley" src="$url/themes//$theme/img/smileys/facepalm.png" alt="m(" /></p>
 EOSTRING
 }
 sub controlstring_withoutimages {
@@ -235,5 +237,6 @@ sub controlstring_withoutimages {
 <p>devilsmile: >:) >:-) >=),</p>
 <p>evilgrin: >:D >:-D >=D,</p>
 <p>angry: >:( >:-( >=(</p>
+<p>facepalm: m(</p>
 EOSTRING
 }
