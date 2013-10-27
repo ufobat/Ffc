@@ -306,7 +306,10 @@ EOSQL
                       : ( $_->[0] => undef ) }
                       ([from => 5,6,7], [to => 8,9,10]) ),
             };
-            $d->{iconspresent} = $d->{editable} 
+            $d->{uploadable} = 0 if $d->{to} and not $d->{to}->{chatable};
+            $d->{iconspresent} = 
+                     $d->{editable} 
+                ||   $d->{uploadable}
                 || ( $d->{from} && $d->{from}->{chatable} ) 
                 || ( $d->{to} && $d->{to}->{chatable} ) 
                 ? 1 : 0;

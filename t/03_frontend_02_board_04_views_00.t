@@ -259,7 +259,7 @@ sub check_pages {
                 my $editlink =
 qr~,\s*<a href="$url_edit" title="Beitrag bearbeiten">\s*(?:<img src="$url_editicon" alt="\&Auml;ndern" />|Bearbeiten)</a>(?:\s*,\s*)?~;
                 my $deletelink =
-qr~<a href="$url_delete" title="Beitrag l\&ouml;schen">\s*(?:<img src="$url_deleteicon" alt="L\&ouml;schen" />|L&ouml;schen)</a>(?:\s*,\s*)?~;
+qr~<a href="$url_delete" title="Beitrag l\&ouml;schen">\s*(?:<img src="$url_deleteicon" alt="L\&ouml;schen" />|L&ouml;schen)</a>\s*(?:\s*,\s*)?~;
                 my $attachelink =
 qr~<a href="$url_attache" title="Datei an den Beitrag anf\&uuml;gen">\s*(?:<img src="$url_attacheicon" alt="Anh\&auml;ngen" />|Anhang)</a>(?:\s*,\s*)?~;
                 my $msglink = ( $act eq 'msgs' && $sessmsguser && $sessmsguser eq $msguser ) ? '' :
@@ -290,7 +290,7 @@ qr~$start\s*$middle\s*$timestampre\s*$editlink\s*$deletelink\s*$attachelink\s*$e
                         $user->{active} ? $user->{name} : qr~<span class="inactive">$user->{name}</span>~;
                     } 1, 2;
                     $t->content_like(
-qr~$start\s*$user[0]\s*→\s*$user[1]\s*$middle\s*\(\s*$timestampre\s*$msglink\s*(?:,\s*$attachelink)?\s*\)\s*$end~
+qr~$start\s*$user[0]\s*→\s*$user[1]\s*$middle\s*\(\s*$timestampre\s*$msglink(?:\s*$attachelink)?\s*\)\s*$end~
                     );
                 }
                 if ( $act eq 'forum' ) {
