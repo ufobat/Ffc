@@ -256,8 +256,8 @@ textarea.update_post {
     box-shadow: none;
     font-family: serif;
     font-style: italic;
-    width: 5em;
-    max-height: 5em;
+    max-width: 5em;
+    height: 5em;
     overflow: hidden;
     text-align: center;
 }
