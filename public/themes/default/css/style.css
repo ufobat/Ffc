@@ -257,6 +257,7 @@ textarea.update_post {
     font-family: serif;
     font-style: italic;
     max-width: 7.5em;
+    min-width: 2.5em;
     height: 5em;
     overflow: hidden;
     text-align: center;
