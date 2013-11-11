@@ -248,7 +248,7 @@ textarea.update_post {
 .postbox .avatar {
     color: gainsboro;
     background: whitesmoke;
-    margin: -0.5em 0 .5em .5em;
+    margin: -0.5em 0 .5em 1em;
     font-variant: small-caps;
     font-weight: bolder;
     float: right;
