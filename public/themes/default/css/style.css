@@ -6,7 +6,7 @@ body {
 }
 @media screen {
     body {
-        background: url('../img/hg.png') repeat-x 0 0 gainsboro;
+        background: url('../img/hg.png') repeat-x fixed gainsboro;
         max-width: 46em;
     }
 }
