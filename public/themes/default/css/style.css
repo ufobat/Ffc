@@ -6,7 +6,7 @@ body {
 }
 @media screen {
     body {
-        background: url('../img/hg.png') no-repeat 0 0 gainsboro;
+        background: url('../img/hg.png') repeat-x 0 0 gainsboro;
         max-width: 46em;
     }
 }
@@ -167,7 +167,7 @@ img.smiley, img.icon {
 }
 @media screen {
     .postbox {
-        box-shadow: .1em .1em .3em darkgrey;
+        box-shadow: 0 .1em .2em darkgrey;
     }
 }
 .menu .active:hover {
@@ -178,7 +178,7 @@ img.smiley, img.icon {
 }
 @media screen {
     .newpost {
-        box-shadow: .1em .1em .3em palevioletred;
+        box-shadow: 0 .1em .2em palevioletred;
     }
 }
 .headbox .active {
@@ -242,7 +242,7 @@ textarea.update_post {
 }
 @media screen {
     input[type="password"], input[type="text"], textarea {
-        box-shadow: inset .05em .05em .2em gainsboro;
+        box-shadow: inset 0 .05em .15em gainsboro;
     }
 }
 .postbox .avatar {
