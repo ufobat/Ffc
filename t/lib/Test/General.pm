@@ -9,6 +9,7 @@ use Mock::Testuser;
 use Mock::Controller::App;
 use Test::Mojo;
 use Test::More;
+use Ffc::Data::Formats;
 
 our ( @Users, @Categories, $Maxcatid, $Maxuserid, $Config, $App );
 
@@ -90,7 +91,7 @@ sub test_get_rand_user     { $Users[ int rand scalar @Users ] }
     my $g = sub { join '', map { $chars[ int rand scalar @chars ] } 0 .. 7 + int rand 5 };
     sub test_r {
         my $s = '';
-        $s = $g->() while grep /$s/i, @teststr;
+        $s = $g->() while !$s or $s =~ m/$Ffc::Data::Formats::SmileyRe/xms or grep /$s/i, @teststr;
         return $s;
     }
 }
