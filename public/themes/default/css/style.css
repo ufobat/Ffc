@@ -129,11 +129,8 @@ img.smiley, img.icon {
     padding: .25em .5em;
     margin: 0;
 }
-.postbox h2, .attachementtitle, .menu, .footerlinks, .pages, .headbox form {
+.postbox h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons {
     font-size: .75em;
-}
-textarea {
-    font-size: 1em;
 }
 .menu {
     margin: 0 1em 1em 1em;
