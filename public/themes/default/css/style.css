@@ -7,7 +7,7 @@ body {
 }
 @media screen {
     body {
-        background: url('../img/hg.png') no-repeat top center gainsboro;
+        background: url('../img/hg.png') no-repeat top center fixed gainsboro;
         max-width: 768px;
     }
 }
