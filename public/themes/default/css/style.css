@@ -3,7 +3,6 @@ body {
     background: gainsboro;
     font-family: sans-serif;
     color: black;
-    font-size: 10pt;
 }
 @media screen {
     body {
@@ -20,12 +19,12 @@ body > div {
 }
 .postbox h2, .attachementtitle {
     color: #666;
-    font-size: 1em;
     margin: .5em 1em;
 }
 .postbox h2 {
     border-bottom: 1px silver solid;
     margin-right: 0;
+    margin-left: 1.25em;
 }
 .postbox img {
     max-width: 256px;
@@ -129,6 +128,9 @@ img.smiley, img.icon {
 .headbox p {
     padding: .25em .5em;
     margin: 0;
+}
+.postbox h2, .attachementtitle, .menu, .footerlinks, .pages, .headbox form {
+    font-size: .75em;
 }
 .menu {
     margin: 0 1em 1em 1em;
@@ -248,9 +250,9 @@ textarea.update_post {
     font-size: 1em;
     font-family: serif;
     font-style: italic;
-    max-width: 5.5em;
-    min-width: 2em;
-    height: 4em;
+    max-width: 7.5em;
+    min-width: 3em;
+    height: 5em;
     overflow: hidden;
     text-align: center;
 }
