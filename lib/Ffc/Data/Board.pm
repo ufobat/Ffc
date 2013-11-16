@@ -46,12 +46,10 @@ sub _update_user_msgs {
 # ( $userid, $act, $category )
 sub update_user_stats {
     my $userid = _get_userid( shift, 'Benutzerstatistik' );
-    given ( $_[0] ) {
-        when ( 'forum' ) { _update_user_forum( $userid, @_ ) }
-        when ( 'msgs'  ) { _update_user_msgs(  $userid, @_ ) }
-        when ( 'notes' ) {}
-        default          { croak 'Abschnitt ungültig'        }
-    }
+    if    ( $_[0] eq 'forum' ) { _update_user_forum( $userid, @_ ) }
+    elsif ( $_[0] eq 'msgs'  ) { _update_user_msgs(  $userid, @_ ) }
+    elsif ( $_[0] eq 'notes' ) {}
+    else                       { croak 'Abschnitt ungültig'        }
     return 1;
 }
 

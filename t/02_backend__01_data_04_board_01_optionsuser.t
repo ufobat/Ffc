@@ -224,7 +224,7 @@ use_ok('Ffc::Data::Board::OptionsUser');
         my $theme    = $Ffc::Data::Themes[ int rand scalar @Ffc::Data::Themes ];
         my $illegal_theme = Test::General::test_r();
         $illegal_theme = Test::General::test_r()
-          while $illegal_theme ~~ @Ffc::Data::Themes;
+          while grep /$illegal_theme/, @Ffc::Data::Themes;
         $c->session()->{user} = $username;
         check_call(
             \&Ffc::Data::Board::OptionsUser::update_theme,

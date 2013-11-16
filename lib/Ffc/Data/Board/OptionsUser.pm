@@ -53,7 +53,7 @@ sub update_theme {
     my $t = shift;
     croak q{Themenname nicht angegeben} unless $t;
     croak q{Themenname zu lang (64 Zeichen maximal)} if 64 < length $t;
-    croak qq{Thema ungültig: $t} unless $t ~~ @Ffc::Data::Themes; 
+    croak qq{Thema ungültig: $t} unless grep /$t/, @Ffc::Data::Themes; 
     $s->{theme} = $t;
     my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET theme=? WHERE id=?';
     Ffc::Data::dbh()->do($sql, undef, $t, $userid);

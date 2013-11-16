@@ -339,7 +339,7 @@ sub check_msgs {
                 $t->content_like(qr~<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*<span\s+class="username">\s*$u\s*</span>\s*<span\s+class="userinfo">\s*\(\s*$timestampre\s*,\s*<span class="mark">$c</span>\s*\)\s*</span>\s*</a>~)
             }
             else {
-                $t->content_like(qr(<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*<span\s+class="username">\s*$u\s*</span>\s*<span\s+class="userinfo">\s*\(\s*$timestampre\s*\)\s*</span>\s*</a>))
+                $t->content_like(qr(<a href="$url" title="Privatnachrichten an \&quot;$u\&quot; lesen und schreiben">\s*<span\s+class="username">\s*$u\s*</span>\s*<span\s+class="userinfo">\s*(\s*$timestampre\s*)\s*</span>\s*</a>))
             }
         }
     }

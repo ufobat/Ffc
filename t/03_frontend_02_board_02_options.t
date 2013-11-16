@@ -204,16 +204,14 @@ my $t = Test::General::test_prepare_frontend('Ffc');
     my $call = sub {
         $t->post_ok( '/options/admin_save', form => shift );
         for my $p (@_) {
-            given ( ref $p ) {
-                when ('SCALAR') { $t->content_like(qr{$p}) }
-                when ('Regexp') { $t->content_like($p) }
-                when ('CODE')   { $p->($t) }
-                default {
-                    die q{parameter type '}
-                      . ref($p)
-                      . q{' illegal: }
-                      . Dumper( \@_ )
-                }
+            if    ('SCALAR' eq ref $p) { $t->content_like(qr{$p}) }
+            elsif ('Regexp' eq ref $p) { $t->content_like($p) }
+            elsif ('CODE'   eq ref $p) { $p->($t) }
+            else {
+                die q{parameter type '}
+                  . ref($p)
+                  . q{' illegal: }
+                  . Dumper( \@_ )
             }
         }
         return $t;

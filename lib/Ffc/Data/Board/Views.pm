@@ -64,11 +64,10 @@ SELECT COUNT(p.id)
 FROM       ${Ffc::Data::Prefix}posts p 
 INNER JOIN ${Ffc::Data::Prefix}users u ON u.id = ? AND p.user_from <> u.id
 EOSQL
-    given ( $act ) {
-        when ( 'forum' ) {
-            if ( $cat ) {
-                push @param, Ffc::Data::General::get_category_id($cat);
-                $sql .= << "EOSQL";
+    if ( $act eq 'forum' ) {
+        if ( $cat ) {
+            push @param, Ffc::Data::General::get_category_id($cat);
+            $sql .= << "EOSQL";
 LEFT OUTER JOIN ${Ffc::Data::Prefix}lastseenforum f ON p.category = f.category AND f.userid     = u.id
 WHERE p.altered              >=     COALESCE(f.lastseen,0)
   AND p.user_to              IS     NULL
@@ -76,34 +75,35 @@ WHERE p.altered              >=     COALESCE(f.lastseen,0)
   AND COALESCE(f.show_cat,1) =      1
   AND p.category             =      ?
 EOSQL
-            }
-            else {
-                $sql .= << "EOSQL";
+        }
+        else {
+            $sql .= << "EOSQL";
 WHERE p.altered  >= COALESCE(u.lastseenforum, 0)
   AND p.user_to  IS NULL
   AND p.category IS NULL
 EOSQL
-            }
         }
-        when ( 'msgs'  ) {
-            if ( $msgsuser ) {
-                push @param, _get_userid( $msgsuser );
-                $sql .= << "EOSQL";
+    }
+    elsif ( $act eq 'msgs' ) {
+        if ( $msgsuser ) {
+            push @param, _get_userid( $msgsuser );
+            $sql .= << "EOSQL";
 WHERE p.posted    >= COALESCE(u.lastseenmsgs, 0)
   AND p.user_to   =  u.id
   AND p.user_to   IS NOT NULL
   AND p.user_from =  ?
 EOSQL
-            }
-            else {
-                $sql .= << "EOSQL";
+        }
+        else {
+            $sql .= << "EOSQL";
 WHERE p.altered   >= COALESCE(u.lastseenmsgs, 0)
   AND p.user_to   =  u.id
   AND p.user_to   IS NOT NULL
 EOSQL
-            }
         }
-        default {$sql = ''}
+    }
+    else {
+        $sql = '';
     }
     return 0 unless $sql;
     my $cnt = (Ffc::Data::dbh()->selectrow_array($sql, undef, $userid, @param))[0];

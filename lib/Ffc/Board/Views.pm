@@ -62,15 +62,17 @@ sub _frontpage {
     }
     my $posts  = [];
     my @params = $c->get_params(); #($user, $page, $s->{query}, $cat, $c);
-    given ( $act ) {
-        when('forum' ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_forum(@params)})}
-        when('notes' ){$posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_notes(@params)})}
-        when('msgs'  ){
-            $c->stash(userlist => $c->or_empty(sub{Ffc::Data::Board::Views::get_userlist($user)}));
-            $posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_msgs(@params,$msgs_username)});
-        }
-        default       {$c->error_handling({plain=>qq("$act" unbekannt)})}
+    if ( $act eq 'forum' ) {
+        $posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_forum(@params)})
     }
+    elsif ( $act eq 'notes' ) {
+        $posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_notes(@params)})
+    }
+    elsif ( $act eq 'msgs' ) {
+        $c->stash(userlist => $c->or_empty(sub{Ffc::Data::Board::Views::get_userlist($user)}));
+        $posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_msgs(@params,$msgs_username)});
+    }
+    else {$c->error_handling({plain=>qq("$act" unbekannt)})}
     if ( $postid ) {
         my @post = grep { exists($_->{id}) and defined($_->{id}) and ( $_->{id} eq $postid ) } @$posts;
         if ( @post ) {

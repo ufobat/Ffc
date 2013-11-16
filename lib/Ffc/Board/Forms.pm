@@ -69,10 +69,8 @@ sub insert_post {
     $c->error_handling({plain => 'Text des Beitrages ungültig'}) unless $text;
     my $from = $s->{user};
     my @params = ( $from, $text, $c->stash('category') );
-    given ( $act ) {
-        when ( 'notes' ) { push @params, $from }
-        when ( 'msgs'  ) { push @params, $c->stash('msgs_username') }
-    }
+    if ( $act eq 'notes' ) { push @params, $from }
+    if ( $act eq 'msgs'  ) { push @params, $c->stash('msgs_username') }
     $c->error_handling( {
         code        => sub { Ffc::Data::Board::Forms::insert_post(@params) }, 
         msg         => 'Beitrag ungültig, bitte erneut eingeben', 
@@ -95,9 +93,7 @@ sub update_post {
     my $postid = $c->stash('postid');
     my $from = $s->{user};
     my @params = ( $from, $text, $postid );
-    given ( $act ) {
-        when ( 'msgs'  ) { $c->error_handling( { plain => 'Privatnachrichten dürfen nicht geändert werden' } ) }
-    }
+    if ( $act eq 'msgs'  ) { $c->error_handling( { plain => 'Privatnachrichten dürfen nicht geändert werden' } ) }
     $c->error_handling( {
         code        => sub { Ffc::Data::Board::Forms::update_post(@params) },
         msgs        => 'Beitrag ungültig, bitte erneut eingeben',
