@@ -132,6 +132,9 @@ img.smiley, img.icon {
 .postbox h2, .attachementtitle, .menu, .footerlinks, .pages, .headbox form {
     font-size: .75em;
 }
+textarea {
+    font-size: 1em;
+}
 .menu {
     margin: 0 1em 1em 1em;
     padding: .2em;
