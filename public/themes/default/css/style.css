@@ -18,12 +18,14 @@ body > div {
 .attachementtitle {
     font-weight: normal;
 }
-.postbox h2 {
-    font-size: 1em;
-    border-bottom: 1px silver solid;
-}
 .postbox h2, .attachementtitle {
     color: #666;
+    font-size: 1em;
+    margin: .5em 1em;
+}
+.postbox h2 {
+    border-bottom: 1px silver solid;
+    margin-right: 0;
 }
 .postbox img {
     max-width: 256px;
@@ -36,9 +38,6 @@ body > div {
 .postbox > p {
     margin: 1em;
     text-align: justify;
-}
-body > .msgs > p, body > .forum > p, body > .notes > p {
-    text-indent: 1em;
 }
 input, textarea, select {
     font-size: 1em;
@@ -85,7 +84,6 @@ form {
 }
 img.smiley, img.icon {
     border: none;
-    box-shadow: none;
     width: 1em;
     height: 1em;
 }
@@ -218,7 +216,7 @@ img.smiley, img.icon {
 }
 .emotion {
     color: dimgrey;
-    vertical-align: text-top;
+    font-variant: small-caps;
 }
 .postbox .username {
     font-weight: bolder;
@@ -243,12 +241,11 @@ textarea.update_post {
 .postbox .avatar {
     color: gainsboro;
     background: whitesmoke;
-    margin: -0.5em 0 .5em 1em;
+    margin: -0.25em 0 .5em 1em;
     font-variant: small-caps;
     font-weight: bolder;
     float: right;
     font-size: 1em;
-    box-shadow: none;
     font-family: serif;
     font-style: italic;
     max-width: 5.5em;
