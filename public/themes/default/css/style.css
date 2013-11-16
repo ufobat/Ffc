@@ -19,6 +19,7 @@ body > div {
     font-weight: normal;
 }
 .postbox h2 {
+    font-size: 1em;
     border-bottom: 1px silver solid;
 }
 .postbox h2, .attachementtitle {
