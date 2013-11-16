@@ -3,11 +3,12 @@ body {
     background: gainsboro;
     font-family: sans-serif;
     color: black;
+    font-size: 10pt;
 }
 @media screen {
     body {
         background: url('../img/hg.png') no-repeat top center gainsboro;
-        max-width: 46em;
+        max-width: 768px;
     }
 }
 body > div {
