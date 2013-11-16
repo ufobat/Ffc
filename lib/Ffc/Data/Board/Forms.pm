@@ -49,10 +49,9 @@ sub update_post {
     croak qq{Postid ungültig} unless $i =~ m/\A\d+\z/xms;
     my $dbh = Ffc::Data::dbh();
     my $where = 'WHERE id=? AND user_from=? AND (user_to IS NULL OR user_from=user_to)';
-    #FIXME: does not work yet
-    #my $sql = 'SELECT COUNT(id) FROM '.$Ffc::Data::Prefix."posts $where";
-    #croak qq(Kein entsprechender Beitrag vom angegebenen Benutzer bekannt) unless ($dbh->selectrow_array($sql, undef, $i, $f))[0];
-    my $sql = 'UPDATE '.$Ffc::Data::Prefix."posts SET textdata=?, altered=current_timestamp $where;";
+    my $sql = 'SELECT COUNT(id) FROM '.$Ffc::Data::Prefix."posts $where";
+    croak qq(Kein entsprechender Beitrag vom angegebenen Benutzer bekannt) unless 1 == @{ $dbh->selectall_arrayref($sql, undef, $i, $f) };
+    $sql = 'UPDATE '.$Ffc::Data::Prefix."posts SET textdata=?, altered=current_timestamp $where;";
     $dbh->do( $sql, undef, $d, $i, $f );
 }
 
