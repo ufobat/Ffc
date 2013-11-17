@@ -12,21 +12,21 @@ use Ffc::Data;
 sub check_password_rules {
     my $pass = shift;
     croak qq(Kein Passwort angegeben) unless $pass;
-    croak qq[Passwort ungültig (8 - 64 Zeichen)] unless $pass =~ m/\A$Ffc::Data::PasswordRegex\z/xms;
+    croak qq[Passwort ungültig (8 - 64 Zeichen)] unless $pass =~ m/\A$Ffc::Data::PasswordRegex\z/xmso;
     return 1;
 }
 
 sub check_username_rules {
     my $user = shift;
     croak shift() // qq(Kein Benutzername angegeben) unless $user;
-    croak shift() // qq[Benutzername ungültig (4 - 64 alphanumerische Zeichen)] unless $user =~ m/\A$Ffc::Data::UsernameRegex\z/xms;
+    croak shift() // qq[Benutzername ungültig (4 - 64 alphanumerische Zeichen)] unless $user =~ m/\A$Ffc::Data::UsernameRegex\z/xoms;
     return 1;
 }
 
 sub check_userid_rules {
     my $userid = shift;
     croak qq(Keine Benutzerid angegeben) unless $userid;
-    croak qq{Benutzer ungültig} unless $userid =~ m/\A\d+\z/xms;
+    croak qq{Benutzer ungültig} unless $userid =~ m/\A\d+\z/xmso;
     return 1;
 }
 

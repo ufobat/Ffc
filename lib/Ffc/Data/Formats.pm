@@ -40,7 +40,7 @@ our %NonGoodies = qw(* emotion);
 
 sub format_timestamp {
     my $t = shift // return '';
-    if ( $t =~ m/(\d\d\d\d)-(\d\d)-(\d\d)\s+(\d\d):(\d\d):(\d\d)/xmsi ) {
+    if ( $t =~ m/(\d\d\d\d)-(\d\d)-(\d\d)\s+(\d\d):(\d\d):(\d\d)/xmso ) {
         $t = sprintf '%02d.%02d.%04d, %02d:%02d', $3, $2, $1, $4, $5;
         return 'neu' if $t eq '00.00.0000, 00:00';
         my @time = localtime; $time[5] += 1900; $time[4]++;
@@ -53,25 +53,25 @@ sub format_timestamp {
 }
 
 sub _xml_escape {
-    $_[0] =~ s/\&/\&amp;/gxm;
-    $_[0] =~ s/\<(?=[^3])/\&lt;/gxm;
-    $_[0] =~ s/\>(?=[^\:\=])/\&gt;/gxm;
+    $_[0] =~ s/\&/\&amp;/gxmo;
+    $_[0] =~ s/\<(?=[^3])/\&lt;/gxom;
+    $_[0] =~ s/\>(?=[^\:\=])/\&gt;/goxm;
 }
 sub format_text {
     my $s = shift // '';
     my $c = shift;
     croak('Controller ungültig') unless $c;
     my $u = $c->session()->{user} // '';
-    $s =~ s/\A\s+//gxmsi;
-    $s =~ s/\s+\z//gxmsi;
+    $s =~ s/\A\s+//gxmso;
+    $s =~ s/\s+\z//gxmso;
     return '' unless $s;
     _xml_escape($s);
-    $s =~ s{(\A|\s)"(\S.*?\S|\S)"(\W|\z)}{$1„<span class="quote">$2</span>“$3}gxm;
-    $s =~ s{(?<!\S)(\@)?$u}{_make_username_mark($u, $1)}xgmsei if $u;
-    $s =~ s{(?<!\w)([\_\-\+\~\!\*])([\_\-\+\~\!\w\*]+)\g1(?!\w)}{_make_goody($1,$2)}gxmies;
-    $s =~ s{((?:[\(\s]|\A)?)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3,$c)}gxmeis;
-    $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxes;
-    $s =~ s{\n[\n\s]*}{</p>\n<p>}xgms;
+    $s =~ s{(\A|\s)"(\S.*?\S|\S)"(\W|\z)}{$1„<span class="quote">$2</span>“$3}gxom;
+    $s =~ s{(?<!\S)(\@)?$u}{_make_username_mark($u, $1)}xgmseio if $u;
+    $s =~ s{(?<!\w)([\_\-\+\~\!\*])([\_\-\+\~\!\w\*]+)\g1(?!\w)}{_make_goody($1,$2)}gxmoeis;
+    $s =~ s{((?:[\(\s]|\A)?)(https?://[^\)\s]+)([\)\s]|\z)}{_make_link($1,$2,$3,$c)}gxmeois;
+    $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxeos;
+    $s =~ s{\n[\n\s]*}{</p>\n<p>}xgmos;
     $s = "<p>$s</p>";
     return $s;
 }
@@ -101,8 +101,8 @@ sub _make_goody {
 
 sub _make_link {
     my ( $start, $url, $end, $c ) = @_;
-    $url =~ s/"/\%22/xms;
-    if ( $url =~ m(jpe?g|gif|bmp|png\z)xmsi ) {
+    $url =~ s/"/\%22/xmso;
+    if ( $url =~ m(jpe?g|gif|bmp|png\z)xmsio ) {
         if ( $c->session()->{show_images} ) {
             return qq~$start<a href="$url" title="Externes Bild" target="_blank"><img src="$url" class="extern" title="Externes Bild" /></a>$end~;
         }
@@ -135,9 +135,9 @@ sub _make_smiley {
     my $y = my $x = shift // return '';
     my $c = shift;
     return "$s$x" unless $c->session()->{show_images};
-    $y =~ s/\&/&lt;/xmsg;
-    $y =~ s/\>/&gt;/xmsg;
-    $y =~ s/\</&lt;/xmsg;
+    $y =~ s/\&/&lt;/xmsgo;
+    $y =~ s/\>/&gt;/xmsgo;
+    $y =~ s/\</&lt;/xmsgo;
     my $ext = 'png';
 #    $ext = 'svg' if $Smiley{$x} eq 'smile';
     return qq~$s<img class="smiley" src="~
