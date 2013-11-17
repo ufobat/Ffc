@@ -7,23 +7,29 @@ use utf8;
 
 use File::Spec;
 use File::Basename;
+use FindBin;
 use Encode;
 use DBI;
 use Carp;
 
-our $PasswordRegex = qr/.{8,64}/xms;
-our $UsernameRegex = qr/\w{4,64}/xms;
-our $CategoryRegex = qr/\w{1,64}/xms;
+our $PasswordRegex = qr/.{8,64}/xmso;
+our $UsernameRegex = qr/\w{4,64}/xmso;
+our $CategoryRegex = qr/\w{1,64}/xmso;
 
-our $DefaultConfigPath = join '/',
-  File::Spec->splitdir( File::Basename::dirname(__FILE__) ), '..', '..', 'etc',
-  'ffc.json';
-our $DataDir = '../data';
-our $FileDir = File::Basename::dirname(__FILE__) . '/../' . $DataDir;
-our $AvatarDir = "$FileDir/avatars";
-our $AvatarUrl = "$DataDir/avatars";
-our $UploadDir = "$FileDir/uploads";
-our $UploadUrl = "$DataDir/uploads";
+our $FileBase = join '/', File::Spec->splitdir( File::Basename::dirname(__FILE__) ), '..', '..';
+
+our $DefaultConfigPath = "$FileBase/etc/ffc.json";
+our $DataDir           = 'data';
+our $FileDir           = "$FileBase/$DataDir";
+our $AvatarDir         = "$FileDir/avatars";
+our $AvatarUrl         = "../$DataDir/avatars";
+our $UploadDir         = "$FileDir/uploads";
+our $UploadUrl         = "../$DataDir/uploads";
+our $Themedir          = 'themes';
+our $Themebasedir      = "$FileBase/public/$Themedir";
+our $DbTemplate        = "$FileBase/doc/db-schemas/database_sqlite.sql";
+our $DbTestdata        = "$FileBase/t/var/testdata.sql";
+
 our $Prefix         = '';
 our $Fullpostnumber = 7;
 our $Limit;
@@ -38,27 +44,18 @@ our @Themes;
 our $Testing = 0;
 our $RefreshInterval = 10 * 60 * 1000;
 our $Footerlinks = [];
-our $Themedir = '/themes/';
 our $CommonCatTitle = 'Allgemeine Beiträge';
 our $Mode = 'development';
-our $Themebasedir =
-  File::Basename::dirname(__FILE__) . '/../../public' . $Themedir;
-our $DbTemplate =
-  File::Basename::dirname(__FILE__) . '/../../doc/db-schemas/database_sqlite.sql';
-our $DbTestdata =
-  File::Basename::dirname(__FILE__) . '/../../t/var/testdata.sql';
 our $Favicon;
 our $DefaultConfig = {
-    "cryptsalt"    => 1000 + int( rand 9999999 ),
+    "cryptsalt"    => 1984,
     "dsn"          => "DBI:SQLite:database=:memory:",
     "user"         => "",
     "password"     => "",
     "title"        => "Ffc",
     "dbprefix"     => '',
-    "cookiename"   => join( '', map { ('a' .. 'z', 'A' .. 'Z')[int rand 23] } ( 0 .. 5 + int rand 10 )),
-    "cookiesecret" => join( '',
-        map { ( 'a' .. 'z', 'A' .. 'Z', 0 .. 9 )[ int rand 62 ] }
-          ( 0 .. int( rand 128 ) ) ),
+    "cookiename"   => 'FfcCookies',
+    "cookiesecret" => 'FfcCookieSecret',
     "postlimit"       => 16,
     "pagelinkpreview" => 3,
     "sessiontimeout"  => 3600,
