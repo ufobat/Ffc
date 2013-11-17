@@ -2,8 +2,8 @@
 <html>
   <head>
     <title><%= $Ffc::Data::Title %> - <%= acttitle() %></title>
-    <%= stylesheet $Ffc::Data::Themedir.$Ffc::Data::Theme.'/css/style.css' %>
-    <link rel="icon" type="image/ico" href="<%= $Ffc::Data::Favicon || url_for_me $Ffc::Data::Themedir.$Ffc::Data::Theme.'/img/favicon.png' %>" />
+    <%= stylesheet '/'.$Ffc::Data::Themedir.'/'.$Ffc::Data::Theme.'/css/style.css' %>
+    <link rel="icon" type="image/ico" href="<%= $Ffc::Data::Favicon || url_for '/'.$Ffc::Data::Themedir.'/'.$Ffc::Data::Theme.'/img/favicon.png' %>" />
   </head>
   <body>
 %= include 'parts/error'
