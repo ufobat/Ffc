@@ -220,6 +220,8 @@ img.smiley, img.icon {
     color: dimgrey;
     font-variant: small-caps;
 }
+.emotion:before { content:"*" }
+.emotion:after  { content:"*" }
 .postbox .username {
     font-weight: bolder;
 }

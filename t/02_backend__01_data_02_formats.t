@@ -9,7 +9,7 @@ use Mock::Controller;
 use Test::Callcheck;
 srand;
 
-use Test::More tests => 79;
+use Test::More tests => 81;
 
 use_ok('Ffc::Data::Formats');
 $Ffc::Data::URLShorten = 1024;
@@ -133,6 +133,8 @@ Notiz am Rande: !BBCodes! können mich mal kreuzweise am Arsch lecken, bin ferti
 
 $testurl $testurl $testurl
 
+$testurl, $testurl
+
 Hallo $testurl Hallo ($testurl) Hallo
 
 ($testurl), $testimage
@@ -174,12 +176,13 @@ sub controlstring_withimages {
 <p>MarkupTests:</p>
 <p>Notiz am Rande: <span class="alert">BBCodes !!!</span> können mich mal kreuzweise am Arsch lecken, bin fertig mit den sinnlosen Drecksdingern. Die kommen hier nie, nie nie rein!</p>
 <p><a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a></p>
+<p><a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>, <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a></p>
 <p>Hallo <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> Hallo (<a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>) Hallo</p>
 <p>(<a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>), <a href="$testimage" title="Externes Bild" target="_blank"><img src="$testimage" class="extern" title="Externes Bild" /></a></p>
 <p>Und „<span class="quote">Hier, in dieser <img class="smiley" src="$url/themes/$theme/img/smileys/smile.png" alt=":)" /> ... <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> ... achso</span>“ und da" oder, <span class="username">$testuser</span>, so.</p>
 <p>Achso <span class="username"><span class="alert">@</span>$testuser</span>: <span class="username">$testuser</span> oder <a href="http://www.$testuser.de" title="Externe Webseite: http://www.$testuser.de" target="_blank">http://www.$testuser.de</a> weil ja!</p>
-<p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span>, <span class="emotion">*test6*</span></p>
-<p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span>, <span class="emotion">*test 6*</span></p>
+<p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span>, <span class="emotion">test6</span></p>
+<p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span>, <span class="emotion">test 6</span></p>
 <p>look: <img class="smiley" src="$url/themes/$theme/img/smileys/look.png" alt="O.O" /> <img class="smiley" src="$url/themes/$theme/img/smileys/look.png" alt="0.0" />,</p>
 <p>what: <img class="smiley" src="$url/themes/$theme/img/smileys/what.png" alt="o.O" /> <img class="smiley" src="$url/themes/$theme/img/smileys/what.png" alt="O.o" /> <img class="smiley" src="$url/themes/$theme/img/smileys/what.png" alt="O.ò" /> <img class="smiley" src="$url/themes/$theme/img/smileys/what.png" alt="ó.O" />,</p>
 <p>tongue: <img class="smiley" src="$url/themes/$theme/img/smileys/tongue.png" alt=":P" /> <img class="smiley" src="$url/themes/$theme/img/smileys/tongue.png" alt=":-P" /> <img class="smiley" src="$url/themes/$theme/img/smileys/tongue.png" alt="=P" /> <img class="smiley" src="$url/themes/$theme/img/smileys/tongue.png" alt=":p" /> <img class="smiley" src="$url/themes/$theme/img/smileys/tongue.png" alt=":-p" /> <img class="smiley" src="$url/themes/$theme/img/smileys/tongue.png" alt="=p" />,</p>
@@ -210,12 +213,13 @@ sub controlstring_withoutimages {
 <p>MarkupTests:</p>
 <p>Notiz am Rande: <span class="alert">BBCodes !!!</span> können mich mal kreuzweise am Arsch lecken, bin fertig mit den sinnlosen Drecksdingern. Die kommen hier nie, nie nie rein!</p>
 <p><a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a></p>
+<p><a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>, <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a></p>
 <p>Hallo <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> Hallo (<a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>) Hallo</p>
 <p>(<a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>), <a href="$testimage" title="Externes Bild: $testimage" target="_blank">$testimage</a></p>
 <p>Und „<span class="quote">Hier, in dieser :) ... <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> ... achso</span>“ und da" oder, <span class="username">$testuser</span>, so.</p>
 <p>Achso <span class="username"><span class="alert">@</span>$testuser</span>: <span class="username">$testuser</span> oder <a href="http://www.$testuser.de" title="Externe Webseite: http://www.$testuser.de" target="_blank">http://www.$testuser.de</a> weil ja!</p>
-<p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span>, <span class="emotion">*test6*</span></p>
-<p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span>, <span class="emotion">*test 6*</span></p>
+<p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span>, <span class="emotion">test6</span></p>
+<p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span>, <span class="emotion">test 6</span></p>
 <p>look: O.O 0.0,</p>
 <p>what: o.O O.o O.ò ó.O,</p>
 <p>tongue: :P :-P =P :p :-p =p,</p>
