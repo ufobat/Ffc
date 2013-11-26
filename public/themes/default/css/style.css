@@ -6,7 +6,7 @@ body {
 }
 @media screen {
     body {
-        background: url('../img/hg.png') no-repeat top center fixed gainsboro;
+        background: url('../img/hg.png') no-repeat top center fixed beige;
         max-width: 768px;
     }
 }
@@ -164,7 +164,7 @@ img.smiley, img.icon {
 }
 @media screen {
     .postbox {
-        box-shadow: 0 .1em .2em darkgrey;
+        box-shadow: 0 .1em .2em palegoldenrod;
     }
 }
 .menu .active:hover {
