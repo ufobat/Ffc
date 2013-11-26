@@ -31,7 +31,7 @@ sub options_form {
     );
     $c->stash( email      => $email    // '' );
     $c->stash( userlist   => $userlist // '' );
-    $c->stash( themes     => \@Ffc::Data::Themes );
+    $c->stash( themes     => Ffc::Data::General::get_themes() );
     $c->stash( act        => 'options' );
     $c->stash( categories => Ffc::Data::Board::Views::get_all_categories($s->{user}) );
     $c->get_counts();

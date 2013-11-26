@@ -11,6 +11,7 @@ use Data::Dumper;
 use Test::Mojo;
 use Test::General;
 use Mock::Testuser;
+use Ffc::Data::General;
 use Ffc::Data::Board::Views;
 
 use Test::More tests => 767;
@@ -65,7 +66,8 @@ my $t = Test::General::test_prepare_frontend('Ffc');
                 'theme "' . ( $theme // '<undef>' ) . '"ok in database' );
         };
         $check_theme->(undef);
-        for my $theme (@Ffc::Data::Themes[0,1]) {
+        my @Themes = @{ Ffc::Data::General::get_themes() };
+        for my $theme (@Themes[0,1]) {
             $t->post_ok( '/options/theme_save', form => { theme => $theme } )
               ->status_is(200);
             $t->content_like(qr{Einstellungen});
@@ -75,7 +77,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
             $check_theme->($theme);
         }
         {
-            my $theme = $Ffc::Data::Themes[0];
+            my $theme = $Themes[0];
             $t->post_ok( '/options/theme_save', form => { theme => $theme } )
               ->status_is(200)->content_like(qr{Einstellungen});
             $check_theme->($theme);
@@ -83,7 +85,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
                 my $newtheme = '';
                 $newtheme = Test::General::test_r()
                   while !$newtheme
-                  or grep { $newtheme eq $_ } @Ffc::Data::Themes;
+                  or grep { $newtheme eq $_ } @Themes;
                 $t->post_ok( '/options/theme_save', form => { theme => $newtheme } )
                   ->status_is(500)->content_like(qr{Thema ungültig});
                 $t->get_ok('/')->status_is(200)->content_like(qr($theme/css/style.css));

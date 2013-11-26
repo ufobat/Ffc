@@ -11,6 +11,7 @@ use Test::General;
 use Mock::Controller;
 use Mock::Testuser;
 use Ffc::Data::Auth;
+use Ffc::Data::General;
 srand;
 
 use Test::More tests => 121;
@@ -217,14 +218,15 @@ use_ok('Ffc::Data::Board::OptionsUser');
 }
 {
     note('sub update_theme( $sessionhash, $themename )');
+    my @Themes = @{ Ffc::Data::General::get_themes() };
     {
         my $user     = Test::General::test_get_rand_user();
         my $username = $user->{name};
         my $c        = Mock::Controller->new();
-        my $theme    = $Ffc::Data::Themes[ int rand scalar @Ffc::Data::Themes ];
+        my $theme    = $Themes[ int rand scalar @Themes ];
         my $illegal_theme = Test::General::test_r();
         $illegal_theme = Test::General::test_r()
-          while grep /$illegal_theme/, @Ffc::Data::Themes;
+          while grep /$illegal_theme/, @Themes;
         $c->session()->{user} = $username;
         check_call(
             \&Ffc::Data::Board::OptionsUser::update_theme,
@@ -274,7 +276,7 @@ use_ok('Ffc::Data::Board::OptionsUser');
         for my $i ( 0 .. 9 ) {
             my $new_theme = '';
             $new_theme =
-              $Ffc::Data::Themes[ int rand scalar @Ffc::Data::Themes ]
+              $Themes[ int rand scalar @Themes ]
               while !$new_theme
               or $new_theme eq $theme;
             isnt( $theme, $new_theme,

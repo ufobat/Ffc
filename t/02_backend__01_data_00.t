@@ -10,7 +10,7 @@ use Data::Dumper;
 use Mojolicious;
 use Mock::Config;
 
-use Test::More tests => 42;
+use Test::More tests => 40;
 
 srand;
 
@@ -90,19 +90,6 @@ ok( Ffc::Data::set_config($app), 'config set returned true' );
     like($Ffc::Data::DbTemplate, qr/database_sqlite\.sql/, 'database template file looks good');
     like($Ffc::Data::DbTestdata, qr/testdata\.sql/, 'testdata file looks good');
     is($app->sessions->cookie_name, $config->{cookiename}, 'cookie name ok');
-
-    my @themes;
-    {
-        opendir my $dh, $Ffc::Data::Themebasedir
-            or die qq(could not open theme dir "$Ffc::Data::Themebasedir": $!);
-        while ( my $file = readdir $dh ) {
-            next unless $file =~ m/\A\w+\z/xms;
-            push @themes, $file;
-        }
-    }
-    
-    ok( @Ffc::Data::Themes, 'themes from directory are available');
-    is_deeply( \@Ffc::Data::Themes, \@themes, 'avaiable themes figured out correctly' );
 
     ok( keys(%Ffc::Data::Acttitles), 'custom activity titles are available');
     is_deeply( \%Ffc::Data::Acttitles, $config->{acttitles}, 'custom activity titles from config ok' );

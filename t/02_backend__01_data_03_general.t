@@ -23,7 +23,7 @@ sub get_noneexisting_username { &Mock::Testuser::get_noneexisting_username }
 sub test_get_rand_user { &Test::General::test_get_rand_user }
 sub test_get_rand_category { &Test::General::test_get_rand_category }
 
-use Test::More tests => 47;
+use Test::More tests => 52;
 
 use_ok('Ffc::Data::General');
 
@@ -194,5 +194,26 @@ use_ok('Ffc::Data::General');
         ],
         'userlist retrieved'
     );
+}
+{
+    note('sub get_themes()');
+    my @themes;
+    {
+        opendir my $dh, $Ffc::Data::Themebasedir
+            or die qq(could not open theme dir "$Ffc::Data::Themebasedir": $!);
+        while ( my $file = readdir $dh ) {
+            next unless $file =~ m/\A\w+\z/xms;
+            push @themes, $file;
+        }
+    }
+    
+    my $get_themes = Ffc::Data::General::get_themes();
+    ok( @$get_themes, 'themes from directory are available');
+    is_deeply( $get_themes, \@themes, 'avaiable themes figured out correctly' );
+
+    my $get_themes2 = Ffc::Data::General::get_themes();
+    ok( @$get_themes2, 'themes from directory are available');
+    is_deeply( $get_themes2, \@themes, 'avaiable themes figured out correctly' );
+    is_deeply( $get_themes2, $get_themes, 'avaiable themes figured out correctly' );
 }
 

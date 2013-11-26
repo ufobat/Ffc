@@ -40,7 +40,6 @@ our $Debug = 0;
 our $SessionTimeout;
 our $URLShorten = 30;
 our $Theme;
-our @Themes;
 our $Testing = 0;
 our $RefreshInterval = 10 * 60 * 1000;
 our $Footerlinks = [];
@@ -120,16 +119,6 @@ our $DefaultConfig = {
         $Mode            = $config->{mode} if $config->{mode};
         $app->sessions->cookie_name($config->{cookiename} // 'Ffc');
         $app->mode($Mode);
-        {
-            opendir my $dh, $Themebasedir
-              or croak qq(could not open theme directory $Themebasedir: $!);
-            while ( my $d = readdir $dh ) {
-                next if $d =~ m/\A\./xms;
-                next unless -d "$Themebasedir/$d";
-                push @Themes, $d;
-            }
-            closedir $dh;
-        }
 
         $dbconfig = {
             map {

@@ -74,5 +74,19 @@ sub get_category_short {
     return $CategoryIds{$id} = $ret[0];
 }
 
+our @Themes;
+sub get_themes {
+    return \@Themes if @Themes;
+    opendir my $dh, $Ffc::Data::Themebasedir
+      or croak qq(could not open theme directory $Ffc::Data::Themebasedir: $!);
+    while ( my $d = readdir $dh ) {
+        next if $d =~ m/\A\./xms;
+        next unless -d "$Ffc::Data::Themebasedir/$d";
+        push @Themes, $d;
+    }
+    closedir $dh;
+    return \@Themes;
+}
+
 1;
 
