@@ -32,7 +32,7 @@ https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&x=ypsilon
 <p>Mein „<span class="quote">11</span>“ Notebook" ist tool! oder doch?</p>
 <p>"Halli</p>
 <p>Galli"</p>
-<p><a href="https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&amp;x=ypsilon" title="Externe Webseite" target="_blank">https://abcde.f…p;amp;x=ypsilon</a></p>~;
+<p><a href="https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&amp;x=ypsilon" title="Externe Webseite: https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&amp;amp;x=ypsilon" target="_blank">https://abcde.f…p;amp;x=ypsilon</a></p>~;
 
     is(Ffc::Data::Formats::format_text($teststring, $c), $controlstring);
 }
