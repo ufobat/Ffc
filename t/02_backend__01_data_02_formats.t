@@ -135,7 +135,7 @@ $testurl $testurl $testurl
 
 Hallo $testurl Hallo ($testurl) Hallo
 
-($testurl"), $testimage
+($testurl), $testimage
 
 Und "Hier, in dieser :) ... $testurl ... achso" und da" oder, $testuser, so.
 
@@ -173,11 +173,11 @@ sub controlstring_withimages {
     return << "EOSTRING";
 <p>MarkupTests:</p>
 <p>Notiz am Rande: <span class="alert">BBCodes !!!</span> können mich mal kreuzweise am Arsch lecken, bin fertig mit den sinnlosen Drecksdingern. Die kommen hier nie, nie nie rein!</p>
-<p><a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a> <a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a> <a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a></p>
-<p>Hallo <a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a> Hallo (<a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a>) Hallo</p>
-<p>(<a href="$testurl\%22" title="Externe Webseite" target="_blank">$testurl\%22</a>), <a href="$testimage" title="Externes Bild" target="_blank"><img src="$testimage" class="extern" title="Externes Bild" /></a></p>
-<p>Und „<span class="quote">Hier, in dieser <img class="smiley" src="$url/themes/$theme/img/smileys/smile.png" alt=":)" /> ... <a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a> ... achso</span>“ und da" oder, <span class="username">$testuser</span>, so.</p>
-<p>Achso <span class="username"><span class="alert">@</span>$testuser</span>: <span class="username">$testuser</span> oder <a href="http://www.$testuser.de" title="Externe Webseite" target="_blank">http://www.$testuser.de</a> weil ja!</p>
+<p><a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a></p>
+<p>Hallo <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> Hallo (<a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>) Hallo</p>
+<p>(<a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>), <a href="$testimage" title="Externes Bild" target="_blank"><img src="$testimage" class="extern" title="Externes Bild" /></a></p>
+<p>Und „<span class="quote">Hier, in dieser <img class="smiley" src="$url/themes/$theme/img/smileys/smile.png" alt=":)" /> ... <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> ... achso</span>“ und da" oder, <span class="username">$testuser</span>, so.</p>
+<p>Achso <span class="username"><span class="alert">@</span>$testuser</span>: <span class="username">$testuser</span> oder <a href="http://www.$testuser.de" title="Externe Webseite: http://www.$testuser.de" target="_blank">http://www.$testuser.de</a> weil ja!</p>
 <p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span>, <span class="emotion">*test6*</span></p>
 <p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span>, <span class="emotion">*test 6*</span></p>
 <p>look: <img class="smiley" src="$url/themes/$theme/img/smileys/look.png" alt="O.O" /> <img class="smiley" src="$url/themes/$theme/img/smileys/look.png" alt="0.0" />,</p>
@@ -209,11 +209,11 @@ sub controlstring_withoutimages {
     return << "EOSTRING";
 <p>MarkupTests:</p>
 <p>Notiz am Rande: <span class="alert">BBCodes !!!</span> können mich mal kreuzweise am Arsch lecken, bin fertig mit den sinnlosen Drecksdingern. Die kommen hier nie, nie nie rein!</p>
-<p><a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a> <a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a> <a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a></p>
-<p>Hallo <a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a> Hallo (<a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a>) Hallo</p>
-<p>(<a href="$testurl\%22" title="Externe Webseite" target="_blank">$testurl\%22</a>), <a href="$testimage" title="Externes Bild" target="_blank">$testimage</a></p>
-<p>Und „<span class="quote">Hier, in dieser :) ... <a href="$testurl" title="Externe Webseite" target="_blank">$testurl</a> ... achso</span>“ und da" oder, <span class="username">$testuser</span>, so.</p>
-<p>Achso <span class="username"><span class="alert">@</span>$testuser</span>: <span class="username">$testuser</span> oder <a href="http://www.$testuser.de" title="Externe Webseite" target="_blank">http://www.$testuser.de</a> weil ja!</p>
+<p><a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a></p>
+<p>Hallo <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> Hallo (<a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>) Hallo</p>
+<p>(<a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>), <a href="$testimage" title="Externes Bild: $testimage" target="_blank">$testimage</a></p>
+<p>Und „<span class="quote">Hier, in dieser :) ... <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> ... achso</span>“ und da" oder, <span class="username">$testuser</span>, so.</p>
+<p>Achso <span class="username"><span class="alert">@</span>$testuser</span>: <span class="username">$testuser</span> oder <a href="http://www.$testuser.de" title="Externe Webseite: http://www.$testuser.de" target="_blank">http://www.$testuser.de</a> weil ja!</p>
 <p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span>, <span class="emotion">*test6*</span></p>
 <p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span>, <span class="emotion">*test 6*</span></p>
 <p>look: O.O 0.0,</p>

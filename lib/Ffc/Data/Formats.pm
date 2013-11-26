@@ -109,15 +109,17 @@ sub _make_link {
         else {
             my $url_xmlencode = $url;
             _xml_escape($url_xmlencode);
+            my $url_show = $url_xmlencode;
             _stripped_url($url_xmlencode);
-            return qq~$start<a href="$url" title="Externes Bild" target="_blank">$url_xmlencode</a>$end~;
+            return qq~$start<a href="$url" title="Externes Bild: $url_show" target="_blank">$url_xmlencode</a>$end~;
         }
     }
     else {
         my $url_xmlencode = $url;
         _xml_escape($url_xmlencode);
+            my $url_show = $url_xmlencode;
         _stripped_url($url_xmlencode);
-        return qq~$start<a href="$url" title="Externe Webseite" target="_blank">$url_xmlencode</a>$end~;
+        return qq~$start<a href="$url" title="Externe Webseite: $url_show" target="_blank">$url_xmlencode</a>$end~;
     }
 }
 
