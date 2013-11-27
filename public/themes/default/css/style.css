@@ -24,7 +24,6 @@ body > div {
 .postbox h2 {
     border-bottom: 1px silver solid;
     margin-right: 0;
-    margin-left: 1.25em;
 }
 .postbox img {
     max-width: 256px;
