@@ -261,7 +261,7 @@ qr~,\s*<a href="$url_edit" title="Beitrag bearbeiten">\s*(?:<img src="$url_editi
                 my $deletelink =
 qr~<a href="$url_delete" title="Beitrag l\&ouml;schen">\s*(?:<img src="$url_deleteicon" alt="L\&ouml;schen" />|L&ouml;schen)</a>\s*(?:\s*,\s*)?~;
                 my $attachelink =
-qr~<a href="$url_attache" title="Datei an den Beitrag anf\&uuml;gen">\s*(?:<img src="$url_attacheicon" alt="Anh\&auml;ngen" />|Anhang)</a>(?:\s*,\s*)?~;
+qr~(?:,\s*)<a href="$url_attache" title="Datei an den Beitrag anf\&uuml;gen">\s*(?:<img src="$url_attacheicon" alt="Anh\&auml;ngen" />|Anhang)</a>(?:\s*,\s*)?~;
                 my $msglink = ( $act eq 'msgs' && $sessmsguser && $sessmsguser eq $msguser ) ? '' :
 qr~,\s*<a href="$url_msg"\s*title="Dem Benutzer &quot;$msguser&quot; eine private Nachricht zukommen lassen">\s*(?:<img src="$url_msgicon" alt="Nachricht" />|Privatnachrichten)</a>~;
                 my $avatar = do {

@@ -15,7 +15,7 @@ use File::Temp;
 use File::Copy;
 srand;
 
-use Test::More tests => 165;
+use Test::More tests => 186;
 
 Test::General::test_prepare();
 sub r { &Test::General::test_r }
@@ -286,6 +286,24 @@ my $postid3 = Test::General::test_get_max_postid();
 }
 #############################################################################
 {
+    note 'check uploads for several kinds of posts';
+    for my $id ( $postid1, $postid2, $postid3 ) {
+        my $file = '';
+        Ffc::Data::Board::Upload::upload($user1->{name}, $id, "newfile_7_$id.dat", "descr_7_$id", sub { push @del, $_[0]; $file = $_[0]; copy $testfile3, $_[0] } );
+        ok $file, "filename '$file' exists";
+        ok -e $file, "file '$file' exists";
+        my $attid = Ffc::Data::dbh()->selectall_arrayref('SELECT MAX(a.number) FROM '.$Ffc::Data::Prefix.'attachements a WHERE a.postid=?', undef, $id)->[0]->[0];
+        ok $attid, "attachement id '$attid' found";
+        eval { Ffc::Data::Board::Upload::delete_upload($user2->{name}, $id, $attid) };
+        ok $@, 'error received';
+        like $@, qr/Benutzer\s+nicht\s+berechtigt/xmsi, 'error message seems legit';
+        ok -e $file, "file '$file' still exists, user not allowed to delete it";
+        Ffc::Data::Board::Upload::delete_upload($user1->{name}, $id, $attid);
+        ok !-e $file, "file '$file' deleted";
+    }
+}
+#############################################################################
+{
     note 'delete post';
     Ffc::Data::Board::Upload::upload($user1->{name}, $postid1, 'newfile6.dat', 'descr6', sub { push @del, $_[0]; copy $testfile3, $_[0] } );
     check_call(
@@ -313,6 +331,7 @@ my $postid3 = Test::General::test_get_max_postid();
     ok(!(Ffc::Data::dbh()->selectrow_array('SELECT COUNT(number) FROM '.$Ffc::Data::Prefix.'attachements WHERE postid=?', undef, $postid1 ))[0], 'attachements do not exist after deletion anymore' );
     ok !-e $del[-1], 'attachement is deleted together with the post';
 }
+
 #############################################################################
 END { unlink $_ for @del }
 

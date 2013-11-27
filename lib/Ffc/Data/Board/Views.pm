@@ -284,7 +284,6 @@ EOSQL
                 ( $d->[5] == $userid 
                     ? (ownpost => 1, uploadable => 1) 
                     : (ownpost => 0, uploadable => 0) ),
-                ownpost    => $d->[5] == $userid ? 1 : 0,
                 id         => $d->[0], # id
                 category   => $d->[3] # kategorie
                     ? { name => $d->[3], short => $d->[4] }
@@ -306,7 +305,12 @@ EOSQL
                       : ( $_->[0] => undef ) }
                       ([from => 5,6,7], [to => 8,9,10]) ),
             };
-            $d->{uploadable} = 0 if $d->{to} and not $d->{to}->{chatable};
+            $d->{uploadable} = 0 
+                if      $d->{to} 
+                    and $d->{to}->{id} 
+                    and $d->{to}->{id} != $userid 
+                    and not $d->{to}->{chatable} 
+                    and $msgu ne $d->{to}->{name};
             $d->{iconspresent} = 
                      $d->{editable} 
                 ||   $d->{uploadable}

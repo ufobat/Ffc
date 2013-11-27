@@ -19,28 +19,30 @@
 %   } 
 % }
         <span class="titleinfo"><%= $act eq 'notes' ? '' : '(' %>
-% unless ( $post->{active} ) {
+% if ( $post->{active} ) {
+          <%= $post->{timestamp} %>, in Bearbeitung
+% } else {
           <%= $post->{timestamp} %><%= $post->{iconspresent} ? ',' : '' %>
-% if ( $post->{editable} ) {
+%   if ( $post->{editable} ) {
           <a href="<%= url_for_me edit_form     => postid => $post->{id} %>" title="Beitrag bearbeiten">Bearbeiten</a>,
       <a href="<%= url_for_me delete_check  => postid => $post->{id} %>" title="Beitrag l&ouml;schen">L&ouml;schen</a><%= $post->{uploadable} ? ',' : '' %>
-% }
-% for my $w (qw(from to)) {
-%   if ( $post->{$w} and $post->{$w}->{chatable} ) {
+%   }
+%   for my $w (qw(from to)) {
+%     if ( $post->{$w} and $post->{$w}->{chatable} ) {
           <a href="<%= url_for_me show => act => 'msgs', msgs_username => $post->{$w}->{name} %>"
             title="Dem Benutzer &quot;<%= $post->{$w}->{name} %>&quot; eine private Nachricht zukommen lassen">
             Privatnachrichten</a><%= $post->{uploadable} ? ',' : '' %>
-%   } 
-% }
+%     } 
+%   }
 %   if ( $post->{uploadable} ) {
           <a href="<%= url_for_me upload_form   => postid => $post->{id} %>" title="Datei an den Beitrag anf&uuml;gen">Anhang</a>
 %   }
-% } else {
-            <%= $post->{timestamp} %>, in Bearbeitung
 % }
         <%= $act eq 'notes' ? '' : ')' %></span>:
     </h2>
-% unless ( $post->{active} ) {
+% if ( $post->{active} ) {
+    <%== $post->{start} %>
+% } else {
     <%== $post->{text} %>
 %   if ( @{ $post->{attachements} } ) {
     <h3 class="attachementtitle">Anhänge:</h3>
@@ -48,7 +50,5 @@
 %   for ( @{ $post->{attachements} } ) {
       <%= include 'parts/attachement', att => $_, ownpost => $post->{ownpost}, deletable => 1 %>
 %   }
-% } else {
-    <%== $post->{start} %>
 % }
 </div>
