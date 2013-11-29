@@ -13,6 +13,7 @@ use Mock::Testuser;
 use Ffc::Data::Board::Forms;
 use File::Temp;
 use File::Copy;
+use File::Path;
 srand;
 
 use Test::More tests => 79;
@@ -21,6 +22,8 @@ Test::General::test_prepare();
 sub r { &Test::General::test_r }
 
 use_ok('Ffc::Data::Board::Upload');
+$Ffc::Data::UploadDir = File::Temp::tempdir();
+die qq'tmp test upload dir "$Ffc::Data::UploadDir" does not exist' unless -e -d $Ffc::Data::UploadDir;
 
 my $u1 = Mock::Testuser->new_active_user();
 my $u2 = Mock::Testuser->new_active_user();
@@ -126,5 +129,10 @@ for my $t ( @testmatrix ) {
     }
 }
 
-END { unlink $_ for @del }
+END {
+    my $errors;
+    unlink $_ for @del;
+    File::Path::rmtree($Ffc::Data::UploadDir, {error => \$errors});
+    diag join "\n", @$errors if @$errors;
+}
 

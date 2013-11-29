@@ -13,6 +13,7 @@ use Mock::Testuser;
 use Ffc::Data::Board::Forms;
 use File::Temp;
 use File::Copy;
+use File::Path;
 srand;
 
 use Test::More tests => 186;
@@ -22,6 +23,8 @@ sub r { &Test::General::test_r }
 my @del;
 
 use_ok('Ffc::Data::Board::Upload');
+$Ffc::Data::UploadDir = File::Temp::tempdir();
+die qq'tmp test upload dir "$Ffc::Data::UploadDir" does not exist' unless -e -d $Ffc::Data::UploadDir;
 
 my $user1 = Mock::Testuser->new_active_user();
 my $user2 = Mock::Testuser->new_active_user();
@@ -333,5 +336,10 @@ my $postid3 = Test::General::test_get_max_postid();
 }
 
 #############################################################################
-END { unlink $_ for @del }
+END {
+    my $errors;
+    unlink $_ for @del;
+    File::Path::rmtree($Ffc::Data::UploadDir, {error => \$errors});
+    diag join "\n", @$errors if @$errors;
+}
 
