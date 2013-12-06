@@ -56,7 +56,7 @@ simpler technischer Struktur.
 
 =back
 
-=item Screenshot: https://raw.github.com/4FriendsForum/Ffc/master/doc/Screenshot.png
+=item L<Screenshot|https://raw.github.com/4FriendsForum/Ffc/master/doc/Screenshot.png>
 
 =back
 
