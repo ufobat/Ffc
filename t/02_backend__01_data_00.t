@@ -10,7 +10,7 @@ use Data::Dumper;
 use Mojolicious;
 use Mock::Config;
 
-use Test::More tests => 40;
+use Test::More tests => 41;
 
 srand;
 
@@ -71,6 +71,7 @@ ok( Ffc::Data::set_config($app), 'config set returned true' );
             theme           => 'Theme',
             favicon         => 'Favicon',
             mode            => 'Mode',
+            backgroundcolor => 'BackgroundColor',
         );
         while ( my ( $k, $v ) = each %order ) {
             no strict 'refs';

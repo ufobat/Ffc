@@ -44,6 +44,7 @@ our $Testing = 0;
 our $RefreshInterval = 10 * 60 * 1000;
 our $Footerlinks = [];
 our $CommonCatTitle = 'Allgemeine Beiträge';
+our $BackgroundColor;
 our $Mode = 'development';
 our $Favicon;
 our $DefaultConfig = {
@@ -62,6 +63,7 @@ our $DefaultConfig = {
     "debug"           => 1,
     "theme"           => "default",
     "commoncattitle"  => 'Allgemeine Beiträge',
+    "backgroundcolor" => '',
     "mode"            => 'development',
     "acttitles"       => {
         "forum"   => 'Forum',
@@ -111,6 +113,7 @@ our $DefaultConfig = {
         $SessionTimeout  = $config->{sessiontimeout};
         $Theme           = $config->{theme};
         $Debug           = $config->{debug};
+        $BackgroundColor = $config->{backgroundcolor} if $config->{backgroundcolor};
         $Favicon         = $config->{favicon} if $config->{favicon};
         $Footerlinks     = $config->{footerlinks} if $config->{footerlinks};
         $RefreshInterval = $config->{refreshinterval} * 60 * 1000 if $config->{refreshinterval};

@@ -29,6 +29,9 @@
             return "loaded ...";
         }
     </script>
+% if ( $Ffc::Data::BackgroundColor ) {
+    <style type="text/css">body { background-color: <%= $Ffc::Data::BackgroundColor %> }</style>
+% }
   </head>
   <!-- body onload="got_loaded()" !-->
   <body>
