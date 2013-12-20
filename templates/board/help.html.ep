@@ -59,7 +59,7 @@
         <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/unsure.png" %>" /> (Unsicherheit zur Schau tragen): <code>:| :-| =|</code></li>
         <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/yes.png" %>" /> (Zustimmen): <code>(y) (Y)</code></li>
         <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/no.png" %>" /> (Ablehnen): <code>(n) (N)</code></li>
-        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/down.png" %>" /> (Resigniert zu Boden schauen): <code>-.-</code></li>
+        <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/down.png" %>" /> (Genervt zu Boden schauen): <code>-.-</code></li>
         <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/nope.png" %>" /> (Zweifeln): <code>:/ :-/ :\ :-\ =/ =\</code></li>
         <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/sunny.png" %>" /> (Die Sonne aus dem Heck scheinen lassen): <code>B) B-) 8) 8-)</code></li>
         <li><img class="smiley" src="<%= url_for "$Ffc::Data::Themedir/".session()->{theme}."/img/smileys/cats.png" %>" /> (Die beliebten Katzenaugen): <code>^^</code></li>
