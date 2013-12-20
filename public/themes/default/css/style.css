@@ -35,7 +35,6 @@ body > div {
 }
 .postbox > p {
     margin: 1em;
-    text-indent: 1em;
 }
 input, textarea, select {
     font-size: 1em;
