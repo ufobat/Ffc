@@ -9,6 +9,7 @@
 % }
   </head>
   <body>
+    <!-- Nicht angemeldet !-->
 %= include 'parts/error'
 %= content
 %= include 'parts/footerlinks'

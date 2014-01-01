@@ -35,6 +35,7 @@
   </head>
   <!-- body onload="got_loaded()" !-->
   <body>
+    <!-- Angemeldet als "<%= session()->{user} %>" !-->
 % if ( session()->{user} ) {
 %= include 'parts/menu'
 % }

@@ -334,7 +334,7 @@ qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*>
         my $url = '/forum' . ( $cat->[2] ? "/category/$cat->[2]" : '' );
         $t->post_ok("$url/edit/$id1", form => { post => $text1b } )->status_is(200);
         $t->content_like(qr'<div class="postbox error">Ein neuer Beitrag wurde zwischenzeitlich durch einen anderen Benutzer erstellt')
-          ->content_like(qr~<textarea\s+name="post"\s+id="textinput"\s+class="insert_post"\s+>$text1b</textarea>~)
+          ->content_like(qr~<textarea\s+name="post"\s+id="textinput"\s+class="update_post"\s+>$text1b</textarea>~)
           ->content_like(qr~<p>$text1</p>~)
           ->content_like(qr~<p>$text2</p>~);
         note('after first fail, this should work');
@@ -343,7 +343,7 @@ qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*>
           ->header_like( Location => qr{\Ahttps?://localhost:\d+$url}xms );
         $t->get_ok($url)
           ->content_unlike(qr'<div class="postbox error">Ein neuer Beitrag wurde zwischenzeitlich durch einen anderen Benutzer erstellt')
-          ->content_unlike(qr~<textarea\s+name="post"\s+id="textinput"\s+class="insert_post"\s+>$text1b</textarea>~)
+          ->content_unlike(qr~<textarea\s+name="post"\s+id="textinput"\s+class="update_post"\s+>$text1b</textarea>~)
           ->content_like(qr~<p>$text1b</p>~);
     }
     {

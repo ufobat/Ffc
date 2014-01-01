@@ -84,7 +84,9 @@ sub update_post {
     my $act = $c->stash('act');
     if ( $act ne 'notes' and check_for_updates($c) ) {
         $c->error_stash('Ein neuer Beitrag wurde zwischenzeitlich durch einen anderen Benutzer erstellt. Bitte Beitrag vor dem Absenden nochmal überprüfen.');
-        $c->stash(post => {raw => $c->param('post')});
+        my $id = $c->param('postid');
+        $c->stash(postid => $id);
+        $c->stash(post => {raw => $c->param('post'), id => $id});
         return $c->edit_form(1);
     }
     my $s = $c->session;
