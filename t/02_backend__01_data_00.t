@@ -51,7 +51,7 @@ ok( Ffc::Data::set_config($app), 'config set returned true' );
     is( Ffc::Data::cryptsalt(),
         $config->{cryptsalt}, 'cryptsalt is ok' );
 
-    is( $app->secret, $config->{cookiesecret}, 'secret is ok' );
+    is( $app->secrets()->[0], $config->{cookiesecret}, 'secret is ok' );
 
     ok( !exists( $app->config()->{cookiesecret} ),
         'secret deleted from config' );
