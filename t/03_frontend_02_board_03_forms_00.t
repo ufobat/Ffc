@@ -201,14 +201,14 @@ qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*>
             }
             $reset->();
             $t->post_ok("/$act/edit/$msgid", form => {post => $newtext2});
+            $t->status_is(500);
             if ($is_msgs) {
-                $t->status_is(500)
-                ->content_like(
+                $t->content_like(
                     qr(Privatnachrichten dürfen nicht geändert werden));
             }
             else {
-                $t->status_is(302)
-                  ->header_like( Location => qr{\Ahttps?://localhost:\d+/}xms );
+                $t->content_like(
+                    qr(Kein entsprechender Beitrag vom angegebenen Benutzer bekannt));
                 $t->get_ok("/$act");
                 $t->status_is(200)
                   ->content_like(

@@ -20,9 +20,12 @@ sub delete_post {
     my $from = _get_userid( $username, 'Autor des zu löschenden Beitrages' );
     croak qq(Keine Postid angegeben) unless $id;
     croak qq{Postid ungültig} unless $id =~ m/\A\d+\z/xms;
-    Ffc::Data::Board::Upload::delete_attachements($username, $id);
+    my $where = 'WHERE id=? AND user_from=? AND (user_to IS NULL OR user_from=user_to)';
+    my $sql = 'SELECT COUNT(id) FROM '.$Ffc::Data::Prefix."posts $where";
     my $dbh = Ffc::Data::dbh();
-    $dbh->do('DELETE FROM '.$Ffc::Data::Prefix.'posts WHERE id=? and user_from=? AND (user_to IS NULL OR user_from=user_to)', undef, $id, $from );
+    croak qq(Kein entsprechender Beitrag vom angegebenen Benutzer bekannt) unless 1 == $dbh->selectall_arrayref($sql, undef, $id, $from)->[0]->[0];
+    Ffc::Data::Board::Upload::delete_attachements($username, $id);
+    $dbh->do('DELETE FROM '.$Ffc::Data::Prefix.'posts '.$where, undef, $id, $from );
     return 1;
 }
 
@@ -50,7 +53,7 @@ sub update_post {
     my $dbh = Ffc::Data::dbh();
     my $where = 'WHERE id=? AND user_from=? AND (user_to IS NULL OR user_from=user_to)';
     my $sql = 'SELECT COUNT(id) FROM '.$Ffc::Data::Prefix."posts $where";
-    croak qq(Kein entsprechender Beitrag vom angegebenen Benutzer bekannt) unless 1 == @{ $dbh->selectall_arrayref($sql, undef, $i, $f) };
+    croak qq(Kein entsprechender Beitrag vom angegebenen Benutzer bekannt) unless 1 == $dbh->selectall_arrayref($sql, undef, $i, $f)->[0]->[0];
     $sql = 'UPDATE '.$Ffc::Data::Prefix."posts SET textdata=?, altered=current_timestamp $where;";
     $dbh->do( $sql, undef, $d, $i, $f );
 }

@@ -13,7 +13,7 @@ use Mock::Testuser;
 use Ffc::Data::Auth;
 srand;
 
-use Test::More tests => 61;
+use Test::More tests => 67;
 
 Test::General::test_prepare();
 
@@ -162,6 +162,13 @@ use_ok('Ffc::Data::Board::Forms');
     );
     is( Test::General::test_get_max_post()->[1],
         $posting, 'posting updated ok' );
+    {
+        my $ret = '';
+        eval { $ret = Ffc::Data::Board::Forms::update_post(Mock::Testuser->new_active_user()->{name}, $posting, $postid) };
+        ok $@, 'error message while updating with wrong user';
+        ok !$ret, 'no return';
+        like $@, qr'Kein\s+entsprechender\s+Beitrag\s+vom\s+angegebenen\s+Benutzer\s+bekannt', 'error message ok';
+    }
 }
 {
     note('sub delete_post( $username, $postid )');
@@ -199,4 +206,11 @@ use_ok('Ffc::Data::Board::Forms');
         },
     );
     ok(!(Ffc::Data::dbh()->selectrow_array('SELECT COUNT(id) FROM '.$Ffc::Data::Prefix.'posts WHERE id=?', undef, $postid ))[0], 'posting does not exist after deletion anymore' );
+    {
+        my $ret = '';
+        eval { $ret = Ffc::Data::Board::Forms::delete_post(Mock::Testuser->new_active_user()->{name}, $postid) };
+        ok $@, 'error message while updating with wrong user';
+        ok !$ret, 'no return';
+        like $@, qr'Kein\s+entsprechender\s+Beitrag\s+vom\s+angegebenen\s+Benutzer\s+bekannt', 'error message ok';
+    }
 }

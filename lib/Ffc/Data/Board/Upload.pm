@@ -62,7 +62,7 @@ sub delete_attachements {
     my $postid = shift;
     die qq(Ungültiger Beitrag) unless $postid and $postid =~ m/\A\d+\z/xms;
     my $dbh = Ffc::Data::dbh();
-    unless ( $dbh->selectrow_arrayref('SELECT COUNT(p.id) FROM '.$Ffc::Data::Prefix.'posts p WHERE p.user_from=? AND p.id=?', undef, $userid, $postid)->[0] ) {
+    unless ( $dbh->selectall_arrayref('SELECT COUNT(p.id) FROM '.$Ffc::Data::Prefix.'posts p WHERE p.user_from=? AND p.id=?', undef, $userid, $postid)->[0]->[0] == 1 ) {
         croak 'Benutzer darf den Beitrag nicht löschen';
     }
     for my $r ( @{ $dbh->selectall_arrayref('SELECT number FROM '.$Ffc::Data::Prefix.'attachements WHERE postid=?', undef, $postid) } ) {
