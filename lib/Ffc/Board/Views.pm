@@ -5,8 +5,6 @@ use strict;
 use warnings;
 use utf8;
 
-use base 'Ffc::Board::Errors';
-
 use Carp;
 use Ffc::Data::General;
 use Ffc::Auth;
@@ -14,6 +12,8 @@ use Ffc::Board::Options;
 use Ffc::Data::Board;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Avatars;
+
+use base 'Ffc::Board::Errors';
 
 sub get_params {
     my $c = shift;
@@ -63,16 +63,18 @@ sub _frontpage {
     my $posts  = [];
     my @params = $c->get_params(); #($user, $page, $s->{query}, $cat, $c);
     if ( $act eq 'forum' ) {
-        $posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_forum(@params)})
+        $posts = Ffc::Data::Board::Views::get_forum(@params);
     }
     elsif ( $act eq 'notes' ) {
-        $posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_notes(@params)})
+        $posts = Ffc::Data::Board::Views::get_notes(@params);
     }
     elsif ( $act eq 'msgs' ) {
-        $c->stash(userlist => $c->or_empty(sub{Ffc::Data::Board::Views::get_userlist($user)}));
-        $posts=$c->or_empty(sub{Ffc::Data::Board::Views::get_msgs(@params,$msgs_username)});
+        $c->stash(userlist => Ffc::Data::Board::Views::get_userlist($user));
+        $posts = Ffc::Data::Board::Views::get_msgs(@params,$msgs_username);
     }
-    else {$c->error_handling({plain=>qq("$act" unbekannt)})}
+    else {
+        $c->error_handling({plain=>qq("$act" unbekannt)});
+    }
     if ( $postid ) {
         my @post = grep { exists($_->{id}) and defined($_->{id}) and ( $_->{id} eq $postid ) } @$posts;
         if ( @post ) {
@@ -83,15 +85,10 @@ sub _frontpage {
     $c->stash( posts => $posts);
     $c->get_counts;
     $c->stash( categories => ($act eq 'forum') 
-            ? $c->or_empty( sub { Ffc::Data::Board::Views::get_categories($user) } ) 
+            ? Ffc::Data::Board::Views::get_categories($user) 
             : [] );
     $c->stash( footerlinks => $Ffc::Data::Footerlinks );
-    if ( $reload or $c->error_handling({
-        code        => sub { Ffc::Data::Board::update_user_stats($user, $act, $cat) },
-        msg         => 'Etwas ist intern schief gegangen, bitte versuchen Sie es später noch einmal.',
-        after_error => sub { 
-            Ffc::Auth::logout($c, 'Etwas ist intern schief gegangen, bitte melden Sie sich an') },
-    }) ) {
+    if ( $reload or Ffc::Data::Board::update_user_stats($user, $act, $cat) ) {
         $c->render('board/frontpage');
     }
 }
@@ -99,9 +96,9 @@ sub _frontpage {
 sub get_counts {
     my $c = shift;
     my $user = $c->session()->{user};
-    $c->stash(notecount    => $c->or_zero(sub{Ffc::Data::Board::Views::count_notes(   $user)}));
-    $c->stash(newmsgscount => $c->or_zero(sub{Ffc::Data::Board::Views::count_newmsgs( $user)}));
-    $c->stash(newpostcount => $c->or_zero(sub{Ffc::Data::Board::Views::count_newposts($user)}));
+    $c->stash(notecount    => Ffc::Data::Board::Views::count_notes(   $user));
+    $c->stash(newmsgscount => Ffc::Data::Board::Views::count_newmsgs( $user));
+    $c->stash(newpostcount => Ffc::Data::Board::Views::count_newposts($user));
 }
 sub search {
     my $c = shift;
