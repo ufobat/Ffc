@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious';
 use Ffc::Auth;
 use Ffc::Data;
 use Ffc::Data::Auth;
+#use Devel::NYTProf;
 
 our @Keys = qw(act page category msgs_username postid number);
 

@@ -81,7 +81,6 @@ our $DefaultConfig = {
 };
 {
     my $dbh;
-    my $config;
     my $dbconfig;
     my $cryptsalt;
 
@@ -89,45 +88,36 @@ our $DefaultConfig = {
 
     sub set_config {
         my $app = shift;
-        if ( -e -r ( $ENV{FFC_CONFIG} // $DefaultConfigPath ) ) {
+        my $config = $ENV{FFC_CONFIG} // $DefaultConfigPath;
+        if ( -e -r $config ) {
             $config =
-              $app->plugin( JSONConfig =>
-                  { file => $ENV{FFC_CONFIG} // $DefaultConfigPath } );
+              $app->plugin( JSONConfig => { file => $config } );
         }
         else {
             $config =
               $app->plugin( JSONConfig => { default => $DefaultConfig } );
         }
-        $app->secrets( [$config->{cookiesecret}] );
+        $app->secrets( [delete $config->{cookiesecret}] );
         $app->sessions->secure($Testing ? 1 : 0);
-        delete $config->{cookiesecret};
-        $cryptsalt = $config->{cryptsalt};
-        delete $config->{cryptsalt};
+        $cryptsalt = delete $config->{cryptsalt};
 
-        $Prefix = $config->{dbprefix};
+        ( $Limit, $Pagelinkpreview, $Title, $SessionTimeout, $Theme, $Debug, $Prefix )
+          = @{ $config }{qw(postlimit pagelinkpreview title sessiontimeout theme debug dbprefix)};
         croak q(Prefix invalid, needs to be something like /\\w{0,10}/)
           unless $Prefix =~ m/\A\w{0,10}/xms;
-        $Limit           = $config->{postlimit};
-        $Pagelinkpreview = $config->{pagelinkpreview};
-        $Title           = $config->{title};
-        $SessionTimeout  = $config->{sessiontimeout};
-        $Theme           = $config->{theme};
-        $Debug           = $config->{debug};
-        $BackgroundColor = $config->{backgroundcolor} if $config->{backgroundcolor};
-        $Favicon         = $config->{favicon} if $config->{favicon};
-        $Footerlinks     = $config->{footerlinks} if $config->{footerlinks};
-        $RefreshInterval = $config->{refreshinterval} * 60 * 1000 if $config->{refreshinterval};
+        $BackgroundColor = $config->{backgroundcolor} if exists $config->{backgroundcolor};
+        $Favicon         = $config->{favicon} if exists $config->{favicon};
+        $Footerlinks     = $config->{footerlinks} if exists $config->{footerlinks};
+        $RefreshInterval = $config->{refreshinterval} * 60 * 1000 if exists $config->{refreshinterval};
         $CommonCatTitle  = encode( 'UTF-8', $config->{commoncattitle} || $CommonCatTitle);
-        $URLShorten      = $config->{urlshorten} if $config->{urlshorten};
-        $Mode            = $config->{mode} if $config->{mode};
+        $URLShorten      = $config->{urlshorten} if exists $config->{urlshorten};
+        $Mode            = $config->{mode} if exists $config->{mode};
         $app->sessions->cookie_name($config->{cookiename} // 'Ffc');
         $app->mode($Mode);
 
         $dbconfig = {
             map {
-                my $v = $config->{$_};
-                delete $config->{$_};
-                $_ => $v;
+                $_ => delete $config->{$_};
             } qw(dsn user password)
         };
         %Acttitles = (
