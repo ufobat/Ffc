@@ -26,10 +26,7 @@ sub get_params {
         $c;
 }
 
-sub frontpage            { _frontpage(0, @_) }
-sub frontpage_autoreload { _frontpage(1, @_) }
-sub _frontpage {
-    my $reload = shift;
+sub frontpage {
     my $c = shift;
     my $s = $c->session;
     my $act = $c->stash('act');
@@ -88,7 +85,7 @@ sub _frontpage {
             ? Ffc::Data::Board::Views::get_categories($user) 
             : [] );
     $c->stash( footerlinks => $Ffc::Data::Footerlinks );
-    if ( $reload or Ffc::Data::Board::update_user_stats($user, $act, $cat) ) {
+    if ( Ffc::Data::Board::update_user_stats($user, $act, $cat) ) {
         $c->render('board/frontpage');
     }
 }
