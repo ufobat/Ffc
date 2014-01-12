@@ -140,6 +140,36 @@ my @public = qw(
     public/themes/default/img/smileys/yes.png
     public/themes/default/img/smileys/twinkling.png
     public/themes/default/img/smileys/laughting.png
+    public/themes/nostyle
+    public/themes/nostyle/css
+    public/themes/nostyle/css/style.css
+    public/themes/nostyle/img
+    public/themes/nostyle/img/nofile.png
+    public/themes/nostyle/img/avatar.png
+    public/themes/nostyle/img/favicon.png
+    public/themes/nostyle/img/smileys
+    public/themes/nostyle/img/smileys/devilsmile.png
+    public/themes/nostyle/img/smileys/unsure.png
+    public/themes/nostyle/img/smileys/look.png
+    public/themes/nostyle/img/smileys/sad.png
+    public/themes/nostyle/img/smileys/angry.png
+    public/themes/nostyle/img/smileys/smile.png
+    public/themes/nostyle/img/smileys/down.png
+    public/themes/nostyle/img/smileys/facepalm.png
+    public/themes/nostyle/img/smileys/what.png
+    public/themes/nostyle/img/smileys/evilgrin.png
+    public/themes/nostyle/img/smileys/tongue.png
+    public/themes/nostyle/img/smileys/ooo.png
+    public/themes/nostyle/img/smileys/cats.png
+    public/themes/nostyle/img/smileys/nope.png
+    public/themes/nostyle/img/smileys/no.png
+    public/themes/nostyle/img/smileys/sunny.png
+    public/themes/nostyle/img/smileys/crying.png
+    public/themes/nostyle/img/smileys/rofl.png
+    public/themes/nostyle/img/smileys/love.png
+    public/themes/nostyle/img/smileys/yes.png
+    public/themes/nostyle/img/smileys/twinkling.png
+    public/themes/nostyle/img/smileys/laughting.png
     public/themes/README.pod
     script
     templates
