@@ -15,19 +15,25 @@ sub _new { bless _generate_testuser( @_[ 1, 2 ] ), $_[0] }
 
 sub randstr {
     my $pick = sub { $_[0][ int rand scalar @{ $_[0] } ] };
-    my $alphachars = [ 'a' .. 'z', 'A' .. 'Z' ];
-    my $allchars = [ 0 .. 9, '_', @$alphachars ];
+    my $lowerchars = [ 'a' .. 'z' ];
+    my $numbers = [ 0 .. 9 ];
+    my $upperchars = [ 'A' .. 'Z' ];
     return join '', map( {
             ;
-              $pick->($alphachars)
+              $pick->($lowerchars)
         } 1 .. 2 ),
       map( {
             ;
-              $pick->($allchars)
-        } 1 .. 4 ),
+              $pick->($upperchars)
+        } 1 .. 2 ),
       map( {
             ;
-              $pick->($alphachars)
+              $pick->($numbers)
+      } 1 .. 2 ),
+      '_',
+      map( {
+            ;
+              $pick->($lowerchars)
       } 1 .. 2 );
 }
 

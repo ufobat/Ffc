@@ -15,7 +15,7 @@ use Test::Callcheck;
 use Test::General;
 use Ffc::Data;
 
-use Test::More tests => 210;
+use Test::More tests => 212;
 
 BEGIN { use_ok('Ffc::Data::Auth') }
 
@@ -104,7 +104,7 @@ qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/,
     {
         my ( $ok, $return, $error ) =
           just_call( \&Ffc::Data::Auth::get_userdata_for_login,
-            $activeuser->{name}, $activeuser->{password} );
+            lc($activeuser->{name}), $activeuser->{password} );
         ok( $ok,     'everything is ok with good active user' );
         ok( !$error, 'no error with good active user' );
 
@@ -114,12 +114,13 @@ qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/,
         is( $return->[2], 0, 'user is no admin' );
         is( $return->[3], 1, 'user wants to see images' );
         ok( !$return->[4], 'user has not set a theme yet' );
+        is( $return->[5], $activeuser->{name}, 'user name is ok' );
         $activeuser->{id} = $return->[0];
     }
     {
         my ( $ok, $return, $error ) =
           just_call( \&Ffc::Data::Auth::get_userdata_for_login,
-            $activeadmin->{name}, $activeadmin->{password} );
+            lc($activeadmin->{name}), $activeadmin->{password} );
         ok( $ok,     'everything is ok with good active admin' );
         ok( !$error, 'no error with good active admin' );
 
@@ -129,6 +130,7 @@ qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/,
         is( $return->[2], 1, 'admin is no admin' );
         is( $return->[3], 1, 'admin wants to see images' );
         ok( !$return->[4], 'admin has not set a theme yet' );
+        is( $return->[5], $activeadmin->{name}, 'admin name is ok' );
         $activeadmin->{id} = $return->[0];
     }
     _run_failures( \&Ffc::Data::Auth::get_userdata_for_login,

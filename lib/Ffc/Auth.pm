@@ -63,7 +63,7 @@ sub _get_relevant_data {
     $self->stash( error => '' );
     %$session = (
         %$session,
-        user        => $user,
+        user        => $data[5],
         lastseen    => $data[1],
         admin       => $data[2],
         show_images => $data[3],
