@@ -16,7 +16,7 @@ use Ffc::Data;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Forms;
 
-use Test::More tests => 4773;
+use Test::More tests => 3795;
 
 srand;
 my $t = Test::General::test_prepare_frontend('Ffc');
@@ -428,8 +428,6 @@ sub checkall_tests {
     note('insert some test postings');
     insert_tests();
     sleep 1.1;
-    note('checks with test postings in autoreload mode');
-    checkall_tests(1,1);
     note('checks with test postings as normal user');
     checkall_tests(1,0);
 }
