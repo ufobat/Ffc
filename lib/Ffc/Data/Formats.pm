@@ -34,7 +34,7 @@ our @Smilies = (
     [ facepalm   => ['m(',                                        ] ],
 );
 our %Smiley     = map {my ($n,$l)=($_->[0],$_->[1]); map {$_=>$n} @$l} @Smilies;
-our $SmileyRe   = join '|', map {s{([\^\<\-\.\:\\\/\(\)\=\|\,])}{\\$1}gxms; $_} keys %Smiley;
+our $SmileyRe   = join '|', map {s{([\^\<\-\.\:\\\/\(\)\=\|\,])}{\\$1}gxoms; $_} keys %Smiley;
 our %Goodies    = qw( _ underline - linethrough + bold ~ italic ! alert * emotion);
 
 sub format_timestamp {
@@ -46,7 +46,7 @@ sub format_timestamp {
 #        $time[3]-- if $time[2] < 2;$time[2] -= 2; # FIXME Zeitzonenzeuch
         my $time = sprintf '%02d.%02d.%04d', @time[3,4,5];
         return 'jetzt' if $t eq sprintf "$time, \%02d:\%02d", @time[2,1];
-        return substr $t, 12, 5 if $t =~ m/\A$time/xms;
+        return substr $t, 12, 5 if $t =~ m/\A$time/xmos;
     }
     return $t;
 }
@@ -66,13 +66,12 @@ sub format_text {
     return '' unless $s;
     _xml_escape($s);
     $s =~ s{(\A|\s)"(\S.*?\S|\S)"(\W|\z)}{$1„<span class="quote">$2</span>“$3}gxom;
-    $s =~ s{(?<!\S)(\@)?$u}{_make_username_mark($u, $1)}xgmseio if $u;
-    $s =~ s{(?<!\w)([\_\-\+\~\!\*])([\_\-\+\~\!\w\*]+)\g1(?!\w)}{_make_goody($1,$2)}gxmoeis;
+    $s =~ s{(?<!\S)(\@)?$u}{_make_username_mark($u, $1)}xgmsieo if $u;
+    $s =~ s{(?<!\w)([\_\-\+\~\!\*])([\_\-\+\~\!\w\*]+)\g1(?!\w)}{_make_goody($1,$2)}gxmoes;
     $s =~ s{((?:[\(\s]|\A)?)(https?://[^\)\s]+?)(\)|,?\s|\z)}{_make_link($1,$2,$3,$c)}gxmeois;
     $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxeos;
     $s =~ s{\n[\n\s]*}{</p>\n<p>}xgmos;
-    $s = "<p>$s</p>";
-    return $s;
+    return "<p>$s</p>";
 }
 
 sub _make_username_mark {
@@ -136,10 +135,9 @@ sub _make_smiley {
     $y =~ s/\&/&lt;/xmsgo;
     $y =~ s/\>/&gt;/xmsgo;
     $y =~ s/\</&lt;/xmsgo;
-    my $ext = 'png';
 #    $ext = 'svg' if $Smiley{$x} eq 'smile';
     return qq~$s<img class="smiley" src="~
-        . $c->url_for("/$Ffc::Data::Themedir/".$c->session()->{theme}."/img/smileys/$Smiley{$x}.$ext")
+        . $c->url_for("/$Ffc::Data::Themedir/".$c->session()->{theme}."/img/smileys/$Smiley{$x}.png")
         . qq~" alt="$y" />~;
 }
 
