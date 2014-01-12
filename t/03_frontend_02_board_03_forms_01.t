@@ -36,7 +36,7 @@ $t1->post_ok( '/login',
 
 $t1->get_ok('/')
   ->status_is(200)
-  ->content_like(qr/Angemeldet\s+als\s+"$u1->{name}"/);
+  ->content_like(qr/$u1->{name}\s+abmelden/);
 
 $t1->post_ok('/forum/new', form => { post => $text1 } )
   ->status_is(302)
@@ -59,12 +59,12 @@ $t2->post_ok( '/login',
 $t2->get_ok('/')
   ->status_is(200)
   ->content_like(qr/$text1/)
-  ->content_like(qr/Angemeldet\s+als\s+"$u2->{name}"/)
+  ->content_like(qr/$u2->{name}\s+abmelden/)
   ->content_like(qr~Ffc\s+\(1/0\)~);
 $t2->get_ok('/')
   ->status_is(200)
   ->content_like(qr/$text1/)
-  ->content_like(qr/Angemeldet\s+als\s+"$u2->{name}"/)
+  ->content_like(qr/$u2->{name}\s+abmelden/)
   ->content_unlike(qr~Ffc\s+\(1/0\)~);
 
 $t2->post_ok('/forum/new', form => { post => $text2 } )
@@ -102,14 +102,14 @@ $t1->get_ok('/')
   ->status_is(200)
   ->content_like(qr/$text1/)
   ->content_like(qr/$text2/)
-  ->content_like(qr/Angemeldet\s+als\s+"$u1->{name}"/)
+  ->content_like(qr/$u1->{name}\s+abmelden/)
   ->content_like(qr~<form\s+action="/forum/new"\s+(?:accept\-charset="UTF\-8"\s)?method="POST">~)
   ->content_like(qr~Ffc\s+\(1/0\)~);
 $t1->get_ok('/')
   ->status_is(200)
   ->content_like(qr/$text1/)
   ->content_like(qr/$text2/)
-  ->content_like(qr/Angemeldet\s+als\s+"$u1->{name}"/)
+  ->content_like(qr/$u1->{name}\s+abmelden/)
   ->content_like(qr~<form\s+action="/forum/new"\s+(?:accept\-charset="UTF\-8"\s)?method="POST">~)
   ->content_unlike(qr~Ffc\s+\(1/0\)~);
 $t1->post_ok('/forum/new', form => { post => $text3 } )
@@ -161,7 +161,7 @@ $t1->get_ok('/')
   ->content_like(qr/$text2/)
   ->content_like(qr/$text3/)
   ->content_like(qr/$text4/)
-  ->content_like(qr/Angemeldet\s+als\s+"$u1->{name}"/)
+  ->content_like(qr/$u1->{name}\s+abmelden/)
   ->content_like(qr~Ffc\s+\(1/0\)~);
 $t1->get_ok('/')
   ->status_is(200)
@@ -169,7 +169,7 @@ $t1->get_ok('/')
   ->content_like(qr/$text2/)
   ->content_like(qr/$text3/)
   ->content_like(qr/$text4/)
-  ->content_like(qr/Angemeldet\s+als\s+"$u1->{name}"/)
+  ->content_like(qr/$u1->{name}\s+abmelden/)
   ->content_unlike(qr~Ffc\s+\(1/0\)~);
 $t1->post_ok('/forum/new', form => { post => $text5 } )
   ->status_is(302)

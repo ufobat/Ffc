@@ -9,10 +9,7 @@
 % }
   </head>
   <body>
-    <!-- Angemeldet als "<%= session()->{user} %>" !-->
-% if ( session()->{user} ) {
 %= include 'parts/menu'
-% }
 %= include 'parts/error'
 %= include 'parts/info'
 %= content
