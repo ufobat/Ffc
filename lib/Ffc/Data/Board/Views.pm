@@ -274,7 +274,7 @@ EOSQL
     return [ map { my $d = $_;
             $d = {
                 text         => Ffc::Data::Formats::format_text($d->[1], $c),
-                start        => Ffc::Data::Formats::format_text(do {(split /\n/, $d->[1])[0] // ''}, $c),
+                #start        => Ffc::Data::Formats::format_text((split /\n/, $d->[1])[0] // '', $c),
                 raw          => $d->[1],
                 active       => 0,
                 avatar       => $d->[11] ? $d->[6] : '',
@@ -305,6 +305,7 @@ EOSQL
                       : ( $_->[0] => undef ) }
                       ([from => 5,6,7], [to => 8,9,10]) ),
             };
+            $d->{start} = (split /\n/, $d->{text}, 1)[0] // '';
             $d->{uploadable} = 0 
                 if      $d->{to} 
                     and $d->{to}->{id} 

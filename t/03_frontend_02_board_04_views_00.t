@@ -72,7 +72,7 @@ sub generate_testcases {
             push @testposts, map { [ $u => undef, $cat, 'forum' ] } 1 .. 5;
         }
     }
-    unshift @$_, Test::General::test_r() for @testposts;    # text
+    unshift @$_, join "\n", map { Test::General::test_r()} 1 .. 3 for @testposts;    # text
 }
 
 sub insert_tests {
@@ -230,7 +230,9 @@ sub check_pages {
             $t->content_like(qr(<span class="actpage">\[$page\]</span>));
         }
         for my $test (@tests) {
-            $t->content_like(qr(<p>$test->[0]</p>));
+            my $txt = $test->[0];
+            $txt    =~ s~\n+~</p\\>\\n\\s*<p>~gxmso;
+            $t->content_like(qr(<p>$txt</p>));
             my $url_attacheicon =
               $t->app->url_for("/themes/$Ffc::Data::Theme/img/icons/attache.png");
             my $url_editicon =
@@ -271,9 +273,11 @@ qr~,\s*<a href="$url_msg"\s*title="Dem Benutzer &quot;$msguser&quot; eine privat
                     }
                     else { '' }
                 };
-                my $start     = qr(<h2>\s*$avatar);
-                my $middle    = qr(<span class="titleinfo">);
-                my $end       = qr(</span>:\s*</h2>\s*<p>$test->[0]</p>);
+                my $start  = qr(<h2>\s*$avatar);
+                my $middle = qr(<span class="titleinfo">);
+                my $txt    = $test->[0];
+                $txt       =~ s~\n+~</p\\>\\n\\s*<p>~gxmso;
+                my $end    = qr(</span>:\s*</h2>\s*<p>$txt</p>);
 
                 if ( $act eq 'notes' ) {
                     $t->content_like(
@@ -309,7 +313,7 @@ qr~$start\s*$users{$test->[1]}->{name}\s*$middle\(\s*\s*$timestampre\s*$msglink\
             else {
                 note('testing that there are no buttons at post');
                 $t->content_like(
-qr~<h2>\s*<span class="inactive">$users{$test->[1]}->{name}</span>\s*<span class="titleinfo">\(\s*$timestampre\s*\)</span>:\s*</h2>\s*<p>$test->[0]</p>~
+qr~<h2>\s*<span class="inactive">$users{$test->[1]}->{name}</span>\s*<span class="titleinfo">\(\s*$timestampre\s*\)</span>:\s*</h2>\s*<p>$txt</p>~
                 );
             }
         }
