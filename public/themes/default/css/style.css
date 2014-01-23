@@ -162,7 +162,7 @@ img.smiley, img.icon {
 }
 @media screen {
     .postbox {
-        box-shadow: 0 .1em .2em darkgray;
+        box-shadow: 0 0 .2em darkgray;
     }
 }
 .menu .active:hover {
@@ -173,7 +173,7 @@ img.smiley, img.icon {
 }
 @media screen {
     .newpost {
-        box-shadow: 0 .1em .2em palevioletred;
+        box-shadow: 0 0 .2em palevioletred;
     }
 }
 .headbox .active {
