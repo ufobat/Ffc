@@ -73,7 +73,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
                 $dat,
                 $name.' "' . ( $dat // '<undef>' ) . '"ok in database' );
         };
-        $check_thing->(undef);
+        $check_thing->($default ? undef : $default);
         for my $dat (@{$things}[0 .. $#$things]) {
             $t->post_ok( qq'/options/${thing}_save', form => { $thing => $dat } )
               ->status_is(200);
