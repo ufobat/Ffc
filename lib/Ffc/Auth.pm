@@ -46,7 +46,7 @@ sub check_login {
     if ( my $s = $self->session ) {
         if ( $s->{user} ) {
             $self->session( expiration => $Ffc::Data::SessionTimeout );
-            return 1 if $s->{user};
+            return 1;
         }
     }
     return 0;
