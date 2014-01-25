@@ -14,7 +14,7 @@ use Ffc::Data::Auth;
 use Ffc::Data::General;
 srand;
 
-use Test::More tests => 121;
+use Test::More tests => 170;
 
 Test::General::test_prepare();
 
@@ -216,20 +216,28 @@ use_ok('Ffc::Data::Board::OptionsUser');
         }
     }
 }
-{
-    note('sub update_theme( $sessionhash, $themename )');
-    my @Themes = @{ Ffc::Data::General::get_themes() };
+
+update_something( 'theme',   Ffc::Data::General::get_themes(), 'Themenname', 'Thema', 1 );
+update_something( 'bgcolor', \@Ffc::Data::Colors, 'Farbname', 'Farbe', 0 );
+
+sub update_something {
+    my $thing  = shift;
+    my $data   = shift;
+    my $ename  = shift;
+    my $name   = shift;
+    my $wempty = shift;
+    note(qq'sub update_$thing( \$sessionhash, \$themename )');
     {
         my $user     = Test::General::test_get_rand_user();
         my $username = $user->{name};
         my $c        = Mock::Controller->new();
-        my $theme    = $Themes[ int rand scalar @Themes ];
-        my $illegal_theme = Test::General::test_r();
-        $illegal_theme = Test::General::test_r()
-          while grep /$illegal_theme/, @Themes;
+        my $dat      = $data->[ int rand scalar @$data ];
+        my $illegal_data = Test::General::test_r();
+        $illegal_data = Test::General::test_r()
+          while grep m/$illegal_data/xmsio, @$data;
         $c->session()->{user} = $username;
         check_call(
-            \&Ffc::Data::Board::OptionsUser::update_theme,
+            \&{"Ffc::Data::Board::OptionsUser::update_$thing"},
             update_theme => {
                 name => 'session hash',
                 good => $c->session,
@@ -248,15 +256,18 @@ use_ok('Ffc::Data::Board::OptionsUser');
                 emptyerror => 'Session-Hash als erster Parameter benötigt',
             },
             {
-                name     => 'theme name',
-                good     => $theme,
-                bad      => [ '', 'a' x 66, $illegal_theme ],
+                name     => qq'$thing name',
+                good     => $dat,
+                bad      => [ ( $wempty ? '' : () ), 'a' x 66, $illegal_data ],
                 errormsg => [
-                    'Themenname nicht angegeben',
-                    'Themenname zu lang',
-                    'Thema ungültig'
+                    ( $wempty ? qq'$ename nicht angegeben' : () ),
+                    qq'$ename zu lang',
+                    qq'$name ungültig'
                 ],
-                emptyerror => 'Themenname nicht angegeben',
+                ( $wempty
+                    ? ( emptyerror   => qq'$ename nicht angegeben' )
+                    : ( noemptycheck => 1 )
+                ),
             },
         );
     }
@@ -267,30 +278,33 @@ use_ok('Ffc::Data::Board::OptionsUser');
         $c->session()->{user} = $username;
         my $get_value = sub {
             Ffc::Data::dbh()->selectrow_arrayref(
-                'SELECT theme FROM ' . $Ffc::Data::Prefix . 'users WHERE name=?',
+                qq'SELECT $thing FROM ${Ffc::Data::Prefix}users WHERE name=?',
                 undef, $username
             )->[0];
         };
-        my $theme = $get_value->();
-        $theme = '' unless defined $theme;
+        my $setdat = $get_value->();
+        $setdat = '' unless defined $setdat;
         for my $i ( 0 .. 9 ) {
-            my $new_theme = '';
-            $new_theme =
-              $Themes[ int rand scalar @Themes ]
-              while !$new_theme
-              or $new_theme eq $theme;
-            isnt( $theme, $new_theme,
-                qq(changing theme from "$theme" to "$new_theme") );
-            ok(
-                Ffc::Data::Board::OptionsUser::update_theme(
-                    $c->session(), $new_theme
-                ),
-                'called ok'
-            );
+            my $new_setdat = '';
+            $new_setdat =
+              $data->[ int rand scalar @$data ]
+              while !$new_setdat
+              or $new_setdat eq $setdat;
+            isnt( $setdat, $new_setdat,
+                qq(changing setdat from "$setdat" to "$new_setdat") );
+            { 
+                no strict qw(refs);
+                ok(
+                    &{"Ffc::Data::Board::OptionsUser::update_$thing"}(
+                        $c->session(), $new_setdat
+                    ),
+                    'called ok'
+                );
+            }
             my $new_value = $get_value->();
-            isnt( $theme, $new_value, 'old value does not work anymore' );
-            is($new_value, $new_theme, 'value has been changed' );
-            $theme = $new_theme;
+            isnt( $setdat, $new_value, 'old value does not work anymore' );
+            is($new_value, $new_setdat, 'value has been changed' );
+            $setdat = $new_setdat;
         }
     }
 

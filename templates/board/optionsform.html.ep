@@ -37,6 +37,17 @@
 </div> 
 % }
 <div class="postbox options">
+    <h2>Einstellungen zur Hintergrundfarbe des Forums</h2>
+%= form_for options_bgcolor_save => ( method => 'POST' ) => begin 
+    Hintergrundfarbe (funktioniert nicht bei allen Anzeigethemas):
+% for my $c ( @Ffc::Data::Colors ) {
+    <span style="background: <%= $c %>" title="<%= $c %>"><input type="radio" name="bgcolor" value="<%= $c %>"<%== lc(session()->{bgcolor}) eq lc($c) ? ' checked="checked"' : '' %> /></span>
+% }
+    <p><input type="radio" name="bgcolor" value=""<%= session()->{bgcolor} ? '' : ' checked="checked"' %> /> Voreinstellung für das Forum verwenden</p>
+    <button type="submit" class="linkalike">Hintergrundfarbe speichern</button>
+% end
+</div> 
+<div class="postbox options">
     <h2>Benutzeravatar verwalten</h2>
     <p><img src="<%= url_for show_avatar => username => session()->{user} %>" alt="Avatarbild des Benutzers &quot;<%= session()->{user} %>&quot;" %></p>
 %= form_for options_avatar_save => ( method => 'POST', enctype => 'multipart/form-data' ) => begin 

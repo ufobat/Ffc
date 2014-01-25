@@ -71,7 +71,7 @@ ok( Ffc::Data::set_config($app), 'config set returned true' );
             theme           => 'Theme',
             favicon         => 'Favicon',
             mode            => 'Mode',
-            backgroundcolor => 'BackgroundColor',
+            backgroundcolor => 'BgColor',
         );
         while ( my ( $k, $v ) = each %order ) {
             no strict 'refs';

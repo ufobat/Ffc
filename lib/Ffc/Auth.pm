@@ -68,6 +68,7 @@ sub _get_relevant_data {
         admin       => $data[2],
         show_images => $data[3],
         theme       => $data[4] // $Ffc::Data::Theme,
+        bgcolor     => $data[6] || $Ffc::Data::BgColor // '',
         act         => 'forum',
         query       => '',
         category    => undef,

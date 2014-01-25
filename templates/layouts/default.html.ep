@@ -4,8 +4,8 @@
     <title><%= $Ffc::Data::Title %> (<%= $newpostcount %>/<%= $newmsgscount %>) - <%= acttitle() %></title>
     <%= stylesheet '/'.$Ffc::Data::Themedir.'/'.session()->{theme}.'/css/style.css' %>
     <link rel="icon" type="image/ico" href="<%= $Ffc::Data::Favicon || url_for '/'.$Ffc::Data::Themedir.'/'.session()->{theme}.'/img/favicon.png' %>" />
-% if ( $Ffc::Data::BackgroundColor ) {
-    <style type="text/css">body { background-color: <%= $Ffc::Data::BackgroundColor %> }</style>
+% if ( session()->{bgcolor} ) {
+    <style type="text/css">body { background-color: <%= session()->{bgcolor} %> }</style>
 % }
   </head>
   <body>

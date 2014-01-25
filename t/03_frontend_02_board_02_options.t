@@ -14,7 +14,7 @@ use Mock::Testuser;
 use Ffc::Data::General;
 use Ffc::Data::Board::Views;
 
-use Test::More tests => 767;
+use Test::More tests => 2042;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 
@@ -50,46 +50,61 @@ my $t = Test::General::test_prepare_frontend('Ffc');
             is( $reta->[0]->[0], $cv, 'got the right thing from checking' );
         }
     }
-    {
-        note('testing theme choice');
-        my $check_theme = sub {
-            my $theme = shift;
+    test_update_something('theme', 'Thema', '%s/css/style.css', Ffc::Data::General::get_themes(), 'default', 'Thema' );
+    test_update_something('bgcolor', 'Hintergrundfarbe', 'background-color: %s', \@Ffc::Data::Colors, '', 'Farbe' );
+    sub test_update_something {
+        my $thing   = shift;
+        my $name    = shift;
+        my $teststr = shift;
+        my $things  = shift;
+        my $default = shift;
+        my $illname = shift;
+        note(qq'testing $thing choice');
+        my $check_thing = sub {
+            my $dat = shift;
             my $reta  = Ffc::Data::dbh()->selectall_arrayref(
-                'SELECT theme FROM '
-                  . $Ffc::Data::Prefix
-                  . 'users WHERE name=?',
+                qq'SELECT $thing FROM '
+                .$Ffc::Data::Prefix
+                .'users WHERE name=?',
                 undef, $user->{name}
             );
             ok( @$reta, 'got something from checking' );
             is( $reta->[0]->[0],
-                $theme,
-                'theme "' . ( $theme // '<undef>' ) . '"ok in database' );
+                $dat,
+                $name.' "' . ( $dat // '<undef>' ) . '"ok in database' );
         };
-        $check_theme->(undef);
-        my @Themes = @{ Ffc::Data::General::get_themes() };
-        for my $theme (@Themes[0,1]) {
-            $t->post_ok( '/options/theme_save', form => { theme => $theme } )
+        $check_thing->(undef);
+        for my $dat (@{$things}[0 .. $#$things]) {
+            $t->post_ok( qq'/options/${thing}_save', form => { $thing => $dat } )
               ->status_is(200);
             $t->content_like(qr{Einstellungen});
-            $t->content_like(qr{Thema geändert});
-            $t->content_like(qr($theme/css/style.css));
-            $t->get_ok('/')->content_like(qr($theme/css/style.css));
-            $check_theme->($theme);
+            $t->content_like(qr{$name geändert});
+            my $test = sprintf $teststr, $dat;
+            if ( $default or $dat ) {
+                $t->content_like(qr($test));
+                $t->get_ok('/')->content_like(qr($test));
+            }
+            else {
+                $t->content_unlike(qr($test));
+                $t->get_ok('/')->content_unlike(qr($test));
+            }
+            $check_thing->($dat);
         }
         {
-            my $theme = $Themes[0];
-            $t->post_ok( '/options/theme_save', form => { theme => $theme } )
+            my $dat = $things->[0];
+            $t->post_ok( qq'/options/${thing}_save', form => { $thing => $dat } )
               ->status_is(200)->content_like(qr{Einstellungen});
-            $check_theme->($theme);
+            $check_thing->($dat);
             {
-                my $newtheme = '';
-                $newtheme = Test::General::test_r()
-                  while !$newtheme
-                  or grep { $newtheme eq $_ } @Themes;
-                $t->post_ok( '/options/theme_save', form => { theme => $newtheme } )
-                  ->status_is(500)->content_like(qr{Thema ungültig});
-                $t->get_ok('/')->status_is(200)->content_like(qr($theme/css/style.css));
-                $check_theme->($theme);
+                my $newthing = '';
+                $newthing = Test::General::test_r()
+                  while !$newthing
+                  or grep { lc($newthing) eq lc($_) } @$things;
+                $t->post_ok( qq'/options/${thing}_save', form => { $thing => $newthing } )
+                  ->status_is(500)->content_like(qr{$illname ungültig});
+                my $test = sprintf $teststr, $dat;
+                $t->get_ok('/')->status_is(200)->content_like(qr($test));
+                $check_thing->($dat);
             }
         }
     }

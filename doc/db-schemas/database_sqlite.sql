@@ -11,6 +11,7 @@ CREATE TABLE "${Prefix}users" (
   "show_images" tiniint(1) NOT NULL DEFAULT '1',
   "theme" varchar(64),
   "avatar" varchar(128),
+  "bgcolor" varchar(24),
   UNIQUE ("name")
 );
 

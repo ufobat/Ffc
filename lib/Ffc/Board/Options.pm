@@ -67,6 +67,18 @@ sub options_password_save {
     $c->options_form();
 }
 
+sub options_bgcolor_save {
+    my $c     = shift;
+    my $color = $c->param('bgcolor');
+
+    $c->error_handling({
+        code => sub { Ffc::Data::Board::OptionsUser::update_bgcolor( $c->session, $color ) },
+        after_ok => sub { $c->info_stash('Hintergrundfarbe geändert') },
+        msg => 'Die Hintergrundfarbe konnte nicht geändert werden, vielleicht ist es eine ungültige oder nicht verfügbare Farbe',
+    });
+    $c->options_form();
+}
+
 sub options_theme_save {
     my $c     = shift;
     my $theme = $c->param('theme');

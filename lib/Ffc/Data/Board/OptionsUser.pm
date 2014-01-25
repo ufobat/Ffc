@@ -46,6 +46,21 @@ sub update_show_images {
     return 1;
 }
 
+sub update_bgcolor {
+    my $s = shift;
+    croak q(Session-Hash als erster Parameter benötigt) unless $s and 'HASH' eq ref $s;
+    my $uid = _get_userid( $s->{user}, 'Angemeldeter Benutzer für croak Hintergrundfarb-Einstellung' );
+    my $c = shift() // '';
+    croak q{Farbname zu lang (24 Zeichen maximal)} if 24 < length $c;
+    if ( $c ) {
+        croak qq{Farbe ungültig: $c} unless grep m/$c/xmsi, @Ffc::Data::Colors; 
+    }
+    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET bgcolor=? WHERE id=?';
+    Ffc::Data::dbh()->do($sql, undef, $c, $uid);
+    $s->{bgcolor} = $c || $Ffc::Data::BgColor // '';
+    return 1;
+}
+
 sub update_theme {
     my $s = shift;
     croak q(Session-Hash als erster Parameter benötigt) unless $s and 'HASH' eq ref $s;
@@ -53,10 +68,10 @@ sub update_theme {
     my $t = shift;
     croak q{Themenname nicht angegeben} unless $t;
     croak q{Themenname zu lang (64 Zeichen maximal)} if 64 < length $t;
-    croak qq{Thema ungültig: $t} unless grep /$t/, @{Ffc::Data::General::get_themes()}; 
-    $s->{theme} = $t;
+    croak qq{Thema ungültig: $t} unless grep m/$t/xms, @{Ffc::Data::General::get_themes()}; 
     my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET theme=? WHERE id=?';
     Ffc::Data::dbh()->do($sql, undef, $t, $userid);
+    $s->{theme} = $t;
     return 1;
 }
 
