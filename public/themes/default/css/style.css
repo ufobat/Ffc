@@ -169,7 +169,7 @@ img.smiley, img.icon {
 }
 @media screen {
     .postbox {
-        box-shadow: 0 0 .25em dimgray;
+        box-shadow: 0 0 .25em darkgray;
     }
 }
 .menu .active:hover {
