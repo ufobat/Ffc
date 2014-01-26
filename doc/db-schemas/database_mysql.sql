@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS `${Prefix}users` (
   `theme` varchar(64) DEFAULT NULL,
   `avatar` varchar(128) NOT NULL,
   `bgcolor` varchar(24) DEFAULT '',
+  `fontsize` integer DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=149 ;

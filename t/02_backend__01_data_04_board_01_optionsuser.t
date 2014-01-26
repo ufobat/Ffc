@@ -14,7 +14,7 @@ use Ffc::Data::Auth;
 use Ffc::Data::General;
 srand;
 
-use Test::More tests => 170;
+use Test::More tests => 221;
 
 Test::General::test_prepare();
 
@@ -217,8 +217,10 @@ use_ok('Ffc::Data::Board::OptionsUser');
     }
 }
 
-update_something( 'theme',   Ffc::Data::General::get_themes(), 'Themenname', 'Thema', 1 );
-update_something( 'bgcolor', \@Ffc::Data::Colors, 'Farbname', 'Farbe', 0 );
+my @fontsizes = keys %Ffc::Data::FontSizeMap;
+update_something( 'fontsize', \@fontsizes,                      'Schriftgröße', 'Schriftgröße', 1, 'Schriftgröße keine Zahl' );
+update_something( 'theme',    Ffc::Data::General::get_themes(), 'Themenname',   'Thema',        1 );
+update_something( 'bgcolor',  \@Ffc::Data::Colors,              'Farbname',     'Farbe',        0 );
 
 sub update_something {
     my $thing  = shift;
@@ -226,6 +228,7 @@ sub update_something {
     my $ename  = shift;
     my $name   = shift;
     my $wempty = shift;
+    my $tlem   = shift;
     note(qq'sub update_$thing( \$sessionhash, \$themename )');
     {
         my $user     = Test::General::test_get_rand_user();
@@ -260,9 +263,8 @@ sub update_something {
                 good     => $dat,
                 bad      => [ ( $wempty ? '' : () ), 'a' x 66, $illegal_data ],
                 errormsg => [
-                    ( $wempty ? qq'$ename nicht angegeben' : () ),
-                    qq'$ename zu lang',
-                    qq'$name ungültig'
+                    ( $wempty ? ( $tlem // qq'$ename nicht angegeben' ) : () ),
+                    ( $tlem // qq'$ename zu lang' ), ( $tlem // qq'$name ungültig' )
                 ],
                 ( $wempty
                     ? ( emptyerror   => qq'$ename nicht angegeben' )

@@ -91,6 +91,18 @@ sub options_theme_save {
     $c->options_form();
 }
 
+sub options_fontsize_save {
+    my $c  = shift;
+    my $fs = $c->param('fontsize');
+Ffc::Data::Board::OptionsUser::update_fontsize( $c->session, $fs );
+    $c->error_handling({
+        code => sub { Ffc::Data::Board::OptionsUser::update_fontsize( $c->session, $fs ) },
+        after_ok => sub { $c->info_stash('Schriftgröße geändert') },
+        msg => 'Die Schriftgröße konnte nicht geändert werden, vielleicht ist es eine ungültige oder nicht verfügbare Schriftgröße',
+    });
+    $c->options_form();
+}
+
 sub options_showimages_save {
     my $c           = shift;
     my $show_images = $c->param('show_images');

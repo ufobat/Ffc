@@ -46,6 +46,20 @@ sub update_show_images {
     return 1;
 }
 
+sub update_fontsize {
+    my $s = shift;
+    croak q(Session-Hash als erster Parameter benötigt) unless $s and 'HASH' eq ref $s;
+    my $uid = _get_userid( $s->{user}, 'Angemeldeter Benutzer für croak Hintergrundfarb-Einstellung' );
+    my $fs = shift;
+    croak q{Schriftgröße nicht angegeben} unless defined $fs;
+    croak q{Schriftgröße keine Zahl} if $fs !~ m/\A\-?\d+\z/xmsio;
+    croak qq{Schriftgröße ungültig} unless grep /$fs/, keys %Ffc::Data::FontSizeMap;
+    my $sql = 'UPDATE '.$Ffc::Data::Prefix.'users SET fontsize=? WHERE id=?';
+    Ffc::Data::dbh()->do($sql, undef, $fs, $uid);
+    $s->{fontsize} = $fs // 0;
+    return 1;
+}
+
 sub update_bgcolor {
     my $s = shift;
     croak q(Session-Hash als erster Parameter benötigt) unless $s and 'HASH' eq ref $s;

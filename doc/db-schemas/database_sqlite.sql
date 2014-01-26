@@ -12,6 +12,7 @@ CREATE TABLE "${Prefix}users" (
   "theme" varchar(64),
   "avatar" varchar(128),
   "bgcolor" varchar(24) DEFAULT '',
+  "fontsize" integer DEFAULT 0,
   UNIQUE ("name")
 );
 

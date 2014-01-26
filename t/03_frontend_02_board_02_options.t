@@ -14,7 +14,7 @@ use Mock::Testuser;
 use Ffc::Data::General;
 use Ffc::Data::Board::Views;
 
-use Test::More tests => 2042;
+use Test::More tests => 2102;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 
@@ -50,8 +50,10 @@ my $t = Test::General::test_prepare_frontend('Ffc');
             is( $reta->[0]->[0], $cv, 'got the right thing from checking' );
         }
     }
-    test_update_something('theme', 'Thema', '%s/css/style.css', Ffc::Data::General::get_themes(), 'default', 'Thema' );
-    test_update_something('bgcolor', 'Hintergrundfarbe', 'background-color: %s', \@Ffc::Data::Colors, '', 'Farbe' );
+    my @fontsizes = keys %Ffc::Data::FontSizeMap;
+    test_update_something('fontsize', 'Schriftgröße', 'font-size: %sem;', \@fontsizes, 0, 'Schriftgröße', 1,\%Ffc::Data::FontSizeMap );
+    test_update_something('theme', 'Thema', '%s/css/style.css', Ffc::Data::General::get_themes(), 'default', 'Thema', 0 );
+    test_update_something('bgcolor', 'Hintergrundfarbe', 'background-color: %s', \@Ffc::Data::Colors, '', 'Farbe', 0 );
     sub test_update_something {
         my $thing   = shift;
         my $name    = shift;
@@ -59,6 +61,8 @@ my $t = Test::General::test_prepare_frontend('Ffc');
         my $things  = shift;
         my $default = shift;
         my $illname = shift;
+        my $get     = shift;
+        my $map     = shift;
         note(qq'testing $thing choice');
         my $check_thing = sub {
             my $dat = shift;
@@ -75,11 +79,16 @@ my $t = Test::General::test_prepare_frontend('Ffc');
         };
         $check_thing->($default ? undef : $default);
         for my $dat (@{$things}[0 .. $#$things]) {
-            $t->post_ok( qq'/options/${thing}_save', form => { $thing => $dat } )
-              ->status_is(200);
+            if ( $get ) {
+                $t->get_ok( qq'/options/${thing}_save/$dat' );
+            }
+            else {
+                $t->post_ok( qq'/options/${thing}_save', form => { $thing => $dat } );
+            }
+            $t->status_is(200);
             $t->content_like(qr{Einstellungen});
             $t->content_like(qr{$name geändert});
-            my $test = sprintf $teststr, $dat;
+            my $test = sprintf $teststr, $map ? $map->{$dat} : $dat;
             if ( $default or $dat ) {
                 $t->content_like(qr($test));
                 $t->get_ok('/')->content_like(qr($test));
@@ -92,17 +101,27 @@ my $t = Test::General::test_prepare_frontend('Ffc');
         }
         {
             my $dat = $things->[0];
-            $t->post_ok( qq'/options/${thing}_save', form => { $thing => $dat } )
-              ->status_is(200)->content_like(qr{Einstellungen});
+            if ( $get ) {
+                $t->get_ok( qq'/options/${thing}_save/$dat' );
+            }
+            else {
+                $t->post_ok( qq'/options/${thing}_save', form => { $thing => $dat } );
+            }
+            $t->status_is(200)->content_like(qr{Einstellungen});
             $check_thing->($dat);
             {
                 my $newthing = '';
-                $newthing = Test::General::test_r()
+                $newthing = 9999 + int rand 9999
                   while !$newthing
                   or grep { lc($newthing) eq lc($_) } @$things;
-                $t->post_ok( qq'/options/${thing}_save', form => { $thing => $newthing } )
-                  ->status_is(500)->content_like(qr{$illname ungültig});
-                my $test = sprintf $teststr, $dat;
+                if ( $get ) {
+                    $t->get_ok( qq'/options/${thing}_save/$newthing' );
+                }
+                else {
+                    $t->post_ok( qq'/options/${thing}_save', form => { $thing => $newthing } );
+                }
+                $t->status_is(500)->content_like(qr{$illname ungültig});
+                my $test = sprintf $teststr, $map ? $map->{$dat} : $dat;
                 $t->get_ok('/')->status_is(200)->content_like(qr($test));
                 $check_thing->($dat);
             }

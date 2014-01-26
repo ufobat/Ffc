@@ -121,6 +121,7 @@ sub startup {
     $options->route('/bgcolor_save')->via('post')->to('board#options_bgcolor_save')->name('options_bgcolor_save');
     $options->route('/avatar_save')->via('post')->to('board#options_avatar_save')->name('options_avatar_save');
     $options->route('/showcat_save')->via('post')->to('board#options_showcat_save')->name('options_showcat_save');
+    $options->route('/fontsize_save/:fontsize', fontsize => qr/\-?\d+/)->to('board#options_fontsize_save')->name('options_fontsize_save');
 
     # admin options
     $options->route('/admin_save')->via('post')->to('board#useradmin_save')->name('useradmin_save');
