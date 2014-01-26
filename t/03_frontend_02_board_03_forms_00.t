@@ -13,7 +13,7 @@ use Test::General;
 use Mock::Testuser;
 use Ffc::Data::Board::Views;
 
-use Test::More tests => 6912;
+use Test::More tests => 3437;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 
@@ -22,7 +22,11 @@ my %usertable = (
     u2 => Mock::Testuser->new_active_user(),
     u3 => Mock::Testuser->new_active_user(),
 );
-my %cats = map { $_->[2] => $_->[0] } @Test::General::Categories;
+
+my $start = int rand $#$Test::General::Categories - 3;
+my @mCategories = @Test::General::Categories[$start .. $start + 3];
+
+my %cats = map { $_->[2] => $_->[0] } @mCategories;
 
 my @testmatrix;
 
@@ -303,7 +307,7 @@ qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*>
     $t->get_ok('/forum')->status_is(200);
     sleep 1.1;
     note('check forum with or without category - new entry between check insert');
-    for my $cat ( ['', '', ''], @Test::General::Categories ) {
+    for my $cat ( ['', '', ''], @mCategories ) {
         my $text1 = Test::General::test_r();
         my $text2 = Test::General::test_r();
         Ffc::Data::Board::Forms::insert_post($u2, $text2, $cat->[2], undef);
@@ -323,7 +327,7 @@ qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*>
           ->content_like(qr~<p>$text1</p>~);
     }
     note('check forum with or without category - new entry between check update');
-    for my $cat ( ['', '', ''], @Test::General::Categories ) {
+    for my $cat ( ['', '', ''], @mCategories ) {
         my $text1 = Test::General::test_r();
         Ffc::Data::Board::Forms::insert_post($u1, $text1, $cat->[2], undef);
         my $id1 = Test::General::test_get_max_postid();

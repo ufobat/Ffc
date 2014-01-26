@@ -13,10 +13,13 @@ use Mock::Testuser;
 use Ffc::Data::Board::Forms;
 srand;
 
-use Test::More tests => 10768;
+use Test::More tests => 3673;
 
 Test::General::test_prepare();
 sub r { &Test::General::test_r }
+
+my $start = int rand $#$Test::General::Categories - 3;
+my @mCategories = @Test::General::Categories[$start .. $start + 3];
 
 sub get_post { &Ffc::Data::Board::Views::get_post };
 
@@ -37,9 +40,9 @@ my @testdata = (
     [ 'u1', undef, undef, 'forum', [ qw(u1 u2 u3) ] ],
     [ 'u2', undef, undef, 'forum', [ qw(u1 u2 u3) ] ],
     [ 'u3', undef, undef, 'forum', [ qw(u1 u2 u3) ] ],
-    map({; [ 'u1', undef, $_->[2], 'forum', [ qw(u1 u2 u3 ) ] ] } @Test::General::Categories ),
-    map({; [ 'u2', undef, $_->[2], 'forum', [ qw(u1 u2 u3 ) ] ] } @Test::General::Categories ),
-    map({; [ 'u3', undef, $_->[2], 'forum', [ qw(u1 u2 u3 ) ] ] } @Test::General::Categories ),
+    map({; [ 'u1', undef, $_->[2], 'forum', [ qw(u1 u2 u3 ) ] ] } @mCategories ),
+    map({; [ 'u2', undef, $_->[2], 'forum', [ qw(u1 u2 u3 ) ] ] } @mCategories ),
+    map({; [ 'u3', undef, $_->[2], 'forum', [ qw(u1 u2 u3 ) ] ] } @mCategories ),
     map({; [ $_, $_, undef, 'notes', [$_] ] } qw(u1 u2 u3)),
     [ 'u1', 'u2', undef, 'msgs', [ qw(u1 u2) ] ],
     [ 'u2', 'u1', undef, 'msgs', [ qw(u1 u2) ] ],
@@ -55,7 +58,7 @@ my @testdata = (
     unshift @$_, $t->() for @testdata;
 }
 
-my @Categories = map { $_->[2] } @Test::General::Categories;
+my @Categories = map { $_->[2] } @mCategories;
 my $controller = Mock::Controller->new();
 
 #note(Dumper \@testdata);

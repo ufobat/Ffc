@@ -14,7 +14,7 @@ use Mock::Testuser;
 use Ffc::Data::General;
 use Ffc::Data::Board::Views;
 
-use Test::More tests => 2102;
+use Test::More tests => 941;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 
@@ -53,7 +53,8 @@ my $t = Test::General::test_prepare_frontend('Ffc');
     my @fontsizes = keys %Ffc::Data::FontSizeMap;
     test_update_something('fontsize', 'Schriftgröße', 'font-size: %sem;', \@fontsizes, 0, 'Schriftgröße', 1,\%Ffc::Data::FontSizeMap );
     test_update_something('theme', 'Thema', '%s/css/style.css', Ffc::Data::General::get_themes(), 'default', 'Thema', 0 );
-    test_update_something('bgcolor', 'Hintergrundfarbe', 'background-color: %s', \@Ffc::Data::Colors, '', 'Farbe', 0 );
+    my $start = int rand $#Ffc::Data::Colors - 10;
+    test_update_something('bgcolor', 'Hintergrundfarbe', 'background-color: %s', [@Ffc::Data::Colors[$start..$start + 10]], '', 'Farbe', 0 );
     sub test_update_something {
         my $thing   = shift;
         my $name    = shift;

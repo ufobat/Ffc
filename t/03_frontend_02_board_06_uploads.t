@@ -15,10 +15,12 @@ use File::Temp;
 use File::Copy;
 srand;
 
-use Test::More tests => 18225;
+use Test::More tests => 9945;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 sub r { &Test::General::test_r }
+my $start = int rand $#$Test::General::Categories - 3;
+my @mCategories = @Test::General::Categories[$start .. $start + 3];
 
 my @users = map { 
     my $u = Mock::Testuser->new_active_user();
@@ -59,7 +61,7 @@ for my $tc (
     note 'Unsichtbar fuer: "' . join('", "', map {$_->{name}} @hidden) . '"' if @hidden;
 
     if ( $is_forum ) {
-        for my $cat ( '', map {$_->[2]} @Test::General::Categories ) {
+        for my $cat ( '', map {$_->[2]} @mCategories ) {
             check_forum($from, $cat, \@users);
         }
     }
