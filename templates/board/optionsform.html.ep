@@ -52,7 +52,7 @@
 <div class="postbox options">
     <h2>Einstellungen zur Hintergrundfarbe des Forums</h2>
 %= form_for options_bgcolor_save => ( method => 'POST' ) => begin 
-    Hintergrundfarbe (funktioniert nicht bei allen Anzeigethemas):
+    Hintergrundfarbe (funktioniert nicht bei allen Anzeigethemen):
 % for my $c ( @Ffc::Data::Colors ) {
     <span style="background: <%= $c %>" title="<%= $c %>"><input type="radio" name="bgcolor" value="<%= $c %>"<%== lc(session()->{bgcolor}) eq lc($c) ? ' checked="checked"' : '' %> /></span>
 % }
