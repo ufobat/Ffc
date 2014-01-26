@@ -5,4 +5,5 @@ Vorraussetzungen
 * Perl (>= 5.12)
 * Mojolicious (>= 1.0)
 * DBI + passenden Treiber für das eigene relationale Datenbankmanagementsystem
+* DBD-Treiber für SQLite -> wird für die Testsuite benötigt
 
