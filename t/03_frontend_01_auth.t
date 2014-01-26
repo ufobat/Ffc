@@ -11,7 +11,7 @@ use Data::Dumper;
 use Test::Mojo;
 use Test::General;
 
-use Test::More tests => 184;
+use Test::More tests => 202;
 
 my $t_notloggedin = sub {
     my $t = shift;
@@ -85,6 +85,47 @@ my $user = Test::General::test_get_rand_user();
     $t->get_ok('/logout')->status_is(200)
        ->content_like(qr{melden Sie sich});
 }
+
+{
+    note('test settings alternation');
+    $t->get_ok('/logout')->status_is(200)
+       ->content_like(qr{melden Sie sich});
+    my $set_settings = sub {
+        my $u = shift;
+        Ffc::Data::dbh()->do('UPDATE '.$Ffc::Data::Prefix
+            .'users SET show_images=?, theme=?, bgcolor=?, fontsize=?'
+            .' WHERE LOWER(name)=LOWER(?)',
+            undef,
+            (
+                $u->{show_images} = 3 + int rand 10,
+                $u->{theme}       = Test::General::test_r(),
+                $u->{bgcolor}     = Test::General::test_r(),
+                $u->{fontsize}    = 3 + int rand 10,
+            ),
+            $u->{name});
+        return 1;
+    };
+    my $check_settings = sub {
+        my $u = shift;
+        $t->get_ok('/settings')
+          ->json_is('/theme',      $u->{theme}     )
+          ->json_is('/bgcolor',    $u->{bgcolor}   )
+          ->json_is('/fontsize',   $u->{fontsize}  )
+          ->json_is('/show_image', $u->{show_image})
+          ->json_is('/admin',      $u->{admin}     )
+        ;
+    };
+
+    $set_settings->($user);
+    $t->post_ok( '/login',
+        form => { user => $user->{name}, pass => $user->{password} } )
+      ->status_is(302)
+      ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
+    $check_settings->($user);
+    $set_settings->($user);
+    $check_settings->($user);
+}
+        
 {
     note('test login with wrong password');
     $t->get_ok('/logout')->status_is(200)

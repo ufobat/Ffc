@@ -15,7 +15,7 @@ use Test::Callcheck;
 use Test::General;
 use Ffc::Data;
 
-use Test::More tests => 212;
+use Test::More tests => 218;
 
 BEGIN { use_ok('Ffc::Data::Auth') }
 
@@ -91,7 +91,22 @@ qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/,
     check_call( \&Ffc::Data::Auth::check_userid_rules,
         check_userid_rules => Mock::Testuser::get_userid_check_hash(), );
 }
-
+sub set_settings {
+    my $u = shift;
+    Ffc::Data::dbh()->do('UPDATE '.$Ffc::Data::Prefix
+        .'users SET show_images=?, theme=?, bgcolor=?, fontsize=?'
+        .' WHERE LOWER(name)=LOWER(?)',
+        undef,
+        (
+            $u->{show_images} = 3 + int rand 10,
+            $u->{theme}       = Test::General::test_r(),
+            $u->{bgcolor}     = Test::General::test_r(),
+            $u->{fontsize}    = 3 + int rand 10,
+        ),
+        $u->{name});
+    return 1;
+}
+        
 {
 
     note('TESTING get_userdata_for_login( $user, $pass )');
@@ -108,14 +123,25 @@ qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/,
         ok( $ok,     'everything is ok with good active user' );
         ok( !$error, 'no error with good active user' );
 
-        # u.id, u.lastseenmsgs, u.admin, u.show_images, u.theme
+        # u.id, u.name
         like( $return->[0], qr/\d+/, 'userid is valid' );
-        ok( $return->[1], 'user was lastseen in msgs' );
-        is( $return->[2], 0, 'user is no admin' );
-        is( $return->[3], 1, 'user wants to see images' );
-        ok( !$return->[4], 'user has not set a theme yet' );
-        is( $return->[5], $activeuser->{name}, 'user name is ok' );
+        is( $return->[1], $activeuser->{name}, 'user name is ok' );
         $activeuser->{id} = $return->[0];
+
+        set_settings( $activeuser );
+
+        ( $ok, $return, $error ) =
+          just_call( \&Ffc::Data::Auth::get_usersettings,
+            lc($activeuser->{name}) );
+        ok( $ok,     'everything is ok with good active user' );
+        ok( !$error, 'no error with good active user' );
+
+        # u.admin, u.show_images, u.theme, u.bgcolor, u.fontsize
+        ok(!$return->[0], 'normal user is no admin');
+        is($return->[1], $activeuser->{show_images}, 'normal user wants to see images');
+        is($return->[2], $activeuser->{theme},       'normal user has the correct theme set');
+        is($return->[3], $activeuser->{bgcolor},     'normal user has the correct background color');
+        is($return->[4], $activeuser->{fontsize},    'normal user hsa the correct font size');
     }
     {
         my ( $ok, $return, $error ) =
@@ -124,14 +150,25 @@ qr/Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv/,
         ok( $ok,     'everything is ok with good active admin' );
         ok( !$error, 'no error with good active admin' );
 
-        # u.id, u.lastseenmsgs, u.admin, u.show_images, u.theme
+        # u.id, u.name
         like( $return->[0], qr/\d+/, 'adminid is valid' );
-        ok( $return->[1], 'admin was lastseen in msgs' );
-        is( $return->[2], 1, 'admin is no admin' );
-        is( $return->[3], 1, 'admin wants to see images' );
-        ok( !$return->[4], 'admin has not set a theme yet' );
-        is( $return->[5], $activeadmin->{name}, 'admin name is ok' );
+        is( $return->[1], $activeadmin->{name}, 'admin name is ok' );
         $activeadmin->{id} = $return->[0];
+
+        set_settings( $activeadmin );
+
+        ( $ok, $return, $error ) =
+          just_call( \&Ffc::Data::Auth::get_usersettings,
+            lc($activeadmin->{name}) );
+        ok( $ok,     'everything is ok with good active user' );
+        ok( !$error, 'no error with good active user' );
+
+        # u.admin, u.show_images, u.theme, u.bgcolor, u.fontsize
+        ok($return->[0], 'admin user is admin');
+        is($return->[1], $activeadmin->{show_images}, 'admin user wants to see images');
+        is($return->[2], $activeadmin->{theme},       'admin user has the correct theme set');
+        is($return->[3], $activeadmin->{bgcolor},     'admin user has the correct background color');
+        is($return->[4], $activeadmin->{fontsize},    'admin user hsa the correct font size');
     }
     _run_failures( \&Ffc::Data::Auth::get_userdata_for_login,
         [qw(name password)] );

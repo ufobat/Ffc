@@ -46,10 +46,25 @@ sub check_login {
     if ( my $s = $self->session ) {
         if ( $s->{user} ) {
             $self->session( expiration => $Ffc::Data::SessionTimeout );
-            return 1;
+            return _set_settings($self) ? 1 : 0;
         }
     }
     return 0;
+}
+
+sub _set_settings {
+    my $self = shift;
+    my $s    = $self->session();
+    my $user = $s->{user};
+    my @settings = Ffc::Data::Auth::get_usersettings( $user );
+    Ffc::Errors::handle( $self, sub { @settings = Ffc::Data::Auth::get_usersettings( $user ) }, 'Benutzereinstellungen konnten nicht ermittelt werden, bitte melden Sie sich erneut an.' );
+    return 0 unless @settings;
+    $s->{admin}       = $settings[0],
+    $s->{show_images} = $settings[1],
+    $s->{theme}       = $settings[2] || $Ffc::Data::Theme,
+    $s->{bgcolor}     = $settings[3] || $Ffc::Data::BgColor // '',
+    $s->{fontsize}    = $settings[4],
+    return 1;
 }
 
 sub _get_relevant_data {
@@ -63,19 +78,18 @@ sub _get_relevant_data {
     $self->stash( error => '' );
     %$session = (
         %$session,
-        user        => $data[5],
-        lastseen    => $data[1],
-        admin       => $data[2],
-        show_images => $data[3],
-        theme       => $data[4] // $Ffc::Data::Theme,
-        bgcolor     => $data[6] || $Ffc::Data::BgColor // '',
-        fontsize    => $data[7],
+        user        => $data[1],
         act         => 'forum',
         query       => '',
         category    => undef,
     );
+    return $self->_set_settings() ? 1 : 0;
+}
 
-    return 1;
+sub settings {
+    my $c = shift;
+    my $s = $c->session();
+    $c->render( json => { map { $_ => $s->{$_} } qw(admin show_images theme bgcolor fontsize) });
 }
 
 1;

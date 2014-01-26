@@ -38,11 +38,19 @@ sub check_password {
     return (Ffc::Data::dbh()->selectrow_array( $sql, undef, $userid, crypt($pass, Ffc::Data::cryptsalt())))[0];
 }
 
+sub get_usersettings {
+    my $user = shift;
+    check_username_rules($user);
+    my $sql = 'SELECT u.admin, u.show_images, u.theme, u.bgcolor, u.fontsize FROM '.$Ffc::Data::Prefix.'users u WHERE UPPER(u.name)=UPPER(?)';
+    my $data = Ffc::Data::dbh()->selectall_arrayref( $sql, undef, $user );
+    croak qq{Benutzereinstellungen konnten nicht ermittelt werden} unless @$data;
+    return @{$data->[0]}
+}
 sub get_userdata_for_login { # for login only
     my ( $user, $pass ) = @_;
     check_username_rules($user);
     check_password_rules($pass);
-    my $sql = 'SELECT u.id, u.lastseenmsgs, u.admin, u.show_images, u.theme, u.name, u.bgcolor, u.fontsize FROM '.$Ffc::Data::Prefix.'users u WHERE UPPER(u.name)=UPPER(?) AND u.password=? AND u.active=1';
+    my $sql = 'SELECT u.id, u.name FROM '.$Ffc::Data::Prefix.'users u WHERE UPPER(u.name)=UPPER(?) AND u.password=? AND u.active=1';
     my $data = Ffc::Data::dbh()->selectall_arrayref( $sql, undef, $user, crypt($pass, Ffc::Data::cryptsalt()));
     croak qq{Benutzer oder Passwort passen nicht oder der Benutzer ist inaktiv} unless @$data;
     return @{$data->[0]};
