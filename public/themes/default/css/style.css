@@ -9,6 +9,7 @@ body {
     body {
         background: url('../img/hg.png') no-repeat top center fixed gainsboro;
         max-width: 48em;
+        min-width: 768px;
     }
 }
 body > div {
