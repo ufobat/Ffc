@@ -31,7 +31,7 @@
     session()->{fontsize}
         ? $Ffc::Data::FontSizeMap{$fs} / $Ffc::Data::FontSizeMap{session()->{fontsize}}
         : $Ffc::Data::FontSizeMap{$fs}
-    %>em"<% } %>><% if ( $fs < -1 ) { %>-<% } %><% if ( $fs < 0 ) { %>-<% } %><% if ( $fs > 0 ) { %>+<% } %><% if ( $fs > 1 ) { %>+<% } %>A</a> 
+    %>em"<% } %>><%= $fs < 0 ? '-' x ( 0 - $fs ) : '+' x $fs %>A</a>
 % }
     </p>
 </div>
