@@ -65,13 +65,19 @@ sub format_text {
     $s =~ s/\s+\z//gxmso;
     return '' unless $s;
     _xml_escape($s);
-    $s =~ s{(\A|\s)"(\S.*?\S|\S)"(\W|\z)}{$1„<span class="quote">$2</span>“$3}gxom;
+    $s =~ s{(\A|\s)"(\S|\S.*?\S)"(\W|\z)}{_make_quote($1, $2, $3)}gxomes;
     $s =~ s{(?<!\S)(\@)?$u}{_make_username_mark($u, $1)}xgmsieo if $u;
     $s =~ s{(?<!\w)([\_\-\+\~\!\*])([\_\-\+\~\!\w\*]+)\g1(?!\w)}{_make_goody($1,$2)}gxmoes;
     $s =~ s{((?:[\(\s]|\A)?)(https?://[^\)\s]+?)(\)|,?\s|\z)}{_make_link($1,$2,$3,$c)}gxmeois;
     $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxeos;
     $s =~ s{\n[\n\s]*}{</p>\n<p>}xgmos;
     return "<p>$s</p>";
+}
+
+sub _make_quote {
+    my ( $p, $q, $f ) = @_;
+    $q =~ s{\n+}{</span>\n<span class="quote">}gxmso;
+    return qq($p„<span class="quote">$q</span>“$f);
 }
 
 sub _make_username_mark {

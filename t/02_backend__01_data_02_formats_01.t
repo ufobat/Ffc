@@ -9,11 +9,25 @@ use Mock::Controller;
 use Test::Callcheck;
 srand;
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 use_ok('Ffc::Data::Formats');
-
 my $c = Mock::Controller->new();
+
+{
+    my $src = 'Und "Da kommt
+ein mehrzeiliges
+
+Zitat"! ... Haha!';
+
+    my $expected = '<p>Und „<span class="quote">Da kommt</span></p>
+<p><span class="quote">ein mehrzeiliges</span></p>
+<p><span class="quote">Zitat</span>“! ... Haha!</p>';
+
+    my $got = Ffc::Data::Formats::format_text( $src, $c );
+
+    is $got, $expected, 'multiline quotes work';
+}
 
 {
     my $teststring = q~
@@ -30,10 +44,9 @@ https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&x=ypsilon
 <p>Mein 11" „<span class="quote">Notebook</span>“ ist toll! oder nicht?</p>
 <p>„<span class="quote">a</span>“</p>
 <p>Mein „<span class="quote">11</span>“ Notebook" ist tool! oder doch?</p>
-<p>"Halli</p>
-<p>Galli"</p>
+<p>„<span class="quote">Halli</span></p>
+<p><span class="quote">Galli</span>“</p>
 <p><a href="https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&amp;x=ypsilon" title="Externe Webseite: https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&amp;amp;x=ypsilon" target="_blank">https://abcde.f…p;amp;x=ypsilon</a></p>~;
 
-    is(Ffc::Data::Formats::format_text($teststring, $c), $controlstring);
+    is(Ffc::Data::Formats::format_text($teststring, $c), $controlstring, 'complicated multiline string works as well');
 }
-
