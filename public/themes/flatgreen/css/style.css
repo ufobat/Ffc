@@ -18,6 +18,7 @@ body {
 }
 .postbox {
     border-top: none;
+    padding-bottom: 0;
 }
 
 .postbox h2 {
