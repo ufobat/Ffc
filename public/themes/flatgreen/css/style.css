@@ -38,6 +38,7 @@ a, .linkalike, a:hover, .linkalike:hover, a:focus, .linkalike:focus {
 
 input, textarea {
     box-shadow: none;
+    color: dimgray;
 }
 input:hover, textarea:hover, select:hover {
     border-color: green;
