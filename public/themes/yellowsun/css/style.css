@@ -59,3 +59,7 @@ body {
     border: 2px white solid;
     box-shadow: 0 0 2px gray;
 }
+.postbox img.smiley {
+    border: none;
+    box-shadow: none;
+}
