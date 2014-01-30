@@ -40,11 +40,13 @@ our $Debug = 0;
 our $SessionTimeout;
 our $URLShorten = 30;
 our $Theme;
+our $FixTheme = 0;
 our $Testing = 0;
 our $RefreshInterval = 10 * 60 * 1000;
 our $Footerlinks = [];
 our $CommonCatTitle = 'Allgemeine Beiträge';
 our $BgColor;
+our $FixBgColor = 0;
 our $Mode = 'development';
 our $Favicon;
 our @Colors = qw(Maroon DarkRed FireBrick Red Salmon Tomato Coral OrangeRed Chocolate SandyBrown DarkOrange Orange DarkGoldenrod Goldenrod Gold Olive Yellow YellowGreen GreenYellow Chartreuse LawnGreen Green Lime LimeGreen SpringGreen MediumSpringGreen Turquoise LightSeaGreen MediumTurquoise Teal DarkCyan Aqua Cyan DarkTurquoise DeepSkyBlue DodgerBlue RoyalBlue Navy DarkBlue MediumBlue Blue BlueViolet DarkOrchid DarkViolet Purple DarkMagenta Fuchsia Magenta MediumVioletRed DeepPink HotPink Crimson Brown IndianRed RosyBrown LightCoral Snow MistyRose DarkSalmon LightSalmon Sienna SeaShell SaddleBrown Peachpuff Peru Linen Bisque Burlywood Tan AntiqueWhite NavajoWhite BlanchedAlmond PapayaWhip Moccasin Wheat Oldlace FloralWhite Cornsilk Khaki LemonChiffon PaleGoldenrod DarkKhaki Beige LightGoldenrodYellow LightYellow Ivory OliveDrab DarkOliveGreen DarkSeaGreen DarkGreen ForestGreen LightGreen PaleGreen Honeydew SeaGreen MediumSeaGreen Mintcream MediumAquamarine Aquamarine DarkSlateGray PaleTurquoise LightCyan Azure CadetBlue PowderBlue LightBlue SkyBlue LightskyBlue SteelBlue AliceBlue SlateGray LightSlateGray LightsteelBlue CornflowerBlue Lavender GhostWhite MidnightBlue SlateBlue DarkSlateBlue MediumSlateBlue MediumPurple Indigo MediumOrchid Plum Violet Thistle Orchid LavenderBlush PaleVioletRed Pink LightPink Black DimGray Gray DarkGray Silver LightGray Gainsboro WhiteSmoke White); 
@@ -72,9 +74,11 @@ our $DefaultConfig = {
     "sessiontimeout"  => 3600,
     "refreshinterval" => 5,
     "debug"           => 1,
-    "theme"           => "default",
+    "theme"           => '',
+    "fixtheme"        => '0',
     "commoncattitle"  => 'Allgemeine Beiträge',
     "backgroundcolor" => '',
+    "fixbackgroundcolor" => '0',
     "mode"            => 'development',
     "acttitles"       => {
         "forum"   => 'Forum',
@@ -112,8 +116,8 @@ our $DefaultConfig = {
         $app->sessions->secure($Testing ? 1 : 0);
         $cryptsalt = delete $config->{cryptsalt};
 
-        ( $Limit, $Pagelinkpreview, $Title, $SessionTimeout, $Theme, $Debug, $Prefix )
-          = @{ $config }{qw(postlimit pagelinkpreview title sessiontimeout theme debug dbprefix)};
+        ( $Limit, $Pagelinkpreview, $Title, $SessionTimeout, $Theme, $Debug, $Prefix, $FixBgColor, $FixTheme )
+          = @{ $config }{qw(postlimit pagelinkpreview title sessiontimeout theme debug dbprefix fixbackgroundcolor fixtheme)};
         croak q(Prefix invalid, needs to be something like /\\w{0,10}/)
           unless $Prefix =~ m/\A\w{0,10}/xms;
         $BgColor         = $config->{backgroundcolor} if exists $config->{backgroundcolor};

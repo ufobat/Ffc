@@ -15,12 +15,12 @@ use File::Temp;
 use File::Copy;
 srand;
 
-use Test::More tests => 9945;
+use Test::More tests => 8289;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 sub r { &Test::General::test_r }
-my $start = int rand $#$Test::General::Categories - 3;
-my @mCategories = @Test::General::Categories[$start .. $start + 3];
+my $start = int rand $#$Test::General::Categories - 2;
+my @mCategories = @Test::General::Categories[$start .. $start + 2];
 
 my @users = map { 
     my $u = Mock::Testuser->new_active_user();

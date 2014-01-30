@@ -120,7 +120,7 @@ sub get_attachement {
     }
     else {
         $c->res->headers->header('Content-Disposition' => "attachment;filename=nofile.png");
-        $path = "$Ffc::Data::Themedir/".$c->session->{theme}.'/img/nofile.png';
+        $path = "$Ffc::Data::Themedir/".$c->theme().'/img/nofile.png';
     }
     $c->render_static($path);
 }

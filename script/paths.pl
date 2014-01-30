@@ -38,7 +38,8 @@ my @closed = qw(
     t/02_backend__01_data_02_formats_01.t
     t/02_backend__01_data_03_general.t
     t/02_backend__01_data_04_board_00.t
-    t/02_backend__01_data_04_board_01_optionsuser.t
+    t/02_backend__01_data_04_board_01_optionsuser_00.t
+    t/02_backend__01_data_04_board_01_optionsuser_01_switchoptions.t
     t/02_backend__01_data_04_board_02_optionsadmin.t
     t/02_backend__01_data_04_board_03_forms.t
     t/02_backend__01_data_04_board_04_views_00.t
@@ -52,6 +53,7 @@ my @closed = qw(
     t/03_frontend_02_board_00.t
     t/03_frontend_02_board_01_errors.t
     t/03_frontend_02_board_02_options_00.t
+    t/03_frontend_02_board_02_options_01_switchoptions.t
     t/03_frontend_02_board_03_forms_00.t
     t/03_frontend_02_board_03_forms_01.t
     t/03_frontend_02_board_04_views_00.t

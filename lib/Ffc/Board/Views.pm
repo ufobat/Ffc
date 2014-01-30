@@ -107,7 +107,7 @@ sub show_avatar {
     my $c = shift;
     $c->render_static(
             Ffc::Data::Board::Avatars::get_avatar_path($c->param('username'))
-         || "$Ffc::Data::Themedir/".$c->session->{theme}.'/img/avatar.png'
+         || "$Ffc::Data::Themedir/".$c->bgcolor().'/img/avatar.png'
     );
 }
 

@@ -61,6 +61,7 @@ sub update_fontsize {
 }
 
 sub update_bgcolor {
+    croak q(Hintergrundfarbe kann nicht geändert werden, wenn sie vom Forenadmin festgelegt wurde) if $Ffc::Data::FixBgColor;
     my $s = shift;
     croak q(Session-Hash als erster Parameter benötigt) unless $s and 'HASH' eq ref $s;
     my $uid = _get_userid( $s->{user}, 'Angemeldeter Benutzer für croak Hintergrundfarb-Einstellung' );
@@ -76,6 +77,7 @@ sub update_bgcolor {
 }
 
 sub update_theme {
+    croak q(Anzeigethema kann nicht geändert werden, wenn es vom Forenadmin festgelegt wurde) if $Ffc::Data::FixTheme;
     my $s = shift;
     croak q(Session-Hash als erster Parameter benötigt) unless $s and 'HASH' eq ref $s;
     my $userid = _get_userid( $s->{user}, 'Angemeldeter Benutzer für croak optischen Einstellung' );

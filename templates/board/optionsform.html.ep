@@ -35,7 +35,7 @@
 % }
     </p>
 </div>
-% if ( @$themes > 1 ) {
+% if ( @$themes > 1 and not $Ffc::Data::FixTheme ) {
 <div class="postbox options">
     <h2>Einstellungen zum Aussehen des Forums</h2>
 %= form_for options_theme_save => ( method => 'POST' ) => begin 
@@ -49,6 +49,7 @@
 % end
 </div> 
 % }
+% unless ( $Ffc::Data::FixBgColor ) {
 <div class="postbox options">
     <h2>Einstellungen zur Hintergrundfarbe des Forums</h2>
 %= form_for options_bgcolor_save => ( method => 'POST' ) => begin 
@@ -60,6 +61,7 @@
     <button type="submit" class="linkalike">Hintergrundfarbe speichern</button>
 % end
 </div> 
+% }
 <div class="postbox options">
     <h2>Benutzeravatar verwalten</h2>
     <p><img src="<%= url_for show_avatar => username => session()->{user} %>" alt="Avatarbild des Benutzers &quot;<%= session()->{user} %>&quot;" %></p>

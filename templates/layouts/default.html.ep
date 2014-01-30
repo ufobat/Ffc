@@ -2,12 +2,12 @@
 <html>
   <head>
     <title><%= $Ffc::Data::Title %> (<%= $newpostcount %>/<%= $newmsgscount %>) - <%= acttitle() %></title>
-    <%= stylesheet '/'.$Ffc::Data::Themedir.'/'.session()->{theme}.'/css/style.css' %>
+    <%= stylesheet '/'.$Ffc::Data::Themedir.'/'.theme().'/css/style.css' %>
     <link rel="icon" type="image/ico" href="<%= $Ffc::Data::Favicon || url_for '/'.$Ffc::Data::Themedir.'/'.session()->{theme}.'/img/favicon.png' %>" />
 % if ( session()->{bgcolor} or session()->{fontsize} ) {
     <style type="text/css">body { 
-%   if ( session()->{bgcolor} ) {
-        background-color: <%= session()->{bgcolor} %>;
+%   if ( bgcolor() ) {
+        background-color: <%= bgcolor() %>;
 %   }
 %   if ( session()->{fontsize} ) {
         font-size: <%= $Ffc::Data::FontSizeMap{session()->{fontsize}} %>em;

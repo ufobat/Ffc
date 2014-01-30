@@ -14,7 +14,16 @@ sub startup {
     my $app  = $self->app;
     Ffc::Data::set_config($app);
 
-    $app->helper( theme => sub { $Ffc::Data::Theme } );
+    $app->helper( theme => sub { 
+        $Ffc::Data::FixTheme 
+            ? ( $Ffc::Data::Theme || 'default' )
+            : ( shift()->session()->{theme} || $Ffc::Data::Theme || 'default' )
+    } );
+    $app->helper( bgcolor => sub { 
+        $Ffc::Data::FixBgColor
+            ? $Ffc::Data::BgColor
+            : ( shift()->session()->{bgcolor} || $Ffc::Data::BgColor )
+    } );
     $app->helper( acttitle => sub { $Ffc::Data::Acttitles{shift->stash('act') // 'forum'} // 'Unbekannt' } );
     $app->helper( error => sub { shift->session->{error} // '' } );
     $app->helper( url_for_me => sub {
