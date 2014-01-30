@@ -5,14 +5,17 @@ body {
     box-shadow: 0 0 16px dimgray;
     background-color: #69c;
     padding: 0;
-    border: 2px #369 solid;
+    border: 3px white solid;
 }
 
 .postbox, .menu, .footerlinks, .pages {
     box-shadow: none;
     border: none;
-    border-bottom: 1px #369 solid;
     margin: 0;
+}
+
+.postbox, .menu, .pages {
+    border-bottom: 1px gray solid;
 }
 
 .postbox h2 {
