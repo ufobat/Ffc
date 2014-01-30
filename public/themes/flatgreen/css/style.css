@@ -59,3 +59,7 @@ input:focus, textarea:focus, select:focus {
     box-shadow: none;
     border-color: gray;
 }
+
+.headbox .active {
+    background: green;
+}
