@@ -63,3 +63,9 @@ input:focus, textarea:focus, select:focus {
 .headbox .active {
     background: green;
 }
+
+img.smiley, img.icon {
+    width: auto;
+    height: auto;
+    vertical-align: text-top;
+}
