@@ -108,6 +108,10 @@ my @public = qw(
     public/custom
     public/custom/custom_static_content_placed_here
     public/themes
+    public/themes/flatgreen
+    public/themes/flatgreen/css
+    public/themes/flatgreen/css/style.css
+    public/themes/flatgreen/img
     public/themes/yellowsun
     public/themes/yellowsun/css
     public/themes/yellowsun/css/style.css

@@ -1,0 +1,60 @@
+@import "../../default/css/style.css";
+
+body {
+    margin: 8px auto;
+    box-shadow: none;
+    background-color: yellowgreen;
+    padding: 0;
+}
+
+.postbox, .menu, .footerlinks, .pages {
+    box-shadow: none;
+    border: none;
+    margin: 0;
+}
+
+.postbox, .menu {
+    border: 1px green solid;
+}
+.postbox {
+    border-top: none;
+}
+
+.postbox h2 {
+    border: none;
+}
+
+.menu {
+    background: limegreen;
+}
+
+a, .linkalike, a:hover, .linkalike:hover, a:focus, .linkalike:focus {
+    color: green;
+}
+
+.postbox a:hover img {
+    border-color: green;
+}
+
+input, textarea {
+    box-shadow: none;
+}
+input:hover, textarea:hover, select:hover {
+    border-color: green;
+}
+input:focus, textarea:focus, select:focus {
+    border-color: green;
+}
+
+.footerlinks {
+    padding: .25em;
+}
+
+.menu .active:hover, .menu .active {
+    padding: .25em;
+    border: 1px green solid;
+}
+.menu input[type="text"] {
+    box-shadow: none;
+    border-color: gray;
+}
