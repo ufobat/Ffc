@@ -52,7 +52,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
     }
     my @fontsizes = ( keys %Ffc::Data::FontSizeMap )[1..5];
     test_update_something('fontsize', 'Schriftgröße', 'font-size: %sem;', \@fontsizes, 0, 'Schriftgröße', 1,\%Ffc::Data::FontSizeMap );
-    test_update_something('theme', 'Thema', '%s/css/style.css', Ffc::Data::General::get_themes(), 'default', 'Thema', 0 );
+    test_update_something('theme', 'Thema', '%s/css/style.css', [@{Ffc::Data::General::get_themes()}[0,1]], 'default', 'Thema', 0 );
     my $start = int rand $#Ffc::Data::Colors - 10;
     test_update_something('bgcolor', 'Hintergrundfarbe', 'background-color: %s', [@Ffc::Data::Colors[$start..$start + 10]], '', 'Farbe', 0 );
     sub test_update_something {

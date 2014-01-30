@@ -1,0 +1,45 @@
+@import "../../default/css/style.css";
+
+body {
+    margin: 8px auto;
+    box-shadow: 0 0 16px dimgray;
+    background-color: #69c;
+    padding: 0;
+    border: 2px #369 solid;
+}
+
+.postbox, .menu, .footerlinks, .pages {
+    box-shadow: none;
+    border: none;
+    border-bottom: 1px #369 solid;
+    margin: 0;
+}
+
+.postbox h2 {
+    border: none;
+}
+
+.menu {
+    background: silver;
+}
+
+.footerlinks, .pages {
+    background: gainsboro;
+}
+
+input, textarea {
+    box-shadow: none;
+}
+
+.footerlinks {
+    padding: .25em;
+}
+
+.menu .active:hover, .menu .active {
+    padding: .25em;
+    border: none;
+}
+.menu input {
+    box-shadow: none;
+    border-color: gray;
+}
