@@ -5,6 +5,7 @@ body {
     box-shadow: none;
     background: yellowgreen;
     padding: 0;
+    border: 2px green solid;
 }
 
 .postbox, .menu, .footerlinks, .pages {
@@ -12,12 +13,17 @@ body {
     border: none;
     margin: 0;
 }
-
-.postbox, .menu {
-    border: 1px green solid;
-}
 .postbox {
-    border-top: none;
+    background: white;
+}
+.postbox, .menu, .footerlinks {
+    border-bottom: 1px green solid;
+}
+.footerlinks, .pages, .headbox {
+    background: whitesmoke;
+}
+
+.postbox, .footerlinks, .pages {
     padding-bottom: 0;
 }
 
