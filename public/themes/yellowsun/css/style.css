@@ -39,10 +39,6 @@ body {
     border: none;
 }
 
-input, textarea {
-    box-shadow: none;
-}
-
 .footerlinks {
     padding: .25em;
 }
