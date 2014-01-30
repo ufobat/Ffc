@@ -42,7 +42,7 @@ input, textarea {
     padding: .25em;
     border: none;
 }
-.menu input {
+.menu input[type="text"] {
     box-shadow: none;
     border-color: gray;
 }

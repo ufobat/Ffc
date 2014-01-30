@@ -1,0 +1,65 @@
+@import "../../default/css/style.css";
+
+body {
+    background-color: khaki;
+    padding: 0;
+    padding-top: 1.75em;
+    font-family: serif;
+}
+
+.postbox {
+    border: 2px white solid;
+    border-radius: 4px;
+    background: gainsboro;
+    margin-top: 10px;
+    box-shadow: 0 0 .3em dimgray;
+    text-shadow: 1px 1px 1px white;
+}
+
+.postbox h2 {
+    border: none;
+}
+
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: dimgray;
+    width: 100%;
+    border-bottom: 1px black solid;
+    box-shadow: 0 0 .75em black;
+    margin: 0;
+}
+
+.menu a, .menu .linkalike {
+    color: gainsboro;
+}
+
+.footerlinks, .pages {
+    border: none;
+}
+
+input, textarea {
+    box-shadow: none;
+}
+
+.footerlinks {
+    padding: .25em;
+}
+
+.menu .active:hover, .menu .active {
+    padding: .25em;
+    border: 1px black solid;
+    color: steelblue;
+    background: gainsboro;
+}
+.menu input[type="text"] {
+    box-shadow: none;
+    border-color: black;
+    background-color: gainsboro;
+}
+
+.postbox img, .postbox h2 .avatar {
+    border: 2px white solid;
+    box-shadow: 0 0 2px gray;
+}
