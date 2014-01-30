@@ -1,7 +1,7 @@
 @import "../../default/css/style.css";
 
 body {
-    background-color: #69c;
+    background: #69c url('../img/hg.png') fixed;
     padding: 0;
     padding-top: 1.75em;
     font-family: serif;
@@ -10,9 +10,9 @@ body {
 .postbox {
     border: 2px white solid;
     border-radius: 4px;
-    background: gainsboro;
+    background: gainsboro url('../img/bottom.png') repeat-x bottom;
     margin-top: 10px;
-    box-shadow: 0 0 .3em dimgray;
+    box-shadow: 0 0 .5em dimgray;
     text-shadow: 1px 1px 1px white;
 }
 
@@ -24,10 +24,10 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    background: dimgray;
+    background: dimgray url('../img/bottom_menu.png') repeat-x bottom;
     width: 100%;
     border-bottom: 1px silver solid;
-    box-shadow: 0 0 .75em black;
+    box-shadow: 0 0 1em black;
     margin: 0;
 }
 

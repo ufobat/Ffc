@@ -118,6 +118,11 @@ my @public = qw(
     public/themes/bluebound/css
     public/themes/bluebound/css/style.css
     public/themes/bluebound/img
+    public/themes/bluebound/img/nofile.png
+    public/themes/bluebound/img/avatar.png
+    public/themes/bluebound/img/hg.png
+    public/themes/bluebound/img/favicon.png
+    public/themes/bluebound/img/smileys
     public/themes/default
     public/themes/default/css
     public/themes/default/css/style.css
@@ -125,6 +130,8 @@ my @public = qw(
     public/themes/default/img/nofile.png
     public/themes/default/img/avatar.png
     public/themes/default/img/hg.png
+    public/themes/default/img/bottom.png
+    public/themes/default/img/bottom_menu.png
     public/themes/default/img/favicon.png
     public/themes/default/img/smileys
     public/themes/default/img/smileys/devilsmile.png
