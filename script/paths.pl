@@ -116,10 +116,6 @@ my @public = qw(
     public/themes/yellowsun/css
     public/themes/yellowsun/css/style.css
     public/themes/yellowsun/img
-    public/themes/blueblog
-    public/themes/blueblog/css
-    public/themes/blueblog/css/style.css
-    public/themes/blueblog/img
     public/themes/default
     public/themes/default/css
     public/themes/default/css/style.css
