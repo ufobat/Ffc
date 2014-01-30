@@ -112,10 +112,10 @@ my @public = qw(
     public/themes/flatgreen/css
     public/themes/flatgreen/css/style.css
     public/themes/flatgreen/img
-    public/themes/yellowsun
-    public/themes/yellowsun/css
-    public/themes/yellowsun/css/style.css
-    public/themes/yellowsun/img
+    public/themes/bluebound
+    public/themes/bluebound/css
+    public/themes/bluebound/css/style.css
+    public/themes/bluebound/img
     public/themes/default
     public/themes/default/css
     public/themes/default/css/style.css

@@ -1,7 +1,7 @@
 @import "../../default/css/style.css";
 
 body {
-    background-color: khaki;
+    background-color: #69c;
     padding: 0;
     padding-top: 1.75em;
     font-family: serif;
@@ -33,6 +33,15 @@ body {
 
 .menu a, .menu .linkalike {
     color: gainsboro;
+}
+
+.footerlinks a, .pages a {
+    color: gainsboro;
+}
+
+.headbox .active {
+    text-shadow: none;
+    box-shadow: 1px 1px 2px white;
 }
 
 .footerlinks, .pages {
