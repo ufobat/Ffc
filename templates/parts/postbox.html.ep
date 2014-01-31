@@ -1,4 +1,4 @@
-<div class="postbox <%= $act %><%= $post->{ownpost} ? ' '.$act.'ownpost ownpost' : '' %><%= $post->{active} ? ' activepost' : '' %><%= $post->{newpost} ? ' newpost' : '' %>">
+<div class="postbox postboxentry <%= $act %><%= $post->{ownpost} ? ' '.$act.'ownpost ownpost' : '' %><%= $post->{active} ? ' activepost' : '' %><%= $post->{newpost} ? ' newpost' : '' %>">
     <h2>
 % if ( $act ne 'notes' and $post->{avatar} and session()->{show_images} ) {
         <img class="avatar" src="<%= url_for 'show_avatar', username => $post->{avatar} %>" alt="Avatar für Benutzer &quot;<%= $post->{avatar} %>&quot;" />

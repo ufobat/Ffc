@@ -13,7 +13,7 @@ body {
     border: none;
     margin: 0;
 }
-.postbox {
+.postboxentry {
     background: white;
 }
 .postbox, .menu, .footerlinks {
