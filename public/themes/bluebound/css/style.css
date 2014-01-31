@@ -19,11 +19,7 @@ body {
     text-align: justify;
 }
 
-.headbox {
-    background-color: silver;
-}
-
-.postboxentry {
+.headbox, .postboxentry {
     background-color: gainsboro;
 }
 
