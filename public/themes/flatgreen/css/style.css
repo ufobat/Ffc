@@ -43,7 +43,7 @@ a, .linkalike, a:hover, .linkalike:hover, a:focus, .linkalike:focus {
     border-color: green;
 }
 
-input, textarea {
+input, textarea, input[type="text"], input[type="password"] {
     box-shadow: none;
     color: dimgray;
 }
