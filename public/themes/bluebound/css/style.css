@@ -10,11 +10,17 @@ body {
 .postbox {
     border: 2px white solid;
     border-radius: 4px;
-    background: gainsboro url('../img/bottom.png') repeat-x bottom;
+    background-image: url('../img/bottom.png');
+    background-repeat: repeat-x;
+    background-position: bottom;
     margin-top: 10px;
     box-shadow: 0 0 .5em dimgray;
     text-shadow: 1px 1px 1px white;
     text-align: justify;
+}
+
+.postboxentry {
+    background-color: gainsboro;
 }
 
 .postbox h2 {
