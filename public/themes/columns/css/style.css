@@ -14,6 +14,10 @@ body {
     border: none;
     box-shadow: none;
 }
+.postboxentry {
+    max-height: 38em;
+    overflow: scroll;
+}
 .menu {
     text-align: left;
     width: 100%;
