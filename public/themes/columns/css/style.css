@@ -53,12 +53,12 @@ body {
 }
 .menu .linktext {
     padding: .4em;
-    border: 0 transparent solid;
-    border-width: 0 1px 0 1px;
+    border: none;
 }
 .menu .active, .menu .active:hover {
-    background: white;
-    border-color: silver;
+    background: steelblue;
+    border: none;
+    color: white;
 }
 body > div {
     margin-left: .5em;
