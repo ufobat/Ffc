@@ -5,7 +5,8 @@ body {
     max-width: inherit;
     min-width: inherit;
     background: gainsboro;
-    padding: 0 1em;
+    padding: 0;
+    margin: 0;
 }
 .postbox {
     display: inline-block;
@@ -31,10 +32,9 @@ body {
 }
 .footerlinks, .pages, .menu {
     background: whitesmoke;
-    margin-left: 0;
+    margin: 0;
 }
 .menu {
-    text-align: left;
     margin-bottom: .5em;
     padding-left: 2em;
 }
