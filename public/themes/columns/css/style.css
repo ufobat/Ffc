@@ -16,7 +16,7 @@ body {
 }
 .postboxentry {
     max-height: 28em;
-    overflow: scroll;
+    overflow: auto;
 }
 .menu {
     text-align: left;
