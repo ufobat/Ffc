@@ -16,3 +16,6 @@ body {
     text-align: left;
 }
 
+body > div {
+    margin-left: .5em;
+}
