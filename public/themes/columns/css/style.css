@@ -11,7 +11,8 @@ body {
     display: inline-block;
     width: 38em;
     vertical-align: top;
-    box-shadow: 2px 2px 6px silver;
+/*    box-shadow: 2px 2px 6px silver; */
+    box-shadow: none;
 }
 .postbox > p {
     margin: .5em;
