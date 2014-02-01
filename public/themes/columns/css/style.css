@@ -7,8 +7,10 @@ body {
     background: gainsboro;
     padding: 0;
     margin: 0;
+    text-align: center;
 }
 .postbox {
+    text-align: left;
     display: inline-block;
     width: 38em;
     vertical-align: top;
@@ -42,8 +44,11 @@ body {
 .footerlinks {
     margin-bottom: 0;
 }
-.pages {
+.footerlinks, .pages {
     margin-top: 1em;
+}
+.pages {
+    margin-bottom: -1em;
 }
 .menu .active, .menu .active:hover {
     background: white;
