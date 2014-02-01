@@ -1,0 +1,18 @@
+@import "../../default/css/style.css";
+
+body {
+    width: auto;
+    max-width: 80em;
+    min-width: inherit;
+    background: gainsboro;
+    padding: 0 1em;
+}
+.postbox {
+    display: inline-block;
+    width: 38em;
+    vertical-align: top;
+}
+.menu {
+    text-align: left;
+}
+
