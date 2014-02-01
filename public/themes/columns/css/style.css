@@ -39,6 +39,7 @@ body {
 .menu {
     text-align: left;
     margin-bottom: .5em;
+    border-width: 0 1px 1px 1px;
     padding-left: 2em;
 }
 .footerlinks {
@@ -50,9 +51,14 @@ body {
 .pages {
     margin-bottom: -1em;
 }
+.menu .linktext {
+    padding: .375em;
+    border: 0 transparent solid;
+    border-width: 0 1px 0 1px;
+}
 .menu .active, .menu .active:hover {
     background: white;
-    border: 1px silver solid;
+    border-color: silver;
 }
 body > div {
     margin-left: .5em;
