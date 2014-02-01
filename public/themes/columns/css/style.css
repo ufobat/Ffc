@@ -11,11 +11,23 @@ body {
     display: inline-block;
     width: 38em;
     vertical-align: top;
+    border: none;
+    box-shadow: none;
 }
 .menu {
     text-align: left;
+    width: 100%;
 }
-
+.menu .active {
+    border: none;
+}
 body > div {
     margin-left: .5em;
 }
+.info, .error {
+    display: block;
+}
+input, textarea, input[type="text"], input[type="password"] {
+    box-shadow: none;
+}
+
