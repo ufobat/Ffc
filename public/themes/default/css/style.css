@@ -150,6 +150,11 @@ img.smiley, img.icon {
     border: none;
     background: none;
     display: inline;
+    padding-left: 0;
+    padding-right: 0;
+}
+.menu > * {
+    margin: 0 .4em;
 }
 .menu .linktext {
     border-color: transparent;

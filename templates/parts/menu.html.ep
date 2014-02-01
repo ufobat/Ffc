@@ -7,7 +7,7 @@
     <span class="divider">-</span>
 %= form_for search => ( method => 'POST' ) => begin
 %= text_field query => session()->{query}, session()->{query} ? (class => 'activesearch') : ()
-    <button type="submit" class="linkalike">Suche</button>
+    <button type="submit" class="linkalike">» Suche</button>
 % end
     <span class="divider">-</span>
     <a href="<%= url_for 'options_form' %>" title="Einstellungen diese Plattform anpassen"><span class="linktext linkoptions<%= $act eq 'options' ? ' active activeoptions' : '' %>">Optionen</span></a>
