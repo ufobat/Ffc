@@ -78,4 +78,9 @@ body > div {
 .postbox .avatar {
     border: none;
 }
+img.smiley, img.icon {
+    width: auto;
+    height: auto;
+    vertical-align: text-top;
+}
 
