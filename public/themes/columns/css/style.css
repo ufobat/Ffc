@@ -12,12 +12,9 @@ body {
 .postbox {
     text-align: left;
     display: inline-block;
-    max-width: 40em;
+    width: 40em;
     vertical-align: top;
     box-shadow: none;
-}
-.postbox > * {
-    width: 95%;
 }
 body > div {
     padding: .5em;
