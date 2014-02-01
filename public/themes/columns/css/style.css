@@ -21,7 +21,7 @@ body {
     margin: .5em;
 }
 .postboxentry {
-    border: .5em white solid;
+    border: .25em white solid;
     max-height: 24em;
     overflow: auto;
 }
@@ -30,7 +30,7 @@ body {
     border-bottom-color: gainsboro;
 }
 .headbox {
-    border: .5em whitesmoke solid;
+    border: .25em whitesmoke solid;
 }
 .footerlinks, .pages, .menu {
     background: whitesmoke;
@@ -63,9 +63,10 @@ body {
 body > div {
     margin-left: .5em;
 }
-.info, .error {
+.info, .error, .options {
+    margin: .5em auto;
     display: block;
-    border-width: .5em;
+    border-width: .25em;
     border-color: transparent;
 }
 .menu input[type="text"], input[type="text"], input[type="password"], textarea {
@@ -82,5 +83,12 @@ img.smiley, img.icon {
     width: auto;
     height: auto;
     vertical-align: text-top;
+}
+.activepost {
+    background: silver;
+    border-color: silver;
+}
+.activepost h2 {
+    border-bottom-color: gray;
 }
 
