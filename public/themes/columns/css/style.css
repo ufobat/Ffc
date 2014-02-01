@@ -15,7 +15,7 @@ body {
     box-shadow: none;
 }
 .postboxentry {
-    max-height: 28em;
+    max-height: 24em;
     overflow: auto;
 }
 .menu {
