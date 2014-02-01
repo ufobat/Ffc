@@ -14,7 +14,7 @@ use Mock::Testuser;
 use Ffc::Data::General;
 use Ffc::Data::Board::Views;
 
-use Test::More tests => 941;
+use Test::More tests => 954;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 
@@ -506,16 +506,22 @@ qr(Das neue Passwort und dessen Wiederholung stimmen nicht überein)
 }
 {
     my $user  = Test::General::test_get_rand_user();
+    $t->get_ok('/logout');
     $t->post_ok( '/login',
         form => { user => $user->{name}, pass => $user->{password} } )
       ->status_is(302)
-      ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms )
-      ->get_ok('/options')->status_is(200)
+      ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
+    $t->get_ok('/options')->status_is(200)
       ->content_like(qr(Einstellungen));
     my @cats = grep { $_->[2] } @Test::General::Categories;
     my %cats = map { $_->[2] => 1 } @cats;
     my %catnames = map { my $n = $_->[1]; $n =~ s/"/\\\&quot;/gsm; $_->[2] => $n } @cats;
     my $check_catarray = sub {
+        $t->get_ok('/logout');
+        $t->post_ok( '/login',
+            form => { user => $user->{name}, pass => $user->{password} } )
+          ->status_is(302)
+          ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
         $t->get_ok('/options')->status_is(200)
           ->content_like(qr(Einstellungen));
         $t->content_like( $cats{$_}
@@ -527,6 +533,11 @@ qr(Das neue Passwort und dessen Wiederholung stimmen nicht überein)
     $cats{$_->[2]} = 0 for @cats[4..8];
     {
         my %showcats = map {; "show_cat_$_" => $cats{$_} } keys %cats;
+        $t->get_ok('/logout');
+        $t->post_ok( '/login',
+            form => { user => $user->{name}, pass => $user->{password} } )
+          ->status_is(302)
+          ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
         $t->post_ok("/options/showcat_save", form => \%showcats )
           ->status_is(200)
           ->content_like(qr(Einstellungen));
