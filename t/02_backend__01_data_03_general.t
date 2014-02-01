@@ -23,7 +23,7 @@ sub get_noneexisting_username { &Mock::Testuser::get_noneexisting_username }
 sub test_get_rand_user { &Test::General::test_get_rand_user }
 sub test_get_rand_category { &Test::General::test_get_rand_category }
 
-use Test::More tests => 53;
+use Test::More tests => 54;
 
 use_ok('Ffc::Data::General');
 
@@ -216,6 +216,7 @@ use_ok('Ffc::Data::General');
     ok( @$get_themes2, 'themes from directory are available');
     is_deeply( $get_themes2, \@themes, 'avaiable themes figured out correctly' );
     is_deeply( $get_themes2, $get_themes, 'avaiable themes figured out correctly' );
+    is( $#Ffc::Data::General::Themes, $#themes, 'themes count ok' );
     is_deeply( \@Ffc::Data::General::Themes, \@themes, 'themas match cached array' );
 }
 
