@@ -11,27 +11,49 @@ body {
     display: inline-block;
     width: 38em;
     vertical-align: top;
-    border: none;
-    box-shadow: none;
+    box-shadow: 2px 2px 6px silver;
+}
+.postbox > p {
+    margin: .5em;
 }
 .postboxentry {
+    border: .5em white solid;
     max-height: 24em;
     overflow: auto;
 }
+.postbox h2 {
+    margin-left: 0;
+    border-bottom-color: gainsboro;
+}
+.headbox {
+    border: .5em whitesmoke solid;
+}
+.footerlinks, .pages, .menu {
+    background: whitesmoke;
+    margin-left: -.25em;
+    padding-left: 2em;
+}
 .menu {
     text-align: left;
-    width: 100%;
+    margin-bottom: .5em;
+}
+.pages {
+    margin-top: 1em;
 }
 .menu .active, .menu .active:hover {
-    border: none;
+    background: white;
+    border: 1px silver solid;
 }
 body > div {
     margin-left: .5em;
 }
 .info, .error {
     display: block;
+    border-width: .5em;
+    border-color: transparent;
 }
-input, textarea, input[type="text"], input[type="password"] {
+.menu input[type="text"] {
+    background: white;
     box-shadow: none;
 }
 
