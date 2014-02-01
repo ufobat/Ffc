@@ -14,7 +14,7 @@ use Mock::Testuser;
 use Ffc::Data::General;
 use Ffc::Data::Board::Views;
 
-use Test::More tests => 954;
+use Test::More tests => 966;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 
@@ -122,6 +122,11 @@ my $t = Test::General::test_prepare_frontend('Ffc');
                     $t->post_ok( qq'/options/${thing}_save', form => { $thing => $newthing } );
                 }
                 $t->status_is(500)->content_like(qr{$illname ungültig});
+                $t->get_ok('/logout');
+                $t->post_ok( '/login',
+                    form => { user => $user->{name}, pass => $user->{password} } )
+                  ->status_is(302)
+                  ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
                 my $test = sprintf $teststr, $map ? $map->{$dat} : $dat;
                 $t->get_ok('/')->status_is(200)->content_like(qr($test));
                 $check_thing->($dat);
