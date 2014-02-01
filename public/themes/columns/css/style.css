@@ -73,6 +73,6 @@ body > div {
     box-shadow: none;
 }
 .postbox img {
-    border: none;
+    border-color: silver;
 }
 
