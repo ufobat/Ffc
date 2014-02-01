@@ -12,13 +12,16 @@ body {
 .postbox {
     text-align: left;
     display: inline-block;
-    width: 38em;
+    width: 40em;
     vertical-align: top;
-/*    box-shadow: 2px 2px 6px silver; */
     box-shadow: none;
 }
-.postbox > p {
+body > div {
+    padding: .25em;
     margin: .5em;
+}
+.postbox > p {
+    margin: 1em .5em 1em .5em;
 }
 .postboxentry {
     border: .25em white solid;
@@ -39,7 +42,6 @@ body {
 .menu {
     margin-bottom: .25em;
     border-width: 0 1px 1px 1px;
-    padding-left: 2em;
 }
 .footerlinks {
     margin-bottom: 0;
@@ -60,14 +62,10 @@ body {
     border: none;
     color: white;
 }
-body > div {
-    margin-left: .5em;
-}
 .info, .error, .options {
     margin: .5em auto;
     display: block;
     border-width: .25em;
-    border-color: transparent;
 }
 .menu input[type="text"], input[type="text"], input[type="password"], textarea {
     background: white;
@@ -91,11 +89,8 @@ img.smiley, img.icon {
 .activepost h2 {
     border-bottom-color: gray;
 }
-.info {
-    border-color: forestgreen;
-}
-.error {
-    border-color: firebrick;
+.options {
+    border-color: white;
 }
 .newpost {
     box-shadow: none;
