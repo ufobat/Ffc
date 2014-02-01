@@ -2,7 +2,7 @@
 
 body {
     width: auto;
-    max-width: inherit;
+    max-width: none;
     min-width: inherit;
     background: gainsboro;
     padding: 0;
@@ -11,10 +11,21 @@ body {
 }
 .postbox {
     text-align: left;
-    display: inline-block;
-    width: 40em;
     vertical-align: top;
     box-shadow: none;
+}
+@media screen {
+    .postbox {
+        display: inline-block;
+        width: 40em;
+    }
+}
+@media handheld {
+    .postbox {
+        max-width: none;
+        min-width: inherit;
+        width: auto;
+    }
 }
 body > div {
     padding: .5em;

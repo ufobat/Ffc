@@ -12,6 +12,13 @@ body {
         min-width: 50%;
     }
 }
+@media handheld {
+    body {
+        max-width: none;
+        min-width: inherit;
+        width: auto;
+    }
+}
 body > div {
     padding: .25em .5em 1em .5em;
     margin-top: .5em;
