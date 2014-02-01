@@ -62,7 +62,7 @@ body > div {
     border-width: .5em;
     border-color: transparent;
 }
-.menu input[type="text"] {
+.menu input[type="text"], input[type="text"], input[type="password"], textarea {
     background: white;
     box-shadow: none;
 }
