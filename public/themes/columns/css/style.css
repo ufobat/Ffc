@@ -52,7 +52,7 @@ body {
     margin-bottom: -1em;
 }
 .menu .linktext {
-    padding: .4em;
+    padding: .2em;
     border: none;
 }
 .menu .active, .menu .active:hover {
