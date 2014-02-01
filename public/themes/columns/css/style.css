@@ -31,12 +31,15 @@ body {
 }
 .footerlinks, .pages, .menu {
     background: whitesmoke;
-    margin-left: -.25em;
-    padding-left: 2em;
+    margin-left: 0;
 }
 .menu {
     text-align: left;
     margin-bottom: .5em;
+    padding-left: 2em;
+}
+.footerlinks {
+    margin-bottom: 0;
 }
 .pages {
     margin-top: 1em;
