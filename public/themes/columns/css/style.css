@@ -18,7 +18,7 @@ body {
     text-align: left;
     width: 100%;
 }
-.menu .active {
+.menu .active, .menu .active:hover {
     border: none;
 }
 body > div {
