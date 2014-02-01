@@ -31,8 +31,8 @@ body > div {
 .postbox h2 {
     margin-top: .25em;
     margin-left: .25em;
+    margin-right: .25em;
     border-bottom-color: gainsboro;
-    width: inherit;
 }
 .footerlinks, .pages, .menu {
     background: whitesmoke;
