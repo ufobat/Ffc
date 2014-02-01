@@ -91,4 +91,13 @@ img.smiley, img.icon {
 .activepost h2 {
     border-bottom-color: gray;
 }
+.info {
+    border-color: forestgreen;
+}
+.error {
+    border-color: firebrick;
+}
+.newpost {
+    box-shadow: none;
+}
 
