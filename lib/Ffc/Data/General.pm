@@ -85,6 +85,7 @@ sub get_themes {
         push @Themes, $d;
     }
     closedir $dh;
+    @Themes = sort @Themes;
     return \@Themes;
 }
 
