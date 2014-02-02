@@ -19,12 +19,22 @@ body {
         display: inline-block;
         width: 40em;
     }
+    body {
+        width: auto;
+        max-width: none;
+        min-width: inherit;
+    }
 }
 @media handheld {
     .postbox {
         max-width: none;
         min-width: inherit;
         width: auto;
+    }
+    body {
+        width: auto;
+        max-width: none;
+        min-width: inherit;
     }
 }
 body > div {
