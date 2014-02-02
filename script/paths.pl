@@ -54,6 +54,7 @@ my @closed = qw(
     t/03_frontend_02_board_01_errors.t
     t/03_frontend_02_board_02_options_00.t
     t/03_frontend_02_board_02_options_01_switchoptions.t
+    t/03_frontend_02_board_02_options_02_mobileswitch.t
     t/03_frontend_02_board_03_forms_00.t
     t/03_frontend_02_board_03_forms_01.t
     t/03_frontend_02_board_04_views_00.t

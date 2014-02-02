@@ -12,5 +12,11 @@
     <span class="divider">-</span>
     <a href="<%= url_for 'options_form' %>" title="Einstellungen diese Plattform anpassen"><span class="linktext linkoptions<%= $act eq 'options' ? ' active activeoptions' : '' %>">Optionen</span></a>
     <span class="divider">-</span>
+% if ( session()->{mobile} ) {
+    <a href="<%= url_for 'options_set_desktop' %>" title="Webseitenanzeige für normale Desktopgeräte anzeigen"><span class="linktext">Desktop</span></a>
+% } else {
+    <a href="<%= url_for 'options_set_mobile' %>" title="Webseitenanzeige für mobile Kleinstgeräte optimiert anzeigen"><span class="linktext">mobil</span></a>
+% }
+    <span class="divider">-</span>
     <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linkalike linklogout"><%= session()->{user} %> abmelden</span></a>
 </div>

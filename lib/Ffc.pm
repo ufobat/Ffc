@@ -124,6 +124,8 @@ sub startup {
     # options
     my $options = $loggedin->route('/options');
     $options->route('/')->via('get')->to('board#options_form')->name('options_form');
+    $options->route('/mobile')->via('get')->to('board#options_mobile')->name('options_set_mobile');
+    $options->route('/desktop')->via('get')->to('board#options_desktop')->name('options_set_desktop');
     $options->route('/email_save')->via('post')->to('board#options_email_save')->name('options_email_save');
     $options->route('/password_save')->via('post')->to('board#options_password_save')->name('options_password_save');
     $options->route('/showimages_save')->via('post')->to('board#options_showimages_save')->name('options_showimages_save');

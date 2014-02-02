@@ -210,5 +210,18 @@ sub useradmin_save {
     $c->options_form();
 }
 
+sub options_mobile {
+    my $c = shift;
+    $c->session()->{mobile} = 1;
+    $c->info_stash('Webseitenanzeige für mobile Kleinstgeräte optimiert');
+    $c->frontpage();
+}
+sub options_desktop {
+    my $c = shift;
+    $c->session()->{mobile} = 0;
+    $c->info_stash('Webseitenanzeige für normale Desktopgeräte zugeschalten');
+    $c->frontpage();
+}
+
 1;
 
