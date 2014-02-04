@@ -14,7 +14,7 @@ use Mock::Testuser;
 use Ffc::Data::General;
 use Ffc::Data::Board::Views;
 
-use Test::More tests => 966;
+use Test::More tests => 986;
 
 my $t = Test::General::test_prepare_frontend('Ffc');
 
@@ -50,12 +50,22 @@ my $t = Test::General::test_prepare_frontend('Ffc');
             is( $reta->[0]->[0], $cv, 'got the right thing from checking' );
         }
     }
-    my @fontsizes = ( keys %Ffc::Data::FontSizeMap )[1..5];
-    test_update_something('fontsize', 'Schriftgröße', 'font-size: %sem;', \@fontsizes, 0, 'Schriftgröße', 1,\%Ffc::Data::FontSizeMap );
-    test_update_something('theme', 'Thema', '%s/css/style.css', [@{Ffc::Data::General::get_themes()}[0,1]], 'default', 'Thema', 0 );
-    my $start = int rand $#Ffc::Data::Colors - 10;
-    test_update_something('bgcolor', 'Hintergrundfarbe', 'background-color: %s', [@Ffc::Data::Colors[$start..$start + 10]], '', 'Farbe', 0 );
+    {
+        my $u = Mock::Testuser->new_active_user();
+        my @fontsizes = ( keys %Ffc::Data::FontSizeMap )[1..5];
+        test_update_something($u, 'fontsize', 'Schriftgröße', 'font-size: %sem;', \@fontsizes, 0, 'Schriftgröße', 1,\%Ffc::Data::FontSizeMap );
+    }
+    {
+        my $u = Mock::Testuser->new_active_user();
+        test_update_something($u, 'theme', 'Thema', '%s/css/style.css', [@{Ffc::Data::General::get_themes()}[0,1]], 'default', 'Thema', 0 );
+    }
+    {
+        my $u = Mock::Testuser->new_active_user();
+        my $start = int rand $#Ffc::Data::Colors - 10;
+        test_update_something($u, 'bgcolor', 'Hintergrundfarbe', 'background-color: %s', [@Ffc::Data::Colors[$start..$start + 10]], '', 'Farbe', 0 );
+    }
     sub test_update_something {
+        my $user    = shift;
         my $thing   = shift;
         my $name    = shift;
         my $teststr = shift;
@@ -65,6 +75,11 @@ my $t = Test::General::test_prepare_frontend('Ffc');
         my $get     = shift;
         my $map     = shift;
         note(qq'testing $thing choice');
+        $t->get_ok('/logout');
+        $t->post_ok( '/login',
+            form => { user => $user->{name}, pass => $user->{password} } )
+          ->status_is(302)
+          ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
         my $check_thing = sub {
             my $dat = shift;
             my $reta  = Ffc::Data::dbh()->selectall_arrayref(
@@ -76,7 +91,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
             ok( @$reta, 'got something from checking' );
             is( $reta->[0]->[0],
                 $dat,
-                $name.' "' . ( $dat // '<undef>' ) . '"ok in database' );
+                $name.' "' . ( $dat // '<undef>' ) . '" is ok in database' );
         };
         $check_thing->($default ? undef : $default);
         for my $dat (@{$things}[0 .. $#$things]) {
@@ -135,6 +150,12 @@ my $t = Test::General::test_prepare_frontend('Ffc');
     }
     {
         note('testing email change');
+        my $user = Mock::Testuser->new_active_user();
+        $t->get_ok('/logout');
+        $t->post_ok( '/login',
+            form => { user => $user->{name}, pass => $user->{password} } )
+          ->status_is(302)
+          ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
         my $check_email = sub {
             my $email = shift;
             my $reta  = Ffc::Data::dbh()->selectall_arrayref(
@@ -179,6 +200,12 @@ my $t = Test::General::test_prepare_frontend('Ffc');
     }
     {
         note('testing password change');
+        my $user = Mock::Testuser->new_active_user();
+        $t->get_ok('/logout');
+        $t->post_ok( '/login',
+            form => { user => $user->{name}, pass => $user->{password} } )
+          ->status_is(302)
+          ->header_like( Location => qr{\Ahttps?://localhost:\d+/\z}xms );
         my $oldpw = $user->{password};
         $user->alter_password;
         my $newpw = $user->{password};
@@ -232,7 +259,7 @@ my $t = Test::General::test_prepare_frontend('Ffc');
 {
     note('Administrator testen');
     $t->get_ok('/logout');
-    my $user  = Test::General::test_get_rand_user();
+    my $user  = Mock::Testuser->new_active_user();
     my $admin = Mock::Testuser->new_active_admin();
     $t->post_ok( '/login',
         form => { user => $admin->{name}, pass => $admin->{password} } )
@@ -510,7 +537,7 @@ qr(Das neue Passwort und dessen Wiederholung stimmen nicht überein)
     $t->get_ok('/logout');
 }
 {
-    my $user  = Test::General::test_get_rand_user();
+    my $user = Mock::Testuser->new_active_user();
     $t->get_ok('/logout');
     $t->post_ok( '/login',
         form => { user => $user->{name}, pass => $user->{password} } )
