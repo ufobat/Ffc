@@ -148,12 +148,18 @@ use_ok('Ffc::Data::Board');
         )[0];
     };
     my $get_lastseen_cat = sub {
-        $dbh->selectall_arrayref(
+        my $ret = $dbh->selectall_arrayref(
             'SELECT l.lastseen FROM '
               . $Ffc::Data::Prefix
               . 'lastseenforum l WHERE l.userid=? AND l.category=?',
             undef, $userid, $category->[0]
-        )->[0]->[0];
+        );
+        if ( 'ARRAY' eq ref($ret) and @$ret ) {
+            return $ret->[0]->[0];
+        }
+        else {
+            return;
+        }
     };
     my $before     = $get_lastseen->();
     my $before_cat = $get_lastseen_cat->();
