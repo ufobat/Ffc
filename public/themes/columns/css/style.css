@@ -17,7 +17,7 @@ body {
 @media screen {
     .postbox {
         display: inline-block;
-        width: 40em;
+        width: 38em;
     }
     body {
         width: auto;
@@ -38,8 +38,8 @@ body {
     }
 }
 body > div {
-    padding: .5em;
-    margin: .5em;
+    padding: .25em;
+    margin: .25em;
     border: none;
 }
 .postbox > p {
