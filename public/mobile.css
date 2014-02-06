@@ -12,11 +12,14 @@
     border: none;
     background: whitesmoke;
 }
-.postbox {
+.postboxentry, .headbox, .options, .menu {
     border-bottom: 1px black solid;
 }
 .postbox, .menu {
     padding-top: 0;
+}
+.menu {
+    white-space: normal;
 }
 .headbox, .pages, .menu {
     background: gainsboro;
