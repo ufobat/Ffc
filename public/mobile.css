@@ -1,75 +1,28 @@
-@import "themes/default/css/style.css";
-* {
-    padding: 0;
-    margin: 0;
-}
-body {
-    max-width: none;
-    min-width: inherit;
-    width: auto;
-    padding: 0;
-}
-.postbox, .pages {
-    border: none;
-    border-top: 1px black solid;
-    box-shadow: none;
-    margin: 0;
-    padding: 0;
-}
-.footerlinks {
+@import "themes/fullscreen/css/style.css";
+
+.footerlinks, .postbox .avatar {
     display: none;
 }
-.postbox > p {
+.postbox, .postbox h2, .postbox p, .menu, .pages {
+    padding: .25em .125em;
     margin: 0;
-    padding: .5em 0;
+    text-align: left;
 }
 .postbox h2 {
-    padding: 0;
-    margin: 0;
     border: none;
     background: whitesmoke;
+}
+.postbox {
+    border-bottom: 1px black solid;
+}
+.postbox, .menu {
+    padding-top: 0;
+}
+.headbox, .pages, .menu {
+    background: gainsboro;
 }
 .postbox img {
     max-width: 50%;
     max-height: 50%;
 }
-.avatar {
-    display: none;
-}
-.menu, .pages, .headbox {
-    background: gainsboro;
-    text-align: left;
-}
-.menu {
-    padding: 0;
-    margin: 0;
-    white-space: normal;
-}
-.menu .linktext {
-    padding: .2em;
-    border: none;
-}
-.menu .active, .menu .active:hover {
-    background: steelblue;
-    border: none;
-    color: white;
-}
-.postbox textarea#textinput {
-    height: 1em;
-    min-height: 1em;
-    width: 100%;
-}
-.postbox textarea#textinput:focus {
-    height: 5em;
-}
-input[type="text"], input[type="password"], textarea {
-    box-shadow: none;
-}
-img.smiley, img.icon {
-    width: auto;
-    height: auto;
-}
-.headbox form p, .menu p {
-    margin: 0;
-    padding: 0;
-}
+
