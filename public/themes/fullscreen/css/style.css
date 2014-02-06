@@ -24,6 +24,9 @@ body > div {
 .postbox > p {
     margin: .5em 1em;
 }
+.headbox > p {
+    padding: 0;
+}
 .footerlinks, .pages, .menu {
     background: whitesmoke;
     margin: 0;
