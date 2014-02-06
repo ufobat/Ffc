@@ -4,20 +4,8 @@ body {
     background: gainsboro;
     font-family: sans-serif;
     color: black;
-}
-@media screen {
-    body {
-        background: url('../img/hg.png') no-repeat top center fixed gainsboro;
-        max-width: 48em;
-        min-width: 50%;
-    }
-}
-@media handheld {
-    body {
-        max-width: none;
-        min-width: inherit;
-        width: auto;
-    }
+    background: url('../img/hg.png') no-repeat top center fixed gainsboro;
+    max-width: 52em;
 }
 body > div {
     padding: .25em .5em 1em .5em;
@@ -51,10 +39,8 @@ input, textarea, select {
     background: white;
     color: #006;
 }
-@media screen {
-    input[type="text"], input[type="password"], textarea {
-        box-shadow: inset 0 0 .1em silver;
-    }
+input[type="text"], input[type="password"], textarea {
+    box-shadow: inset 0 0 .1em silver;
 }
 input:hover, textarea:hover, select:hover {
     border-color: steelblue;
@@ -80,10 +66,19 @@ a:hover, .linkalike:hover {
 .pages {
     text-align: right;
 }
-.pages, .menu {
-    background: none;
+.pages, .menu, .footerlinks {
+    background: gainsboro;
     border: none;
     box-shadow: none;
+    padding: .2em;
+    white-space: nowrap;
+    margin: 0;
+}
+.footerlinks, .pages {
+    margin-top: .75em;
+}
+.pages {
+    margin-bottom: -1em;
 }
 .menu, .footerlinks {
     text-align: center;
@@ -100,8 +95,8 @@ img.smiley, img.icon {
 }
 .postbox textarea {
     width: 100%;
-    min-width: 100%;
-    max-width: 100%;
+    min-width: inherit;
+    max-width: none;
     height: 2em;
     min-height: 2em;
     max-height: 54em;
@@ -134,8 +129,8 @@ img.smiley, img.icon {
     background: peachpuff;
 }
 .headbox {
-    background: whitesmoke;
     padding-bottom: .5em;
+    background: whitesmoke;
 }
 .headbox p {
     padding: .25em .5em;
@@ -145,9 +140,7 @@ img.smiley, img.icon {
     font-size: .75em;
 }
 .menu {
-    margin: 0 1em 1em 1em;
-    padding: .2em;
-    white-space: nowrap;
+    margin-bottom: 1em;
 }
 .menu input[type="text"] {
     width: 7.5em;
@@ -179,10 +172,8 @@ img.smiley, img.icon {
     border-color: slategray;
     background: whitesmoke;
 }
-@media screen {
-    .postbox {
-        box-shadow: 0 0 .25em darkgray;
-    }
+.postbox {
+    box-shadow: 0 0 .25em darkgray;
 }
 .menu .active:hover {
     border-color: dodgerblue;
@@ -193,10 +184,8 @@ img.smiley, img.icon {
 .newpost h2 {
     border-bottom-color: palevioletred;
 }
-@media screen {
-    .newpost {
-        box-shadow: 0 0 .25em palevioletred;
-    }
+.newpost {
+    box-shadow: 0 0 .25em palevioletred;
 }
 .headbox .active {
     color: whitesmoke;

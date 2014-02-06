@@ -34,14 +34,7 @@ body > div {
 .menu {
     margin-bottom: .25em;
 }
-.footerlinks {
-    margin-bottom: 0;
-}
-.footerlinks, .pages {
-    margin-top: .75em;
-}
 .pages {
-    margin-bottom: -1em;
     text-align: center;
 }
 .menu .linktext {
