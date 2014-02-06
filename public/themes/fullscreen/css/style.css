@@ -22,7 +22,7 @@ body > div {
     border: none;
 }
 .postbox > p {
-    margin: 1em 1.5em;
+    margin: .5em 1em;
 }
 .footerlinks, .pages, .menu {
     background: whitesmoke;
