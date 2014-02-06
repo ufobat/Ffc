@@ -57,11 +57,9 @@ body > div {
     background: white;
     box-shadow: none;
 }
-.postbox img {
-    border-color: silver;
-}
 .postbox .avatar {
-    border: none;
+    max-width: 6em;
+    max-height: 4em;
 }
 img.smiley, img.icon {
     width: auto;
