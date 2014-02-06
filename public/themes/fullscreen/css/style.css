@@ -50,10 +50,6 @@ body > div {
     border: none;
     color: white;
 }
-.info, .error, .options {
-    margin: .5em auto;
-    display: block;
-}
 .menu input[type="text"], input[type="text"], input[type="password"], textarea {
     background: white;
     box-shadow: none;
