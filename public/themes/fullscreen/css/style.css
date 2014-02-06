@@ -21,9 +21,6 @@ body > div {
     margin: .5em;
     border: none;
 }
-.postbox > p {
-    margin: .5em 1em;
-}
 .headbox > p {
     padding: 0;
 }
