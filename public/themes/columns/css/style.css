@@ -17,7 +17,8 @@ body {
 @media screen {
     .postbox {
         display: inline-block;
-        width: 38em;
+        min-width: 38em;
+        width: 30%;
     }
     body {
         width: auto;
