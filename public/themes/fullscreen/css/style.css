@@ -17,7 +17,7 @@ body {
     width: auto;
 }
 body > div {
-    padding: .5em;
+    padding: .25em .5em 1em .5em;
     margin: .5em;
     border: none;
 }
@@ -56,10 +56,6 @@ body > div {
 .menu input[type="text"], input[type="text"], input[type="password"], textarea {
     background: white;
     box-shadow: none;
-}
-.postbox .avatar {
-    max-width: 6em;
-    max-height: 4em;
 }
 img.smiley, img.icon {
     width: auto;
