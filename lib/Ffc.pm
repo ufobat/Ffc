@@ -15,9 +15,12 @@ sub startup {
     Ffc::Data::set_config($app);
 
     $app->helper( theme => sub { 
-        $Ffc::Data::FixTheme 
-            ? ( $Ffc::Data::Theme || 'default' )
-            : ( shift()->session()->{theme} || $Ffc::Data::Theme || 'default' )
+        my $s = shift()->session();
+        $s->{mobile}
+            ? 'fullscreen'
+            : $Ffc::Data::FixTheme 
+                ? ( $Ffc::Data::Theme || 'default' )
+                : ( $s->{theme} || $Ffc::Data::Theme || 'default' )
     } );
     $app->helper( bgcolor => sub { 
         $Ffc::Data::FixBgColor
