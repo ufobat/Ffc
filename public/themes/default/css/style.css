@@ -10,6 +10,10 @@ body {
 body > div {
     padding: .25em .5em 1em .5em;
     margin-top: .5em;
+    background: white;
+}
+body > div, .menu .active {
+    box-shadow: 0 0 .25em darkgray;
 }
 .attachementtitle {
     font-weight: normal;
@@ -56,7 +60,6 @@ a, .linkalike {
     background: none;
     font-size: 1em;
     font-family: sans-serif;
-    box-shadow: none;
 }
 a:hover, .linkalike:hover {
     color: dodgerblue;
@@ -67,9 +70,7 @@ a:hover, .linkalike:hover {
     text-align: right;
 }
 .pages, .menu, .footerlinks {
-    background: gainsboro;
-    border: none;
-    box-shadow: none;
+    background: whitesmoke;
     padding: .2em;
     white-space: nowrap;
     margin: 0;
@@ -77,8 +78,8 @@ a:hover, .linkalike:hover {
 .footerlinks, .pages {
     margin-top: .75em;
 }
-.pages {
-    margin-bottom: -1em;
+.footerlinks {
+    border-bottom-width: 0;
 }
 .menu, .footerlinks {
     text-align: center;
@@ -103,9 +104,6 @@ img.smiley, img.icon {
 }
 .postbox textarea:focus {
     height: 24em;
-}
-.postbox h2 a:hover img {
-    box-shadow: none;
 }
 .divider {
     display: none;
@@ -144,7 +142,6 @@ img.smiley, img.icon {
 }
 .menu input[type="text"] {
     width: 7.5em;
-    background: whitesmoke;
 }
 .menu button {
     border: none;
@@ -162,18 +159,14 @@ img.smiley, img.icon {
     padding: .5em .5em .75em .5em;
 }
 .menu .active, body > div, .menu .active:hover {
-    background: white;
     border: 1px lightslategray solid;
 }
-.menu .linktext {
+.menu, .menu .linktext {
     border-width: 0 1px 1px 1px;
 }
 .menu .active {
     border-color: slategray;
     background: whitesmoke;
-}
-.postbox {
-    box-shadow: 0 0 .25em darkgray;
 }
 .menu .active:hover {
     border-color: dodgerblue;

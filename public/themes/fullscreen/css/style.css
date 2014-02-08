@@ -1,68 +1,9 @@
 @import "../../default/css/style.css";
 
 body {
-    background: silver;
-    padding: 0;
-    margin: 0;
-    text-align: center;
-}
-.postbox {
-    text-align: left;
-    vertical-align: top;
-    box-shadow: none;
-}
-.postbox, body {
+    background-image: none;
     max-width: none;
     min-width: inherit;
     width: auto;
-}
-body > div {
-    padding: .25em .5em 1em .5em;
-    margin: .5em;
-    border: none;
-}
-.headbox > p {
-    padding: 0;
-}
-.footerlinks, .pages, .menu {
-    background: whitesmoke;
-    margin: 0;
-}
-.menu {
-    margin-bottom: .25em;
-}
-.pages {
-    text-align: center;
-}
-.menu .linktext {
-    padding: .2em;
-    border: none;
-}
-.menu .active, .menu .active:hover {
-    background: steelblue;
-    border: none;
-    color: white;
-}
-.menu input[type="text"], input[type="text"], input[type="password"], textarea {
-    background: white;
-    box-shadow: none;
-}
-img.smiley, img.icon {
-    width: auto;
-    height: auto;
-    vertical-align: text-top;
-}
-.activepost {
-    background: silver;
-}
-.activepost h2 {
-    border-bottom-color: gray;
-}
-.newpost {
-    box-shadow: none;
-}
-.newpost h2 {
-    border-bottom-color: pink;
-    background-color: pink;
 }
 
