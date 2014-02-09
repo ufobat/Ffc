@@ -16,7 +16,7 @@ use Ffc::Data;
 use Ffc::Data::Board::Views;
 use Ffc::Data::Board::Forms;
 
-use Test::More tests => 3795;
+use Test::More tests => 3723;
 
 srand;
 my $t = Test::General::test_prepare_frontend('Ffc');
@@ -287,6 +287,7 @@ qr~$start\s*$middle\s*$timestampre\s*$editlink\s*$deletelink\s*$attachelink\s*$e
                 note('testing buttons at posts');
                 if ( $act eq 'msgs' ) {
                     if ( !$users{$test->[1]}->{active} or ( $test->[2] and !$users{$test->[2]}->{active} ) ) {
+                        next;
                         $msglink = q();
                     }
                     my @user = map {
@@ -325,6 +326,7 @@ sub check_msgs {
     note('check user message system and correpsonding input forms and stuff');
     my @testcases = reverse grep {
         $_->[4] eq 'msgs'
+          and $users{$_->[1]}->{active}
           and ( $p->{user} and ( $_->[1] and $p->{user} eq $_->[1] )
             or ( $_->[2] and $p->{user} eq $_->[2] ) )
     } @testposts;
@@ -349,6 +351,7 @@ sub check_msgs {
     }
     note('check msgs_username system for single conversations');
     for my $user ( keys %actusers ) {
+        next unless $users{$user}{active};
         $t->get_ok("/msgs/user/$users{$user}{name}$autoreload")->status_is(200);
         $t->content_like(
                 qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*></textarea>~s);

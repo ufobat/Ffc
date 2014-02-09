@@ -121,12 +121,13 @@ sub get_userlist {
     my $userid = _get_userid( shift, 'Privatnachrichtennutzerliste' );
     my $sql = 'SELECT 
         u2.name,
-        (SELECT COUNT(p.id) AS cnt FROM '.$Ffc::Data::Prefix.'posts p WHERE p.user_to IS NOT NULL AND p.user_to = u1.id AND p.posted >= u1.lastseenmsgs AND p.user_from=u2.id),
+        COALESCE(c.num,0),
         u2.lastseen,
         u2.active
     FROM '.$Ffc::Data::Prefix.'users u2
     INNER JOIN '.$Ffc::Data::Prefix.'users u1 ON u1.id = ?
-    WHERE u2.id <> u1.id
+    LEFT OUTER JOIN (SELECT COUNT(p.id) AS num, p.user_from, p.user_to, MAX(p.posted) as posted FROM '.$Ffc::Data::Prefix.'posts p WHERE p.user_to IS NOT NULL GROUP BY p.user_from, p.user_to) AS c ON c.user_from = u2.id AND c.user_to = u1.id AND c.posted >= u1.lastseenmsgs
+    WHERE u2.id <> u1.id AND ( u2.active = 1 OR COALESCE(c.num,0) > 0 )
     ORDER BY u2.name';
     return [ map {$_->[2] = Ffc::Data::Formats::format_timestamp($_->[2]); $_} @{ Ffc::Data::dbh()->selectall_arrayref( $sql, undef, $userid ) } ];
 }

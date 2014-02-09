@@ -170,7 +170,7 @@ my @public = qw(
     templates/parts/footerlinks.html.ep
     templates/parts/attachement.html.ep
     templates/parts/info.html.ep
-    templates/parts/userlistlinks.html.ep
+    templates/parts/userlistlink.html.ep
     templates/parts/pagelinks.html.ep
     templates/parts/postbox.html.ep
     templates/auth

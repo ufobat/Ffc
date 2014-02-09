@@ -7,14 +7,12 @@
 Seite <%= $page %>,
 <a href="<%= url_for_me 'show_page', page => 1 %>" title="Zur ersten Seite zur&uuml;ck gehen">zur&uuml;ck zur ersten Seite</a>
 % }
-% if ( $act eq 'msgs' ) {
-%= include 'parts/userlistlinks'
-% }
-% if ( $act eq 'forum' and 0 < $#$categories ) {
+% if ( @$headerlinklist ) {
 <p>
 %   my $counter = 0;
-%   for ( @$categories ) { $counter++;
-   <%== $counter > 1 ? '/ ' : '' %><%= include 'parts/categorylink', cat => $_ %>
+%   for ( @$headerlinklist ) { $counter++;
+%= $counter > 1 ? '/ ' : ''
+%= include 'parts/'.$headerlinktemplate.'link', dat => $_
 %   }
 </p>
 % }

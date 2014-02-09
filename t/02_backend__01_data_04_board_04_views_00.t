@@ -14,9 +14,10 @@ use Ffc::Data::Formats;
 use Ffc::Data::Auth;
 use Ffc::Data::Board;
 use Ffc::Data::Board::Forms;
+use Ffc::Data::Board::OptionsAdmin;
 srand;
 
-use Test::More tests => 379;
+use Test::More tests => 382;
 
 Test::General::test_prepare();
 
@@ -728,9 +729,11 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
 {
     note('test the privmsgs-userarray');
     my $code = \&Ffc::Data::Board::Views::get_userlist;
+    my $uadmin = Mock::Testuser->new_active_admin();
     my $user_s = Mock::Testuser->new_active_user();
     my $user_a = Mock::Testuser->new_active_user();
     my $user_i = Mock::Testuser->new_inactive_user();
+    my $user_ia = Mock::Testuser->new_active_user();
     my $time = Ffc::Data::Formats::format_timestamp(Ffc::Data::dbh()->selectall_arrayref('SELECT u.lastseen FROM '.$Ffc::Data::Prefix.'users u WHERE u.name=?', undef, $user_a->{name})->[0]->[0]);
     
     check_call(
@@ -751,19 +754,24 @@ qq{sub $name( \$username, \$page, \$search, \$category, \$controller )}
     {
         my $ret = $code->($user_s->{name});
         ok(!grep({;$user_s->{name} eq $_->[0]} @$ret),  'session user not in user list');
+        ok( grep({;$uadmin->{name} eq $_->[0]} @$ret), 'active admin in user list');
         ok( grep({;$user_a->{name} eq $_->[0]} @$ret), 'active users in user list');
         ok( grep({;$user_a->{name} eq $_->[0] and $_->[3]} @$ret), 'active users in user list and marked as active');
-        ok( grep({;$user_i->{name} eq $_->[0]} @$ret), 'inactive users in user list');
-        ok( grep({;$user_i->{name} eq $_->[0] and not $_->[3] } @$ret), 'inactive users in user list and marked as inactive');
-        #ok(!grep({;$user_i->{name} eq $_->[0]} @$ret), 'inactive users not in user list'); # all users are in the list, just in case for old msgs
+        ok(!grep({;$user_i->{name} eq $_->[0]} @$ret), 'inactive users not in user list');
     }
     sleep 1.1;
     {
-        my $cnt = 10 + int rand 30;
-        Ffc::Data::Board::Forms::insert_post($user_a->{name}, Test::General::test_r(), undef, $user_s->{name}) for 1 .. $cnt;
+        my $cnt_a = 10 + int rand 30;
+        my $cnt_ia = 10 + int rand 30;
+        Ffc::Data::Board::Forms::insert_post($user_ia->{name}, Test::General::test_r(), undef, $user_s->{name}) for 1 .. $cnt_ia;
+        Ffc::Data::Board::OptionsAdmin::admin_update_active($uadmin->{name}, $user_ia->{name}, 0);
+        Ffc::Data::Board::Forms::insert_post($user_a->{name}, Test::General::test_r(), undef, $user_s->{name}) for 1 .. $cnt_a;
         my $ret = $code->($user_s->{name});
-        is((grep({;$user_a->{name} eq $_->[0]} @$ret))[0][1], $cnt, 'count in user list correct');
+        is((grep({;$user_a->{name} eq $_->[0]} @$ret))[0][1], $cnt_a, 'count for messages of active users in user list correct');
+        is((grep({;$user_ia->{name} eq $_->[0]} @$ret))[0][1], $cnt_ia, 'count for messages of inactive users in user list correct');
         is((grep({;$user_a->{name} eq $_->[0]} @$ret))[0][2], $time, 'timestamp in user list correct');
+        ok( grep({;$user_ia->{name} eq $_->[0]} @$ret), 'inactive users with unread posts in user list');
+        ok( grep({;$user_ia->{name} eq $_->[0] and not $_->[3]} @$ret), 'inactive users with unread posts in user list marked as inactive');
     }
 }
 

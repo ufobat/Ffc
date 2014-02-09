@@ -66,7 +66,6 @@ sub frontpage {
         $posts = Ffc::Data::Board::Views::get_notes(@params);
     }
     elsif ( $act eq 'msgs' ) {
-        $c->stash(userlist => Ffc::Data::Board::Views::get_userlist($user));
         $posts = Ffc::Data::Board::Views::get_msgs(@params,$msgs_username);
     }
     else {
@@ -81,9 +80,15 @@ sub frontpage {
     }
     $c->stash( posts => $posts);
     $c->get_counts;
-    $c->stash( categories => ($act eq 'forum') 
-            ? Ffc::Data::Board::Views::get_categories($user) 
-            : [] );
+    my ( $hll, $hlt ) = 
+        ($act eq 'forum')
+            ? (Ffc::Data::Board::Views::get_categories($user), 'category')
+            : ($act eq 'msgs')
+                ? (Ffc::Data::Board::Views::get_userlist($user), 'userlist')
+                : ([], '');
+    $hll = [] if $act eq 'forum' and @$hll <= 1;
+    $c->stash( headerlinklist => $hll );
+    $c->stash( headerlinktemplate => $hlt );
     $c->stash( footerlinks => $Ffc::Data::Footerlinks );
     if ( Ffc::Data::Board::update_user_stats($user, $act, $cat) ) {
         $c->render('board/frontpage');

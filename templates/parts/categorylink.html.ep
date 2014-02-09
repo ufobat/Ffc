@@ -1,5 +1,7 @@
-% if ( $act eq 'forum' and not ( $category or $cat->[1] ) or ( $category and $category eq $cat->[1] ) ) {
-<span class="active"><%= $cat->[0] . ( $cat->[2] ? " ($cat->[2])" : '' ) %></span>
+% if ( $act eq 'forum' and not ( $category or $dat->[1] ) or ( $category and $category eq $dat->[1] ) ) {
+<span class="active"><%= $dat->[0] . ( $dat->[2] ? " ($dat->[2])" : '' ) %></span>
+% } elsif ( $post and exists $post->{id} ) {
+<%= $dat->[0] %><% if ($dat->[2]) { %> (<span class="mark"><%= $dat->[2] %></span>)<% } %>
 % } else {
-<a href="<%= url_for_me 'show', category => $cat->[1] %>" title="Beiträge der Kategorie &quot;<%= $cat->[0] %>&quot; anzeigen" class="category<%== $cat->[1] ? " category_$cat->[1]" : '' %><%== $cat->[2] ? ' newposts' : '' %>"><%= $cat->[0] %><% if ($cat->[2]) { %> (<span class="mark"><%= $cat->[2] %></span>)<% } %></a>
+<a href="<%= url_for_me 'show', category => $dat->[1] %>" title="Beiträge der Kategorie &quot;<%= $dat->[0] %>&quot; anzeigen" class="category<%== $dat->[1] ? " category_$dat->[1]" : '' %><%== $dat->[2] ? ' newposts' : '' %>"><%= $dat->[0] %><% if ($dat->[2]) { %> (<span class="mark"><%= $dat->[2] %></span>)<% } %></a>
 % }
