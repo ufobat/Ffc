@@ -12,8 +12,6 @@ body > div {
     margin-right: .5em;
 }
 .menu, .footerlinks, .pages {
-    border-left-width: 0;
-    border-right-width: 0;
     margin-left: 0;
     margin-right: 0;
 }

@@ -66,22 +66,26 @@ a:hover, .linkalike:hover {
     text-decoration: none;
     cursor: pointer;
 }
-.pages {
-    text-align: right;
-}
 .pages, .menu, .footerlinks {
     background: whitesmoke;
-    padding: 0;
+    padding: .2em;
     margin: 0;
 }
+.pages {
+    text-align: right;
+    margin-bottom: -.5em;
+}
 .footerlinks, .pages {
-    margin-top: .75em;
+    margin-top: .5em;
 }
 .footerlinks {
-    border-bottom-width: 0;
+    padding-bottom: 0;
 }
 .menu, .footerlinks {
     text-align: center;
+}
+.menu {
+    padding-top: .1em;
 }
 form {
     display: inline;
@@ -157,6 +161,10 @@ img.smiley, img.icon {
 .menu .active, body > div, .menu .active:hover {
     border: 1px lightslategray solid;
 }
+.menu, .footerlinks, .pages {
+    box-shadow: none;
+    border: none;
+}
 .menu, .menu .linktext {
     border-width: 0 1px 1px 1px;
 }
@@ -171,6 +179,7 @@ img.smiley, img.icon {
     border-color: palevioletred;
 }
 .newpost h2 {
+    background: mistyrose;
     border-bottom-color: palevioletred;
 }
 .newpost {
