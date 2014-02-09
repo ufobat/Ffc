@@ -12,9 +12,9 @@ body > div {
     margin-top: .5em;
     background: white;
 }
-body > div, .menu .active {
+/* body > div, .menu .active {
     box-shadow: 0 0 .25em darkgray;
-}
+} */
 .attachementtitle {
     font-weight: normal;
 }
@@ -43,9 +43,9 @@ input, textarea, select {
     background: white;
     color: #006;
 }
-input[type="text"], input[type="password"], textarea {
+/* input[type="text"], input[type="password"], textarea {
     box-shadow: inset 0 0 .1em silver;
-}
+} */
 input:hover, textarea:hover, select:hover {
     border-color: steelblue;
 }
@@ -68,12 +68,12 @@ a:hover, .linkalike:hover {
 }
 .pages, .menu, .footerlinks {
     background: whitesmoke;
-    padding: .2em;
     margin: 0;
 }
 .pages {
     text-align: right;
     margin-bottom: -.5em;
+    padding: .2em;
 }
 .footerlinks, .pages {
     margin-top: .5em;
@@ -85,7 +85,7 @@ a:hover, .linkalike:hover {
     text-align: center;
 }
 .menu {
-    padding-top: .1em;
+    padding: .1em .2em;
 }
 form {
     display: inline;
@@ -162,14 +162,13 @@ img.smiley, img.icon {
     border: 1px lightslategray solid;
 }
 .menu, .footerlinks, .pages {
-    box-shadow: none;
-    border: none;
+    /* box-shadow: none; */
+    border-color: whitesmoke;
 }
 .menu, .menu .linktext {
     border-width: 0 1px 1px 1px;
 }
 .menu .active {
-    border-color: slategray;
     background: whitesmoke;
 }
 .menu .active:hover {
@@ -182,9 +181,9 @@ img.smiley, img.icon {
     background: mistyrose;
     border-bottom-color: palevioletred;
 }
-.newpost {
+/* .newpost {
     box-shadow: 0 0 .25em palevioletred;
-}
+} */
 .headbox .active {
     color: whitesmoke;
     background: steelblue;
