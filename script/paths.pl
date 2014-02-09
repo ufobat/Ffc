@@ -111,10 +111,10 @@ my @public = qw(
     public/custom
     public/custom/custom_static_content_placed_here
     public/themes
-    public/themes/fullscreen
-    public/themes/fullscreen/css
-    public/themes/fullscreen/css/style.css
-    public/themes/fullscreen/img
+    public/themes/mobil
+    public/themes/mobil/css
+    public/themes/mobil/css/style.css
+    public/themes/mobil/img
     public/themes/default
     public/themes/default/css
     public/themes/default/css/style.css
@@ -150,7 +150,6 @@ my @public = qw(
     public/themes/default/img/smileys/twinkling.png
     public/themes/default/img/smileys/laughting.png
     public/themes/README.pod
-    public/mobile.css
     script
     templates
     templates/layouts
