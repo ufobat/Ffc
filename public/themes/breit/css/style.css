@@ -8,11 +8,7 @@ body {
     padding: 0;
 }
 body > div {
-    margin-left: .5em;
-    margin-right: .5em;
-}
-.menu, .footerlinks, .pages {
-    margin-left: 0;
-    margin-right: 0;
+    border-left-width: 0;
+    border-right-width: 0;
 }
 
