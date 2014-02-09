@@ -1,6 +1,6 @@
 body {
     margin: 0 auto;
-    padding: 0 8px;
+    padding: 0 .5em;
     background: gainsboro;
     font-family: sans-serif;
     color: black;
@@ -71,7 +71,7 @@ a:hover, .linkalike:hover {
 }
 .pages, .menu, .footerlinks {
     background: whitesmoke;
-    padding: .1em;
+    padding: 0;
     margin: 0;
 }
 .footerlinks, .pages {

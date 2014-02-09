@@ -5,5 +5,16 @@ body {
     max-width: none;
     min-width: inherit;
     width: auto;
+    padding: 0;
+}
+body > div {
+    margin-left: .5em;
+    margin-right: .5em;
+}
+.menu, .footerlinks, .pages {
+    border-left-width: 0;
+    border-right-width: 0;
+    margin-left: 0;
+    margin-right: 0;
 }
 
