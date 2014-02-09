@@ -71,7 +71,7 @@ a:hover, .linkalike:hover {
 }
 .pages, .menu, .footerlinks {
     background: whitesmoke;
-    padding: .2em;
+    padding: .1em;
     margin: 0;
 }
 .footerlinks, .pages {
@@ -136,9 +136,6 @@ img.smiley, img.icon {
 .postbox h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons {
     font-size: .75em;
 }
-.menu {
-    margin-bottom: 1em;
-}
 .menu input[type="text"] {
     width: 7.5em;
 }
@@ -155,7 +152,7 @@ img.smiley, img.icon {
 .menu .linktext {
     border-color: transparent;
     border-style: solid;
-    padding: .5em .5em .75em .5em;
+    padding: .5em;
 }
 .menu .active, body > div, .menu .active:hover {
     border: 1px lightslategray solid;
