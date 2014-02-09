@@ -111,10 +111,10 @@ my @public = qw(
     public/custom
     public/custom/custom_static_content_placed_here
     public/themes
-    public/themes/mobil
-    public/themes/mobil/css
-    public/themes/mobil/css/style.css
-    public/themes/mobil/img
+    public/themes/breit
+    public/themes/breit/css
+    public/themes/breit/css/style.css
+    public/themes/breit/img
     public/themes/default
     public/themes/default/css
     public/themes/default/css/style.css

@@ -17,7 +17,7 @@ sub startup {
     $app->helper( theme => sub { 
         my $s = shift()->session();
         $s->{mobile}
-            ? 'mobil'
+            ? 'breit'
             : $Ffc::Data::FixTheme 
                 ? ( $Ffc::Data::Theme || 'default' )
                 : ( $s->{theme} || $Ffc::Data::Theme || 'default' )
