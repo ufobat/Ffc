@@ -85,15 +85,13 @@ sub startup {
     } );
 
     # Router
-    my $routes = $self->routes;
-
-    # Normal route to controller
-    $routes->route('/login')->via('post')->to('auth#login')->name('login');
+    my $routes = $self->routes();
 
     my $loggedin = $routes->under(sub{
         my $c = shift;
         unless ( Ffc::Auth::check_login($c) ) {
-            return Ffc::Auth::logout( $c, 'Bitte melden Sie sich an' );
+            Ffc::Auth::logout( $c, 'Bitte melden Sie sich an' );
+            return undef;
         }
 
         my $act = $c->param('act') // 'forum';
@@ -112,20 +110,19 @@ sub startup {
 
         my $cat = $c->param('category') // '';
         $c->stash(category => $cat);
-
         return 1;
-    });
+    })->name('loggedin_bridge');
 
     # logged in
-    $loggedin->route('/logout')->to('auth#logout')->name('logout');
     $loggedin->route('/')->to('board#frontpage')->name('frontpage');
+    $loggedin->route('/logout')->to('auth#logout')->name('logout');
     $loggedin->route('/settings')->to('auth#settings')->name('settings');
 
     # display help
     $loggedin->route('/help')->to('board#help')->name('help');
 
     # options
-    my $options = $loggedin->route('/options');
+    my $options = $loggedin->route('/options')->name('options_bridge');
     $options->route('/')->via('get')->to('board#options_form')->name('options_form');
     $options->route('/mobile')->via('get')->to('board#options_mobile')->name('options_set_mobile');
     $options->route('/desktop')->via('get')->to('board#options_desktop')->name('options_set_desktop');
@@ -165,26 +162,26 @@ sub startup {
 
         # file uploads
         {
-            my $upload = $r->route('/upload');
+            my $upload = $r->route('/upload')->name("upload_bridge$name");
             $upload->route('/show/:postid/:number', postid => qr(\d+), number => qr(\d+))->via('get')->to('board#get_attachement')->name("upload_show$name");
 
-            my $uploadadd = $upload->route('/add');
+            my $uploadadd = $upload->route('/add')->name("add_bridge$name");
             $uploadadd->route('/:postid', postid => qr(\d+))->via('get')->to('board#upload_form')->name("upload_form$name");
             $uploadadd->route('/:postid', postid => qr(\d+))->via('post')->to('board#upload')->name("upload$name");
             
-            my $uploaddelete = $upload->route('/delete/:postid', postid => qr(\d+));
+            my $uploaddelete = $upload->route('/delete/:postid', postid => qr(\d+))->name("upload_delete_bridge$name");
             $uploaddelete->route('/:number', number => qr(\d+))->via('get')->to('board#upload_delete_check')->name("upload_delete_check$name");
             $uploaddelete->route('/:number', number => qr(\d+))->via('post')->to('board#upload_delete')->name("upload_delete$name");
         }
 
         if ( $name ne '_msgs' ) { # private messages are immutable
             # update something
-            my $edit = $r->route('/edit');
+            my $edit = $r->route('/edit')->name("edit_bridte$name");
             $edit->route('/:postid', postid => qr(\d+))->via('get' )->to('board#edit_form')->name("edit_form$name");
             $edit->route('/:postid', postid => qr(\d+))->via('post')->to('board#update_post'  )->name("update_post$name");
 
             # delete something
-            my $delete = $r->route('/delete');
+            my $delete = $r->route('/delete')->name("delete_bridge$name");
             $delete->route('/:postid', postid => qr(\d+))->via('get')->to('board#delete_check')->name("delete_check$name");
             $delete->route('/')->via('post')->to('board#delete_post')->name("delete_post$name");
         }
@@ -193,7 +190,7 @@ sub startup {
     });
 
     # context
-    my $act = $loggedin->route('/:act', act => [qw(forum notes msgs)]);
+    my $act = $loggedin->route('/:act', act => [qw(forum notes msgs)])->name('act_bridge');
 
     # just the actual frontpage
     $act->complete_set();
@@ -206,6 +203,8 @@ sub startup {
     my $category = $act->route('/category/:category', category => $Ffc::Data::CategoryRegex)->name('category_bridge');
     $category->complete_set('category');
 
+    # you should be able to login without being logged in allready
+    $routes->route('/login')->via('post')->to('auth#login')->name('login');
 }
 
 1;

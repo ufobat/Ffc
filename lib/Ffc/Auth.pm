@@ -46,7 +46,7 @@ sub check_login {
     if ( my $s = $self->session ) {
         if ( $s->{user} ) {
             $self->session( expiration => $Ffc::Data::SessionTimeout );
-            return _set_settings($self) ? 1 : 0;
+            return _set_settings($self);
         }
     }
     return 0;
@@ -56,7 +56,7 @@ sub _set_settings {
     my $self = shift;
     my $s    = $self->session();
     my $user = $s->{user};
-    my @settings = Ffc::Data::Auth::get_usersettings( $user );
+    my @settings; # = Ffc::Data::Auth::get_usersettings( $user );
     Ffc::Errors::handle( $self, sub { @settings = Ffc::Data::Auth::get_usersettings( $user ) }, 'Benutzereinstellungen konnten nicht ermittelt werden, bitte melden Sie sich erneut an.' );
     return 0 unless @settings;
     $s->{admin}       = $settings[0],

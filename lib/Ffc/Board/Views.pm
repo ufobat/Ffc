@@ -29,7 +29,7 @@ sub get_params {
 sub frontpage {
     my $c = shift;
     my $s = $c->session;
-    my $act = $c->stash('act') // 'forum';
+    my $act = $c->stash('act') || 'forum';
     my ( $userp, $page, $query, $msgs_username, $cat ) = $c->get_params();           
 
     {
@@ -92,6 +92,9 @@ sub frontpage {
     $c->stash( footerlinks => $Ffc::Data::Footerlinks );
     if ( Ffc::Data::Board::update_user_stats($user, $act, $cat) ) {
         $c->render('board/frontpage');
+    }
+    else {
+        die 'Noooooo! Something terrible happened';
     }
 }
 
