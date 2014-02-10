@@ -11,6 +11,7 @@ body > div {
     padding: .25em .5em 1em .5em;
     margin-top: .5em;
     background: white;
+    border: 1px lightslategray solid;    
 }
 /* body > div, .menu .active {
     box-shadow: 0 0 .25em darkgray;
@@ -66,14 +67,26 @@ a:hover, .linkalike:hover {
     text-decoration: none;
     cursor: pointer;
 }
+.active {
+    background: steelblue;
+    text-decoration: none;
+    color: white;
+}
+.active:hover {
+    background: dodgerblue;
+}
+
 .pages, .menu, .footerlinks {
     background: whitesmoke;
+    border-color: whitesmoke;
+    border-style: solid;
+    border-width: 0 1px;
     margin: 0;
+    padding: .2em;
 }
 .pages {
     text-align: right;
     margin-bottom: -.5em;
-    padding: .2em;
 }
 .footerlinks, .pages {
     margin-top: .5em;
@@ -154,25 +167,7 @@ img.smiley, img.icon {
     margin: 0;
 }
 .menu .linktext {
-    border-color: transparent;
-    border-style: solid;
-    padding: .5em;
-}
-.menu .active, body > div, .menu .active:hover {
-    border: 1px lightslategray solid;
-}
-.menu, .footerlinks, .pages {
-    /* box-shadow: none; */
-    border-color: whitesmoke;
-}
-.menu, .menu .linktext {
-    border-width: 0 1px 1px 1px;
-}
-.menu .active {
-    background: whitesmoke;
-}
-.menu .active:hover {
-    border-color: dodgerblue;
+    padding: .25em .5em;
 }
 .newpost {
     border-color: palevioletred;
@@ -267,9 +262,6 @@ textarea.update_post {
 }
 a:focus, .linkalike:focus {
     color: gainsboro;
-}
-.menu a:focus {
-    color: lightsteelblue;
 }
 .send, .headbox .username {
     font-weight: bolder;

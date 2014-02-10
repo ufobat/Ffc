@@ -171,11 +171,10 @@ sub check_categories {
         my $c = $cats->{$k}->[1];
         if ( $k eq $cat ) {
             if ($c) {
-                $t->content_like(
-                    qr~<span class="active">\s*$e\s+\($c\)\s*</span>~);
+                $t->content_like(qr~active">$e \(<span class="mark">$c</span>\)</a>~);
             }
             else {
-                $t->content_like(qr~<span class="active">\s*$e\s*</span>~);
+                $t->content_like(qr~active">\s*$e\s*</a>~);
             }
         }
         else {
@@ -355,7 +354,7 @@ sub check_msgs {
         $t->get_ok("/msgs/user/$users{$user}{name}$autoreload")->status_is(200);
         $t->content_like(
                 qr~<textarea\s+name="post"\s+id="textinput"\s+class="(?:insert|update)_post"\s*></textarea>~s);
-        $t->content_like(qr~<span\s+class="active(?:\s+inactive)?">\s*<span\s+class="username">\s*$users{$user}{name}\s*</span>\s+<span\s+class="userinfo">\s*\(\s*$timestampre\s*\)\s*</span>\s*</span>~) if $p->{msgs_users}->{$users{$user}{name}};
+        $t->content_like(qr~active(?:\s+inactive)?">\s*<span\s+class="username">\s*$users{$user}{name}\s*</span>\s+<span\s+class="userinfo">\s*\(\s*$timestampre\s*\)\s*</span>\s*</a>~) if $p->{msgs_users}->{$users{$user}{name}};
         my @testcases = grep { $_->[1] eq $user or $_->[2] eq $user } @testcases;
         check_pages( \@testcases, $t, $u, $p, $cat, $sleep, $act, $user ) unless $autoreload;
     }
@@ -387,13 +386,13 @@ sub check_check {
         }
         $t->get_ok("/notes$autoreload")->status_is(200);
         $t->get_ok("/forum$autoreload")->status_is(200);
-        $t->content_like(qr{<span class="active">Kategorie \&quot;$Test::General::Categories[-1][2]\&quot;});
+        $t->content_like(qr{active">Kategorie \&quot;$Test::General::Categories[-1][2]\&quot;});
         {
             my $i = 1 + int rand @Test::General::Categories - 2;
             $t->get_ok("/forum/category/$Test::General::Categories[$i][2]$autoreload")->status_is(200);
             $t->get_ok("/notes$autoreload")->status_is(200);
             $t->get_ok("/forum$autoreload")->status_is(200);
-            $t->content_like(qr{<span class="active">Kategorie \&quot;$Test::General::Categories[$i][2]\&quot;});
+            $t->content_like(qr{active">Kategorie \&quot;$Test::General::Categories[$i][2]\&quot;});
         }
         $t->get_ok("/forum$autoreload")->status_is(200);
     }
