@@ -13,7 +13,7 @@
     <a href="<%= url_for 'options_form' %>" title="Verschiedene Einstellungen für diese Plattform den eigenen Wünschen anpassen"><span class="linktext linkoptions<%= $act eq 'options' ? ' active activeoptions' : '' %>">Optionen</span></a>
     <span class="divider">-</span>
 % if ( session()->{mobile} ) {
-    <a href="<%= url_for 'options_set_desktop' %>" title="Diese Webseite wird wieder so angezeigt, wie es voreingestellt war entweder vom Administrator der Webseite oder in den Optionen unter Anzeigethema. Im letzeren Fall wird derzeit für dieses Gerät im Moment das Anzeigethema &quot;breit&quot; angezeigt, welches in den Optionen auch für alle Geräte dauerhaft eingestellt werden kann, falls das vom Administrator erlaubt ist."><span class="linktext">normal</span></a>
+    <a href="<%= url_for 'options_set_desktop' %>" title="Diese Webseite wird wieder so angezeigt, wie es voreingestellt war entweder vom Administrator der Webseite oder in den Optionen unter Anzeigethema. Im letzeren Fall wird derzeit für dieses Gerät im Moment das Anzeigethema &quot;breit&quot; angezeigt, welches in den Optionen auch für alle Geräte dauerhaft eingestellt werden kann, falls das vom Administrator erlaubt ist."><span class="linktext">schmal</span></a>
 % } else {
     <a href="<%= url_for 'options_set_mobile' %>" title="Diese Webseite über die gesamte Breite des Bildschirmfensters anzeigen, um ggf. Problemen auf mobilen Kleinstgeräten zu begegnen. Diese Einstellung gilt nur für das Gerät, kann aber in den Optionen dauerhaft auch für andere Geräte geändert werden, indem man dort das Anzeigethema &quot;breit&quot; auswählt."><span class="linktext">breit</span></a>
 % }
