@@ -199,9 +199,9 @@ sub processpath {
 }
 
 say '   #### plublic executable files';
-processpath(\@publicexec, '750', '750');
+processpath(\@publicexec, '755', '755');
 say '   #### plublic readable files and directories';
-processpath(\@public,     '750', '640');
+processpath(\@public,     '755', '644');
 say '   #### closed executables files';
 processpath(\@closedexec, '700', '700');
 say '   #### closed readable files and directories';
