@@ -29,7 +29,7 @@ sub get_params {
 sub frontpage {
     my $c = shift;
     my $s = $c->session;
-    my $act = $c->stash('act');
+    my $act = $c->stash('act') // 'forum';
     my ( $userp, $page, $query, $msgs_username, $cat ) = $c->get_params();           
 
     {
