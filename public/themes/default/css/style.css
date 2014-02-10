@@ -69,10 +69,10 @@ a:hover, .linkalike:hover {
 }
 .active {
     background: steelblue;
-    text-decoration: none;
     color: white;
+    text-decoration: none;
 }
-.active:hover {
+.active:hover, a.active:hover {
     background: dodgerblue;
 }
 
@@ -82,7 +82,7 @@ a:hover, .linkalike:hover {
     border-style: solid;
     border-width: 0 1px;
     margin: 0;
-    padding: .2em;
+    padding: 0;
 }
 .pages {
     text-align: right;
@@ -96,9 +96,6 @@ a:hover, .linkalike:hover {
 }
 .menu, .footerlinks {
     text-align: center;
-}
-.menu {
-    padding: .1em .2em;
 }
 form {
     display: inline;
@@ -163,11 +160,8 @@ img.smiley, img.icon {
     padding-left: 0;
     padding-right: 0;
 }
-.menu > * {
-    margin: 0;
-}
 .menu .linktext {
-    padding: .25em .5em;
+    padding: .1em .5em;
 }
 .newpost {
     border-color: palevioletred;
