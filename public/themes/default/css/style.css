@@ -147,7 +147,7 @@ img.smiley, img.icon {
     padding: .25em .5em;
     margin: 0;
 }
-.postbox h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons {
+.postbox h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
     font-size: .75em;
 }
 .menu input[type="text"] {
@@ -217,9 +217,6 @@ img.smiley, img.icon {
 }
 .emotion:before { content:"*" }
 .emotion:after  { content:"*" }
-.postbox .username {
-    font-weight: bolder;
-}
 .activepost {
     background: gainsboro;
 }
@@ -257,10 +254,7 @@ textarea.update_post {
 a:focus, .linkalike:focus {
     color: gainsboro;
 }
-.send, .headbox .username {
-    font-weight: bolder;
-}
-a.newposts {
+.send, a.newposts, .postbox h2 .username {
     font-weight: bolder;
 }
 
