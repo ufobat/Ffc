@@ -86,10 +86,9 @@ sub _get_relevant_data {
     return $self->_set_settings() ? 1 : 0;
 }
 
-sub settings {
+sub session_data_json {
     my $c = shift;
-    my $s = $c->session();
-    $c->render( json => { map { $_ => $s->{$_} } qw(admin show_images theme bgcolor fontsize) });
+    $c->render( json => $c->session() );
 }
 
 1;

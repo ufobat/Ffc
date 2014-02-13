@@ -116,7 +116,7 @@ sub startup {
     # logged in
     $loggedin->route('/')->to('board#frontpage')->name('frontpage');
     $loggedin->route('/logout')->to('auth#logout')->name('logout');
-    $loggedin->route('/settings')->to('auth#settings')->name('settings');
+    $loggedin->route('/session')->to('auth#session_data_json')->name('session_data_json');
 
     # display help
     $loggedin->route('/help')->to('board#help')->name('help');
