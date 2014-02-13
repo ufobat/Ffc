@@ -53,3 +53,28 @@ CREATE TABLE IF NOT EXISTS `${Prefix}users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=149 ;
+
+CREATE VIEW `${Prefix}vw_posts` AS
+  SELECT p.id AS id, p.textdata as textdata, p.posted as posted, 
+       c.name as cat, COALESCE(c.short,'') as catshort,
+       f.id as f_id, f.name as f_name, f.active as f_active,
+       t.id as t_id, t.name as t_name, t.active as t_active,
+       f.avatar as f_avatar,
+       CASE WHEN f.id = t.id OR f.id = u.id
+            THEN 0
+            ELSE CASE WHEN t.id IS NOT NULL
+                      THEN CASE WHEN p.altered >= t.lastseenmsgs THEN 1 ELSE 0 END
+                      ELSE CASE WHEN p.category IS NULL
+                                THEN CASE WHEN p.altered >= u.lastseenforum THEN 1 ELSE 0 END
+                                ELSE CASE WHEN p.altered >= l.lastseen THEN 1 ELSE 0 END
+                           END
+                 END
+       END as new, u.id as user_id
+  FROM             ${Prefix}posts         p
+  INNER       JOIN ${Prefix}users         u
+  INNER       JOIN ${Prefix}users         f ON f.id = p.user_from
+  LEFT  OUTER JOIN ${Prefix}users         t ON t.id = p.user_to
+  LEFT  OUTER JOIN ${Prefix}categories    c ON c.id = p.category
+  LEFT  OUTER JOIN ${Prefix}lastseenforum l ON c.id = l.category AND l.userid = u.id
+  ORDER BY p.id DESC
+;

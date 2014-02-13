@@ -162,7 +162,7 @@ sub get_notes {
     my @params = @_[0..4];
     $params[2] = undef;
     $params[3] = undef;
-    return _get_stuff( 'notes', $userid, @params, 'p.user_from=? AND p.user_to=p.user_from', $userid );
+    return _get_stuff( 'notes', $userid, @params, 'f_id=? AND t_id=f_id', $userid );
 }
 sub get_forum { 
     my $userid = _get_userid( shift, 'Forenbeiträge' );
@@ -174,15 +174,15 @@ sub get_forum {
     else {
         $params[3] = undef;
     }
-    return _get_stuff( 'forum', $userid, @params, 'p.user_to IS NULL' );
+    return _get_stuff( 'forum', $userid, @params, 't_id IS NULL' );
 }
 sub get_msgs  {
     my $userid = _get_userid( shift, 'Privatnachrichtenliste' );
     my @params = ( $userid, $userid );
-    my $where = '( p.user_from=? OR p.user_to=? ) AND p.user_from <> p.user_to';
+    my $where = '( f_id=? OR t_id=? ) AND f_id <> t_id';
     if ( $_[2] ) {
         my $userid = _get_userid( $_[2] );
-        $where .= ' AND ( p.user_from=? OR p.user_to=? )';
+        $where .= ' AND ( f_id=? OR t_id=? )';
         push @params, $userid, $userid;
     }
     my @params2 = @_[0..4];
@@ -199,7 +199,7 @@ sub get_post {
     croak q{Ungültige ID für den Beitrag angegeben} unless $postid =~ m/\A\d+\z/xms;
     my $userid = _get_userid( shift );
     my $where = << 'EOWHERE';
-    p.id=? AND f.id=u.id
+    id=? AND f_id=user_id
 EOWHERE
     my @params = @_[ 0 .. 4 ];
     #die Data::Dumper::Dumper({act => $act, userid => $userid, params => [@params[0..3]], where => $where, postid => $postid});
@@ -240,33 +240,19 @@ sub _get_stuff {
     my $user   = $c->session->{user};
     if ( $query ) {
         push @params, "\%$query\%";
-        $q = q{AND UPPER(p.textdata) LIKE UPPER(?)};
+        $q = q{AND UPPER(textdata) LIKE UPPER(?)};
     }
     my $sql = << "EOSQL";
-SELECT p.id, p.textdata, p.posted, 
-       c.name, COALESCE(c.short,''),
-       f.id, f.name, f.active,
-       t.id, t.name, t.active,
-       f.avatar,
-       CASE WHEN f.id = t.id OR f.id = u.id
-            THEN 0
-            ELSE CASE WHEN t.id IS NOT NULL
-                      THEN CASE WHEN p.altered >= t.lastseenmsgs THEN 1 ELSE 0 END
-                      ELSE CASE WHEN p.category IS NULL
-                                THEN CASE WHEN p.altered >= u.lastseenforum THEN 1 ELSE 0 END
-                                ELSE CASE WHEN p.altered >= l.lastseen THEN 1 ELSE 0 END
-                           END
-                 END
-       END
-  FROM             ${p}posts         p
-  INNER       JOIN ${p}users         u ON u.id = ?
-  INNER       JOIN ${p}users         f ON f.id = p.user_from
-  LEFT  OUTER JOIN ${p}users         t ON t.id = p.user_to
-  LEFT  OUTER JOIN ${p}categories    c ON c.id = p.category
-  LEFT  OUTER JOIN ${p}lastseenforum l ON c.id = l.category AND l.userid = u.id
-  WHERE $where $q
-    AND ( c.short = ? OR ( ( ? = '' OR ? IS NULL ) AND p.category IS NULL) )
-  ORDER BY p.posted DESC, p.id DESC LIMIT ? OFFSET ?
+SELECT id, textdata, posted, 
+       cat, catshort,
+       f_id, f_name, f_active,
+       t_id, t_name, t_active,
+       f_avatar, new
+  FROM ${p}vw_posts
+  WHERE user_id = ?
+    AND $where $q
+    AND ( catshort = ? OR ( ( ? = '' OR ? IS NULL ) AND cat IS NULL) )
+  LIMIT ? OFFSET ?
 EOSQL
     push @params, ( $cat, $cat, $cat );
     push @params, $Ffc::Data::Limit, ( ( $page - 1 ) * $Ffc::Data::Limit );
