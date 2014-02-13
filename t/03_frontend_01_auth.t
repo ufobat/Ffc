@@ -107,7 +107,7 @@ my $user = Test::General::test_get_rand_user();
     };
     my $check_settings = sub {
         my $u = shift;
-        $t->get_ok('/settings')
+        $t->get_ok('/session')
           ->json_is('/theme',      $u->{theme}     )
           ->json_is('/bgcolor',    $u->{bgcolor}   )
           ->json_is('/fontsize',   $u->{fontsize}  )
