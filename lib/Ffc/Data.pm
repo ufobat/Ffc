@@ -7,7 +7,6 @@ use utf8;
 
 use File::Spec;
 use File::Basename;
-use FindBin;
 use Encode;
 use DBI;
 use Carp;
@@ -16,7 +15,7 @@ our $PasswordRegex = qr/.{8,64}/xmso;
 our $UsernameRegex = qr/\w{4,64}/xmso;
 our $CategoryRegex = qr/\w{1,64}/xmso;
 
-our $FileBase = join '/', File::Spec->splitdir( File::Basename::dirname(__FILE__) ), '..', '..';
+our $FileBase = File::Spec->catfile('/', File::Spec->splitdir( File::Basename::dirname(__FILE__) ), '..', '..');
 
 our $DefaultConfigPath = "$FileBase/etc/ffc.json";
 our $DataDir           = 'data';
