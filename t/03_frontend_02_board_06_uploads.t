@@ -163,11 +163,11 @@ sub check_upload_ok {
       ->content_like(qr/$testfile/);
     $t->get_ok($aurl)->status_is(200)
       ->content_like(qr/$teststr/)
-      ->header_is('Content-Disposition' => "attachment;filename=$testfile");
+      ->header_is('Content-Disposition' => qq~attachment; filename="$testfile"~);
 }
 
 sub get_testfile {
-    my ( $testfh, $testfile ) = File::Temp::tempfile(SUFFIX => '.dat', CLEANUP => 1);
+    my ( $testfh, $testfile ) = File::Temp::tempfile(SUFFIX => ' FILE.dat', CLEANUP => 1);
     my $teststr = r();
     print $testfh $teststr; 
     close $testfh;

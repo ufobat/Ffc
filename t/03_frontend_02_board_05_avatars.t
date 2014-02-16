@@ -20,7 +20,7 @@ sub r { &Test::General::test_r }
 srand;
 my $t        = Test::General::test_prepare_frontend('Ffc');
 my $user     = Mock::Testuser->new_active_user();
-my $testfile = r() . '.png';
+my $testfile = r() . ' Avatar.png';
 my $teststr  = r();
 my $destfile = "$Ffc::Data::AvatarDir/$user->{name}.png";
 

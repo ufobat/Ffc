@@ -115,7 +115,7 @@ sub get_attachement {
     my $attachement = $c->or_empty(sub { Ffc::Data::Board::Upload::get_attachement($user, $postid, $number) });
     my $path;
     if ( @$attachement and -e $attachement->[3] ) {
-        $c->res->headers->header('Content-Disposition' => "attachment;filename=$attachement->[0]");
+        $c->res->headers->header('Content-Disposition' => qq~attachment; filename="$attachement->[0]"~);
         $path = $attachement->[2];
     }
     else {
