@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use utf8;
 
-use File::Spec;
+use File::Spec::Functions qw(catfile splitdir);
 use File::Basename;
 use Encode;
 use DBI;
@@ -15,19 +15,19 @@ our $PasswordRegex = qr/.{8,64}/xmso;
 our $UsernameRegex = qr/\w{4,64}/xmso;
 our $CategoryRegex = qr/\w{1,64}/xmso;
 
-our $FileBase = File::Spec->catfile('/', File::Spec->splitdir( File::Basename::dirname(__FILE__) ), '..', '..');
+our $FileBase = catfile(splitdir( File::Basename::dirname(__FILE__) ), '..', '..');
 
-our $DefaultConfigPath = "$FileBase/etc/ffc.json";
+our $DefaultConfigPath = catfile $FileBase, 'etc', 'ffc.json';
 our $DataDir           = 'data';
-our $FileDir           = "$FileBase/$DataDir";
-our $AvatarDir         = "$FileDir/avatars";
+our $FileDir           = catfile $FileBase, $DataDir;
+our $AvatarDir         = catfile $FileDir, 'avatars';
 our $AvatarUrl         = "../$DataDir/avatars";
-our $UploadDir         = "$FileDir/uploads";
+our $UploadDir         = catfile $FileDir, 'uploads';
 our $UploadUrl         = "../$DataDir/uploads";
 our $Themedir          = 'themes';
-our $Themebasedir      = "$FileBase/public/$Themedir";
-our $DbTemplate        = "$FileBase/doc/db-schemas/database_sqlite.sql";
-our $DbTestdata        = "$FileBase/t/var/testdata.sql";
+our $Themebasedir      = catfile $FileBase, 'public', $Themedir;
+our $DbTemplate        = catfile $FileBase, 'doc', 'db-schemas', 'database_sqlite.sql';
+our $DbTestdata        = catfile $FileBase, 't', 'var', 'testdata.sql';
 
 our $Prefix         = '';
 our $Fullpostnumber = 7;
