@@ -24,7 +24,7 @@ Features
   * Benutzeranmeldung für die Arbeit mit dem System ist erforderlich
   * Benutzer müssen von einem Administrator angelegt werden und können sich nicht selber registrieren
   * Umfangreiche Testsuite mit starkem Fokus auf Datensicherheit (wer darf was online sehen)
-* Kein unnützer Ballast wie 
+* Vermeiden von Ballast und Ablenkungen, Focus auf die Textbeiträge
   * Beitragstitel
   * Überbordender Eyecandy
   * Featuritis
