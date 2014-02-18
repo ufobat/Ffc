@@ -12,54 +12,54 @@ Features
 
 ![Screenshot](https://raw.github.com/4FriendsForum/Ffc/master/doc/Screenshot.png)
 
-- Grundlegende Aspekte:
--- Stabilität
--- Datensicherheit
--- Vertraulichkeit
--- Einfache schnell zugängliche Bedienung
--- Schlanke Präsentation
--- Ressourcenschohnende Darbietung
--- Präsentation eher wie ein Blog aufgemacht
--- Einfache klare Datenhaltung (alle Daten werden grundlegend in einer zentralen Tabelle erfasst)
--- Benutzer müsse von einem Administrator angelegt werden und können sich nicht selber registrieren
--- Umfangreiche Testsuite mit starkem Fokus auf Datensicherheit (wer darf was online sehen)
-- Kein unnützer Ballast wie 
--- Beitragstitel
--- Überbordender Eyecandy
--- Featuritis
-- Teilbereiche:
--- Diskussionsforum mit (optionalen) Kategorien
--- Nachrichtenplattform für Privatnachrichten an einzelne Teilnehmer
--- Notizen für den eigenen Bedarf
-- Weiterführende Features:
--- Kategorien werden fest in der Datenbank angelegt
--- Dateiaustausch
--- Benutzeravatarbildchen
--- Optionale Anzeigethemen zur Auswahl mit Voreinstellungsmöglichkeit über die Anwendungskonfiguration
--- Anzeige für kleine Mobilgeräte über einen Link auf jeder Seite umschalten für das Gerät
--- Suche in Beiträgen über einfaches Suchfeld
--- Benutzer können deaktiviert werden
--- Benutzer können Administratoren sein (für Benutzerverwaltung)
--- Textformatierung bei der Anzeige
---- Links werden als HTML-Links dargestellt
---- Bilder werden als eine Art Thumbnail eingeblendet (kann in den Optionen geändert werden)
---- Textsmileys werden durch Bildchen ersetzt (kann in den Optionen geändert werden)
---- Einfache Textauszeichnung: +fett+, ~kursiv~, _unterstrichen_, -durchgestrichen-, !wichtig!, *Gesten*, "Zitate"
---- Footerlinks können in der Konfiguration festgelegt werden
---- MySQL und SQLite wird unterstützt
--- Optionsdialog
---- Anzeige von Bildern, Avataren und Smileys kann in den Optionen abgeschalten werden
---- Thema kann ausgewählt werden (kann vom Administrator unterbunden werden in der Konfiguration)
---- Hintergrundfarbe kann ausgewählt werden (kann vom Administrator unterbunden werden in der Konfiguration, funktioniert nur bei Themen ohne Hintergrundbilder oder mit Transparenzen im Hintergrundbild)
---- Schriftgrößeneinstellung kann in mehreren Stufen geändert werden
---- Emailadresse kann angegeben werden
---- Passwort kann geändert werden
---- Kategorien können vom Benutzer wahlweise ausgeblendet werden
---- Administrationseinstellungen (nur für Administratoren verfügbar)
----- Benutzer anlegen
----- Benutzer aktivieren und deaktivieren
----- Benutzer als Administrator (Benutzerverwaltung) setzen oder dieses Recht entziehen
----- Benutzerpassworte ändern
+* Grundlegende Aspekte:
+  * Stabilität
+  * Datensicherheit
+  * Vertraulichkeit
+  * Einfache schnell zugängliche Bedienung
+  * Schlanke Präsentation
+  * Ressourcenschohnende Darbietung
+  * Präsentation eher wie ein Blog aufgemacht
+  * Einfache klare Datenhaltung (alle Daten werden grundlegend in einer zentralen Tabelle erfasst)
+  * Benutzer müsse von einem Administrator angelegt werden und können sich nicht selber registrieren
+  * Umfangreiche Testsuite mit starkem Fokus auf Datensicherheit (wer darf was online sehen)
+* Kein unnützer Ballast wie 
+  * Beitragstitel
+  * Überbordender Eyecandy
+  * Featuritis
+* Teilbereiche:
+  * Diskussionsforum mit (optionalen) Kategorien
+  * Nachrichtenplattform für Privatnachrichten an einzelne Teilnehmer
+  * Notizen für den eigenen Bedarf
+* Weiterführende Features:
+  * Kategorien werden fest in der Datenbank angelegt
+  * Dateiaustausch
+  * Benutzeravatarbildchen
+  * Optionale Anzeigethemen zur Auswahl mit Voreinstellungsmöglichkeit über die Anwendungskonfiguration
+  * Anzeige für kleine Mobilgeräte über einen Link auf jeder Seite umschalten für das Gerät
+  * Suche in Beiträgen über einfaches Suchfeld
+  * Benutzer können deaktiviert werden
+  * Benutzer können Administratoren sein (für Benutzerverwaltung)
+  * Textformatierung bei der Anzeige
+    * Links werden als HTML-Links dargestellt
+    * Bilder werden als eine Art Thumbnail eingeblendet (kann in den Optionen geändert werden)
+    * Textsmileys werden durch Bildchen ersetzt (kann in den Optionen geändert werden)
+    * Einfache Textauszeichnung: +fett+, ~kursiv~, _unterstrichen_, -durchgestrichen-, !wichtig!, *Gesten*, "Zitate"
+    * Footerlinks können in der Konfiguration festgelegt werden
+    * MySQL und SQLite wird unterstützt
+  * Optionsdialog
+    * Anzeige von Bildern, Avataren und Smileys kann in den Optionen abgeschalten werden
+    * Thema kann ausgewählt werden (kann vom Administrator unterbunden werden in der Konfiguration)
+    * Hintergrundfarbe kann ausgewählt werden (kann vom Administrator unterbunden werden in der Konfiguration, funktioniert nur bei Themen ohne Hintergrundbilder oder mit Transparenzen im Hintergrundbild)
+    * Schriftgrößeneinstellung kann in mehreren Stufen geändert werden
+    * Emailadresse kann angegeben werden
+    * Passwort kann geändert werden
+    * Kategorien können vom Benutzer wahlweise ausgeblendet werden
+    * Administrationseinstellungen (nur für Administratoren verfügbar)
+      * Benutzer anlegen
+      * Benutzer aktivieren und deaktivieren
+      * Benutzer als Administrator (Benutzerverwaltung) setzen oder dieses Recht entziehen
+      * Benutzerpassworte ändern
 
 Datenstruktur
 -------------
