@@ -28,6 +28,7 @@ Features
   * Beitragstitel
   * Überbordender Eyecandy
   * Featuritis
+  * Bedienung ist komplett ohne Javascript möglich
 * Teilbereiche:
   * Diskussionsforum mit (optionalen) Kategorien
   * Nachrichtenplattform für Privatnachrichten an einzelne Teilnehmer
