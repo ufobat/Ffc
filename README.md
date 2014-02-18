@@ -21,7 +21,8 @@ Features
   * Ressourcenschohnende Darbietung
   * Präsentation eher wie ein Blog aufgemacht
   * Einfache klare Datenhaltung (alle Daten werden grundlegend in einer zentralen Tabelle erfasst)
-  * Benutzer müsse von einem Administrator angelegt werden und können sich nicht selber registrieren
+  * Benutzeranmeldung für die Arbeit mit dem System ist erforderlich
+  * Benutzer müssen von einem Administrator angelegt werden und können sich nicht selber registrieren
   * Umfangreiche Testsuite mit starkem Fokus auf Datensicherheit (wer darf was online sehen)
 * Kein unnützer Ballast wie 
   * Beitragstitel
@@ -33,7 +34,9 @@ Features
   * Notizen für den eigenen Bedarf
 * Weiterführende Features:
   * Kategorien werden fest in der Datenbank angelegt
-  * Dateiaustausch
+  * Beiträge erstellen, ändern und löschen
+  * Markierungen und Anzeige der Anzahl neuer Beiträge in den Kategorien und in den Teilbereichen
+  * Dateiaustausch (Anhänge an Beiträge hinzufügen und entfernen)
   * Benutzeravatarbildchen
   * Optionale Anzeigethemen zur Auswahl mit Voreinstellungsmöglichkeit über die Anwendungskonfiguration
   * Anzeige für kleine Mobilgeräte über einen Link auf jeder Seite umschalten für das Gerät
