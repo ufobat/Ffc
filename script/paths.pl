@@ -29,25 +29,25 @@ my @closed = qw(
     doc/db-schemas/database_mysql.sql
     doc/db-schemas/database_sqlite.sql
     .git
-    README.pod
+    README.md
     t
     t/01_aux______01_errorhandling.t
-    t/02_backend__01_data_00.t
-    t/02_backend__01_data_01_auth.t
-    t/02_backend__01_data_02_formats_00.t
-    t/02_backend__01_data_02_formats_01.t
-    t/02_backend__01_data_03_general.t
-    t/02_backend__01_data_04_board_00.t
-    t/02_backend__01_data_04_board_01_optionsuser_00.t
-    t/02_backend__01_data_04_board_01_optionsuser_01_switchoptions.t
-    t/02_backend__01_data_04_board_02_optionsadmin.t
-    t/02_backend__01_data_04_board_03_forms.t
-    t/02_backend__01_data_04_board_04_views_00.t
-    t/02_backend__01_data_04_board_04_views_01_categoryhide.t
-    t/02_backend__01_data_04_board_05_datasecurity.t
-    t/02_backend__01_data_04_board_06_avatars.t
-    t/02_backend__01_data_04_board_07_uploads_01_functions.t
-    t/02_backend__01_data_04_board_07_uploads_02_datasecurity.t
+    t/02_backend__01_data__00.t
+    t/02_backend__01_data__01_auth.t
+    t/02_backend__01_data__02_formats_00.t
+    t/02_backend__01_data__02_formats_01.t
+    t/02_backend__01_data__03_general.t
+    t/02_backend__01_data__04_board_00.t
+    t/02_backend__01_data__04_board_01_optionsuser_00.t
+    t/02_backend__01_data__04_board_01_optionsuser_01_switchoptions.t
+    t/02_backend__01_data__04_board_02_optionsadmin.t
+    t/02_backend__01_data__04_board_03_forms.t
+    t/02_backend__01_data__04_board_04_views_00.t
+    t/02_backend__01_data__04_board_04_views_01_categoryhide.t
+    t/02_backend__01_data__04_board_05_datasecurity.t
+    t/02_backend__01_data__04_board_06_avatars.t
+    t/02_backend__01_data__04_board_07_uploads_01_functions.t
+    t/02_backend__01_data__04_board_07_uploads_02_datasecurity.t
     t/03_frontend_00.t
     t/03_frontend_01_auth.t
     t/03_frontend_02_board_00.t
