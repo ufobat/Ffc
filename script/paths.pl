@@ -122,8 +122,6 @@ my @public = qw(
     public/themes/default/img/nofile.png
     public/themes/default/img/avatar.png
     public/themes/default/img/hg.png
-    public/themes/default/img/bottom.png
-    public/themes/default/img/bottom_menu.png
     public/themes/default/img/favicon.png
     public/themes/default/img/smileys
     public/themes/default/img/smileys/devilsmile.png
