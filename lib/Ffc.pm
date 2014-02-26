@@ -98,11 +98,11 @@ sub startup {
         $c->stash(act => $act);
 
         my $page = $c->param('page') // 1;
-        $page    = 1  unless $page =~ m/\A\d+\z/xms;
+        $page    = 1  unless $page =~ m/\A\d+\z/xmso;
         $c->stash(page   => $page);
 
         my $postid = $c->param( 'postid' ) // '';
-        $postid    = '' unless $postid =~ m/\A\d+\z/xms;
+        $postid    = '' unless $postid =~ m/\A\d+\z/xoms;
         $c->stash(postid => $postid);
 
         my $msgs_username = $c->param('msgs_username') // '';
@@ -133,7 +133,7 @@ sub startup {
     $options->route('/bgcolor_save')->via('post')->to('board#options_bgcolor_save')->name('options_bgcolor_save');
     $options->route('/avatar_save')->via('post')->to('board#options_avatar_save')->name('options_avatar_save');
     $options->route('/showcat_save')->via('post')->to('board#options_showcat_save')->name('options_showcat_save');
-    $options->route('/fontsize_save/:fontsize', fontsize => qr/\-?\d+/)->to('board#options_fontsize_save')->name('options_fontsize_save');
+    $options->route('/fontsize_save/:fontsize', fontsize => qr/\-?\d+/xmso)->to('board#options_fontsize_save')->name('options_fontsize_save');
 
     # admin options
     $options->route('/admin_save')->via('post')->to('board#useradmin_save')->name('useradmin_save');
@@ -143,6 +143,7 @@ sub startup {
 
     # search
     $loggedin->route('/search')->via('post')->to('board#search')->name('search');
+    my $numre = qr(\d+)xmso;
 
     $routes->add_shortcut(complete_set => sub {
         my $r = shift;
@@ -155,7 +156,7 @@ sub startup {
         $r->route('/autoreload')->to('board#frontpage_autoreload')->name("show${name}_autoreload");
 
         # pagination
-        $r->route('/:page', page => qr(\d+))->to('board#frontpage')->name("show_page$name");
+        $r->route('/:page', page => $numre)->to('board#frontpage')->name("show_page$name");
 
         # create something
         $r->route('/new')->via('post')->to('board#insert_post')->name("insert_post$name");
@@ -163,26 +164,26 @@ sub startup {
         # file uploads
         {
             my $upload = $r->route('/upload')->name("upload_bridge$name");
-            $upload->route('/show/:postid/:number', postid => qr(\d+), number => qr(\d+))->via('get')->to('board#get_attachement')->name("upload_show$name");
+            $upload->route('/show/:postid/:number', postid => $numre, number => $numre)->via('get')->to('board#get_attachement')->name("upload_show$name");
 
             my $uploadadd = $upload->route('/add')->name("add_bridge$name");
-            $uploadadd->route('/:postid', postid => qr(\d+))->via('get')->to('board#upload_form')->name("upload_form$name");
-            $uploadadd->route('/:postid', postid => qr(\d+))->via('post')->to('board#upload')->name("upload$name");
+            $uploadadd->route('/:postid', postid => $numre)->via('get')->to('board#upload_form')->name("upload_form$name");
+            $uploadadd->route('/:postid', postid => $numre)->via('post')->to('board#upload')->name("upload$name");
             
-            my $uploaddelete = $upload->route('/delete/:postid', postid => qr(\d+))->name("upload_delete_bridge$name");
-            $uploaddelete->route('/:number', number => qr(\d+))->via('get')->to('board#upload_delete_check')->name("upload_delete_check$name");
-            $uploaddelete->route('/:number', number => qr(\d+))->via('post')->to('board#upload_delete')->name("upload_delete$name");
+            my $uploaddelete = $upload->route('/delete/:postid', postid => $numre)->name("upload_delete_bridge$name");
+            $uploaddelete->route('/:number', number => $numre)->via('get')->to('board#upload_delete_check')->name("upload_delete_check$name");
+            $uploaddelete->route('/:number', number => $numre)->via('post')->to('board#upload_delete')->name("upload_delete$name");
         }
 
         if ( $name ne '_msgs' ) { # private messages are immutable
             # update something
             my $edit = $r->route('/edit')->name("edit_bridte$name");
-            $edit->route('/:postid', postid => qr(\d+))->via('get' )->to('board#edit_form')->name("edit_form$name");
-            $edit->route('/:postid', postid => qr(\d+))->via('post')->to('board#update_post'  )->name("update_post$name");
+            $edit->route('/:postid', postid => $numre)->via('get' )->to('board#edit_form')->name("edit_form$name");
+            $edit->route('/:postid', postid => $numre)->via('post')->to('board#update_post'  )->name("update_post$name");
 
             # delete something
             my $delete = $r->route('/delete')->name("delete_bridge$name");
-            $delete->route('/:postid', postid => qr(\d+))->via('get')->to('board#delete_check')->name("delete_check$name");
+            $delete->route('/:postid', postid => $numre)->via('get')->to('board#delete_check')->name("delete_check$name");
             $delete->route('/')->via('post')->to('board#delete_post')->name("delete_post$name");
         }
 
