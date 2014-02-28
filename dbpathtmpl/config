@@ -1,0 +1,11 @@
+cookiename = Ffc_Forum
+cookiesecret = Geh3im!
+cryptsalt = 1234567890
+postlimit = 15
+title = Ffc Forum
+sessiontimeout = 432000
+commoncattitle = Allgemein
+urlshorten = 30
+backgroundcolor =
+fixbackgroundcolor = 0
+favicon =

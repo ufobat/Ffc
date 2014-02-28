@@ -1,94 +1,40 @@
 package Ffc::Auth;
 use Mojo::Base 'Mojolicious::Controller';
-use utf8;
-use Ffc::Board;
-use Ffc::Data;
-use Ffc::Data::Auth;
-use Ffc::Errors;
+use Digest::SHA 'sha512_base64';
+
+sub password { sha512_base64 $_[0], Ffc::Config()->{cryptsalt} }
+
+sub check_login {
+    return shift()->session()->{user} ? 1 : 0;
+}
 
 sub login {
-    my $self = shift;
-    if ( $self->_get_relevant_data() ) {
-        $self->redirect_to('show');
-        return 1;
+    my $c = shift;
+    my $u = $c->param('username');
+    my $p = $c->param('password');
+    return $c->redirect_to('login_form') unless $u and $p;
+    my $r = FFc::Dbh()->selectall_arrayref(
+        'SELECT u.admin, u.show_images, u.theme, u.bgcolor, u.fontsize FROM users u WHERE u.id=? and u.password=?'
+        undef, $u, $p);
+    if ( @$r ) {
+        return $c->redirect_to('show_forum');
     }
-    login_form($self, 'Anmeldung fehlgeschlagen, Benutzername oder Passwort stimmen nicht.');
-    return; 
+    else {
+        $c->flash(error => 'Fehler bei der Anmeldung, bitte versuchen Sie es erneut');
+        return $c->redirect_to('login_form');
+    }
 }
 
 sub logout {
-    my $self = shift;
-    my $msg = shift || 'Abmelden bestätigt, bitte melden Sie sich erneut an';
-    my $s = $self->session;
+    my $c = shift;
+    my $s = $c->session();
     delete $s->{$_} for keys %$s;
-    login_form($self, $msg);
+    $c->redirect_to('login_form');
 }
 
 sub login_form {
-    my $self = shift;
-    my $msg = shift || 'Bitte melden Sie sich an';
-    _cancel_session( $self );
-    $self->stash(error => $msg);
-    $self->render( 'auth/loginform');
-    return 0;
-}
-
-sub _cancel_session {
-    my $self    = shift;
-    my $session = $self->session;
-    my $user    = $session->{user};
-    delete $session->{user};
-    return $user;
-}
-
-sub check_login {
-    my $self = shift;
-    if ( my $s = $self->session ) {
-        if ( $s->{user} ) {
-            $self->session( expiration => $Ffc::Data::SessionTimeout );
-            return _set_settings($self);
-        }
-    }
-    return 0;
-}
-
-sub _set_settings {
-    my $self = shift;
-    my $s    = $self->session();
-    my $user = $s->{user};
-    my @settings; # = Ffc::Data::Auth::get_usersettings( $user );
-    Ffc::Errors::handle( $self, sub { @settings = Ffc::Data::Auth::get_usersettings( $user ) }, 'Benutzereinstellungen konnten nicht ermittelt werden, bitte melden Sie sich erneut an.' );
-    return 0 unless @settings;
-    $s->{admin}       = $settings[0],
-    $s->{show_images} = $settings[1],
-    $s->{theme}       = $settings[2] || $Ffc::Data::Theme,
-    $s->{bgcolor}     = $settings[3] || $Ffc::Data::BgColor // '',
-    $s->{fontsize}    = $settings[4],
-    return 1;
-}
-
-sub _get_relevant_data {
-    my $self    = shift;
-    my $session = $self->session;
-    my $user    = $self->param('user');
-    my $pass    = $self->param('pass');
-    my @data;
-    Ffc::Errors::handle( $self, sub { @data = Ffc::Data::Auth::get_userdata_for_login( $user, $pass ) }, 'Benutzername oder Passwort ungültig, bitte melden Sie sich erneut an.' );
-    return unless @data;
-    $self->stash( error => '' );
-    %$session = (
-        %$session,
-        user        => $data[1],
-        act         => 'forum',
-        query       => '',
-        category    => undef,
-    );
-    return $self->_set_settings() ? 1 : 0;
-}
-
-sub session_data_json {
     my $c = shift;
-    $c->render( json => $c->session() );
+    my $cfg = Ffc::Config();
 }
 
 1;

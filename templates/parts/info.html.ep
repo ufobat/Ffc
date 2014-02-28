@@ -1,3 +1,0 @@
-% if ( flash('info') // $info ) {
-    <div class="postbox info"><%= flash('info') // $info %></div>
-% }

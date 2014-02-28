@@ -1,7 +1,0 @@
-    <div class="footerlinks">
-% for my $e ( @$Ffc::Data::Footerlinks ) {
-%= ( @$Ffc::Data::Footerlinks > 0 and $e->[0] eq $Ffc::Data::Footerlinks->[0]->[0] ) ? '' : '-'
-        <a href="<%= $e->[1] %>" title="<%= $e->[2] // qq(Zur Webseite '$e->[0]' wechseln) %>" target="_blank"><%= $e->[0] %></a>
-% }
-    </div>
-
