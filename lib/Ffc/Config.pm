@@ -1,9 +1,9 @@
 package Ffc;
 use strict;
 use warnings;
-use 5.016;
+use 5.010;
 use DBI;
-use File::Spec qw(splitpath catdir);
+use File::Spec::Functions qw(splitdir catdir);
 
 {
     my @Datapath;
@@ -11,7 +11,7 @@ use File::Spec qw(splitpath catdir);
         return @Datapath if @Datapath;
         die qq~need a directory as "FFC_DATA_PATH" environment variable ('~.($ENV{FFC_DATA_PATH}//'').q~')~
             unless $ENV{FFC_DATA_PATH} and -e -d -r $ENV{FFC_DATA_PATH};
-        @Datapath = splitpath $ENV{FFC_DATA_PATH};
+        @Datapath = splitdir $ENV{FFC_DATA_PATH};
         return @Datapath;
     }
 
@@ -30,7 +30,7 @@ use File::Spec qw(splitpath catdir);
     sub Dbh {
         return $Dbh if $Dbh;
         $DBFile = catdir Datapath(), 'database.sqlite3';
-        return $Dbh = DBI->connect("DBI:SQLite:database=$DBFile", { AutoCommit => 1, RaiseError => 1 });
+        return $Dbh = DBI->connect("DBI:SQLite:database=$DBFile", { AutoCommit => 1, RaiseError => 1 })
             or die qq~could not connect to database "$DBFile": $DBI::errstr~;
     }
 }

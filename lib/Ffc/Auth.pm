@@ -13,8 +13,8 @@ sub login {
     my $u = $c->param('username');
     my $p = $c->param('password');
     return $c->redirect_to('login_form') unless $u and $p;
-    my $r = FFc::Dbh()->selectall_arrayref(
-        'SELECT u.admin, u.show_images, u.theme, u.bgcolor, u.fontsize FROM users u WHERE u.id=? and u.password=?'
+    my $r = Ffc::Dbh()->selectall_arrayref(
+        'SELECT u.admin, u.show_images, u.theme, u.bgcolor, u.fontsize FROM users u WHERE u.id=? and u.password=?',
         undef, $u, $p);
     if ( @$r ) {
         return $c->redirect_to('show_forum');
@@ -35,6 +35,13 @@ sub logout {
 sub login_form {
     my $c = shift;
     my $cfg = Ffc::Config();
+}
+
+sub add_user {
+    my ( $n, $p, $a ) = @_;
+    Ffc::Dbh()->do(
+        'INSERT INTO users (name, password, admin) VALUES (?,?,?)',
+        undef, $n, password($p), ( $a ? 1 : 0 ) );
 }
 
 1;
