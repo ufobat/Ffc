@@ -6,21 +6,19 @@ use 5.010;
 use strict;
 use warnings;
 
-use File::Spec::Functions qw(catfile splitdir catdir);
-use File::Basename;
-use File::Temp;
-use DBI;
-use lib catdir(splitdir(File::Basename::dirname(__FILE__)), '..', 'lib');
+use FindBin;
+use lib "$FindBin::Bin/lib";
+use Testinit;
 
-use Test::More tests => 25;
+use DBI;
+use File::Temp;
+
+use Test::More tests => 37;
 
 use_ok('Ffc::Config');
 use_ok('Ffc::Auth');
 
-my $script 
-    = catfile splitdir(File::Basename::dirname(__FILE__)),
-        '..', 'script', 'init.pl';
-
+my $script = $Testinit::Script;
 note "testing init script '$script'";
 
 my $testpath = File::Temp::tempdir( CLEANUP => 1 );
@@ -75,4 +73,23 @@ like $out3, $_, 'second run content ok' for (
     qr~ok: database allready existed, no admin user created~,
 );
 check_pw();
+
+for my $path ( 
+    [ qq'$testpath/avatars',          1 ],
+    [ qq'$testpath/uploads',          1 ],
+    [ qq'$testpath/database.sqlite3', 0 ],
+    [ qq'$testpath/config',           0 ],
+) {
+    my ( $p, $d ) = @$path;
+    ok -e $p, "'$p' exists";
+    if ( $d ) {
+        ok -d $p, "'$p' is a directory";
+        ok !-f $p, "'$p' is not a file";
+    }
+    else {
+        ok !-d $p, "'$p' is not a directory";
+        ok -f $p, "'$p' is a file";
+    }
+}
+
 
