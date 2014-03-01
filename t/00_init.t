@@ -13,7 +13,7 @@ use Testinit;
 use DBI;
 use File::Temp;
 
-use Test::More tests => 37;
+use Test::More tests => 53;
 
 use_ok('Ffc::Config');
 use_ok('Ffc::Auth');
@@ -36,10 +36,37 @@ sub check_pw {
        ->[0]->[0], 1, 'admin password ok');
 }
 
+sub check_paths {
+    my $noexist = shift;
+    for my $path ( 
+        [ qq'$testpath/avatars',          1 ],
+        [ qq'$testpath/uploads',          1 ],
+        [ qq'$testpath/database.sqlite3', 0 ],
+        [ qq'$testpath/config',           0 ],
+    ) {
+        my ( $p, $d ) = @$path;
+        if ( $noexist ) {
+            ok !-e $p, "'$p' does not exist yet";
+        }
+        else {
+            ok -e $p, "'$p' exists";
+            if ( $d ) {
+                ok -d $p, "'$p' is a directory";
+                ok !-f $p, "'$p' is not a file";
+            }
+            else {
+                ok !-d $p, "'$p' is not a directory";
+                ok -f $p, "'$p' is a file";
+            }
+        }
+    }
+}
+
 my $out1 = qx($script 2>&1);
 like $out1,
     qr'error: please provide a "FFC_DATA_PATH" environment variable',
     'error message for env var ok';
+check_paths(1);
 
 my $out2 = qx(FFC_DATA_PATH=$testpath $script 2>&1);
 like $out2, $_, 'first run content ok' for (
@@ -56,6 +83,7 @@ $pw = (split /\n+/, $out2 )[-1];
 chomp $pw;
 note "password supplied is '$pw'";
 check_pw();
+check_paths();
 
 my $out3 = qx(FFC_DATA_PATH=$testpath $script 2>&1);
 like $out3, $_, 'second run content ok' for (
@@ -73,23 +101,5 @@ like $out3, $_, 'second run content ok' for (
     qr~ok: database allready existed, no admin user created~,
 );
 check_pw();
-
-for my $path ( 
-    [ qq'$testpath/avatars',          1 ],
-    [ qq'$testpath/uploads',          1 ],
-    [ qq'$testpath/database.sqlite3', 0 ],
-    [ qq'$testpath/config',           0 ],
-) {
-    my ( $p, $d ) = @$path;
-    ok -e $p, "'$p' exists";
-    if ( $d ) {
-        ok -d $p, "'$p' is a directory";
-        ok !-f $p, "'$p' is not a file";
-    }
-    else {
-        ok !-d $p, "'$p' is not a directory";
-        ok -f $p, "'$p' is a file";
-    }
-}
-
+check_paths();
 
