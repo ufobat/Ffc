@@ -1,9 +1,49 @@
-package Ffc;
+package Ffc::Config;
 use strict;
 use warnings;
 use 5.010;
 use DBI;
 use File::Spec::Functions qw(splitdir catdir);
+
+our %Defaults = (
+    favicon        => '/themes/favicon.png',
+    commoncattitle => 'Allgemein',
+    title          => 'Ffc Forum',
+    cookiename     => 'Ffc_Forum',
+);
+
+our %FontSizeMap = (
+    -3, 0.25,
+    -2, 0.5,
+    -1, 0.75,
+     0, 1,
+     1, 1.25,
+     2, 1.5,
+     3, 1.75,
+     4, 2,
+);
+
+our @Colors = qw(Maroon DarkRed FireBrick Red Salmon Tomato Coral OrangeRed
+  Chocolate SandyBrown DarkOrange Orange DarkGoldenrod Goldenrod Gold Olive 
+  Yellow YellowGreen GreenYellow Chartreuse LawnGreen Green Lime LimeGreen 
+  SpringGreen MediumSpringGreen Turquoise LightSeaGreen MediumTurquoise 
+  Teal DarkCyan Aqua Cyan DarkTurquoise DeepSkyBlue DodgerBlue RoyalBlue 
+  Navy DarkBlue MediumBlue Blue BlueViolet DarkOrchid DarkViolet 
+  Purple DarkMagenta Fuchsia Magenta MediumVioletRed DeepPink HotPink Crimson 
+  Brown IndianRed RosyBrown LightCoral Snow MistyRose DarkSalmon 
+  LightSalmon Sienna SeaShell SaddleBrown Peachpuff Peru Linen Bisque 
+  Burlywood Tan AntiqueWhite NavajoWhite BlanchedAlmond PapayaWhip Moccasin 
+  Wheat Oldlace FloralWhite Cornsilk Khaki LemonChiffon PaleGoldenrod 
+  DarkKhaki Beige LightGoldenrodYellow LightYellow Ivory OliveDrab 
+  DarkOliveGreen DarkSeaGreen DarkGreen ForestGreen LightGreen 
+  PaleGreen Honeydew SeaGreen MediumSeaGreen Mintcream 
+  MediumAquamarine Aquamarine DarkSlateGray PaleTurquoise LightCyan Azure 
+  CadetBlue PowderBlue LightBlue SkyBlue LightskyBlue SteelBlue AliceBlue 
+  SlateGray LightSlateGray LightsteelBlue CornflowerBlue Lavender 
+  GhostWhite MidnightBlue SlateBlue DarkSlateBlue MediumSlateBlue 
+  MediumPurple Indigo MediumOrchid Plum Violet Thistle Orchid 
+  LavenderBlush PaleVioletRed Pink LightPink Black DimGray Gray DarkGray 
+  Silver LightGray Gainsboro WhiteSmoke White);
 
 {
     my @Datapath;
@@ -20,7 +60,7 @@ use File::Spec::Functions qw(splitdir catdir);
         return \%Config if %Config;
         open my $fh, '<', catdir Datapath(), 'config'
             or die q~could not open config file '~.catdir(Datapath(), 'config').qq~': $!~;
-        %Config = map { m/\A\s*(\w+)\s*(.+?)\s*/xmso ? ( $1 => $2 ) : () } <$fh>;
+        %Config = map { m/\A\s*(\w+)\s*=\s*(.*)\s*\z/xmso ? ( $1 => $2 ) : () } <$fh>;
         close $fh;
         return \%Config;
     }

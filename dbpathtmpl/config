@@ -1,6 +1,6 @@
 cookiename = Ffc_Forum
-cookiesecret = Geh3im!
-cryptsalt = 1234567890
+cookiesecret =
+cryptsalt =
 postlimit = 15
 title = Ffc Forum
 sessiontimeout = 432000
