@@ -2,12 +2,13 @@
 <html>
   <head>
     <title><%= $title %></title>
-    <%= stylesheet '/theme/style.css' %>
-    <link rel="icon" type="image/ico" href="<%= $favicon %>" />
+    <%= stylesheet stylefile() %>
+    <link rel="icon" type="image/ico" href="<%= url_for $favicon %>" />
 %= include 'layouts/parts/styleinc'
   </head>
   <body>
     <!-- Nicht angemeldet !-->
+%= include 'parts/messageboxes'
 %= content
   </body>
 </html>

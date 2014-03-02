@@ -102,6 +102,7 @@ sub generate_random_security {
         undef, $uname, sha512_base64($pw, $salt), 1);
 
     say 'ok: initial admin user created with salt and password:';
+    say $csecret;
     say $uname;
     say $salt;
     say $pw;
@@ -120,7 +121,7 @@ sub alter_configfile {
     };
     unless ( 
         $confcont 
-          =~ s~(\A|\n)(\s*$key\s*=\s*)~$1# auto generated:\n$2$value\n#$2\n~gsmx
+          =~ s~(\A|\n)(\s*$key\s*=[^\n]*)~$1# auto generated:\n$2$value\n#$2\n~gsmx
     ) {
         $confcont .= "\n# auto generated:\n$key = $value\n";
     }

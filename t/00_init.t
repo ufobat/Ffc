@@ -12,9 +12,10 @@ use Testinit;
 
 use DBI;
 use File::Temp;
+use File::Spec::Functions qw(catfile);
 use Digest::SHA 'sha512_base64';
 
-use Test::More tests => 172;
+use Test::More tests => 194;
 
 use_ok('Ffc::Config');
 use_ok('Ffc::Auth');
@@ -40,6 +41,24 @@ sub check_pw {
         'SELECT COUNT(id) FROM users WHERE name=? AND password=?'
         , undef, $user, sha512_base64($pw, $salt))
        ->[0]->[0], 1, 'admin password ok');
+}
+
+sub check_config {
+    my ($testpath, $salt, $csecret) = @_;
+    my %zuo = (
+        cookiesecret => $csecret,
+        cryptsalt    => $salt   ,
+    );
+    open my $fh, '<', catfile($testpath, 'config')
+        or die "could not open config file: $!";
+    my $cnt = 0;
+    my $re = join '|', keys %zuo;
+    while ( my $l = <$fh> ) {
+        next unless $l =~ m/(?:\A|\n)\s*($re)\s*=\s*([^\n]+)/xmso;
+        is $2, $zuo{$1}, "auto config param $1 set ok to $zuo{$1}";
+        $cnt++;
+    }
+    is $cnt, scalar(keys %zuo), 'all auto config params set ok';
 }
 
 sub check_paths {
@@ -73,9 +92,10 @@ sub test_path {
     my $testpath = shift;
 
     note "using path '$testpath' for tests";
-    my $user = '';
-    my $pw   = '';
-    my $salt = 0;
+    my $csecret = '';
+    my $user    = '';
+    my $pw      = '';
+    my $salt    = 0;
 
     my $out1 = qx($script 2>&1);
     note 'test error without path env variable';
@@ -98,20 +118,22 @@ sub test_path {
         qr~ok: cookiesecret set to random '.{32}'~,
         qr~ok: cryptsalt set to random '\d+'~,
     );
-    ( $user, $salt, $pw ) = (split /\n+/, $out2 )[-3,-2,-1];
-    chomp $user; chomp $salt; chomp $pw;
+    ( $csecret, $user, $salt, $pw ) = (split /\n+/, $out2 )[-4,-3,-2,-1];
+    chomp $user; chomp $salt; chomp $pw; chomp $csecret;
     is $user, 'admin', 'admin user received';
     like $salt, qr/\d+/, 'salt received';
+    ok $csecret, 'cookiesecret provided';
     ok $pw, 'password received';
     note "adminuser supplied is '$user'";
     note "salt supplied is '$salt'";
     note "password supplied is '$pw'";
     check_pw($testpath, $user, $salt, $pw);
     check_paths($testpath);
+    check_config($testpath, $salt, $csecret);
 
     note 'test with allready existing path';
     my $out3 = qx(FFC_DATA_PATH=$testpath $script 2>&1);
-    like $out3, $_, 'second run content ok' for (
+    like $out3, $_, 'second run content existing ok' for (
         qr~ok: using '\d+' as data path owner and '\d+' as data path group~,
         qr~ok: using '$testpath/avatars' as avatar store~,
         qr~ok: path '$testpath/avatars' as avatar allready exists~,
@@ -127,6 +149,7 @@ sub test_path {
     );
     check_pw($testpath, $user, $salt, $pw);
     check_paths($testpath);
+    check_config($testpath, $salt, $csecret);
 
     note 'test with allready existing path but without database';
     {
@@ -137,7 +160,7 @@ sub test_path {
         undef $dbh;
     }
     my $out4 = qx(FFC_DATA_PATH=$testpath $script 2>&1);
-    like $out4, $_, 'second run content ok' for (
+    like $out4, $_, 'second run content without database' for (
         qr~ok: using '\d+' as data path owner and '\d+' as data path group~,
         qr~ok: using '$testpath/avatars' as avatar store~,
         qr~ok: path '$testpath/avatars' as avatar allready exists~,
@@ -149,17 +172,19 @@ sub test_path {
         qr~ok: check user and group priviledges of the data path!~,
         qr~ok: remember to alter config file '$testpath/config'~,
         qr~ok: initial admin user created with salt and password:~,
-        qr~ok: cookiesecret set to random '.{32}'~,
-        qr~ok: cryptsalt set to random '\d+'~,
+        qr~ok: using preconfigured cookiesecret '.{32}'~,
+        qr~ok: using preconfigured salt '\d+'~,
     );
-    ( $user, $salt, $pw ) = (split /\n+/, $out4 )[-3,-2,-1];
-    chomp $user; chomp $salt; chomp $pw;
+    ( $csecret, $user, $salt, $pw ) = (split /\n+/, $out4 )[-4,-3,-2,-1];
+    chomp $user; chomp $salt; chomp $pw; chomp $csecret;
     is $user, 'admin', 'admin user received';
     like $salt, qr/\d+/, 'salt received';
+    ok $csecret, 'cookiesecret provided';
     ok $pw, 'password received';
     note "adminuser supplied is '$user'";
     note "salt supplied is '$salt'";
     note "password supplied is '$pw'";
     check_pw($testpath, $user, $salt, $pw);
     check_paths($testpath);
+    check_config($testpath, $salt, $csecret);
 }

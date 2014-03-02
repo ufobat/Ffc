@@ -5,8 +5,10 @@ use 5.010;
 use DBI;
 use File::Spec::Functions qw(splitdir catdir);
 
+our @Styles = ( '/theme/normal.css', '/theme/breit.css' );
+
 our %Defaults = (
-    favicon        => '/themes/favicon.png',
+    favicon        => '/theme/img/favicon.png',
     commoncattitle => 'Allgemein',
     title          => 'Ffc Forum',
     cookiename     => 'Ffc_Forum',
@@ -60,7 +62,7 @@ our @Colors = qw(Maroon DarkRed FireBrick Red Salmon Tomato Coral OrangeRed
         return \%Config if %Config;
         open my $fh, '<', catdir Datapath(), 'config'
             or die q~could not open config file '~.catdir(Datapath(), 'config').qq~': $!~;
-        %Config = map { m/\A\s*(\w+)\s*=\s*(.*)\s*\z/xmso ? ( $1 => $2 ) : () } <$fh>;
+        %Config = map { m/\A\s*(\w+)\s*=\s*([^\n]*)\s*\z/xmso ? ( $1 => $2 ) : () } <$fh>;
         close $fh;
         return \%Config;
     }

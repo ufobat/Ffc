@@ -10,14 +10,17 @@ sub check_login {
 
 sub login {
     my $c = shift;
-    my $u = $c->param('username');
-    my $p = $c->param('password');
-    return $c->render(template => 'auth/loginform') unless $u and $p;
+    my $u = $c->param('username') // '';
+    my $p = $c->param('password') // '';
+    if ( $u xor $p ) {
+        $c->stash(error => 'Bitte melden Sie sich an');
+        return $c->render(template => 'auth/loginform');
+    }
     my $r = $c->dbh()->selectall_arrayref(
         'SELECT u.admin, u.show_images, u.bgcolor
         FROM users u WHERE u.id=? and u.password=?',
         undef, $u, $c->password($p));
-    if ( @$r ) {
+    if ( $r and @$r ) {
         my $s = $c->session();
         $s->{admin}           = $r->[0]->[0];
         $s->{show_images}     = $r->[0]->[1];
@@ -25,7 +28,7 @@ sub login {
         $s->{user}            = $u;
         return $c->redirect_to('show');
     }
-    $c->stash(error => 'Fehler bei der Anmeldung');
+    $c->stash(error => 'Fehler bei der Anmeldung '.$c->path().' '.$u.' '.$p.' '.$c->config()->{cryptsalt});
     $c->render(template => 'auth/loginform');
 }
 
@@ -33,6 +36,8 @@ sub logout {
     my $c = shift;
     my $s = $c->session();
     delete $s->{$_} for keys %$s;
+    $c->stash(error => '');
+    $c->stash(info => 'Abmelden erfolgreich');
     $c->render(template => 'auth/loginform');
 }
 

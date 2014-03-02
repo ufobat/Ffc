@@ -19,11 +19,18 @@ sub start_test {
     my $testpath = File::Temp::tempdir( CLEANUP => 1 );
     note "using test data dir '$testpath'";
     local $ENV{FFC_DATA_PATH} = $testpath;
-    my $pw = ( split /\n+/, qx($Script 2>&1) )[-1];
-    chomp $pw;
-    note "user 'admin' with password '$pw' created";
+    my ( $csecret, $user, $salt, $pw ) 
+        = (split /\n+/, qx($Script 2>&1) )[-4,-3,-2,-1];
+    chomp $user; chomp $salt; chomp $pw; chomp $csecret;
+    note "user '$user':'$pw' (salt $salt, secret $csecret) created";
+    note "CONFIG:\n" . do {
+        local $/;
+        open my $fh, '<', catfile($testpath, 'config')
+            or die "could not open config file: $!";
+        <$fh>;
+    };
     my $t = Test::Mojo->new('Ffc');
-    return $t, $testpath, 'admin', $pw;
+    return $t, $testpath, $user, $pw, $salt, $csecret;
 }
 
 

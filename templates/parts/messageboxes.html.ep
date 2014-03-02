@@ -1,0 +1,10 @@
+% if ( $error ) {
+<div class="error">
+    <%= $error %>
+</div>
+% }
+% if ( $info ) {
+<div class="info">
+    <%= $info %>
+</div>
+% }

@@ -2,8 +2,8 @@
 <div class="postbox loginform">
 %= form_for login => begin
     <table>
-        <tr><td>Benutzer:</td><td><input type="text" name="user" class="loginfield" /></td></tr>
-        <tr><td>Passwort:</td><td><input type="password" name="pass" class="loginfield" /></td></tr>
+        <tr><td>Benutzer:</td><td><input type="text" name="username" class="loginfield" /></td></tr>
+        <tr><td>Passwort:</td><td><input type="password" name="password" class="loginfield" /></td></tr>
         <tr><td></td><td>
             <input type="submit" value="anmelden" class="linkalike" />
         </td></tr>

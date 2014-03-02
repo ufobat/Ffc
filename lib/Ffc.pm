@@ -1,6 +1,7 @@
 package Ffc;
 use Mojo::Base 'Mojolicious';
 use Digest::SHA 'sha512_base64';
+use File::Spec::Functions qw(catdir);
 use Ffc::Config;
 use Ffc::Auth;
 
@@ -8,8 +9,9 @@ use Ffc::Auth;
 sub startup {
     my $app    = shift;
 
+    my @path   = Ffc::Config::Datapath();
     my $config = Ffc::Config::Config();
-    my $path   = Ffc::Config::Datapath();
+    my $bpath  = catdir @path;
     my $dbh    = Ffc::Config::Dbh();
 
     $app->secrets([$config->{cookiesecret}]);
@@ -22,12 +24,14 @@ sub startup {
             qw(favicon commoncattitle title) ),
     });
 
-    $app->helper(fontsize => sub { $Ffc::Config::FontSizeMap{$_[0]} || 1 });
-    $app->helper(config   => sub { $config } );
-    $app->helper(path     => sub { $path   } );
-    $app->helper(dbh      => sub { $dbh    } );
-    $app->helper(password => 
-        sub { sha512_base64 $_[0], $config->{cryptsalt} } );
+    $app->helper(fontsize  => sub { $Ffc::Config::FontSizeMap{$_[1]} || 1 });
+    $app->helper(config    => sub { $config } );
+    $app->helper(path      => sub { $bpath  } );
+    $app->helper(dbh       => \&Ffc::Config::Dbh );
+    $app->helper(stylefile => 
+        sub { $Ffc::Config::Styles[$_[0]->session()->{style} ? 1 : 0] } );
+    $app->helper(password  => 
+        sub { use Data::Dumper; die Dumper $bpath, $config; sha512_base64 $_[1], $config->{cryptsalt} } );
 
     $app->hook(before_render => sub { 
         my $c = $_[0];
