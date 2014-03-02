@@ -24,6 +24,8 @@ sub _apply_preparations {
         $config->{cookiename} || $Ffc::Config::Defaults{cookiename});
 
     $app->defaults({
+        act => 'forum',
+        map( {;$_.'count' => 0} qw(newmsgs newpost note) ),
         map( {;$_ => ''} qw(error info) ),
         map( {;$_ => $config->{$_} || $Ffc::Config::Defaults{$_}} 
             qw(favicon commoncattitle title) ),
@@ -51,16 +53,54 @@ sub _apply_preparations {
 }
 
 sub _install_routes {
-    my $app = $_[0];
+    my $r = $_[0]->routes;
 
-    # Router
-    my $r = $app->routes;
-
-    # Normal route to controller
+    # Anmeldehandling und Anmeldeprüfung
     $r->post('/login')->to('auth#login')->name('login');
-    $r->any('/logout')->to('auth#logout')->name('logout');
-    my $l = $r->under(\&Ffc::Auth::check_login)->name('login_check');
+    $r->get('/logout')->to('auth#logout')->name('logout');
+    my $l = $r->bridge('/')
+              ->via('get')
+              ->to('auth#check_login')
+              ->name('login_check');
+
+    # Standardseitenauslieferung
     $l->get('/')->to('board#frontpage')->name('show');;
+
+    # Einfache Benutzeroptionen (Schalter)
+    my $o = $l->get('/options')->name('options_bridge');
+    $o->get('/form')
+      ->to('options#options_form')
+      ->name('options_form');
+    $o->get('/switchtheme')
+      ->to('options#switch_theme')
+      ->name('switch_theme');
+    $o->get('/fontsize/:fontsize', [fontsize => qr(-?\d+)])
+      ->to('options#font_size')
+      ->name('font_size');
+    my $b = $o->get('/bgcolor')->name('bgcolor_bridge');
+    $b->get('/none')
+      ->to('options#no_bg_color')
+      ->name('no_bg_color');
+    $b->get('/color/:bgcolor', [bgcolor => qr(\#?\w+)])
+      ->to('options#bg_color')
+      ->name('bg_color');
+    $o->get('/toggle/cat/:cat', [cat => qr(\w+)])
+      ->to('options#toggle_cat')
+      ->name('toggle_cat');
+    $o->get('/toggle/show_images')
+      ->to('options#toggle_show_images')
+      ->name('toggle_show_images');
+
+    # Benutzeroptionen mit Fomularen
+    $o->post("/$_")
+      ->to("options#set_$_")
+      ->name("set_$_")
+        for qw(email password avatar);
+
+    # Benutzeradministration
+    $o->post('/useradmin')
+      ->to('options#useradmin')
+      ->name('useradmin');
 }
 
 1;

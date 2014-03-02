@@ -1,0 +1,15 @@
+@import "normal.css";
+
+body {
+    background-image: none;
+    max-width: none;
+    min-width: inherit;
+    width: auto;
+    padding: 0;
+}
+body > div {
+    border-left-width: 0;
+    border-right-width: 0;
+}
+
+

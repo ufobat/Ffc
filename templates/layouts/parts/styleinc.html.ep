@@ -1,13 +1,12 @@
-% if ( $backgroundcolor or ( $fontsize and $fontsize != 1 ) ) {
+% if ( $backgroundcolor or $fontsize ) {
     <style type="text/css">
       body {
 %   if ( $backgroundcolor ) {
         background-color: <%= $backgroundcolor %>;
 %   }
 %   if ( $fontsize ) {
-        font-size: <%= fontsize($fontsize) %>;
+        font-size: <%= fontsize($fontsize) %>em;
 %   }
       }
     </style>
 % }
-

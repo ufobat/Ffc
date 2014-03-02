@@ -1,0 +1,68 @@
+% layout 'board';
+<div class="postbox options">
+    <h2>Einstellungen zur Schriftgröße</h2>
+    <p>(Schriftgrößen ist abhängig von Browsereinstellungen)</p>
+    <p>
+% for my $fs ( sort {$a <=> $b} keys %Ffc::Config::FontSizeMap ) {
+        <a href="<%= url_for font_size => fontsize => $fs %>" title="Schriftgröße <%= $Ffc::Config::FontSizeMap{$fs} // 'normal' %>"<% if ( $fs != session()->{fontsize} ) { %> style="font-size: <%=
+    session()->{fontsize}
+        ? $Ffc::Config::FontSizeMap{$fs} / $Ffc::Config::FontSizeMap{session()->{fontsize}}
+        : $Ffc::Config::FontSizeMap{$fs}
+    %>em"<% } %>><%= $fs < 0 ? '-' x ( 0 - $fs ) : '+' x $fs %>A</a>
+% }
+    </p>
+</div>
+<div class="postbox options">
+    <h2>Einstellungen zum Aussehen des Forums</h2>
+    <p>(Das Forum kann wahlweise in schmaler Blogform oder über die gesamte Fensterbreite dargestellt werden)</p>
+    <p>
+        <%= link_to switch_theme => begin %>Anzeige des Forums
+            <%= session()->{style} ? 'normal' : 'über die Fensterbreite' %><% end %>
+    </p>
+</div> 
+% unless ( $Ffc::Data::FixBgColor ) {
+<div class="postbox options">
+    <h2>Einstellungen zur Hintergrundfarbe des Forums</h2>
+    <p>(Die gewünschte Farbe für den Hintergrund einfach anklicken)</p>
+    <p>
+<% for my $c ( @Ffc::Config::Colors ) { %><a href="<%= url_for bg_color => bgcolor => $c %>" title="Hintergrundfarbe <%= $c %>" style="background:<%= $c %>;text-decoration:none;margin:0;padding:0;display:inline-block;width:1.5em">&nbsp;</a><% } %>
+
+    </p>
+    <p><%= link_to no_bg_color => begin %>Standardhintergrundfarbe des Forums<% end %></p>
+</div>
+% }
+<div class="postbox options">
+    <h2>Benutzeravatar verwalten</h2>
+    <p><img src="<%= url_for show_avatar => username => session()->{user} %>" alt="Avatarbild des Benutzers &quot;<%= session()->{user} %>&quot;" %></p>
+%= form_for set_avatar => ( enctype => 'multipart/form-data' ) => begin 
+    <%= file_field avatarfile => (accept => 'image/*') %>
+    <button type="submit" class="linkalike">Avatar hochladen</button>
+    <p>(Benutzeravatare sind kleine Bildchen, die neben den Beiträgen angezeigt werden, um optisch den Autoren des jeweiligen Beitrages hervorzuheben. Diese Avatarbildchen sollten nach Möglichkeit nicht zu groß sein (128px Seitenlänge sind da genug), damit auch Benutzer mit langsameren Internetverbindungen in den Genuß dieses Features kommen. Aus Designgründen werden diese Bildchen quadratisch dargestellt. Daher sollten die Bildchen, die man hochlädt, nach Möglichkeit ebenfalls Quadratisch sein, sonst kommt es zu unschönen Verzerrungen in der Anzeige.</p>
+% end
+</div>
+<div class="postbox options">
+    <h2>Einstellungen zur Anzeige von Bildern in den Beiträgen</h2>
+    <p>(Anzeige von Grafiken kann wahlweise abgeschalten werden)</p>
+    <p>
+        <%= link_to toggle_show_images => begin %>Bilder und Smileys werden
+            <%= session()->{show_images} ? 'ausgeblendet' : 'angezeigt' %><% end %>
+    </p>
+</div>
+<div class="postbox options">
+    <h2>Eigenes Passwort ändern</h2>
+    <p>(Aus Sicherheitsgründen sollte regelmäßig das eigene Passwort geändert werden)</p>
+%= form_for set_password => begin 
+    <p><%= password_field 'oldpw' %> (Altes Passwort zur Bestätigung)</p>
+    <p><%= password_field 'newpw1' %> (Neues Passwort, 8 - 64 Zeichen)</p>
+    <p><%= password_field 'newpw2' %> (Neues Passwort wiederholen)</p>
+    <p><button type="submit" class="linkalike">Passwort ändern</button></p>
+% end
+</div>
+<div class="postbox options">
+    <h2>Eigene E-Mail-Adresse einstellen</h2>
+    <p>(Mit der Emailadresse kann der Administrator des Forums ggf. Nachrichten außerhalb des Forums verschicken)</p>
+%= form_for set_email => begin 
+    <%= email_field 'email' %>
+    <button type="submit" class="linkalike">Emailadresse speichern</button>
+% end
+</div>
