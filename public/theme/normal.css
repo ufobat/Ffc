@@ -7,7 +7,7 @@ body {
     max-width: 46em;
 }
 body > * {
-    padding: .25em .5em .5em .5em;
+    padding: .25em 1em .5em 1em;
     margin-top: .5em;
     background: white;
     border: 1px lightslategray solid;    
