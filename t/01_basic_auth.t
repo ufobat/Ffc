@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 42;
+use Test::More tests => 89;
 use Test::Mojo;
 
 my ( $t, $path, $admin, $pass ) = Testinit::start_test();
@@ -39,9 +39,9 @@ $t->content_like(qr~<div class="error">\s*Fehler bei der Anmeldung~);
 $t->get_ok('/');
 check_notloggedin();
 note 'working login';
-$t->post_ok('/login', form => { username => $admin, password => $pass });
-check_loggedin();
-exit;
+$t->post_ok('/login', form => { username => $admin, password => $pass })
+  ->status_is(302)
+  ->header_like(location => qr~https?://localhost:\d+/~);
 $t->get_ok('/');
 check_loggedin();
 note 'working logout';
@@ -67,5 +67,5 @@ sub check_loggedin {
     note 'check that i am logged in';
     $t->status_is(200)
       ->content_like(qr/Angemeldet als "$admin"/)
-      ->content_untlike(qr~<form action="/login" method="POST">~i)
+      ->content_unlike(qr~<form action="/login" method="POST">~i)
 }

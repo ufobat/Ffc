@@ -31,7 +31,7 @@ sub startup {
     $app->helper(stylefile => 
         sub { $Ffc::Config::Styles[$_[0]->session()->{style} ? 1 : 0] } );
     $app->helper(password  => 
-        sub { use Data::Dumper; die Dumper $bpath, $config; sha512_base64 $_[1], $config->{cryptsalt} } );
+        sub { sha512_base64 $_[1], $config->{cryptsalt} } );
 
     $app->hook(before_render => sub { 
         my $c = $_[0];

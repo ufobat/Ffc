@@ -12,13 +12,13 @@ sub login {
     my $c = shift;
     my $u = $c->param('username') // '';
     my $p = $c->param('password') // '';
-    if ( $u xor $p ) {
+    if ( !$u or !$p ) {
         $c->stash(error => 'Bitte melden Sie sich an');
         return $c->render(template => 'auth/loginform');
     }
     my $r = $c->dbh()->selectall_arrayref(
         'SELECT u.admin, u.show_images, u.bgcolor
-        FROM users u WHERE u.id=? and u.password=?',
+        FROM users u WHERE UPPER(u.name)=UPPER(?) and u.password=?',
         undef, $u, $c->password($p));
     if ( $r and @$r ) {
         my $s = $c->session();
@@ -28,7 +28,7 @@ sub login {
         $s->{user}            = $u;
         return $c->redirect_to('show');
     }
-    $c->stash(error => 'Fehler bei der Anmeldung '.$c->path().' '.$u.' '.$p.' '.$c->config()->{cryptsalt});
+    $c->stash(error => 'Fehler bei der Anmeldung: '.$c->password($p));
     $c->render(template => 'auth/loginform');
 }
 

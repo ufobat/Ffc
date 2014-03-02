@@ -1,7 +1,7 @@
 CREATE TABLE "users" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
   "name" varchar(64) NOT NULL,
-  "password" varchar(64) NOT NULL,
+  "password" varchar(512) NOT NULL,
   "lastseen"  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "lastseenmsgs"  integer NOT NULL DEFAULT '0',
   "lastseenforum" integer NOT NULL DEFAULT '0',
