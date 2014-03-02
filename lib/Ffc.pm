@@ -7,7 +7,12 @@ use Ffc::Auth;
 
 # This method will run once at server start
 sub startup {
-    my $app    = shift;
+    $_[0]->_apply_preparations();
+    $_[0]->_install_routes();
+}
+
+sub _apply_preparations {
+    my $app = $_[0];
 
     my @path   = Ffc::Config::Datapath();
     my $config = Ffc::Config::Config();
@@ -43,6 +48,10 @@ sub startup {
                 : ( $s->{backgroundcolor} || $config->{backgroundcolor} )
         );
     });
+}
+
+sub _install_routes {
+    my $app = $_[0];
 
     # Router
     my $r = $app->routes;
