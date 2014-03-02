@@ -25,7 +25,7 @@
     <h2>Einstellungen zur Hintergrundfarbe des Forums</h2>
     <p>(Die gewünschte Farbe für den Hintergrund einfach anklicken)</p>
     <p>
-<% for my $c ( @Ffc::Config::Colors ) { %><a href="<%= url_for bg_color => bgcolor => $c %>" title="Hintergrundfarbe <%= $c %>" style="background:<%= $c %>;text-decoration:none;margin:0;padding:0;display:inline-block;width:1.5em">&nbsp;</a><% } %>
+<% for my $c ( @Ffc::Config::Colors ) { %><a href="<%= url_for bg_color => bgcolor => $c %>" title="Hintergrundfarbe <%= $c %>" style="background:<%= $c %>" class="coloroption">&nbsp;</a><% } %>
 
     </p>
     <p><%= link_to no_bg_color => begin %>Standardhintergrundfarbe des Forums<% end %></p>

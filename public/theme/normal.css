@@ -99,3 +99,11 @@ form {
     padding: 0;
     margin: 0;
 }
+a.coloroption {
+    border: 1px black solid;
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+    width: 1.5em;
+}
