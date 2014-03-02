@@ -13,7 +13,7 @@ use Testinit;
 use DBI;
 use File::Temp;
 
-use Test::More tests => 53;
+use Test::More tests => 104;
 
 use_ok('Ffc::Config');
 use_ok('Ffc::Auth');
@@ -21,11 +21,15 @@ use_ok('Ffc::Auth');
 my $script = $Testinit::Script;
 note "testing init script '$script'";
 
-my $testpath = File::Temp::tempdir( CLEANUP => 1 );
+my $testpath1 = File::Temp::tempdir( CLEANUP => 1 );
+my $testpath2 = File::Temp::tempdir( CLEANUP => 1 );
 
-note "using path '$testpath' for tests";
-my $pw = '';
+test_path($testpath1);
+test_path($testpath2);
+
 sub check_pw {
+    my $testpath = shift;
+    my $pw = shift;
     local $ENV{FFC_DATA_PATH} = $testpath;
     is(DBI->connect(
         "DBI:SQLite:database=$testpath/database.sqlite3"
@@ -37,6 +41,7 @@ sub check_pw {
 }
 
 sub check_paths {
+    my $testpath = shift;
     my $noexist = shift;
     for my $path ( 
         [ qq'$testpath/avatars',          1 ],
@@ -62,44 +67,50 @@ sub check_paths {
     }
 }
 
-my $out1 = qx($script 2>&1);
-like $out1,
-    qr'error: please provide a "FFC_DATA_PATH" environment variable',
-    'error message for env var ok';
-check_paths(1);
+sub test_path {
+    my $testpath = shift;
 
-my $out2 = qx(FFC_DATA_PATH=$testpath $script 2>&1);
-like $out2, $_, 'first run content ok' for (
-    qr~ok: using '\d+' as data path owner and '\d+' as data path group~,
-    qr~ok: using '$testpath/avatars' as avatar store~,
-    qr~ok: using '$testpath/uploads' as upload store~,
-    qr~ok: using '$testpath/database\.sqlite3' as database store~,
-    qr~ok: using '$testpath/config' as config store~,
-    qr~ok: check user and group priviledges of the data path!~,
-    qr~ok: remember to alter config file '$testpath/config'~,
-    qr~ok: initial admin user created:~,
-);
-$pw = (split /\n+/, $out2 )[-1];
-chomp $pw;
-note "password supplied is '$pw'";
-check_pw();
-check_paths();
+    note "using path '$testpath' for tests";
+    my $pw = '';
+    my $out1 = qx($script 2>&1);
+    like $out1,
+        qr'error: please provide a "FFC_DATA_PATH" environment variable',
+        'error message for env var ok';
+    check_paths($testpath, 1);
 
-my $out3 = qx(FFC_DATA_PATH=$testpath $script 2>&1);
-like $out3, $_, 'second run content ok' for (
-    qr~ok: using '\d+' as data path owner and '\d+' as data path group~,
-    qr~ok: using '$testpath/avatars' as avatar store~,
-    qr~ok: path '$testpath/avatars' as avatar allready exists~,
-    qr~ok: using '$testpath/uploads' as upload store~,
-    qr~ok: path '$testpath/uploads' as upload allready exists~,
-    qr~ok: using '$testpath/database\.sqlite3' as database store~,
-    qr~ok: path '$testpath/database\.sqlite3' as database allready exists~,
-    qr~ok: using '$testpath/config' as config store~,
-    qr~ok: path '$testpath/config' as config allready exists~,
-    qr~ok: check user and group priviledges of the data path!~,
-    qr~ok: remember to alter config file '$testpath/config'~,
-    qr~ok: database allready existed, no admin user created~,
-);
-check_pw();
-check_paths();
+    my $out2 = qx(FFC_DATA_PATH=$testpath $script 2>&1);
+    like $out2, $_, 'first run content ok' for (
+        qr~ok: using '\d+' as data path owner and '\d+' as data path group~,
+        qr~ok: using '$testpath/avatars' as avatar store~,
+        qr~ok: using '$testpath/uploads' as upload store~,
+        qr~ok: using '$testpath/database\.sqlite3' as database store~,
+        qr~ok: using '$testpath/config' as config store~,
+        qr~ok: check user and group priviledges of the data path!~,
+        qr~ok: remember to alter config file '$testpath/config'~,
+        qr~ok: initial admin user created:~,
+    );
+    $pw = (split /\n+/, $out2 )[-1];
+    chomp $pw;
+    note "password supplied is '$pw'";
+    check_pw($testpath, $pw);
+    check_paths($testpath);
 
+    my $out3 = qx(FFC_DATA_PATH=$testpath $script 2>&1);
+    like $out3, $_, 'second run content ok' for (
+        qr~ok: using '\d+' as data path owner and '\d+' as data path group~,
+        qr~ok: using '$testpath/avatars' as avatar store~,
+        qr~ok: path '$testpath/avatars' as avatar allready exists~,
+        qr~ok: using '$testpath/uploads' as upload store~,
+        qr~ok: path '$testpath/uploads' as upload allready exists~,
+        qr~ok: using '$testpath/database\.sqlite3' as database store~,
+        qr~ok: path '$testpath/database\.sqlite3' as database allready exists~,
+        qr~ok: using '$testpath/config' as config store~,
+        qr~ok: path '$testpath/config' as config allready exists~,
+        qr~ok: check user and group priviledges of the data path!~,
+        qr~ok: remember to alter config file '$testpath/config'~,
+        qr~ok: database allready existed, no admin user created~,
+    );
+    check_pw($testpath, $pw);
+    check_paths($testpath);
+
+}
