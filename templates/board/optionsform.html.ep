@@ -8,7 +8,7 @@
     session()->{fontsize}
         ? $Ffc::Config::FontSizeMap{$fs} / $Ffc::Config::FontSizeMap{session()->{fontsize}}
         : $Ffc::Config::FontSizeMap{$fs}
-    %>em"<% } %>><%= $fs < 0 ? '-' x ( 0 - $fs ) : '+' x $fs %>A</a>
+    %>em"<% } else { %> class="active"<% } %>><%= $fs < 0 ? '-' x ( 0 - $fs ) : '+' x $fs %>A</a>
 % }
     </p>
 </div>
