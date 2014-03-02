@@ -15,10 +15,9 @@ use File::Temp;
 use File::Spec::Functions qw(catfile);
 use Digest::SHA 'sha512_base64';
 
-use Test::More tests => 194;
+use Test::More tests => 193;
 
 use_ok('Ffc::Config');
-use_ok('Ffc::Auth');
 
 my $script = $Testinit::Script;
 note "testing init script '$script'";
