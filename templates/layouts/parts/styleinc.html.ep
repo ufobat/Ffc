@@ -1,4 +1,4 @@
-% if ( $backgroundcolor or ( $fontsize and $fontsize <> 1 ) ) {
+% if ( $backgroundcolor or ( $fontsize and $fontsize != 1 ) ) {
     <style type="text/css">
       body {
 %   if ( $backgroundcolor ) {

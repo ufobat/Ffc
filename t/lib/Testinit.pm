@@ -19,10 +19,10 @@ sub start_test {
     my $testpath = File::Temp::tempdir( CLEANUP => 1 );
     note "using test data dir '$testpath'";
     local $ENV{FFC_DATA_PATH} = $testpath;
-    my $t = Test::Mojo->new('Ffc');
     my $pw = ( split /\n+/, qx($Script 2>&1) )[-1];
     chomp $pw;
     note "user 'admin' with password '$pw' created";
+    my $t = Test::Mojo->new('Ffc');
     return $t, $testpath, 'admin', $pw;
 }
 

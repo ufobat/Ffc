@@ -7,7 +7,7 @@
 %= include 'layouts/parts/styleinc'
   </head>
   <body>
-    <!-- Nicht angemeldet !-->
+    <!-- Angemeldet als "<%= session()->{user} %>" !-->
 %= content
   </body>
 </html>

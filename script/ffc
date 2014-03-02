@@ -1,12 +1,12 @@
 #!/usr/bin/env perl
 
-use 5.016;
+use 5.010;
 use strict;
 use warnings;
 
-use File::Spec::Functions qw(catfile splitdir);
+use File::Spec::Functions qw(catdir splitdir);
 use File::Basename;
-use lib catfile splitdir(File::Basename::basename(__FILE__)), '..', 'lib';
+use lib catdir(splitdir(File::Basename::dirname(__FILE__)), '..', 'lib');
 
 # Start command line interface for application
 require Mojolicious::Commands;

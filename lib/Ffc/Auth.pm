@@ -12,14 +12,20 @@ sub login {
     my $c = shift;
     my $u = $c->param('username');
     my $p = $c->param('password');
-    return $c->redirect_to('login_form') unless $u and $p;
+    return $c->render(template => 'auth/loginform') unless $u and $p;
     my $r = $c->dbh()->selectall_arrayref(
-        'SELECT u.admin, u.show_images, u.theme, u.bgcolor, u.fontsize FROM users u WHERE u.id=? and u.password=?',
+        'SELECT u.admin, u.show_images, u.bgcolor
+        FROM users u WHERE u.id=? and u.password=?',
         undef, $u, $c->password($p));
     if ( @$r ) {
+        my $s = $c->session();
+        $s->{admin}           = $r->[0]->[0];
+        $s->{show_images}     = $r->[0]->[1];
+        $s->{backgroundcolor} = $r->[0]->[2];
+        $s->{user}            = $u;
         return $c->redirect_to('show');
     }
-    $c->flash(error => 'Fehler bei der Anmeldung, bitte versuchen Sie es erneut');
+    $c->stash(error => 'Fehler bei der Anmeldung');
     $c->render(template => 'auth/loginform');
 }
 

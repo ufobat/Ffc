@@ -4,11 +4,63 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 3;
+use Test::More tests => 42;
 use Test::Mojo;
 
 my ( $t, $path, $admin, $pass ) = Testinit::start_test();
-$t->get_ok('/')
-  ->status_is(200)
-  ->content_is(q/Mojolicious/);
 
+note 'first attempt without login';
+$t->get_ok('/');
+check_notloggedin();
+note 'try to logout without login before';
+$t->get_ok('/logout');
+check_notloggedin();
+note 'failed login without data';
+$t->post_ok('/login', form => { });
+check_notloggedin();
+note 'failed login without password';
+$t->post_ok('/login', form => { username => $admin });
+check_notloggedin();
+note 'failed login without username';
+$t->post_ok('/login', form => { password => $pass });
+check_notloggedin();
+note 'failed login with wrong password';
+$t->post_ok('/login', form => { username => $admin, password => "#$pass#" });
+check_notloggedin();
+exit;
+$t->get_ok('/');
+check_notloggedin();
+note 'failed login with noneexisting username';
+$t->post_ok('/login', form => { username => "#$admin#", password => $pass });
+check_notloggedin();
+$t->get_ok('/');
+check_notloggedin();
+note 'working login';
+$t->post_ok('/login', form => { username => $admin, password => $pass });
+check_loggedin();
+$t->get_ok('/');
+check_loggedin();
+note 'working logout';
+$t->get_ok('/logout');
+check_notloggedin();
+note 'again failed login with wrong password';
+$t->post_ok('/login', form => { username => $admin, password => "#$pass#" });
+check_notloggedin();
+
+sub check_notloggedin {
+    note 'check that i am not logged in';
+    $t->status_is(200)
+      ->content_like(qr/Nicht angemeldet/)
+      ->content_like(qr/<input type="text" name="user"/)
+      ->content_like(qr/<input type="password" name="pass"/)
+      ->content_like(qr~<form action="/login" method="POST">~i)
+      ->content_like(
+        qr~<input type="submit" value="anmelden" class="linkalike~);
+}
+
+sub check_loggedin {
+    note 'check that i am logged in';
+    $t->status_is(200)
+      ->content_like(qr/Angemeldet als "$admin"/)
+      ->content_untlike(qr~<form action="/login" method="POST">~i)
+}

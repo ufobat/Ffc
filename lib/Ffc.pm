@@ -2,6 +2,7 @@ package Ffc;
 use Mojo::Base 'Mojolicious';
 use Digest::SHA 'sha512_base64';
 use Ffc::Config;
+use Ffc::Auth;
 
 # This method will run once at server start
 sub startup {
@@ -11,7 +12,7 @@ sub startup {
     my $path   = Ffc::Config::Datapath();
     my $dbh    = Ffc::Config::Dbh();
 
-    $app->secret($config->{cookiesecret});
+    $app->secrets([$config->{cookiesecret}]);
     $app->sessions->cookie_name(
         $config->{cookiename} || $Ffc::Config::Defaults{cookiename});
 
@@ -28,7 +29,7 @@ sub startup {
     $app->helper(password => 
         sub { sha512_base64 $_[0], $config->{cryptsalt} } );
 
-    $app->before_render(sub{
+    $app->hook(before_render => sub { 
         my $c = $_[0];
         my $s = $c->session;
         $c->stash(fontsize => $s->{fontsize} // 0);
@@ -46,7 +47,7 @@ sub startup {
     $r->post('/login')->to('auth#login')->name('login');
     $r->any('/logout')->to('auth#logout')->name('logout');
     my $l = $r->under(\&Ffc::Auth::check_login)->name('login_check');
-    $r->get('/')->to('example#welcome')->name('show');;
+    $l->get('/')->to('board#frontpage')->name('show');;
 }
 
 1;
