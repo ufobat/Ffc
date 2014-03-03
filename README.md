@@ -10,7 +10,7 @@ simpler technischer Struktur.
 Features
 --------
 
-![Screenshot](https://raw.github.com/4FriendsForum/Ffc/master/doc/Screenshot.png)
+![Screenshot](https://raw.github.com/4FriendsForum/Ffc/master/public/theme/Screenshot.png)
 
 * Grundlegende Aspekte:
   * Stabilität
