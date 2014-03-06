@@ -5,15 +5,41 @@ use utf8;
 use FindBin;
 use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
-srand;
+use Test::Mojo;
 
-use Test::More tests => 1;
+use Test::More tests => 153;
 
 use_ok('Ffc::Formats');
-exit;
-$Ffc::Data::URLShorten = 1024;
-note("url shortened to $Ffc::Data::URLShorten");
-my $c = Mock::Controller->new();
+
+srand;
+
+{
+    use Mojolicious::Lite;
+
+    my $config = {};
+    helper format_timestamp => \&Ffc::Formats::format_timestamp;
+    helper format_text      => \&Ffc::Formats::format_text;
+    helper config           => sub { $config };
+    helper prepare          => sub {
+        my $c = shift;
+        $c->session->{show_images} = $c->param('show_images') ? 1 : 0;
+        $c->session->{user} = $c->param('user') // '';
+        $c->config->{urlshorten} = $c->param('urlshorten') // 30;
+    };
+
+    any '/format_timestamp' => sub {
+        my $c = shift;
+        $c->prepare;
+        $c->render(text => $c->format_timestamp($c->param('text')));
+    };
+    any '/format_text' => sub {
+        my $c = shift;
+        $c->prepare;
+        $c->render(text => $c->format_text($c->param('text')));
+    };
+}
+
+my $t = Test::Mojo->new;
 
 {
     note('checking format_timestamp( $timestring )');
@@ -26,61 +52,48 @@ my $c = Mock::Controller->new();
     my $timeok_checkstring = sprintf '%02d.%02d.%04d, %02d:%02d',
       @timeok[ 2, 1, 0, 3, 4 ];
     my $timebad = ">>> " . int( rand 1000000 ) . " <<<";
-    is( Ffc::Formats::format_timestamp(),
-        '', 'no input returned empty string' );
-    is( Ffc::Formats::format_timestamp($timebad),
-        $timebad, 'bad time string just returned unaltered' );
-    is( Ffc::Formats::format_timestamp($timeok_teststring),
-        $timeok_checkstring, 'good timestring returned like expected' );
-    is( Ffc::Formats::format_timestamp('0000-00-00 00:00:00'), 'neu', 'new users shown correct' );
+
+    $t->post_ok('/format_timestamp', form => { text => '' })
+      ->content_is('');
+    $t->post_ok('/format_timestamp', form => { text => $timebad })
+      ->content_is($timebad);
+    $t->post_ok('/format_timestamp', form => { text => $timeok_teststring })
+      ->content_is($timeok_checkstring);
+    $t->post_ok('/format_timestamp', form => { text => '0000-00-00 00:00:00' })
+      ->content_is('neu');
     {
         my @time = localtime; $time[5] += 1900; $time[4]++;
         my $stamp = sprintf '%04d-%02d-%02d %02d:%02d:%02d', @time[5,4,3,2,1,0];
-        is( Ffc::Formats::format_timestamp($stamp), 'jetzt', 'actual time correct' );
+        $t->post_ok('/format_timestamp', form => { text => $stamp })
+          ->content_is('jetzt');
     }
     {
         my @time = localtime; $time[5] += 1900; $time[4]++;
         $time[1]++;
         my $stamp = sprintf '%04d-%02d-%02d %02d:%02d:%02d', @time[5,4,3,2,1,0];
         my $check = sprintf '%02d:%02d', @time[2,1];
-        is( Ffc::Formats::format_timestamp($stamp), $check, 'actual time correct' );
+        $t->post_ok('/format_timestamp', form => { text => $stamp })
+          ->content_is($check);
     }
 }
+
 {
     note('checking format_text');
     my @chars = ('a'..'z', 0..9, '.');
     my $zs = sub { join '', map({;$chars[int rand scalar @chars]} 0 .. 4 + int rand 8) };
     my $tu = sub { 'http://www.'.$zs->().'.de' };
+    my @params;
     {
-        note('checking wrong calls');
-        check_call( \&Ffc::Formats::format_text,
-            format_text =>
-            {
-                name => 'input string',
-                good => '',
-                bad => [],
-                emptyerror => 'Controller ungültig',
-                errormsg => [],
-            },
-            {
-                name => 'controller object',
-                good => $c,
-                bad => [ '' ],
-                emptyerror => 'Controller ungültig',
-                errormsg => ['Controller ungültig'],
-            },
-        );
-    }
-    note('checking format_text without input');
-    {
-        $c->session()->{show_images} = 1;
-        is( Ffc::Formats::format_text('', $c), '', 'empty (nuthing) string returned empty - like in nothing');
-        is( Ffc::Formats::format_text('', $c), '', 'empty (nuthing) string returned empty - like in nothing');
-        is( Ffc::Formats::format_text(' ' x ( 3 + int rand 1000 ), $c), '', 'empty (lots of spaces) string returned empty - like in nothing');
-        $c->session()->{show_images} = 0;
-        is( Ffc::Formats::format_text('', $c), '', 'empty (nuthing) string returned empty - like in nothing');
-        is( Ffc::Formats::format_text('', $c), '', 'empty (nuthing) string returned empty - like in nothing');
-        is( Ffc::Formats::format_text(' ' x ( 3 + int rand 1000 ), $c), '', 'empty (lots of spaces) string returned empty - like in nothing');
+        @params = ( show_images => 1, user => '', urlshorten => 10 + length $tu );
+        $t->post_ok('/format_text', form => { text => '', @params })
+          ->content_is('');
+        $t->post_ok('/format_text', form => { text => '' x ( 3 + int rand 1000), @params })
+          ->content_is('');
+        @params = ( show_images => 1, user => '', urlshorten => 10 + length $tu );
+        $t->post_ok('/format_text', form => { text => '', @params })
+          ->content_is('');
+        $t->post_ok('/format_text', form => { text => '' x ( 3 + int rand 1000), @params })
+          ->content_is('');
     }
 
     {
@@ -100,28 +113,30 @@ my $c = Mock::Controller->new();
         my $code = \&Ffc::Formats::format_text;
         my $testurl = $tu->().'/'.$zs->().'.html';
         my $testimage = $tu->().'/'.$zs->().'.png';
-        $c->session()->{theme} = my $theme = $zs->();
-        $c->session()->{user} = my $testuser = $zs->();
-        $c->{url} = my $url = $tu->();
+        my $testuser = $zs->();
         my @input = map { chomp; $_ ? $_ : () } split /\n+/, teststring($testurl, $testimage, $testuser);
-        my @output_w_img = map { chomp; $_ ? $_ : () } split /\n+/, controlstring_withimages($testurl, $testimage, $url, $theme, $testuser);
-        my @output_wo_img = map { chomp; $_ ? $_ : () } split /\n+/, controlstring_withoutimages($testurl, $testimage, $url, $theme, $testuser);
-        #die ">".@input."<>".@output_w_img."<>".@output_wo_img."<";
+        my @output_w_img = map { chomp; $_ ? $_ : () } split /\n+/, controlstring_withimages($testurl, $testimage, $testuser);
+        my @output_wo_img = map { chomp; $_ ? $_ : () } split /\n+/, controlstring_withoutimages($testurl, $testimage, $testuser);
         for my $i ( 0..$#input ) {
             my $start = [ map {$zs->()} 0 .. int rand 3 ];
             my $stop = [ map {$zs->()} 0 .. int rand 3 ];
             my $input = $prep->($start, $input[$i], $stop, 0);
             my $output_w = $prep->($start, $output_w_img[$i], $stop, 1);
             my $output_wo = $prep->($start, $output_wo_img[$i], $stop, 1);
-            $c->session()->{show_images} = 1;
-            is($code->($input, $c), $output_w, 'teststring testet ok with images');
-            $c->session()->{show_images} = 0;
-            is($code->($input, $c), $output_wo, 'teststring testet ok witout images');
+            {
+                my @params = ( show_images => 1, user => $testuser, urlshorten => 10 + length $testurl.$testimage );
+                $t->post_ok('/format_text', form => { text => $input, @params })
+                  ->content_is($output_w);
+            }
+            {
+                my @params = ( show_images => 0, user => $testuser, urlshorten => 10 + length $testurl.$testimage );
+                $t->post_ok('/format_text', form => { text => $input, @params })
+                  ->content_is($output_wo);
+            }
         }
     }
-
-
 }
+
 {
     my $src = 'Und "Da kommt
 ein mehrzeiliges
@@ -132,9 +147,7 @@ Zitat"! ... Haha!';
 <p><span class="quote">ein mehrzeiliges</span></p>
 <p><span class="quote">Zitat</span>“! ... Haha!</p>';
 
-    my $got = Ffc::Formats::format_text( $src, $c );
-
-    is $got, $expected, 'multiline quotes work';
+    $t->post_ok('/format_text', form => { text => $src })->content_is($expected);
 }
 
 {
@@ -156,7 +169,7 @@ https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&x=ypsilon
 <p><span class="quote">Galli</span>“</p>
 <p><a href="https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&amp;x=ypsilon" title="Externe Webseite: https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&amp;amp;x=ypsilon" target="_blank">https://abcde.f…p;amp;x=ypsilon</a></p>~;
 
-    is(Ffc::Formats::format_text($teststring, $c), $controlstring, 'complicated multiline string works as well');
+    $t->post_ok('/format_text', form => { text => $teststring, urlshorten => 30 })->content_is($controlstring);
 }
 
 sub teststring {
@@ -206,7 +219,7 @@ EOSTRING
 }
 
 sub controlstring_withimages {
-    my ( $testurl, $testimage, $url, $theme, $testuser ) = @_;
+    my ( $testurl, $testimage, $testuser ) = @_;
     return << "EOSTRING";
 <p>MarkupTests:</p>
 <p>Notiz am Rande: <span class="alert">BBCodes !!!</span> können mich mal kreuzweise am Arsch lecken, bin fertig mit den sinnlosen Drecksdingern. Die kommen hier nie, nie nie rein!</p>
@@ -214,36 +227,36 @@ sub controlstring_withimages {
 <p><a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>, <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a></p>
 <p>Hallo <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> Hallo (<a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>) Hallo</p>
 <p>(<a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>), <a href="$testimage" title="Externes Bild" target="_blank"><img src="$testimage" class="extern" title="Externes Bild" /></a></p>
-<p>Und „<span class="quote">Hier, in dieser <img class="smiley" src="$url/themes/$theme/img/smileys/smile.png" alt=":)" /> ... <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> ... achso</span>“ und da" oder, <span class="username">$testuser</span>, so.</p>
+<p>Und „<span class="quote">Hier, in dieser <img class="smiley" src="/theme/img/smileys/smile.png" alt=":)" /> ... <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> ... achso</span>“ und da" oder, <span class="username">$testuser</span>, so.</p>
 <p>Achso <span class="username"><span class="alert">@</span>$testuser</span>: <span class="username">$testuser</span> oder <a href="http://www.$testuser.de" title="Externe Webseite: http://www.$testuser.de" target="_blank">http://www.$testuser.de</a> weil ja!</p>
 <p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span>, <span class="emotion">test6</span></p>
 <p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span>, <span class="emotion">test 6</span></p>
-<p>look: <img class="smiley" src="$url/themes/$theme/img/smileys/look.png" alt="O.O" /> <img class="smiley" src="$url/themes/$theme/img/smileys/look.png" alt="0.0" />,</p>
-<p>what: <img class="smiley" src="$url/themes/$theme/img/smileys/what.png" alt="o.O" /> <img class="smiley" src="$url/themes/$theme/img/smileys/what.png" alt="O.o" /> <img class="smiley" src="$url/themes/$theme/img/smileys/what.png" alt="O.ò" /> <img class="smiley" src="$url/themes/$theme/img/smileys/what.png" alt="ó.O" />,</p>
-<p>tongue: <img class="smiley" src="$url/themes/$theme/img/smileys/tongue.png" alt=":P" /> <img class="smiley" src="$url/themes/$theme/img/smileys/tongue.png" alt=":-P" /> <img class="smiley" src="$url/themes/$theme/img/smileys/tongue.png" alt="=P" /> <img class="smiley" src="$url/themes/$theme/img/smileys/tongue.png" alt=":p" /> <img class="smiley" src="$url/themes/$theme/img/smileys/tongue.png" alt=":-p" /> <img class="smiley" src="$url/themes/$theme/img/smileys/tongue.png" alt="=p" />,</p>
-<p>ooo: <img class="smiley" src="$url/themes/$theme/img/smileys/ooo.png" alt=":O" /> <img class="smiley" src="$url/themes/$theme/img/smileys/ooo.png" alt=":-O" /> <img class="smiley" src="$url/themes/$theme/img/smileys/ooo.png" alt="=O" /> <img class="smiley" src="$url/themes/$theme/img/smileys/ooo.png" alt=":o" /> <img class="smiley" src="$url/themes/$theme/img/smileys/ooo.png" alt=":-o" /> <img class="smiley" src="$url/themes/$theme/img/smileys/ooo.png" alt="=o" />,</p>
-<p>smile: <img class="smiley" src="$url/themes/$theme/img/smileys/smile.png" alt=":)" /> <img class="smiley" src="$url/themes/$theme/img/smileys/smile.png" alt=":-)" /> <img class="smiley" src="$url/themes/$theme/img/smileys/smile.png" alt="=)" />,</p>
-<p>sad: <img class="smiley" src="$url/themes/$theme/img/smileys/sad.png" alt=":(" /> <img class="smiley" src="$url/themes/$theme/img/smileys/sad.png" alt=":-(" /> <img class="smiley" src="$url/themes/$theme/img/smileys/sad.png" alt="=(" />,</p>
-<p>crying: <img class="smiley" src="$url/themes/$theme/img/smileys/crying.png" alt=":,(" /> <img class="smiley" src="$url/themes/$theme/img/smileys/crying.png" alt=":'(" />,</p>
-<p>twinkling: <img class="smiley" src="$url/themes/$theme/img/smileys/twinkling.png" alt=";)" /> <img class="smiley" src="$url/themes/$theme/img/smileys/twinkling.png" alt=";-)" />,</p>
-<p>laughting: <img class="smiley" src="$url/themes/$theme/img/smileys/laughting.png" alt=":D" /> <img class="smiley" src="$url/themes/$theme/img/smileys/laughting.png" alt="=D" /> <img class="smiley" src="$url/themes/$theme/img/smileys/laughting.png" alt=":-D" /> <img class="smiley" src="$url/themes/$theme/img/smileys/laughting.png" alt="LOL" />,</p>
-<p>rofl: <img class="smiley" src="$url/themes/$theme/img/smileys/rofl.png" alt="XD" /> <img class="smiley" src="$url/themes/$theme/img/smileys/rofl.png" alt="X-D" /> <img class="smiley" src="$url/themes/$theme/img/smileys/rofl.png" alt="ROFL" />,</p>
-<p>unsure: <img class="smiley" src="$url/themes/$theme/img/smileys/unsure.png" alt=":|" /> <img class="smiley" src="$url/themes/$theme/img/smileys/unsure.png" alt=":-|" /> <img class="smiley" src="$url/themes/$theme/img/smileys/unsure.png" alt="=|" />,</p>
-<p>yes: <img class="smiley" src="$url/themes/$theme/img/smileys/yes.png" alt="(y)" /> <img class="smiley" src="$url/themes/$theme/img/smileys/yes.png" alt="(Y)" />,</p>
-<p>no: <img class="smiley" src="$url/themes/$theme/img/smileys/no.png" alt="(n)" /> <img class="smiley" src="$url/themes/$theme/img/smileys/no.png" alt="(N)" />,</p>
-<p>down: <img class="smiley" src="$url/themes/$theme/img/smileys/down.png" alt="-.-" />,</p>
-<p>nope: <img class="smiley" src="$url/themes/$theme/img/smileys/nope.png" alt=":/" /> <img class="smiley" src="$url/themes/$theme/img/smileys/nope.png" alt=":-/" /> <img class="smiley" src="$url/themes/$theme/img/smileys/nope.png" alt=":\\" /> <img class="smiley" src="$url/themes/$theme/img/smileys/nope.png" alt=":-\\" /> <img class="smiley" src="$url/themes/$theme/img/smileys/nope.png" alt="=/" /> <img class="smiley" src="$url/themes/$theme/img/smileys/nope.png" alt="=\\" />,</p>
-<p>sunny: <img class="smiley" src="$url/themes/$theme/img/smileys/sunny.png" alt="B)" /> <img class="smiley" src="$url/themes/$theme/img/smileys/sunny.png" alt="B-)" /> <img class="smiley" src="$url/themes/$theme/img/smileys/sunny.png" alt="8)" /> <img class="smiley" src="$url/themes/$theme/img/smileys/sunny.png" alt="8-)" />,</p>
-<p>cats: <img class="smiley" src="$url/themes/$theme/img/smileys/cats.png" alt="^^" />,</p>
-<p>love: <img class="smiley" src="$url/themes/$theme/img/smileys/love.png" alt="&lt;3" />,</p>
-<p>devilsmile: <img class="smiley" src="$url/themes/$theme/img/smileys/devilsmile.png" alt="&gt;:)" /> <img class="smiley" src="$url/themes/$theme/img/smileys/devilsmile.png" alt="&gt;:-)" /> <img class="smiley" src="$url/themes/$theme/img/smileys/devilsmile.png" alt="&gt;=)" />,</p>
-<p>evilgrin: <img class="smiley" src="$url/themes/$theme/img/smileys/evilgrin.png" alt="&gt;:D" /> <img class="smiley" src="$url/themes/$theme/img/smileys/evilgrin.png" alt="&gt;:-D" /> <img class="smiley" src="$url/themes/$theme/img/smileys/evilgrin.png" alt="&gt;=D" />,</p>
-<p>angry: <img class="smiley" src="$url/themes/$theme/img/smileys/angry.png" alt="&gt;:(" /> <img class="smiley" src="$url/themes/$theme/img/smileys/angry.png" alt="&gt;:-(" /> <img class="smiley" src="$url/themes/$theme/img/smileys/angry.png" alt="&gt;=(" /></p>
-<p>facepalm: <img class="smiley" src="$url/themes/$theme/img/smileys/facepalm.png" alt="m(" /></p>
+<p>look: <img class="smiley" src="/theme/img/smileys/look.png" alt="O.O" /> <img class="smiley" src="/theme/img/smileys/look.png" alt="0.0" />,</p>
+<p>what: <img class="smiley" src="/theme/img/smileys/what.png" alt="o.O" /> <img class="smiley" src="/theme/img/smileys/what.png" alt="O.o" /> <img class="smiley" src="/theme/img/smileys/what.png" alt="O.ò" /> <img class="smiley" src="/theme/img/smileys/what.png" alt="ó.O" />,</p>
+<p>tongue: <img class="smiley" src="/theme/img/smileys/tongue.png" alt=":P" /> <img class="smiley" src="/theme/img/smileys/tongue.png" alt=":-P" /> <img class="smiley" src="/theme/img/smileys/tongue.png" alt="=P" /> <img class="smiley" src="/theme/img/smileys/tongue.png" alt=":p" /> <img class="smiley" src="/theme/img/smileys/tongue.png" alt=":-p" /> <img class="smiley" src="/theme/img/smileys/tongue.png" alt="=p" />,</p>
+<p>ooo: <img class="smiley" src="/theme/img/smileys/ooo.png" alt=":O" /> <img class="smiley" src="/theme/img/smileys/ooo.png" alt=":-O" /> <img class="smiley" src="/theme/img/smileys/ooo.png" alt="=O" /> <img class="smiley" src="/theme/img/smileys/ooo.png" alt=":o" /> <img class="smiley" src="/theme/img/smileys/ooo.png" alt=":-o" /> <img class="smiley" src="/theme/img/smileys/ooo.png" alt="=o" />,</p>
+<p>smile: <img class="smiley" src="/theme/img/smileys/smile.png" alt=":)" /> <img class="smiley" src="/theme/img/smileys/smile.png" alt=":-)" /> <img class="smiley" src="/theme/img/smileys/smile.png" alt="=)" />,</p>
+<p>sad: <img class="smiley" src="/theme/img/smileys/sad.png" alt=":(" /> <img class="smiley" src="/theme/img/smileys/sad.png" alt=":-(" /> <img class="smiley" src="/theme/img/smileys/sad.png" alt="=(" />,</p>
+<p>crying: <img class="smiley" src="/theme/img/smileys/crying.png" alt=":,(" /> <img class="smiley" src="/theme/img/smileys/crying.png" alt=":'(" />,</p>
+<p>twinkling: <img class="smiley" src="/theme/img/smileys/twinkling.png" alt=";)" /> <img class="smiley" src="/theme/img/smileys/twinkling.png" alt=";-)" />,</p>
+<p>laughting: <img class="smiley" src="/theme/img/smileys/laughting.png" alt=":D" /> <img class="smiley" src="/theme/img/smileys/laughting.png" alt="=D" /> <img class="smiley" src="/theme/img/smileys/laughting.png" alt=":-D" /> <img class="smiley" src="/theme/img/smileys/laughting.png" alt="LOL" />,</p>
+<p>rofl: <img class="smiley" src="/theme/img/smileys/rofl.png" alt="XD" /> <img class="smiley" src="/theme/img/smileys/rofl.png" alt="X-D" /> <img class="smiley" src="/theme/img/smileys/rofl.png" alt="ROFL" />,</p>
+<p>unsure: <img class="smiley" src="/theme/img/smileys/unsure.png" alt=":|" /> <img class="smiley" src="/theme/img/smileys/unsure.png" alt=":-|" /> <img class="smiley" src="/theme/img/smileys/unsure.png" alt="=|" />,</p>
+<p>yes: <img class="smiley" src="/theme/img/smileys/yes.png" alt="(y)" /> <img class="smiley" src="/theme/img/smileys/yes.png" alt="(Y)" />,</p>
+<p>no: <img class="smiley" src="/theme/img/smileys/no.png" alt="(n)" /> <img class="smiley" src="/theme/img/smileys/no.png" alt="(N)" />,</p>
+<p>down: <img class="smiley" src="/theme/img/smileys/down.png" alt="-.-" />,</p>
+<p>nope: <img class="smiley" src="/theme/img/smileys/nope.png" alt=":/" /> <img class="smiley" src="/theme/img/smileys/nope.png" alt=":-/" /> <img class="smiley" src="/theme/img/smileys/nope.png" alt=":\\" /> <img class="smiley" src="/theme/img/smileys/nope.png" alt=":-\\" /> <img class="smiley" src="/theme/img/smileys/nope.png" alt="=/" /> <img class="smiley" src="/theme/img/smileys/nope.png" alt="=\\" />,</p>
+<p>sunny: <img class="smiley" src="/theme/img/smileys/sunny.png" alt="B)" /> <img class="smiley" src="/theme/img/smileys/sunny.png" alt="B-)" /> <img class="smiley" src="/theme/img/smileys/sunny.png" alt="8)" /> <img class="smiley" src="/theme/img/smileys/sunny.png" alt="8-)" />,</p>
+<p>cats: <img class="smiley" src="/theme/img/smileys/cats.png" alt="^^" />,</p>
+<p>love: <img class="smiley" src="/theme/img/smileys/love.png" alt="&lt;3" />,</p>
+<p>devilsmile: <img class="smiley" src="/theme/img/smileys/devilsmile.png" alt="&gt;:)" /> <img class="smiley" src="/theme/img/smileys/devilsmile.png" alt="&gt;:-)" /> <img class="smiley" src="/theme/img/smileys/devilsmile.png" alt="&gt;=)" />,</p>
+<p>evilgrin: <img class="smiley" src="/theme/img/smileys/evilgrin.png" alt="&gt;:D" /> <img class="smiley" src="/theme/img/smileys/evilgrin.png" alt="&gt;:-D" /> <img class="smiley" src="/theme/img/smileys/evilgrin.png" alt="&gt;=D" />,</p>
+<p>angry: <img class="smiley" src="/theme/img/smileys/angry.png" alt="&gt;:(" /> <img class="smiley" src="/theme/img/smileys/angry.png" alt="&gt;:-(" /> <img class="smiley" src="/theme/img/smileys/angry.png" alt="&gt;=(" /></p>
+<p>facepalm: <img class="smiley" src="/theme/img/smileys/facepalm.png" alt="m(" /></p>
 EOSTRING
 }
 sub controlstring_withoutimages {
-    my ( $testurl, $testimage, $url, $theme, $testuser ) = @_;
+    my ( $testurl, $testimage, $testuser ) = @_;
     return << "EOSTRING";
 <p>MarkupTests:</p>
 <p>Notiz am Rande: <span class="alert">BBCodes !!!</span> können mich mal kreuzweise am Arsch lecken, bin fertig mit den sinnlosen Drecksdingern. Die kommen hier nie, nie nie rein!</p>

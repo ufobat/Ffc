@@ -4,6 +4,7 @@ use Digest::SHA 'sha512_base64';
 use File::Spec::Functions qw(catdir);
 use Ffc::Config;
 use Ffc::Auth;
+use Ffc::Formats;
 
 # This method will run once at server start
 sub startup {
@@ -22,6 +23,12 @@ sub _apply_preparations {
     $app->secrets([$config->{cookiesecret}]);
     $app->sessions->cookie_name(
         $config->{cookiename} || $Ffc::Config::Defaults{cookiename});
+    $app->sessions->default_expiration(
+        $config->{sessiontimeout} || $Ffc::Config::Defaults{sessiontimeout});
+
+    unless ( $config->{urlshorten} and $config->{urlshorten} =~ m/\A\d+\z/xmso ) {
+        $config->{urlshorten} = $Ffc::Config::Defaults{urlshorten};
+    }
 
     $app->defaults({
         act => 'forum',
@@ -29,20 +36,20 @@ sub _apply_preparations {
         map( {;$_ => ''} qw(error info) ),
         map( {;$_ => $config->{$_} || $Ffc::Config::Defaults{$_}} 
             qw(favicon commoncattitle title) ),
-        map( {;$_ => ( $config->{$_} && $config->{$_} =~ m/(\d+)/xmso ) ? $1 : $Ffc::Config::Defaults{$_}} 
-            qw(urlshorten) ),
     });
 
-    $app->helper(fontsize  => sub { $Ffc::Config::FontSizeMap{$_[1]} || 1 });
-    $app->helper(config    => sub { $config } );
-    $app->helper(path      => sub { $bpath  } );
-    $app->helper(dbh       => \&Ffc::Config::Dbh );
-    $app->helper(stylefile => 
+    $app->helper( fontsize  => sub { $Ffc::Config::FontSizeMap{$_[1]} || 1 } );
+    $app->helper( config    => sub { $config } );
+    $app->helper( path      => sub { $bpath  } );
+    $app->helper( dbh       => \&Ffc::Config::Dbh );
+    $app->helper( stylefile => 
         sub { $Ffc::Config::Styles[$_[0]->session()->{style} ? 1 : 0] } );
-    $app->helper(password  => 
+    $app->helper( password  => 
         sub { sha512_base64 $_[1], $config->{cryptsalt} } );
+    $app->helper( format_text      => \&Ffc::Formats::format_text      );
+    $app->helper( format_timestamp => \&Ffc::Formats::format_timestamp );
 
-    $app->hook(before_render => sub { 
+    $app->hook( before_render => sub { 
         my $c = $_[0];
         my $s = $c->session;
         $c->stash(fontsize => $s->{fontsize} // 0);

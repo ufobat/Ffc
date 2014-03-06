@@ -1,11 +1,9 @@
-package Ffc::Data::Formats;
+package Ffc::Formats;
 
 use 5.010;
 use strict;
 use warnings;
 use utf8;
-
-use Carp;
 
 our @Smilies = (
     [ look       => ['O.O', '0.0',                                ] ],
@@ -36,8 +34,8 @@ our $SmileyRe   = join '|', map {s{([\^\<\-\.\:\\\/\(\)\=\|\,])}{\\$1}gxoms; $_}
 our %Goodies    = qw( _ underline - linethrough + bold ~ italic ! alert * emotion);
 
 sub format_timestamp {
-    my $t = shift // return '';
-    if ( $t =~ m/(\d\d\d\d)-(\d\d)-(\d\d)\s+(\d\d):(\d\d):(\d\d)/xmso ) {
+    my $t = $_[1] || return '';
+    if ( $t =~ m/(\d\d\d\d)-(\d\d)-(\d\d)\s+(\d\d):(\d\d)/xmso ) {
         $t = sprintf '%02d.%02d.%04d, %02d:%02d', $3, $2, $1, $4, $5;
         return 'neu' if $t eq '00.00.0000, 00:00';
         my @time = localtime; $time[5] += 1900; $time[4]++;
@@ -49,19 +47,12 @@ sub format_timestamp {
     return $t;
 }
 
-sub _xml_escape {
-    $_[0] =~ s/\&/\&amp;/gxmo;
-    $_[0] =~ s/\<(?=[^3])/\&lt;/gxom;
-    $_[0] =~ s/\>(?=[^\:\=])/\&gt;/goxm;
-}
 sub format_text {
-    my $s = shift // '';
-    my $c = shift;
-    croak('Controller ungültig') unless $c;
-    my $u = $c->session()->{user} // '';
+    my ( $c, $s ) = @_;
+    return '' if !$s or $s =~ m/\A\s*\z/xmso;
     $s =~ s/\A\s+//gxmso;
     $s =~ s/\s+\z//gxmso;
-    return '' unless $s;
+    my $u = $c->session()->{user} // '';
     _xml_escape($s);
     $s =~ s{(\A|\s)"(\S|\S.*?\S)"(\W|\z)}{_make_quote($1, $2, $3)}gxomes;
     $s =~ s{(?<!\S)(\@)?$u}{_make_username_mark($u, $1)}xgmsie if $u;
@@ -70,6 +61,12 @@ sub format_text {
     $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxes;
     $s =~ s{\n[\n\s]*}{</p>\n<p>}xgmos;
     return "<p>$s</p>";
+}
+
+sub _xml_escape {
+    $_[0] =~ s/\&/\&amp;/gxmo;
+    $_[0] =~ s/\<(?=[^3])/\&lt;/gxom;
+    $_[0] =~ s/\>(?=[^\:\=])/\&gt;/goxm;
 }
 
 sub _make_quote {
@@ -109,7 +106,7 @@ sub _make_link {
             my $url_xmlencode = $url;
             _xml_escape($url_xmlencode);
             my $url_show = $url_xmlencode;
-            _stripped_url($url_xmlencode);
+            _stripped_url($c, $url_xmlencode);
             return qq~$start<a href="$url" title="Externes Bild: $url_show" target="_blank">$url_xmlencode</a>$end~;
         }
     }
@@ -117,18 +114,19 @@ sub _make_link {
         my $url_xmlencode = $url;
         _xml_escape($url_xmlencode);
             my $url_show = $url_xmlencode;
-        _stripped_url($url_xmlencode);
+        _stripped_url($c, $url_xmlencode);
         return qq~$start<a href="$url" title="Externe Webseite: $url_show" target="_blank">$url_xmlencode</a>$end~;
     }
 }
 
 sub _stripped_url {
-    if ( $Ffc::Data::URLShorten and $Ffc::Data::URLShorten < length $_[0] ) {
-        my $d = int( ( length($_[0]) - $Ffc::Data::URLShorten ) / 2 );
-        my $h = int( length($_[0]) / 2 );
-        $_[0] = substr($_[0], 0, $h - $d) . '…' . substr($_[0], $h + $d);
+    my $u = $_[0]->config->{urlshorten};
+    if ( $u and $u < length $_[1] ) {
+        my $d = int( ( length($_[1]) - $u ) / 2 );
+        my $h = int( length($_[1]) / 2 );
+        $_[1] = substr($_[1], 0, $h - $d) . '…' . substr($_[1], $h + $d);
     }
-    return $_[0];
+    return $_[1];
 }
 
 sub _make_smiley {
@@ -141,7 +139,7 @@ sub _make_smiley {
     $y =~ s/\</&lt;/xmsgo;
 #    $ext = 'svg' if $Smiley{$x} eq 'smile';
     return qq~$s<img class="smiley" src="~
-        . $c->url_for("/$Ffc::Data::Themedir/".$c->session()->{theme}."/img/smileys/$Smiley{$x}.png")
+        . $c->url_for("/theme/img/smileys/$Smiley{$x}.png")
         . qq~" alt="$y" />~;
 }
 

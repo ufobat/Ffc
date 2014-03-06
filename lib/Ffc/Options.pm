@@ -1,5 +1,6 @@
 package Ffc::Options;
 use Mojo::Base 'Mojolicious::Controller';
+use Data::Dumper;
 
 sub options_form {
     my $c = shift;
