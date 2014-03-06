@@ -107,3 +107,6 @@ a.coloroption {
     display: inline-block;
     width: 1.5em;
 }
+a.coloroption:hover {
+    border-color: dodgerblue;
+}

@@ -17,7 +17,7 @@
     <p>(Das Forum kann wahlweise in schmaler Blogform oder über die gesamte Fensterbreite dargestellt werden)</p>
     <p>
         <%= link_to switch_theme => begin %>Anzeige des Forums
-            <%= session()->{style} ? 'normal' : 'über die Fensterbreite' %><% end %>
+            <%= session()->{style} ? 'in schmaler Blogform' : 'über die Fensterbreite' %><% end %>
     </p>
 </div> 
 % unless ( $Ffc::Data::FixBgColor ) {

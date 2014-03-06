@@ -7,8 +7,8 @@ use Ffc::Auth;
 
 # This method will run once at server start
 sub startup {
-    $_[0]->_apply_preparations();
-    $_[0]->_install_routes();
+    _apply_preparations(@_);
+    _install_routes(@_);
 }
 
 sub _apply_preparations {
@@ -53,21 +53,33 @@ sub _apply_preparations {
 }
 
 sub _install_routes {
-    my $r = $_[0]->routes;
+    my $l = _install_routes_auth($_[0]->routes);
 
+    # Standardseitenauslieferungen
+    $l->get('/')->to('board#frontpage')->name('show');
+    $l->get('/session')
+      ->to( sub { $_[0]->render( json => $_[0]->session() ) } )
+      ->name('sessiondata');
+
+    # Optionen-Routen
+    _install_routes_options($l);
+}
+
+sub _install_routes_auth {
+    my $r = $_[0];
     # Anmeldehandling und Anmeldeprüfung
     $r->post('/login')->to('auth#login')->name('login');
     $r->get('/logout')->to('auth#logout')->name('logout');
-    my $l = $r->bridge('/')
+    return $r->bridge('/')
               ->via('get')
               ->to('auth#check_login')
               ->name('login_check');
+}
 
-    # Standardseitenauslieferung
-    $l->get('/')->to('board#frontpage')->name('show');;
+sub _install_routes_options {
+    my $o = $_[0]->get('/options')->name('options_bridge');
 
     # Einfache Benutzeroptionen (Schalter)
-    my $o = $l->get('/options')->name('options_bridge');
     $o->get('/form')
       ->to('options#options_form')
       ->name('options_form');
