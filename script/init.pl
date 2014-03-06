@@ -101,7 +101,7 @@ sub generate_random_security {
         'INSERT INTO users (name, password, admin) VALUES (?,?,?)',
         undef, $uname, sha512_base64($pw, $salt), 1);
 
-    say 'ok: initial admin user created with salt and password:';
+    say 'ok: initial cookiesecret, salt, admin user and password:';
     say $csecret;
     say $salt;
     say $uname;

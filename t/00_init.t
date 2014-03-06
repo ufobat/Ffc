@@ -113,7 +113,7 @@ sub test_path {
         qr~ok: using '$testpath/config' as config store~,
         qr~ok: check user and group priviledges of the data path!~,
         qr~ok: remember to alter config file '$testpath/config'~,
-        qr~ok: initial admin user created with salt and password:~,
+        qr~ok: initial cookiesecret, salt, admin user and password:~,
         qr~ok: cookiesecret set to random '.{32}'~,
         qr~ok: cryptsalt set to random '\d+'~,
     );
@@ -170,7 +170,7 @@ sub test_path {
         qr~ok: path '$testpath/config' as config allready exists~,
         qr~ok: check user and group priviledges of the data path!~,
         qr~ok: remember to alter config file '$testpath/config'~,
-        qr~ok: initial admin user created with salt and password:~,
+        qr~ok: initial cookiesecret, salt, admin user and password:~,
         qr~ok: using preconfigured cookiesecret '.{32}'~,
         qr~ok: using preconfigured salt '\d+'~,
     );
