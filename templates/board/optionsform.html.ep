@@ -1,7 +1,7 @@
 % layout 'board';
 <div class="postbox options">
     <h2>Einstellungen zur Schriftgröße</h2>
-    <p>(Schriftgrößen ist abhängig von Browsereinstellungen)</p>
+    <p>(Schriftgrößen sind abhängig von Browsereinstellungen)</p>
     <p>
 % for my $fs ( sort {$a <=> $b} keys %Ffc::Config::FontSizeMap ) {
         <a href="<%= url_for font_size => fontsize => $fs %>" title="Schriftgröße <%= $Ffc::Config::FontSizeMap{$fs} // 'normal' %>"<% if ( $fs != session()->{fontsize} ) { %> style="font-size: <%=
