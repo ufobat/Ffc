@@ -95,17 +95,17 @@ sub _install_routes_options {
     $o->get('/switchtheme')
       ->to('options#switch_theme')
       ->name('switch_theme');
-    $o->get('/fontsize/:fontsize', [fontsize => qr(-?\d+)])
+    $o->get('/fontsize/:fontsize', [fontsize => qr(-?\d{1,3})])
       ->to('options#font_size')
       ->name('font_size');
     my $b = $o->get('/bgcolor')->name('bgcolor_bridge');
     $b->get('/none')
       ->to('options#no_bg_color')
       ->name('no_bg_color');
-    $b->get('/color/:bgcolor', [bgcolor => qr(\#?\w+)])
+    $b->get('/color/:bgcolor', [bgcolor => qr(\w{3,32})])
       ->to('options#bg_color')
       ->name('bg_color');
-    $o->get('/toggle/cat/:cat', [cat => qr(\w+)])
+    $o->get('/toggle/cat/:cat', [cat => qr(\w{1,64})])
       ->to('options#toggle_cat')
       ->name('toggle_cat');
     $o->get('/toggle/show_images')
