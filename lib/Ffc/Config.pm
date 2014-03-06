@@ -12,6 +12,7 @@ our %Defaults = (
     commoncattitle => 'Allgemein',
     title          => 'Ffc Forum',
     cookiename     => 'Ffc_Forum',
+    urlshorten     => 30,
 );
 
 our %FontSizeMap = (
@@ -75,6 +76,14 @@ our @Colors = qw(Maroon DarkRed FireBrick Red Salmon Tomato Coral OrangeRed
         return $Dbh = DBI->connect("DBI:SQLite:database=$DBFile", { AutoCommit => 1, RaiseError => 1 })
             or die qq~could not connect to database "$DBFile": $DBI::errstr~;
     }
+
+    sub reset {
+        @Datapath = ();
+        %Config = ();
+        $Dbh = undef;
+        $DBFile = undef;
+    }
+
 }
 
 1;

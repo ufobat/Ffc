@@ -29,6 +29,8 @@ sub _apply_preparations {
         map( {;$_ => ''} qw(error info) ),
         map( {;$_ => $config->{$_} || $Ffc::Config::Defaults{$_}} 
             qw(favicon commoncattitle title) ),
+        map( {;$_ => ( $config->{$_} && $config->{$_} =~ m/(\d+)/xmso ) ? $1 : $Ffc::Config::Defaults{$_}} 
+            qw(urlshorten) ),
     });
 
     $app->helper(fontsize  => sub { $Ffc::Config::FontSizeMap{$_[1]} || 1 });
