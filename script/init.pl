@@ -103,8 +103,8 @@ sub generate_random_security {
 
     say 'ok: initial admin user created with salt and password:';
     say $csecret;
-    say $uname;
     say $salt;
+    say $uname;
     say $pw;
 }
 

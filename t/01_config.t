@@ -14,7 +14,7 @@ use Digest::SHA 'sha512_base64';
 
 my $testpath = $ENV{FFC_DATA_PATH} = File::Temp::tempdir( CLEANUP => 1 );
 my $out = qx(FFC_DATA_PATH=$testpath $Testinit::Script 2>&1);
-my ( $csecret, $user, $salt, $pw ) = (split /\n+/, $out )[-4,-3,-2,-1];
+my ( $csecret, $salt, $user, $pw ) = (split /\n+/, $out )[-4,-3,-2,-1];
 chomp $user; chomp $salt; chomp $pw; chomp $csecret;
 
 use_ok('Ffc::Config');

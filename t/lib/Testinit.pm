@@ -19,7 +19,7 @@ sub start_test {
     my $testpath = File::Temp::tempdir( CLEANUP => 1 );
     note "using test data dir '$testpath'";
     $ENV{FFC_DATA_PATH} = $testpath;
-    my ( $csecret, $user, $salt, $pw ) 
+    my ( $csecret, $salt, $user, $pw ) 
         = (split /\n+/, qx($Script 2>&1) )[-4,-3,-2,-1];
     chomp $user; chomp $salt; chomp $pw; chomp $csecret;
     note "user '$user':'$pw' (salt $salt, secret $csecret) created";

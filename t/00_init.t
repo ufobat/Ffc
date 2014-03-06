@@ -117,7 +117,7 @@ sub test_path {
         qr~ok: cookiesecret set to random '.{32}'~,
         qr~ok: cryptsalt set to random '\d+'~,
     );
-    ( $csecret, $user, $salt, $pw ) = (split /\n+/, $out2 )[-4,-3,-2,-1];
+    ( $csecret, $salt, $user, $pw ) = (split /\n+/, $out2 )[-4,-3,-2,-1];
     chomp $user; chomp $salt; chomp $pw; chomp $csecret;
     is $user, 'admin', 'admin user received';
     like $salt, qr/\d+/, 'salt received';
@@ -174,7 +174,7 @@ sub test_path {
         qr~ok: using preconfigured cookiesecret '.{32}'~,
         qr~ok: using preconfigured salt '\d+'~,
     );
-    ( $csecret, $user, $salt, $pw ) = (split /\n+/, $out4 )[-4,-3,-2,-1];
+    ( $csecret, $salt, $user, $pw ) = (split /\n+/, $out4 )[-4,-3,-2,-1];
     chomp $user; chomp $salt; chomp $pw; chomp $csecret;
     is $user, 'admin', 'admin user received';
     like $salt, qr/\d+/, 'salt received';
