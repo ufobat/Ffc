@@ -43,7 +43,7 @@ sub logout {
 
 sub add_user {
     my ( $c, $n, $p, $a ) = @_;
-    Ffc::Config::Dbh()->do(
+    $c->dbh()->do(
         'INSERT INTO users (name, password, admin) VALUES (?,?,?)',
         undef, $n, $c->password($p), ( $a ? 1 : 0 ) );
 }

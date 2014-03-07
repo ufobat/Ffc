@@ -15,9 +15,7 @@ use File::Temp;
 use File::Spec::Functions qw(catfile);
 use Digest::SHA 'sha512_base64';
 
-use Test::More tests => 193;
-
-use_ok('Ffc::Config');
+use Test::More tests => 192;
 
 my $script = $Testinit::Script;
 note "testing init script '$script'";
@@ -105,6 +103,7 @@ sub test_path {
 
     note 'test with new empty path';
     my $out2 = qx(FFC_DATA_PATH=$testpath $script 2>&1);
+
     like $out2, $_, 'first run content ok' for (
         qr~ok: using '\d+' as data path owner and '\d+' as data path group~,
         qr~ok: using '$testpath/avatars' as avatar store~,
@@ -153,10 +152,11 @@ sub test_path {
     note 'test with allready existing path but without database';
     {
         local $ENV{FFC_DATA_PATH} = $testpath;
-        my $dbh = Ffc::Config::Dbh();
-        $dbh->disconnect();
+        do {
+            use Mojolicious::Lite;
+            plugin 'Ffc::Plugin::Config';
+        }->dbh()->disconnect();
         unlink "$testpath/database.sqlite3";
-        undef $dbh;
     }
     my $out4 = qx(FFC_DATA_PATH=$testpath $script 2>&1);
     like $out4, $_, 'second run content without database' for (

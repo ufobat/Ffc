@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 9;
+use Test::More tests => 8;
 use Test::Mojo;
 
 use DBI;
@@ -12,7 +12,6 @@ use File::Temp;
 use File::Spec::Functions qw(catfile);
 use Digest::SHA 'sha512_base64';
 
-use_ok('Ffc::Config');
 test_config();
 test_config({
     cookiename => 'Ffc-Forum-NEU',
@@ -36,9 +35,13 @@ sub test_config {
     my ( $csecret, $salt, $user, $pw ) = (split /\n+/, $out )[-4,-3,-2,-1];
     chomp $user; chomp $salt; chomp $pw; chomp $csecret;
 
-    Ffc::Config::reset();
+    my $Config = do {
+        use Mojolicious::Lite;
+        plugin 'Ffc::Plugin::Config';
+    };
+    $Config->reset;
 
-    is catfile(Ffc::Config::Datapath()), $testpath, 'data path ok';
+    is catfile(@{$Config->datapath()}), $testpath, 'data path ok';
     my $config = do {
         my %c = ();
         open my $fh, '<', catfile($testpath, 'config')
@@ -49,8 +52,8 @@ sub test_config {
         }
         \%c;
     };
-    is_deeply $config, Ffc::Config::Config(), 'config data ok';
-    my $dbh = Ffc::Config::Dbh();
+    is_deeply $config, $Config->config(), 'config data ok';
+    my $dbh = $Config->dbh();
     ok $dbh, 'database handle received';
     my $r = $dbh->selectall_arrayref(
         'SELECT name, password FROM users ORDER BY name');

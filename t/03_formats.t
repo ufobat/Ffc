@@ -7,9 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 153;
-
-use_ok('Ffc::Formats');
+use Test::More tests => 152;
 
 srand;
 
@@ -17,8 +15,7 @@ srand;
     use Mojolicious::Lite;
 
     my $config = {};
-    helper format_timestamp => \&Ffc::Formats::format_timestamp;
-    helper format_text      => \&Ffc::Formats::format_text;
+    plugin 'Ffc::Plugin::Formats';
     helper config           => sub { $config };
     helper prepare          => sub {
         my $c = shift;

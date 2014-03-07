@@ -1,4 +1,5 @@
-package Ffc::Formats;
+package Ffc::Plugin::Formats;
+use Mojo::Base 'Mojolicious::Plugin';
 
 use 5.010;
 use strict;
@@ -33,7 +34,13 @@ our %Smiley     = map {my ($n,$l)=($_->[0],$_->[1]); map {$_=>$n} @$l} @Smilies;
 our $SmileyRe   = join '|', map {s{([\^\<\-\.\:\\\/\(\)\=\|\,])}{\\$1}gxoms; $_} keys %Smiley;
 our %Goodies    = qw( _ underline - linethrough + bold ~ italic ! alert * emotion);
 
-sub format_timestamp {
+sub register {
+    my ( $self, $app ) = @_;
+    $app->helper( format_text      => \&_format_text      );
+    $app->helper( format_timestamp => \&_format_timestamp );
+}
+
+sub _format_timestamp {
     my $t = $_[1] || return '';
     if ( $t =~ m/(\d\d\d\d)-(\d\d)-(\d\d)\s+(\d\d):(\d\d)/xmso ) {
         $t = sprintf '%02d.%02d.%04d, %02d:%02d', $3, $2, $1, $4, $5;
@@ -47,7 +54,7 @@ sub format_timestamp {
     return $t;
 }
 
-sub format_text {
+sub _format_text {
     my ( $c, $s ) = @_;
     return '' if !$s or $s =~ m/\A\s*\z/xmso;
     $s =~ s/\A\s+//gxmso;

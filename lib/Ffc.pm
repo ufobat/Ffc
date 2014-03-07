@@ -1,64 +1,12 @@
 package Ffc;
 use Mojo::Base 'Mojolicious';
-use Digest::SHA 'sha512_base64';
 use File::Spec::Functions qw(catdir);
-use Ffc::Config;
-use Ffc::Auth;
-use Ffc::Formats;
 
 # This method will run once at server start
 sub startup {
-    _apply_preparations(@_);
+    $_[0]->plugin('Ffc::Plugin::Config');
+    $_[0]->plugin('Ffc::Plugin::Formats');
     _install_routes(@_);
-}
-
-sub _apply_preparations {
-    my $app = $_[0];
-
-    my @path   = Ffc::Config::Datapath();
-    my $config = Ffc::Config::Config();
-    my $bpath  = catdir @path;
-    my $dbh    = Ffc::Config::Dbh();
-
-    $app->secrets([$config->{cookiesecret}]);
-    $app->sessions->cookie_name(
-        $config->{cookiename} || $Ffc::Config::Defaults{cookiename});
-    $app->sessions->default_expiration(
-        $config->{sessiontimeout} || $Ffc::Config::Defaults{sessiontimeout});
-
-    unless ( $config->{urlshorten} and $config->{urlshorten} =~ m/\A\d+\z/xmso ) {
-        $config->{urlshorten} = $Ffc::Config::Defaults{urlshorten};
-    }
-
-    $app->defaults({
-        act => 'forum',
-        map( {;$_.'count' => 0} qw(newmsgs newpost note) ),
-        map( {;$_ => ''} qw(error info) ),
-        map( {;$_ => $config->{$_} || $Ffc::Config::Defaults{$_}} 
-            qw(favicon commoncattitle title) ),
-    });
-
-    $app->helper( fontsize  => sub { $Ffc::Config::FontSizeMap{$_[1]} || 1 } );
-    $app->helper( config    => sub { $config } );
-    $app->helper( path      => sub { $bpath  } );
-    $app->helper( dbh       => \&Ffc::Config::Dbh );
-    $app->helper( stylefile => 
-        sub { $Ffc::Config::Styles[$_[0]->session()->{style} ? 1 : 0] } );
-    $app->helper( password  => 
-        sub { sha512_base64 $_[1], $config->{cryptsalt} } );
-    $app->helper( format_text      => \&Ffc::Formats::format_text      );
-    $app->helper( format_timestamp => \&Ffc::Formats::format_timestamp );
-
-    $app->hook( before_render => sub { 
-        my $c = $_[0];
-        my $s = $c->session;
-        $c->stash(fontsize => $s->{fontsize} // 0);
-        $c->stash(backgroundcolor => 
-            $config->{fixbackgroundcolor}
-                ? $config->{backgroundcolor}
-                : ( $s->{backgroundcolor} || $config->{backgroundcolor} )
-        );
-    });
 }
 
 sub _install_routes {

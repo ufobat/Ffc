@@ -8,7 +8,6 @@ use File::Path qw(make_path);
 use File::Copy;
 use Digest::SHA 'sha512_base64';
 use lib catdir(splitdir(File::Basename::dirname(__FILE__)), '..', 'lib');
-use Ffc::Config;
 srand;
 
 my $uname = 'admin'; # name of initial first user
@@ -79,7 +78,11 @@ sub generate_paths {
 }
 
 sub generate_random_security {
-    my $config = Ffc::Config::Config();
+    my $Config = do {
+        use Mojolicious::Lite;
+        plugin 'Ffc::Plugin::Config';
+    };
+    my $config = $Config->config();
     my $salt = $config->{cryptsalt};
     if ( $salt ) {
         say "ok: using preconfigured salt '$salt'";
@@ -97,7 +100,7 @@ sub generate_random_security {
         alter_configfile(cookiesecret => $csecret);
     }
     my $pw = generate_random(4);
-    Ffc::Config::Dbh()->do(
+    $Config->dbh()->do(
         'INSERT INTO users (name, password, admin) VALUES (?,?,?)',
         undef, $uname, sha512_base64($pw, $salt), 1);
 
