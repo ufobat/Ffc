@@ -6,6 +6,7 @@ use File::Spec::Functions qw(catdir);
 sub startup {
     $_[0]->plugin('Ffc::Plugin::Config');
     $_[0]->plugin('Ffc::Plugin::Formats');
+    $_[0]->helper(login_ok => sub { $_[0]->session->{user} ? 1 : 0 });
     _install_routes(@_);
 }
 

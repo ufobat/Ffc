@@ -3,7 +3,7 @@ use Mojo::Base 'Mojolicious::Controller';
 
 sub check_login {
     my $c = shift;
-    return 1 if $c->session()->{user};
+    return 1 if $c->login_ok;
     $c->render(template => 'auth/loginform');
     return;
 }
