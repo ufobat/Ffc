@@ -35,7 +35,7 @@ sub check_pw {
         "DBI:SQLite:database=$testpath/database.sqlite3"
         ,'','',{AutoCommit => 1, RaiseError => 1})
        ->selectall_arrayref(
-        'SELECT COUNT(id) FROM users WHERE name=? AND password=?'
+        'SELECT COUNT(id) FROM users WHERE name=? AND password=? AND active=1'
         , undef, $user, sha512_base64($pw, $salt))
        ->[0]->[0], 1, 'admin password ok');
 }

@@ -3,7 +3,26 @@ use Mojo::Base 'Mojolicious::Controller';
 
 sub check_login {
     my $c = shift;
-    return 1 if $c->login_ok;
+    if ( $c->login_ok ) {
+        my $s = $c->session();
+        my $r = $c->dbh()->selectall_arrayref(
+            'SELECT u.admin, u.show_images, u.bgcolor
+            FROM users u WHERE UPPER(u.name)=UPPER(?) AND active=1',
+            undef, $s->{user});
+
+        if ( $r and @$r ) {
+            $s->{admin}           = $r->[0]->[0];
+            $s->{show_images}     = $r->[0]->[1];
+            $s->{backgroundcolor} = $r->[0]->[2];
+            return 1;
+        }
+        else {
+            $c->logout();
+            $c->set_info('');
+            $c->set_error('Fehler mit der Anmeldung');
+            return;
+        }
+    }
     $c->render(template => 'auth/loginform');
     return;
 }
@@ -18,7 +37,7 @@ sub login {
     }
     my $r = $c->dbh()->selectall_arrayref(
         'SELECT u.admin, u.show_images, u.bgcolor
-        FROM users u WHERE UPPER(u.name)=UPPER(?) and u.password=?',
+        FROM users u WHERE UPPER(u.name)=UPPER(?) AND u.password=? AND active=1',
         undef, $u, $c->hash_password($p));
     if ( $r and @$r ) {
         my $s = $c->session();

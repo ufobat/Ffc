@@ -100,59 +100,46 @@ sub set_password {
 sub useradmin {
     my $c        = shift;
     my $admin    = $c->session()->{user};
+
     my $username = $c->param('username');
     my $newpw1   = $c->param('newpw1');
     my $newpw2   = $c->param('newpw2');
     my $isadmin  = $c->param('admin')  ? 1 : 0;
-    my $active   = $c->param('active') ? 1 : 0;
+    my $isactive = $c->param('active') ? 1 : 0;
+    my $overok   = $c->param('overwriteok');
+
     unless ( $c->session->{admin} ) {
         $c->set_error('Nur Administratoren dürfen dass');
         return $c->options_form();
     }
-    elsif ( $username and _check_user_exists( $username ) ) {
+    unless ( $username ) {
+        $c->set_error('Benutzername nicht angegeben');
+        return $c->options_form();
+    }
+    if ( $newpw1 and $newpw2 and $newpw1 ne $newpw2 ) {
+        $c->set_error('Passworte stimmen nicht überein');
+        return $c->options_form();
+    }
 
-        if ( $c->param('overwriteok') ) {
-            $c->error_handling({
-                code => sub {
-                    Ffc::Data::Board::OptionsAdmin::admin_update_password(
-                        $admin, $username, $newpw1, $newpw2 );
-                },
-                after_ok => sub { $c->info_stash(qq'Passwort von "$username" geändert') },
-              }) if $newpw1
-              and $newpw2;
-            $c->error_handling({
-                code => sub {
-                    Ffc::Data::Board::OptionsAdmin::admin_update_active( $admin,
-                        $username, $active );
-                },
-                after_ok => sub { $c->info_stash(qq'Benutzer "$username" '.($active ? 'aktiviert' : 'deaktiviert')) },
-            });
-            $c->error_handling({
-                code => sub {
-                    Ffc::Data::Board::OptionsAdmin::admin_update_admin( $admin,
-                        $username, $isadmin );
-                },
-                after_ok => sub { $c->info_stash(qq'Adminstatus von "$username" '.($isadmin ? 'aktiviert' : 'deaktiviert')) },
-            });
-        }
-        else {
-            $c->error_handling(
-                {
-                    plain =>
-'"Überschreiben"-Option muss angekreuzt werden, wesche de Sischeheit!'
-                }
-            );
-        }
+    my $exists = $c->dbh->selectall_arrayref(
+        'SELECT COUNT(id) FROM users WHERE UPPER(name) = UPPER(?)'
+        , undef, $username)->[0]->[0];
+
+    if ( $exists and not $overok ) {
+        $c->set_error('Benutzer existiert bereits, das Überschreiben-Häkchen ist allerdings nicht gesetzt');
+        return $c->options_form();
+    }
+    unless ( $exists or $newpw1 ) {
+        $c->set_error('Neuen Benutzern muss ein Passwort gesetzt werden');
+        return $c->options_form();
+    }
+
+    my $pw = $newpw1 ? $c->hash_password($newpw1) : '';
+    if ( $exists ) {
     }
     else {
-        $c->error_handling({
-            code => sub {
-                Ffc::Data::Board::OptionsAdmin::admin_create_user( $admin,
-                    $username, $newpw1, $newpw2, $active, $isadmin );
-            },
-            after_ok => sub { $c->info_stash(qq'Neuer Benutzer "$username" angelegt') },
-        });
     }
+
     $c->options_form();
 }
 
