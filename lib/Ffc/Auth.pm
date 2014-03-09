@@ -13,13 +13,13 @@ sub login {
     my $u = $c->param('username') // '';
     my $p = $c->param('password') // '';
     if ( !$u or !$p ) {
-        $c->stash(error => 'Bitte melden Sie sich an');
+        $c->set_error('Bitte melden Sie sich an');
         return $c->render(template => 'auth/loginform');
     }
     my $r = $c->dbh()->selectall_arrayref(
         'SELECT u.admin, u.show_images, u.bgcolor
         FROM users u WHERE UPPER(u.name)=UPPER(?) and u.password=?',
-        undef, $u, $c->password($p));
+        undef, $u, $c->hash_password($p));
     if ( $r and @$r ) {
         my $s = $c->session();
         $s->{admin}           = $r->[0]->[0];
@@ -28,16 +28,15 @@ sub login {
         $s->{user}            = $u;
         return $c->redirect_to('show');
     }
-    $c->stash(error => 'Fehler bei der Anmeldung: '.$c->password($p));
+    $c->set_error('Fehler bei der Anmeldung');
     $c->render(template => 'auth/loginform');
 }
 
 sub logout {
     my $c = shift;
-    my $s = $c->session();
+    my $s = $c->session;
     delete $s->{$_} for keys %$s;
-    $c->stash(error => '');
-    $c->stash(info => 'Abmelden erfolgreich');
+    $c->set_info('Abmelden erfolgreich');
     $c->render(template => 'auth/loginform');
 }
 

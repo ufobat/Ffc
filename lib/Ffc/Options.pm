@@ -5,6 +5,13 @@ use Data::Dumper;
 sub options_form {
     my $c = shift;
     $c->stash(act => 'options');
+    $c->stash(fontsizes => \%Ffc::Plugin::Config::FontSizeMap);
+    $c->stash(colors    => \@Ffc::Plugin::Config::Colors);
+    if ( $c->session->{admin} ) {
+        $c->stash(userlist => 
+            $c->dbh->selectall_arrayref(
+                'SELECT u.id, u.name, u.active, u.admin FROM users u ORDER BY u.active DESC, u.name ASC'));
+    }
     $c->render(template => 'board/optionsform');
 }
 
@@ -12,6 +19,7 @@ sub switch_theme {
     my $c = shift;
     my $s = $c->session();
     $s->{style} = $s->{style} ? 0 : 1;
+    $c->set_info('Ansicht gewechselt');
     $c->options_form();
 }
 
@@ -19,7 +27,8 @@ sub font_size {
     my $c = shift;
     my $fs = $c->param('fontsize');
     $c->session()->{fontsize} = $fs
-        if exists $Ffc::Config::FontSizeMap{$fs};
+        if defined $c->fontsize($fs);
+    $c->set_info('Schriftgröße geändert');
     $c->options_form();
 }
 
@@ -30,6 +39,7 @@ sub no_bg_color {
     $c->dbh()->do(
         'UPDATE users SET bgcolor=? WHERE UPPER(name)=UPPER(?)',
         undef, '', $s->{user});
+    $c->set_info('Hintergrundfarbe zurück gesetzt');
     $c->options_form();
 }
 
@@ -42,6 +52,106 @@ sub bg_color {
             'UPDATE users SET bgcolor=? WHERE UPPER(name)=UPPER(?)',
             undef, $bgcolor, $s->{user});
         $s->{backgroundcolor} = $bgcolor;
+        $c->set_info('Hintergrundfarbe angepasst');
+    }
+    $c->options_form();
+}
+
+sub set_password {
+    my $c = shift;
+    my $opw  = $c->param('oldpw');
+    my $npw1 = $c->param('newpw1');
+    my $npw2 = $c->param('newpw2');
+
+    unless ( $opw ) {
+        $c->set_error('Altes Passwort nicht angegeben');
+        return $c->options_form();
+    }
+    unless ( $npw1 and $npw2 ) {
+        $c->set_error('Neues Passwort nicht angegeben');
+        return $c->options_form();
+    }
+    if ( $npw1 ne $npw2 ) {
+        $c->set_error('Neue Passworte stimmen nicht überein');
+        return $c->options_form();
+    }
+
+    my $u = $c->session->{user};
+    my $p = $c->hash_password($npw1);
+
+    $c->dbh->do(
+        'UPDATE users SET password=? WHERE UPPER(name)=UPPER(?) AND password=?'
+        , undef, $p, $u, $c->hash_password($opw));
+
+    my $i = $c->dbh->selectall_arrayref(
+        'SELECT COUNT(id) FROM users WHERE UPPER(name)=UPPER(?) AND password=?'
+        , undef, $u, $p)->[0]->[0];
+
+    if ( $i ) {
+        $c->set_info('Passwortwechsel erfolgreich');
+    }
+    else {
+        $c->set_error('Passwortwechsel fehlgeschlagen')
+    }
+
+    $c->options_form();
+}
+
+sub useradmin {
+    my $c        = shift;
+    my $admin    = $c->session()->{user};
+    my $username = $c->param('username');
+    my $newpw1   = $c->param('newpw1');
+    my $newpw2   = $c->param('newpw2');
+    my $isadmin  = $c->param('admin')  ? 1 : 0;
+    my $active   = $c->param('active') ? 1 : 0;
+    unless ( $c->session->{admin} ) {
+        $c->set_error('Nur Administratoren dürfen dass');
+        return $c->options_form();
+    }
+    elsif ( $username and _check_user_exists( $username ) ) {
+
+        if ( $c->param('overwriteok') ) {
+            $c->error_handling({
+                code => sub {
+                    Ffc::Data::Board::OptionsAdmin::admin_update_password(
+                        $admin, $username, $newpw1, $newpw2 );
+                },
+                after_ok => sub { $c->info_stash(qq'Passwort von "$username" geändert') },
+              }) if $newpw1
+              and $newpw2;
+            $c->error_handling({
+                code => sub {
+                    Ffc::Data::Board::OptionsAdmin::admin_update_active( $admin,
+                        $username, $active );
+                },
+                after_ok => sub { $c->info_stash(qq'Benutzer "$username" '.($active ? 'aktiviert' : 'deaktiviert')) },
+            });
+            $c->error_handling({
+                code => sub {
+                    Ffc::Data::Board::OptionsAdmin::admin_update_admin( $admin,
+                        $username, $isadmin );
+                },
+                after_ok => sub { $c->info_stash(qq'Adminstatus von "$username" '.($isadmin ? 'aktiviert' : 'deaktiviert')) },
+            });
+        }
+        else {
+            $c->error_handling(
+                {
+                    plain =>
+'"Überschreiben"-Option muss angekreuzt werden, wesche de Sischeheit!'
+                }
+            );
+        }
+    }
+    else {
+        $c->error_handling({
+            code => sub {
+                Ffc::Data::Board::OptionsAdmin::admin_create_user( $admin,
+                    $username, $newpw1, $newpw2, $active, $isadmin );
+            },
+            after_ok => sub { $c->info_stash(qq'Neuer Benutzer "$username" angelegt') },
+        });
     }
     $c->options_form();
 }

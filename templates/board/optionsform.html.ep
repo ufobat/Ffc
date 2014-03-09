@@ -3,12 +3,9 @@
     <h2>Einstellungen zur Schriftgröße</h2>
     <p>(Schriftgrößen sind abhängig von Browsereinstellungen)</p>
     <p>
-% for my $fs ( sort {$a <=> $b} keys %Ffc::Config::FontSizeMap ) {
-        <a href="<%= url_for font_size => fontsize => $fs %>" title="Schriftgröße <%= $Ffc::Config::FontSizeMap{$fs} // 'normal' %>"<% if ( $fs != session()->{fontsize} ) { %> style="font-size: <%=
-    session()->{fontsize}
-        ? $Ffc::Config::FontSizeMap{$fs} / $Ffc::Config::FontSizeMap{session()->{fontsize}}
-        : $Ffc::Config::FontSizeMap{$fs}
-    %>em"<% } else { %> class="active"<% } %>><%= $fs < 0 ? '-' x ( 0 - $fs ) : '+' x $fs %>A</a>
+% for my $fs ( sort {$a <=> $b} keys %$fontsizes ) {
+        <a href="<%= url_for font_size => fontsize => $fs %>" 
+            title="Schriftgröße <%= $fs ? fontsize($fs) : 'normal' %>"<% if ( $fs != $fontsize ) { %> style="font-size: <%= $fontsize ? fontsize($fs) / fontsize($fontsize) : fontsize($fs) %>em"<% } else { %> class="active"<% } %>><%= $fs < 0 ? '-' x ( 0 - $fs ) : '+' x $fs %>A</a>
 % }
     </p>
 </div>
@@ -25,7 +22,7 @@
     <h2>Einstellungen zur Hintergrundfarbe des Forums</h2>
     <p>(Die gewünschte Farbe für den Hintergrund einfach anklicken)</p>
     <p>
-<% for my $c ( @Ffc::Config::Colors ) { %><a href="<%= url_for bg_color => bgcolor => $c %>" title="Hintergrundfarbe <%= $c %>" style="background:<%= $c %>" class="coloroption">&nbsp;</a><% } %>
+<% for my $c ( @$colors ) { %><a href="<%= url_for bg_color => bgcolor => $c %>" title="Hintergrundfarbe <%= $c %>" style="background:<%= $c %>" class="coloroption">&nbsp;</a><% } %>
 
     </p>
     <p><%= link_to no_bg_color => begin %>Standardhintergrundfarbe des Forums<% end %></p>
@@ -66,3 +63,47 @@
     <p><button type="submit" class="linkalike">Emailadresse speichern</button></p>
 % end
 </div>
+% if ( session()->{admin} ) {
+<div class="postbox options useradmin_form">
+    <h2>Benutzerverwaltung</h2>
+%= form_for useradmin_save => begin 
+    <table>
+        <tr>
+            <td rowspan="8"><div class="userlist">
+% for my $u ( @$userlist ) {
+                <p<%== $u->[2] ? '' : ' class="inactive"' %>><%== $u->[3] ? '<span class="adminmark">@</span> ' : '' %><%= $u->[1] %></p>
+% }
+            <div></td>
+        </tr>
+        <tr>
+            <th>Benutzername</th>
+            <td><input type="text" name="username" value="" /></td>
+        </tr>
+        <tr>
+            <th>Passwort</th>
+            <td><input type="password" name="newpw1" value="" /></td>
+        </tr>
+        <tr>
+            <th>Wiederholen</th>
+            <td><input type="password" name="newpw2" value="" /></td>
+        </tr>
+        <tr>
+            <th>Überschreiben Ok</th>
+            <td><input type="checkbox" name="overwriteok" /></td>
+        </tr>
+        <tr>
+            <th>Aktiv</th>
+            <td><input type="checkbox" name="active" checked="checked" /></td>
+        </tr>
+        <tr>
+            <th>Admin</th>
+            <td><input type="checkbox" name="admin" /></td>
+        </tr>
+        <tr>
+            <th>&nbsp;</th><td><button type="submit" class="linkalike">Speichern</button></td>
+        </tr>
+    </table>
+% end
+</div>
+%}
+

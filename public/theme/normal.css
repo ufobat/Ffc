@@ -10,7 +10,10 @@ body > * {
     padding: .25em 1em .5em 1em;
     margin-top: .5em;
     background: white;
-    border: 1px lightslategray solid;    
+    border: 1px dimgray solid;    
+}
+body > * > h2 {
+    border-bottom: 1px silver solid;
 }
 .loginform, .menu, .pages, .headbox {
     background: whitesmoke;
@@ -109,4 +112,19 @@ a.coloroption {
 }
 a.coloroption:hover {
     border-color: dodgerblue;
+}
+.userlist {
+    width: 12em;
+    height: 15em;
+    overflow: scroll;
+    border: 1px silver solid;
+    margin-right: 2em;
+}
+.userlist p {
+    margin: 0;
+}
+.useradmin_form th {
+    text-align: left;
+    font-weight: normal;
+    vertical-align: top;
 }

@@ -28,13 +28,12 @@ sub _install_routes_auth {
     $r->post('/login')->to('auth#login')->name('login');
     $r->get('/logout')->to('auth#logout')->name('logout');
     return $r->bridge('/')
-              ->via('get')
-              ->to('auth#check_login')
-              ->name('login_check');
+             ->to('auth#check_login')
+             ->name('login_check');
 }
 
 sub _install_routes_options {
-    my $o = $_[0]->get('/options')->name('options_bridge');
+    my $o = $_[0]->any('/options')->name('options_bridge');
 
     # Einfache Benutzeroptionen (Schalter)
     $o->get('/form')
