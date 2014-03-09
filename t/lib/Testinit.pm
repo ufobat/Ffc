@@ -44,7 +44,7 @@ sub test_logout {
 sub test_login {
     my ( $t, $u, $p ) = @_;
 
-    t_logout($t);
+    test_logout($t);
 
     $t->post_ok('/login', form => { username => $u, password => $p })
       ->status_is(302)
