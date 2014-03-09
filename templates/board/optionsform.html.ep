@@ -66,7 +66,7 @@
 % if ( session()->{admin} ) {
 <div class="postbox options useradmin_form">
     <h2>Benutzerverwaltung</h2>
-%= form_for useradmin_save => begin 
+%= form_for useradmin => begin 
     <table>
         <tr>
             <td rowspan="8"><div class="userlist">

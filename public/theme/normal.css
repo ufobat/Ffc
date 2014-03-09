@@ -7,13 +7,14 @@ body {
     max-width: 46em;
 }
 body > * {
-    padding: .25em 1em .5em 1em;
+    padding: .25em 1em 1em 1em;
     margin-top: .5em;
     background: white;
     border: 1px dimgray solid;    
 }
 body > * > h2 {
-    border-bottom: 1px silver solid;
+    border-bottom: 1px gainsboro solid;
+    color: gray;
 }
 .loginform, .menu, .pages, .headbox {
     background: whitesmoke;
@@ -59,18 +60,24 @@ a:focus, .linkalike:focus {
     color: gray;
     background: lightsteelblue;
 }
-.info {
+.info, .info h2 {
     color: darkgreen;
     border-color: forestgreen;
     background: palegreen;
 }
-.error {
+.info h2 {
+    color: forestgreen;
+}
+.error, .error h2 {
+    color: darkred;
     border-color: firebrick;
     background: peachpuff;
 }
+.error h2 {
+    color: firebrick;
+}
 .pages, .menu {
-    background: whitesmoke;
-    border: 1px whitesmoke solid;
+    background: gainsboro;
     margin: 0;
     padding: 0;
 }
@@ -78,10 +85,10 @@ a:focus, .linkalike:focus {
     text-align: right;
     margin-bottom: -0.5em;
 }
-.menu, .footerlinks {
+.menu {
     text-align: center;
 }
-.postbox h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
+h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
     font-size: .75em;
 }
 .menu input[type="text"] {
@@ -128,3 +135,4 @@ a.coloroption:hover {
     font-weight: normal;
     vertical-align: top;
 }
+

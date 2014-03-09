@@ -134,10 +134,19 @@ sub useradmin {
         return $c->options_form();
     }
 
-    my $pw = $newpw1 ? $c->hash_password($newpw1) : '';
+    my @pw = ( $newpw1 ? $c->hash_password($newpw1) : () );
     if ( $exists ) {
+        my $sql = 'UPDATE users SET active=?, admin=?';
+        $sql .= ', password=?' if @pw;
+        $sql .= ' WHERE UPPER(name)=UPPER(?)';
+        $c->dbh->do($sql, undef, $isactive, $isadmin, @pw, $username);
+        $c->set_info(qq~Benutzer "$username" geändert~);
     }
     else {
+        $c->dbh->do(
+            'INSERT INTO users SET (name, password, active, admin) VALUES (?,?,?,?)'
+            , undef, $username, @pw, $isactive, $isadmin);
+        $c->set_info(qq~Benutzer "$username" angelegt~);
     }
 
     $c->options_form();
