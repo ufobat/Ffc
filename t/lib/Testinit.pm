@@ -33,4 +33,30 @@ sub start_test {
     return $t, $testpath, $user, $pw, $salt, $csecret;
 }
 
+sub test_logout {
+    $_[0]->get_ok('/logout')
+         ->status_is(200)
+         ->content_like(qr/Nicht angemeldet/);
+}
+
+sub test_login {
+    my ( $t, $u, $p ) = @_;
+
+    t_logout($t);
+
+    $t->post_ok('/login', form => { username => $u, password => $p })
+      ->status_is(302)
+      ->header_like(location => qr~https?://localhost:\d+/~);
+    $t->get_ok('/')
+      ->status_is(200)
+      ->content_like(qr/Angemeldet als "$u"/);
+
+    return $t;
+}
+
+sub test_dbh {
+    my ( $path ) = shift;
+    DBI->connect('dbi:SQLite:database='.catfile($path, 'database.sqlite3')
+        , { AutoCommit => 1, RaiseError => 1 });
+}
 
