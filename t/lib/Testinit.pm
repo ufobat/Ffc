@@ -62,3 +62,15 @@ sub test_dbh {
         , { AutoCommit => 1, RaiseError => 1 });
 }
 
+sub test_error {
+    my ( $t, $error ) = @_;
+    $t->content_like(
+        qr~<div\s+class="error">\s*<h2>Fehler</h2>\s*$error\s*</div>~);
+}
+
+sub test_info {
+    my ( $t, $info ) = @_;
+    $t->content_like(
+        qr~<div\s+class="info">\s*<h2>Hinweis</h2>\s*$info\s*</div>~);
+}
+

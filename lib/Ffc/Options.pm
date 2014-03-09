@@ -12,6 +12,9 @@ sub options_form {
             $c->dbh->selectall_arrayref(
                 'SELECT u.id, u.name, u.active, u.admin FROM users u ORDER BY u.active DESC, u.name ASC'));
     }
+    else {
+        $c->stash(userlist => []);
+    }
     $c->render(template => 'board/optionsform');
 }
 
