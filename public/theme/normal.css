@@ -1,3 +1,7 @@
+* {
+    margin: 0;
+    padding: 0;
+}
 body {
     margin: 0 auto .5em auto;
     padding: 0 .5em;
@@ -7,10 +11,13 @@ body {
     max-width: 46em;
 }
 body > * {
-    padding: .25em 1em 1em 1em;
+    padding: 0 1em 1em 1em;
     margin-top: .5em;
     background: white;
     border: 1px dimgray solid;    
+}
+body > * > * {
+    margin: .75em 0;
 }
 body > * > h2 {
     border-bottom: 1px gainsboro solid;
@@ -87,6 +94,8 @@ a:focus, .linkalike:focus {
 }
 .menu {
     text-align: center;
+    padding: .1em 0;
+    border-top-width: 0;
 }
 h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
     font-size: .75em;
@@ -98,22 +107,19 @@ h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox
     border: none;
     background: none;
     display: inline;
-    padding-left: 0;
-    padding-right: 0;
 }
 .menu > * {
     padding: 0 1em;
 }
 form {
     display: inline;
-    padding: 0;
-    margin: 0;
+}
+.options form > * {
+    margin: 0.5em 0;
 }
 a.coloroption {
     border: 1px black solid;
     text-decoration: none;
-    margin: 0;
-    padding: 0;
     display: inline-block;
     width: 1.5em;
 }
@@ -125,14 +131,12 @@ a.coloroption:hover {
     height: 15em;
     overflow: scroll;
     border: 1px silver solid;
-    margin-right: 2em;
-}
-.userlist p {
     margin: 0;
+    margin-right: 2em;
+    padding: 0;
 }
 .useradmin_form th {
     text-align: left;
     font-weight: normal;
-    vertical-align: top;
 }
 
