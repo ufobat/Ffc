@@ -7,7 +7,7 @@ use Testinit;
 use Test::More tests => 133;
 use Test::Mojo;
 
-my ( $t, $path, $admin, $pass ) = Testinit::start_test();
+my ( $t, $path, $admin, $pass, $dbh ) = Testinit::start_test();
 
 note 'first attempt without login';
 $t->get_ok('/');
@@ -53,7 +53,6 @@ $t->content_like(qr~<div\s+class="error">\s*<h2>Fehler</h2>\s*Fehler bei der Anm
 check_notloggedin();
 
 note 'failed login with inactive user';
-my $dbh = Testinit::test_dbh($path);
 $dbh->do('UPDATE users SET active=0 WHERE UPPER(name)=UPPER(?)', undef, $admin);
 $t->post_ok('/login', form => { username => $admin, password => $pass });
 $t->content_like(qr~<div\s+class="error">\s*<h2>Fehler</h2>\s*Fehler bei der Anmeldung~);

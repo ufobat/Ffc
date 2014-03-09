@@ -29,8 +29,10 @@ sub start_test {
             or die "could not open config file: $!";
         <$fh>;
     };
+    my $dbh = DBI->connect('dbi:SQLite:database='.catfile($testpath, 'database.sqlite3')
+                , { AutoCommit => 1, RaiseError => 1 });
     my $t = Test::Mojo->new('Ffc');
-    return $t, $testpath, $user, $pw, $salt, $csecret;
+    return $t, $testpath, $user, $pw, $dbh, $salt, $csecret;
 }
 
 sub test_logout {
