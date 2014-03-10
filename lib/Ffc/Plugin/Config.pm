@@ -78,8 +78,8 @@ sub register {
             qw(favicon commoncattitle title) ),
     });
 
-    $app->helper( "set_info"  => sub { shift()->stash(info  => join ' ', @_) } );
-    $app->helper( "set_error" => sub { shift()->stash(error => join ' ', @_) } );
+    $app->helper( set_info  => sub { shift()->stash(info  => join ' ', @_) } );
+    $app->helper( set_error => sub { shift()->stash(error => join ' ', @_) } );
     $app->helper( fontsize  => sub { $FontSizeMap{$_[1]} || 1 } );
     $app->helper( stylefile => 
         sub { $Styles[$_[0]->session()->{style} ? 1 : 0] } );
