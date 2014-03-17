@@ -72,3 +72,29 @@ sub test_info {
         qr~<div\s+class="info">\s*<h2>Hinweis</h2>\s*$info\s*</div>~);
 }
 
+sub test_add_users {
+    my $t = shift; my $admin = shift; my $apass = shift;
+    test_logout($t);
+    test_login($t, $admin, $apass);
+    my $cnt = 0;
+    while ( @_ ) {
+        my $user = shift;
+        my $pass = shift;
+        last unless $user and $pass;
+        $t->post_ok('/options/useradmin', form => {username => $user, newpw1 => $pass, newpw2 => $pass, active => 1})
+          ->content_like(qr~Benutzer \&quot;$user\&quot; angelegt~);
+        $cnt++;
+    }
+    test_logout($t);
+    if ( $cnt ) {
+        note $cnt == 1
+            ? 'one user created'
+            : "$cnt users created";
+    }
+    else {
+        diag 'no users created';
+
+    }
+    return $t;
+}
+

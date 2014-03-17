@@ -10,9 +10,10 @@ use Test::More tests => 308;
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
 
-sub admin_login { Testinit::test_login(  $t, $admin, $apass ) };
-sub user_login  { Testinit::test_login(  $t, $user,  $pass  ) };
-sub logout      { Testinit::test_logout( $t                 ) };
+sub admin_login { Testinit::test_login(  $t, $admin, $apass ) }
+sub user_login  { Testinit::test_login(  $t, $user,  $pass  ) }
+sub logout      { Testinit::test_logout( $t                 ) }
+sub error_login { Testinit::test_error(  $t, 'Fehler bei der Anmeldung' ) }
 sub get_users   { 
     $dbh->selectall_arrayref('SELECT name, active, admin FROM users ORDER BY id')
 }
@@ -82,8 +83,8 @@ is @{get_users()}, 2, 'user count ok';
 
 logout();
 $t->post_ok('/login', form => { username => $user, password => $pass })
-  ->status_is(200)
-  ->content_like(qr~Fehler bei der Anmeldung~);
+  ->status_is(200);
+error_login();
 
 dump_user();
 
@@ -121,8 +122,8 @@ $t->post_ok('/options/useradmin', form => {username => $user, newpw1 => $newpass
 is @{get_users()}, 2, 'user count ok';
 logout();
 $t->post_ok('/login', form => { username => $user, password => $newpass })
-  ->status_is(200)
-  ->content_like(qr~Fehler bei der Anmeldung~);
+  ->status_is(200);
+error_login();
 user_login();
 
 note 'alter user password via admin login';
@@ -134,8 +135,8 @@ $t->post_ok('/options/useradmin', form => {username => $user, newpw1 => $pass, n
 is @{get_users()}, 2, 'user count ok';
 logout();
 $t->post_ok('/login', form => { username => $user, password => $oldpass })
-  ->status_is(200)
-  ->content_like(qr~Fehler bei der Anmeldung~);
+  ->status_is(200);
+error_login();
 user_login();
 
 note 'disable user';
@@ -148,8 +149,8 @@ $t->post_ok('/options/useradmin', form => {username => $user, active => 0, overw
 is get_user($user)->{active}, 0, 'user now inactive';
 logout();
 $t->post_ok('/login', form => { username => $user, password => $pass })
-  ->status_is(200)
-  ->content_like(qr~Fehler bei der Anmeldung~);
+  ->status_is(200);
+error_login();
 
 note 'reenable user';
 admin_login();
