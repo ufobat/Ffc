@@ -132,7 +132,7 @@ sub useradmin {
         $c->set_error('Benutzer existiert bereits, das Überschreiben-Häkchen ist allerdings nicht gesetzt');
         return $c->options_form();
     }
-    unless ( $exists or $newpw1 ) {
+    unless ( $exists or ( $newpw1 and $newpw2 ) ) {
         $c->set_error('Neuen Benutzern muss ein Passwort gesetzt werden');
         return $c->options_form();
     }
@@ -147,7 +147,7 @@ sub useradmin {
     }
     else {
         $c->dbh->do(
-            'INSERT INTO users SET (name, password, active, admin) VALUES (?,?,?,?)'
+            'INSERT INTO users (name, password, active, admin) VALUES (?,?,?,?)'
             , undef, $username, @pw, $isactive, $isadmin);
         $c->set_info(qq~Benutzer "$username" angelegt~);
     }

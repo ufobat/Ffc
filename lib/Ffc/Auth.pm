@@ -54,16 +54,9 @@ sub login {
 sub logout {
     my $c = shift;
     my $s = $c->session;
-    delete $s->{$_} for keys %$s;
+    delete $s->{user};
     $c->set_info('Abmelden erfolgreich');
     $c->render(template => 'auth/loginform');
-}
-
-sub add_user {
-    my ( $c, $n, $p, $a ) = @_;
-    $c->dbh()->do(
-        'INSERT INTO users (name, password, admin) VALUES (?,?,?)',
-        undef, $n, $c->password($p), ( $a ? 1 : 0 ) );
 }
 
 1;
