@@ -7,7 +7,7 @@ use Testinit;
 use Ffc::Plugin::Config;
 
 use Test::Mojo;
-use Test::More tests => 494;
+use Test::More tests => 573;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
@@ -93,9 +93,9 @@ for my $c ( @Ffc::Plugin::Config::Colors[$i .. $i + 3], '' ) {
 
 note 'checking theme switcher';
 my $b = 0;
-login($user1, $pass1);
 for ( 0 .. 3 ) {
     $b = $b ? 0 : 1;
+    login($user1, $pass1);
     $t->get_ok('/options/switchtheme')
       ->status_is(200)
       ->content_like(qr~Angemeldet als "$user1"~)
@@ -104,7 +104,13 @@ for ( 0 .. 3 ) {
       ->status_is(200)
       ->content_like(qr~Angemeldet als "$user1"~)
       ->content_like(qr~href="$Ffc::Plugin::Config::Styles[$b]"~);
+    login($user2, $pass2);
+    $t->get_ok('/')
+      ->status_is(200)
+      ->content_like(qr~Angemeldet als "$user2"~)
+      ->content_like(qr~href="$Ffc::Plugin::Config::Styles[$b]"~);
 }
 
 note 'checking image disable switch';
+# FIXME: unable to test that yet without posting borad infrastructure
 
