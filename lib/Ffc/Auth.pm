@@ -6,14 +6,13 @@ sub check_login {
     if ( $c->login_ok ) {
         my $s = $c->session();
         my $r = $c->dbh()->selectall_arrayref(
-            'SELECT u.admin, u.show_images, u.bgcolor
+            'SELECT u.admin, u.bgcolor
             FROM users u WHERE UPPER(u.name)=UPPER(?) AND active=1',
             undef, $s->{user});
 
         if ( $r and @$r ) {
             $s->{admin}           = $r->[0]->[0];
-            $s->{show_images}     = $r->[0]->[1];
-            $s->{backgroundcolor} = $r->[0]->[2];
+            $s->{backgroundcolor} = $r->[0]->[1];
             return 1;
         }
         else {
@@ -36,14 +35,13 @@ sub login {
         return $c->render(template => 'auth/loginform');
     }
     my $r = $c->dbh()->selectall_arrayref(
-        'SELECT u.admin, u.show_images, u.bgcolor
+        'SELECT u.admin, u.bgcolor
         FROM users u WHERE UPPER(u.name)=UPPER(?) AND u.password=? AND active=1',
         undef, $u, $c->hash_password($p));
     if ( $r and @$r ) {
         my $s = $c->session();
         $s->{admin}           = $r->[0]->[0];
-        $s->{show_images}     = $r->[0]->[1];
-        $s->{backgroundcolor} = $r->[0]->[2];
+        $s->{backgroundcolor} = $r->[0]->[1];
         $s->{user}            = $u;
         return $c->redirect_to('show');
     }

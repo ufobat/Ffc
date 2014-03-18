@@ -9,10 +9,7 @@ CREATE TABLE "users" (
   "email" varchar(1024) NOT NULL DEFAULT '',
   "avatar" varchar(128) NOT NULL DEFAULT '',
   "admin" tinyint(1) NOT NULL DEFAULT '0',
-  "show_images" tiniint(1) NOT NULL DEFAULT '1',
-  "theme" varchar(64) NOT NULL DEFAULT '',
   "bgcolor" varchar(24) NOT NULL DEFAULT '',
-  "fontsize" integer NOT NULL DEFAULT '0',
   UNIQUE ("name")
 );
 
