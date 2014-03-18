@@ -34,7 +34,7 @@ $t->get_ok('/')
   ->content_unlike(qr'font-size:');
 
 note 'checking font size changes';
-for my $i ( sort {$a <=> $b} keys %Ffc::Plugin::Config::FontSizeMap, 0 ) {
+for my $i ( sort( {$a <=> $b} keys %Ffc::Plugin::Config::FontSizeMap ), 0 ) {
     my $s = $Ffc::Plugin::Config::FontSizeMap{$i};
     login($user1, $pass1);
     $t->get_ok("/options/fontsize/$i")
