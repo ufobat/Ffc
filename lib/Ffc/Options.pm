@@ -42,7 +42,7 @@ sub no_bg_color {
     $c->dbh()->do(
         'UPDATE users SET bgcolor=? WHERE UPPER(name)=UPPER(?)',
         undef, '', $s->{user});
-    $c->set_info('Hintergrundfarbe zurück gesetzt');
+    $c->set_info('Hintergrundfarbe zurückgesetzt');
     $c->options_form();
 }
 

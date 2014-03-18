@@ -7,7 +7,7 @@ use Testinit;
 use Ffc::Plugin::Config;
 
 use Test::Mojo;
-use Test::More tests => 573;
+use Test::More tests => 591;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
@@ -40,6 +40,7 @@ for my $i ( sort( {$a <=> $b} keys %Ffc::Plugin::Config::FontSizeMap ), 0 ) {
     $t->get_ok("/options/fontsize/$i")
       ->status_is(200)
       ->content_like(qr'active activeoptions">Optionen<');
+    info('Schriftgröße geändert');
     $t->get_ok('/')
       ->status_is(200)
       ->content_like(qr~Angemeldet als "$user1"~);
@@ -68,9 +69,11 @@ for my $c ( @Ffc::Plugin::Config::Colors[$i .. $i + 3], '' ) {
     login($user1, $pass1);
     if ( $c ) {
         $t->get_ok("/options/bgcolor/color/$c");
+        info('Hintergrundfarbe angepasst');
     }
     else {
         $t->get_ok("/options/bgcolor/none");
+        info('Hintergrundfarbe zurückgesetzt');
     }
     $t->status_is(200)
       ->content_like(qr'active activeoptions">Optionen<');
@@ -100,6 +103,7 @@ for ( 0 .. 3 ) {
       ->status_is(200)
       ->content_like(qr~Angemeldet als "$user1"~)
       ->content_like(qr'active activeoptions">Optionen<');
+    info('Ansicht gewechselt');
     $t->get_ok('/')
       ->status_is(200)
       ->content_like(qr~Angemeldet als "$user1"~)
