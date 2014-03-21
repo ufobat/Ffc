@@ -59,7 +59,7 @@
     <h2>Eigene E-Mail-Adresse einstellen</h2>
     <p>(Mit der Emailadresse kann der Administrator des Forums ggf. Nachrichten außerhalb des Forums verschicken)</p>
 %= form_for set_email => begin 
-    <p><%= email_field 'email' %></p>
+    <p><%= email_field email => $email %></p>
     <p><button type="submit" class="linkalike">Emailadresse speichern</button></p>
 % end
 </div>

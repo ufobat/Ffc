@@ -7,7 +7,12 @@ sub options_form {
     $c->stash(act => 'options');
     $c->stash(fontsizes => \%Ffc::Plugin::Config::FontSizeMap);
     $c->stash(colors    => \@Ffc::Plugin::Config::Colors);
-    if ( $c->session->{admin} ) {
+    my $r = $c->dbh->selectall_arrayref(
+        'SELECT email, admin FROM users WHERE UPPER(name)=UPPER(?)'
+        , undef, $c->session->{user});
+    my ( $email, $admin ) = ( ( $r and ref($r) eq 'ARRAY' ) ? (@{$r->[0]}) : ('', 0) );
+    $c->stash(email => $email);
+    if ( $admin ) {
         $c->stash(userlist => 
             $c->dbh->selectall_arrayref(
                 'SELECT u.id, u.name, u.active, u.admin FROM users u ORDER BY u.active DESC, u.name ASC'));
@@ -57,6 +62,28 @@ sub bg_color {
         $s->{backgroundcolor} = $bgcolor;
         $c->set_info('Hintergrundfarbe angepasst');
     }
+    $c->options_form();
+}
+
+sub set_email {
+    my $c = shift;
+    my $email = $c->param('email');
+    unless ( $email ) {
+        $c->set_error('Email-Adresse nicht gesetzt');
+        return $c->options_form();
+    }
+    if ( 1024 < length $email ) {
+        $c->set_error('Email-Adresse darf maximal 1024 Zeichen lang sein');
+        return $c->options_form();
+    }
+    unless ( $email =~ m/.+\@.+\.\w+/xmso ) {
+        $c->set_error('Email-Adresse sieht komisch aus');
+        return $c->options_form();
+    }
+    $c->dbh->do(
+        'UPDATE users SET email=? WHERE UPPER(name)=UPPER(?)'
+        , undef, $email, $c->session->{user});
+    $c->set_info('Email-Adresse geändert');
     $c->options_form();
 }
 
