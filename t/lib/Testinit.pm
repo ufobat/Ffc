@@ -6,6 +6,7 @@ use 5.010;
 use File::Spec::Functions qw(catfile splitdir catdir);
 use File::Basename;
 use File::Temp;
+use Data::Dumper;
 use Test::More;
 use DBI;
 use lib 
@@ -23,13 +24,8 @@ sub start_test {
         = (split /\n+/, qx($Script 2>&1) )[-4,-3,-2,-1];
     chomp $user; chomp $salt; chomp $pw; chomp $csecret;
     note "user '$user':'$pw' (salt $salt, secret $csecret) created";
-    note "CONFIG:\n" . do {
-        local $/;
-        open my $fh, '<', catfile($testpath, 'config')
-            or die "could not open config file: $!";
-        <$fh>;
-    };
     my $t = Test::Mojo->new('Ffc');
+    note "CONFIG:\n" . Dumper($t->app->configdata);
     return $t, $testpath, $user, $pw, test_dbh($testpath), $salt, $csecret;
 }
 

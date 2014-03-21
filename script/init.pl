@@ -82,7 +82,7 @@ sub generate_random_security {
         use Mojolicious::Lite;
         plugin 'Ffc::Plugin::Config';
     };
-    my $config = $Config->config();
+    my $config = $Config->{secconfig};
     my $salt = $config->{cryptsalt};
     if ( $salt ) {
         say "ok: using preconfigured salt '$salt'";

@@ -56,11 +56,17 @@ sub register {
     my ( $self, $app ) = @_;
     $self->reset();
     my $config = $self->config();
+    my $secconfig = $self->{secconfig} = {};
 
     $app->helper(datapath     => sub { $self->datapath() });
     $app->helper(dbh          => sub { $self->dbh()      });
+    $app->helper(configdata   => sub { $self->config()   });
+    for my $c ( qw(cookiesecret cryptsalt) ) {
+        $secconfig->{$c} = $config->{$c};
+        delete $config->{$c};
+    }
 
-    $app->secrets([$config->{cookiesecret}]);
+    $app->secrets([$secconfig->{cookiesecret}]);
     $app->sessions->cookie_name(
         $config->{cookiename} || $Defaults{cookiename});
     $app->sessions->default_expiration(
@@ -84,7 +90,7 @@ sub register {
     $app->helper( stylefile => 
         sub { $Styles[$_[0]->session()->{style} ? 1 : 0] } );
     $app->helper( hash_password  => 
-        sub { sha512_base64 $_[1], $config->{cryptsalt} } );
+        sub { sha512_base64 $_[1], $secconfig->{cryptsalt} } );
 
     $app->hook( before_render => sub { 
         my $c = $_[0];
