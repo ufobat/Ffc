@@ -7,7 +7,7 @@ use Testinit;
 use Ffc::Plugin::Config;
 
 use Test::Mojo;
-use Test::More tests => 591;
+use Test::More tests => 661;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
@@ -116,6 +116,65 @@ for ( 0 .. 3 ) {
 }
 
 note 'checking email entry';
+login($user1, $pass1);
+$t->post_ok('/options/email')
+  ->status_is(200)
+  ->content_like(qr'active activeoptions">Optionen<');
+error('Email-Adresse nicht gesetzt');
+$t->post_ok('/options/email', form => { email => '' })
+  ->status_is(200)
+  ->content_like(qr'name="email" type="email" value=""')
+  ->content_like(qr'active activeoptions">Optionen<');
+error('Email-Adresse nicht gesetzt');
+is $dbh->selectall_arrayref(
+    'SELECT email FROM users WHERE name=?'
+    , undef, $user1)->[0]->[0], '', 'emailadress not set in database';
+$t->post_ok('/options/email', form => { email => ('a' x 1025 ) })
+  ->status_is(200)
+  ->content_like(qr'name="email" type="email" value="a{1025}"')
+  ->content_like(qr'active activeoptions">Optionen<');
+error('Email-Adresse darf maximal 1024 Zeichen lang sein');
+is $dbh->selectall_arrayref(
+    'SELECT email FROM users WHERE name=?'
+    , undef, $user1)->[0]->[0], '', 'emailadress not set in database';
+$t->post_ok('/options/email', form => { email => ('a' x 100 ) })
+  ->status_is(200)
+  ->content_like(qr'name="email" type="email" value="a{100}"')
+  ->content_like(qr'active activeoptions">Optionen<');
+error('Email-Adresse sieht komisch aus');
+is $dbh->selectall_arrayref(
+    'SELECT email FROM users WHERE name=?'
+    , undef, $user1)->[0]->[0], '', 'emailadress not set in database';
+$t->post_ok('/options/email', form => { email => 'me@home.de' })
+  ->status_is(200)
+  ->content_like(qr'active activeoptions">Optionen<')
+  ->content_like(qr'name="email" type="email" value="me@home.de"');
+info('Email-Adresse geändert');
+is $dbh->selectall_arrayref(
+    'SELECT email FROM users WHERE name=?'
+    , undef, $user1)->[0]->[0], 'me@home.de', 'emailadress set in database';
+$t->post_ok('/options/email', form => { email => 'him@work.com' })
+  ->status_is(200)
+  ->content_like(qr'active activeoptions">Optionen<')
+  ->content_like(qr'name="email" type="email" value="him@work.com"');
+info('Email-Adresse geändert');
+is $dbh->selectall_arrayref(
+    'SELECT email FROM users WHERE name=?'
+    , undef, $user1)->[0]->[0], 'him@work.com', 'emailadress set in database';
+login($user2, $pass2);
+$t->get_ok('/options/form')
+  ->status_is(200)
+  ->content_like(qr'name="email" type="email" value=""')
+  ->content_like(qr'active activeoptions">Optionen<');
+is $dbh->selectall_arrayref(
+    'SELECT email FROM users WHERE name=?'
+    , undef, $user2)->[0]->[0], '', 'emailadress not set in database';
+login($user1, $pass1);
+$t->get_ok('/options/form')
+  ->status_is(200)
+  ->content_like(qr'name="email" type="email" value="him@work.com"')
+  ->content_like(qr'active activeoptions">Optionen<');
+
 note 'checking background chooser with default background color in config';
 note 'checking background chooser disabled via config param';
 note 'checking image disable switch';
