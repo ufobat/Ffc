@@ -1,2 +1,2 @@
 % layout 'board';
-<div class="postbox"><h2>Hallo</h2><p>Welt!</p></div>
+<div class="postbox"><h1>Hallo</h1><p>Welt!</p></div>

@@ -36,7 +36,8 @@ our %Goodies    = qw( _ underline - linethrough + bold ~ italic ! alert * emotio
 
 sub register {
     my ( $self, $app ) = @_;
-    $app->helper( format_text      => \&_format_text      );
+    $app->helper( pre_format       => \&_pre_format_text  );
+    $app->helper( post_format      => \&_post_format_text );
     $app->helper( format_timestamp => \&_format_timestamp );
 }
 
@@ -54,15 +55,23 @@ sub _format_timestamp {
     return $t;
 }
 
-sub _format_text {
+sub _post_format_text {
+    my ( $c, $s ) = @_;
+    my $u = my $xu = $c->session()->{user} // '';
+    return $s unless $u;
+    _xml_escape($xu);
+    $s =~ s{(?<!\S)(\@)?$u}{_make_username_mark($xu, $1)}xgmsie;
+    return $s;
+}
+
+sub _pre_format_text {
     my ( $c, $s ) = @_;
     return '' if !$s or $s =~ m/\A\s*\z/xmso;
     $s =~ s/\A\s+//gxmso;
     $s =~ s/\s+\z//gxmso;
-    my $u = $c->session()->{user} // '';
     _xml_escape($s);
+    $s =~ s{(\A|\n)=\s*([^\n]+)(\z|\n)}{_make_heading($1, $2, $3)}gxomes;
     $s =~ s{(\A|\s)"(\S|\S.*?\S)"(\W|\z)}{_make_quote($1, $2, $3)}gxomes;
-    $s =~ s{(?<!\S)(\@)?$u}{_make_username_mark($u, $1)}xgmsie if $u;
     $s =~ s{(?<!\w)([\_\-\+\~\!\*])([\_\-\+\~\!\w\*]+)\g1(?!\w)}{_make_goody($1,$2)}gxmoes;
     $s =~ s{((?:[\(\s]|\A)?)(https?://[^\)\s]+?)(\)|,?\s|\z)}{_make_link($1,$2,$3,$c)}gxmeis;
     $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxes;
@@ -74,6 +83,11 @@ sub _xml_escape {
     $_[0] =~ s/\&/\&amp;/gxmo;
     $_[0] =~ s/\<(?=[^3])/\&lt;/gxom;
     $_[0] =~ s/\>(?=[^\:\=])/\&gt;/goxm;
+}
+
+sub _make_heading {
+    my ( $s, $t, $e ) = @_;
+    return "$s<h2>$t</h2>$e";
 }
 
 sub _make_quote {
@@ -106,16 +120,7 @@ sub _make_link {
     my ( $start, $url, $end, $c ) = @_;
     $url =~ s/"/\%22/xmso;
     if ( $url =~ m(jpe?g|gif|bmp|png\z)xmsio ) {
-        if ( $c->session()->{show_images} ) {
-            return qq~$start<a href="$url" title="Externes Bild" target="_blank"><img src="$url" class="extern" title="Externes Bild" /></a>$end~;
-        }
-        else {
-            my $url_xmlencode = $url;
-            _xml_escape($url_xmlencode);
-            my $url_show = $url_xmlencode;
-            _stripped_url($c, $url_xmlencode);
-            return qq~$start<a href="$url" title="Externes Bild: $url_show" target="_blank">$url_xmlencode</a>$end~;
-        }
+        return qq~$start<a href="$url" title="Externes Bild" target="_blank"><img src="$url" class="extern" title="Externes Bild" /></a>$end~;
     }
     else {
         my $url_xmlencode = $url;
@@ -140,7 +145,6 @@ sub _make_smiley {
     my $s = shift // '';
     my $y = my $x = shift // return '';
     my $c = shift;
-    return "$s$x" unless $c->session()->{show_images};
     $y =~ s/\&/&lt;/xmsgo;
     $y =~ s/\>/&gt;/xmsgo;
     $y =~ s/\</&lt;/xmsgo;

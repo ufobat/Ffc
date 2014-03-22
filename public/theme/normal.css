@@ -19,7 +19,7 @@ body > * {
 body > * > * {
     margin: .75em 0;
 }
-body > * > h2 {
+body > * > h1 {
     border-bottom: 1px gainsboro solid;
     color: gray;
 }
@@ -70,20 +70,20 @@ a:focus, .linkalike:focus {
     color: gray;
     background: lightsteelblue;
 }
-.info, .info h2 {
+.info, .info h1 {
     color: darkgreen;
     border-color: forestgreen;
     background: palegreen;
 }
-.info h2 {
+.info h1 {
     color: forestgreen;
 }
-.error, .error h2 {
+.error, .error h1 {
     color: darkred;
     border-color: firebrick;
     background: peachpuff;
 }
-.error h2 {
+.error h1 {
     color: firebrick;
 }
 .pages, .menu {
@@ -100,7 +100,7 @@ a:focus, .linkalike:focus {
     padding: .1em 0;
     border-top-width: 0;
 }
-h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
+h1, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
     font-size: .75em;
 }
 .menu input[type="text"] {

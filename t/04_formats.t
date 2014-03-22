@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 152;
+use Test::More tests => 92;
 
 srand;
 
@@ -19,7 +19,6 @@ srand;
     helper config           => sub { $config };
     helper prepare          => sub {
         my $c = shift;
-        $c->session->{show_images} = $c->param('show_images') ? 1 : 0;
         $c->session->{user} = $c->param('user') // '';
         $c->config->{urlshorten} = $c->param('urlshorten') // 30;
     };
@@ -29,10 +28,15 @@ srand;
         $c->prepare;
         $c->render(text => $c->format_timestamp($c->param('text')));
     };
-    any '/format_text' => sub {
+    any '/pre_format' => sub {
         my $c = shift;
         $c->prepare;
-        $c->render(text => $c->format_text($c->param('text')));
+        $c->render(text => $c->pre_format($c->param('text')));
+    };
+    any '/post_format' => sub {
+        my $c = shift;
+        $c->prepare;
+        $c->render(text => $c->post_format($c->param('text')));
     };
 }
 
@@ -75,21 +79,21 @@ my $t = Test::Mojo->new;
 }
 
 {
-    note('checking format_text');
+    note('checking pre_format');
     my @chars = ('a'..'z', 0..9, '.');
     my $zs = sub { join '', map({;$chars[int rand scalar @chars]} 0 .. 4 + int rand 8) };
     my $tu = sub { 'http://www.'.$zs->().'.de' };
     my @params;
     {
-        @params = ( show_images => 1, user => '', urlshorten => 10 + length $tu );
-        $t->post_ok('/format_text', form => { text => '', @params })
+        @params = ( user => '', urlshorten => 10 + length $tu );
+        $t->post_ok('/pre_format', form => { text => '', @params })
           ->content_is('');
-        $t->post_ok('/format_text', form => { text => '' x ( 3 + int rand 1000), @params })
+        $t->post_ok('/pre_format', form => { text => '' x ( 3 + int rand 1000), @params })
           ->content_is('');
-        @params = ( show_images => 1, user => '', urlshorten => 10 + length $tu );
-        $t->post_ok('/format_text', form => { text => '', @params })
+        @params = ( user => '', urlshorten => 10 + length $tu );
+        $t->post_ok('/pre_format', form => { text => '', @params })
           ->content_is('');
-        $t->post_ok('/format_text', form => { text => '' x ( 3 + int rand 1000), @params })
+        $t->post_ok('/pre_format', form => { text => '' x ( 3 + int rand 1000), @params })
           ->content_is('');
     }
 
@@ -107,28 +111,20 @@ my $t = Test::Mojo->new;
                 return $s;
             };
         };
-        my $code = \&Ffc::Formats::format_text;
         my $testurl = $tu->().'/'.$zs->().'.html';
         my $testimage = $tu->().'/'.$zs->().'.png';
         my $testuser = $zs->();
         my @input = map { chomp; $_ ? $_ : () } split /\n+/, teststring($testurl, $testimage, $testuser);
         my @output_w_img = map { chomp; $_ ? $_ : () } split /\n+/, controlstring_withimages($testurl, $testimage, $testuser);
-        my @output_wo_img = map { chomp; $_ ? $_ : () } split /\n+/, controlstring_withoutimages($testurl, $testimage, $testuser);
         for my $i ( 0..$#input ) {
             my $start = [ map {$zs->()} 0 .. int rand 3 ];
             my $stop = [ map {$zs->()} 0 .. int rand 3 ];
             my $input = $prep->($start, $input[$i], $stop, 0);
             my $output_w = $prep->($start, $output_w_img[$i], $stop, 1);
-            my $output_wo = $prep->($start, $output_wo_img[$i], $stop, 1);
             {
-                my @params = ( show_images => 1, user => $testuser, urlshorten => 10 + length $testurl.$testimage );
-                $t->post_ok('/format_text', form => { text => $input, @params })
+                my @params = ( user => $testuser, urlshorten => 10 + length $testurl.$testimage );
+                $t->post_ok('/pre_format', form => { text => $input, @params })
                   ->content_is($output_w);
-            }
-            {
-                my @params = ( show_images => 0, user => $testuser, urlshorten => 10 + length $testurl.$testimage );
-                $t->post_ok('/format_text', form => { text => $input, @params })
-                  ->content_is($output_wo);
             }
         }
     }
@@ -144,7 +140,7 @@ Zitat"! ... Haha!';
 <p><span class="quote">ein mehrzeiliges</span></p>
 <p><span class="quote">Zitat</span>“! ... Haha!</p>';
 
-    $t->post_ok('/format_text', form => { text => $src })->content_is($expected);
+    $t->post_ok('/pre_format', form => { text => $src })->content_is($expected);
 }
 
 {
@@ -166,7 +162,52 @@ https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&x=ypsilon
 <p><span class="quote">Galli</span>“</p>
 <p><a href="https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&amp;x=ypsilon" title="Externe Webseite: https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&amp;amp;x=ypsilon" target="_blank">https://abcde.f…p;amp;x=ypsilon</a></p>~;
 
-    $t->post_ok('/format_text', form => { text => $teststring, urlshorten => 30 })->content_is($controlstring);
+    $t->post_ok('/pre_format', form => { text => $teststring, urlshorten => 30 })->content_is($controlstring);
+}
+{
+    my $teststring = q~
+=Abc
+Hall
+= DEf
+llo
+=diad
+~;
+    my $controlstring = qq~<p><h2>Abc</h2></p>
+<p>Hall</p>
+<p><h2>DEf</h2></p>
+<p>llo</p>
+<p><h2>diad</h2></p>~;
+    $t->post_ok('/pre_format', form => { text => $teststring, urlshorten => 30 })->content_is($controlstring);
+}
+
+{
+    my @chars = ('a'..'z', 0..9, '.');
+    my $zs = sub { join '', map({;$chars[int rand scalar @chars]} 0 .. 4 + int rand 8) };
+    my $test = $zs->();
+    my $testuser = $test.'<>&"';
+    my $controluser = $test.'&lt;&gt;&amp;"';
+    my $teststring = qq~
+$testuser
+Und "Hier, in dieser :) ... achso" und da" oder, so.
+
+Achso \@$testuser: $testuser oder http://www.$testuser.de weil ja!
+$testuser
+
+Hallo
+
+$testuser~;
+    my $controlstring = qq~
+<span class="username">$controluser</span>
+Und "Hier, in dieser :) ... achso" und da" oder, so.
+
+Achso <span class="username"><span class="alert">@</span>$controluser</span>: <span class="username">$controluser</span> oder http://www.$test<>&".de weil ja!
+<span class="username">$controluser</span>
+
+Hallo
+
+<span class="username">$controluser</span>~;
+    $t->post_ok('/post_format', form => { text => $teststring, user => $testuser, urlshorten => 999999 })
+      ->content_is($controlstring);
 }
 
 sub teststring {
@@ -224,8 +265,8 @@ sub controlstring_withimages {
 <p><a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>, <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a></p>
 <p>Hallo <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> Hallo (<a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>) Hallo</p>
 <p>(<a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>), <a href="$testimage" title="Externes Bild" target="_blank"><img src="$testimage" class="extern" title="Externes Bild" /></a></p>
-<p>Und „<span class="quote">Hier, in dieser <img class="smiley" src="/theme/img/smileys/smile.png" alt=":)" /> ... <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> ... achso</span>“ und da" oder, <span class="username">$testuser</span>, so.</p>
-<p>Achso <span class="username"><span class="alert">@</span>$testuser</span>: <span class="username">$testuser</span> oder <a href="http://www.$testuser.de" title="Externe Webseite: http://www.$testuser.de" target="_blank">http://www.$testuser.de</a> weil ja!</p>
+<p>Und „<span class="quote">Hier, in dieser <img class="smiley" src="/theme/img/smileys/smile.png" alt=":)" /> ... <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> ... achso</span>“ und da" oder, $testuser, so.</p>
+<p>Achso \@$testuser: $testuser oder <a href="http://www.$testuser.de" title="Externe Webseite: http://www.$testuser.de" target="_blank">http://www.$testuser.de</a> weil ja!</p>
 <p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span>, <span class="emotion">test6</span></p>
 <p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span>, <span class="emotion">test 6</span></p>
 <p>look: <img class="smiley" src="/theme/img/smileys/look.png" alt="O.O" /> <img class="smiley" src="/theme/img/smileys/look.png" alt="0.0" />,</p>
@@ -250,42 +291,5 @@ sub controlstring_withimages {
 <p>evilgrin: <img class="smiley" src="/theme/img/smileys/evilgrin.png" alt="&gt;:D" /> <img class="smiley" src="/theme/img/smileys/evilgrin.png" alt="&gt;:-D" /> <img class="smiley" src="/theme/img/smileys/evilgrin.png" alt="&gt;=D" />,</p>
 <p>angry: <img class="smiley" src="/theme/img/smileys/angry.png" alt="&gt;:(" /> <img class="smiley" src="/theme/img/smileys/angry.png" alt="&gt;:-(" /> <img class="smiley" src="/theme/img/smileys/angry.png" alt="&gt;=(" /></p>
 <p>facepalm: <img class="smiley" src="/theme/img/smileys/facepalm.png" alt="m(" /></p>
-EOSTRING
-}
-sub controlstring_withoutimages {
-    my ( $testurl, $testimage, $testuser ) = @_;
-    return << "EOSTRING";
-<p>MarkupTests:</p>
-<p>Notiz am Rande: <span class="alert">BBCodes !!!</span> können mich mal kreuzweise am Arsch lecken, bin fertig mit den sinnlosen Drecksdingern. Die kommen hier nie, nie nie rein!</p>
-<p><a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a></p>
-<p><a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>, <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a></p>
-<p>Hallo <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> Hallo (<a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>) Hallo</p>
-<p>(<a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a>), <a href="$testimage" title="Externes Bild: $testimage" target="_blank">$testimage</a></p>
-<p>Und „<span class="quote">Hier, in dieser :) ... <a href="$testurl" title="Externe Webseite: $testurl" target="_blank">$testurl</a> ... achso</span>“ und da" oder, <span class="username">$testuser</span>, so.</p>
-<p>Achso <span class="username"><span class="alert">@</span>$testuser</span>: <span class="username">$testuser</span> oder <a href="http://www.$testuser.de" title="Externe Webseite: http://www.$testuser.de" target="_blank">http://www.$testuser.de</a> weil ja!</p>
-<p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span>, <span class="emotion">test6</span></p>
-<p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span>, <span class="emotion">test 6</span></p>
-<p>look: O.O 0.0,</p>
-<p>what: o.O O.o O.ò ó.O,</p>
-<p>tongue: :P :-P =P :p :-p =p,</p>
-<p>ooo: :O :-O =O :o :-o =o,</p>
-<p>smile: :) :-) =),</p>
-<p>sad: :( :-( =(,</p>
-<p>crying: :,( :'(,</p>
-<p>twinkling: ;) ;-),</p>
-<p>laughting: :D =D :-D LOL,</p>
-<p>rofl: XD X-D ROFL,</p>
-<p>unsure: :| :-| =|,</p>
-<p>yes: (y) (Y),</p>
-<p>no: (n) (N),</p>
-<p>down: -.-,</p>
-<p>nope: :/ :-/ :\\ :-\\ =/ =\\,</p>
-<p>sunny: B) B-) 8) 8-),</p>
-<p>cats: ^^,</p>
-<p>love: <3,</p>
-<p>devilsmile: >:) >:-) >=),</p>
-<p>evilgrin: >:D >:-D >=D,</p>
-<p>angry: >:( >:-( >=(</p>
-<p>facepalm: m(</p>
 EOSTRING
 }
