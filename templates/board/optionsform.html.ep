@@ -38,14 +38,6 @@
 % end
 </div>
 <div class="postbox options">
-    <h1>Einstellungen zur Anzeige von Bildern in den Beiträgen</h1>
-    <p>(Anzeige von Grafiken kann wahlweise abgeschalten werden)</p>
-    <p>
-        <%= link_to toggle_show_images => begin %>Bilder und Smileys werden
-            <%= session()->{show_images} ? 'ausgeblendet' : 'angezeigt' %><% end %>
-    </p>
-</div>
-<div class="postbox options">
     <h1>Eigenes Passwort ändern</h1>
     <p>(Aus Sicherheitsgründen sollte regelmäßig das eigene Passwort geändert werden)</p>
 %= form_for set_password => begin 

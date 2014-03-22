@@ -190,6 +190,4 @@ sub test_email {
 
 note 'checking background chooser with default background color in config';
 note 'checking background chooser disabled via config param';
-note 'checking image disable switch';
-# FIXME: unable to test that yet without posting borad infrastructure
 
