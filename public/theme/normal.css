@@ -95,7 +95,6 @@ a:focus, .linkalike:focus {
     color: firebrick;
 }
 .pages, .menu {
-    background: gainsboro;
     margin: 0;
     padding: 0;
 }
