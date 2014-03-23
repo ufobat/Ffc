@@ -155,7 +155,7 @@ sub test_path {
         do {
             use Mojolicious::Lite;
             plugin 'Ffc::Plugin::Config';
-        }->dbh()->disconnect();
+        }->dbh()->disconnect() or die;
         unlink "$testpath/database.sqlite3";
     }
     my $out4 = qx(FFC_DATA_PATH=$testpath $script 2>&1);

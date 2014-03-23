@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 8;
+use Test::More tests => 38;
 use Test::Mojo;
 
 use DBI;
@@ -37,11 +37,19 @@ sub test_config {
 
     my $Config = do {
         use Mojolicious::Lite;
-        plugin 'Ffc::Plugin::Config';
+        use File::Spec::Functions qw(catfile);
+        my $config = plugin 'Ffc::Plugin::Config';
+        any '/config'   => sub { $_[0]->render(json => $_[0]->configdata) };
+        any '/datapath' => sub { $_[0]->render(text => catfile(@{$_[0]->datapath})) };
+        $config;
     };
-    $Config->reset;
+    my $t = Test::Mojo->new;
+    $t->get_ok('/datapath')->status_is(200)->content_is($testpath);
+    $t->get_ok('/config')
+      ->status_is(200)
+      ->json_hasnt('/cookiesecret')
+      ->json_hasnt('/cryptsalt');
 
-    is catfile(@{$Config->datapath()}), $testpath, 'data path ok';
     my $config = do {
         my %c = ();
         open my $fh, '<', catfile($testpath, 'config')
@@ -52,7 +60,12 @@ sub test_config {
         }
         \%c;
     };
-    is_deeply $config, $Config->config(), 'config data ok';
+    is_deeply $config, $Config->_config(), 'config data ok';
+    for my $c (qw( fixbackgroundcolor favicon
+    cookiename postlimit title sessiontimeout
+    commoncattitle urlshorten backgroundcolor)) {
+        $t->json_is("/$c", $config->{$c});
+    }
     my $dbh = $Config->dbh();
     ok $dbh, 'database handle received';
     my $r = $dbh->selectall_arrayref(
@@ -70,5 +83,12 @@ sub generate_config {
         for sort keys %$config_data;
     close $fh;
     return 1;
+}
+
+sub test_configsecrets {
+    my $testpath = $ENV{FFC_DATA_PATH} = File::Temp::tempdir( CLEANUP => 1 );
+    my $out = qx(FFC_DATA_PATH=$testpath $Testinit::Script 2>&1);
+    my ( $csecret, $salt, $user, $pw ) = (split /\n+/, $out )[-4,-3,-2,-1];
+    chomp $user; chomp $salt; chomp $pw; chomp $csecret;
 }
 

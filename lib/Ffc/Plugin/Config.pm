@@ -55,12 +55,13 @@ our @Colors = qw(Maroon DarkRed FireBrick Red Salmon Tomato Coral OrangeRed
 sub register {
     my ( $self, $app ) = @_;
     $self->reset();
-    my $config = $self->config();
+    my $datapath  = $self->_datapath();
+    my $config    = $self->_config();
     my $secconfig = $self->{secconfig} = {};
 
-    $app->helper(datapath     => sub { $self->datapath() });
-    $app->helper(dbh          => sub { $self->dbh()      });
-    $app->helper(configdata   => sub { $self->config()   });
+    $app->helper(datapath     => sub { $datapath    });
+    $app->helper(dbh          => sub { $self->dbh() });
+    $app->helper(configdata   => sub { $config      });
     for my $c ( qw(cookiesecret cryptsalt) ) {
         $secconfig->{$c} = $config->{$c};
         delete $config->{$c};
@@ -106,7 +107,7 @@ sub register {
     return $self;
 }
 
-sub datapath {
+sub _datapath {
     my $self = $_[0];
     return $self->{datapath} if $self->{datapath};
     die qq~need a directory as "FFC_DATA_PATH" environment variable ('~.($ENV{FFC_DATA_PATH}//'').q~')~
@@ -114,24 +115,23 @@ sub datapath {
     return $self->{datapath} = [ splitdir $ENV{FFC_DATA_PATH} ];
 }
 
-sub config {
+sub _config {
     my $self = $_[0];
-    return $self->{config} if $self->{config};
-    open my $fh, '<', catdir @{$self->datapath()}, 'config'
-        or die q~could not open config file '~.catdir(@{$self->datapath()}, 'config').qq~': $!~;
-    return $self->{config} = { map { m/\A\s*(\w+)\s*=\s*([^\n]*)\s*\z/xmso ? ( $1 => $2 ) : () } <$fh> };
+    open my $fh, '<', catdir @{$self->_datapath()}, 'config'
+        or die q~could not open config file '~.catdir(@{$self->_datapath()}, 'config').qq~': $!~;
+    return { map { m/\A\s*(\w+)\s*=\s*([^\n]*)\s*\z/xmso ? ( $1 => $2 ) : () } <$fh> };
 }
 
 sub dbh {
     my $self = $_[0];
     return $self->{dbh} if $self->{dbh};
-    $self->{dbfile} = catdir @{ $self->datapath() }, 'database.sqlite3';
+    $self->{dbfile} = catdir @{ $self->_datapath() }, 'database.sqlite3';
     return $self->{dbh} = DBI->connect("DBI:SQLite:database=$self->{dbfile}", { AutoCommit => 1, RaiseError => 1 })
         or die qq~could not connect to database "$self->{dbfile}": $DBI::errstr~;
 }
 
 sub reset {
-    @{$_[0]}{qw(datapath config dbh dbfile)} = (undef,undef,undef,undef);
+    @{$_[0]}{qw(datapath configdata dbh dbfile)} = (undef,undef,undef,undef);
 }
 
 1;
