@@ -1,4 +1,5 @@
 package Ffc::Plugin::Config;
+use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Plugin';
 
 use strict;

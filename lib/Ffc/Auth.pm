@@ -1,4 +1,5 @@
 package Ffc::Auth;
+use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 
 sub check_login {

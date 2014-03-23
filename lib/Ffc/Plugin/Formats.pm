@@ -1,4 +1,5 @@
 package Ffc::Plugin::Formats;
+use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Plugin';
 
 use 5.010;
