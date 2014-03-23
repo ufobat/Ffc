@@ -4,6 +4,12 @@
     <%= $error %>
 </div>
 % }
+% if ( $warning ) {
+<div class="warning">
+    <h1>Warnung</h1>
+    <%= $warning %>
+</div>
+% }
 % if ( $info ) {
 <div class="info">
     <h1>Hinweis</h1>

@@ -70,6 +70,14 @@ a:focus, .linkalike:focus {
     color: gray;
     background: lightsteelblue;
 }
+.warning, .warning h1 {
+    color: saddlebrown;
+    border-color: chocolate;
+    background: lemonchiffon;
+}
+.warning h1 {
+    color: chocolate;
+}
 .info, .info h1 {
     color: darkgreen;
     border-color: forestgreen;

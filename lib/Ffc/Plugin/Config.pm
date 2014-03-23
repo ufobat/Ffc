@@ -80,14 +80,18 @@ sub register {
     $app->defaults({
         act => 'forum',
         map( {;$_.'count' => 0} qw(newmsgs newpost note) ),
-        map( {;$_ => ''} qw(error info) ),
+        map( {;$_ => ''} qw(error info warning) ),
         map( {;$_ => $config->{$_} || $Defaults{$_}} 
             qw(favicon commoncattitle title) ),
     });
 
-    $app->helper( set_info  => sub { shift()->stash(info  => join ' ', @_) } );
-    $app->helper( set_error => sub { shift()->stash(error => join ' ', @_) } );
-    $app->helper( fontsize  => sub { $FontSizeMap{$_[1]} || 1 } );
+    for my $w ( qw(info error warning ) ) {
+        $app->helper( "set_$w" => 
+            sub { shift()->stash($w => join ' ', @_) } );
+    }
+
+    $app->helper( fontsize =>
+        sub { $FontSizeMap{$_[1]} || 1 } );
     $app->helper( stylefile => 
         sub { $Styles[$_[0]->session()->{style} ? 1 : 0] } );
     $app->helper( hash_password  => 

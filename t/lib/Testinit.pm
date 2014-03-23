@@ -68,6 +68,12 @@ sub test_info {
         qr~<div\s+class="info">\s*<h1>Hinweis</h1>\s*$info\s*</div>~);
 }
 
+sub test_warning {
+    my ( $t, $warning ) = @_;
+    $t->content_like(
+        qr~<div\s+class="info">\s*<h1>Warnung</h1>\s*$warning\s*</div>~);
+}
+
 sub test_add_users {
     my $t = shift; my $admin = shift; my $apass = shift;
     test_logout($t);
