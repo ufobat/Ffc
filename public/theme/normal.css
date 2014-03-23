@@ -14,7 +14,7 @@ body > * {
     padding: 0 1em 1em 1em;
     margin-top: .5em;
     background: white;
-    border: 1px dimgray solid;    
+    border: 1px gray solid;    
 }
 body > * > * {
     margin: .75em 0;
