@@ -53,7 +53,7 @@ sub no_bg_color {
 
 sub bg_color {
     my $c = shift;
-    unless ( $c->config()->{fixbackgroundcolor} ) {
+    unless ( $c->configdata()->{fixbackgroundcolor} ) {
         my $bgcolor = $c->param('bgcolor');
         my $s = $c->session();
         $c->dbh()->do(
@@ -61,6 +61,9 @@ sub bg_color {
             undef, $bgcolor, $s->{user});
         $s->{backgroundcolor} = $bgcolor;
         $c->set_info('Hintergrundfarbe angepasst');
+    }
+    else {
+        $c->set_error('Ändern der Hintergrundfarbe vom Forenadministrator deaktiviert');
     }
     $c->options_form();
 }

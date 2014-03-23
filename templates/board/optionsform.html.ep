@@ -17,7 +17,7 @@
             <%= session()->{style} ? 'in schmaler Blogform' : 'über die Fensterbreite' %><% end %>
     </p>
 </div> 
-% unless ( $Ffc::Data::FixBgColor ) {
+% unless ( configdata()->{fixbackgroundcolor} ) {
 <div class="postbox options">
     <h1>Einstellungen zur Hintergrundfarbe des Forums</h1>
     <p>(Die gewünschte Farbe für den Hintergrund einfach anklicken)</p>

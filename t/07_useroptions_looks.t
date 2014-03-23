@@ -7,7 +7,7 @@ use Testinit;
 use Ffc::Plugin::Config;
 
 use Test::Mojo;
-use Test::More tests => 661;
+use Test::More tests => 694;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
@@ -37,6 +37,7 @@ test_font_size();
 test_bgcolor();
 test_theme_switcher();
 test_email();
+test_bgcolor_configoptions();
 
 sub test_font_size {
     note 'checking font size changes';
@@ -188,6 +189,52 @@ sub test_email {
       ->content_like(qr'active activeoptions">Optionen<');
 }
 
-note 'checking background chooser with default background color in config';
-note 'checking background chooser disabled via config param';
+sub test_bgcolor_configoptions {
+    my @Chars = ('a' .. 'z', 0 .. 9);
+    note 'checking background chooser with default background color in config';
+    my $sbgcolor = $t->app->configdata->{backgroundcolor} = 
+        join '', 'c4', map {$Chars[int rand @Chars]} 1 .. 4;
+    my $mbgcolor = 'my' . uc $sbgcolor;
+    isnt $sbgcolor, $mbgcolor;
+
+    $t->get_ok("/options/bgcolor/none");
+    info('Hintergrundfarbe zurückgesetzt');
+    $t->get_ok('/')
+      ->status_is(200)
+      ->content_like(qr~background-color:\s*$sbgcolor~);
+
+    $t->get_ok("/options/bgcolor/color/$mbgcolor");
+    info('Hintergrundfarbe angepasst');
+    $t->get_ok('/')
+      ->status_is(200)
+      ->content_like(qr~background-color:\s*$mbgcolor~);
+
+    $t->get_ok("/options/bgcolor/none");
+    info('Hintergrundfarbe zurückgesetzt');
+    $t->get_ok('/')
+      ->status_is(200)
+      ->content_like(qr~background-color:\s*$sbgcolor~);
+
+    note 'checking background chooser disabled via config param';
+    $t->app->configdata->{fixbackgroundcolor} = 1;
+    $t->get_ok('/options/form')
+      ->status_is(200)
+      ->content_like(qr'active activeoptions">Optionen<')
+      ->content_unlike(qr'Einstellungen zur Hintergrundfarbe');
+    $t->get_ok('/')
+      ->status_is(200)
+      ->content_like(qr~background-color:\s*$sbgcolor~);
+    
+    $t->get_ok("/options/bgcolor/color/$mbgcolor");
+    error('Ändern der Hintergrundfarbe vom Forenadministrator deaktiviert');
+    $t->get_ok('/')
+      ->status_is(200)
+      ->content_like(qr~background-color:\s*$sbgcolor~);
+
+    $t->get_ok("/options/bgcolor/none");
+    info('Hintergrundfarbe zurückgesetzt');
+    $t->get_ok('/')
+      ->status_is(200)
+      ->content_like(qr~background-color:\s*$sbgcolor~);
+}
 

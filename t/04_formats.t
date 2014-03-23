@@ -16,11 +16,11 @@ srand;
 
     my $config = {};
     plugin 'Ffc::Plugin::Formats';
-    helper config           => sub { $config };
-    helper prepare          => sub {
+    helper configdata => sub { $config };
+    helper prepare    => sub {
         my $c = shift;
         $c->session->{user} = $c->param('user') // '';
-        $c->config->{urlshorten} = $c->param('urlshorten') // 30;
+        $c->configdata->{urlshorten} = $c->param('urlshorten') // 30;
     };
 
     any '/format_timestamp' => sub {

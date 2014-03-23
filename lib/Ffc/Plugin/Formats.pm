@@ -132,7 +132,7 @@ sub _make_link {
 }
 
 sub _stripped_url {
-    my $u = $_[0]->config->{urlshorten};
+    my $u = $_[0]->configdata->{urlshorten};
     if ( $u and $u < length $_[1] ) {
         my $d = int( ( length($_[1]) - $u ) / 2 );
         my $h = int( length($_[1]) / 2 );
