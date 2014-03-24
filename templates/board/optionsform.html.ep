@@ -11,7 +11,7 @@
     <p>(Das Forum kann über die gesamte Browserfensterbreite oder schmal und zentriert dargestellt werden)</p>
     <p>
         <%= link_to switch_theme => begin %>Anzeige des Forums
-            <%= session()->{style} ? 'in schmaler Blogform' : 'über die Fensterbreite' %><% end %>
+            <%= session()->{style} ? 'in schmaler zentrierter Blogform' : 'über die gesamte Browserfensterbreite' %><% end %>
     </p>
 </div> 
 % unless ( configdata()->{fixbackgroundcolor} ) {
