@@ -1,6 +1,6 @@
 % layout 'board';
 <div class="postbox options">
-    <h1>Einstellungen zur Schriftgröße und Anzeigebreite</h1>
+    <h1>Einstellungen zu Schriftgröße und Anzeigebreite</h1>
     <p>(Schriftgrößen sind abhängig von Browsereinstellungen)</p>
     <p>
 % for my $fs ( sort {$a <=> $b} keys %$fontsizes ) {
