@@ -2,8 +2,6 @@ package Ffc::Board;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 
-use Ffc::Board::Avatars;
-
 sub frontpage {
     my $c = shift;
     $c->set_error('Der Text, der erscheint, wenn etwas schief gelaufen ist oder so nicht gemacht werden darf.');

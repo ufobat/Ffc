@@ -38,20 +38,22 @@ sub _install_routes_auth {
 sub _install_routes_avatars {
     my $p = $_[0]->any('/avatar')->name('avatars_bridge');
     $p->get('/:username', [username => qr(\w{2,32})xmso])
-      ->to('board#avatar_show')
+      ->to('avatars#avatar_show')
       ->name('avatar_show');
     $p->post('/upload')
-      ->to('board#avatar_upload')
+      ->to('avatars#avatar_upload')
       ->name('avatar_upload');
 }
 
 sub _install_routes_options {
     my $o = $_[0]->any('/options')->name('options_bridge');
 
-    # Einfache Benutzeroptionen (Schalter)
+    # Optionsformular
     $o->get('/form')
       ->to('options#options_form')
       ->name('options_form');
+    
+    # Einfache Benutzeroptionen (Schalter)
     $o->get('/switchtheme')
       ->to('options#switch_theme')
       ->name('switch_theme');
@@ -68,15 +70,12 @@ sub _install_routes_options {
     $o->get('/toggle/cat/:cat', [cat => qr(\w{1,64})])
       ->to('options#toggle_cat')
       ->name('toggle_cat');
-    $o->get('/toggle/show_images')
-      ->to('options#toggle_show_images')
-      ->name('toggle_show_images');
 
     # Benutzeroptionen mit Fomularen
     $o->post("/$_")
       ->to("options#set_$_")
       ->name("set_$_")
-        for qw(email password avatar);
+        for qw(email password);
 
     # Benutzeradministration
     $o->post('/useradmin')
