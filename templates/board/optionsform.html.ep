@@ -13,7 +13,7 @@
         <%= link_to switch_theme => begin %>Anzeige des Forums
             <%= session()->{style} ? 'in schmaler zentrierter Blogform' : 'über die gesamte Browserfensterbreite' %><% end %>
     </p>
-    <p>(Diese Anzeigeeinstellungen gelten nur für diese Browsersitzung auf diesem Gerät)</p>
+    <p>(Diese Anzeigeeinstellungen gelten nur für diese Browsersitzung)</p>
 </div> 
 % unless ( configdata()->{fixbackgroundcolor} ) {
 <div class="postbox options">
