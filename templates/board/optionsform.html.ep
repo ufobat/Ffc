@@ -30,11 +30,11 @@
 % }
 <div class="postbox options">
     <h1>Benutzeravatar verwalten</h1>
+    <p>(Benutzeravatare sind kleine Bildchen, die neben den Beiträgen angezeigt werden, um optisch den Autoren des jeweiligen Beitrages hervorzuheben. Dieses Bildchen dürfen maximal 150Kb groß sein, der Dateiname darf höchstens 150 Zeichen enthalten und es muss vom Typ PNG, JPG, BMP oder GIF sein.)</p>
     <p><a href="<%= url_for avatar_show => username => session()->{user} %>"><img src="<%= url_for avatar_show => username => session()->{user} %>" alt="Avatarbild des Benutzers &quot;<%= session()->{user} %>&quot;" %></a></p>
 %= form_for avatar_upload => ( enctype => 'multipart/form-data' ) => begin 
     <%= file_field avatarfile => (accept => 'image/*') %>
     <button type="submit" class="linkalike">Avatar hochladen</button>
-    <p>Benutzeravatare sind kleine Bildchen, die neben den Beiträgen angezeigt werden, um optisch den Autoren des jeweiligen Beitrages hervorzuheben. Dieses Bildchen dürfen maximal 150Kb groß sein, der Dateiname darf höchstens 150 Zeichen enthalten und es muss vom Typ PNG, JPG, BMP oder GIF sein.</p>
 % end
 </div>
 <div class="postbox options">
