@@ -72,6 +72,7 @@ a:hover > img {
 }
 .active:hover, a.active:hover {
     background: dodgerblue;
+    color: white;
 }
 a:focus, .linkalike:focus {
     color: gainsboro;
