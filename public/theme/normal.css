@@ -50,10 +50,16 @@ a, .linkalike {
     font-size: 1em;
     font-family: sans-serif;
 }
+a > img {
+    border: 1px steelblue solid;
+}
 a:hover, .linkalike:hover {
     color: dodgerblue;
     text-decoration: none;
     cursor: pointer;
+}
+a:hover > img {
+    border-color: dodgerblue;
 }
 .active {
     background: steelblue;
