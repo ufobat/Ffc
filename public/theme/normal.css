@@ -26,6 +26,10 @@ body > * > h1 {
 .loginform, .menu, .pages, .headbox {
     background: whitesmoke;
 }
+img {
+    max-width: 13em;
+    max-height: 8em;
+}
 input, textarea, select {
     font-size: 1em;
     border: 1px silver solid;
