@@ -37,9 +37,12 @@ sub _install_routes_auth {
 
 sub _install_routes_avatars {
     my $p = $_[0]->any('/avatar')->name('avatars_bridge');
-    $p->get('/:username', [username => qr()xmso])
+    $p->get('/:username', [username => qr(\w{2,32})xmso])
       ->to('board#avatar_show')
       ->name('avatar_show');
+    $p->post('/upload')
+      ->to('board#avatar_upload')
+      ->name('avatar_upload');
 }
 
 sub _install_routes_options {
