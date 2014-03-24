@@ -21,6 +21,7 @@ sub _install_routes {
       ->name('sessiondata');
 
     # Optionen-Routen
+    _install_routes_avatars($l);
     _install_routes_options($l);
 }
 
@@ -34,6 +35,13 @@ sub _install_routes_auth {
              ->name('login_check');
 }
 
+sub _install_routes_avatars {
+    my $p = $_[0]->any('/avatar')->name('avatars_bridge');
+    $p->get('/:username', [username => qr()xmso])
+      ->to('board#avatar_show')
+      ->name('avatar_show');
+}
+
 sub _install_routes_options {
     my $o = $_[0]->any('/options')->name('options_bridge');
 
@@ -44,7 +52,7 @@ sub _install_routes_options {
     $o->get('/switchtheme')
       ->to('options#switch_theme')
       ->name('switch_theme');
-    $o->get('/fontsize/:fontsize', [fontsize => qr(-?\d{1,3})])
+    $o->get('/fontsize/:fontsize', [fontsize => qr(-?\d{1,3})xmso])
       ->to('options#font_size')
       ->name('font_size');
     my $b = $o->get('/bgcolor')->name('bgcolor_bridge');

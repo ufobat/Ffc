@@ -5,15 +5,18 @@ use lib "$FindBin::Bin/lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 308;
+use Test::More tests => 337;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
 
-sub admin_login { Testinit::test_login(  $t, $admin, $apass ) }
-sub user_login  { Testinit::test_login(  $t, $user,  $pass  ) }
-sub logout      { Testinit::test_logout( $t                 ) }
+sub admin_login { Testinit::test_login(  $t, $admin, $apass             ) }
+sub user_login  { Testinit::test_login(  $t, $user,  $pass              ) }
+sub logout      { Testinit::test_logout( $t                             ) }
 sub error_login { Testinit::test_error(  $t, 'Fehler bei der Anmeldung' ) }
+sub error       { Testinit::test_error(  $t, @_                         ) }
+sub info        { Testinit::test_info(   $t, @_                         ) }
+
 sub get_users   { 
     $dbh->selectall_arrayref('SELECT name, active, admin FROM users ORDER BY id')
 }
@@ -37,6 +40,7 @@ sub dump_user {
 note 'admin login';
 admin_login();
 $t->get_ok('/options/form')
+  ->status_is(200)
   ->content_like(qr'active activeoptions">Optionen<')
   ->content_like(qr'Benutzerverwaltung')
   ->content_like(qr'<form action="/options/useradmin" method="POST">');
@@ -44,41 +48,59 @@ $t->get_ok('/options/form')
 note 'nonadmins shall not see useradmin forms';
 $dbh->do('UPDATE users SET admin=0 WHERE UPPER(name)=UPPER(?)', undef, $admin);
 $t->get_ok('/options/form')
+  ->status_is(200)
   ->content_like(qr'active activeoptions">Optionen<')
   ->content_unlike(qr'Benutzerverwaltung')
   ->content_unlike(qr'<form action="/options/useradmin" method="POST">');
 
 $t->post_ok('/options/useradmin', form => {})
-  ->content_like(qr~Nur Administratoren dürfen das~);
+  ->status_is(200);
+error('Nur Administratoren dürfen das');
 is @{get_users()}, 1, 'user count ok';
 
 note 'admins shall see useradmin forms';
 $dbh->do('UPDATE users SET admin=1 WHERE UPPER(name)=UPPER(?)', undef, $admin);
 $t->get_ok('/options/form')
+  ->status_is(200)
   ->content_like(qr'active activeoptions">Optionen<')
   ->content_like(qr'Benutzerverwaltung')
   ->content_like(qr'<form action="/options/useradmin" method="POST">');
 
 note 'wrong use of useradmin interface';
 $t->post_ok('/options/useradmin', form => {})
-  ->content_like(qr~Benutzername nicht angegeben~);
+  ->status_is(200);
+error(q~Benutzername nicht angegeben~);
+is @{get_users()}, 1, 'user count ok';
+
+$t->post_ok('/options/useradmin', form => {username => 'a'})
+  ->status_is(200);
+error(q~Benutzername passt nicht \\(muss zwischen 2 und 32 Buchstaben haben\\)~);
+is @{get_users()}, 1, 'user count ok';
+
+$t->post_ok('/options/useradmin', form => {username => ('a' x 33)})
+  ->status_is(200);
+error(q~Benutzername passt nicht \\(muss zwischen 2 und 32 Buchstaben haben\\)~);
 is @{get_users()}, 1, 'user count ok';
   
 $t->post_ok('/options/useradmin', form => {username => $user})
-  ->content_like(qr~Neuen Benutzern muss ein Passwort gesetzt werden~);
+  ->status_is(200);
+error(q~Neuen Benutzern muss ein Passwort gesetzt werden~);
 is @{get_users()}, 1, 'user count ok';
 
 $t->post_ok('/options/useradmin', form => {username => $user, newpw1 => $pass})
-  ->content_like(qr~Neuen Benutzern muss ein Passwort gesetzt werden~);
+  ->status_is(200);
+error(q~Neuen Benutzern muss ein Passwort gesetzt werden~);
 is @{get_users()}, 1, 'user count ok';
 
 $t->post_ok('/options/useradmin', form => {username => $user, newpw1 => $pass, newpw2 => "$pass#"})
-  ->content_like(qr~Passworte stimmen nicht überein~);
+  ->status_is(200);
+error(q~Passworte stimmen nicht überein~);
 is @{get_users()}, 1, 'user count ok';
 
 note 'new inactive user';
 $t->post_ok('/options/useradmin', form => {username => $user, newpw1 => $pass, newpw2 => $pass})
-  ->content_like(qr~Benutzer \&quot;$user\&quot; angelegt~);
+  ->status_is(200);
+info(qq~Benutzer \&quot;$user\&quot; angelegt~);
 is @{get_users()}, 2, 'user count ok';
 
 logout();
@@ -90,7 +112,8 @@ dump_user();
 
 note 'new active adminuser';
 $t->post_ok('/options/useradmin', form => {username => $user, newpw1 => $pass, newpw2 => $pass, active => 1, admin => 1})
-  ->content_like(qr~Benutzer \&quot;$user\&quot; angelegt~);
+  ->status_is(200);
+info(qq~Benutzer \&quot;$user\&quot; angelegt~);
 is @{get_users()}, 2, 'user count ok';
 user_login();
 
@@ -104,7 +127,8 @@ dump_user();
 
 note 'new active normal user';
 $t->post_ok('/options/useradmin', form => {username => $user, newpw1 => $pass, newpw2 => $pass, active => 1})
-  ->content_like(qr~Benutzer \&quot;$user\&quot; angelegt~);
+  ->status_is(200);
+info(qq~Benutzer \&quot;$user\&quot; angelegt~);
 is @{get_users()}, 2, 'user count ok';
 user_login();
 
@@ -118,7 +142,8 @@ note 'alter user password via admin login without overwrite-check';
 admin_login();
 my $newpass = "$pass#";
 $t->post_ok('/options/useradmin', form => {username => $user, newpw1 => $newpass, newpw2 => $newpass, active => 1})
-  ->content_like(qr~Benutzer existiert bereits, das Überschreiben-Häkchen ist allerdings nicht gesetzt~);
+  ->status_is(200);
+error(q~Benutzer existiert bereits, das Überschreiben-Häkchen ist allerdings nicht gesetzt~);
 is @{get_users()}, 2, 'user count ok';
 logout();
 $t->post_ok('/login', form => { username => $user, password => $newpass })
@@ -131,7 +156,8 @@ admin_login();
 my $oldpass = $pass;
 $pass = $newpass;
 $t->post_ok('/options/useradmin', form => {username => $user, newpw1 => $pass, newpw2 => $pass, active => 1, overwriteok => 1})
-  ->content_like(qr~Benutzer \&quot;$user\&quot; geändert~);
+  ->status_is(200);
+info(qq~Benutzer \&quot;$user\&quot; geändert~);
 is @{get_users()}, 2, 'user count ok';
 logout();
 $t->post_ok('/login', form => { username => $user, password => $oldpass })
@@ -142,10 +168,12 @@ user_login();
 note 'disable user';
 admin_login();
 $t->post_ok('/options/useradmin', form => {username => $user, active => 0})
-  ->content_like(qr~Benutzer existiert bereits, das Überschreiben-Häkchen ist allerdings nicht gesetzt~);
+  ->status_is(200);
+error(q~Benutzer existiert bereits, das Überschreiben-Häkchen ist allerdings nicht gesetzt~);
 is get_user($user)->{active}, 1, 'user still active';
 $t->post_ok('/options/useradmin', form => {username => $user, active => 0, overwriteok => 1})
-  ->content_like(qr~Benutzer \&quot;$user\&quot; geändert~);
+  ->status_is(200);
+info(qq~Benutzer \&quot;$user\&quot; geändert~);
 is get_user($user)->{active}, 0, 'user now inactive';
 logout();
 $t->post_ok('/login', form => { username => $user, password => $pass })
@@ -155,17 +183,20 @@ error_login();
 note 'reenable user';
 admin_login();
 $t->post_ok('/options/useradmin', form => {username => $user, active => 1})
-  ->content_like(qr~Benutzer existiert bereits, das Überschreiben-Häkchen ist allerdings nicht gesetzt~);
+  ->status_is(200);
+error(q~Benutzer existiert bereits, das Überschreiben-Häkchen ist allerdings nicht gesetzt~);
 is get_user($user)->{active}, 0, 'user still inactive';
 $t->post_ok('/options/useradmin', form => {username => $user, active => 1, overwriteok => 1})
-  ->content_like(qr~Benutzer \&quot;$user\&quot; geändert~);
+  ->status_is(200);
+info(qq~Benutzer \&quot;$user\&quot; geändert~);
 is get_user($user)->{active}, 1, 'user is active again';
 user_login();
 
 note 'set admin flag for user';
 admin_login();
 $t->post_ok('/options/useradmin', form => {username => $user, admin => 1, active => 1})
-  ->content_like(qr~Benutzer existiert bereits, das Überschreiben-Häkchen ist allerdings nicht gesetzt~);
+  ->status_is(200);
+error(q~Benutzer existiert bereits, das Überschreiben-Häkchen ist allerdings nicht gesetzt~);
 is get_user($user)->{admin}, 0, 'user still no admin';
 user_login();
 $t->get_ok('/options/form')
@@ -175,7 +206,8 @@ $t->get_ok('/options/form')
   ->content_unlike(qr'<form action="/options/useradmin" method="POST">');
 admin_login();
 $t->post_ok('/options/useradmin', form => {username => $user, admin => 1, active => 1, overwriteok => 1})
-  ->content_like(qr~Benutzer \&quot;$user\&quot; geändert~);
+  ->status_is(200);
+info(qq~Benutzer \&quot;$user\&quot; geändert~);
 is get_user($user)->{admin}, 1, 'user is now admin';
 user_login();
 $t->get_ok('/options/form')
@@ -187,7 +219,8 @@ $t->get_ok('/options/form')
 note 'unset admin flag for user';
 admin_login();
 $t->post_ok('/options/useradmin', form => {username => $user, admin => 0, active => 1})
-  ->content_like(qr~Benutzer existiert bereits, das Überschreiben-Häkchen ist allerdings nicht gesetzt~);
+  ->status_is(200);
+error(q~Benutzer existiert bereits, das Überschreiben-Häkchen ist allerdings nicht gesetzt~);
 is get_user($user)->{admin}, 1, 'user still admin';
 user_login();
 $t->get_ok('/options/form')
@@ -197,7 +230,8 @@ $t->get_ok('/options/form')
   ->content_like(qr'<form action="/options/useradmin" method="POST">');
 admin_login();
 $t->post_ok('/options/useradmin', form => {username => $user, admin => 0, active => 1, overwriteok => 1})
-  ->content_like(qr~Benutzer \&quot;$user\&quot; geändert~);
+  ->status_is(200);
+info(qq~Benutzer \&quot;$user\&quot; geändert~);
 is get_user($user)->{admin}, 0, 'user no admin anymore';
 user_login();
 $t->get_ok('/options/form')
