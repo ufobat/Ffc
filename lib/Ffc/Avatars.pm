@@ -53,9 +53,9 @@ sub avatar_upload {
         $c->set_error('Datei ist zu groß, darf maximal 150Kb groß sein.');
         return $c->options_form;
     }
-    my $filename = $file->filename;
-    if ( !$filename or 150 < $filename ) {
-        $c->set_error('Dateiname ist zu lang, darf maximal 150 Zeichen lang sein.');
+    my $filename = $u . '_' . $file->filename;
+    if ( !$filename or 80 < $filename ) {
+        $c->set_error('Dateiname ist zu lang, darf maximal 80 Zeichen lang sein.');
         return $c->options_form;
     }
     if ( $filename !~ m/\.(?:png|jpe?g|bmp|gif)\z/ximso ) {
@@ -69,6 +69,13 @@ sub avatar_upload {
     unless ( $file->move_to(catfile(@{$c->datapath}, 'avatars', $filename)) ) {
         $c->set_error('Dateiupload für das Avatarbild fehlgeschlagen.');
         return $c->options_form;
+    }
+    my $old = $c->dbh->selectall_arrayref(
+        'SELECT avatar FROM users WHERE UPPER(name)=UPPER(?)'
+        , undef, $u);
+    if ( $old and 'ARRAY' eq ref($old) and $old->[0]->[0] ) {
+        $old = catfile(@{$c->datapath}, 'avatars', $old->[0]->[0] );
+        unlink $old if -e $old;
     }
     $c->dbh->do('UPDATE users SET avatar=? WHERE UPPER(name)=UPPER(?)'
         , undef, $filename, $u);
