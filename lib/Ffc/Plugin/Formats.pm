@@ -68,16 +68,100 @@ sub _post_format_text {
 sub _pre_format_text {
     my ( $c, $s ) = @_;
     return '' if !$s or $s =~ m/\A\s*\z/xmso;
-    $s =~ s/\A\s+//gxmso;
+    $s =~ s/\A\s+(?:\r?\n\r?)+//gxmso;
     $s =~ s/\s+\z//gxmso;
     _xml_escape($s);
-    $s =~ s{(\A|\n)=\s*([^\n]+)(\z|\n)}{_make_heading($1, $2, $3)}gxomes;
-    $s =~ s{(\A|\s)"(\S|\S.*?\S)"(\W|\z)}{_make_quote($1, $2, $3)}gxomes;
-    $s =~ s{(?<!\w)([\_\-\+\~\!\*])([\_\-\+\~\!\w\*]+)\g1(?!\w)}{_make_goody($1,$2)}gxmoes;
-    $s =~ s{((?:[\(\s]|\A)?)(https?://[^\)\s]+?)(\)|,?\s|\z)}{_make_link($1,$2,$3,$c)}gxmeis;
-    $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxes;
-    $s =~ s{\n[\n\s]*}{</p>\n<p>}xgmos;
-    return "<p>$s</p>";
+    my $o = '';
+    my ( $ul, $pre, $ol, $q ) = ( 0, 0, 0, 0 );
+    for my $s ( split /(?:\r?\n\r?)+/, $s ) {
+
+        # predefined text
+        if ( $s =~ m/\A\s+(.+)\z/xmso ) {
+            unless ( $pre ) {
+                $pre = 1;
+                $o .= '<pre>'
+            }
+            $o .= $1;
+        }
+        elsif ( $pre ) {
+            $o .= '</pre>';
+            $pre = 0;
+        }
+
+        # normal text
+        unless ( $pre ) {
+            next if $s =~ m/\A\s*\z/xmso;
+            
+            my $mqs = 0;
+            # multiline quote
+            if ( !$q and $s =~ s~\A([^"]*)"([^"\S][^"]*)\z~$1„<span class="quote">$2~gxmso ) {
+                $q = 1;
+                $mqs = 1;
+            }
+            elsif ( !$mqs and $q and $s =~ s~\A([^"]*[^"\S])"([^"]*)\z~$1</span>$2~gxmso ) {
+                $q = 0;
+            }
+
+            # normal inline quoting
+            $s =~ s{(\A|\s)"(\S|\S.*?\S)"(\W|\z)}{_make_quote($1, $2, $3)}gxomes;
+            
+            # normal text
+            $s =~ s{(\A|\n)=\s*([^\n]+)(\z|\n)}{_make_heading($1, $2, $3)}gxomes;
+            $s =~ s{(?<!\w)([\_\-\+\~\!\*])([\_\-\+\~\!\w\*]+)\g1(?!\w)}{_make_goody($1,$2)}gxmoes;
+            $s =~ s{((?:[\(\s]|\A)?)(https?://[^\)\s]+?)(\)|,?\s|\z)}{_make_link($1,$2,$3,$c)}gxmeios;
+            $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxeos;
+
+            # unordered lists
+            if ( $s =~ m/\A\s*-\s*(.+)\z/xmso ) {
+                unless ( $ul ) {
+                    $ul = 1;
+                    $o .= '<ul>';
+                }
+                $o .= "<li>$1</li>";
+            }
+            elsif ( $ul ) {
+                $o .= '</ul>';
+                $ul = 0;
+            }
+
+            # ordered lists
+            if ( $s =~ m/\A\s*-\s*(.+)\z/xmso ) {
+                unless ( $ul ) {
+                    $ul = 1;
+                    $o .= '<ul>';
+                }
+                $o .= "<li>$1</li>";
+            }
+            elsif ( $ul ) {
+                $o .= '</ul>';
+                $ul = 0;
+            }
+            
+            # normal text
+            unless ( $ul or $ol ) {
+                $o .= '<p>';
+            }
+            # multiline quoting beginnen
+            if ( $q and not $mqs ) {
+                $o .= qq~<span class="quote">~;
+            }
+            # normal text
+            unless ( $ul or $ol ) {
+                $o .= $s;
+            }
+            # multiline quoting abschliessen
+            if ( $q ) {
+                $o .= qq~</span>~;
+            }
+            # normal text
+            unless ( $ul or $ol ) {
+                $o .= '</p>';
+            }
+        }
+        $o .= "\n";
+    }
+    chomp $o;
+    return $o;
 }
 
 sub _xml_escape {
@@ -93,7 +177,6 @@ sub _make_heading {
 
 sub _make_quote {
     my ( $p, $q, $f ) = @_;
-    $q =~ s{\n+}{</span>\n<span class="quote">}gxmso;
     return qq($p„<span class="quote">$q</span>“$f);
 }
 
