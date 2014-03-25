@@ -94,11 +94,11 @@ sub _pre_format_text {
             
             my $mqs = 0;
             # multiline quote
-            if ( !$q and $s =~ s~\A([^"]*)"([^"\S][^"]*)\z~$1„<span class="quote">$2~gxmso ) {
+            if ( !$q and $s =~ s~\A([^"]*)"([^"\s][^"]*)\z~$1„<span class="quote">$2~gxmso ) {
                 $q = 1;
                 $mqs = 1;
             }
-            elsif ( !$mqs and $q and $s =~ s~\A([^"]*[^"\S])"([^"]*)\z~$1</span>$2~gxmso ) {
+            elsif ( !$mqs and $q and $s =~ s~\A([^"]*[^"\s])"([^"]*)\z~<span class="quote">$1</span>“$2~gxmso ) {
                 $q = 0;
             }
 
