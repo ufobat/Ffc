@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 94;
+use Test::More tests => 98;
 
 srand;
 
@@ -183,21 +183,44 @@ llo
     $t->post_ok('/pre_format', form => { text => $teststring, urlshorten => 30 })->content_is($controlstring);
 }
 {
+    note 'test lists';
     my $teststring = q~
-=Abc
-Hall
-= DEf
-llo
-=diad
-~;
-    my $controlstring = qq~<p><h2>Abc</h2></p>
-<p>Hall</p>
-<p><h2>DEf</h2></p>
-<p>llo</p>
-<p><h2>diad</h2></p>~;
+- Hallo
+- Welt
+Das ist eine Liste
+-Haha
+Das auch
+# weil ich es kann
+#du nicht?
+# hui~;
+    my $controlstring = qq~<ul>
+<li>Hallo</li>
+<li>Welt</li>
+</ul>
+<p>Das ist eine Liste</p>
+<ul>
+<li>Haha</li>
+</ul>
+<p>Das auch</p>
+<ol>
+<li>weil ich es kann</li>
+<li>du nicht?</li>
+<li>hui</li>
+</ol>~;
+    $t->post_ok('/pre_format', form => { text => $teststring, urlshorten => 30 })->content_is($controlstring);
+
+    $teststring = q~- Hallo~;
+    $controlstring = qq~<ul>
+<li>Hallo</li>
+</ul>~;
+    $t->post_ok('/pre_format', form => { text => $teststring, urlshorten => 30 })->content_is($controlstring);
+
+    $teststring = q~# Hallo~;
+    $controlstring = qq~<ol>
+<li>Hallo</li>
+</ol>~;
     $t->post_ok('/pre_format', form => { text => $teststring, urlshorten => 30 })->content_is($controlstring);
 }
-
 
 {
     note 'test usernames';

@@ -72,94 +72,80 @@ sub _pre_format_text {
     $s =~ s/\s+\z//gxmso;
     _xml_escape($s);
     my $o = '';
-    my ( $ul, $pre, $ol, $q ) = ( 0, 0, 0, 0 );
+    my ( $ul, $ol, $q ) = ( 0, 0, 0 );
     for my $s ( split /(?:\r?\n\r?)+/, $s ) {
-
-        # predefined text
-        if ( $s =~ m/\A\s+(.+)\z/xmso ) {
-            unless ( $pre ) {
-                $pre = 1;
-                $o .= '<pre>'
-            }
-            $o .= $1;
-        }
-        elsif ( $pre ) {
-            $o .= '</pre>';
-            $pre = 0;
-        }
-
         # normal text
-        unless ( $pre ) {
-            next if $s =~ m/\A\s*\z/xmso;
-            
-            my $mqs = 0;
-            # multiline quote
-            if ( !$q and $s =~ s~\A([^"]*)"([^"\s][^"]*)\z~$1„<span class="quote">$2~gxmso ) {
-                $q = 1;
-                $mqs = 1;
-            }
-            elsif ( !$mqs and $q and $s =~ s~(\A[^"]*[^"\s])"([^"]*)~<span class="quote">$1</span>“$2~gxmso ) {
-                $q = 0;
-            }
+        next if $s =~ m/\A\s*\z/xmso;
+        
+        my $mqs = 0;
+        # multiline quote
+        if ( !$q and $s =~ s~\A([^"]*)"([^"\s][^"]*)\z~$1„<span class="quote">$2~gxmso ) {
+            $q = 1;
+            $mqs = 1;
+        }
+        elsif ( !$mqs and $q and $s =~ s~(\A[^"]*[^"\s])"([^"]*)~<span class="quote">$1</span>“$2~gxmso ) {
+            $q = 0;
+        }
 
-            # normal inline quoting
-            $s =~ s{(\A|\s)"(\S|\S.*?\S)"(\W|\z)}{$1„<span class="quote">$2</span>“$3}gxoms;
-            
-            # normal text
-            $s =~ s{\A=\s*([^\n]+)\z}{<h2>$1</h2>}gxoms;
-            $s =~ s{(?<!\w)([\_\-\+\~\!\*])([\_\-\+\~\!\w\*]+)\g1(?!\w)}{_make_goody($1,$2)}gxmoes;
-            $s =~ s{((?:[\(\s]|\A)?)(https?://[^\)\s]+?)(\)|,?\s|\z)}{_make_link($1,$2,$3,$c)}gxmeios;
-            $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxeos;
+        # normal inline quoting
+        $s =~ s{(\A|\s)"(\S|\S.*?\S)"(\W|\z)}{$1„<span class="quote">$2</span>“$3}gxoms;
+        
+        # normal text
+        $s =~ s{\A=\s*([^\n]+)\z}{<h2>$1</h2>}gxoms;
+        $s =~ s{(?<!\w)([\_\-\+\~\!\*])([\_\-\+\~\!\w\*]+)\g1(?!\w)}{_make_goody($1,$2)}gxmoes;
+        $s =~ s{((?:[\(\s]|\A)?)(https?://[^\)\s]+?)(\)|,?\s|\z)}{_make_link($1,$2,$3,$c)}gxmeios;
+        $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxeos;
 
-            # unordered lists
-            if ( $s =~ m/\A\s*-\s*(.+)\z/xmso ) {
-                unless ( $ul ) {
-                    $ul = 1;
-                    $o .= '<ul>';
-                }
-                $o .= "<li>$1</li>";
+        # unordered lists
+        if ( $s =~ m/\A\s*-\s*(.+)\z/xmso ) {
+            unless ( $ul ) {
+                $ul = 1;
+                $o .= "<ul>\n";
             }
-            elsif ( $ul ) {
-                $o .= '</ul>';
-                $ul = 0;
-            }
+            $o .= "<li>$1</li>";
+        }
+        elsif ( $ul ) {
+            $o .= "</ul>\n";
+            $ul = 0;
+        }
 
-            # ordered lists
-            if ( $s =~ m/\A\s*-\s*(.+)\z/xmso ) {
-                unless ( $ul ) {
-                    $ul = 1;
-                    $o .= '<ul>';
-                }
-                $o .= "<li>$1</li>";
+        # ordered lists
+        if ( $s =~ m/\A\s*\#\s*(.+)\z/xmso ) {
+            unless ( $ol ) {
+                $ol = 1;
+                $o .= "<ol>\n";
             }
-            elsif ( $ul ) {
-                $o .= '</ul>';
-                $ul = 0;
-            }
-            
-            # normal text
-            unless ( $ul or $ol ) {
-                $o .= '<p>';
-            }
-            # multiline quoting beginnen
-            if ( $q and not $mqs ) {
-                $o .= qq~<span class="quote">~;
-            }
-            # normal text
-            unless ( $ul or $ol ) {
-                $o .= $s;
-            }
-            # multiline quoting abschliessen
-            if ( $q ) {
-                $o .= qq~</span>~;
-            }
-            # normal text
-            unless ( $ul or $ol ) {
-                $o .= '</p>';
-            }
+            $o .= "<li>$1</li>";
+        }
+        elsif ( $ol ) {
+            $o .= "</ol>\n";
+            $ol = 0;
+        }
+        
+        # normal text
+        unless ( $ul or $ol ) {
+            $o .= '<p>';
+        }
+        # multiline quoting beginnen
+        if ( $q and not $mqs ) {
+            $o .= qq~<span class="quote">~;
+        }
+        # normal text
+        unless ( $ul or $ol ) {
+            $o .= $s;
+        }
+        # multiline quoting abschliessen
+        if ( $q ) {
+            $o .= qq~</span>~;
+        }
+        # normal text
+        unless ( $ul or $ol ) {
+            $o .= '</p>';
         }
         $o .= "\n";
     }
+    $o .= '</ul>' if $ul;
+    $o .= '</ol>' if $ol;
     chomp $o;
     return $o;
 }
