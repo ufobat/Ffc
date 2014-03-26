@@ -98,15 +98,15 @@ sub _pre_format_text {
                 $q = 1;
                 $mqs = 1;
             }
-            elsif ( !$mqs and $q and $s =~ s~\A([^"]*[^"\s])"([^"]*)\z~<span class="quote">$1</span>“$2~gxmso ) {
+            elsif ( !$mqs and $q and $s =~ s~(\A[^"]*[^"\s])"([^"]*)~<span class="quote">$1</span>“$2~gxmso ) {
                 $q = 0;
             }
 
             # normal inline quoting
-            $s =~ s{(\A|\s)"(\S|\S.*?\S)"(\W|\z)}{_make_quote($1, $2, $3)}gxomes;
+            $s =~ s{(\A|\s)"(\S|\S.*?\S)"(\W|\z)}{$1„<span class="quote">$2</span>“$3}gxoms;
             
             # normal text
-            $s =~ s{(\A|\n)=\s*([^\n]+)(\z|\n)}{_make_heading($1, $2, $3)}gxomes;
+            $s =~ s{\A=\s*([^\n]+)\z}{<h2>$1</h2>}gxoms;
             $s =~ s{(?<!\w)([\_\-\+\~\!\*])([\_\-\+\~\!\w\*]+)\g1(?!\w)}{_make_goody($1,$2)}gxmoes;
             $s =~ s{((?:[\(\s]|\A)?)(https?://[^\)\s]+?)(\)|,?\s|\z)}{_make_link($1,$2,$3,$c)}gxmeios;
             $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxeos;
@@ -168,16 +168,6 @@ sub _xml_escape {
     $_[0] =~ s/\&/\&amp;/gxmo;
     $_[0] =~ s/\<(?=[^3])/\&lt;/gxom;
     $_[0] =~ s/\>(?=[^\:\=])/\&gt;/goxm;
-}
-
-sub _make_heading {
-    my ( $s, $t, $e ) = @_;
-    return "$s<h2>$t</h2>$e";
-}
-
-sub _make_quote {
-    my ( $p, $q, $f ) = @_;
-    return qq($p„<span class="quote">$q</span>“$f);
 }
 
 sub _make_username_mark {
