@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 92;
+use Test::More tests => 94;
 
 srand;
 
@@ -131,6 +131,7 @@ my $t = Test::Mojo->new;
 }
 
 {
+    note 'test multiline quotes';
     my $src = 'Und "Da kommt
 ein mehrzeiliges
 
@@ -144,6 +145,7 @@ Zitat"! ... Haha!';
 }
 
 {
+    note 'test quotes and single "';
     my $teststring = q~
 "Hallo Welt" blabla.
 Mein 11" "Notebook" ist toll! oder nicht?
@@ -165,6 +167,22 @@ https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&x=ypsilon
     $t->post_ok('/pre_format', form => { text => $teststring, urlshorten => 30 })->content_is($controlstring);
 }
 {
+    note 'test headings';
+    my $teststring = q~
+=Abc
+Hall
+= DEf
+llo
+=diad
+~;
+    my $controlstring = qq~<p><h2>Abc</h2></p>
+<p>Hall</p>
+<p><h2>DEf</h2></p>
+<p>llo</p>
+<p><h2>diad</h2></p>~;
+    $t->post_ok('/pre_format', form => { text => $teststring, urlshorten => 30 })->content_is($controlstring);
+}
+{
     my $teststring = q~
 =Abc
 Hall
@@ -180,7 +198,9 @@ llo
     $t->post_ok('/pre_format', form => { text => $teststring, urlshorten => 30 })->content_is($controlstring);
 }
 
+
 {
+    note 'test usernames';
     my @chars = ('a'..'z', 0..9, '.');
     my $zs = sub { join '', map({;$chars[int rand scalar @chars]} 0 .. 4 + int rand 8) };
     my $test = $zs->();
@@ -195,7 +215,9 @@ $testuser
 
 Hallo
 
-$testuser~;
+$testuser
+
+<a href="http://www.$testuser.de">http://www.$testuser.de</a>~;
     my $controlstring = qq~
 <span class="username">$controluser</span>
 Und "Hier, in dieser :) ... achso" und da" oder, so.
@@ -205,7 +227,9 @@ Achso <span class="username"><span class="alert">@</span>$controluser</span>: <s
 
 Hallo
 
-<span class="username">$controluser</span>~;
+<span class="username">$controluser</span>
+
+<a href="http://www.$testuser.de">http://www.$testuser.de</a>~;
     $t->post_ok('/post_format', form => { text => $teststring, user => $testuser, urlshorten => 999999 })
       ->content_is($controlstring);
 }
