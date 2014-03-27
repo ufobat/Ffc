@@ -32,24 +32,24 @@ our %FontSizeMap = (
      4, 2,
 );
 our @Colors = qw(
-    Black Navy DarkBlue MediumBlue MidnightBlue Indigo Blue Maroon
-    DarkRed Purple DarkMagenta DarkViolet SaddleBrown DarkSlateBlue DarkGreen DarkSlateGray
-    Brown FireBrick Sienna BlueViolet DarkOliveGreen Green Crimson MediumVioletRed
-    Red DarkOrchid Teal DimGray Chocolate Fuchsia Magenta SlateBlue
-    Olive IndianRed DarkCyan OrangeRed RoyalBlue ForestGreen MediumOrchid DeepPink
-    DarkGoldenrod SeaGreen OliveDrab MediumSlateBlue Tomato PaleVioletRed Gray SlateGray
-    Peru DodgerBlue DarkOrange MediumPurple SteelBlue Coral LightSlateGray Orchid
-    Salmon LightCoral HotPink RosyBrown Orange Goldenrod CadetBlue LightSeaGreen
-    DarkSalmon DeepSkyBlue Violet CornflowerBlue MediumSeaGreen SandyBrown DarkTurquoise LightSalmon
-    LimeGreen DarkGray DarkKhaki Plum Tan DarkSeaGreen YellowGreen BurlyWood
-    Gold MediumAquamarine LightPink Silver Lime MediumTurquoise MediumSpringGreen Thistle
-    SpringGreen LightSteelBlue Pink Turquoise Aqua Cyan LawnGreen SkyBlue
-    Chartreuse LightSkyBlue LightGray LightBlue LightGreen GreenYellow PeachPuff Yellow
-    Khaki Wheat NavajoWhite Gainsboro PowderBlue PaleGoldenrod Moccasin Bisque
-    PaleGreen MistyRose PaleTurquoise BlanchedAlmond Lavender AntiqueWhite Aquamarine PapayaWhip
-    Linen Beige LavenderBlush OldLace LemonChiffon LightGoldenrodYellow Cornsilk Seashell
-    WhiteSmoke AliceBlue FloralWhite GhostWhite LightYellow Snow Honeydew LightCyan
-    Ivory MintCream Azure White
+    White Azure MintCream Ivory LightCyan Honeydew Snow LightYellow
+    GhostWhite FloralWhite AliceBlue WhiteSmoke Seashell Cornsilk LightGoldenrodYellow LemonChiffon
+    OldLace LavenderBlush Beige Linen PapayaWhip Aquamarine AntiqueWhite Lavender
+    BlanchedAlmond PaleTurquoise MistyRose PaleGreen Bisque Moccasin PaleGoldenrod PowderBlue
+    Gainsboro NavajoWhite Wheat Khaki Yellow PeachPuff GreenYellow LightGreen
+    LightBlue LightGray LightSkyBlue Chartreuse SkyBlue LawnGreen Cyan Aqua
+    Turquoise Pink LightSteelBlue SpringGreen Thistle MediumSpringGreen MediumTurquoise Lime
+    Silver LightPink MediumAquamarine Gold BurlyWood YellowGreen DarkSeaGreen Tan
+    Plum DarkKhaki DarkGray LimeGreen LightSalmon DarkTurquoise SandyBrown MediumSeaGreen
+    CornflowerBlue Violet DeepSkyBlue DarkSalmon LightSeaGreen CadetBlue Goldenrod Orange
+    RosyBrown HotPink LightCoral Salmon Orchid LightSlateGray Coral SteelBlue
+    MediumPurple DarkOrange DodgerBlue Peru SlateGray Gray PaleVioletRed Tomato
+    MediumSlateBlue OliveDrab SeaGreen DarkGoldenrod DeepPink MediumOrchid ForestGreen RoyalBlue
+    OrangeRed DarkCyan IndianRed Olive SlateBlue Magenta Fuchsia Chocolate
+    DimGray Teal DarkOrchid Red MediumVioletRed Crimson Green DarkOliveGreen
+    BlueViolet Sienna FireBrick Brown DarkSlateGray DarkGreen DarkSlateBlue SaddleBrown
+    DarkViolet DarkMagenta Purple DarkRed Maroon Blue Indigo MidnightBlue
+    MediumBlue DarkBlue Navy Black
 );
 
 sub register {
