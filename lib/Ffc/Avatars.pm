@@ -49,17 +49,35 @@ sub avatar_upload {
         $c->set_error('Keine Datei als Avatarbild angegeben.');
         return $c->options_form;
     }
+    if ( $file->size < 1000 ) {
+        $c->set_error('Datei ist zu klein, sollte mindestens 1Kb groß sein.');
+        return $c->options_form;
+    }
     if ( $file->size > 150000 ) {
         $c->set_error('Datei ist zu groß, darf maximal 150Kb groß sein.');
         return $c->options_form;
     }
-    my $filename = $u . '_' . $file->filename;
-    if ( !$filename or 80 < $filename ) {
+
+    my $filename = $file->filename ne 'avatarfile' ? $u . '_' . $file->filename : '';
+
+    unless ( $filename ) {
+        $c->set_error('Dateiname fehlt.');
+        return $c->options_form;
+    }
+    if ( (length($u) + 8) > length $filename ) {
+        $c->set_error('Dateiname ist zu kurz, muss mindestens 6 Zeichen inklusive Dateiendung enthalten.');
+        return $c->options_form;
+    }
+    if ( 80 < length $filename ) {
         $c->set_error('Dateiname ist zu lang, darf maximal 80 Zeichen lang sein.');
         return $c->options_form;
     }
+    if ( $file->filename =~ m/\A\./xms ) {
+        $c->set_error('Dateiname darf nicht mit einem "." beginnen.');
+        return $c->options_form;
+    }
     if ( $filename !~ m/\.(?:png|jpe?g|bmp|gif)\z/ximso ) {
-        $c->set_error('Datei ist kein verwertbares Bild, muss PNG, JPG, BMP oder GIF sein.');
+        $c->set_error('Datei ist keine Bilddatei, muss PNG, JPG, BMP oder GIF sein.');
         return $c->options_form;
     }
     if ( $filename =~ m/(?:\.\.|\/)/xmso ) {
