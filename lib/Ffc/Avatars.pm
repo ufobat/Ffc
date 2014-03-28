@@ -26,7 +26,7 @@ sub avatar_show {
 
     $file = Mojo::Asset::File->new(path => $file);
     my $headers = Mojo::Headers->new();
-    $headers->add( 'Content-Type', 'image/'.$filetype.';name=' . $filename );
+    $headers->add( 'Content-Type', 'image/'.$filetype );
     $headers->add( 'Content-Disposition', 'inline;filename=' . $filename );
     $headers->add( 'Content-Length' => $file->size );
     $c->res->content->headers($headers);
@@ -97,7 +97,7 @@ sub avatar_upload {
     }
     $c->dbh->do('UPDATE users SET avatar=? WHERE UPPER(name)=UPPER(?)'
         , undef, $filename, $u);
-    $c->set_info('Avatarbild aktualisiert');
+    $c->set_info('Avatarbild aktualisiert.');
     $c->options_form;
 }
 
