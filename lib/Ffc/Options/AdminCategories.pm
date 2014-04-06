@@ -15,7 +15,7 @@ sub categoryadmin {
         return $c->options_form();
     }
     if ( $catid and $catid !~ m/\A$Ffc::Digqr\z/xmso ) {
-        $c->set_eror('Kategorieid ist ungültig');
+        $c->set_error('Kategorieid ist ungültig');
         return $c->options_form();
     }
     if ( $catid and not $overok ) {
@@ -23,7 +23,7 @@ sub categoryadmin {
         return $c->options_form();
     }
     unless ( $catname and $catname =~ m/\A$Ffc::Catqr\z/xmso ) {
-        $c->set_eror('Kategoriename nicht angegeben');
+        $c->set_error('Kategoriename nicht angegeben');
         return $c->options_form();
     }
     unless ( $catid ) {
