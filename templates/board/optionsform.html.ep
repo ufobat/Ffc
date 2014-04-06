@@ -73,7 +73,7 @@
     </p>
 % end
 % }
-    <h2>Neuen Benutzer anlegen</h2>
+    <h2>Neuen Benutzer anlegen:</h2>
 %= form_for adminuseradd => begin
     <input type="hidden" name="overwriteok" value="0" />
     <p>
