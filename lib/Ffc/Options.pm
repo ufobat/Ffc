@@ -20,7 +20,9 @@ sub options_form {
         $c->stash(userlist => 
             $c->dbh->selectall_arrayref(
                 'SELECT u.id, u.name, u.active, u.admin FROM users u ORDER BY UPPER(u.name) ASC'));
-        $c->stash(categories => []);
+        $c->stash(categories =>
+            $c->dbh->selectall_arrayref(
+                'SELECT c.id, c.name, c.hidden FROM categories c ORDER BY c.hidden ASC, UPPER(c.name) ASC'));
     }
     else {
         $c->stash(userlist   => []);

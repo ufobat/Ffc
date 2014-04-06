@@ -20,7 +20,7 @@ sub useradmin {
         $c->set_error('Benutzername nicht angegeben');
         return $c->options_form();
     }
-    if ( $username !~ m/\A\w{2,32}\z/xmso) {
+    if ( $username !~ m/\A$Ffc::Usrqr\z/xmso) {
         $c->set_error('Benutzername passt nicht (muss zwischen 2 und 32 Buchstaben haben)');
         return $c->options_form();
     }

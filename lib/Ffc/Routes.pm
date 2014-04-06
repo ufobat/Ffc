@@ -94,10 +94,17 @@ sub _install_routes_options {
     $o->post('/adminuseradd')
       ->to('options#useradmin')
       ->name('adminuseradd');
-    # Benutzeradministration
     $o->post('/adminusermod/:username', [username => $Ffc::Usrqr])
       ->to('options#useradmin')
       ->name('adminusermod');
+
+    # Kategorienadministration
+    $o->post('/admincatadd')
+      ->to('options#categoryadmin')
+      ->name('admincatadd');
+    $o->post('/admincatmod/:catid', [catid => $Ffc::Digqr])
+      ->to('options#categoryadmin')
+      ->name('admincatmod');
 }
 
 sub _install_routes_avatars {

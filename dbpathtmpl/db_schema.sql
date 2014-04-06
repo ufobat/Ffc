@@ -26,6 +26,7 @@ CREATE TABLE "posts" (
 CREATE TABLE "categories" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
   "name" varchar(16) NOT NULL,
+  "hidden" tinyint(1) NOT NULL DEFAULT '0',
   UNIQUE ("name")
 );
 
