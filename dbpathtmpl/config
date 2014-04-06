@@ -1,7 +1,7 @@
 cookiename = Ffc_Forum
 cookiesecret =
 cryptsalt =
-postlimit = 15
+postlimit = 7
 title = Ffc Forum
 sessiontimeout = 432000
 commoncattitle = Allgemein
