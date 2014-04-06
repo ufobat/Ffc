@@ -19,9 +19,16 @@ body > * {
 body > * > * {
     margin: .75em 0;
 }
+body > * > h1, body > * > h2 {
+    font-weight: bolder;
+}
 body > * > h1 {
     border-bottom: 1px gainsboro solid;
     color: gray;
+}
+body > * > h2 {
+    color: black;
+    font-size: 1em;
 }
 .loginform, .menu, .pages, .headbox {
     background: whitesmoke;

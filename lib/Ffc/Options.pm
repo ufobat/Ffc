@@ -19,7 +19,7 @@ sub options_form {
     if ( $admin ) {
         $c->stash(userlist => 
             $c->dbh->selectall_arrayref(
-                'SELECT u.id, u.name, u.active, u.admin FROM users u ORDER BY u.active DESC, u.name ASC'));
+                'SELECT u.id, u.name, u.active, u.admin FROM users u ORDER BY UPPER(u.name) ASC'));
         $c->stash(categories => []);
     }
     else {

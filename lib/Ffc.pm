@@ -107,9 +107,13 @@ sub _install_routes_options {
         for qw(email password);
 
     # Benutzeradministration
-    $o->post('/useradmin')
+    $o->post('/adminuseradd')
       ->to('options#useradmin')
-      ->name('useradmin');
+      ->name('adminuseradd');
+    # Benutzeradministration
+    $o->post('/adminusermod/:username', [username => $Usrqr])
+      ->to('options#useradmin')
+      ->name('adminusermod');
 }
 
 sub _install_routes_avatars {

@@ -55,43 +55,43 @@
 % if ( session()->{admin} ) {
 <div class="postbox options useradmin_form">
     <h1>Benutzerverwaltung</h1>
-%= form_for useradmin => begin 
-    <table>
-        <tr>
-            <td rowspan="8"><div class="userlist">
 % for my $u ( @$userlist ) {
-                <p<%== $u->[2] ? '' : ' class="inactive"' %>><%== $u->[3] ? '<span class="adminmark">@</span> ' : '' %><%= $u->[1] %></p>
+    <h2>Benutzer &quot;<%= $u->[1] %>&quot; ändern</h2>
+%= form_for adminusermod => { username => $u->[1] } => begin
+    <input type="hidden" name="overwriteok" value="1" />
+    <p>
+      Passwort:
+      <input type="password" name="newpw1" value="" />
+      <input type="password" name="newpw2" value="" />
+    </p>
+    <p>
+      <input type="checkbox" name="active"<%== $u->[2] ? ' checked="checked"' : '' %> />
+      Aktiv,
+      <input type="checkbox" name="admin"<%== $u->[3] ? ' checked="checked"' : '' %> />
+      Admin,
+      <button type="submit" class="linkalike">Speichern</button>
+    </p>
+% end
 % }
-            <div></td>
-        </tr>
-        <tr>
-            <th>Benutzername</th>
-            <td><input type="text" name="username" value="" /></td>
-        </tr>
-        <tr>
-            <th>Passwort</th>
-            <td><input type="password" name="newpw1" value="" /></td>
-        </tr>
-        <tr>
-            <th>Wiederholen</th>
-            <td><input type="password" name="newpw2" value="" /></td>
-        </tr>
-        <tr>
-            <th>Überschreiben Ok</th>
-            <td><input type="checkbox" name="overwriteok" /></td>
-        </tr>
-        <tr>
-            <th>Aktiv</th>
-            <td><input type="checkbox" name="active" checked="checked" /></td>
-        </tr>
-        <tr>
-            <th>Admin</th>
-            <td><input type="checkbox" name="admin" /></td>
-        </tr>
-        <tr>
-            <th>&nbsp;</th><td><button type="submit" class="linkalike">Speichern</button></td>
-        </tr>
-    </table>
+    <h2>Neuen Benutzer anlegen</h2>
+%= form_for adminuseradd => begin
+    <input type="hidden" name="overwriteok" value="0" />
+    <p>
+      Benutzername:
+      <input type="text" name="username" value="" />
+    </p>
+    <p>
+      Passwort:
+      <input type="password" name="newpw1" value="" />
+      <input type="password" name="newpw2" value="" />
+    </p>
+    <p>
+      <input type="checkbox" name="active" />
+      Aktiv,
+      <input type="checkbox" name="admin" />
+      Admin,
+      <button type="submit" class="linkalike">Speichern</button>
+    </p>
 % end
 </div>
 %}
