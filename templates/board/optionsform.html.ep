@@ -53,14 +53,44 @@
 % end
 </div>
 % if ( session()->{admin} ) {
+<div class="postbox options useradmin">
+    <h1>Benutzerverwaltung</h1>
+<div class="suboption useradmin_form">
+    <h2>Neuen Benutzer anlegen:</h2>
+%= form_for adminuseradd => begin
+    <input type="hidden" name="overwriteok" value="0" />
+    <p>
+      Benutzername:
+      <input type="text" name="username" value="" />
+    </p>
+    <p>
+      Passwort:
+      <input type="password" name="newpw1" value="" />
+    </p>
+    <p>
+      Passwort wiederholen:
+      <input type="password" name="newpw2" value="" />
+    </p>
+    <p>
+      <input type="checkbox" name="active" checked="checked" />
+      ist aktiv,
+      <input type="checkbox" name="admin" />
+      ist ein Administrator,
+      <button type="submit" class="linkalike">Speichern</button>
+    </p>
+% end
+</div>
 % for my $u ( @$userlist ) {
-<div class="postbox options useradmin_form">
-    <h1>Benutzer &quot;<%= $u->[1] %>&quot; ändern:</h1>
+<div class="suboption useradmin_form">
+    <h2>Benutzer &quot;<%= $u->[1] %>&quot; ändern:</h2>
 %= form_for adminusermod => { username => $u->[1] } => begin
     <input type="hidden" name="overwriteok" value="1" />
     <p>
       Passwort:
       <input type="password" name="newpw1" value="" />
+    </p>
+    <p>
+      Passwort wiederholen:
       <input type="password" name="newpw2" value="" />
     </p>
     <p>
@@ -73,31 +103,27 @@
 % end
 </div>
 % }
-<div class="postbox options useradmin_form">
-    <h1>Neuen Benutzer anlegen:</h1>
-%= form_for adminuseradd => begin
+</div>
+<div class="postbox options categoryadmin">
+    <h1>Kategorieverwaltung</h1>
+<div class="suboption categoryadmin_form">
+    <h2>Neue Kategorie anlegen:</h2>
+%= form_for admincatadd => begin
     <input type="hidden" name="overwriteok" value="0" />
     <p>
-      Benutzername:
-      <input type="text" name="username" value="" />
+      Kategoriename:
+      <input type="text" name="catname" value="" />
     </p>
     <p>
-      Passwort:
-      <input type="password" name="newpw1" value="" />
-      <input type="password" name="newpw2" value="" />
-    </p>
-    <p>
-      <input type="checkbox" name="active" checked="checked" />
-      ist aktiv,
-      <input type="checkbox" name="admin" />
-      ist ein Administrator,
+      <input type="checkbox" name="visible" checked="checked" />
+      ist sichtbar,
       <button type="submit" class="linkalike">Speichern</button>
     </p>
 % end
 </div>
 % for my $c ( @$categories ) {
-<div class="postbox options categoryadmin_form">
-    <h1>Kategorie &quot;<%= $c->[1] %>&quot; ändern:</h1>
+<div class="suboption categoryadmin_form">
+    <h2>Kategorie &quot;<%= $c->[1] %>&quot; ändern:</h2>
 %= form_for admincatmod => { catid => $c->[0] } => begin
     <input type="hidden" name="overwriteok" value="1" />
     <p>
@@ -112,20 +138,6 @@
 % end
 </div>
 % }
-<div class="postbox options categoryadmin_form">
-    <h1>Neue Kategorie anlegen:</h1>
-%= form_for admincatadd => begin
-    <input type="hidden" name="overwriteok" value="0" />
-    <p>
-      Kategoriename:
-      <input type="text" name="catname" value="" />
-    </p>
-    <p>
-      <input type="checkbox" name="visible" checked="checked" />
-      ist sichtbar,
-      <button type="submit" class="linkalike">Speichern</button>
-    </p>
-% end
 </div>
 %}
 

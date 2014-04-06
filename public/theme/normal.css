@@ -19,16 +19,20 @@ body > * {
 body > * > * {
     margin: .75em 0;
 }
-body > * > h1, body > * > h2 {
+body > * > h1, body > * h2 {
     font-weight: bolder;
+}
+body > * > h1, .suboption h2, .comment h2 {
+    color: gray;
 }
 body > * > h1 {
     border-bottom: 1px gainsboro solid;
-    color: gray;
+}
+body > * > h2, .suboption h2 {
+    font-size: 1em;
 }
 body > * > h2 {
     color: black;
-    font-size: 1em;
     text-decoration: underline;
 }
 .loginform, .menu, .pages, .headbox {
@@ -126,7 +130,7 @@ a:focus, .linkalike:focus {
     padding: .1em 0;
     border-top-width: 0;
 }
-h1, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
+h1, .comment h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
     font-size: .75em;
 }
 .menu input[type="text"] {
@@ -155,17 +159,9 @@ a.coloroption {
 a.coloroption:hover {
     border-color: dodgerblue;
 }
-.userlist {
-    width: 12em;
-    height: 15em;
-    overflow: scroll;
-    border: 1px silver solid;
-    margin: 0;
-    margin-right: 2em;
-    padding: 0;
-}
-.useradmin_form th {
-    text-align: left;
-    font-weight: normal;
+.suboption, .comment {
+    background: whitesmoke;
+    margin-left: .75em;
+    border: 1px gainsboro solid;
 }
 
