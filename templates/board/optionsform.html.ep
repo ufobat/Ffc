@@ -1,24 +1,22 @@
 % layout 'board';
 <div class="postbox options">
-    <a name="styleoptions"></a>
     <h1>Einstellungen zu Schriftgröße und Anzeigebreite</h1>
     <p>(Schriftgrößen sind abhängig von Browsereinstellungen)</p>
     <p>
 % for my $fs ( sort {$a <=> $b} keys %$fontsizes ) {
-        <a href="<%= url_for font_size => fontsize => $fs %>#styleoptions" 
+        <a href="<%= url_for font_size => fontsize => $fs %>" 
             title="Schriftgröße <%= $fs ? fontsize($fs) : 'normal' %>"<% if ( $fs != $fontsize ) { %> style="font-size: <%= $fontsize ? fontsize($fs) / fontsize($fontsize) : fontsize($fs) %>em"<% } else { %> class="active"<% } %>><%= $fs < 0 ? '-' x ( 0 - $fs ) : '+' x $fs %>A</a>
 % }
     </p>
     <p>(Das Forum kann über die gesamte Browserfensterbreite oder schmal und zentriert dargestellt werden)</p>
     <p>
-        <a href="<%= url_for 'switch_theme' %>#styleoptions">Anzeige des Forums
+        <a href="<%= url_for 'switch_theme' %>?<%= session()->{style} %>">Anzeige des Forums
             <%= session()->{style} ? 'in schmaler zentrierter Blogform' : 'über die gesamte Browserfensterbreite' %></a>
     </p>
     <p>(Diese Anzeigeeinstellungen gelten nur für diese Browsersitzung)</p>
 </div> 
 % unless ( configdata()->{fixbackgroundcolor} ) {
 <div class="postbox options">
-    <a name="bgcolor"></a>
     <h1>Einstellungen zur Hintergrundfarbe des Forums</h1>
     <p>
 <% for my $c ( @$colors ) { %><a href="<%= url_for bg_color => bgcolor => $c %>#bgcolor" title="Hintergrundfarbe <%= $c %>" style="background:<%= $c %>" class="coloroption">&nbsp;</a><% } %>
