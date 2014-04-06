@@ -83,7 +83,7 @@ sub test_add_users {
         my $user = shift;
         my $pass = shift;
         last unless $user and $pass;
-        $t->post_ok('/options/useradmin', form => {username => $user, newpw1 => $pass, newpw2 => $pass, active => 1})
+        $t->post_ok('/options/adminuseradd', form => {username => $user, newpw1 => $pass, newpw2 => $pass, active => 1})
           ->content_like(qr~Benutzer \&quot;$user\&quot; angelegt~);
         $cnt++;
     }
