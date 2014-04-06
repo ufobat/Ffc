@@ -22,7 +22,7 @@ body > * > * {
 body > * > h1, body > * h2 {
     font-weight: bolder;
 }
-body > * > h1, .suboption h2, .comment h2 {
+body > * > h1, .comment h2 {
     color: gray;
 }
 body > * > h1 {
