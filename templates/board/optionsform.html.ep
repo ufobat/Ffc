@@ -55,6 +55,7 @@
 % if ( session()->{admin} ) {
 <div class="postbox options useradmin_form">
     <h1>Benutzerverwaltung</h1>
+    <p>(Passwörter müssen zur Sicherheit immer zweimal eingegeben werden, einmal regulär und einmal genau so als Wiederholung im zweiten Eingabefeld)</p>
 % for my $u ( @$userlist ) {
     <h2>Benutzer &quot;<%= $u->[1] %>&quot; ändern:</h2>
 %= form_for adminusermod => { username => $u->[1] } => begin
@@ -66,9 +67,9 @@
     </p>
     <p>
       <input type="checkbox" name="active"<%== $u->[2] ? ' checked="checked"' : '' %> />
-      Aktiv,
+      ist aktiv,
       <input type="checkbox" name="admin"<%== $u->[3] ? ' checked="checked"' : '' %> />
-      Admin,
+      ist ein Administrator,
       <button type="submit" class="linkalike">Speichern</button>
     </p>
 % end
@@ -87,9 +88,9 @@
     </p>
     <p>
       <input type="checkbox" name="active" checked="checked" />
-      Aktiv,
+      ist aktiv,
       <input type="checkbox" name="admin" />
-      Admin,
+      ist ein Administrator,
       <button type="submit" class="linkalike">Speichern</button>
     </p>
 % end
