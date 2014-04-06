@@ -19,21 +19,28 @@ body > * {
 body > * > * {
     margin: .75em 0;
 }
+.comment > * {
+    margin: .5em .25em;
+}
 body > * > h1, body > * h2 {
     font-weight: bolder;
-}
-body > * > h1, .comment h2 {
-    color: gray;
 }
 body > * > h1 {
     border-bottom: 1px gainsboro solid;
 }
-body > * > h2, .suboption h2 {
+body > * > h2, .suboption h2, .comment h2 {
     font-size: 1em;
 }
-body > * > h2 {
+body > * > h2, .comment h2 {
     color: black;
     text-decoration: underline;
+}
+body > * > h1, .comment h2.title {
+    color: gray;
+    text-decoration: none;
+}
+.comment h2.title {
+    margin-top: 0;
 }
 .loginform, .menu, .pages, .headbox {
     background: whitesmoke;
@@ -130,7 +137,7 @@ a:focus, .linkalike:focus {
     padding: .1em 0;
     border-top-width: 0;
 }
-h1, .comment h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
+h1, .comment h2.title, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
     font-size: .75em;
 }
 .menu input[type="text"] {
@@ -161,7 +168,11 @@ a.coloroption:hover {
 }
 .suboption, .comment {
     background: whitesmoke;
-    margin-left: .75em;
     border: 1px gainsboro solid;
 }
-
+.suboption {
+    margin-left: .75em;
+}
+.comment {
+    margin-left: 3em;
+}
