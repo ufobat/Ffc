@@ -48,7 +48,7 @@ input, textarea, select {
     background: white;
     color: #006;
 }
-input[type="text"], input[type="password"] {
+input[type="email"], input[type="text"], input[type="password"] {
     width: 16em;
 }
 input:hover, textarea:hover, select:hover {
