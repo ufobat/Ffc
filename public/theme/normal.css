@@ -100,6 +100,20 @@ a:focus, .linkalike:focus {
     color: gray;
     background: lightsteelblue;
 }
+.messagebox {
+    padding: 0;
+    border: none;
+    background: transparent;
+    position: fixed;
+    width: 23em;
+    bottom: .25em;
+    right: .25em;
+}
+.messagebox > * {
+    border: 1px silver solid;
+    padding: 0 .5em .5em .5em;
+    margin: .25em;
+}
 .warning, .warning h1 {
     color: saddlebrown;
     border-color: chocolate;

@@ -1,141 +1,148 @@
 % layout 'board';
 <div class="postbox options">
+    <a name="styleoptions"></a>
     <h1>Einstellungen zu Schriftgröße und Anzeigebreite</h1>
     <p>(Schriftgrößen sind abhängig von Browsereinstellungen)</p>
     <p>
 % for my $fs ( sort {$a <=> $b} keys %$fontsizes ) {
-        <a href="<%= url_for font_size => fontsize => $fs %>" 
+        <a href="<%= url_for font_size => fontsize => $fs %>#styleoptions" 
             title="Schriftgröße <%= $fs ? fontsize($fs) : 'normal' %>"<% if ( $fs != $fontsize ) { %> style="font-size: <%= $fontsize ? fontsize($fs) / fontsize($fontsize) : fontsize($fs) %>em"<% } else { %> class="active"<% } %>><%= $fs < 0 ? '-' x ( 0 - $fs ) : '+' x $fs %>A</a>
 % }
     </p>
     <p>(Das Forum kann über die gesamte Browserfensterbreite oder schmal und zentriert dargestellt werden)</p>
     <p>
-        <%= link_to switch_theme => begin %>Anzeige des Forums
-            <%= session()->{style} ? 'in schmaler zentrierter Blogform' : 'über die gesamte Browserfensterbreite' %><% end %>
+        <a href="<%= url_for 'switch_theme' %>#styleoptions">Anzeige des Forums
+            <%= session()->{style} ? 'in schmaler zentrierter Blogform' : 'über die gesamte Browserfensterbreite' %></a>
     </p>
     <p>(Diese Anzeigeeinstellungen gelten nur für diese Browsersitzung)</p>
 </div> 
 % unless ( configdata()->{fixbackgroundcolor} ) {
 <div class="postbox options">
+    <a name="bgcolor"></a>
     <h1>Einstellungen zur Hintergrundfarbe des Forums</h1>
     <p>
-<% for my $c ( @$colors ) { %><a href="<%= url_for bg_color => bgcolor => $c %>" title="Hintergrundfarbe <%= $c %>" style="background:<%= $c %>" class="coloroption">&nbsp;</a><% } %>
+<% for my $c ( @$colors ) { %><a href="<%= url_for bg_color => bgcolor => $c %>#bgcolor" title="Hintergrundfarbe <%= $c %>" style="background:<%= $c %>" class="coloroption">&nbsp;</a><% } %>
 
     </p>
-    <p><%= link_to no_bg_color => begin %>Standardhintergrundfarbe des Forums<% end %></p>
+    <p><a href="<%= url_for 'no_bg_color' %>#bgcolor">Standardhintergrundfarbe des Forums</a></p>
 </div>
 % }
 <div class="postbox options">
+    <a name="avatarupload"></a>
     <h1>Benutzeravatar verwalten</h1>
     <p>(Benutzeravatare dürfen maximal 150Kb groß sein, der Dateiname darf höchstens 80 Zeichen enthalten und das Bild muss vom Typ PNG, JPG, BMP oder GIF sein)</p>
     <p><a href="<%= url_for avatar_show => username => session()->{user} %>"><img src="<%= url_for avatar_show => username => session()->{user} %>" alt="Avatarbild des Benutzers &quot;<%= session()->{user} %>&quot;" %></a></p>
-%= form_for avatar_upload => ( enctype => 'multipart/form-data' ) => begin 
-    <%= file_field avatarfile => (accept => 'image/*') %>
-    <button type="submit" class="linkalike">Avatar hochladen</button>
-% end
+    <form action="<%= url_for 'avatar_upload' %>#avatarupload" enctype="multipart/form-data" method="POST">
+        <%= file_field avatarfile => (accept => 'image/*') %>
+        <button type="submit" class="linkalike">Avatar hochladen</button>
+    </form>
 </div>
 <div class="postbox options">
+    <a name="set_password"></a>
     <h1>Eigenes Passwort ändern</h1>
     <p>(Aus Sicherheitsgründen sollte das eigene Passwort regelmäßig geändert werden)</p>
-%= form_for set_password => begin 
-    <p><%= password_field 'oldpw' %> (Altes Passwort zur Bestätigung)</p>
-    <p><%= password_field 'newpw1' %> (Neues Passwort, 8 - 64 Zeichen)</p>
-    <p><%= password_field 'newpw2' %> (Neues Passwort wiederholen)</p>
-    <p><button type="submit" class="linkalike">Passwort ändern</button></p>
-% end
+    <form action="<%= url_for 'set_password' %>#set_password" method="POST">
+        <p><%= password_field 'oldpw' %> (Altes Passwort zur Bestätigung)</p>
+        <p><%= password_field 'newpw1' %> (Neues Passwort, 8 - 64 Zeichen)</p>
+        <p><%= password_field 'newpw2' %> (Neues Passwort wiederholen)</p>
+        <p><button type="submit" class="linkalike">Passwort ändern</button></p>
+    </form>
 </div>
 <div class="postbox options">
+    <a name="set_email"></a>
     <h1>Eigene E-Mail-Adresse einstellen</h1>
     <p>(Mit der Emailadresse kann der Administrator des Forums ggf. Nachrichten außerhalb des Forums verschicken)</p>
-%= form_for set_email => begin 
-    <p><%= email_field email => $email %></p>
-    <p><button type="submit" class="linkalike">Emailadresse speichern</button></p>
-% end
+    <form action="<%= url_for 'set_email' %>#set_email" method="POST">
+        <p><%= email_field email => $email %></p>
+        <p><button type="submit" class="linkalike">Emailadresse speichern</button></p>
+    </form>
 </div>
 % if ( session()->{admin} ) {
 <div class="postbox options useradmin">
+    <a name="useradmin"></a>
     <h1>Benutzerverwaltung</h1>
 <div class="suboption useradmin_form">
     <h2>Neuen Benutzer anlegen:</h2>
-%= form_for adminuseradd => begin
-    <input type="hidden" name="overwriteok" value="0" />
-    <p>
-      Benutzername:
-      <input type="text" name="username" value="" />
-    </p>
-    <p>
-      Passwort:
-      <input type="password" name="newpw1" value="" />
-    </p>
-    <p>
-      Passwort wiederholen:
-      <input type="password" name="newpw2" value="" />
-    </p>
-    <p>
-      <input type="checkbox" name="active" checked="checked" />
-      ist aktiv,
-      <input type="checkbox" name="admin" />
-      ist ein Administrator,
-      <button type="submit" class="linkalike">Speichern</button>
-    </p>
-% end
+    <form action="<%= url_for 'adminuseradd' %>#useradmin" method="POST">
+        <input type="hidden" name="overwriteok" value="0" />
+        <p>
+            Benutzername:
+            <input type="text" name="username" value="" />
+        </p>
+        <p>
+            Passwort:
+            <input type="password" name="newpw1" value="" />
+        </p>
+        <p>
+            Passwort wiederholen:
+            <input type="password" name="newpw2" value="" />
+        </p>
+        <p>
+            <input type="checkbox" name="active" checked="checked" />
+            ist aktiv,
+            <input type="checkbox" name="admin" />
+            ist ein Administrator,
+            <button type="submit" class="linkalike">Speichern</button>
+        </p>
+    </form>
 </div>
 % for my $u ( @$userlist ) {
 <div class="suboption useradmin_form">
     <h2>Benutzer &quot;<%= $u->[1] %>&quot; ändern:</h2>
-%= form_for adminusermod => { username => $u->[1] } => begin
-    <input type="hidden" name="overwriteok" value="1" />
-    <p>
-      Passwort:
-      <input type="password" name="newpw1" value="" />
-    </p>
-    <p>
-      Passwort wiederholen:
-      <input type="password" name="newpw2" value="" />
-    </p>
-    <p>
-      <input type="checkbox" name="active"<%== $u->[2] ? ' checked="checked"' : '' %> />
-      ist aktiv,
-      <input type="checkbox" name="admin"<%== $u->[3] ? ' checked="checked"' : '' %> />
-      ist ein Administrator,
-      <button type="submit" class="linkalike">Speichern</button>
-    </p>
-% end
+    <form action="<%= url_for adminusermod => { username => $u->[1] } %>#useradmin" method="POST">
+        <input type="hidden" name="overwriteok" value="1" />
+        <p>
+            Passwort:
+            <input type="password" name="newpw1" value="" />
+        </p>
+        <p>
+            Passwort wiederholen:
+            <input type="password" name="newpw2" value="" />
+        </p>
+        <p>
+            <input type="checkbox" name="active"<%== $u->[2] ? ' checked="checked"' : '' %> />
+            ist aktiv,
+            <input type="checkbox" name="admin"<%== $u->[3] ? ' checked="checked"' : '' %> />
+            ist ein Administrator,
+            <button type="submit" class="linkalike">Speichern</button>
+        </p>
+    </form>
 </div>
 % }
 </div>
 <div class="postbox options categoryadmin">
+    <a name="categoryadmin"></a>
     <h1>Kategorieverwaltung</h1>
 <div class="suboption categoryadmin_form">
     <h2>Neue Kategorie anlegen:</h2>
-%= form_for admincatadd => begin
-    <input type="hidden" name="overwriteok" value="0" />
-    <p>
-      Kategoriename:
-      <input type="text" name="catname" value="" />
-    </p>
-    <p>
-      <input type="checkbox" name="visible" checked="checked" />
-      ist sichtbar,
-      <button type="submit" class="linkalike">Speichern</button>
-    </p>
-% end
+    <form action="<%= url_for 'admincatadd' %>#categoryadmin" method="POST">
+        <input type="hidden" name="overwriteok" value="0" />
+        <p>
+            Kategoriename:
+            <input type="text" name="catname" value="" />
+        </p>
+        <p>
+            <input type="checkbox" name="visible" checked="checked" />
+            ist sichtbar,
+            <button type="submit" class="linkalike">Speichern</button>
+        </p>
+    </form>
 </div>
 % for my $c ( @$categories ) {
 <div class="suboption categoryadmin_form">
     <h2>Kategorie &quot;<%= $c->[1] %>&quot; ändern:</h2>
-%= form_for admincatmod => { catid => $c->[0] } => begin
-    <input type="hidden" name="overwriteok" value="1" />
-    <p>
-      Kategoriename:
-      <input type="text" name="catname" value="<%= $c->[1] %>" />
-    </p>
-    <p>
-      <input type="checkbox" name="visible"<%== $c->[2] ? '' : ' checked="checked"' %> />
-      ist sichtbar,
-      <button type="submit" class="linkalike">Speichern</button>
-    </p>
-% end
+    <form action="<%= url_for admincatmod => { catid => $c->[0] } %>#categoryadmin" method="POST">
+        <input type="hidden" name="overwriteok" value="1" />
+        <p>
+            Kategoriename:
+            <input type="text" name="catname" value="<%= $c->[1] %>" />
+        </p>
+        <p>
+            <input type="checkbox" name="visible"<%== $c->[2] ? '' : ' checked="checked"' %> />
+            ist sichtbar,
+            <button type="submit" class="linkalike">Speichern</button>
+        </p>
+    </form>
 </div>
 % }
 </div>

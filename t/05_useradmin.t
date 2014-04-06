@@ -43,7 +43,7 @@ $t->get_ok('/options/form')
   ->status_is(200)
   ->content_like(qr'active activeoptions">Optionen<')
   ->content_like(qr'Neuen Benutzer anlegen')
-  ->content_like(qr'<form action="/options/adminuseradd" method="POST">');
+  ->content_like(qr'<form action="/options/adminuseradd#useradmin" method="POST">');
 
 note 'nonadmins shall not see useradmin forms';
 $dbh->do('UPDATE users SET admin=0 WHERE UPPER(name)=UPPER(?)', undef, $admin);
@@ -51,7 +51,7 @@ $t->get_ok('/options/form')
   ->status_is(200)
   ->content_like(qr'active activeoptions">Optionen<')
   ->content_unlike(qr'Neuen Benutzer anlegen')
-  ->content_unlike(qr'<form action="/options/adminuseradd" method="POST">');
+  ->content_unlike(qr'<form action="/options/adminuseradd#useradmin" method="POST">');
 
 $t->post_ok('/options/adminuseradd', form => {})
   ->status_is(200);
@@ -68,7 +68,7 @@ $t->get_ok('/options/form')
   ->status_is(200)
   ->content_like(qr'active activeoptions">Optionen<')
   ->content_like(qr'Neuen Benutzer anlegen')
-  ->content_like(qr'<form action="/options/adminuseradd" method="POST">');
+  ->content_like(qr'<form action="/options/adminuseradd#useradmin" method="POST">');
 
 note 'wrong use of useradmin interface';
 $t->post_ok('/options/adminuseradd', form => {})
@@ -125,7 +125,7 @@ $t->get_ok('/options/form')
   ->content_like(qr~Angemeldet als "$user"~)
   ->content_like(qr'active activeoptions">Optionen<')
   ->content_like(qr'Neuen Benutzer anlegen')
-  ->content_like(qr'<form action="/options/adminuseradd" method="POST">');
+  ->content_like(qr'<form action="/options/adminuseradd#useradmin" method="POST">');
 
 dump_user();
 
@@ -140,7 +140,7 @@ $t->get_ok('/options/form')
   ->content_like(qr~Angemeldet als "$user"~)
   ->content_like(qr'active activeoptions">Optionen<')
   ->content_unlike(qr'Neuen Benutzer anlegen')
-  ->content_unlike(qr'<form action="/options/adminuseradd" method="POST">');
+  ->content_unlike(qr'<form action="/options/adminuseradd#useradmin" method="POST">');
 
 note 'alter user password via admin login without overwrite-check';
 admin_login();
@@ -207,7 +207,7 @@ $t->get_ok('/options/form')
   ->content_like(qr~Angemeldet als "$user"~)
   ->content_like(qr'active activeoptions">Optionen<')
   ->content_unlike(qr'Neuen Benutzer anlegen')
-  ->content_unlike(qr'<form action="/options/adminuseradd" method="POST">');
+  ->content_unlike(qr'<form action="/options/adminuseradd#useradmin" method="POST">');
 admin_login();
 $t->post_ok("/options/adminusermod/$user", form => {admin => 1, active => 1, overwriteok => 1})
   ->status_is(200);
@@ -218,7 +218,7 @@ $t->get_ok('/options/form')
   ->content_like(qr~Angemeldet als "$user"~)
   ->content_like(qr'active activeoptions">Optionen<')
   ->content_like(qr'Neuen Benutzer anlegen')
-  ->content_like(qr'<form action="/options/adminuseradd" method="POST">');
+  ->content_like(qr'<form action="/options/adminuseradd#useradmin" method="POST">');
 
 note 'unset admin flag for user';
 admin_login();
@@ -231,7 +231,7 @@ $t->get_ok('/options/form')
   ->content_like(qr~Angemeldet als "$user"~)
   ->content_like(qr'active activeoptions">Optionen<')
   ->content_like(qr'Neuen Benutzer anlegen')
-  ->content_like(qr'<form action="/options/adminuseradd" method="POST">');
+  ->content_like(qr'<form action="/options/adminuseradd#useradmin" method="POST">');
 admin_login();
 $t->post_ok("/options/adminusermod/$user", form => {admin => 0, active => 1, overwriteok => 1})
   ->status_is(200);
@@ -242,5 +242,5 @@ $t->get_ok('/options/form')
   ->content_like(qr~Angemeldet als "$user"~)
   ->content_like(qr'active activeoptions">Optionen<')
   ->content_unlike(qr'Neuen Benutzer anlegen')
-  ->content_unlike(qr'<form action="/options/adminuseradd" method="POST">');
+  ->content_unlike(qr'<form action="/options/adminuseradd#useradmin" method="POST">');
 
