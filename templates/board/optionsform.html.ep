@@ -26,16 +26,6 @@
 </div>
 % }
 <div class="postbox options">
-    <a name="avatarupload"></a>
-    <h1>Benutzeravatar verwalten</h1>
-    <p>(Benutzeravatare dürfen maximal 150Kb groß sein, der Dateiname darf höchstens 80 Zeichen enthalten und das Bild muss vom Typ PNG, JPG, BMP oder GIF sein)</p>
-    <p><a href="<%= url_for avatar_show => username => session()->{user} %>"><img src="<%= url_for avatar_show => username => session()->{user} %>" alt="Avatarbild des Benutzers &quot;<%= session()->{user} %>&quot;" %></a></p>
-    <form action="<%= url_for 'avatar_upload' %>#avatarupload" enctype="multipart/form-data" method="POST">
-        <%= file_field avatarfile => (accept => 'image/*') %>
-        <button type="submit" class="linkalike">Avatar hochladen</button>
-    </form>
-</div>
-<div class="postbox options">
     <a name="set_password"></a>
     <h1>Eigenes Passwort ändern</h1>
     <p>(Aus Sicherheitsgründen sollte das eigene Passwort regelmäßig geändert werden)</p>
@@ -44,6 +34,16 @@
         <p><%= password_field 'newpw1' %> (Neues Passwort, 8 - 64 Zeichen)</p>
         <p><%= password_field 'newpw2' %> (Neues Passwort wiederholen)</p>
         <p><button type="submit" class="linkalike">Passwort ändern</button></p>
+    </form>
+</div>
+<div class="postbox options">
+    <a name="avatarupload"></a>
+    <h1>Benutzeravatar verwalten</h1>
+    <p>(Benutzeravatare dürfen maximal 150Kb groß sein, der Dateiname darf höchstens 80 Zeichen enthalten und das Bild muss vom Typ PNG, JPG, BMP oder GIF sein)</p>
+    <p><a href="<%= url_for avatar_show => username => session()->{user} %>"><img src="<%= url_for avatar_show => username => session()->{user} %>" alt="Avatarbild des Benutzers &quot;<%= session()->{user} %>&quot;" %></a></p>
+    <form action="<%= url_for 'avatar_upload' %>#avatarupload" enctype="multipart/form-data" method="POST">
+        <%= file_field avatarfile => (accept => 'image/*') %>
+        <button type="submit" class="linkalike">Avatar hochladen</button>
     </form>
 </div>
 <div class="postbox options">
