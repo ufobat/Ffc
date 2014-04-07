@@ -114,12 +114,12 @@ a:focus, .linkalike:focus {
     padding: 0 .5em .5em .5em;
     margin: .25em;
 }
+.messagebox h1 {
+    text-decoration: blink;
+}
 .messagebox:hover > * {
     margin-left: 22em;
     margin-right: -22em;
-}
-.messagebox h1 {
-    text-decoration: blink;
 }
 .warning, .warning h1 {
     color: saddlebrown;
