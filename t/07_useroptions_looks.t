@@ -7,7 +7,7 @@ use Testinit;
 use Ffc::Plugin::Config;
 
 use Test::Mojo;
-use Test::More tests => 694;
+use Test::More tests => 691;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);

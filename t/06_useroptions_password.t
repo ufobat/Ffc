@@ -5,7 +5,7 @@ use lib "$FindBin::Bin/lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 81;
+use Test::More tests => 78;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);

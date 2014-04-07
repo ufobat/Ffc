@@ -74,9 +74,9 @@ sub test_warning {
         qr~<div\s+class="info">\s*<h1>Warnung</h1>\s*$warning\s*</div>~);
 }
 
+sub test_add_user { &test_add_users } # Alias
 sub test_add_users {
     my $t = shift; my $admin = shift; my $apass = shift;
-    test_logout($t);
     test_login($t, $admin, $apass);
     my $cnt = 0;
     while ( @_ ) {

@@ -9,7 +9,7 @@ use File::Temp qw~tempfile tempdir~;
 use File::Spec::Functions qw(catfile catdir splitdir);
 
 use Test::Mojo;
-use Test::More tests => 250;
+use Test::More tests => 247;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
