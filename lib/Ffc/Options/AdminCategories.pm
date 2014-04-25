@@ -19,7 +19,7 @@ sub categoryadmin {
         return $c->options_form();
     }
     if ( $catid and not $overok ) {
-        $c->set_error('Das Überschreiben-Häkchen ist zum Ändern der Kategorie ist nicht gesetzt');
+        $c->set_error('Der Überschreiben-Check zum Ändern einer Kategorie ist nicht gesetzt');
         return $c->options_form();
     }
     unless ( $catname and $catname =~ m/\A$Ffc::Catqr\z/xmso ) {

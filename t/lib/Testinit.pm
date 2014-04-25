@@ -15,6 +15,19 @@ use lib
 our $Script 
     = catfile splitdir(File::Basename::dirname(__FILE__)),
         '..', '..', 'script', 'init.pl';
+our @Chars = ('a' .. 'z', 'A' .. 'Z', 0 .. 9, ' ');
+{
+    my %Strings;
+    my $ts = sub { join '', map { $Chars[int rand @Chars] } 1 .. 10 };
+    sub test_randstring {
+        my $str = $ts->();
+        while ( exists $Strings{$str} ) {
+            $str = $ts->();
+        }
+        $Strings{$str} = 1;
+        return $str;
+    }
+}
 
 sub start_test {
     my $testpath = File::Temp::tempdir( CLEANUP => 1 );
