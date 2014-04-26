@@ -28,8 +28,6 @@ my $AvatarPath     = catdir @BasePath, 'avatars';
 my $UploadPath     = catdir @BasePath, 'uploads';
 my $DatabasePath   = catdir @BasePath, 'database.sqlite3';
 my $DatabaseSource = catdir @BaseRoot, 'database.sqlite3';
-my $ConfigPath     = catdir @BasePath, 'config';
-my $ConfigSource   = catdir @BaseRoot, 'config';
 
 generate_paths();
 
@@ -40,7 +38,6 @@ sub generate_paths {
         [ avatar   => $AvatarPath,   1, 0770, '',              0 ],
         [ upload   => $UploadPath,   1, 0770, '',              0 ],
         [ database => $DatabasePath, 0, 0660, $DatabaseSource, 1 ],
-        [ config   => $ConfigPath,   0, 0640, $ConfigSource,   0 ],
     ) {
         my ( $name, $path, $isdir, $mode, $copy, $db ) = @$d;
 
@@ -66,7 +63,6 @@ sub generate_paths {
     }
 
     say q"ok: check user and group priviledges of the data path!";
-    say "ok: remember to alter config file '$ConfigPath'";
 
     if ( $dbexists ) {
         say 'ok: database allready existed, no admin user created';
@@ -89,7 +85,7 @@ sub generate_random_security {
     }
     else {
         $salt = $config->{cryptsalt} = 1000 + int rand 99999999;
-        alter_configfile(cryptsalt => $salt);
+        alter_configfile($Config, cryptsalt => $salt);
     }
     my $csecret = $config->{cookiesecret};
     if ( $csecret ) {
@@ -97,7 +93,7 @@ sub generate_random_security {
     }
     else {
         $csecret = $config->{cookiesecret} = generate_random(28);
-        alter_configfile(cookiesecret => $csecret);
+        alter_configfile($Config, cookiesecret => $csecret);
     }
     my $pw = generate_random(4);
     $Config->dbh()->do(
@@ -112,29 +108,12 @@ sub generate_random_security {
 }
 
 sub alter_configfile {
+    my $config = shift;
     my $key = shift;
     my $value = shift;
-    my $confcont = do { 
-        open my $fh, '<', $ConfigPath
-            or die "error: could not read config file '$ConfigPath': $!";
-        local $/;
-        my $out = <$fh>;
-        close $fh;
-        $out;
-    };
-    unless ( 
-        $confcont 
-          =~ s~(\A|\n)(\s*$key\s*=[^\n]*)~$1# auto generated:\n$2$value\n#$2\n~gsmx
-    ) {
-        $confcont .= "\n# auto generated:\n$key = $value\n";
-    }
-
-    {
-        open my $fh, '>', $ConfigPath
-            or die "error: could not write config file '$ConfigPath': $!";
-        print $fh $confcont;
-    }
-
+    $config->dbh()->do(
+        'UPDATE "config" SET "value"=? WHERE "key"=?',
+        undef, $value, $key);
     say "ok: $key set to random '$value'";
 }
 

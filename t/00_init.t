@@ -15,7 +15,7 @@ use File::Temp;
 use File::Spec::Functions qw(catfile);
 use Digest::SHA 'sha512_base64';
 
-use Test::More tests => 192;
+use Test::More tests => 150;
 
 my $script = $Testinit::Script;
 note "testing init script '$script'";
@@ -42,20 +42,15 @@ sub check_pw {
 
 sub check_config {
     my ($testpath, $salt, $csecret) = @_;
-    my %zuo = (
-        cookiesecret => $csecret,
-        cryptsalt    => $salt   ,
-    );
-    open my $fh, '<', catfile($testpath, 'config')
-        or die "could not open config file: $!";
-    my $cnt = 0;
-    my $re = join '|', keys %zuo;
-    while ( my $l = <$fh> ) {
-        next unless $l =~ m/(?:\A|\n)\s*($re)\s*=\s*([^\n]+)/xmso;
-        is $2, $zuo{$1}, "auto config param $1 set ok to $zuo{$1}";
-        $cnt++;
-    }
-    is $cnt, scalar(keys %zuo), 'all auto config params set ok';
+    my %zuo = map {@$_} @{ DBI->connect(
+        "DBI:SQLite:database=$testpath/database.sqlite3"
+        ,'','',{AutoCommit => 1, RaiseError => 1})
+        ->selectall_arrayref(
+            'SELECT "key", "value" FROM "config"'
+        ) 
+    };
+    is $zuo{cryptsalt}, $salt, "auto config param cryptsalt set ok to $salt";
+    is $zuo{cookiesecret}, $csecret, "auto config param cookiesecret set ok to $csecret";
 }
 
 sub check_paths {
@@ -65,7 +60,6 @@ sub check_paths {
         [ qq'$testpath/avatars',          1 ],
         [ qq'$testpath/uploads',          1 ],
         [ qq'$testpath/database.sqlite3', 0 ],
-        [ qq'$testpath/config',           0 ],
     ) {
         my ( $p, $d ) = @$path;
         if ( $noexist ) {
@@ -109,9 +103,7 @@ sub test_path {
         qr~ok: using '$testpath/avatars' as avatar store~,
         qr~ok: using '$testpath/uploads' as upload store~,
         qr~ok: using '$testpath/database\.sqlite3' as database store~,
-        qr~ok: using '$testpath/config' as config store~,
         qr~ok: check user and group priviledges of the data path!~,
-        qr~ok: remember to alter config file '$testpath/config'~,
         qr~ok: initial cookiesecret, salt, admin user and password:~,
         qr~ok: cookiesecret set to random '.{32}'~,
         qr~ok: cryptsalt set to random '\d+'~,
@@ -139,10 +131,7 @@ sub test_path {
         qr~ok: path '$testpath/uploads' as upload allready exists~,
         qr~ok: using '$testpath/database\.sqlite3' as database store~,
         qr~ok: path '$testpath/database\.sqlite3' as database allready exists~,
-        qr~ok: using '$testpath/config' as config store~,
-        qr~ok: path '$testpath/config' as config allready exists~,
         qr~ok: check user and group priviledges of the data path!~,
-        qr~ok: remember to alter config file '$testpath/config'~,
         qr~ok: database allready existed, no admin user created~,
     );
     check_pw($testpath, $user, $salt, $pw);
@@ -166,13 +155,10 @@ sub test_path {
         qr~ok: using '$testpath/uploads' as upload store~,
         qr~ok: path '$testpath/uploads' as upload allready exists~,
         qr~ok: using '$testpath/database\.sqlite3' as database store~,
-        qr~ok: using '$testpath/config' as config store~,
-        qr~ok: path '$testpath/config' as config allready exists~,
         qr~ok: check user and group priviledges of the data path!~,
-        qr~ok: remember to alter config file '$testpath/config'~,
         qr~ok: initial cookiesecret, salt, admin user and password:~,
-        qr~ok: using preconfigured cookiesecret '.{32}'~,
-        qr~ok: using preconfigured salt '\d+'~,
+        qr~ok: cookiesecret set to random '.{32}'~,
+        qr~ok: cryptsalt set to random '\d+'~,
     );
     ( $csecret, $salt, $user, $pw ) = (split /\n+/, $out4 )[-4,-3,-2,-1];
     chomp $user; chomp $salt; chomp $pw; chomp $csecret;

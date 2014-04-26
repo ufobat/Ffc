@@ -50,16 +50,11 @@ sub test_config {
       ->json_hasnt('/cookiesecret')
       ->json_hasnt('/cryptsalt');
 
-    my $config = do {
-        my %c = ();
-        open my $fh, '<', catfile($testpath, 'config')
-            or die "could not open config file: $!";
-        while ( my $l = <$fh> ) {
-            next unless $l =~ m~(?:\A|\z)\s*(\w+)\s*=\s*([^\n]*)\s*~xmso;
-            $c{$1} = $2;
-        }
-        \%c;
-    };
+    my $config = { map {@$_} @{ 
+        $Config->dbh()->selectall_arrayref(
+            'SELECT "key", "value" FROM "config"'
+        )
+    } };
     is_deeply $config, $Config->_config(), 'config data ok';
     for my $c (qw( fixbackgroundcolor favicon
     cookiename postlimit title sessiontimeout

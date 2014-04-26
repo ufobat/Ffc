@@ -56,12 +56,10 @@ sub register {
     my ( $self, $app ) = @_;
     $self->reset();
     my $datapath  = $self->_datapath();
+    my $dbh       = $self->dbh();
     my $config    = $self->_config();
     my $secconfig = $self->{secconfig} = {};
 
-    $app->helper(datapath     => sub { $datapath    });
-    $app->helper(dbh          => sub { $self->dbh() });
-    $app->helper(configdata   => sub { $config      });
     for my $c ( qw(cookiesecret cryptsalt) ) {
         $secconfig->{$c} = $config->{$c};
         delete $config->{$c};
@@ -76,6 +74,10 @@ sub register {
     unless ( $config->{urlshorten} and $config->{urlshorten} =~ m/\A\d+\z/xmso ) {
         $config->{urlshorten} = $Defaults{urlshorten};
     }
+
+    $app->helper(datapath     => sub { $datapath });
+    $app->helper(dbh          => sub { $dbh      });
+    $app->helper(configdata   => sub { $config   });
 
     $app->defaults({
         act => 'forum',
@@ -120,10 +122,9 @@ sub _datapath {
 }
 
 sub _config {
-    my $self = $_[0];
-    open my $fh, '<', catdir @{$self->_datapath()}, 'config'
-        or die q~could not open config file '~.catdir(@{$self->_datapath()}, 'config').qq~': $!~;
-    return { map { m/\A\s*(\w+)\s*=\s*([^\n]*)\s*\z/xmso ? ( $1 => $2 ) : () } <$fh> };
+    return { map { @$_ } 
+        @{ $_[0]->{dbh}->selectall_arrayref(
+            'SELECT "key", "value" FROM "config"') } };
 }
 
 sub dbh {
@@ -135,7 +136,7 @@ sub dbh {
 }
 
 sub reset {
-    @{$_[0]}{qw(datapath configdata dbh dbfile)} = (undef,undef,undef,undef);
+    @{$_[0]}{qw(datapath dbh dbfile)} = (undef,undef,undef);
 }
 
 1;

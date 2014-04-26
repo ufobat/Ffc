@@ -51,3 +51,32 @@ CREATE TABLE "attachements" (
   "filename" varchar(256)
 );
 
+CREATE TABLE "config" (
+  "key" varchar(32) NOT NULL,
+  "value" varchar(256) NOT NULL DEFAULT '',
+  UNIQUE ("key")
+);
+
+INSERT INTO "config" ("key", "value") 
+  VALUES ('cookiename','Ffc_Forum');
+INSERT INTO "config" ("key", "value") 
+  VALUES ('cookiesecret','');
+INSERT INTO "config" ("key", "value") 
+  VALUES ('cryptsalt','');
+INSERT INTO "config" ("key", "value") 
+  VALUES ('postlimit','7');
+INSERT INTO "config" ("key", "value") 
+  VALUES ('title','Ffc Forum');
+INSERT INTO "config" ("key", "value") 
+  VALUES ('sessiontimeout','432000');
+INSERT INTO "config" ("key", "value") 
+  VALUES ('commoncattitle','Allgemein');
+INSERT INTO "config" ("key", "value") 
+  VALUES ('urlshorten','30');
+INSERT INTO "config" ("key", "value") 
+  VALUES ('backgroundcolor','');
+INSERT INTO "config" ("key", "value") 
+  VALUES ('fixbackgroundcolor','0');
+INSERT INTO "config" ("key", "value") 
+  VALUES ('favicon','');
+
