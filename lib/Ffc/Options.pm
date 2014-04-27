@@ -17,11 +17,11 @@ sub options_form {
     my ( $email, $admin ) = ( ( $r and ref($r) eq 'ARRAY' ) ? (@{$r->[0]}) : ('', 0) );
     $c->stash(email => $email);
     if ( $admin ) {
-        $c->stash(userlist => 
-            $c->dbh->selectall_arrayref(
-                'SELECT u.id, u.name, u.active, u.admin FROM users u WHERE UPPER(u.name) != UPPER(?) ORDER BY UPPER(u.name) ASC'
-                , undef, $c->session->{user}
-            ));
+        my $userlist = $c->dbh->selectall_arrayref(
+                'SELECT u.id, u.name, u.active, u.admin, u.email FROM users u WHERE UPPER(u.name) != UPPER(?) ORDER BY UPPER(u.name) ASC'
+                , undef, $c->session->{user});
+        $c->stash(useremails => join ';', map { $_->[4] ? $_->[4] : () } @$userlist );
+        $c->stash(userlist => $userlist);
         $c->stash(categories =>
             $c->dbh->selectall_arrayref(
                 'SELECT c.id, c.name, c.hidden FROM categories c ORDER BY c.hidden ASC, UPPER(c.name) ASC'));

@@ -86,7 +86,7 @@
 </div>
 % for my $u ( @$userlist ) {
 <div class="suboption useradmin_form">
-    <h2>Benutzer &quot;<%= $u->[1] %>&quot; ändern:</h2>
+    <h2>Benutzer &quot;<%= $u->[1] %>&quot; ändern<% if ( $u->[4] ) { %> (<%= $u->[4] %>)<% } %>:</h2>
     <form action="<%= url_for adminusermod => { username => $u->[1] } %>#useradmin" method="POST">
         <input type="hidden" name="overwriteok" value="1" />
         <p>
@@ -105,6 +105,13 @@
             <button type="submit" class="linkalike">Speichern</button>
         </p>
     </form>
+</div>
+% }
+% if ( $useremails ) {
+<div class="suboption useradmin_form">
+    <h2>Liste verfügbarer Emailadressen:</h2>
+    <p>(Zur Verwendung für Administratoren ausserhalb des Forums)</p>
+    <p><%= $useremails %></p>
 </div>
 % }
 </div>
