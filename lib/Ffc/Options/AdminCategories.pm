@@ -10,10 +10,6 @@ sub categoryadmin {
     my $overok  = $c->param('overwriteok');
     my $hidden  = $c->param('visible') ? 0 : 1;
 
-    unless ( $c->session->{admin} ) {
-        $c->set_error('Nur Administratoren dürfen das');
-        return $c->options_form();
-    }
     if ( $catid and $catid !~ m/\A$Ffc::Digqr\z/xmso ) {
         $c->set_error('Kategorieid ist ungültig');
         return $c->options_form();

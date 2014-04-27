@@ -12,10 +12,6 @@ sub useradmin {
     my $isactive = $c->param('active') ? 1 : 0;
     my $overok   = $c->param('overwriteok');
 
-    unless ( $c->session->{admin} ) {
-        $c->set_error('Nur Administratoren dürfen das');
-        return $c->options_form();
-    }
     unless ( $username ) {
         $c->set_error('Benutzername nicht angegeben');
         return $c->options_form();

@@ -37,12 +37,12 @@ sub check_admin {
       ->status_is(200)
       ->content_like(qr~<h1>Kategorieverwaltung</h1>~)
       ->content_like(qr~<h2>Neue Kategorie anlegen:</h2>~)
-      ->content_like(qr~<form action="/options/admincatadd#categoryadmin" method="POST">~);
+      ->content_like(qr~<form action="/options/admin/catadd#categoryadmin" method="POST">~);
     for my $kat ( @testkats ) {
         my $sbcq = $kat->[2] ? ' checked="checked"' : '';
         $t->content_like(qr~<div class="suboption categoryadmin_form">
     <h2>Kategorie &quot;$kat->[1]&quot; ändern:</h2>
-    <form action="/options/admincatmod/$kat->[0]#categoryadmin" method="POST">
+    <form action="/options/admin/catmod/$kat->[0]#categoryadmin" method="POST">
         <input type="hidden" name="overwriteok" value="1" />
         <p>
             Kategoriename:
@@ -67,12 +67,12 @@ check_user();
 note 'test add category errors';
 {
     user();
-    $t->post_ok('/options/admincatadd', form => {})
+    $t->post_ok('/options/admin/catadd', form => {})
       ->status_is(200);
     error('Nur Administratoren dürfen das');
     check_user();
     check_admin();
-    $t->post_ok('/options/admincatadd', form => {})
+    $t->post_ok('/options/admin/catadd', form => {})
       ->status_is(200);
     error('Kategoriename nicht angegeben');
     check_user();
@@ -83,7 +83,7 @@ note 'adding new visible categories';
 for ( 1 .. 2 ) {
     my $tkat = [++$maxid, rstr(), 1];
     push @testkats, $tkat;
-    $t->post_ok('/options/admincatadd', form => {catname => $tkat->[1], visible => 1 })
+    $t->post_ok('/options/admin/catadd', form => {catname => $tkat->[1], visible => 1 })
       ->status_is(200);
     info(qq~Kategorie &quot;$tkat->[1]&quot; erstellt~);
     check_user();
@@ -93,7 +93,7 @@ note 'adding new invisible categories';
 for ( 1 .. 2 ) {
     my $tkat = [++$maxid, rstr(), 0];
     push @testkats, $tkat;
-    $t->post_ok('/options/admincatadd', form => {catname => $tkat->[1]})
+    $t->post_ok('/options/admin/catadd', form => {catname => $tkat->[1]})
       ->status_is(200);
     info(qq~Kategorie &quot;$tkat->[1]&quot; erstellt~);
     check_user();
@@ -101,7 +101,7 @@ for ( 1 .. 2 ) {
 }
 
 note 'error adding allready existing category';
-$t->post_ok('/options/admincatadd', form => {catname => $testkats[1][1]})
+$t->post_ok('/options/admin/catadd', form => {catname => $testkats[1][1]})
   ->status_is(200);
 error('Die neue Kategorie gibt es bereits');
 check_user();
@@ -109,24 +109,24 @@ check_admin();
 
 note 'test modify category errors';
 user();
-$t->post_ok('/options/admincatmod/1', form => {})
+$t->post_ok('/options/admin/catmod/1', form => {})
   ->status_is(200);
 error('Nur Administratoren dürfen das');
 check_user();
 check_admin();
-$t->post_ok('/options/admincatmod/1', form => {})
+$t->post_ok('/options/admin/catmod/1', form => {})
   ->status_is(200);
 error('Der Überschreiben-Check zum Ändern einer Kategorie ist nicht gesetzt');
 check_user();
 check_admin();
-$t->post_ok('/options/admincatmod/1', form => {overwriteok => 1})
+$t->post_ok('/options/admin/catmod/1', form => {overwriteok => 1})
   ->status_is(200);
 error('Kategoriename nicht angegeben');
 check_user();
 check_admin();
 
 note 'testing change category name into same name with visible unchanged';
-$t->post_ok('/options/admincatmod/2', form => {overwriteok => 1, catname => $testkats[1][1], visible => 1})
+$t->post_ok('/options/admin/catmod/2', form => {overwriteok => 1, catname => $testkats[1][1], visible => 1})
   ->status_is(200);
 info(qq~Kategorie &quot;$testkats[1][1]&quot; geändert~);
 check_user();
@@ -134,7 +134,7 @@ check_admin();
 
 note 'testing change category name into same name with invisible changed';
 $testkats[1][2] = 0;
-$t->post_ok('/options/admincatmod/2', form => {overwriteok => 1, catname => $testkats[1][1], visible => 0})
+$t->post_ok('/options/admin/catmod/2', form => {overwriteok => 1, catname => $testkats[1][1], visible => 0})
   ->status_is(200);
 info(qq~Kategorie &quot;$testkats[1][1]&quot; geändert~);
 check_user();
@@ -142,7 +142,7 @@ check_admin();
 
 note 'testing change category name into same name with visible changed';
 $testkats[1][2] = 1;
-$t->post_ok('/options/admincatmod/2', form => {overwriteok => 1, catname => $testkats[1][1], visible => 1})
+$t->post_ok('/options/admin/catmod/2', form => {overwriteok => 1, catname => $testkats[1][1], visible => 1})
   ->status_is(200);
 info(qq~Kategorie &quot;$testkats[1][1]&quot; geändert~);
 check_user();
@@ -150,7 +150,7 @@ check_admin();
 
 note 'testing change category name into same name with visible unchanged';
 $testkats[1] = [ 2, rstr(), 1 ];
-$t->post_ok('/options/admincatmod/2', form => {overwriteok => 1, catname => $testkats[1][1], visible => 1})
+$t->post_ok('/options/admin/catmod/2', form => {overwriteok => 1, catname => $testkats[1][1], visible => 1})
   ->status_is(200);
 info(qq~Kategorie &quot;$testkats[1][1]&quot; geändert~);
 check_user();
@@ -158,7 +158,7 @@ check_admin();
 
 note 'testing change category name into same name with invisible changed';
 $testkats[1] = [ 2, rstr(), 0 ];
-$t->post_ok('/options/admincatmod/2', form => {overwriteok => 1, catname => $testkats[1][1], visible => 0})
+$t->post_ok('/options/admin/catmod/2', form => {overwriteok => 1, catname => $testkats[1][1], visible => 0})
   ->status_is(200);
 info(qq~Kategorie &quot;$testkats[1][1]&quot; geändert~);
 check_user();
@@ -166,7 +166,7 @@ check_admin();
 
 note 'testing change category name into same name with visible changed';
 $testkats[1] = [ 2, rstr(), 1 ];
-$t->post_ok('/options/admincatmod/2', form => {overwriteok => 1, catname => $testkats[1][1], visible => 1})
+$t->post_ok('/options/admin/catmod/2', form => {overwriteok => 1, catname => $testkats[1][1], visible => 1})
   ->status_is(200);
 info(qq~Kategorie &quot;$testkats[1][1]&quot; geändert~);
 check_user();

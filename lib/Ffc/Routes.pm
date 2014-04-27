@@ -90,24 +90,29 @@ sub _install_routes_options {
       ->name("set_$_")
         for qw(email password);
 
+    # Administratorenoptionen
+    my $oa = $o->bridge('/admin')
+               ->to('options#check_admin')
+               ->name('adminoptions');
+
     # Benutzeradministration
-    $o->post('/adminuseradd')
+    $oa->post('/useradd')
       ->to('options#useradmin')
       ->name('adminuseradd');
-    $o->post('/adminusermod/:username', [username => $Ffc::Usrqr])
+    $oa->post('/usermod/:username', [username => $Ffc::Usrqr])
       ->to('options#useradmin')
       ->name('adminusermod');
 
     # Kategorienadministration
-    $o->post('/admincatadd')
+    $oa->post('/catadd')
       ->to('options#categoryadmin')
       ->name('admincatadd');
-    $o->post('/admincatmod/:catid', [catid => $Ffc::Digqr])
+    $oa->post('/catmod/:catid', [catid => $Ffc::Digqr])
       ->to('options#categoryadmin')
       ->name('admincatmod');
 
     # Boardeinstellungen
-    $o->post('/adminboardsettings/:optionkey', [optionkey => $Ffc::Optky])
+    $oa->post('/boardsettings/:optionkey', [optionkey => $Ffc::Optky])
       ->to('options#boardsettingsadmin')
       ->name('boardsetting');
 }

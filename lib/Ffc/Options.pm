@@ -7,6 +7,16 @@ use Ffc::Options::AdminUser;
 use Ffc::Options::AdminCategories;
 use Ffc::Options::AdminBoardsettings;
 
+sub check_admin {
+    my $c = shift;
+    unless ( $c->session->{admin} ) {
+        $c->set_error('Nur Administratoren dürfen das');
+        $c->options_form();
+        return;
+    }
+    return 1;
+}
+
 sub options_form {
     my $c = shift;
     $c->stash(act => 'options');
