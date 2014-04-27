@@ -46,7 +46,9 @@ sub boardsettingsadmin {
 
     my ( $tit, $re, $err ) = @{ ( grep {$optkey eq $_->[0]} @Settings )[0] }[1,2,6];
     if ( $optvalue =~ $re ) {
-# ...
+        $c->dbh->do('UPDATE "config" SET "value"=? WHERE "key"=?',
+            undef, $optvalue, $optkey);
+        $c->configdata->{$optkey} = $optvalue;
         $c->set_info("$tit geändert");
     }
     else {
