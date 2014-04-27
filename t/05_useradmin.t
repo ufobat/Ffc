@@ -5,7 +5,7 @@ use lib "$FindBin::Bin/lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 341;
+use Test::More tests => 588;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -16,6 +16,7 @@ sub logout      { Testinit::test_logout( $t                             ) }
 sub error_login { Testinit::test_error(  $t, 'Fehler bei der Anmeldung' ) }
 sub error       { Testinit::test_error(  $t, @_                         ) }
 sub info        { Testinit::test_info(   $t, @_                         ) }
+sub trandstr    { Testinit::test_randstring(                            ) }
 
 sub get_users   { 
     $dbh->selectall_arrayref('SELECT name, active, admin FROM users ORDER BY id')
@@ -243,4 +244,83 @@ $t->get_ok('/options/form')
   ->content_like(qr'active activeoptions">Optionen<')
   ->content_unlike(qr'Neuen Benutzer anlegen')
   ->content_unlike(qr'<form action="/options/adminuseradd#useradmin" method="POST">');
+
+note 'show user email adresses for administrators';
+my @users = ([$user,'', $pass]);
+
+sub add_testuser {
+    my $email = shift() ? 1 : '';
+    note 'generate new test users';
+    note 'test user has email adress' if $email;
+    my ( $user, $pass ) = (trandstr(), trandstr());
+    $email = trandstr().'@home.de' if $email;
+    $t->post_ok('/options/adminuseradd', form => {username => $user, newpw1 => $pass, newpw2 => $pass, active => 1})
+      ->status_is(200);
+    info(qq~Benutzer \&quot;$user\&quot; angelegt~);
+    if ( $email ) {
+        Testinit::test_login( $t, $user, $pass );
+        $t->post_ok('/options/email', form => { email => $email })
+          ->status_is(200);
+        info('Email-Adresse geändert');
+        admin_login();
+    }
+    push @users, [$user, $email, $pass];
+}
+sub test_emailadresses {
+    note 'check that user email adresses visible for admin';
+    for my $u ( @users ) {
+        $t->get_ok('/options/form');
+        if ( $u->[1] ) {
+            $t->content_like(
+             qr~<h2>Benutzer &quot;$u->[0]&quot; ändern \($u->[1]\):</h2>~);
+        }
+        else {
+            $t->content_like(
+             qr~<h2>Benutzer &quot;$u->[0]&quot; ändern:</h2>~);
+        }
+    }
+}
+sub test_emailadresslist {
+    note 'check that user email adress list visible for admin';
+    my $emailadresslist = join ';', map { $_->[1] || () } sort {uc($a->[0]) cmp uc($b->[0])} @users;
+    $t->get_ok('/options/form');
+    if ( $emailadresslist ) {
+        $t->content_like(qr~<h2>Liste verfügbarer Emailadressen:</h2>~)
+          ->content_like(qr~<p>$emailadresslist</p>~);
+    }
+    else {
+        $t->content_unlike(qr~<h2>Liste verfügbarer Emailadressen:</h2>~);
+    }
+}
+sub test_no_other_emailadresses_visible {
+    note 'check that normal users are unable to see user email adresses';
+    for my $u ( @users ) {
+        Testinit::test_login( $t, $u->[0], $u->[2] );
+        $t->get_ok('/options/form')
+          ->content_like(qr~Angemeldet als "$u->[0]"~)
+          ->content_unlike(qr~<h2>Liste verfügbarer Emailadressen:</h2>~);
+        for my $tu ( @users ) {
+            next if $tu->[0] eq $u->[0];
+            next unless $tu->[1];
+            $t->content_unlike(qr~$tu->[1]~);
+        }
+    }
+    admin_login();
+}
+
+test_no_other_emailadresses_visible();
+test_emailadresslist();
+test_emailadresses();
+add_testuser(1);
+test_no_other_emailadresses_visible();
+test_emailadresslist();
+test_emailadresses();
+add_testuser();
+test_no_other_emailadresses_visible();
+test_emailadresslist();
+test_emailadresses();
+add_testuser(1);
+test_no_other_emailadresses_visible();
+test_emailadresslist();
+test_emailadresses();
 

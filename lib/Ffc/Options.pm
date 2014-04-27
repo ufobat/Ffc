@@ -20,7 +20,7 @@ sub options_form {
         my $userlist = $c->dbh->selectall_arrayref(
                 'SELECT u.id, u.name, u.active, u.admin, u.email FROM users u WHERE UPPER(u.name) != UPPER(?) ORDER BY UPPER(u.name) ASC'
                 , undef, $c->session->{user});
-        $c->stash(useremails => join ';', map { $_->[4] ? $_->[4] : () } @$userlist );
+        $c->stash(useremails => join ';', map { $_->[4] || () } @$userlist );
         $c->stash(userlist => $userlist);
         $c->stash(categories =>
             $c->dbh->selectall_arrayref(

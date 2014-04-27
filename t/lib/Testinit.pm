@@ -15,7 +15,7 @@ use lib
 our $Script 
     = catfile splitdir(File::Basename::dirname(__FILE__)),
         '..', '..', 'script', 'init.pl';
-our @Chars = ('a' .. 'z', 'A' .. 'Z', 0 .. 9, ' ');
+our @Chars = ('a' .. 'z', 'A' .. 'Z', 0 .. 9);
 {
     my %Strings;
     my $ts = sub { join '', map { $Chars[int rand @Chars] } 1 .. 10 };
