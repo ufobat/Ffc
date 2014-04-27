@@ -27,6 +27,7 @@ sub options_form {
                 'SELECT c.id, c.name, c.hidden FROM categories c ORDER BY c.hidden ASC, UPPER(c.name) ASC'));
     }
     else {
+        $c->stash(useremails => '');
         $c->stash(userlist   => []);
         $c->stash(categories => []);
     }
