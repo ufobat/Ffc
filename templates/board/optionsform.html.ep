@@ -151,5 +151,21 @@
 </div>
 % }
 </div>
-%}
+<div class="postbox options categoryadmin">
+    <a name="boardsettingsadmin"></a>
+    <h1>Foreneinstellungen</h1>
+% for my $o ( @$configoptions ) {
+<div class="suboption categoryadmin_form">
+    <h2><%= $o->[4] %>:</h2>
+    <p>(<%= $o->[5] %>)</p>
+    <form action="<%= url_for boardsetting => { optionkey => $o->[0] } %>#boardsettingsadmin" method="POST">
+        <p>
+            <input type="<%= $o->[3] %>" name="optionvalue" value="<%= $configdata->{$o->[0]} %>" />
+            <button type="submit" class="linkalike">Speichern</button>
+        </p>
+    </form>
+</div>
+% }
+</div>
+% }
 

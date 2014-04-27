@@ -105,6 +105,11 @@ sub _install_routes_options {
     $o->post('/admincatmod/:catid', [catid => $Ffc::Digqr])
       ->to('options#categoryadmin')
       ->name('admincatmod');
+
+    # Boardeinstellungen
+    $o->post('/adminboardsettings/:optionkey', [optionkey => $Ffc::Optky])
+      ->to('options#boardsettingsadmin')
+      ->name('boardsetting');
 }
 
 sub _install_routes_avatars {

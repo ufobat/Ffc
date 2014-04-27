@@ -9,6 +9,8 @@ our $Usrqr = qr(\w{2,32})xmso;
 our $Catqr = qr(.{1,64})xmso;
 our $Bgcqr = qr(\w{3,32})xmso;
 our $Fszqr = qr(-?\d{1,3})xmso;
+our $Optky 
+    = qr(title|postlimit|sessiontimeout|commoncattitle|urlshorten|backgroundcolor|fixbackgroundcolor|favicon)xmso;
 
 # This method will run once at server start
 sub startup {
