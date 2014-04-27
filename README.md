@@ -12,87 +12,54 @@ Features
 
 ![Screenshot](https://raw.github.com/4FriendsForum/Ffc/master/public/theme/Screenshot.png)
 
-* Grundlegende Aspekte:
-  * Stabilität
-  * Datensicherheit
-  * Vertraulichkeit
-  * Einfache schnell zugängliche Bedienung
-  * Schlanke Präsentation
-  * Ressourcenschohnende Darbietung
-  * Präsentation eher wie ein Blog aufgemacht
-  * Einfache klare Datenhaltung (alle Daten werden grundlegend in einer zentralen Tabelle erfasst)
-  * Benutzeranmeldung für die Arbeit mit dem System ist erforderlich
-  * Benutzer müssen von einem Administrator angelegt werden und können sich nicht selber registrieren
-  * Umfangreiche Testsuite mit starkem Fokus auf Datensicherheit (wer darf was online sehen)
-* Vermeiden von Ballast und Ablenkungen, Focus auf die Textbeiträge
-  * Beitragstitel
-  * Überbordender Eyecandy
-  * Featuritis
-  * Bedienung ist komplett ohne Javascript möglich
-* Teilbereiche:
-  * Diskussionsforum mit (optionalen) Kategorien
-  * Nachrichtenplattform für Privatnachrichten an einzelne Teilnehmer
-  * Notizen für den eigenen Bedarf
-* Weiterführende Features:
-  * Kategorien werden fest in der Datenbank angelegt
-  * Beiträge erstellen, ändern und löschen
-  * Markierungen und Anzeige der Anzahl neuer Beiträge in den Kategorien und in den Teilbereichen
-  * Dateiaustausch (Anhänge an Beiträge hinzufügen und entfernen)
-  * Benutzeravatarbildchen
-  * Optionale Anzeigethemen zur Auswahl mit Voreinstellungsmöglichkeit über die Anwendungskonfiguration
-  * Anzeige für kleine Mobilgeräte über einen Link auf jeder Seite umschalten für das Gerät
-  * Suche in Beiträgen über einfaches Suchfeld
-  * Benutzer können deaktiviert werden
-  * Benutzer können Administratoren sein (für Benutzerverwaltung)
-  * Textformatierung bei der Anzeige
-    * Links werden als HTML-Links dargestellt
-    * Bilder werden als eine Art Thumbnail eingeblendet (kann in den Optionen geändert werden)
-    * Textsmileys werden durch Bildchen ersetzt (kann in den Optionen geändert werden)
-    * Einfache Textauszeichnung: +fett+, ~kursiv~, _unterstrichen_, -durchgestrichen-, !wichtig!, *Gesten*, "Zitate"
-    * Footerlinks können in der Konfiguration festgelegt werden
-    * MySQL und SQLite wird unterstützt
-  * Optionsdialog
-    * Anzeige von Bildern, Avataren und Smileys kann in den Optionen abgeschalten werden
-    * Thema kann ausgewählt werden (kann vom Administrator unterbunden werden in der Konfiguration)
-    * Hintergrundfarbe kann ausgewählt werden (kann vom Administrator unterbunden werden in der Konfiguration, funktioniert nur bei Themen ohne Hintergrundbilder oder mit Transparenzen im Hintergrundbild)
-    * Schriftgrößeneinstellung kann in mehreren Stufen geändert werden
-    * Emailadresse kann angegeben werden
-    * Passwort kann geändert werden
-    * Kategorien können vom Benutzer wahlweise ausgeblendet werden
-    * Administrationseinstellungen (nur für Administratoren verfügbar)
-      * Benutzer anlegen
-      * Benutzer aktivieren und deaktivieren
-      * Benutzer als Administrator (Benutzerverwaltung) setzen oder dieses Recht entziehen
-      * Benutzerpassworte ändern
-
-Datenstruktur
--------------
-
-Alles ist ein Beitrag.
-
-Beiträge haben einen Text, ein Erstelldatum und einen Urheber.
-
-Beiträge ohne Zielperson (```to```) gelten als öffentliche Forenbeiträge.
-Beiträge mit anderer Zielperson, als der Urheber ist, gelten als 
-Privatnachrichten. Beiträge mit dem Urheber zusätzlich als Zielperson
-gelten als eigene Notizen.
-
-Bei Bedarf werden an die Beiträge aus dem Forum über eine Extratabelle
-Kategorien angefügt. Wird das Kategoriefeld leer gelassen, gelten die
-Beiträge als allgemeine Beiträge.
-
-Benutzer können nur von bestehenden Administratorbenutzern hinzugefügt
-werden, können ihr Passwort und ihre Emailadresse aber selber ändern.
-
-Jedem Beitrag kann genau eine Datei angehängt werden ("Zwang" zur 
-Archivierung und Komprimierung). Diese Datei wird dann über einen
-Beitragsindex referenziert im Dateisystem abgelegt und kann entsprechend
-von allen oder von den Zielpersonen des Beitrages abgerufen werden.
+* Flaches Forum (blogartige Darstellung) für alle Benutzer zugänglich
+* Benutzer werden händisch von einem Administrator angelegt und müssen sich anmelden
+* Private Nachrichten zwischen einzelnen Benutzern möglich
+* Eigene Notizen für die Benutzer selbst möglich
+* Das Forum kann mit einem einzigen Kommando eingerichtet werden, wobei ein initialer Administratoraccount bereits angelegt wird
+* Das Forum arbeitet innerhalb einesfestgelegten Verzeichnisses
+* Dateien für Uploads und Avatare werden in Unterverzeichnissen abgelegt
+* Alle Benutzerdaten, Foreneinstellungen und Beiträge werden in einer SQLite-Datenbank innerhalb des festgelegten Verzeichnisses abgelegt
+* Das festgelegte Foremverzeichnis ist transparent und portabel
+* Forenbeiträge können in von Administratoren verwalteten Kategorien abgelegt werden
+* Foren-, Nachrichten- und Notizbeiträge enthalten primär lediglich den Text ohne Titel
+* Diese Beiträge haben alle intern die selbe technische Struktur
+* Foren- und Nachrichtenbeiträge können Kommentiert werden
+* Allen Beiträgen können Dateien via Upload angehängt werden durch den Beitragsersteller
+* Uploads können jederzeit gelöscht werden vom hochladenden Benutzer gelöscht werden
+* Foren- und Nachrichtenbeträge können in einer flachen Struktur von allen Teilnehmern kommentiert werden
+* Foren- und Nachrichtenbeiträge können vom Verfasser gelöscht und verändert werden, solange sie nicht kommentiert wurden
+* Notizen können jederzeit vom Verfasser gelöscht und verändert werden
+* Alle Beiträge und Kommentare können mit einer Art Markup versehen werden
+* Links in Beiträgen werden automatisch erkannt und als HTML-Links dargestellt
+* Bilder in Beiträgen werden automatisch erkannt und als HTML-Bildervorschauen dargestellt
+* Bilder in Anhängen werden automatisch erkannt und als HTML-Bildervorschauen dargestellt
+* Forenbeiträge können durchsucht werden über ein einfaches Suchfeld
+* Foreneinstellungen, die von Administratoren vorgenommen werden können:
+  * Benutzerverwaltung mit Passwortangange, aktivieren und deaktiveren von Benutzern sowie Adminstratorenstatus setzen
+  * Webseitenhintergrundfarbe und ob Benutzer diese Farbe selber noch ändern können
+  * Favoritenicon und Webseitentitel
+  * Anzahl der gleichzeitig angezeigten Beiträge auf einer Seite
+  * Anzahl der Buchstaben die von einer URL dargestellt werden (URL-Shortener), die vollständige URL wird über ein Tooltip dargestellt
+  * Titel der allgemeinen Kategorie, die immer da ist (Kategorien werden ausgeblendet, wenn es nur diese Kategorie gibt)
+* Foreneinstellungen, die von Benutzern vorgenommen werden können:
+  * Passwortwechsel
+  * Email-Adresse angeben (diese kann vom Administrator lediglich ausserhalb des Forums verwendet werden)
+  * Hintergrundfarbe der Forenwebseite (falls der Administrator das erlaubt, was voreingestellt ist)
+  * Ein Avatarbild hochladen, was neben jedem Beitrag oder Kommentar dargestellt wird (Avatar des Verfassers)
+  * Schriftgröße und Breitbildanzeige (Normalanzeige ist so eine schmale blogartige Seite) können Geräteabhängig eingerichtet werden
+* Das Forum verwendet folgende technische Komponenten:
+  * Perl Version 5.014 oder höher
+  * Mojolicious 4.0 oder höher
+  * DBI Version 1.63 oder höher
+  * DBD::SQLite Version 1.4 oder höher
+  * SQLite Version 3.7.3 oder höher
+* Die Software enthält eine umfangreiche Testsuite, in der besonderer Wert auf Datensicherheit und Zuverlässigkeit gelegt wird
 
 Copyright und Lizenz
 ====================
 
-Copyright (C) 2012-2013 by Markus Pinkert
+Copyright (C) 2012-2014 by Markus Pinkert
 
 This application is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
 
