@@ -22,14 +22,14 @@ our @Settings = (
         'Diese Überschrift wird für die erste Kategorie verwendet, welche immer da ist und bei der man üblicherweise startet als Benutzer, sie wird jedoch nicht angezeigt, wenn keine weiteren Kategorien definiert und sichtbar sind',
         'Der Name der allgemeinen Kategorie muss zwischen zwei und 256 Zeichen lang sein' ],
     [ urlshorten => 'Maximale Länge für die URL-Darstellung', qr(\d+)xmso, 'number',
-        'Längen-Kürzung fürURL-Anzeige ändern',
+        'Längen-Kürzung für URL-Anzeige ändern',
         'URLs werden in Beiträgen auf diese Anzahl von Zeichen in der Darstellung zurecht gekürzt, damit die in den Beiträgen nicht zu lang werden, die gesamte URL ist jedoch im Tooltip ersichtlich',
         'Die Länge, auf die URLs in der Anzeige gekürzt werden, muss eine Zahl sein' ],
     [ backgroundcolor => 'Hintergrundfarbe', qr(\#[a-f0-9]{6}|\w{2,128})xmsoi, 'text',
         'Hintergrundfarbe für die Webseite ändern',
-        'Hier kann die Hintergrundfarbe für die Webseite in hexadezimaler Schreibweise mit führender "#" oder als Webfarbenname angegeben werden, welche Benutzer stanardmäßig angezeigt bekommen',
+        'Hier kann die Hintergrundfarbe für die Webseite in hexadezimaler Schreibweise mit führender "#" oder als Webfarbenname angegeben werden, welche Benutzer stanardmäßig angezeigt bekommen, Achtung: Wenn man selber eine Hintergrundfarbe bei sich eingestellt hat, dann zeigt diese Option bei einem selbst keine Wirkung, falls Benutzern erlaubt ist, die Hintergrundfarbe zu ändern',
         'Die Hintergrundfarbe für die Webseite muss in hexadezimaler Schreibweise mit führender "#" oder als Webfarbenname angegeben werden' ],
-    [ fixbackgroundcolor => 'Hintergrundfarbe unveränderlich vorgegeben', qr(1?), 'checkbox',
+    [ fixbackgroundcolor => 'Hintergrundfarbe unveränderlich vorgegeben', '', 'checkbox',
         'Hintergrundfarbe für Benutzer unveränderbar machen',
         'Hier kann man die vorgegebene Hintergrundfarbe für alle Benutzer zwingend machen, so dass die Benutzer die Farbe nicht ändern können und auch keinen entsprechenden Dialog in den Optionen angeboten bekommen, ist das Häkchen gesetzt, können Benutzer die Hintergrundfarbe nicht ändern',
         'Der Hintergrundfarbzwang muss ein Schalter sein' ],
@@ -45,7 +45,11 @@ sub boardsettingsadmin {
     my $optvalue = $c->param('optionvalue') // '';
 
     my ( $tit, $re, $err ) = @{ ( grep {$optkey eq $_->[0]} @Settings )[0] }[1,2,6];
-    if ( $optvalue =~ $re ) {
+    unless ( $tit ) {
+        $c->options_form();
+        return; # theoretisch nicht möglich laut routen
+    }
+    if ( ( $re and $optvalue =~ $re ) or ( not $re and ( $optvalue eq '1' or not $optvalue ) ) ) {
         $c->dbh->do('UPDATE "config" SET "value"=? WHERE "key"=?',
             undef, $optvalue, $optkey);
         $c->configdata->{$optkey} = $optvalue;
