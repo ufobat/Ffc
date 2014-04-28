@@ -156,14 +156,14 @@
     <h1>Foreneinstellungen</h1>
 % for my $o ( @$configoptions ) {
 <div class="suboption categoryadmin_form">
-    <h2><%= $o->[4] %>:</h2>
-    <p>(<%= $o->[5] %>)</p>
+    <h2><%= $o->[5] %>:</h2>
+    <p>(<%= $o->[6] %>)</p>
     <form action="<%= url_for boardsetting => { optionkey => $o->[0] } %>#boardsettingsadmin" method="POST">
         <p>
-% if ( $o->[3] eq 'checkbox' ) {
-            <input type="<%= $o->[3] %>" name="optionvalue" value="1"<%= $configdata->{$o->[0]} ? ' checked="checked"' : '' %> />
+% if ( $o->[4] eq 'checkbox' ) {
+            <input type="checkbox" name="optionvalue" value="1"<%= $configdata->{$o->[0]} ? ' checked="checked"' : '' %> />
 % } else {
-            <input type="<%= $o->[3] %>" name="optionvalue" value="<%= $configdata->{$o->[0]} %>" />
+            <input type="<%= $o->[4] %>" name="optionvalue" value="<%= $configdata->{$o->[0]} %>" />
 % }
             <button type="submit" class="linkalike">Speichern</button>
         </p>

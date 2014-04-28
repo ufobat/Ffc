@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 439;
+use Test::More tests => 471;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -23,29 +23,29 @@ my @Settings = (
 #               [good values], [bad values],
 #               optionsheading, optionsexplaination, errormessage ]
     [ title => 'Webseitentitel', 'text',
-        [rstr(), rstr()], ['a', ('a' x 257)],
+        [rstr(), rstr(), scalar('a' x 256)], ['a', scalar('a' x 257)],
         'Der Titel muss zwischen zwei und 256 Zeichen lang sein' ],
     [ postlimit => 'Beitragsanzahl', 'number',
         [10 + int( rand 90),110 + int(rand 90)],['asdf'],
         'Die Anzahl gleichzeitig angezeigter Beiträge muss eine Zahl sein' ],
     [ sessiontimeout => 'Maximale Benutzersitzungsdauer', 'number',
         [10 + int( rand 90),110 + int(rand 90)],['asdf'],
-        'Die Zeit der Benutzersitzungsmaximallänge muss eine Zahl (Sekunden) sein' ],
+        'Die Zeit der Benutzersitzungsmaximallänge muss eine Zahl in Sekunden sein' ],
     [ commoncattitle => 'Titel der allgemeinen Kategorie', 'text',
-        [rstr(), rstr()], ['a', ('a' x 257)],
+        [rstr(), rstr(), scalar('a' x 256)], ['a', scalar('a' x 257)],
         'Der Name der allgemeinen Kategorie muss zwischen zwei und 256 Zeichen lang sein' ],
     [ urlshorten => 'Maximale Länge für die URL-Darstellung', 'number',
         [10 + int( rand 90),110 + int(rand 90)],['asdf'],
         'Die Länge, auf die URLs in der Anzeige gekürzt werden, muss eine Zahl sein' ],
     [ backgroundcolor => 'Hintergrundfarbe', 'text',
-        ['#aabb99', 'SlateBlue'], ['#aabbfg', 'asdf ASD', '11$AA', '#aacc999', 'a', ('a' x 257), 'aa#bbcc'],
-        'Die Hintergrundfarbe für die Webseite muss in hexadezimaler Schreibweise mit führender "#" oder als Webfarbenname angegeben werden' ],
+        ['#aaBB99', '#aabb99', '', 'SlateBlue', scalar('a' x 128), 'aa'], ['#aabbfg', 'asdf ASD', '11$AA', '#aacc999', 'a', scalar('a' x 129), 'aa#bbcc'],
+        'Die Hintergrundfarbe für die Webseite muss in hexadezimaler Schreibweise mit führender Raute oder als Webfarbenname angegeben werden' ],
     [ fixbackgroundcolor => 'Hintergrundfarbe unveränderlich vorgegeben', 'checkbox',
         [0,1,'',1], ['asdf', 22],
         'Der Hintergrundfarbzwang muss ein Schalter sein' ],
     [ favicon => 'Favoritenicon-Link', 'text',
-        [rstr(), rstr()], ['a', ('a' x 257)],
-        'Die URL zum Favoritenicon muss zwischen zwei und 256 Zeichen lang sein' ],
+        [rstr(), '', rstr(), scalar('a' x 256)], [scalar('a' x 257)],
+        'Die URL zum Favoritenicon darf höchstens 256 Zeichen lang sein' ],
 );
 
 note qq~checking that admins have input fields available for boardsettings~;
@@ -83,7 +83,7 @@ for my $s ( @Settings ) {
     $t->post_ok($url)
       ->status_is(200)
       ->content_like(qr'active activeoptions">Optionen<');
-    if ( $itype eq 'checkbox' ) {
+    if ( $key =~ m/favicon|backgroundcolor|fixbackgroundcolor/xmso ) {
         info($info);
     }
     else {
@@ -91,14 +91,14 @@ for my $s ( @Settings ) {
     }
     for my $i ( @$badv ) {
         note qq~testing with bad value "$i"~;
-        $t->post_ok($url, { form => { optionsvalue => $i } } )
+        $t->post_ok($url, form => { optionvalue => $i } )
           ->status_is(200)
           ->content_like(qr'active activeoptions">Optionen<');
         error($error);
     }
     for my $i ( @$goodv ) {
         note qq~testing with good value "$i"~;
-        $t->post_ok($url, { form => { optionsvalue => $i } } )
+        $t->post_ok($url, form => { optionvalue => $i } )
           ->status_is(200)
           ->content_like(qr'active activeoptions">Optionen<');
         info($info);
