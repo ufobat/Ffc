@@ -54,6 +54,8 @@ sub logout {
     my $c = shift;
     my $s = $c->session;
     delete $s->{user};
+    delete $s->{backgroundcolor};
+    delete $s->{admin};
     $c->set_info('Abmelden erfolgreich');
     $c->render(template => 'auth/loginform');
 }
