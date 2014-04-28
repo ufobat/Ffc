@@ -7,14 +7,15 @@ use Testinit;
 use Ffc::Plugin::Config;
 
 use Test::Mojo;
-use Test::More tests => 691;
+use Test::More tests => 711;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
 
-sub login { Testinit::test_login( $t, @_ ) }
-sub error { Testinit::test_error( $t, @_ ) }
-sub info  { Testinit::test_info(  $t, @_ ) }
+sub login  { Testinit::test_login(  $t, @_ ) }
+sub logout { Testinit::test_logout( $t, @_ ) }
+sub error  { Testinit::test_error(  $t, @_ ) }
+sub info   { Testinit::test_info(   $t, @_ ) }
 
 Testinit::test_add_users($t, $admin, $apass, $user1, $pass1, $user2, $pass2);
 
@@ -95,6 +96,8 @@ sub test_bgcolor {
         else {
             $t->content_unlike(qr~background-color:~);
         }
+        logout();
+        $t->content_unlike(qr~background-color:~);
 
         login($user2, $pass2);
         $t->get_ok('/')
