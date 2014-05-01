@@ -32,7 +32,7 @@ our @Settings = (
         'Hintergrundfarbe für Benutzer unveränderbar machen',
         'Hier kann man die vorgegebene Hintergrundfarbe für alle Benutzer zwingend machen, so dass die Benutzer die Farbe nicht ändern können und auch keinen entsprechenden Dialog in den Optionen angeboten bekommen, ist das Häkchen gesetzt, können Benutzer die Hintergrundfarbe nicht ändern',
         'Der Hintergrundfarbzwang muss ein Schalter sein' ],
-    [ favicon => 'Favoritenicon-Link', qr(\A.{0,256}\z)xmso, 1, 'text',
+    [ favicon => 'Favoritenicon-Link', qr(\A.{0,256}\z)xmso, 1, 'url',
         'Link zum Favoritenicon ändern',
         'Dieser Link kann statt des Standard-Favoritenicons verwendet werden, welches verwendet wird, sollte diese Option leer gelassen werden',
         'Die URL zum Favoritenicon darf höchstens 256 Zeichen lang sein' ],
