@@ -14,12 +14,15 @@ our @Styles = (
     '/theme/breit.css',
 );
 our %Defaults = (
-    favicon        => '/theme/img/favicon.png',
-    commoncattitle => 'Allgemein',
-    title          => 'Ffc Forum',
-    cookiename     => 'Ffc_Forum',
-    urlshorten     => 30,
-    sessiontimeout => 259200,
+    favicon            => '/theme/img/favicon.png',
+    commoncattitle     => 'Allgemein',
+    title              => 'Ffc Forum',
+    cookiename         => 'Ffc_Forum',
+    urlshorten         => 30,
+    sessiontimeout     => 259200,
+    postlimit          => 7,
+    backgroundcolor    => '',
+    fixbackgroundcolor => 0,
 );
 our %FontSizeMap = (
     -3, 0.25,
