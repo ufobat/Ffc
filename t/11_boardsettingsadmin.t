@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 471;
+use Test::More tests => 601;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -102,6 +102,12 @@ for my $s ( @Settings ) {
           ->status_is(200)
           ->content_like(qr'active activeoptions">Optionen<');
         info($info);
+        $t->get_ok('/config')
+          ->status_is(200)
+          ->json_is("/$key", $i);
+        my $r = $dbh->selectall_arrayref('SELECT value FROM config WHERE key=?', undef, $key);
+        is ref($r), 'ARRAY', 'config value retrieved from database';
+        is $r->[0]->[0], $i, 'config value in database ok';
     }
 }
 

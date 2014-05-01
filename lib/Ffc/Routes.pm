@@ -3,19 +3,22 @@ use strict; use warnings; use utf8;
 
 sub install_routes {
     my $l = _install_routes_auth($_[0]);
-
-    # Standardseitenauslieferungen
-    $l->any('/')->to('board#frontpage')->name('show');
-    $l->get('/session')
-      ->to( sub { $_[0]->render( json => $_[0]->session() ) } )
-      ->name('sessiondata');
-
-    # Optionen-Routen
+    _install_routes_std($l);
     _install_routes_avatars($l);
     _install_routes_options($l);
     _install_routes_forum($l);
     _install_routes_pmsgs($l);
     _install_routes_notes($l);
+}
+
+sub _install_routes_std {
+    my $l = $_[0];
+    # Standardseitenauslieferungen
+    $l->any('/')->to('board#frontpage')->name('show');
+    $l->get('/session' => sub { $_[0]->render( json => $_[0]->session() ) } )
+      ->name('sessiondata');
+    $l->get('/config' => sub { $_[0]->render( json => $_[0]->configdata() ) } )
+      ->name('configdata');
 }
 
 sub _install_routes_auth {
