@@ -13,14 +13,14 @@ my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 Testinit::test_login($t, $admin, $apass);
 my ( $user, $pass ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
 Testinit::test_add_user( $t, $admin, $apass, $user, $pass );
-Testinit::test_login($t, $admin, $apass);
 
+note 'test /session as admin';
+Testinit::test_login($t, $admin, $apass);
 $t->get_ok('/session')
   ->status_is(200)
   ->json_is('/admin', 1)
   ->json_is('/user', $admin)
   ->json_is('/backgroundcolor', '');
-
 $t->get_ok('/options/bgcolor/color/Green')->status_is(200);
 $t->get_ok('/session')
   ->status_is(200)
@@ -28,6 +28,7 @@ $t->get_ok('/session')
   ->json_is('/user', $admin)
   ->json_is('/backgroundcolor', 'Green');
 
+note 'test /session as normal user';
 Testinit::test_login($t, $user, $pass);
 $t->get_ok('/session')
   ->status_is(200)
@@ -41,6 +42,7 @@ $t->get_ok('/session')
   ->json_is('/user', $user)
   ->json_is('/backgroundcolor', 'Yellow');
 
+note 'test /config with defaults: '.%Ffc::Plugins::Config::Defaults; # doof, aber sonst gibts ne warning
 my %settings = %Ffc::Plugins::Config::Defaults;
 delete $settings{cookiename};
 
@@ -60,6 +62,7 @@ test_config();
 Testinit::test_login($t, $user, $pass);
 test_config();
 
+note 'test /config with custom settings';
 %settings = (
     title => 'Webseitentitel',
     postlimit => 12,
