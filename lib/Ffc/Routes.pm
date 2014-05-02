@@ -135,7 +135,7 @@ sub _install_switch_bridge {
     my $r = $_[0]->bridge("/$n")
                  ->under(sub{$_[0]->stash(act => $n)})
                  ->name("switch_${n}_bridge");
-    _install_show_route($r, $_[1]);
+    _install_show_route($r, $n);
     return $r;
 }
 
@@ -176,7 +176,7 @@ sub _install_edit_routes {
       ->to('board#delete_post_do')
       ->name("delete_post$n");
 
-    _install_upload_routes($r, $r);
+    _install_upload_routes($r, $n);
 }
 
 sub _install_upload_routes {

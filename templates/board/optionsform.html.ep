@@ -18,6 +18,7 @@
 % unless ( configdata()->{fixbackgroundcolor} ) {
 <div class="postbox options">
     <h1>Einstellungen zur Hintergrundfarbe des Forums</h1>
+    <p>(Die Hintergrundfarbe muss eine Webfarbe (siehe Wikipedia) oder eine Angabe in hexadizimaler Farbschreibweise (<code>#00aaff</code>) sein - moderne Webbrowser bieten an dieser Stelle auch eine einfache Farbauswahl an, in der man sich die gewünschte Farbe einfach per Klick auswählen kann)</p>
     <form action="<%= url_for 'bg_color_form' %>#bgcolor" title="Hintergrundfarbe" method="POST">
         <input type="color" name="bgcolor" value="<%= session()->{backgroundcolor} || $backgroundcolor || 'gainsboro' %>" />
         <button type="submit" class="linkalike">Speichern</button>
