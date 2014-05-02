@@ -7,7 +7,7 @@ use Testinit;
 use Ffc::Plugin::Config;
 
 use Test::Mojo;
-use Test::More tests => 711;
+use Test::More tests => 926;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
@@ -74,16 +74,28 @@ sub test_font_size {
 
 sub test_bgcolor {
     note 'checking background colors';
-    my $i = int rand(@Ffc::Plugin::Config::Colors - 3);
-    for my $c ( @Ffc::Plugin::Config::Colors[$i .. $i + 3], '' ) {
+    my @good = ( '#aaBB99', '#aabb99', '', 'SlateBlue', scalar('a' x 128), 'aa' );
+    my @bad  = ( '#aabbfg', 'asdf ASD', '11$AA', '#aacc999', 'a', scalar('a' x 129), 'aa#bbcc' );
+    my $goodmsg   = 'Hintergrundfarbe angepasst';
+    my $goodreset = 'Hintergrundfarbe zurück gesetzt';
+    my $badmsg    = 'Die Hintergrundfarbe für die Webseite muss in hexadezimaler Schreibweise mit führender Raute oder als Webfarbenname angegeben werden';
+
+    note 'color reset without form parameter';
+    login($user1, $pass1);
+    $t->post_ok("/options/bgcolor/color", form => {})
+      ->status_is(200)
+      ->content_like(qr'active activeoptions">Optionen<');
+    info('Hintergrundfarbe zurück gesetzt');
+
+    for my $c ( @good ) {
         login($user1, $pass1);
         if ( $c ) {
-            $t->get_ok("/options/bgcolor/color/$c");
-            info('Hintergrundfarbe angepasst');
+            $t->post_ok("/options/bgcolor/color", form => { bgcolor => $c });
+            info($goodmsg);
         }
         else {
             $t->get_ok("/options/bgcolor/none");
-            info('Hintergrundfarbe zurückgesetzt');
+            info($goodreset);
         }
         $t->status_is(200)
           ->content_like(qr'active activeoptions">Optionen<');
@@ -98,6 +110,17 @@ sub test_bgcolor {
         }
         logout();
         $t->content_unlike(qr~background-color:~);
+
+        login($user2, $pass2);
+        $t->get_ok('/')
+          ->status_is(200)
+          ->content_like(qr~Angemeldet als "$user2"~)
+          ->content_unlike(qr~background-color:~);
+    }
+    for my $c ( @bad ) {
+        login($user1, $pass1);
+        $t->post_ok("/options/bgcolor/color", form => { bgcolor => $c });
+        error($badmsg);
 
         login($user2, $pass2);
         $t->get_ok('/')
@@ -201,19 +224,19 @@ sub test_bgcolor_configoptions {
     isnt $sbgcolor, $mbgcolor;
 
     $t->get_ok("/options/bgcolor/none");
-    info('Hintergrundfarbe zurückgesetzt');
+    info('Hintergrundfarbe zurück gesetzt');
     $t->get_ok('/')
       ->status_is(200)
       ->content_like(qr~background-color:\s*$sbgcolor~);
 
-    $t->get_ok("/options/bgcolor/color/$mbgcolor");
+    $t->post_ok("/options/bgcolor/color", form => { bgcolor => $mbgcolor });
     info('Hintergrundfarbe angepasst');
     $t->get_ok('/')
       ->status_is(200)
       ->content_like(qr~background-color:\s*$mbgcolor~);
 
     $t->get_ok("/options/bgcolor/none");
-    info('Hintergrundfarbe zurückgesetzt');
+    info('Hintergrundfarbe zurück gesetzt');
     $t->get_ok('/')
       ->status_is(200)
       ->content_like(qr~background-color:\s*$sbgcolor~);
@@ -228,14 +251,14 @@ sub test_bgcolor_configoptions {
       ->status_is(200)
       ->content_like(qr~background-color:\s*$sbgcolor~);
     
-    $t->get_ok("/options/bgcolor/color/$mbgcolor");
+    $t->post_ok("/options/bgcolor/color", form => { bgcolor => $mbgcolor });
     error('Ändern der Hintergrundfarbe vom Forenadministrator deaktiviert');
     $t->get_ok('/')
       ->status_is(200)
       ->content_like(qr~background-color:\s*$sbgcolor~);
 
     $t->get_ok("/options/bgcolor/none");
-    info('Hintergrundfarbe zurückgesetzt');
+    info('Hintergrundfarbe zurück gesetzt');
     $t->get_ok('/')
       ->status_is(200)
       ->content_like(qr~background-color:\s*$sbgcolor~);

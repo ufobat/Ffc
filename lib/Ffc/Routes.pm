@@ -80,9 +80,9 @@ sub _install_routes_options {
     $b->get('/none')
       ->to('options#no_bg_color')
       ->name('no_bg_color');
-    $b->get('/color/:bgcolor', [bgcolor => $Ffc::Bgcqr])
+    $b->post('/color')
       ->to('options#bg_color')
-      ->name('bg_color');
+      ->name('bg_color_form');
     $o->get('/toggle/cat/:cat', [cat => $Ffc::Catqr])
       ->to('options#toggle_cat')
       ->name('toggle_cat');

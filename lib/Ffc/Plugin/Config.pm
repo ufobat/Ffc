@@ -34,26 +34,6 @@ our %FontSizeMap = (
      3, 1.75,
      4, 2,
 );
-our @Colors = qw(
-    White Azure MintCream Ivory LightCyan Honeydew Snow LightYellow
-    GhostWhite FloralWhite AliceBlue WhiteSmoke Seashell Cornsilk LightGoldenrodYellow LemonChiffon
-    OldLace LavenderBlush Beige Linen PapayaWhip Aquamarine AntiqueWhite Lavender
-    BlanchedAlmond PaleTurquoise MistyRose PaleGreen Bisque Moccasin PaleGoldenrod PowderBlue
-    Gainsboro NavajoWhite Wheat Khaki Yellow PeachPuff GreenYellow LightGreen
-    LightBlue LightGray LightSkyBlue Chartreuse SkyBlue LawnGreen Cyan Aqua
-    Turquoise Pink LightSteelBlue SpringGreen Thistle MediumSpringGreen MediumTurquoise Lime
-    Silver LightPink MediumAquamarine Gold BurlyWood YellowGreen DarkSeaGreen Tan
-    Plum DarkKhaki DarkGray LimeGreen LightSalmon DarkTurquoise SandyBrown MediumSeaGreen
-    CornflowerBlue Violet DeepSkyBlue DarkSalmon LightSeaGreen CadetBlue Goldenrod Orange
-    RosyBrown HotPink LightCoral Salmon Orchid LightSlateGray Coral SteelBlue
-    MediumPurple DarkOrange DodgerBlue Peru SlateGray Gray PaleVioletRed Tomato
-    MediumSlateBlue OliveDrab SeaGreen DarkGoldenrod DeepPink MediumOrchid ForestGreen RoyalBlue
-    OrangeRed DarkCyan IndianRed Olive SlateBlue Magenta Fuchsia Chocolate
-    DimGray Teal DarkOrchid Red MediumVioletRed Crimson Green DarkOliveGreen
-    BlueViolet Sienna FireBrick Brown DarkSlateGray DarkGreen DarkSlateBlue SaddleBrown
-    DarkViolet DarkMagenta Purple DarkRed Maroon Blue Indigo MidnightBlue
-    MediumBlue DarkBlue Navy Black
-);
 
 sub register {
     my ( $self, $app ) = @_;

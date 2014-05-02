@@ -21,7 +21,6 @@ sub options_form {
     my $c = shift;
     $c->stash(act => 'options');
     $c->stash(fontsizes => \%Ffc::Plugin::Config::FontSizeMap);
-    $c->stash(colors    => \@Ffc::Plugin::Config::Colors);
     my $r = $c->dbh->selectall_arrayref(
         'SELECT email, admin FROM users WHERE UPPER(name)=UPPER(?)'
         , undef, $c->session->{user});

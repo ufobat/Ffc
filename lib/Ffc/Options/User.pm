@@ -25,23 +25,32 @@ sub no_bg_color {
     $c->dbh()->do(
         'UPDATE users SET bgcolor=? WHERE UPPER(name)=UPPER(?)',
         undef, '', $s->{user});
-    $c->set_info('Hintergrundfarbe zurückgesetzt');
+    $c->set_info('Hintergrundfarbe zurück gesetzt');
     $c->options_form();
 }
 
 sub bg_color {
     my $c = shift;
-    unless ( $c->configdata()->{fixbackgroundcolor} ) {
-        my $bgcolor = $c->param('bgcolor');
+    my $bgcolor = $c->param('bgcolor') // '';
+    if ( $bgcolor !~ qr(\A(?:$Ffc::Bgcqr)\z)xmsio ) {
+        $c->set_error('Die Hintergrundfarbe für die Webseite muss in hexadezimaler Schreibweise mit führender Raute oder als Webfarbenname angegeben werden');
+        $c->set_warning($bgcolor);
+    }
+    elsif ( $c->configdata()->{fixbackgroundcolor} ) {
+        $c->set_error('Ändern der Hintergrundfarbe vom Forenadministrator deaktiviert');
+    }
+    else {
         my $s = $c->session();
         $c->dbh()->do(
             'UPDATE users SET bgcolor=? WHERE UPPER(name)=UPPER(?)',
             undef, $bgcolor, $s->{user});
         $s->{backgroundcolor} = $bgcolor;
-        $c->set_info('Hintergrundfarbe angepasst');
-    }
-    else {
-        $c->set_error('Ändern der Hintergrundfarbe vom Forenadministrator deaktiviert');
+        if ( $bgcolor ) {
+            $c->set_info('Hintergrundfarbe angepasst');
+        }
+        else {
+            $c->set_info('Hintergrundfarbe zurück gesetzt');
+        }
     }
     $c->options_form();
 }

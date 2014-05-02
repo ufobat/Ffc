@@ -21,7 +21,8 @@ $t->get_ok('/session')
   ->json_is('/admin', 1)
   ->json_is('/user', $admin)
   ->json_is('/backgroundcolor', '');
-$t->get_ok('/options/bgcolor/color/Green')->status_is(200);
+$t->post_ok('/options/bgcolor/color', form => {bgcolor => 'Green'})
+  ->status_is(200);
 $t->get_ok('/session')
   ->status_is(200)
   ->json_is('/admin', 1)
@@ -35,7 +36,8 @@ $t->get_ok('/session')
   ->json_is('/admin', 0)
   ->json_is('/user', $user)
   ->json_is('/backgroundcolor', '');
-$t->get_ok('/options/bgcolor/color/Yellow')->status_is(200);
+$t->post_ok('/options/bgcolor/color', form => {bgcolor => 'Yellow'})
+  ->status_is(200);
 $t->get_ok('/session')
   ->status_is(200)
   ->json_is('/admin', 0)

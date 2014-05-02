@@ -18,10 +18,10 @@
 % unless ( configdata()->{fixbackgroundcolor} ) {
 <div class="postbox options">
     <h1>Einstellungen zur Hintergrundfarbe des Forums</h1>
-    <p>
-<% for my $c ( @$colors ) { %><a href="<%= url_for bg_color => bgcolor => $c %>#bgcolor" title="Hintergrundfarbe <%= $c %>" style="background:<%= $c %>" class="coloroption">&nbsp;</a><% } %>
-
-    </p>
+    <form action="<%= url_for 'bg_color_form' %>#bgcolor" title="Hintergrundfarbe" method="POST">
+        <input type="color" name="bgcolor" value="<%= session()->{backgroundcolor} || $backgroundcolor || 'gainsboro' %>" />
+        <button type="submit" class="linkalike">Speichern</button>
+    </form>
     <p><a href="<%= url_for 'no_bg_color' %>#bgcolor">Standardhintergrundfarbe des Forums</a></p>
 </div>
 % }
