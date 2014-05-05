@@ -202,3 +202,46 @@ a.coloroption:hover {
 .comment {
     margin-left: 3em;
 }
+.postbox textarea {
+    width: 100%;
+    min-width: inherit;
+    max-width: none;
+    height: 2em;
+    min-height: 2em;
+    max-height: 54em;
+}
+.postbox textarea:focus {
+    height: 24em;
+}
+.postbox img {
+    max-width: 256px;
+    max-height: 128px;
+    border: 1px gray solid;
+}
+.postbox .avatar {
+    color: gainsboro;
+    background: whitesmoke;
+    margin: -0.25em 0 .5em 1em;
+    font-variant: small-caps;
+    font-weight: bolder;
+    float: right;
+    font-size: 1em;
+    font-family: serif;
+    font-style: italic;
+    max-width: 7.5em;
+    min-width: 2.5em;
+    height: 5em;
+    overflow: hidden;
+    text-align: center;
+}
+.comment .avatar {
+    margin-top: 0.25em;
+    max-width: 5em;
+    min-width: 2em;
+    height: 3em;
+}
+img.smiley, img.icon {
+    border: none;
+    width: 1em;
+    height: 1em;
+}

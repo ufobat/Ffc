@@ -15,6 +15,7 @@ sub _install_routes_std {
     my $l = $_[0];
     # Standardseitenauslieferungen
     $l->any('/')->to('board#frontpage')->name('show');
+    $l->any('/help')->to('board#help')->name('help');
     $l->get('/session' => sub { $_[0]->render( json => $_[0]->session() ) } )
       ->name('sessiondata');
     $l->get('/config' => sub { $_[0]->render( json => $_[0]->configdata() ) } )
