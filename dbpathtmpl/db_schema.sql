@@ -19,8 +19,10 @@ CREATE TABLE "posts" (
   "posted" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "altered" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "textdata" text NOT NULL,
+  "cache" text,
   "user_to" integer,
-  "category" integer
+  "category" integer,
+  "parent" integer
 );
 
 CREATE TABLE "categories" (
