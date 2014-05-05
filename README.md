@@ -57,7 +57,7 @@ Installation
 Softwareinstallation
 --------------------
 
-Die Software muss in ein Verzeichnis ausgecheckt oder kopiert werden, in dem der Webserver ausführenden Zugriff auf die `Datei script/ffc` sowie lesenden Zugriff auf die Dateien unterhalb des Verzeichnisses `lib` erhält. In diesem Verzeichnis befinden sich die Programmdateien der Software für alle Instanzen des Systems.
+Die Software muss in ein Verzeichnis ausgecheckt oder kopiert werden, in dem der Webserver ausführenden Zugriff auf die `Datei script/ffc` sowie lesenden Zugriff auf die Dateien unterhalb der Verzeichnisse `lib`, `public` und `templates` erhält. In diesem Verzeichnis befinden sich die Programmdateien der Software für alle Instanzen des Systems.
 
 Die vorrausgesetzten technischen Komponenten müssen installiert werden:  
 
