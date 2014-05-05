@@ -48,13 +48,41 @@ Features
   * Hintergrundfarbe der Forenwebseite (falls der Administrator das erlaubt, was voreingestellt ist)
   * Ein Avatarbild hochladen, was neben jedem Beitrag oder Kommentar dargestellt wird (Avatar des Verfassers)
   * Schriftgröße und Breitbildanzeige (Normalanzeige ist so eine schmale blogartige Seite) können Geräteabhängig eingerichtet werden
-* Das Forum verwendet folgende technische Komponenten:
-  * Perl Version 5.014 oder höher
-  * Mojolicious 4.0 oder höher
-  * DBI Version 1.63 oder höher
-  * DBD::SQLite Version 1.4 oder höher
-  * SQLite Version 3.7.3 oder höher
+* Das Forum verwendet die Programmiersprache Perl, das Webframework Mojolicious sowie SQLite als Datenbank
 * Die Software enthält eine umfangreiche Testsuite, in der besonderer Wert auf Datensicherheit und Zuverlässigkeit gelegt wird
+
+Installation
+============
+
+Softwareinstallation
+--------------------
+
+Die Software muss in ein Verzeichnis ausgecheckt oder kopiert werden, in dem der Webserver ausführenden Zugriff auf die `Datei script/ffc` sowie lesenden Zugriff auf die Dateien unterhalb des Verzeichnisses `lib` erhält. In diesem Verzeichnis befinden sich die Programmdateien der Software für alle Instanzen des Systems.
+
+Die vorrausgesetzten technischen Komponenten müssen installiert werden:  
+
+* Perl Version 5.014 oder höher
+* Mojolicious 4.0 oder höher
+* DBI Version 1.63 oder höher
+* DBD::SQLite Version 1.4 oder höher
+* SQLite Version 3.7.3 oder höher
+
+Installation einer neuen Instanz (eigenständiges Forum)
+--------------------------------------------------------
+
+Ein Verzeichnis muss angelegt werden, in dem der Webserverbenutzeraccount schreibenden Zugriff erhält. Dieses Verzeichnis ist das Arbeitsverzeichnis der Instanz. Eine Instanz ist ein in sich geschlossenes Forum mit eigener Datenhaltung und eigenen Benutzeraccounts. Die Software kann mehrere Instanzen in verschiedenen Arbeitsverzeichnissen verwalten. 
+
+Innerhalb des Arbeitsverzeichnisses werden Dateien in Unterverzeichnissen abgelegt. Die Textdaten, Benutzerdaten sowie die Konfiguration erfolgt über eine SQLite-Datenbankdatei innerhalb des Arbeitsverzeichnisses.
+
+Die Software verwendet die Umgebungsvariable **`FFC_DATA_PATH`**, um festzustellen, mit welcher Instanz sie gerade läuft und entsprechend welches Arbeitsverzeichnis sie verwenden muss. Diese Umgebungsvariable **`FFC_DATA_PATH`** muss beim Aufruf des Initialisierungsscriptes sowie beim Lauf der Software im Web auf den Pfad zum Arbeitsverzeichnis gesetzt werden. Ist die Variable nicht gesetzt, kommen entsprechende Fehlermeldungen.
+
+Das Initialisierungsscript liegt unter `script/init.pl` und muss einmal vor Inbetriebnahme der Software aufgerufen werden mit der entsprechenden Umgebungsvariable **`FFC_DATA_PATH`**. Dabei wird im entsprechenden Arbeitsverzeichnis die Datenbank mit einer Standardkonfiguration sowie die Unterordnerstruktur angelegt.
+
+Außerdem wird ein erster Administratoren-Account mit Zufallspasswort angelegt. Die Zugangsdaten werden auf der Kommandozeile beim Aufruf von `script/init.pl` ausgegeben und sollten notiert werden, da die weiterführende Konfiguration über diesen Account von statten geht.
+
+Anschließend muss der Webserver so konfiguriert werden, dass das Script `script/ffc` mit der passenden Umgebungsvariable **`FFC_DATA_PATH`** als URL für diese Instanz im Web verfügbar ist. Diese Konfiguration ist von Webserver zu Webserver verschieden. Weitere Hinweise kann man auch im Internet in der Mojolicious-Dokumentation unter Deployment finden.
+
+Unter der so eingerichteten URL sollte, wenn alles passt, anschließend das entsprechende Forum verfügbar sein. Hier kann man sich mit den vom `script/init.pl` gelieferten Daten anmelden und kann entsprechende weiterführende Konfigurationen (Foreneinstellungen, Kategorieeinstellungen, Benutzerverwaltung) unter dem Menüpunkt "Optionen" vornehmen.
 
 Copyright und Lizenz
 ====================
