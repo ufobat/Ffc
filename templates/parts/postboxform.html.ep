@@ -1,9 +1,4 @@
 <div class="postbox headbox">
-% if ( $isa eq 'comment' ) {
-<h2 class="title"><%= $titlestr %>:</h2>
-% } else {
-<h1 class="title"><%= $titlestr %>:</h1>
-% }
 <form action="<%= url_for 'edit' %>" accept-charset="UTF-8" method="POST">
 <p class="insertformbuttons">
 %= submit_button 'Senden', class => 'linkalike send'

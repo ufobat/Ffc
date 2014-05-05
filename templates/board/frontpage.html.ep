@@ -1,5 +1,5 @@
 % layout 'board';
-%= include 'parts/postboxform', titlestr => 'Neuen Beitrag schreiben', isa => 'entry';
+%= include 'parts/postboxform';
 <div class="postbox">
     <h1 class="title">
         <img src="<%= url_for avatar_show => username => session()->{user} %>" alt="Avatarbild des Benutzers &quot;<%= session()->{user} %>&quot;" class="avatar" />
@@ -8,7 +8,7 @@
     <h2>Absatz 1</h2>
     <p>Consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
     <div class="comment">
-        %= include 'parts/postboxform', titlestr => 'Neuen Kommentar schreiben', isa => 'comment';
+        %= include 'parts/postboxform';
     </div>
 </div>
 <div class="postbox">
@@ -40,6 +40,6 @@
         <p>Macht keinen Sinn</p>
     </div>
     <div class="comment">
-        %= include 'parts/postboxform', titlestr => 'Neuen Kommentar schreiben', isa => 'comment';
+        %= include 'parts/postboxform';
     </div>
 </div>
