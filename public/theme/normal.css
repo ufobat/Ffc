@@ -204,11 +204,15 @@ a.coloroption:hover {
 }
 .postbox textarea {
     width: 100%;
-    min-width: inherit;
+    min-width: 100%;
     max-width: none;
-    height: 2em;
-    min-height: 2em;
     max-height: 54em;
+    min-height: 2em;
+    height: 2em;
+}
+.comment textarea {
+    min-height: 1.25em;
+    height: 1.25em;
 }
 .postbox textarea:focus {
     height: 24em;
