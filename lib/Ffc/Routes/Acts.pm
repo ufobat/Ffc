@@ -2,56 +2,40 @@ package Ffc::Routes::Acts;
 use strict; use warnings; use utf8;
 
 sub _install_routes_acts {
-    _install_routes_forum($_[0]);
-    _install_routes_pmsgs($_[0]);
-    _install_routes_notes($_[0]);
-}
+    my $n = 'act';
 
-sub _install_routes_forum {
-    my $n = 'forum';
-    my $r = _install_switch_bridge($_[0], $n);
+    my $r = $_[0]->bridge('/:act', act => [qw(forum pmsgs notes)])
+                 ->name($n.'_bridge');
+
+    # add default level routes
+    _install_routes($r, $n);
 
     # category management
+    my $cn = $n.'_cat';
     my $c = $r->bridge('/cat/:catname', catname => $Ffc::Catqr)
-              ->name($n.'_cat_bridge');
-    $n = 'forum_cat';
-    _install_routes($c, $n);
-}
-
-sub _install_routes_pmsgs {
-    my $n = 'pmsgs';
-    my $r = _install_switch_bridge($_[0], $n);
+              ->name($n.'_bridge');
+    _install_routes($c, $cn);
 
     # user conversation management
+    my $un = $n.'_user';
     my $u = $r->bridge('/user/:username', username => $Ffc::Usrqr)
-              ->name($n.'_user_bridge');
-    $n = 'pmsgs_user';
-    _install_routes($u, $n);
-}
-
-sub _install_routes_notes {
-    my $r = _install_switch_bridge($_[0], 'notes');
-}
-
-sub _install_switch_bridge {
-    my $n = $_[1];
-    my $r = $_[0]->bridge("/$n")
-                 ->under(sub{$_[0]->stash(act => $n)})
-                 ->name("switch_${n}_bridge");
-    _install_routes($r, $n);
-    return $r;
+              ->name($n.'_bridge');
+    _install_routes($u, $un);
 }
 
 sub _install_routes {
     my ( $r, $n ) = @_;
 
-    _install_display_fac($r, $n);
+    my ( $pr, $pn ) = _install_display_fac($r, $n);
 
-    _install_edit_fac($r, $n);
+    _install_edit_fac( $r,  $n  );
+    _install_edit_fac( $pr, $pn );
 
-    _install_upload_fac($r, $n);
+    _install_upload_fac( $r,  $n  );
+    _install_upload_fac( $pr, $pn );
 
-    _install_comment_fac($r, $n);
+    _install_comment_fac( $r,  $n  );
+    _install_comment_fac( $pr, $pn );
 
     return $r;
 }
@@ -62,20 +46,22 @@ sub _install_display_fac {
     # simple display
     $r->get('/show')
          ->to('board#frontpage')
-         ->name('show'.($n ? "_$n" : ''));
+         ->name($n.'_show');
 
     # search in view
     $r->post('/search')
          ->to('board#frontpage')
-         ->name('search'.($n ? "_$n" : ''));
+         ->name($n.'_search');
 
-    return $r;
+    # pagination
+    return $r->bridge('/page/:page', page => $Ffc::Digqr)
+             ->name($n.'_page_bridge'), $n . '_page';
 }
 
 sub _install_upload_fac {
-    my $n = ($_[1] // '').'_upload';
+    my $n = $_[1].'_upload';
     my $r = $_[0]->bridge('/upload/:postid', postid => $Ffc::Digqr)
-                 ->name($n.'_fac_bridge');
+                 ->name($n.'_bridge');
 
     # upload a new file for an entry
     $r->get('/form')
@@ -86,6 +72,7 @@ sub _install_upload_fac {
       ->name($n.'_do');
 
     # handle single uploads
+    $n = $n . '_file';
     my $u = $r->bridge('/file/:uploadid', uploadid => $Ffc::Digqr)
               ->name($n.'_bridge');
 
@@ -109,13 +96,10 @@ sub _install_upload_fac {
 }
 
 sub _install_comment_fac {
-    my $n = $_[1] // '';
+    my $n = $_[1] . '_comment';
+
     my $r = $_[0]->bridge('/comment/:postid', postid => $Ffc::Digqr)
-                 ->name($n.'_comment_fac_bridge');
-
-    # add a new comment for an entry
-
-    $n = $n . '_comment';
+                 ->name($n.'_bridge');
 
     _install_edit_fac($r, $n);
 
@@ -141,24 +125,26 @@ sub _install_edit_fac {
       ->name($n.'_show');
 
     # edit a single entry
+    my $en = $n . '_edit';
     my $e = $p->bridge('/edit')
-              ->name($n.'_edit');
+              ->name($en . '_bridge');
     $e->get('/form')
       ->to('board#edit_entry_form')
-      ->name($n.'_form');
+      ->name($en.'_form');
     $e->post('/save')
       ->to('board#edit_entry_save')
-      ->name($n.'_save');
+      ->name($en.'_save');
 
     # delete a single entry
+    my $dn = $n . '_delete';
     my $d = $p->bridge('/delete')
-              ->name($n.'_delete');
+              ->name($dn . '_bridge');
     $d->get('/confirm')
       ->to('board#delete_entry_confirm')
-      ->name($n.'_delete_confirm');
+      ->name($dn.'_confirm');
     $d->post('/do')
       ->to('board#delete_do')
-      ->name($n.'_delete');
+      ->name($dn.'_do');
 
     return $r;
 }
