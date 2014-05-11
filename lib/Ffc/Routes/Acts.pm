@@ -73,27 +73,37 @@ sub _install_display_fac {
 }
 
 sub _install_upload_fac {
-    my $n = $_[1] // '';
+    my $n = ($_[1] // '').'_upload';
     my $r = $_[0]->bridge('/upload/:postid', [postid => $Ffc::Digqr])
-                 ->name($n.'_upload_fac_bridge');
+                 ->name($n.'_fac_bridge');
 
     # upload a new file for an entry
     $r->via('get')
       ->to('board#upload_form')
-      ->name($n.'uploadform');
+      ->name($n.'_form');
     $r->via('post')
       ->to('board#upload')
-      ->name($n.'_upload');
+      ->name($n.'_do');
+
+    # handle single uploads
+    my $u = $r->bridge('/upload/:uploadid', [uploadid => $Ffc::Digqr])
+              ->name($n.'_bridge');
+
+    # show the upload file
+    $u->via('get')
+      ->to('board#download')
+      ->name($n.'_download');
 
     # delete an uploaded file from an entry
-    my $u = $r->bridge('/upload/:uploadid', [uploadid => $Ffc::Digqr])
-              ->name($n.'_upload_bridge');
-    $u->via('get')
+    $n = $n . '_delete';
+    my $d = $r->bridge('/delete')
+              ->name($n.'_bridge');
+    $d->via('get')
       ->to('board#deleteupload_confirm')
-      ->name($n.'_deleteuploadconfirm');
-    $u->via('post')
+      ->name($n.'_confirm');
+    $d->via('post')
       ->to('board#delete_upload_do')
-      ->name($n.'_deleteupload');
+      ->name($n.'_do');
 
     return $r;
 }
@@ -104,6 +114,8 @@ sub _install_comment_fac {
                  ->name($n.'_comment_fac_bridge');
 
     # add a new comment for an entry
+
+    $n = $n . '_comment';
 
     _install_edit_fac($r, $n);
 
@@ -123,20 +135,29 @@ sub _install_edit_fac {
       ->to('board#new_entry')
       ->name($n.'_new');
 
+    # handle single entries
+    $n = $n . '_entry';
+    my $p = $r->bridge('/entry/:entryid', [entryid => $Ffc::Digqr])
+              ->name($n.'_bridge');
+
     # edit a single entry
-    $r->get('/edit/:entryid', [entryid => $Ffc::Digqr])
+    my $e = $p->bridge('/edit')
+              ->name($n.'_edit');
+    $e->via('get')
       ->to('board#edit_entry_form')
-      ->name($n.'_editform');
-    $r->post('/edit/:entryid', [entryid => $Ffc::Digqr])
-      ->to('board#edit_entry_do')
-      ->name($n.'_editsave');
+      ->name($n.'_form');
+    $e->via('post')
+      ->to('board#edit_entry_save')
+      ->name($n.'_save');
 
     # delete a single entry
-    $r->get('/delete/:entryid', [entryid => $Ffc::Digqr])
+    my $d = $p->bridge('/delete')
+              ->name($n.'_delete');
+    $d->via('get')
       ->to('board#delete_entry_confirm')
-      ->name($n.'_deleteconfirm');
-    $r->post('/delete/:entryid', [entryid => $Ffc::Digqr])
-      ->to('board#delete_entry_do')
+      ->name($n.'_delete_confirm');
+    $d->via('post')
+      ->to('board#delete_do')
       ->name($n.'_delete');
 
     return $r;
