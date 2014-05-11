@@ -101,24 +101,24 @@ sub _install_routes_options {
 
     # Benutzeradministration
     $oa->post('/useradd')
-      ->to('options#useradmin')
-      ->name('adminuseradd');
+       ->to('options#useradmin')
+       ->name('adminuseradd');
     $oa->post('/usermod/:username', [username => $Ffc::Usrqr])
-      ->to('options#useradmin')
-      ->name('adminusermod');
+       ->to('options#useradmin')
+       ->name('adminusermod');
 
     # Kategorienadministration
     $oa->post('/catadd')
-      ->to('options#categoryadmin')
-      ->name('admincatadd');
+       ->to('options#categoryadmin')
+       ->name('admincatadd');
     $oa->post('/catmod/:catid', [catid => $Ffc::Digqr])
-      ->to('options#categoryadmin')
-      ->name('admincatmod');
+       ->to('options#categoryadmin')
+       ->name('admincatmod');
 
     # Boardeinstellungen
     $oa->post('/boardsettings/:optionkey', [optionkey => $Ffc::Optky])
-      ->to('options#boardsettingsadmin')
-      ->name('boardsetting');
+       ->to('options#boardsettingsadmin')
+       ->name('boardsetting');
 }
 
 sub _install_routes_avatars {
