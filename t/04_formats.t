@@ -63,7 +63,12 @@ my $t = Test::Mojo->new;
     $t->post_ok('/format_timestamp', form => { text => '0000-00-00 00:00:00' })
       ->content_is('neu');
     {
-        my @time = localtime; $time[5] += 1900; $time[4]++;
+        my @time = localtime;
+        if ( $time[0] > 55 ) {
+            sleep 6; # fix (workarround) testing bug with edge case on minute switch
+            @time = localtime;
+        }
+        $time[5] += 1900; $time[4]++;
         my $stamp = sprintf '%04d-%02d-%02d %02d:%02d:%02d', @time[5,4,3,2,1,0];
         $t->post_ok('/format_timestamp', form => { text => $stamp })
           ->content_is('jetzt');
