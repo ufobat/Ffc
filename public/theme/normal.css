@@ -215,6 +215,9 @@ a.coloroption:hover {
 .postbox textarea:focus {
     height: 24em;
 }
+.comment textarea:focus {
+    height: 12em;
+}
 .postbox img {
     max-width: 256px;
     max-height: 128px;
