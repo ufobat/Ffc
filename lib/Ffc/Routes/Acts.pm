@@ -12,13 +12,13 @@ sub _install_routes_acts {
 
     # category management
     my $cn = $n.'_cat';
-    my $c = $r->bridge('/cat/:catname', catname => $Ffc::Catqr)
+    my $c = $r->bridge('/cat/:catid', catid => $Ffc::Digqr)
               ->name($n.'_bridge');
     _install_routes($c, $cn);
 
     # user conversation management
     my $un = $n.'_user';
-    my $u = $r->bridge('/user/:username', username => $Ffc::Usrqr)
+    my $u = $r->bridge('/user/:userid', userid => $Ffc::Digqr)
               ->name($n.'_bridge');
     _install_routes($u, $un);
 }
@@ -54,7 +54,7 @@ sub _install_display_fac {
          ->name($n.'_search');
 
     # pagination
-    return $r->bridge('/page/:page', page => $Ffc::Digqr)
+    return $r->bridge('/page/:pageid', pageid => $Ffc::Digqr)
              ->name($n.'_page_bridge'), $n . '_page';
 }
 

@@ -5,6 +5,9 @@ use Ffc::Routes::Auth;
 use Ffc::Routes::Avatars;
 use Ffc::Routes::Acts;
 
+our @params   = qw(cat user page upload post entry);
+our @parnames = map {$_.'id'} @params;
+
 sub install_routes {
     my $app = $_[0];
     my $l = Ffc::Routes::Auth::_install_routes_auth($app->routes);
@@ -30,10 +33,16 @@ sub _install_routebuilder {
     my $app = shift;
     $app->helper( url_for_me => sub {
         my $c = shift;
-        my $path = shift;
-        my %params = @_;
-        $params{act} = 'forum' unless $params{act};
-        $c->url_for( $path );
+        my $pathend = shift;
+        my $path = 'act';
+        my %params = ( 
+            map( {; $_ => $c->param($_) } @parnames ),
+            @_
+        );
+        for ( @params ) {
+            $path .= '_$_' if $params{$_.'id'};
+        }
+        return $c->url_for( $path . ( $pathend ? '_' . $pathend : '' ) );
     });
 }
 
