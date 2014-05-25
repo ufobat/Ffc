@@ -23,7 +23,7 @@ Testinit::test_add_users($t, $admin, $apass, $user1, $pass1, $user2, $pass2);
 my $tempdir = tempdir( CLEANUP => 1 );
 my @files;
 my %failfile = do {
-    open my $fh, '<', "$FindBin::Bin/../public/theme/img/smileys/smile.png"
+    open my $fh, '<', "$FindBin::Bin/../public/theme/img/avatar.png"
         or die qq~Could not open fail file: $!~;
     local $/;
     my $content = <$fh>;
