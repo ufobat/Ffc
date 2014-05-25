@@ -6,6 +6,8 @@ use Mojo::Util 'quote';
 use Encode qw( encode decode_utf8 );
 use Ffc::Options;
 
+our $DefaultAvatar = catfile 'theme', 'img', 'avatar.png';
+
 sub avatar_show {
     my $c = shift;
     my $u = $c->param('username');
@@ -21,7 +23,7 @@ sub avatar_show {
     else {
         $file = '';
     }
-    return $c->render_static(catfile('theme', 'img', 'smileys', 'smile.png'))
+    return $c->render_static($DefaultAvatar)
         unless $file and -e $file;
 
     $file = Mojo::Asset::File->new(path => $file);
