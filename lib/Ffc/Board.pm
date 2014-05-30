@@ -2,6 +2,8 @@ package Ffc::Board;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 
+use Ffc::Board::Forms;
+
 sub frontpage {
     my $c = shift;
     $c->stash(act => $c->param('act'));
