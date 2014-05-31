@@ -116,47 +116,11 @@
 </div>
 % }
 </div>
-<div class="postbox options categoryadmin">
-    <a name="categoryadmin"></a>
-    <h1>Kategorieverwaltung</h1>
-<div class="suboption categoryadmin_form">
-    <h2>Neue Kategorie anlegen:</h2>
-    <form action="<%= url_for 'admincatadd' %>#categoryadmin" method="POST">
-        <input type="hidden" name="overwriteok" value="0" />
-        <p>
-            Kategoriename:
-            <input type="text" name="catname" value="" />
-        </p>
-        <p>
-            <input type="checkbox" name="visible" checked="checked" />
-            ist sichtbar,
-            <button type="submit" class="linkalike">Speichern</button>
-        </p>
-    </form>
-</div>
-% for my $c ( @$categories ) {
-<div class="suboption categoryadmin_form">
-    <h2>Kategorie &quot;<%= $c->[1] %>&quot; ändern:</h2>
-    <form action="<%= url_for admincatmod => { catid => $c->[0] } %>#categoryadmin" method="POST">
-        <input type="hidden" name="overwriteok" value="1" />
-        <p>
-            Kategoriename:
-            <input type="text" name="catname" value="<%= $c->[1] %>" />
-        </p>
-        <p>
-            <input type="checkbox" name="visible"<%== $c->[2] ? '' : ' checked="checked"' %> />
-            ist sichtbar,
-            <button type="submit" class="linkalike">Speichern</button>
-        </p>
-    </form>
-</div>
-% }
-</div>
-<div class="postbox options categoryadmin">
+<div class="postbox options boardsettingadmin">
     <a name="boardsettingsadmin"></a>
     <h1>Foreneinstellungen</h1>
 % for my $o ( @$configoptions ) {
-<div class="suboption categoryadmin_form">
+<div class="suboption boardsetting_form">
     <h2><%= $o->[5] %>:</h2>
     <p>(<%= $o->[6] %>)</p>
     <form action="<%= url_for boardsetting => { optionkey => $o->[0] } %>#boardsettingsadmin" method="POST">

@@ -3,8 +3,6 @@ CREATE TABLE "users" (
   "name" varchar(64) NOT NULL,
   "password" varchar(512) NOT NULL,
   "lastseen"  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "lastseenmsgs"  integer NOT NULL DEFAULT '0',
-  "lastseenforum" integer NOT NULL DEFAULT '0',
   "active" tinyint(1) NOT NULL DEFAULT '0',
   "email" varchar(1024) NOT NULL DEFAULT '',
   "avatar" varchar(128) NOT NULL DEFAULT '',
@@ -13,38 +11,36 @@ CREATE TABLE "users" (
   UNIQUE ("name")
 );
 
+CREATE TABLE "topics" (
+  "id" integer PRIMARY KEY AUTOINCREMENT,
+  "userfrom" int(11) NOT NULL,
+  "posted" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "altered" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "title" varchar(256) NOT NULL
+);
+
 CREATE TABLE "posts" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
-  "user_from" int(11) NOT NULL,
+  "userfrom" int(11) NOT NULL,
+  "userto" int(11),
   "posted" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "altered" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "textdata" text NOT NULL,
-  "cache" text,
-  "user_to" integer,
-  "category" integer,
-  "parent" integer
-);
-
-CREATE TABLE "categories" (
-  "id" integer PRIMARY KEY AUTOINCREMENT,
-  "name" varchar(16) NOT NULL,
-  "hidden" tinyint(1) NOT NULL DEFAULT '0',
-  UNIQUE ("name")
+  "cache" text
 );
 
 CREATE TABLE "lastseenforum" (
   "userid" integer NOT NULL,
-  "category" integer NOT NULL,
+  "topicid" integer NOT NULL,
   "lastseen" integer NOT NULL DEFAULT '0',
-  "show_cat" smallint NOT NULL DEFAULT '1',
-  PRIMARY KEY ("userid", "category")
+  PRIMARY KEY ("userid", "topicid")
 );
 
 CREATE TABLE "lastseenmsgs" (
   "userid" integer NOT NULL,
-  "user_from_id" integer NOT NULL,
+  "userfromid" integer NOT NULL,
   "lastseen" integer NOT NULL DEFAULT '0',
-  PRIMARY KEY ("userid", "user_from_id")
+  PRIMARY KEY ("userid", "userfromid")
 );
 
 CREATE TABLE "attachements" (

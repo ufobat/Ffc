@@ -46,14 +46,6 @@ sub _install_routes_options {
        ->to('options#useradmin')
        ->name('adminusermod');
 
-    # Kategorienadministration
-    $oa->post('/catadd')
-       ->to('options#categoryadmin')
-       ->name('admincatadd');
-    $oa->post('/catmod/:catid', [catid => $Ffc::Digqr])
-       ->to('options#categoryadmin')
-       ->name('admincatmod');
-
     # Boardeinstellungen
     $oa->post('/boardsettings/:optionkey', [optionkey => $Ffc::Optky])
        ->to('options#boardsettingsadmin')

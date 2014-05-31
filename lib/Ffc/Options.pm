@@ -4,7 +4,6 @@ use Mojo::Base 'Mojolicious::Controller';
 
 use Ffc::Options::User;
 use Ffc::Options::AdminUser;
-use Ffc::Options::AdminCategories;
 use Ffc::Options::AdminBoardsettings;
 
 sub check_admin {
@@ -32,16 +31,12 @@ sub options_form {
                 , undef, $c->session->{user});
         $c->stash(useremails => join ';', map { $_->[4] || () } @$userlist );
         $c->stash(userlist => $userlist);
-        $c->stash(categories =>
-            $c->dbh->selectall_arrayref(
-                'SELECT c.id, c.name, c.hidden FROM categories c ORDER BY c.hidden ASC, UPPER(c.name) ASC'));
         $c->stash(configoptions => \@Ffc::Options::Settings);
         $c->stash(configdata => $c->configdata);
     }
     else {
         $c->stash(useremails    => '');
         $c->stash(userlist      => []);
-        $c->stash(categories    => []);
         $c->stash(configoptions => []);
         $c->stash(configdata    => {});
     }
