@@ -11,7 +11,7 @@ our $Bgcqr = qr(|\#[0123456789abcdef]{6}|\w{2,128})msoi;
 our $Fszqr = qr(-?\d{1,3})xmso;
 
 our $Optky 
-    = qr(title|postlimit|sessiontimeout|commoncattitle|urlshorten|backgroundcolor|fixbackgroundcolor|favicon)xmso;
+    = qr(title|postlimit|sessiontimeout|commoncattitle|urlshorten|backgroundcolor|fixbackgroundcolor|favicon|topiclimit)xmso;
 
 # This method will run once at server start
 sub startup {

@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 601;
+use Test::More tests => 657;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -28,6 +28,9 @@ my @Settings = (
     [ postlimit => 'Beitragsanzahl', 'number',
         [10 + int( rand 90),110 + int(rand 90)],['asdf'],
         'Die Anzahl gleichzeitig angezeigter Beiträge muss eine Zahl sein' ],
+    [ topiclimit => 'Überschriftenanzahl', 'number',
+        [10 + int( rand 90),110 + int(rand 90)],['asdf'],
+        'Die Anzahl gleichzeitig angezeigter Forenüberschriften muss eine Zahl sein' ],
     [ sessiontimeout => 'Maximale Benutzersitzungsdauer', 'number',
         [10 + int( rand 90),110 + int(rand 90)],['asdf'],
         'Die Zeit der Benutzersitzungsmaximallänge muss eine Zahl in Sekunden sein' ],

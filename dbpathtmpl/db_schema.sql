@@ -64,6 +64,8 @@ INSERT INTO "config" ("key", "value")
 INSERT INTO "config" ("key", "value") 
   VALUES ('postlimit','7');
 INSERT INTO "config" ("key", "value") 
+  VALUES ('topiclimit','21');
+INSERT INTO "config" ("key", "value") 
   VALUES ('title','Ffc Forum');
 INSERT INTO "config" ("key", "value") 
   VALUES ('sessiontimeout','432000');
