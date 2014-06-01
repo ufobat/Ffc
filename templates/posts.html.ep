@@ -1,0 +1,8 @@
+% layout 'board';
+%= include 'parts/postboxform';
+% for my $p ( @$posts) {
+%= include 'parts/postbox', post => $p
+% }
+% if ( @$posts or $page > 1 ) {
+%= include 'parts/pagelinks', more => scalar @$posts
+% }

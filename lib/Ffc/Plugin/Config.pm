@@ -63,11 +63,14 @@ sub register {
     $app->helper(configdata   => sub { $config   });
 
     $app->defaults({
-        act => 'forum',
-        map( {;$_.'count' => 0} qw(newmsgs newpost note) ),
-        map( {;$_ => undef} qw(postid) ),
-        map( {;$_ => 1} qw(page) ),
-        map( {;$_ => ''} qw(error info warning dourl returl editurl msgurl delurl uplurl query textdata heading) ),
+        act      => 'forum',
+        queryurl => 'query_forum',
+        page     => 1,
+        postid   => undef,
+        map( {;$_.'count' => 0} 
+            qw(newmsgs newpost note) ),
+        map( {;$_ => ''} 
+            qw(error info warning dourl returl editurl msgurl delurl uplurl query textdata heading) ),
         map( {;$_ => $config->{$_} || $Defaults{$_}} 
             qw(favicon commoncattitle title) ),
     });

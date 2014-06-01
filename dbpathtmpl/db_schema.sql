@@ -23,6 +23,7 @@ CREATE TABLE "posts" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
   "userfrom" int(11) NOT NULL,
   "userto" int(11),
+  "topicid" int(11),
   "posted" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "altered" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "textdata" text NOT NULL,

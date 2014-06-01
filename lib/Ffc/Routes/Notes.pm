@@ -8,6 +8,10 @@ sub install_routes_notes {
       ->via('get')
       ->to('notes#show')
       ->name('show_notes');
+    $l->route('/notes/query')
+      ->via('post')
+      ->to('notes#query')
+      ->name('query_notes');
     $l->route('/notes/:page', page => $Ffc::Digqr)
       ->via('get')
       ->to('notes#show')

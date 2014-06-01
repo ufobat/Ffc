@@ -1,6 +1,0 @@
-% layout 'board', act => 'notes';
-%= include 'parts/postboxform', returl => url_for('show_notes'), dourl => url_for('add_note'), heading => 'Persönliche Notizen';
-% for my $r ( @$notes ) {
-%= include 'parts/postbox', post => $r, editurl => 'edit_note_form', delurl => 'delete_note_check', returl => 'show_notes'
-% }
-%= include 'parts/pagelinks', url => 'show_notes_page', starturl => 'show_notes', more => scalar @$notes

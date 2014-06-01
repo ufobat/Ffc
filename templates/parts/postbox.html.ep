@@ -2,9 +2,9 @@
     <h2>
 % if ( $act ne 'notes' ) {
         <img class="avatar" src="<%= url_for 'avatar_show', userid => $post->[1] // session->{userid} %>" alt="Avatar für Benutzer &quot;<%= $post->[2] || session->{user} %>&quot;" />
+        <%== $post->[2] ? post_format($post->[2]) . ',' : '' %>
 % }
-        <%= $post->[2] ? post_format($post->[2]) . ',' : '' %>
-        <%= format_timestamp($post->[5]) %>
+        <%= format_timestamp($post->[6]) %>
 % if ( ( $editurl or $delurl or $uplurl ) and $post->[1] == session()->{userid} ) {
     (
 %   if ( $editurl ) {
@@ -27,5 +27,5 @@
         )
 % }
     </h2>
-%== $post->[7];
+%== $post->[8];
 </div>
