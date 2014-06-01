@@ -2,7 +2,7 @@
 %= include 'parts/postboxform', heading => 'Lorem ipsum (Forenbeiträge)';
 <div class="postbox">
     <h2 class="title">
-        <img src="<%= url_for avatar_show => username => session()->{user} %>" alt="Avatarbild des Benutzers &quot;<%= session()->{user} %>&quot;" class="avatar" />
+        <img class="avatar" src="<%= url_for 'avatar_show', userid => session->{userid} %>" alt="Avatar für Benutzer &quot;<%= session->{user} %>&quot;" />
         Lorem impsum (3)
     </h2>
     <h3>Absatz 1</h3>
@@ -10,7 +10,7 @@
 </div>
 <div class="postbox">
     <h2 class="title">
-        <img src="<%= url_for avatar_show => username => session()->{user} %>" alt="Avatarbild des Benutzers &quot;<%= session()->{user} %>&quot;" class="avatar" />
+        <img class="avatar" src="<%= url_for 'avatar_show', userid => session->{userid} %>" alt="Avatar für Benutzer &quot;<%= session->{user} %>&quot;" />
         Lorem impsum (2)
     </h2>
     <h3>Absatz 1</h3>
