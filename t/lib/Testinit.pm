@@ -113,3 +113,9 @@ sub test_add_users {
     return $t;
 }
 
+sub test_get_userid {
+    my $dbh = shift;
+    my $user = shift;
+    $dbh->selectall_arrayref('SELECT id FROM users WHERE UPPER(name)=UPPER(?)', undef, $user)->[0]->[0];
+}
+

@@ -13,13 +13,15 @@ use Test::More tests => 247;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
-
 sub login  { Testinit::test_login(  $t, @_ ) }
 sub logout { Testinit::test_logout( $t, @_ ) }
 sub error  { Testinit::test_error(  $t, @_ ) }
 sub info   { Testinit::test_info(   $t, @_ ) }
 
 Testinit::test_add_users($t, $admin, $apass, $user1, $pass1, $user2, $pass2);
+my $userid1 = Testinit::test_get_userid($dbh, $user1);
+my $userid2 = Testinit::test_get_userid($dbh, $user2);
+
 my $tempdir = tempdir( CLEANUP => 1 );
 my @files;
 my %failfile = do {
@@ -28,7 +30,7 @@ my %failfile = do {
     local $/;
     my $content = <$fh>;
     close $fh;
-    (filename => 'smile.png', content => $content, contentlength => length($content));
+    (filename => 'avatar.png', content => $content, contentlength => length($content));
 };
 
 login($user1, $pass1);
@@ -264,28 +266,28 @@ sub file_db_ok {
 sub check_file_online {
     my $user2ok = shift;
     note 'check if file is online available';
-    $t->get_ok("/avatar/$user1")
+    $t->get_ok("/avatar/$userid1")
       ->status_is(200)
       ->content_is($files[0]{content})
       ->header_is('content-type' => qq~image/png~)
       ->header_is('content-disposition' => qq~inline;filename="$files[0]{avatarfile}"~)
       ->header_is('content-length' => $files[0]{contentlength});
     login($user2, $pass2);
-    $t->get_ok("/avatar/$user1")
+    $t->get_ok("/avatar/$userid1")
       ->status_is(200)
       ->content_is($files[0]{content})
       ->header_is('content-type' => qq~image/png~)
       ->header_is('content-disposition' => qq~inline;filename="$files[0]{avatarfile}"~)
       ->header_is('content-length' => $files[0]{contentlength});
     if ( $user2ok ) {
-        $t->get_ok("/avatar/$user2")
+        $t->get_ok("/avatar/$userid2")
           ->status_is(200)
           ->content_is($files[1]{content})
           ->header_is('content-type' => qq~image/png~)
           ->header_is('content-disposition' => qq~inline;filename="$files[1]{avatarfile}"~)
           ->header_is('content-length' => $files[1]{contentlength});
         login($user1, $pass1);
-        $t->get_ok("/avatar/$user2")
+        $t->get_ok("/avatar/$userid2")
           ->status_is(200)
           ->content_is($files[1]{content})
           ->header_is('content-type' => qq~image/png~)
@@ -293,13 +295,13 @@ sub check_file_online {
           ->header_is('content-length' => $files[1]{contentlength});
     }
     else {
-        $t->get_ok("/avatar/$user2")
+        $t->get_ok("/avatar/$userid2")
           ->status_is(200)
           ->content_is($failfile{content})
           ->header_is('content-length' => $failfile{contentlength})
           ->header_is('content-type' => qq~image/png~);
         login($user1, $pass1);
-        $t->get_ok("/avatar/$user2")
+        $t->get_ok("/avatar/$userid2")
           ->status_is(200)
           ->content_is($failfile{content})
           ->header_is('content-length' => $failfile{contentlength})
@@ -380,12 +382,12 @@ sub check_file_online {
 {
     note 'test, that no avatars without login';
     logout();
-    $t->get_ok("/avatar/$user1")
+    $t->get_ok("/avatar/$userid1")
       ->status_is(200)
       ->content_like(qr/Nicht\s+angemeldet/xms)
       ->content_unlike(qr~$files[0]{content}~xms)
       ->content_unlike(qr~$files[1]{content}~xms);
-    $t->get_ok("/avatar/$user2")
+    $t->get_ok("/avatar/$userid2")
       ->status_is(200)
       ->content_like(qr/Nicht\s+angemeldet/xms)
       ->content_unlike(qr~$files[0]{content}~xms)
