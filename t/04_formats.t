@@ -180,11 +180,11 @@ Hall
 llo
 =diad
 ~;
-    my $controlstring = qq~<p><h2>Abc</h2></p>
+    my $controlstring = qq~<h3>Abc</h3>
 <p>Hall</p>
-<p><h2>DEf</h2></p>
+<h3>DEf</h3>
 <p>llo</p>
-<p><h2>diad</h2></p>~;
+<h3>diad</h3>~;
     $t->post_ok('/pre_format', form => { text => $teststring, urlshorten => 30 })->content_is($controlstring);
 }
 {

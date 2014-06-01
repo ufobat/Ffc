@@ -91,7 +91,8 @@ sub _pre_format_text {
         $s =~ s{(\A|\s)"(\S|\S.*?\S)"(\W|\z)}{$1„<span class="quote">$2</span>“$3}gxoms;
         
         # normal text
-        $s =~ s{\A=\s*([^\n]+)\z}{<h2>$1</h2>}gxoms;
+        my $h3 = 0;
+        $h3 = 1 if $s =~ s{\A=\s*([^\n]+)\z}{<h3>$1</h3>}gxoms;
         $s =~ s{(?<!\w)([\_\-\+\~\!\*])([\_\-\+\~\!\w\*]+)\g1(?!\w)}{_make_goody($1,$2)}gxmoes;
         $s =~ s{((?:[\(\s]|\A)?)(https?://[^\)\s]+?)(\)|,?\s|\z)}{_make_link($1,$2,$3,$c)}gxmeios;
         $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxeos;
@@ -123,7 +124,7 @@ sub _pre_format_text {
         }
         
         # normal text
-        unless ( $ul or $ol ) {
+        unless ( $ul or $ol or $h3 ) {
             $o .= '<p>';
         }
         # multiline quoting beginnen
@@ -139,7 +140,7 @@ sub _pre_format_text {
             $o .= qq~</span>~;
         }
         # normal text
-        unless ( $ul or $ol ) {
+        unless ( $ul or $ol or $h3 ) {
             $o .= '</p>';
         }
         $o .= "\n";

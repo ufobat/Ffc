@@ -18,6 +18,14 @@
     <ul>
 </div>
 <div class="postbox helptext">
+    <h2>Textstrukturierungen</h2>
+    <ul>
+        <li><code>=</code> am Zeilenanfang: Erzeugt eine Zwischenüberschrift</li>
+        <li><code>-</code> am Zeilenanfang: Erzeugt eine Liste</li>
+        <li><code>#</code> am Zeilenanfang: Erzeugt eine Aufzählungsliste</li>
+    </ul>
+</div>
+<div class="postbox helptext">
     <h2>Links</h2>
     <p>Links werden weitestgehend automatisch erkannt und entsprechend als Links markiert, sobald sie im Text auftauchen.</p>
 </div>

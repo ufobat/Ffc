@@ -220,3 +220,6 @@ img.smiley, img.icon {
     width: 1em;
     height: 1em;
 }
+li {
+    margin-left: 2em;
+}
