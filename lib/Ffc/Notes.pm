@@ -24,7 +24,12 @@ SET "textdata"=?, "cache"=?
 WHERE "id"=? AND "userfrom"="userto" AND "userfrom"=?
 EOSQL
 
-our $GetNoteTextSQL = << 'EOSQL';
+our $DeleteNoteSQL = << 'EOSQL';
+DELETE FROM "posts" 
+WHERE "id"=? AND "userfrom"="userto" AND "userfrom"=?
+EOSQL
+
+our $GetNoteSQL = << 'EOSQL';
 SELECT p."id", uf."id", '', uf."id", '', p."posted", p."altered", p."cache", p."textdata"
   FROM "posts" p
   INNER JOIN "users" uf ON p."userfrom"=uf."id"
@@ -61,20 +66,21 @@ sub _get_single_post {
 
     my $postid = $c->param('postid');
     my $post   = $c->dbh->selectall_arrayref(
-        $GetNoteTextSQL, undef, 
+        $GetNoteSQL, undef, 
         $postid, $c->session->{userid}
     );
     my $textdata = '';
     if ( $post and @$post ) {
         $textdata = $post->[0]->[8];
+        $c->stash( post => $post->[0] );
     }
     else {
         $c->set_warning('Keine passenden Beiträge gefunden');
+        $c->stash( post => '' );
     }
 
     $c->stash( textdata => $textdata );
     $c->stash( postid   => $postid );
-    $c->stash( post     => $post );
     $c->stash( act      => 'notes' );
     $c->stash( returl   => $c->url_for('show_notes') ); 
 }
@@ -112,12 +118,21 @@ sub delete_check {
     my $c = shift;
     $c->_get_single_post;
     $c->stash( heading  => 'Persönliche Notiz entfernen' );
-    $c->stash( dourl    => $c->url_for('delete_notes_do') );
+    $c->stash( dourl    => $c->url_for('delete_note_do') );
     $c->render( template => 'delete_check' );
 }
 
 sub delete_do {
     my $c = shift;
+    my $postid = $c->param('postid');
+    unless ( $postid and $postid =~ $Ffc::Digqr ) {
+        $c->set_error('Konnte den Beitrag nicht ändern, da die Beitragsnummer irgendwie verloren ging');
+        return $c->show();
+    }
+    $c->dbh->do(
+        $DeleteNoteSQL, undef,
+        $postid, $c->session->{userid}
+    );
     $c->set_info('Beitrag entfernt');
     $c->show();
 }

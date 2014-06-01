@@ -27,7 +27,7 @@ sub install_routes_notes {
       ->to('notes#edit_form')
       ->name('edit_note_form');
 
-    $l->route('/notes/delete/:postid')
+    $l->route('/notes/delete')
       ->via('post')
       ->to('notes#delete_do')
       ->name('delete_note_do');

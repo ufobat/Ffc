@@ -67,7 +67,7 @@ sub register {
         map( {;$_.'count' => 0} qw(newmsgs newpost note) ),
         map( {;$_ => undef} qw(postid) ),
         map( {;$_ => 1} qw(page) ),
-        map( {;$_ => ''} qw(error info warning dourl returl query textdata heading) ),
+        map( {;$_ => ''} qw(error info warning dourl returl editurl msgurl delurl uplurl query textdata heading) ),
         map( {;$_ => $config->{$_} || $Defaults{$_}} 
             qw(favicon commoncattitle title) ),
     });
@@ -93,6 +93,10 @@ sub register {
                 ? $config->{backgroundcolor}
                 : ( $s->{backgroundcolor} || $config->{backgroundcolor} )
         );
+        $c->stash(notecount => $c->dbh->selectall_arrayref(
+            'SELECT COUNT("id") FROM "posts" WHERE "userfrom"=? AND "userfrom"="userto"',
+            undef, $s->{userid}
+        )->[0]->[0]);
     });
 
     return $self;
@@ -116,8 +120,10 @@ sub dbh {
     my $self = $_[0];
     return $self->{dbh} if $self->{dbh};
     $self->{dbfile} = catdir @{ $self->_datapath() }, 'database.sqlite3';
-    return $self->{dbh} = DBI->connect("DBI:SQLite:database=$self->{dbfile}", { AutoCommit => 1, RaiseError => 1 })
+    $self->{dbh} = DBI->connect("DBI:SQLite:database=$self->{dbfile}", { AutoCommit => 1, RaiseError => 1 })
         or die qq~could not connect to database "$self->{dbfile}": $DBI::errstr~;
+    $self->{dbh}->{sqlite_unicode} = 1;
+    return $self->{dbh};
 }
 
 sub reset {
