@@ -65,6 +65,7 @@ sub register {
     $app->defaults({
         act => 'forum',
         map( {;$_.'count' => 0} qw(newmsgs newpost note) ),
+        map( {;$_ => undef} qw(postid) ),
         map( {;$_ => 1} qw(page) ),
         map( {;$_ => ''} qw(error info warning dourl returl query textdata heading) ),
         map( {;$_ => $config->{$_} || $Defaults{$_}} 

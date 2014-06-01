@@ -18,23 +18,23 @@ sub install_routes_notes {
       ->to('notes#add')
       ->name('add_note');
 
+    $l->route('/notes/edit')
+      ->via('post')
+      ->to('notes#edit_do')
+      ->name('edit_note_do');
     $l->route('/notes/edit/:postid', postid => $Ffc::Digqr)
       ->via('get')
       ->to('notes#edit_form')
       ->name('edit_note_form');
-    $l->route('/notes/edit/:postid', postid => $Ffc::Digqr)
-      ->via('post')
-      ->to('notes#edit_do')
-      ->name('edit_note_do');
 
+    $l->route('/notes/delete/:postid')
+      ->via('post')
+      ->to('notes#delete_do')
+      ->name('delete_note_do');
     $l->route('/notes/delete/:postid', postid => $Ffc::Digqr)
       ->via('get')
       ->to('notes#delete_check')
       ->name('delete_note_check');
-    $l->route('/notes/delete/:postid', postid => $Ffc::Digqr)
-      ->via('post')
-      ->to('notes#delete_do')
-      ->name('delete_note_do');
 }
 
 1;
