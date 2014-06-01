@@ -10,10 +10,10 @@ our $DefaultAvatar = catfile 'theme', 'img', 'avatar.png';
 
 sub avatar_show {
     my $c = shift;
-    my $u = $c->param('username');
+    my $u = $c->param('userid');
     my ( $filename, $filetype );
     my $file = $c->dbh->selectall_arrayref(
-        'SELECT avatar FROM users WHERE UPPER(name)=UPPER(?)'
+        'SELECT avatar FROM users WHERE id=?'
         , undef, $u);
     if ( $file and 'ARRAY' eq ref($file) and $file = $file->[0]->[0] ) {
         $filename = quote encode 'UTF-8', $file;

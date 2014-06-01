@@ -1,7 +1,7 @@
 package Ffc::Routes::Auth;
 use strict; use warnings; use utf8;
 
-sub _install_routes_auth {
+sub install_routes_auth {
     my $r = $_[0];
     # Anmeldehandling und Anmeldeprüfung
     $r->post('/login')->to('auth#login')->name('login');

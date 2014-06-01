@@ -1,0 +1,20 @@
+<div class="postbox">
+    <h2>
+        <img class="avatar" src="<%= url_for 'avatar_show', userid => $post->[1] // session->{userid} %>" alt="Avatar für Benutzer &quot;<%= $post->[2] || session->{user} %>&quot;" />
+        <%= $post->[2] ? post_format($post->[2]) . ',' : '' %>
+        <%= format_timestamp($post->[5]) %> (
+% if ( $post->[1] == session()->{userid} ) {
+        <a href="<%= url_for $editurl, postid => $post->[0] %>" 
+           title="Beitrag bearbeiten">bearbeiten</a>,
+        <a href="<%= url_for $delurl, postid => $post->[0] %>" 
+           title="Beitrag löschen">löschen</a>,
+        <a href="<%= url_for $uplurl, postid => $post->[0] %>" 
+           title="Einen Anhang zum Beitrag hinzufügen">anhängen</a>,
+% } else {
+        <a href="<%= url_for $msgurl, userid => $post->[3] %>" 
+           title="Private Nachricht an den Verfasser &quot;<%= $post->[4] %>&quot; schreiben">Privatnachricht</a>,
+% }
+    )
+    </h2>
+    %== $post->[7];
+</div>

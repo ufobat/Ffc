@@ -3,47 +3,31 @@ use strict; use warnings; use utf8;
 use Ffc::Routes::Options;
 use Ffc::Routes::Auth;
 use Ffc::Routes::Avatars;
-use Ffc::Routes::Acts;
-
-our @params   = qw(cat user page upload post entry);
-our @parnames = map {$_.'id'} @params;
+use Ffc::Routes::Forum;
+use Ffc::Routes::Pmsgs;
+use Ffc::Routes::Notes;
 
 sub install_routes {
     my $app = $_[0];
-    my $l = Ffc::Routes::Auth::_install_routes_auth($app->routes);
-    Ffc::Routes::Avatars::_install_routes_avatars($l);
-    Ffc::Routes::Options::_install_routes_options($l);
-    Ffc::Routes::Acts::_install_routes_acts($l);
+    my $l = Ffc::Routes::Auth::install_routes_auth($app->routes);
+    Ffc::Routes::Avatars::install_routes_avatars($l);
+    Ffc::Routes::Options::install_routes_options($l);
+    Ffc::Routes::Forum::install_routes_forum($l);
+    Ffc::Routes::Pmsgs::install_routes_pmsgs($l);
+    Ffc::Routes::Notes::install_routes_notes($l);
     _install_routes_helper($l);
-    _install_routebuilder($app);
 }
 
 sub _install_routes_helper {
     my $l = $_[0];
     # Standardseitenauslieferungen
-    $l->any('/')->to('board#frontpage')->name('show');
-    $l->any('/help')->to('board#help')->name('help');
+    $l->any('/')->to('forum#show')->name('show');
+    $l->any('/help' => sub { $_[0]->render(template => 'help' ) } )
+      ->name('help');
     $l->get('/session' => sub { $_[0]->render( json => $_[0]->session() ) } )
       ->name('sessiondata');
     $l->get('/config' => sub { $_[0]->render( json => $_[0]->configdata() ) } )
       ->name('configdata');
-}
-
-sub _install_routebuilder {
-    my $app = shift;
-    $app->helper( url_for_me => sub {
-        my $c = shift;
-        my $pathend = shift;
-        my $path = 'act';
-        my %params = ( 
-            map( {; $_ => $c->param($_) } @parnames ),
-            @_
-        );
-        for ( @params ) {
-            $path .= '_$_' if $params{$_.'id'};
-        }
-        return $c->url_for( $path . ( $pathend ? '_' . $pathend : '' ) );
-    });
 }
 
 1;

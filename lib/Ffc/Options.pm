@@ -40,7 +40,7 @@ sub options_form {
         $c->stash(configoptions => []);
         $c->stash(configdata    => {});
     }
-    $c->render(template => 'board/optionsform');
+    $c->render(template => 'optionsform');
 }
 
 1;

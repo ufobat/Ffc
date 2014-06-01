@@ -7,11 +7,11 @@ sub check_login {
     if ( $c->login_ok ) {
         my $s = $c->session();
         my $r = $c->dbh()->selectall_arrayref(
-            'SELECT u.admin, u.bgcolor
+            'SELECT u.admin, u.bgcolor, u.id
             FROM users u WHERE UPPER(u.name)=UPPER(?) AND active=1',
             undef, $s->{user});
 
-        if ( $r and @$r ) {
+        if ( $r and @$r and $r->[0]->[2] == $s->{userid} ) {
             $s->{admin}           = $r->[0]->[0];
             $s->{backgroundcolor} = $r->[0]->[1];
             return 1;
@@ -23,7 +23,7 @@ sub check_login {
             return;
         }
     }
-    $c->render(template => 'auth/loginform');
+    $c->render(template => 'loginform');
     return;
 }
 
@@ -33,31 +33,33 @@ sub login {
     my $p = $c->param('password') // '';
     if ( !$u or !$p ) {
         $c->set_error('Bitte melden Sie sich an');
-        return $c->render(template => 'auth/loginform');
+        return $c->render(template => 'loginform');
     }
     my $r = $c->dbh()->selectall_arrayref(
-        'SELECT u.admin, u.bgcolor
+        'SELECT u.admin, u.bgcolor, u.name, u.id
         FROM users u WHERE UPPER(u.name)=UPPER(?) AND u.password=? AND active=1',
         undef, $u, $c->hash_password($p));
     if ( $r and @$r ) {
         my $s = $c->session();
         $s->{admin}           = $r->[0]->[0];
         $s->{backgroundcolor} = $r->[0]->[1];
-        $s->{user}            = $u;
+        $s->{user}            = $r->[0]->[2];
+        $s->{userid}          = $r->[0]->[3];
         return $c->redirect_to('show');
     }
     $c->set_error('Fehler bei der Anmeldung');
-    $c->render(template => 'auth/loginform');
+    $c->render(template => 'loginform');
 }
 
 sub logout {
     my $c = shift;
     my $s = $c->session;
     delete $s->{user};
+    delete $s->{userid};
     delete $s->{backgroundcolor};
     delete $s->{admin};
     $c->set_info('Abmelden erfolgreich');
-    $c->render(template => 'auth/loginform');
+    $c->render(template => 'loginform');
 }
 
 1;

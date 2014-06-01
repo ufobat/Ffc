@@ -19,28 +19,19 @@ body > * {
 body > * > * {
     margin: .75em 0;
 }
-.comment > * {
-    margin: .5em .25em;
-}
-body > * > h1, body > * h2 {
+h1, h2, h3 {
     font-weight: bolder;
-}
-body > * > h1 {
-    border-bottom: 1px gainsboro solid;
-}
-body > * > h2, .suboption h2, .comment h2 {
+    text-decoration: none;
     font-size: 1em;
 }
-body > * > h2, .comment h2 {
-    color: black;
-    text-decoration: underline;
+h1, h2 {
+    border-bottom: 1px gainsboro solid;
 }
-body > * > h1, .comment h2.title {
+h1 {
+    font-size: 1.25em;
+}
+h2 {
     color: gray;
-    text-decoration: none;
-}
-.comment h2.title {
-    margin-top: 0;
 }
 .loginform, .menu, .pages, .headbox {
     background: whitesmoke;
@@ -148,20 +139,17 @@ a:focus, .linkalike:focus {
 .error h1 {
     color: firebrick;
 }
-.pages, .menu {
-    margin: 0;
-    padding: 0;
-}
 .pages {
     text-align: right;
-    margin-bottom: -0.5em;
+    padding: .25em;
 }
 .menu {
+    margin: 0;
     text-align: center;
     padding: .1em 0;
     border-top-width: 0;
 }
-h1, .comment h2.title, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
+h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
     font-size: .75em;
 }
 .menu input[type="text"] {
@@ -190,15 +178,10 @@ a.coloroption {
 a.coloroption:hover {
     border-color: dodgerblue;
 }
-.suboption, .comment {
+.suboption {
     background: whitesmoke;
     border: 1px gainsboro solid;
-}
-.suboption {
     margin-left: .75em;
-}
-.comment {
-    margin-left: 3em;
 }
 .postbox textarea {
     width: 100%;
@@ -208,15 +191,8 @@ a.coloroption:hover {
     min-height: 2em;
     height: 2em;
 }
-.comment textarea {
-    min-height: 1.25em;
-    height: 1.25em;
-}
 .postbox textarea:focus {
     height: 24em;
-}
-.comment textarea:focus {
-    height: 12em;
 }
 .postbox img {
     max-width: 256px;
@@ -238,12 +214,6 @@ a.coloroption:hover {
     height: 5em;
     overflow: hidden;
     text-align: center;
-}
-.comment .avatar {
-    margin-top: 0.25em;
-    max-width: 5em;
-    min-width: 2em;
-    height: 3em;
 }
 img.smiley, img.icon {
     border: none;

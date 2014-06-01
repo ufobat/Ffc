@@ -1,0 +1,14 @@
+<div class="pages">
+% if ( $page > 1 ) {
+    <a href="<%= url_for $starturl %>" 
+       title="Zur ersten Seite gehen">Aktuellste Beiträge &lt;&lt;</a><%= ( $more or $page > 2 ) ? ' /' : '' %>
+%   if ( $page > 2 ) {
+    <a href="<%= url_for $url, page => $page - 1 %>" 
+       title="Zur vorherigen Seite gehen">&lt; Jüngere Beiträge</a> /
+%   }
+% }
+% if ( $more ) {
+    <a href="<%= url_for $url, page => $page + 1 %>" 
+       title="Zur nächsten Seite gehen">Ältere Beiträge &gt;</a>
+% }
+</div>

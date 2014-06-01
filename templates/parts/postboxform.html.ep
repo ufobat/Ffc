@@ -1,16 +1,17 @@
 <div class="postbox headbox">
-<form action="<%= url_for 'edit' %>" accept-charset="UTF-8" method="POST">
+<% if ( $heading ) { %><h1><%= $heading %></h1><% } %>
+<form action="<%== $dourl %>" accept-charset="UTF-8" method="POST">
 <p class="insertformbuttons">
 %= submit_button 'Senden', class => 'linkalike send'
-(<a href="<%= url_for 'show' %>" title="&Auml;nderung abbrechen">Abbrechen</a>)
+(<a href="<%== $returl %>" title="&Auml;nderung abbrechen">Abbrechen</a>)
 <span class="help">(<a href="<%= url_for 'help' %>" target="_blank">Hilfe</a>)</span>
 </p>
 <p>
     <textarea 
-        name="post" 
+        name="textdata" 
         id="textinput" 
         class="edit"
-    ></textarea>
+    ><%== $textdata // '' %></textarea>
 </p>
 </form>
 </div>
