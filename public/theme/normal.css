@@ -191,7 +191,7 @@ a.coloroption:hover {
     min-height: 2em;
     height: 2em;
 }
-.postbox textarea:focus {
+.postbox textarea:focus, .postbox textarea.inedit {
     height: 24em;
 }
 .postbox img {

@@ -13,7 +13,7 @@
     <textarea 
         name="textdata" 
         id="textinput" 
-        class="edit"
+        class="edit<%= $textdata ? ' inedit' : '' %>"
     ><%== $textdata // '' %></textarea>
 </p>
 </form>

@@ -111,14 +111,15 @@ sub edit_do {
 sub delete_check {
     my $c = shift;
     $c->_get_single_post;
-    $c->stash( heading  => 'Persönliche Notiz ändern' );
-    $c->stash( dourl    => 'delete_notes_do' );
+    $c->stash( heading  => 'Persönliche Notiz entfernen' );
+    $c->stash( dourl    => $c->url_for('delete_notes_do') );
     $c->render( template => 'delete_check' );
 }
 
 sub delete_do {
     my $c = shift;
-    $c->render(template => 'notes');
+    $c->set_info('Beitrag entfernt');
+    $c->show();
 }
 
 1;

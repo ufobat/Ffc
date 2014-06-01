@@ -7,7 +7,7 @@
         <a href="<%= url_for $editurl, postid => $post->[0] %>" 
            title="Beitrag bearbeiten">bearbeiten</a>,
         <a href="<%= url_for $delurl, postid => $post->[0] %>" 
-           title="Beitrag löschen">löschen</a>,
+           title="Beitrag löschen">entfernen</a>,
         <a href="<%= url_for $uplurl, postid => $post->[0] %>" 
            title="Einen Anhang zum Beitrag hinzufügen">anhängen</a>,
 % } else {
