@@ -3,6 +3,6 @@
 % for my $p ( @$posts) {
 %= include 'parts/postbox', post => $p
 % }
-% if ( @$posts or $page > 1 ) {
-%= include 'parts/pagelinks', more => scalar @$posts
+% if ( @$posts >= configdata->{postlimit} or $page > 1 ) {
+%= include 'parts/pagelinks', more => @$posts >= configdata->{postlimit} ? 1 : 0
 % }
