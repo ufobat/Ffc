@@ -97,13 +97,13 @@ sub file_db_ok {
     $fn = (splitdir $fn )[-1];
     $t->post_ok('/avatar/upload', form => {
             avatarfile => {
-                file => Mojo::Asset::Memory->new->add_chunk('a' x 999),
+                file => Mojo::Asset::Memory->new->add_chunk('a' x 99),
                 filename => $fn,
                 content_type => 'image/png',
             }
         }
     )->status_is(200);
-    error('Datei ist zu klein, sollte mindestens 1Kb groß sein.');
+    error('Datei ist zu klein, sollte mindestens 100B groß sein.');
     is file_db_ok($fn, $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
     ok !@dirlist, 'no files in storage directory';

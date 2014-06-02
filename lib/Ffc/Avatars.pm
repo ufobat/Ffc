@@ -51,8 +51,8 @@ sub avatar_upload {
         $c->set_error('Keine Datei als Avatarbild angegeben.');
         return $c->options_form;
     }
-    if ( $file->size < 1000 ) {
-        $c->set_error('Datei ist zu klein, sollte mindestens 1Kb groß sein.');
+    if ( $file->size < 100 ) {
+        $c->set_error('Datei ist zu klein, sollte mindestens 100B groß sein.');
         return $c->options_form;
     }
     if ( $file->size > 150000 ) {
