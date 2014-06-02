@@ -38,6 +38,7 @@ sub _show_posts {
     my @wherep = @_;
     my $query  = $c->session->{query};
     $query = "\%$query\%" if $query;
+    $c->setup_stash;
 
     my $sql = qq~SELECT\n~
         .qq~p."id", uf."id", uf."name", ut."id", ut."name", p."topicid", p."posted", p."altered", p."cache"\n~
@@ -110,6 +111,7 @@ sub _get_single_post {
 
 sub _edit_post_form {
     my $c = shift;
+    $c->setup_stash;
     _get_single_post($c, @_);
     $c->render( template => 'edit_form' );
 }
@@ -141,6 +143,7 @@ sub _edit_post_do {
 
 sub _delete_post_check {
     my $c = shift;
+    $c->setup_stash;
     _get_single_post($c, @_);
     $c->render( template => 'delete_check' );
 }

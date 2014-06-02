@@ -25,7 +25,7 @@ our $WhereM = '"userfrom"="userto" AND "userfrom"=?'; # needs $c->session->{user
 # Diese Hilfsfunktion setzt den Rahmen für alle Formulare innerhalb
 # der Beitrags-Handling-Routinen. Es legt einige Stash-Variablen fest,
 # die von allen Templates benötigt werden
-sub _setup_notes {
+sub setup_stash {
     my $c = shift;
     # Aktueller Beitragskontext für die Markierung im Menü
     $c->stash( act      => 'notes' ); 
@@ -37,7 +37,6 @@ sub _setup_notes {
 
 sub show {
     my $c = shift;
-    $c->_setup_notes();
     $c->stash( heading => 'Persönliche Notizen' );
     $c->stash( dourl   => $c->url_for('add_note') );
     $c->stash( editurl => 'edit_note_form' );
@@ -55,7 +54,6 @@ sub add {
 
 sub edit_form {
     my $c = shift;
-    $c->_setup_notes;
     $c->stash( heading => 'Persönliche Notiz ändern' );
     $c->stash( dourl   => $c->url_for('edit_note_do') );
     $c->edit_post_form($WhereS, $c->session->{userid});
@@ -68,7 +66,6 @@ sub edit_do {
 
 sub delete_check {
     my $c = shift;
-    $c->_setup_notes;
     $c->stash( heading => 'Persönliche Notiz entfernen' );
     $c->stash( dourl   => $c->url_for('delete_note_do') );
     $c->delete_post_check($WhereS, $c->session->{userid});
