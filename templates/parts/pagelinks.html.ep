@@ -3,12 +3,12 @@
     <a href="<%== $returl %>" 
        title="Zur ersten Seite gehen">Aktuellste Beiträge &lt;&lt;</a><%= ( $more or $page > 2 ) ? ' /' : '' %>
 %   if ( $page > 2 ) {
-    <a href="<%= url_for $pageurl, page => $page - 1 %>" 
+    <a href="<%= url_for @$pageurl, page => $page - 1 %>" 
        title="Zur vorherigen Seite gehen">&lt; Jüngere Beiträge</a> /
 %   }
 % }
 % if ( $more ) {
-    <a href="<%= url_for $pageurl, page => $page + 1 %>" 
+    <a href="<%= url_for @$pageurl, page => $page + 1 %>" 
        title="Zur nächsten Seite gehen">Ältere Beiträge &gt;</a>
 % }
 </div>

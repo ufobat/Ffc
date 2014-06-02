@@ -8,21 +8,21 @@
 % if ( ( $editurl or $delurl or $uplurl ) and $post->[1] == session()->{userid} ) {
     (
 %   if ( $editurl ) {
-        <a href="<%= url_for $editurl, postid => $post->[0] %>" 
+        <a href="<%= url_for @$editurl, postid => $post->[0] %>" 
            title="Beitrag bearbeiten">bearbeiten</a><%= $delurl || $uplurl ? ',' : '' %>
 %   }
 %   if ( $delurl ) {
-        <a href="<%= url_for $delurl, postid => $post->[0] %>" 
+        <a href="<%= url_for @$delurl, postid => $post->[0] %>" 
            title="Beitrag löschen">entfernen</a><%= $uplurl ? ',' : '' %>
 %   }
 %   if ( $uplurl ) {
-        <a href="<%= url_for $uplurl, postid => $post->[0] %>" 
+        <a href="<%= url_for @$uplurl, postid => $post->[0] %>" 
            title="Einen Anhang zum Beitrag hinzufügen">anhängen</a>
 %   }
     )
 % } elsif ( $msgurl ) {
         (
-        <a href="<%= url_for $msgurl, userid => $post->[3] %>" 
+        <a href="<%= url_for @$msgurl, userid => $post->[3] %>" 
            title="Private Nachricht an den Verfasser &quot;<%= $post->[4] %>&quot; schreiben">Privatnachricht</a>
         )
 % }

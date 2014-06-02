@@ -39,6 +39,15 @@ sub install_routes_notes {
       ->via('get')
       ->to('notes#delete_check')
       ->name('delete_note_check');
+
+    $l->route('/notes/upload')
+      ->via('post')
+      ->to('notes#upload_do')
+      ->name('upload_note_do');
+    $l->route('/notes/upload/:postid', postid => $Ffc::Digqr)
+      ->via('get')
+      ->to('notes#upload_form')
+      ->name('upload_note_form');
 }
 
 1;

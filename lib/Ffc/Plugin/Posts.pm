@@ -15,6 +15,8 @@ sub register {
     $app->helper( edit_post_do      => \&_edit_post_do      );
     $app->helper( delete_post_check => \&_delete_post_check );
     $app->helper( delete_post_do    => \&_delete_post_do    );
+    $app->helper( upload_post_form  => \&_upload_post_form  );
+    $app->helper( upload_post_do    => \&_upload_post_do    );
     return $self;
 }
 
@@ -164,6 +166,21 @@ sub _delete_post_do {
     $c->set_info('Beitrag entfernt');
     $c->show();
 }
+
+sub _upload_post_form {
+    my $c = shift;
+    $c->setup_stash;
+    _get_single_post($c, @_);
+    $c->render( template => 'upload_form' );
+}
+
+sub _upload_post_do {
+    my $c = shift;
+    my $wheres = shift;
+    my @wherep = @_;
+    $c->set_info('Datei an den Beitrag angehängt');
+    $c->show();
+};
 
 1;
 
