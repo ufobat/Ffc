@@ -6,6 +6,10 @@ use strict;
 use warnings;
 use 5.010;
 
+# Die Dokumentation dieses Plugins wurde beispielhaft und sehr ausführlich
+# im Controller Ffc::Notes durchgeführt. Bitte da rein schauen, um raus zu
+# bekommen, wie dieses Plugin zu verwenden ist.
+
 sub register {
     my ( $self, $app ) = @_;
     $app->helper( show_posts        => \&_show_posts        );
