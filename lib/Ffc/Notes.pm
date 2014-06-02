@@ -2,14 +2,36 @@ package Ffc::Notes;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 
+# Where-Bestandteil zum Suchen von Beiträgen in der Datenbank
+# - Dieser SQL-Bestandteil benötigt das Prefix "p." für Feldnamen, 
+#   da hier mehere Tabellen beim "SELECT" gejoint werden
+# - Dieser Bestandteil wird zum anzeigen der Beitragsliste ($c->show) 
+#   sowie zum anzeigen des einzelnen Beitrags bei edit und delete verwendet
+# - Dieser Bestandteil wird in die Where-Clause eingebaut
+# - "?"-Parameter müssen beim Aufruf der entsprechenden Helper-Subs
+#   mit in der entsprechenden Reihenfolge übergeben werden
+our $WhereS = 'p."userfrom"=p."userto" AND p."userfrom"=?'; # needs $c->session->{userid}
+
+# Where-Bestandteil zum Ändern von Beiträgen in der Datenbank
+# - Dieser SQL-Bestandteil darf keine Prefixe für Feldnamen enthalten,
+#   da "UPDATE" und "DELETE" sonst auffe Schnauze fallen
+# - Dieser Bestandteil wird beim Ausführen des Editieren- und Löschenvorganes
+#   in der Datenbank verwendet
+# - Dieser Bestandteil wird in die Where-Clause eingebaut
+# - "?"-Parameter müssen beim Aufruf der entsprechenden Helper-Subs
+#   mit in der entsprechenden Reihenfolge übergeben werden
+our $WhereM = '"userfrom"="userto" AND "userfrom"=?'; # needs $c->session->{userid}
+
+# Diese Hilfsfunktion setzt den Rahmen für alle Formulare innerhalb
+# der Beitrags-Handling-Routinen. Es legt einige Stash-Variablen fest,
+# die von allen Templates benötigt werden
 sub _setup_notes {
     my $c = shift;
-    $c->stash( act      => 'notes' );
-    $c->stash( addurl   => $c->url_for('add_note') );
-    $c->stash( editurl  => 'edit_note_form' );
-    $c->stash( delurl   => 'delete_note_check' );
+    # Aktueller Beitragskontext für die Markierung im Menü
+    $c->stash( act      => 'notes' ); 
+    # Routenname für Abbrüche, der auf die Einstiegsseite der Beitragsübersicht verweißt
     $c->stash( returl   => $c->url_for('show_notes') );
-    $c->stash( pageurl  => 'show_notes_page' );
+    # Routenname für Filter-Suchen aus dem Menü heraus
     $c->stash( queryurl => $c->url_for('query_notes') );
 }
 
@@ -17,105 +39,44 @@ sub show {
     my $c = shift;
     $c->_setup_notes();
     $c->stash( heading => 'Persönliche Notizen' );
-    return $c->show_posts(
-        'p."userfrom"=p."userto" AND p."userfrom"=?',
-        $c->session->{userid}
-    );
+    $c->stash( dourl   => $c->url_for('add_note') );
+    $c->stash( editurl => 'edit_note_form' );
+    $c->stash( delurl  => 'delete_note_check' );
+    $c->stash( pageurl => 'show_notes_page' );
+    $c->show_posts($WhereS, $c->session->{userid});
 }
 
-sub query { 
-    my $c = shift;
-    $c->query_posts();
-    $c->show;
-}
+sub query { $_[0]->query_posts }
 
 sub add {
     my $c = shift;
     $c->add_post($c->session->{userid}, undef);
-    $c->show();
-}
-
-sub _get_single_post {
-    my $c = shift;
-
-    my $postid = $c->param('postid');
-    my $post   = $c->dbh->selectall_arrayref( << 'EOSQL', undef,
-SELECT p."id", uf."id", '', uf."id", '', p."posted", p."altered", p."cache", p."textdata"
-  FROM "posts" p
-  INNER JOIN "users" uf ON p."userfrom"=uf."id"
- WHERE p."id"=? AND p."userfrom"=p."userto" AND p."userfrom"=?
-EOSQL
-        $postid, $c->session->{userid}
-    );
-    my $textdata = '';
-    if ( $post and @$post ) {
-        $textdata = $post->[0]->[8];
-        $c->stash( post => $post->[0] );
-    }
-    else {
-        $c->set_warning('Keine passenden Beiträge gefunden');
-        $c->stash( post => '' );
-    }
-
-    $c->stash( textdata => $textdata );
-    $c->stash( postid   => $postid );
 }
 
 sub edit_form {
     my $c = shift;
-    $c->_get_single_post;
-    $c->stash( heading  => 'Persönliche Notiz ändern' );
-    $c->stash( dourl    => $c->url_for('edit_note_do') );
-    $c->render( template => 'edit_form' );
+    $c->_setup_notes;
+    $c->stash( heading => 'Persönliche Notiz ändern' );
+    $c->stash( dourl   => $c->url_for('edit_note_do') );
+    $c->edit_post_form($WhereS, $c->session->{userid});
 }
 
 sub edit_do {
     my $c = shift;
-    my $postid = $c->param('postid');
-    unless ( $postid and $postid =~ $Ffc::Digqr ) {
-        $c->set_error('Konnte den Beitrag nicht ändern, da die Beitragsnummer irgendwie verloren ging');
-        return $c->edit_form();
-    }
-    my $text = $c->param('textdata');
-    if ( !defined($text) or (2 > length $text) ) {
-        $c->stash(textdata => $text);
-        $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen)');
-        return $c->edit_form();
-    }
-    $c->dbh->do( << 'EOSQL', undef,
-UPDATE "posts" 
-SET "textdata"=?, "cache"=?, altered=current_timestamp
-WHERE "id"=? AND "userfrom"="userto" AND "userfrom"=?
-EOSQL
-        $text, $c->pre_format($text), $postid, $c->session->{userid}
-    );
-    $c->set_info('Beitrag geändert');
-    $c->show();
+    $c->edit_post_do($WhereM, $c->session->{userid});
 }
 
 sub delete_check {
     my $c = shift;
-    $c->_get_single_post;
-    $c->stash( heading  => 'Persönliche Notiz entfernen' );
-    $c->stash( dourl    => $c->url_for('delete_note_do') );
-    $c->render( template => 'delete_check' );
+    $c->_setup_notes;
+    $c->stash( heading => 'Persönliche Notiz entfernen' );
+    $c->stash( dourl   => $c->url_for('delete_note_do') );
+    $c->delete_post_check($WhereS, $c->session->{userid});
 }
 
 sub delete_do {
     my $c = shift;
-    my $postid = $c->param('postid');
-    unless ( $postid and $postid =~ $Ffc::Digqr ) {
-        $c->set_error('Konnte den Beitrag nicht ändern, da die Beitragsnummer irgendwie verloren ging');
-        return $c->show();
-    }
-    $c->dbh->do( << 'EOSQL', undef,
-DELETE FROM "posts" 
-WHERE "id"=? AND "userfrom"="userto" AND "userfrom"=?
-EOSQL
-        $postid, $c->session->{userid}
-    );
-    $c->set_info('Beitrag entfernt');
-    $c->show();
+    $c->delete_post_do($WhereM, $c->session->{userid});
 }
 
 1;
