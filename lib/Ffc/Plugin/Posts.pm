@@ -83,6 +83,7 @@ EOSQL
         $c->session->{userid}, $userto, $topicid, $text, $c->pre_format($text)
     );
 
+    $c->set_info('Ein neuer Beitrag wurde erstellt');
     $c->show;
 }
 
@@ -143,7 +144,7 @@ sub _edit_post_do {
             . qq~WHERE "id"=?~;
     $sql .= qq~ AND $wheres~ if $wheres;
     $c->dbh->do( $sql, undef, $text, $c->pre_format($text), $postid, @wherep );
-    $c->set_info('Beitrag geändert');
+    $c->set_info('Der Beitrag wurde geändert');
     return $c->show;
 }
 
@@ -163,11 +164,25 @@ sub _delete_post_do {
         $c->set_error('Konnte den Beitrag nicht ändern, da die Beitragsnummer irgendwie verloren ging');
         return $c->show();
     }
-    my $sql = q~DELETE FROM "posts" WHERE "id"=?~;
-    $sql .= qq~ AND $wheres~ if $wheres;
-
-    $c->dbh->do( $sql, undef, $postid, @wherep );
-    $c->set_info('Beitrag entfernt');
+    {
+        my $sql = q~SELECT "id" FROM "posts" WHERE "id"=?~;
+        $sql   .= qq~ AND $wheres~ if $wheres;
+        my $post = $c->dbh->selectall_arrayref( $sql, undef, $postid, @wherep );
+        unless ( $post and 'ARRAY' eq ref($post) and @$post ) {
+            $c->set_error('Der Beitrag konnte nicht entfernt werden.');
+            return $c->show();
+        }
+    }
+    {
+        my $sql = q~DELETE FROM "posts" WHERE "id"=?~;
+        $sql   .= qq~ AND $wheres~ if $wheres;
+        $c->dbh->do( $sql, undef, $postid, @wherep );
+    }
+    {
+        my $sql = q~DELETE FROM "attachements" WHERE "postid"=?~;
+        $c->dbh->do( $sql, undef, $postid );
+    }
+    $c->set_info('Der Beitrag wurde komplett entfernt');
     $c->show();
 }
 

@@ -2,6 +2,7 @@ package Ffc::Options;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 
+use Ffc::Options::Routes;
 use Ffc::Options::User;
 use Ffc::Options::AdminUser;
 use Ffc::Options::AdminBoardsettings;

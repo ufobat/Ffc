@@ -1,7 +1,7 @@
-package Ffc::Routes::Options;
+package Ffc::Options; # Routes
 use strict; use warnings; use utf8;
 
-sub install_routes_options {
+sub install_routes {
     my $o = $_[0]->bridge('/options')->name('options_bridge');
 
     # Optionsformular

@@ -2,6 +2,11 @@ package Ffc::Pmsgs;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 
+sub install_routes {
+    my $l = $_[0];
+    $l->get('/pmsgs')->to('pmsgs#show')->name('show_pmsgs');
+}
+
 sub _setup_pmsgs {
     my $c = shift;
     $c->stash( act      => 'pmsgs' );

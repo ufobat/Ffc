@@ -2,6 +2,42 @@ package Ffc::Notes;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 
+# Als erstes werden über die folgende Routine die notwendigen Routen definiert.
+# Diese Routine wird aus Ffc::Routes angesprochen und übernimmt eine Bridge,
+# bei welcher man bereits angemeldet ist und bei der die Anmeldung geprüft wird.
+sub install_routes {
+    my $l = shift;
+
+    $l->route('/notes')->via('get')
+      ->to('notes#show')->name('show_notes');
+    $l->route('/notes/query')->via('post')
+      ->to('notes#query')->name('query_notes');
+    $l->route('/notes/:page', page => $Ffc::Digqr)->via('get')
+      ->to('notes#show')->name('show_notes_page');
+
+    $l->route('/notes/new')->via('post')
+      ->to('notes#add')->name('add_note');
+
+    $l->route('/notes/edit')->via('post')
+      ->to('notes#edit_do')->name('edit_note_do');
+    $l->route('/notes/edit/:postid', postid => $Ffc::Digqr)->via('get')
+      ->to('notes#edit_form')->name('edit_note_form');
+
+    $l->route('/notes/delete')->via('post')
+      ->to('notes#delete_do')->name('delete_note_do');
+    $l->route('/notes/delete/:postid', postid => $Ffc::Digqr)->via('get')
+      ->to('notes#delete_check')->name('delete_note_check');
+
+    $l->route('/notes/upload')->via('post')
+      ->to('notes#upload_do')->name('upload_note_do');
+    $l->route('/notes/upload/:postid', postid => $Ffc::Digqr)->via('get')
+      ->to('notes#upload_form')->name('upload_note_form');
+
+    $l->route('/notes/upload/delete')->via('post')
+      ->to('notes#delete_upload_do')->name('delete_upload_note_do');
+    $l->route('/notes/upload/delete/:uploadid', uploadid => $Ffc::Digqr)->via('get')
+      ->to('notes#delete_upload_check')->name('delete_upload_note_check');
+}
 # Where-Bestandteile dienen dazu, den Aktionsradius von Funktionen
 # innerhalb dieses Teils des Ffc einzuschränken, sind aber optional.
 
@@ -24,6 +60,19 @@ our $WhereS = 'p."userfrom"=p."userto" AND p."userfrom"=?'; # needs $c->session-
 # - "?"-Parameter müssen beim Aufruf der entsprechenden Helper-Subs
 #   mit in der entsprechenden Reihenfolge übergeben werden
 our $WhereM = '"userfrom"="userto" AND "userfrom"=?'; # needs $c->session->{userid}
+
+# Folge-Aktionen werden über Routennamen oder fertige Routen-URL's in
+# Stash-Variablen gespeichert. Bestimmte Aktionen werden im Verlauf der
+# Arbeit des Plugins "Posts" mit dynamischen Werten versehen und müssen
+# dementsprechend als Routenname übergeben werden. Dazu werden sie in
+# eine Arrayreferenz gepackt als ersten Eintrag und etwaige weitere
+# Parameter, welche dieser Route übergeben werden müssen, können
+# als weitere Parameter in dieser Arrayreferenz weiter hinten an
+# gehängt werden. Einige Routen stehen allerdings fest und können
+# vor dem Rendern der Templates schon fertig zur URL verbaut werden
+# (wegen Performance). Diese Routen können bereits fertig erstellt werden
+# an einer Stelle und werden als fertige URL's in die entsprechenden
+# Stash-Variablen geschrieben.
 
 # Diese Hilfsfunktion setzt den Rahmen für alle Formulare innerhalb
 # der Beitrags-Handling-Routinen. Es legt einige Stash-Variablen fest,
@@ -62,12 +111,13 @@ sub setup_stash {
 sub show {
     my $c = shift;
     $c->stash( 
-        heading => 'Persönliche Notizen',   # Überschrift
-        dourl   => $c->url_for('add_note'), # Neuen Beitrag erstellen
-        editurl => [ 'edit_note_form'    ], # Formuar zum Bearbeiten von Beiträgen
-        delurl  => [ 'delete_note_check' ], # Formular, um den Löschvorgang einzuleiten
-        uplurl  => [ 'upload_note_form'  ], # Formular für Dateiuploads
-        pageurl => [ 'show_notes_page'   ], # Seitenweiterschaltung
+        heading => 'Persönliche Notizen'         , # Überschrift
+        dourl   => $c->url_for('add_note')       , # Neuen Beitrag erstellen
+        editurl => [ 'edit_note_form'           ], # Formuar zum Bearbeiten von Beiträgen
+        delurl  => [ 'delete_note_check'        ], # Formular, um den Löschvorgang einzuleiten
+        uplurl  => [ 'upload_note_form'         ], # Formular für Dateiuploads
+        delupl  => [ 'delete_upload_note_check' ], # Formular zum entfernen von Anhängen
+        pageurl => [ 'show_notes_page'          ], # Seitenweiterschaltung
     );
     # Das folgende ist der Plugin-Helper-Aufruf, über den die Anzeige erfolgt.
     # Dieser Aufruf bekommt einen "WHERE"-Bestandteil und die Liste der entsprechenden Parameter.
@@ -147,7 +197,7 @@ sub upload_form {
 # Diese Funktion führt das Hochladen der gewählten Datei über die Helper-Sub 
 # durch und verwendet dafür den "WHERE"-Bestandteil für Datenmodifikationen 
 # mit passender Parameterliste. Anschließend leitet sie auf "show" um.
-sub upload_do { $_[0]->edit_post_do($WhereM, $_[0]->session->{userid}) }
+sub upload_do { $_[0]->upload_post_do($WhereM, $_[0]->session->{userid}) }
 
 1;
 

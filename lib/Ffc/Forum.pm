@@ -2,6 +2,11 @@ package Ffc::Forum;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 
+sub install_routes {
+    my $l = $_[0];
+    $l->get('/forum')->to('forum#show')->name('show_forum');
+}
+
 sub _setup_forum {
     my $c = shift;
     $c->stash( act      => 'forum' );

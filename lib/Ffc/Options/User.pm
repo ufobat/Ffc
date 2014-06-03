@@ -32,7 +32,7 @@ sub no_bg_color {
 sub bg_color {
     my $c = shift;
     my $bgcolor = $c->param('bgcolor') // '';
-    if ( $bgcolor !~ qr(\A(?:$Ffc::Bgcqr)\z)xmsio ) {
+    if ( $bgcolor !~ qr(\A(?:|\#[0-9a-f]{6}|\w{2,128})\z)xmsio ) {
         $c->set_error('Die Hintergrundfarbe für die Webseite muss in hexadezimaler Schreibweise mit führender Raute oder als Webfarbenname angegeben werden');
         $c->set_warning($bgcolor);
     }

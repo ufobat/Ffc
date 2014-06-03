@@ -1,20 +1,19 @@
 package Ffc::Routes;
 use strict; use warnings; use utf8;
-use Ffc::Routes::Options;
-use Ffc::Routes::Auth;
-use Ffc::Routes::Avatars;
-use Ffc::Routes::Forum;
-use Ffc::Routes::Pmsgs;
-use Ffc::Routes::Notes;
+use Ffc::Options;
+use Ffc::Auth;
+use Ffc::Avatars;
+use Ffc::Forum;
+use Ffc::Pmsgs;
+use Ffc::Notes;
 
 sub install_routes {
-    my $app = $_[0];
-    my $l = Ffc::Routes::Auth::install_routes_auth($app->routes);
-    Ffc::Routes::Avatars::install_routes_avatars($l);
-    Ffc::Routes::Options::install_routes_options($l);
-    Ffc::Routes::Forum::install_routes_forum($l);
-    Ffc::Routes::Pmsgs::install_routes_pmsgs($l);
-    Ffc::Routes::Notes::install_routes_notes($l);
+    my $l = Ffc::Auth::install_routes($_[0]->routes);
+    Ffc::Avatars::install_routes($l);
+    Ffc::Options::install_routes($l);
+    Ffc::Forum::install_routes($l);
+    Ffc::Pmsgs::install_routes($l);
+    Ffc::Notes::install_routes($l);
     _install_routes_helper($l);
 }
 
