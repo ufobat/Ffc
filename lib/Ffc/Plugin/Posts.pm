@@ -1,6 +1,7 @@
 package Ffc::Plugin::Posts;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Plugin';
+use File::Spec::Functions qw(catfile);
 
 use strict;
 use warnings;
@@ -12,15 +13,17 @@ use 5.010;
 
 sub register {
     my ( $self, $app ) = @_;
-    $app->helper( show_posts        => \&_show_posts        );
-    $app->helper( query_posts       => \&_query_posts       );
-    $app->helper( add_post          => \&_add_post          );
-    $app->helper( edit_post_form    => \&_edit_post_form    );
-    $app->helper( edit_post_do      => \&_edit_post_do      );
-    $app->helper( delete_post_check => \&_delete_post_check );
-    $app->helper( delete_post_do    => \&_delete_post_do    );
-    $app->helper( upload_post_form  => \&_upload_post_form  );
-    $app->helper( upload_post_do    => \&_upload_post_do    );
+    $app->helper( show_posts               => \&_show_posts              );
+    $app->helper( query_posts              => \&_query_posts             );
+    $app->helper( add_post                 => \&_add_post                );
+    $app->helper( edit_post_form           => \&_edit_post_form          );
+    $app->helper( edit_post_do             => \&_edit_post_do            );
+    $app->helper( delete_post_check        => \&_delete_post_check       );
+    $app->helper( delete_post_do           => \&_delete_post_do          );
+    $app->helper( upload_post_form         => \&_upload_post_form        );
+    $app->helper( upload_post_do           => \&_upload_post_do          );
+    $app->helper( delete_upload_post_check => \&_delete_upload_post_form );
+    $app->helper( delete_upload_post_do    => \&_delete_upload_post_do   );
     return $self;
 }
 
@@ -168,19 +171,32 @@ sub _delete_post_do {
         my $sql = q~SELECT "id" FROM "posts" WHERE "id"=?~;
         $sql   .= qq~ AND $wheres~ if $wheres;
         my $post = $c->dbh->selectall_arrayref( $sql, undef, $postid, @wherep );
-        unless ( $post and 'ARRAY' eq ref($post) and @$post ) {
-            $c->set_error('Der Beitrag konnte nicht entfernt werden.');
+        unless ( @$post ) {
+            $c->set_error('Der angegebene Beitrag konnte nicht entfernt werden.');
             return $c->show();
         }
+    }
+    my $atts = 0;
+    {
+        my $sql = q~SELECT "id" FROM "attachements" WHERE "postid"=?~;
+        my $r = $c->dbh->selectall_arrayref( $sql, undef, $postid );
+        $atts = @$r;
+        my $delerr = 0;
+        for my $r ( @$r ) {
+            my $file = catfile(@{$c->datapath}, 'uploads', $r->[0]);
+            unlink $file or $delerr++;
+        }
+        $c->set_warning("$delerr Anhänge konnten nicht entfernt werden.")
+            if $delerr;
+    }
+    if ( $atts ) {
+        my $sql = q~DELETE FROM "attachements" WHERE "postid"=?~;
+        $c->dbh->do( $sql, undef, $postid );
     }
     {
         my $sql = q~DELETE FROM "posts" WHERE "id"=?~;
         $sql   .= qq~ AND $wheres~ if $wheres;
         $c->dbh->do( $sql, undef, $postid, @wherep );
-    }
-    {
-        my $sql = q~DELETE FROM "attachements" WHERE "postid"=?~;
-        $c->dbh->do( $sql, undef, $postid );
     }
     $c->set_info('Der Beitrag wurde komplett entfernt');
     $c->show();
@@ -197,8 +213,82 @@ sub _upload_post_do {
     my $c = shift;
     my $wheres = shift;
     my @wherep = @_;
+
+    my $file = $c->param('attachement');
+    my $postid = $c->param('postid');
+    unless ( $postid and $postid =~ $Ffc::Digqr ) {
+        $c->set_error('Konnte keinen Anhang zu dem Beitrag hochladen, da die Beitragsnummer irgendwie verloren ging');
+        return $c->show();
+    }
+    {
+        my $sql = q~SELECT "id" FROM "posts" WHERE "id"=?~;
+        $sql   .= qq~ AND $wheres~ if $wheres;
+        my $post = $c->dbh->selectall_arrayref( $sql, undef, $postid, @wherep );
+        unless ( @$post ) {
+            $c->set_error('Zum angegebene Beitrag kann kein Anhang hochgeladen werden.');
+            return $c->show();
+        }
+    }
+    
+    unless ( $file ) {
+        $c->set_error('Kein Anhang angegeben.');
+        return $c->options_form;
+    }
+    unless ( $file->isa('Mojo::Upload') ) {
+        $c->set_error('Keine Datei als Anhang angegeben.');
+        return $c->show;
+    }
+    if ( $file->size < 1 ) {
+        $c->set_error('Datei ist zu klein, sollte mindestens 1B groß sein.');
+        return $c->show;
+    }
+    if ( $file->size > 2000000 ) {
+        $c->set_error('Datei ist zu groß, darf maximal 2MB groß sein.');
+        return $c->show;
+    }
+
+    my $filename = $file->filename;
+
+    unless ( $filename ) {
+        $c->set_error('Der Dateiname zum Hochladenfehlt.');
+        return $c->show;
+    }
+    if ( 2 > length $filename ) {
+        $c->set_error('Dateiname ist zu kurz, muss mindestens 2 Zeichen inklusive Dateiendung enthalten.');
+        return $c->show;
+    }
+    if ( 200 < length $filename ) {
+        $c->set_error('Dateiname ist zu lang, darf maximal 200 Zeichen lang sein.');
+        return $c->show;
+    }
+    if ( $file->filename =~ m/\A\./xms ) {
+        $c->set_error('Der Dateiname darf nicht mit einem "." beginnen.');
+        return $c->show;
+    }
+    if ( $filename =~ m/(?:\.\.|\/)/xmso ) {
+        $c->set_error('Der Dateiname darf weder ".." noch "/" enthalten.');
+        return $c->show;
+    }
+
+    $c->dbh->do('INSERT INTO "attachements" ("filename", "postid") VALUES (?,?)',
+        undef, $filename, $postid);
+    my $fileid = $c->dbh->do('SELECT "id" FROM "attachements" WHERE "postid"=? ORDER BY "id" DESC LIMIT 1',
+        undef, $postid);
+    if ( @$fileid ) {
+        $fileid = $fileid->[0]->[0];
+    }
+    else {
+        $c->set_error('Beim Dateiupload ist etwas schief gegangen, ich finde die Datei nicht mehr in der Datenbank');
+        return $c->show;
+    }
+
+    unless ( $file->move_to(catfile(@{$c->datapath}, 'uploads', $fileid)) ) {
+        $c->set_error('Das Hochladen des Anhanges ist fehlgeschlagen.');
+        return $c->show;
+    }
+
     $c->set_info('Datei an den Beitrag angehängt');
-    $c->show();
+    $c->show;
 };
 
 1;

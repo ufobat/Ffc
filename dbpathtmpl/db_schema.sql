@@ -46,7 +46,6 @@ CREATE TABLE "lastseenmsgs" (
 
 CREATE TABLE "attachements" (
   "postid" int(11) NOT NULL,
-  "number" integer not null default 0,
   "filename" varchar(256)
 );
 

@@ -38,6 +38,9 @@ sub install_routes {
     $l->route('/notes/upload/delete/:uploadid', uploadid => $Ffc::Digqr)->via('get')
       ->to('notes#delete_upload_check')->name('delete_upload_note_check');
 }
+
+# Im Folgenden werden die Standart-Einschränkungen ("WHERE"-Bestandteile) 
+# für die Abfrage von Beiträgen in der Datenbank festgelegt.
 # Where-Bestandteile dienen dazu, den Aktionsradius von Funktionen
 # innerhalb dieses Teils des Ffc einzuschränken, sind aber optional.
 
