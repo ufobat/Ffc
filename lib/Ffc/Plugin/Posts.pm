@@ -22,6 +22,7 @@ sub register {
     $app->helper( delete_post_do           => \&_delete_post_do          );
     $app->helper( upload_post_form         => \&_upload_post_form        );
     $app->helper( upload_post_do           => \&_upload_post_do          );
+    $app->helper( download_post            => \&_download_post           );
     $app->helper( delete_upload_post_check => \&_delete_upload_post_form );
     $app->helper( delete_upload_post_do    => \&_delete_upload_post_do   );
     return $self;
@@ -39,6 +40,25 @@ sub _query_posts {
     my $c = shift;
     $c->session->{query} = $c->param('query');
     $c->show;
+}
+
+sub _get_attachements {
+    my $c = shift;
+    my $posts = shift;
+    my $wheres = shift;
+    my @wherep = @_;
+    my $sql = qq~SELECT\n~
+            . qq~a."id", a."postid", a."filename",\n~
+            . qq~CASE WHEN p."userfrom"=? THEN 1 ELSE 0 END AS "deleteable"\n~
+            . qq~FROM "attachements" a\n~
+            . qq~INNER JOIN "posts" p ON a."postid"=p."id"\n~
+            .  q~WHERE a."postid" IN ('~
+            . (join q~', '~, map { $_->[0] } @$posts)
+            .  q~')~;
+    $sql .= " AND $wheres" if $wheres;
+    #die $sql;
+    return $c->stash( attachements =>
+        $c->dbh->selectall_arrayref( $sql, undef, $c->session->{userid}, @wherep ) );
 }
 
 sub _show_posts {
@@ -62,9 +82,13 @@ sub _show_posts {
         $sql .= qq~WHERE UPPER(p."textdata") LIKE UPPER(?)\n~;
     }
     $sql .= 'ORDER BY p."id" DESC LIMIT ? OFFSET ?';
-    $c->stash(posts => $c->dbh->selectall_arrayref(
+
+    my $posts = $c->dbh->selectall_arrayref(
         $sql, undef, @wherep, ( $query || () ), _pagination($c)
-    ));
+    );
+    $c->stash(posts => $posts );
+
+    _get_attachements($c, $posts, $wheres, @wherep);
 
     return $c->render(template => 'posts');
 }
@@ -109,6 +133,7 @@ sub _get_single_post {
     if ( $post and @$post ) {
         $textdata = $post->[0]->[9] unless $textdata;
         $c->stash( post => $post->[0] );
+        _get_attachements($c, $post, $wheres, @wherep);
     }
     else {
         $c->set_warning('Keine passenden Beiträge gefunden');
@@ -291,6 +316,45 @@ sub _upload_post_do {
     $c->set_info('Datei an den Beitrag angehängt');
     $c->show;
 };
+
+sub _download_post {
+    my $c = shift;
+    my $wheres = shift;
+    my @wherep = @_;
+    my $fileid = $c->param('fileid');
+    unless ( $fileid ) {
+        $c->set_error('Download des gewünschten Dateianhanges nicht möglich');
+        return $c->show;
+    }
+    my $sql = qq~SELECT\n~
+            . qq~a."filename"\n~
+            . qq~FROM "attachements" a\n~
+            . qq~INNER JOIN "posts" p ON a."postid"=p."id"\n~
+            . qq~WHERE a."id"=?~;
+    $sql .= " AND $wheres" if $wheres;
+    my $filename = $c->dbh->selectall_arrayref( $sql, undef, $fileid, @wherep );
+    unless ( @$filename ) {
+        $c->set_error('Konnte die gewünschte Datei in der Datenbank nicht finden.');
+        return $c->show;
+    }
+    $filename = $filename->[0]->[0];
+    my $file = catfile(@{$c->datapath}, 'uploads', $fileid);
+    unless ( -e $file ) {
+        $c->set_error('Konnte die gewünschte Datei im Dateisystem nicht finden.');
+        return $c->show;
+    }
+    my $content = '';
+    if ( open my $fh, '<', $file ) {
+        local $/;
+        $content = <$fh>;
+    }
+    else {
+        $c->set_error('Konnte die gewünschte Datei im Dateisystem nicht auslesen.');
+        return $c->show;
+    }
+    $c->res->headers->header('Content-Disposition' => qq~attachment; filename="$filename"~);
+    $c->render(data => $content);
+}
 
 1;
 

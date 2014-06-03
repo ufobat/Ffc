@@ -28,4 +28,12 @@
 % }
     </h2>
 %== $post->[8];
+% if ( @$attachements ) {
+    <h2>Anhänge:</h2>
+    <ul>
+% for my $att ( @$attachements ) {
+%= include 'parts/attachement', attachement => $att
+% }
+    </ul>
+% }
 </div>

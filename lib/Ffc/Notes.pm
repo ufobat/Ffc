@@ -33,9 +33,12 @@ sub install_routes {
     $l->route('/notes/upload/:postid', postid => $Ffc::Digqr)->via('get')
       ->to('notes#upload_form')->name('upload_note_form');
 
+    $l->route('/notes/download/:fileid', fileid => $Ffc::Digqr)->via('get')
+      ->to('notes#download')->name('download_att_notes');
+
     $l->route('/notes/upload/delete')->via('post')
       ->to('notes#delete_upload_do')->name('delete_upload_note_do');
-    $l->route('/notes/upload/delete/:uploadid', uploadid => $Ffc::Digqr)->via('get')
+    $l->route('/notes/upload/delete/:fileid', fileid => $Ffc::Digqr)->via('get')
       ->to('notes#delete_upload_check')->name('delete_upload_note_check');
 }
 
@@ -91,6 +94,10 @@ sub setup_stash {
         # Routenname für Filter-Suchen aus dem Menü heraus.
         # Diese Route wird direkt als URL festgelegt, da sie keine weiteren Daten braucht.
         queryurl => $c->url_for('query_notes'),
+        # Der folgende Routenname wird für den Download von Dateianhängen benötigt.
+        # Hierbei handelt es sich auch um eine Array-Referenz, welche zusätzliche Daten
+        # enthalten kann.
+        downld   => [ 'download_att_notes' ],
     );
 }
 
@@ -201,6 +208,9 @@ sub upload_form {
 # durch und verwendet dafür den "WHERE"-Bestandteil für Datenmodifikationen 
 # mit passender Parameterliste. Anschließend leitet sie auf "show" um.
 sub upload_do { $_[0]->upload_post_do($WhereM, $_[0]->session->{userid}) }
+
+# Folgende Funktion erlaubt den Download von Dateianhängen zu Beiträgen
+sub download {  $_[0]->download_post($WhereM, $_[0]->session->{userid}) }
 
 1;
 

@@ -1,0 +1,9 @@
+        <li>
+            <a href="<%= url_for @$downld, fileid => $attachement->[0] %>" 
+               title="Diesen Anhang herunterladen"><%= $attachement->[2] %></a>
+% if ( $delupl and $attachement->[3] ) {
+            (<a href="<%= url_for @$delupl, fileid => $attachement->[0] %>" 
+               title="Diesen Anhang entfernen">entfernen</a>)
+% }
+        </li>
+

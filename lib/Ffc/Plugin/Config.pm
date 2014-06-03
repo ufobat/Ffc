@@ -71,7 +71,7 @@ sub register {
             qw(newmsgs newpost note) ),
         map( {;$_ => ''} 
             qw(error info warning query textdata heading
-               dourl returl editurl msgurl delurl uplurl ) ),
+               dourl returl editurl msgurl delurl uplurl delupl downld ) ),
         map( {;$_ => $config->{$_} || $Defaults{$_}} 
             qw(favicon commoncattitle title) ),
     });
