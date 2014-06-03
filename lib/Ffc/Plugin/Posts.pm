@@ -13,18 +13,18 @@ use 5.010;
 
 sub register {
     my ( $self, $app ) = @_;
-    $app->helper( show_posts               => \&_show_posts              );
-    $app->helper( query_posts              => \&_query_posts             );
-    $app->helper( add_post                 => \&_add_post                );
-    $app->helper( edit_post_form           => \&_edit_post_form          );
-    $app->helper( edit_post_do             => \&_edit_post_do            );
-    $app->helper( delete_post_check        => \&_delete_post_check       );
-    $app->helper( delete_post_do           => \&_delete_post_do          );
-    $app->helper( upload_post_form         => \&_upload_post_form        );
-    $app->helper( upload_post_do           => \&_upload_post_do          );
-    $app->helper( download_post            => \&_download_post           );
-    $app->helper( delete_upload_post_check => \&_delete_upload_post_form );
-    $app->helper( delete_upload_post_do    => \&_delete_upload_post_do   );
+    $app->helper( show_posts               => \&_show_posts               );
+    $app->helper( query_posts              => \&_query_posts              );
+    $app->helper( add_post                 => \&_add_post                 );
+    $app->helper( edit_post_form           => \&_edit_post_form           );
+    $app->helper( edit_post_do             => \&_edit_post_do             );
+    $app->helper( delete_post_check        => \&_delete_post_check        );
+    $app->helper( delete_post_do           => \&_delete_post_do           );
+    $app->helper( upload_post_form         => \&_upload_post_form         );
+    $app->helper( upload_post_do           => \&_upload_post_do           );
+    $app->helper( download_post            => \&_download_post            );
+    $app->helper( delete_upload_post_check => \&_delete_upload_post_check );
+    $app->helper( delete_upload_post_do    => \&_delete_upload_post_do    );
     return $self;
 }
 
@@ -56,6 +56,7 @@ sub _get_attachements {
             . (join q~', '~, map { $_->[0] } @$posts)
             .  q~')~;
     $sql .= " AND $wheres" if $wheres;
+    $sql .= qq~\nORDER BY a."filename", a."id"~;
     #die $sql;
     return $c->stash( attachements =>
         $c->dbh->selectall_arrayref( $sql, undef, $c->session->{userid}, @wherep ) );
@@ -354,6 +355,20 @@ sub _download_post {
     }
     $c->res->headers->header('Content-Disposition' => qq~attachment; filename="$filename"~);
     $c->render(data => $content);
+}
+
+sub _delete_upload_post_check {
+    my $c = shift;
+    $c->setup_stash;
+    _get_single_post($c, @_);
+    $c->render( template => 'delete_upload_check' );
+}
+
+sub _delete_upload_post_do {
+    my $c = shift;
+    my $wheres = shift;
+    my @wherep = @_;
+    my $fileid = $c->param('fileid');
 }
 
 1;

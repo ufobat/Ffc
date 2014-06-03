@@ -2,42 +2,100 @@ package Ffc::Notes;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 
+# Dieser Standardcontroller verwaltet eine bestimmte Art von Beiträgen
+# in der Datenbank und deren Anhänge. Dazu verwendet er das Plugin
+# Ffc::Plugin::Posts. Dieses Plugin kümmert sich um alle Feinheiten
+# der Beitrags- und Anhangsverwaltung. Das Konzept bei der Anwendung
+# ist dabei folgendes:
+# - Die Formulare werden über Stash-Variablen konfiguriert. Dabei
+#   werden Überschriften sowie Routen-Namen mit Parametern in speziellen
+#   vorgeschriebenen Variablen abgelegt.
+# - Stash-Variablen, welche Routen beschreiben, können fest verdrahtet
+#   oder als Array-Referenz übergeben werden, je nach dem, ob das Plugin
+#   diese gleich fertig übernehmen kann oder ob es selber noch Variablen
+#   einfügen muss.
+# - In den hier definierten Routen müssen bestimmte Parameternamen
+#   verwendet werden: "postid" für die ID eines Beitrages sowie "fileid" 
+#   für die ID eines Dateianhanges. Diese Parameter beziehen sich auf die
+#   entsprechenden "id"-Felder in der Datenbank.
+# - Das Plugin stellt Prozeduren zur Verfügung, welche die eigentliche
+#   Arbeit übernehmen.
+# - Die Arbeitsprozeduren bekommen als Funktionsparameter einen SQL-Bestandteil
+#   sowie eine Liste von Parametern mit. Der SQL-Bestandteil wird in die 
+#   WHERE-Klausel im SQL bei Datenbankabfragen eingebaut und die Parameter
+#   entsprechen den darin enthaltenen Platzhaltern.
+# - Über diese Funktionsparameter werden die Beiträge eingeschränkt. So kann
+#   hierrüber festgelegt werden, an wen ein Beitrag gerichtet ist und
+#   unter welchem Titel er zu finden ist.
+# - Das Plugin kümmert sich intern auch darum, dass Benutzer nur die 
+#   Beiträge bearbeiten können, deren Urheber sie auch sind. Welche Beiträge
+#   ein Benutzer sehen kann, dass muss über die Funktionsparameter 
+#   eingeschränkt werden.
+# - Seitenweiterschaltung bei Beitragslisten sowie die Filterfunktion
+#   im Menü wird ebenfalls von dem Plugin in die Auflistungen eingebaut.
+# - Werden Routenangaben weggelassen, steht die entsprechende Funktion
+#   im erzeugten Formular dann auch nicht zur Verfügung. Wenn sich das 
+#   Formular allerdings um genau diese Funktion dreht, dann gibt das
+#   natürlich einen Fehler.
+
 # Als erstes werden über die folgende Routine die notwendigen Routen definiert.
 # Diese Routine wird aus Ffc::Routes angesprochen und übernimmt eine Bridge,
 # bei welcher man bereits angemeldet ist und bei der die Anmeldung geprüft wird.
 sub install_routes {
     my $l = shift;
 
+    # Die erste Route zeigt die Liste der passenden Beiträge an.
     $l->route('/notes')->via('get')
       ->to('notes#show')->name('show_notes');
+    # Diese Route führt zur Routine, welche das Filterfeld aus dem Menü
+    # umsetzt.
     $l->route('/notes/query')->via('post')
       ->to('notes#query')->name('query_notes');
+    # Diese Route wird für die Seitenweiterschaltung verwendet.
     $l->route('/notes/:page', page => $Ffc::Digqr)->via('get')
       ->to('notes#show')->name('show_notes_page');
-
+    
+    # Die folgende Route fügt einen neuen Beitrag hinzu.
     $l->route('/notes/new')->via('post')
       ->to('notes#add')->name('add_note');
 
+    # Mit der folgenden Route wird der bearbeitete Beitrag mit
+    # seinen Änderungen abgespeichert.
     $l->route('/notes/edit')->via('post')
       ->to('notes#edit_do')->name('edit_note_do');
+    # Mit dieser Route wird ein Bearbeitungsformular für einen
+    # Beitrag erstellt.
     $l->route('/notes/edit/:postid', postid => $Ffc::Digqr)->via('get')
       ->to('notes#edit_form')->name('edit_note_form');
-
+    
+    # Diese Route löscht einen Beitrag mit all seinen Anhängen und allem.
     $l->route('/notes/delete')->via('post')
       ->to('notes#delete_do')->name('delete_note_do');
+    # Diese Route erzeugt ein Bestätigungsformular, was den Benutzer
+    # fragt, ob er den gewünschten Beitrag tatsächlich und unwiderbringlich
+    # löschen möchte.
     $l->route('/notes/delete/:postid', postid => $Ffc::Digqr)->via('get')
       ->to('notes#delete_check')->name('delete_note_check');
 
+    # Folgende Route lädt Dateien zu einem Beitrag hoch.
     $l->route('/notes/upload')->via('post')
       ->to('notes#upload_do')->name('upload_note_do');
+    # Diese Route dient dem Upload von Anhängen an einen Beitrag
+    # und liefert dafür das entsprechende Upload-Formular.
     $l->route('/notes/upload/:postid', postid => $Ffc::Digqr)->via('get')
       ->to('notes#upload_form')->name('upload_note_form');
 
+    # Die folgende Route erlaubt den Download von Dateien, die
+    # an einen Beitrag angehängt wurden.
     $l->route('/notes/download/:fileid', fileid => $Ffc::Digqr)->via('get')
       ->to('notes#download')->name('download_att_notes');
 
+    # Die Route löscht einen Anhang, der an einem Beitrag hängt.
     $l->route('/notes/upload/delete')->via('post')
       ->to('notes#delete_upload_do')->name('delete_upload_note_do');
+    # Diese Route erzeugt ein Bestätigungsformular, wenn der Benutzer
+    # einen Dateianhang löschen möchte, in dem er nochmal gefragt wird, 
+    # ob er das auch tatsächlich machen will.
     $l->route('/notes/upload/delete/:fileid', fileid => $Ffc::Digqr)->via('get')
       ->to('notes#delete_upload_check')->name('delete_upload_note_check');
 }
@@ -181,6 +239,9 @@ sub delete_check {
         heading => 'Persönliche Notiz entfernen', # Überschrift für das Bestätigungsformular
         dourl   => $c->url_for('delete_note_do'), # Route zum tatsächlichen Löschen
     );
+    # Der folgende Helper erzeugt das Bestätigungsformular. Er bekommt
+    # einen "WHERE"-Bestandteil für Beitragsanzeigen sowie dessen
+    # Parameterliste übergeben.
     $c->delete_post_check($WhereS, $c->session->{userid});
 }
 
@@ -211,6 +272,25 @@ sub upload_do { $_[0]->upload_post_do($WhereM, $_[0]->session->{userid}) }
 
 # Folgende Funktion erlaubt den Download von Dateianhängen zu Beiträgen
 sub download {  $_[0]->download_post($WhereM, $_[0]->session->{userid}) }
+
+# Die Folgende Funktion führt zu einer Bestätigungsseite, auf der noch
+# einmal nachgefragt wird, ob man einen bestimmten Dateianhang tatsächlich
+# komplett löschen möchte (im Dateisystem und in der Datenbank).
+sub delete_upload_check {
+    my $c = shift;
+    $c->stash( 
+        heading => 'Einen Dateianhang an einer Notiz entfernen', # Überschrift für das Bestätigungsformular
+        dourl   => $c->url_for('delete_note_do'), # Route zum tatsächlichen Löschen
+    );
+    # Der folgende Helper erzeugt das Bestätigungsformular. Er bekommt
+    # einen "WHERE"-Bestandteil für Beitragsanzeigen sowie dessen
+    # Parameterliste übergeben.
+    $c->delete_upload_post_check($WhereS, $c->session->{userid});
+}
+
+# Diese Funktion löscht einen Dateianhang nach der Bestätigung (aus vorhergehender
+# Funktion) komplett aus dem Dateisystem und aus der Datenbank.
+sub delete_upload_do { $_[0]->delete_upload_post_do($WhereM, $_[0]->session->{userid}) }
 
 1;
 
