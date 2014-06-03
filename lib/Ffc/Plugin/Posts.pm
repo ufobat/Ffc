@@ -272,7 +272,8 @@ sub _upload_post_do {
 
     $c->dbh->do('INSERT INTO "attachements" ("filename", "postid") VALUES (?,?)',
         undef, $filename, $postid);
-    my $fileid = $c->dbh->do('SELECT "id" FROM "attachements" WHERE "postid"=? ORDER BY "id" DESC LIMIT 1',
+    my $fileid = $c->dbh->selectall_arrayref(
+        'SELECT "id" FROM "attachements" WHERE "postid"=? ORDER BY "id" DESC LIMIT 1',
         undef, $postid);
     if ( @$fileid ) {
         $fileid = $fileid->[0]->[0];

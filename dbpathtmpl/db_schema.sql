@@ -45,6 +45,7 @@ CREATE TABLE "lastseenmsgs" (
 );
 
 CREATE TABLE "attachements" (
+  "id" integer PRIMARY KEY AUTOINCREMENT,
   "postid" int(11) NOT NULL,
   "filename" varchar(256)
 );
