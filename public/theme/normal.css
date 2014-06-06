@@ -228,3 +228,8 @@ ul.attachements {
 li {
     margin-left: 2em;
 }
+input.activesearch {
+    border-color: darkred;
+    background-color: lightsalmon;
+}
+
