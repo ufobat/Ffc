@@ -41,7 +41,7 @@ sub _install_routes_helper {
     my $l = $_[0];
     # Standardseitenauslieferungen
     $l->any('/')->to('forum#show')->name('show');
-    $l->any('/help' => sub { $_[0]->render(template => 'help' ) } )
+    $l->any('/help' => sub { $_[0]->render(template => 'help') } )
       ->name('help');
     $l->get('/session' => sub { $_[0]->render( json => $_[0]->session() ) } )
       ->name('sessiondata');

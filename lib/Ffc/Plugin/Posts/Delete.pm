@@ -2,11 +2,13 @@ package Ffc::Plugin::Posts; # Delete
 use 5.010;
 use strict; use warnings; use utf8;
 
+use File::Spec qw(catfile);
+
 sub _delete_post_check {
     my $c = shift;
     $c->stash( dourl => $c->url_for('delete_'.$c->stash('controller').'_do' => $c->additional_params) );
     _setup_stash($c);
-    _get_single_post($c, @_);
+    return unless _get_single_post($c, @_);
     $c->render( template => 'delete_check' );
 }
 

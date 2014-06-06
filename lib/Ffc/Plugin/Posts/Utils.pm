@@ -27,6 +27,11 @@ sub _get_single_post {
     my ( $wheres, @wherep ) = $c->where_select;
 
     my $postid = $c->param('postid');
+    unless ( $postid and $postid =~ $Ffc::Digqr ) {
+        $c->set_error('Konnte den gewünschten Beitrag nicht finden, da die Beitragsnummer irgendwie verloren ging');
+        $c->show;
+        return;
+    }
 
     my $sql = qq~SELECT\n~
         .qq~p."id", uf."id", uf."name", ut."id", ut."name", p."topicid", p."posted", p."altered", p."cache", p."textdata"\n~
@@ -40,7 +45,7 @@ sub _get_single_post {
     if ( $post and @$post ) {
         $textdata = $post->[0]->[9] unless $textdata;
         $c->stash( post => $post->[0] );
-        _get_attachements($c, $post, $wheres, @wherep);
+        return unless _get_attachements($c, $post, $wheres, @wherep);
     }
     else {
         $c->set_warning('Keine passenden Beiträge gefunden');
@@ -51,6 +56,23 @@ sub _get_single_post {
     $c->stash( postid   => $postid );
 }
 
+sub _get_attachements {
+    my $c = shift;
+    my ( $wheres, @wherep ) = $c->where_select;
+    my $posts = shift;
+    my $sql = qq~SELECT\n~
+            . qq~a."id", a."postid", a."filename",\n~
+            . qq~CASE WHEN p."userfrom"=? THEN 1 ELSE 0 END AS "deleteable"\n~
+            . qq~FROM "attachements" a\n~
+            . qq~INNER JOIN "posts" p ON a."postid"=p."id"\n~
+            .  q~WHERE a."postid" IN ('~
+            . (join q~', '~, map { $_->[0] } @$posts)
+            .  q~')~;
+    $sql .= " AND $wheres" if $wheres;
+    $sql .= qq~\nORDER BY a."filename", a."id"~;
+    return $c->stash( attachements =>
+        $c->dbh->selectall_arrayref( $sql, undef, $c->session->{userid}, @wherep ) );
+}
 
 1;
 

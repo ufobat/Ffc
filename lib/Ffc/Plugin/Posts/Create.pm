@@ -27,7 +27,7 @@ sub _edit_post_form {
     my $c = shift;
     $c->stash( dourl => $c->url_for('edit_'.$c->stash('controller').'_do' => $c->additional_params) );
     _setup_stash($c);
-    _get_single_post($c, @_);
+    return unless _get_single_post($c, @_);
     $c->render( template => 'edit_form' );
 }
 

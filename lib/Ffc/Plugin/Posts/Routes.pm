@@ -57,7 +57,7 @@ sub install_routes_posts {
     # Diese Route erzeugt ein Bestätigungsformular, wenn der Benutzer
     # einen Dateianhang löschen möchte, in dem er nochmal gefragt wird, 
     # ob er das auch tatsächlich machen will.
-    $l->route("$start/upload/delete/:fileid", fileid => $Ffc::Digqr)->via('get')
+    $l->route("$start/upload/delete/:postid/:fileid", postid => $Ffc::Digqr, fileid => $Ffc::Digqr)->via('get')
       ->to(controller => $cname, action => 'delete_upload_check')->name("delete_upload_${cname}_check");
 }
 

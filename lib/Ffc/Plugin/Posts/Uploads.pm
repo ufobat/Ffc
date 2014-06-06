@@ -6,7 +6,7 @@ sub _upload_post_form {
     my $c = shift;
     $c->stash( dourl => $c->url_for('upload_'.$c->stash('controller').'_do', $c->additional_params) );
     _setup_stash($c);
-    _get_single_post($c, @_);
+    return unless _get_single_post($c, @_);
     $c->render( template => 'upload_form' );
 }
 
@@ -32,7 +32,7 @@ sub _upload_post_do {
     
     unless ( $file ) {
         $c->set_error('Kein Anhang angegeben.');
-        return $c->options_form;
+        return $c->show;
     }
     unless ( $file->isa('Mojo::Upload') ) {
         $c->set_error('Keine Datei als Anhang angegeben.');

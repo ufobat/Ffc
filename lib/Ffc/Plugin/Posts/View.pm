@@ -16,24 +16,6 @@ sub _query_posts {
     $c->show;
 }
 
-sub _get_attachements {
-    my $c = shift;
-    my ( $wheres, @wherep ) = $c->where_select;
-    my $posts = shift;
-    my $sql = qq~SELECT\n~
-            . qq~a."id", a."postid", a."filename",\n~
-            . qq~CASE WHEN p."userfrom"=? THEN 1 ELSE 0 END AS "deleteable"\n~
-            . qq~FROM "attachements" a\n~
-            . qq~INNER JOIN "posts" p ON a."postid"=p."id"\n~
-            .  q~WHERE a."postid" IN ('~
-            . (join q~', '~, map { $_->[0] } @$posts)
-            .  q~')~;
-    $sql .= " AND $wheres" if $wheres;
-    $sql .= qq~\nORDER BY a."filename", a."id"~;
-    return $c->stash( attachements =>
-        $c->dbh->selectall_arrayref( $sql, undef, $c->session->{userid}, @wherep ) );
-}
-
 sub _show_posts {
     my $c = shift;
     my ( $wheres, @wherep ) = $c->where_select;

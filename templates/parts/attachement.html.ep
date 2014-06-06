@@ -7,7 +7,7 @@
                <%= $attachement->[2] %></a>
 % }
 % if ( $delupl and $attachement->[3] ) {
-            (<a href="<%= url_for @$delupl, fileid => $attachement->[0] %>" 
+            (<a href="<%= url_for @$delupl, fileid => $attachement->[0], postid => $post->[0] %>" 
                title="Diesen Anhang entfernen">entfernen</a>)
 % }
         </li>
