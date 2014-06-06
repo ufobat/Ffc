@@ -1,11 +1,7 @@
 package Ffc::Plugin::Formats;
+use 5.010;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Plugin';
-
-use 5.010;
-use strict;
-use warnings;
-use utf8;
 
 our @Smilies = (
     [ look       => ['O.O', '0.0',                                ] ],

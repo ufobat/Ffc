@@ -1,6 +1,11 @@
         <li>
             <a href="<%= url_for @$downld, fileid => $attachement->[0] %>" 
-               title="Diesen Anhang herunterladen"><%= $attachement->[2] %></a>
+               title="Diesen Anhang herunterladen">
+% if ( $attachement->[2] =~ m/(?:bmp|png|jpe?g|gif)\z/ximso ) {
+               <img src="<%= url_for @$downld, fileid => $attachement->[0] %>" title="Bildervorschau des Anhanges" alt="<%= $attachement->[2] %>"/></a>
+% } else {
+               <%= $attachement->[2] %></a>
+% }
 % if ( $delupl and $attachement->[3] ) {
             (<a href="<%= url_for @$delupl, fileid => $attachement->[0] %>" 
                title="Diesen Anhang entfernen">entfernen</a>)

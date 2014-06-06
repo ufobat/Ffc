@@ -1,10 +1,8 @@
 package Ffc::Plugin::Config;
+use 5.010;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Plugin';
 
-use strict;
-use warnings;
-use 5.010;
 use DBI;
 use File::Spec::Functions qw(splitdir catdir);
 use Digest::SHA 'sha512_base64';

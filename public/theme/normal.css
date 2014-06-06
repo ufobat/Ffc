@@ -222,6 +222,9 @@ img.smiley, img.icon {
     width: 1em;
     height: 1em;
 }
+ul.attachements {
+    list-style: none;
+}
 li {
     margin-left: 2em;
 }

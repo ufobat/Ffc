@@ -1,6 +1,6 @@
 <div class="postbox">
     <h2>
-% if ( $act ne 'notes' ) {
+% if ( $controller ne 'notes' ) {
         <img class="avatar" src="<%= url_for 'avatar_show', userid => $post->[1] // session->{userid} %>" alt="Avatar für Benutzer &quot;<%= $post->[2] || session->{user} %>&quot;" />
         <%== $post->[2] ? post_format($post->[2]) . ',' : '' %>
 % }
@@ -28,10 +28,10 @@
 % }
     </h2>
 %== $post->[8];
-% if ( @$attachements ) {
+% if ( my @attments = grep { $_->[1] == $post->[0] } @$attachements ) {
     <h2>Anhänge:</h2>
-    <ul>
-% for my $att ( @$attachements ) {
+    <ul class="attachements">
+% for my $att ( @attments ) {
 %= include 'parts/attachement', attachement => $att
 % }
     </ul>
