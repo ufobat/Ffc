@@ -2,7 +2,6 @@ package Ffc;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious';
 use File::Spec::Functions qw(catdir);
-use Ffc::Routes;
 
 our $Digqr = qr/\d+/xmso;
 our $Usrqr = qr(\w{2,32})xmso;
