@@ -5,6 +5,9 @@ sub install_routes {
     my $o = $_[0]->bridge('/options')->name('options_bridge');
 
     # Optionsformular
+    $o->post('/query')
+      ->to('options#query')
+      ->name('query_options');
     $o->get('/form')
       ->to('options#options_form')
       ->name('options_form');

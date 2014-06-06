@@ -17,9 +17,15 @@ sub check_admin {
     return 1;
 }
 
+sub query {
+    my $c = shift;
+    $c->session->{query} = $c->param('query');
+    $c->options_form;
+}
+
 sub options_form {
     my $c = shift;
-    $c->stash(act => 'options');
+    $c->stash(queryurl => $c->url_for('query_options'));
     $c->stash(fontsizes => \%Ffc::Plugin::Config::FontSizeMap);
     my $r = $c->dbh->selectall_arrayref(
         'SELECT email, admin FROM users WHERE UPPER(name)=UPPER(?)'
