@@ -235,4 +235,8 @@ input.activesearch {
     border-color: darkred;
     background-color: lightsalmon;
 }
+.userlist .avatar {
+    height: 3.5em;
+    margin-top: 1em;
+}
 

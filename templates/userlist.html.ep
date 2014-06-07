@@ -1,0 +1,16 @@
+% layout 'board', act => 'pmsgs';
+<div class="postbox">
+<h1>Privatnachrichten mit Benutzern</h1>
+<p>Im folgenden findet siche eine Liste aller aktiven Benutzer, mit denen Nachrichten ausgetauscht werden können.</p>
+</div>
+% for my $u ( @$users ) {
+<div class="postbox userlist">
+    <img class="avatar" src="<%= url_for 'avatar_show', userid => $u->[0] %>"
+         alt="Avatar für Benutzer &quot;<%= $u->[1] %>&quot;" />
+    <h1>
+        <%= $u->[1] %>
+    </h1>
+    <p><a href="<%= url_for 'show_pmsgs', userid => $u->[0] %>"
+       title="Privatnachrichten mit Benutzer &qout;<%= $u->[1] %>&quot; ansehen">Konversation mit Benuter &quot;<%= $u->[1] %>&quot; öffnen</a></p>
+</div>
+% }

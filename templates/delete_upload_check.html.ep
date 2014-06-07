@@ -6,8 +6,6 @@
 %= include 'parts/attachement', attachement => grep { $_->[0] == $fileid } @$attachements;
     </ul>
 <form action="<%== $dourl %>" accept-charset="UTF-8" method="POST">
-    <input type="hidden" name="postid" value="<%= $postid %>" />
-    <input type="hidden" name="fileid" value="<%= $fileid %>" />
     %= submit_button 'Entfernen', class => 'linkalike send'
 </form>
 <a href="<%== $returl %>" title="Den Vorgang abbrechen">Abbrechen</a>

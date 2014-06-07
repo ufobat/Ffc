@@ -11,7 +11,7 @@
 
 <div class="menu">
     <a href="<%= url_for 'show_forum' %>" title="Nachrichten für alle angemeldeten Benutzer in der Art einer öffentlichen Diskussion"><span class="linktext linkforum<%= $controller eq 'forum' ? ' active activeforum' : '' %>">Forum<% if ( $newpostcount ) { %> (<span class="mark"><%= $newpostcount %></span>)<% } %></span></a>
-    <a href="<%= url_for 'show_pmsgs' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkpmsgs<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>">Nachrichten<% if ( $newmsgscount ) { %> (<span class="mark"><%= $newmsgscount %></span>)<% } %></span></a>
+    <a href="<%= url_for 'show_pmsgs_userlist' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkpmsgs<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>">Nachrichten<% if ( $newmsgscount ) { %> (<span class="mark"><%= $newmsgscount %></span>)<% } %></span></a>
     <a href="<%= url_for 'show_notes' %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
 <form action="<%== $queryurl %>" accept-charset="UTF-8" method="POST">
 %= text_field query => session()->{query}, session()->{query} ? (class => 'activesearch') : ()

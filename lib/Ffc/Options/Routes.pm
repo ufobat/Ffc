@@ -26,9 +26,6 @@ sub install_routes {
     $b->post('/color')
       ->to('options#bg_color')
       ->name('bg_color_form');
-    $o->get('/toggle/cat/:cat', [cat => $Ffc::Catqr])
-      ->to('options#toggle_cat')
-      ->name('toggle_cat');
 
     # Benutzeroptionen mit Fomularen
     $o->post("/$_")

@@ -11,14 +11,14 @@ sub _setup_stash {
     $c->stash( 
         # Routenname für Abbrüche, der auf die Einstiegsseite der Beitragsübersicht verweißt.
         # Diese Route wird direkt als URL festgelegt, da sie keine weiteren Daten braucht.
-        returl   => $c->url_for("show_$cname", $c->additional_params),
+        returl   => $c->url_for("show_$cname"),
         # Routenname für Filter-Suchen aus dem Menü heraus.
         # Diese Route wird direkt als URL festgelegt, da sie keine weiteren Daten braucht.
-        queryurl => $c->url_for("query_$cname", $c->additional_params),
+        queryurl => $c->url_for("query_$cname"),
         # Der folgende Routenname wird für den Download von Dateianhängen benötigt.
         # Hierbei handelt es sich auch um eine Array-Referenz, welche zusätzliche Daten
         # enthalten kann.
-        downld   => [ "download_att_$cname", $c->additional_params],
+        downld   => "download_att_$cname",
     );
 }
 

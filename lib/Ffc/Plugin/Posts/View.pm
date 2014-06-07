@@ -21,15 +21,14 @@ sub _show_posts {
     my ( $wheres, @wherep ) = $c->where_select;
     my $query  = $c->session->{query};
     $query = "\%$query\%" if $query;
-    my @addparms = $c->additional_params;
     my $cname = $c->stash('controller');
     $c->stash( 
-        dourl   => $c->url_for("add_${cname}",       @addparms ), # Neuen Beitrag erstellen
-        editurl => [ "edit_${cname}_form",           @addparms ], # Formuar zum Bearbeiten von Beiträgen
-        delurl  => [ "delete_${cname}_check",        @addparms ], # Formular, um den Löschvorgang einzuleiten
-        uplurl  => [ "upload_${cname}_form",         @addparms ], # Formular für Dateiuploads
-        delupl  => [ "delete_upload_${cname}_check", @addparms ], # Formular zum entfernen von Anhängen
-        pageurl => [ "show_${cname}_page",           @addparms ], # Seitenweiterschaltung
+        dourl   => $c->url_for("add_${cname}"),    # Neuen Beitrag erstellen
+        editurl => "edit_${cname}_form",           # Formuar zum Bearbeiten von Beiträgen
+        delurl  => "delete_${cname}_check",        # Formular, um den Löschvorgang einzuleiten
+        uplurl  => "upload_${cname}_form",         # Formular für Dateiuploads
+        delupl  => "delete_upload_${cname}_check", # Formular zum entfernen von Anhängen
+        pageurl => "show_${cname}_page",           # Seitenweiterschaltung
     );
     _setup_stash($c);
 
