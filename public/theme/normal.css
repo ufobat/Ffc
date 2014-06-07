@@ -33,6 +33,9 @@ h1 {
 h2 {
     color: gray;
 }
+h3 {
+    text-decoration: underline;
+}
 .loginform, .menu, .pages, .headbox {
     background: whitesmoke;
 }
