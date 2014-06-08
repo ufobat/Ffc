@@ -4,9 +4,12 @@ use Mojo::Base 'Mojolicious::Controller';
 
 sub install_routes { 
     my $l = shift;
-    my $r = $l->route('/pmsgs')->via('get')
-              ->to(controller => 'pmsgs', action => 'show_userlist')
-              ->name('show_pmsgs_userlist');
+    $l->route('/pmsgs/query')->via('post')
+      ->to(controller => 'pmsgs', action => 'query_userlist')
+      ->name('query_pmsgs_userlist');
+    $l->route('/pmsgs')->via('get')
+      ->to(controller => 'pmsgs', action => 'show_userlist')
+      ->name('show_pmsgs_userlist');
     Ffc::Plugin::Posts::install_routes_posts($l, 'pmsgs', '/pmsgs/:userid', userid => $Ffc::Digqr);
 }
 
@@ -28,11 +31,27 @@ sub where_modify {
         $uid, $uid, $cid, $cid;
 }
 
+sub query_userlist {
+    my $c = shift;
+    $c->session->{query} = $c->param('query');
+    $c->show_userlist;
+}
+
 sub show_userlist {
     my $c = shift;
+    $c->stash(queryurl => $c->url_for('query_pmsgs_userlist'));
+    my $uid = $c->session->{userid};
     $c->stash( users => $c->dbh->selectall_arrayref(
-        'SELECT "id", "name" FROM "users" WHERE "active"=1 AND "id"<>? ORDER BY UPPER("name") ASC',
-        undef, $c->session->{userid}
+        'SELECT u."id", u."name", COUNT(pn."id") AS "msgcount_new", COUNT(po."id") AS "msgcount_other", COUNT(pm."id") AS "msgcount_me" 
+        FROM "users" u
+        LEFT OUTER JOIN "posts" po ON po."userfrom"=u."id" AND po."userto"=?
+        LEFT OUTER JOIN "posts" pm ON pm."userto"=u."id" AND pm."userfrom"=?
+        LEFT OUTER JOIN "lastseenmsgs" l ON l."userfromid"=u."id" AND l."userid"=?
+        LEFT OUTER JOIN "posts" pn ON pn."userfrom"=u."id" AND pn."userto"=? AND pn."id">COALESCE(l."lastseen",0)
+        WHERE u."active"=1 AND u."id"<>? 
+        GROUP BY u."id"
+        ORDER BY "msgcount_new" DESC, UPPER(u."name") ASC',
+        undef, $uid, $uid, $uid, $uid, $uid
     ) );
     $c->render(template => 'userlist');
 }
@@ -50,8 +69,33 @@ sub _get_username {
 }
 sub show {
     my $c = shift;
+    $c->stash(backurl => $c->url_for('show_pmsgs_userlist'));
     $c->stash( heading => 
         'Private Nachrichten mit Benutzer "' . $c->_get_username . '"' );
+    my ( $dbh, $uid, $utoid ) = ( $c->dbh, $c->session->{userid}, $c->param('userid') );
+    my $lastseen = $dbh->selectall_arrayref(
+        'SELECT "lastseen"
+        FROM "lastseenmsgs"
+        WHERE "userid"=? AND "userfromid"=?',
+        undef, $uid, $utoid
+    );
+    $lastseen = $lastseen && 'ARRAY' eq ref($lastseen) && @$lastseen ? $lastseen->[0]->[0] : undef;
+    $c->stash( lastseen => $lastseen // -1 );
+    my $newlastseen = $dbh->selectall_arrayref(
+        'SELECT "id" FROM "posts" WHERE "userto"=? AND "userfrom"=? ORDER BY "id" DESC LIMIT 1',
+        undef, $uid, $utoid);
+    $newlastseen = $newlastseen && 'ARRAY' eq ref($newlastseen) && @$newlastseen 
+        ? $newlastseen->[0]->[0] : -1;
+    if ( defined $lastseen ) {
+        $dbh->do(
+            'UPDATE "lastseenmsgs" SET "lastseen"=? WHERE "userid"=? AND "userfromid"=?',
+            undef, $newlastseen, $uid, $utoid );
+    }
+    else {
+        $dbh->do(
+            'INSERT INTO "lastseenmsgs" ("userid", "userfromid", "lastseen") VALUES (?,?,?)',
+            undef, $uid, $utoid, $newlastseen );
+    }
     $c->show_posts();
 }
 

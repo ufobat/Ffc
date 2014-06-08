@@ -232,11 +232,22 @@ li {
     margin-left: 2em;
 }
 input.activesearch {
-    border-color: darkred;
-    background-color: lightsalmon;
+    border-color: palevioletred;
+    background-color: lemonchiffon;
 }
 .userlist .avatar {
     height: 3.5em;
     margin-top: 1em;
+}
+.mark {
+    color: palevioletred;
+    font-weight: bolder;
+}
+.newpost {
+    border-color: palevioletred;
+}
+.newpost h1, .newpost .title {
+    background: lemonchiffon;
+    border-bottom-color: lightsalmon;
 }
 

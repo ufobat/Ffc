@@ -4,12 +4,18 @@
 <p>Im folgenden findet siche eine Liste aller aktiven Benutzer, mit denen Nachrichten ausgetauscht werden können.</p>
 </div>
 % for my $u ( @$users ) {
-<div class="postbox userlist">
+<div class="postbox userlist<%== $u->[2] ? ' newpost' : '' %>">
     <img class="avatar" src="<%= url_for 'avatar_show', userid => $u->[0] %>"
          alt="Avatar für Benutzer &quot;<%= $u->[1] %>&quot;" />
     <h1>
         <%= $u->[1] %>
     </h1>
+    <p>
+        Neue empfangene Nachrichten:
+        <% if ( $u->[2] ) { %><span class="mark"><%= $u->[2] // 0 %></span><% } else { %>0<% } %>,
+        empfangene Nachrichten gesamt: <%= $u->[3] // 0 %>,
+        gesendete Nachrichten: <%= $u->[4] // 0 %>
+    </p>
     <p><a href="<%= url_for 'show_pmsgs', userid => $u->[0] %>"
        title="Privatnachrichten mit Benutzer &qout;<%= $u->[1] %>&quot; ansehen">Konversation mit Benuter &quot;<%= $u->[1] %>&quot; öffnen</a></p>
 </div>

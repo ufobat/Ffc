@@ -64,12 +64,13 @@ sub register {
         act      => 'forum',
         queryurl => 'query_forum',
         page     => 1,
+        lastseen => -1,
         postid   => undef,
         map( {;$_.'count' => 0} 
             qw(newmsgs newpost note) ),
         map( {;$_ => ''} 
             qw(error info warning query textdata heading
-               dourl returl editurl msgurl delurl uplurl delupl downld ) ),
+               dourl returl editurl msgurl delurl uplurl delupl downld backurl ) ),
         map( {;$_ => $config->{$_} || $Defaults{$_}} 
             qw(favicon commoncattitle title) ),
     });
@@ -89,16 +90,33 @@ sub register {
     $app->hook( before_render => sub { 
         my $c = $_[0];
         my $s = $c->session;
-        $c->stash(fontsize => $s->{fontsize} // 0);
-        $c->stash(backgroundcolor => 
-            $config->{fixbackgroundcolor}
-                ? $config->{backgroundcolor}
-                : ( $s->{backgroundcolor} || $config->{backgroundcolor} )
+        $c->stash(
+            fontsize => $s->{fontsize} // 0,
+            backgroundcolor => 
+                $config->{fixbackgroundcolor}
+                    ? $config->{backgroundcolor}
+                    : ( $s->{backgroundcolor} || $config->{backgroundcolor} ),
         );
-        $c->stash(notecount => $c->dbh->selectall_arrayref(
-            'SELECT COUNT("id") FROM "posts" WHERE "userfrom"=? AND "userfrom"="userto"',
-            undef, $s->{userid}
-        )->[0]->[0]);
+    });
+    $app->hook( before_routes => sub { 
+        my $c = $_[0];
+        my $s = $c->session;
+        my $uid = $s->{userid};
+        my $dbh = $c->dbh;
+        $c->stash(
+            newmsgscount => $dbh->selectall_arrayref(
+                    'SELECT COUNT(p."id")
+                    FROM "posts" p
+                    INNER JOIN "users" u ON u."id"<>? AND u."id"=p."userfrom" AND u."active"=1
+                    LEFT OUTER JOIN "lastseenmsgs" l ON l."userfromid"=u."id" AND l."userid"=?
+                    WHERE p."userto"=? AND p."id">COALESCE(l."lastseen",0)',
+                    undef, $uid, $uid, $uid
+                )->[0]->[0],
+            notecount => $dbh->selectall_arrayref(
+                    'SELECT COUNT("id") FROM "posts" WHERE "userfrom"=? AND "userfrom"="userto"',
+                    undef, $uid
+                )->[0]->[0],
+        );
     });
 
     return $self;
