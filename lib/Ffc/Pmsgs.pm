@@ -42,17 +42,43 @@ sub show_userlist {
     $c->stash(queryurl => $c->url_for('query_pmsgs_userlist'));
     my $uid = $c->session->{userid};
     $c->stash( users => $c->dbh->selectall_arrayref(
-        'SELECT u."id", u."name", COUNT(pn."id") AS "msgcount_new", COUNT(po."id") AS "msgcount_other", COUNT(pm."id") AS "msgcount_me" 
+        'SELECT u."id", u."name",
+            (SELECT COUNT(p."id") 
+                FROM "posts" p
+                LEFT OUTER JOIN "lastseenmsgs" l ON l."userid"=? AND l."userfromid"=u."id"
+                WHERE p."userfrom"=u."id" AND p."userto"=? AND p."id">COALESCE(l."lastseen",-1)
+            ) AS "msgcount_newtome",
+            (SELECT COUNT("id") 
+                FROM "posts" 
+                WHERE "userfrom"=u."id" AND "userto"=?
+            ) AS "msgcount_tome",
+            (SELECT COUNT("id") 
+                FROM "posts" 
+                WHERE "userto"=u."id" AND "userfrom"=?
+            ) AS "msgcount_fromme"
         FROM "users" u
-        LEFT OUTER JOIN "posts" po ON po."userfrom"=u."id" AND po."userto"=?
-        LEFT OUTER JOIN "posts" pm ON pm."userto"=u."id" AND pm."userfrom"=?
-        LEFT OUTER JOIN "lastseenmsgs" l ON l."userfromid"=u."id" AND l."userid"=?
-        LEFT OUTER JOIN "posts" pn ON pn."userfrom"=u."id" AND pn."userto"=? AND pn."id">COALESCE(l."lastseen",0)
         WHERE u."active"=1 AND u."id"<>? 
         GROUP BY u."id"
         ORDER BY "msgcount_new" DESC, UPPER(u."name") ASC',
         undef, $uid, $uid, $uid, $uid, $uid
     ) );
+
+=pod
+
+        'SELECT u."id", u."name", COUNT(pn."id") AS "msgcount_new", COUNT(po."id") AS "msgcount_other", COUNT(pm."id") AS "msgcount_me" 
+        FROM "users" u
+        LEFT OUTER JOIN "posts" po ON po."userfrom"=u."id" AND po."userto"=?
+        LEFT OUTER JOIN "posts" pm ON pm."userto"=u."id" AND pm."userfrom"=?
+        LEFT OUTER JOIN "lastseenmsgs" l ON l."userfromid"=u."id" AND l."userid"=?
+        LEFT OUTER JOIN "posts" pn ON pn."userfrom"=u."id" AND pn."userto"=? AND pn."id">COALESCE(l."lastseen",-1)
+        WHERE u."active"=1 AND u."id"<>? 
+        GROUP BY u."id"
+        ORDER BY "msgcount_new" DESC, UPPER(u."name") ASC',
+        undef, $uid, $uid, $uid, $uid, $uid
+    ) );
+
+=cut
+
     $c->render(template => 'userlist');
 }
 

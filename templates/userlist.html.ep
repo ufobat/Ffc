@@ -12,7 +12,7 @@
     </h1>
     <p>
         Neue empfangene Nachrichten:
-        <% if ( $u->[2] ) { %><span class="mark"><%= $u->[2] // 0 %></span><% } else { %>0<% } %>,
+        <% if ( $u->[2] ) { %><span class="mark"><%= $u->[2] %></span><% } else { %>0<% } %>,
         empfangene Nachrichten gesamt: <%= $u->[3] // 0 %>,
         gesendete Nachrichten: <%= $u->[4] // 0 %>
     </p>

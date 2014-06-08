@@ -109,7 +109,7 @@ sub register {
                     FROM "posts" p
                     INNER JOIN "users" u ON u."id"<>? AND u."id"=p."userfrom" AND u."active"=1
                     LEFT OUTER JOIN "lastseenmsgs" l ON l."userfromid"=u."id" AND l."userid"=?
-                    WHERE p."userto"=? AND p."id">COALESCE(l."lastseen",0)',
+                    WHERE p."userto"=? AND p."id">COALESCE(l."lastseen",-1)',
                     undef, $uid, $uid, $uid
                 )->[0]->[0],
             notecount => $dbh->selectall_arrayref(
