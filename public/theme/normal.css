@@ -188,6 +188,10 @@ a.coloroption:hover {
     border: 1px gainsboro solid;
     margin-left: .75em;
 }
+.suboption h2 {
+    font-size: 1em;
+    color: black;
+}
 .postbox textarea {
     width: 100%;
     min-width: 100%;
