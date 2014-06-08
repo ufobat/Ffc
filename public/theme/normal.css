@@ -99,7 +99,7 @@ a:focus, .linkalike:focus {
     border: none;
     background: transparent;
     position: fixed;
-    width: 100%;
+    width: 21em;
     bottom: 0;
     right: 0;
     font-size: 1.25em;
