@@ -95,11 +95,11 @@ a:focus, .linkalike:focus {
     background: lightsteelblue;
 }
 .messagebox {
-    padding: 0;
+    padding: 2em 0 0 0;
     border: none;
     background: transparent;
     position: fixed;
-    width: 21em;
+    width: 23em;
     bottom: 0;
     right: 0;
     font-size: 1.25em;
