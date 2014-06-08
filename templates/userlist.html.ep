@@ -2,6 +2,7 @@
 <div class="headbox">
 <h1>Privatnachrichten mit Benutzern</h1>
 <p>Im folgenden findet siche eine Liste aller aktiven Benutzer, mit denen Nachrichten ausgetauscht werden können.</p>
+<p>Um eine Konversation anzuzeigen, muss auf den entsprechenden Link zur Konversation geklickt werden.</p>
 </div>
 % for my $u ( @$users ) {
 <div class="postbox userlist<%== $u->[2] ? ' newpost' : '' %>">

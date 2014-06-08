@@ -1,6 +1,6 @@
 % layout 'board';
 <div class="postbox headbox">
-    <h1>Einstellungen</h1>
+    <h1>Einstellungen für das Forum</h1>
     <p>Hier können Einstellungen für das Forum in Bezug auf das Aussehen sowie auf Ihre Anmelde- und Konteninformationen vorgenommen werden.</p>
 </div>
 <div class="postbox options">
