@@ -251,6 +251,9 @@ input.activesearch {
 }
 .newpost h1, .newpost .title {
     background: lemonchiffon;
-    border-bottom-color: lightsalmon;
+    border-bottom-color: palevioletred;
+}
+.newpost .avatar {
+    border-color: palevioletred;
 }
 
