@@ -1,6 +1,10 @@
 % layout 'board';
+<div class="postbox headbox">
+    <h1>Einstellungen</h1>
+    <p>Hier können Einstellungen für das Forum in Bezug auf das Aussehen sowie auf Ihre Anmelde- und Konteninformationen vorgenommen werden.</p>
+</div>
 <div class="postbox options">
-    <h1>Einstellungen zu Schriftgröße und Anzeigebreite</h1>
+    <h1>Schriftgröße und Darstellung</h1>
     <p>(Schriftgrößen sind abhängig von Browsereinstellungen)</p>
     <p>
 % for my $fs ( sort {$a <=> $b} keys %$fontsizes ) {
@@ -17,7 +21,7 @@
 </div> 
 % unless ( configdata()->{fixbackgroundcolor} ) {
 <div class="postbox options">
-    <h1>Einstellungen zur Hintergrundfarbe des Forums</h1>
+    <h1>Hintergrundfarbe des Forums</h1>
     <p>(Die Hintergrundfarbe muss eine Webfarbe (siehe Wikipedia) oder eine Angabe in hexadizimaler Farbschreibweise (<code>#00aaff</code>) sein - moderne Webbrowser bieten an dieser Stelle auch eine einfache Farbauswahl an, in der man sich die gewünschte Farbe einfach per Klick auswählen kann)</p>
     <form action="<%= url_for 'bg_color_form' %>#bgcolor" title="Hintergrundfarbe" method="POST">
         <input type="color" name="bgcolor" value="<%= session()->{backgroundcolor} || $backgroundcolor || 'gainsboro' %>" />
@@ -28,7 +32,7 @@
 % }
 <div class="postbox options">
     <a name="set_password"></a>
-    <h1>Eigenes Passwort ändern</h1>
+    <h1>Passwort ändern</h1>
     <p>(Aus Sicherheitsgründen sollte das eigene Passwort regelmäßig geändert werden)</p>
     <form action="<%= url_for 'set_password' %>#set_password" method="POST">
         <p><%= password_field 'oldpw' %> (Altes Passwort zur Bestätigung)</p>
@@ -49,7 +53,7 @@
 </div>
 <div class="postbox options">
     <a name="set_email"></a>
-    <h1>Eigene E-Mail-Adresse einstellen</h1>
+    <h1>E-Mail-Adresse einstellen</h1>
     <p>(Mit der Emailadresse kann der Administrator des Forums ggf. Nachrichten außerhalb des Forums verschicken)</p>
     <form action="<%= url_for 'set_email' %>#set_email" method="POST">
         <p><%= email_field email => $email %></p>
@@ -118,7 +122,7 @@
 </div>
 <div class="postbox options boardsettingadmin">
     <a name="boardsettingsadmin"></a>
-    <h1>Foreneinstellungen</h1>
+    <h1>Globale Foreneinstellungen</h1>
 % for my $o ( @$configoptions ) {
 <div class="suboption boardsetting_form">
     <h2><%= $o->[5] %>:</h2>

@@ -1,5 +1,5 @@
 % layout 'board', act => 'pmsgs';
-<div class="postbox">
+<div class="headbox">
 <h1>Privatnachrichten mit Benutzern</h1>
 <p>Im folgenden findet siche eine Liste aller aktiven Benutzer, mit denen Nachrichten ausgetauscht werden können.</p>
 </div>
