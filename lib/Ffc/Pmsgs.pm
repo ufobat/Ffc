@@ -59,7 +59,7 @@ sub show_userlist {
         FROM "users" u
         WHERE u."active"=1 AND u."id"<>? 
         GROUP BY u."id"
-        ORDER BY "msgcount_new" DESC, UPPER(u."name") ASC',
+        ORDER BY "msgcount_newtome" DESC, UPPER(u."name") ASC',
         undef, $uid, $uid, $uid, $uid, $uid
     ) );
 
