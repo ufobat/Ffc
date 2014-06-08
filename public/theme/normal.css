@@ -194,7 +194,7 @@ a.coloroption:hover {
 .postbox textarea {
     width: 100%;
     min-width: 100%;
-    max-width: none;
+    max-width: 100%;
     max-height: 54em;
     min-height: 2em;
     height: 2em;
