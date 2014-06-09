@@ -123,6 +123,7 @@ sub add_topic_do {
         return $c->add_topic_form;
     }
     $c->param(topicid => $r->[0]->[0]);
+    $c->set_info('Ein neues Thema wurde begonnen.');
     return $c->add;
 }
 
@@ -138,6 +139,68 @@ sub _get_title_from_topicid {
         return $c->show_topiclist;
     }
     return $r->[0]->[0];
+}
+
+sub edit_topic_form {
+    my $c = shift;
+    $c->stash(
+        topicid     => $c->param('topicid'),
+        titlestring => $c->param('titlestring') // $c->_get_title_from_topicid,
+    );
+    $c->render(template => 'topicform');
+}
+sub edit_topic_do {
+    my $c = shift;
+    return $c->edit_topic_form unless $c->_check_titlestring;
+    my $topicid = $c->param('topicid');
+    if ( my $topicidto = $c->_get_topicid_for_title ) {
+        if ( $topicidto == $topicid ) {
+            $c->set_warning('Der Titel wurde nicht verändert.');
+            return $c->show_topiclist;
+        }
+        $c->set_warning('Das gewünschte Thema existiert bereits.');
+        $c->stash(
+            topicid   => $topicid,
+            topicidto => $topicidto,
+            titlestringdest => $c->_get_title_from_topicid($topicidto),
+            titlestringorig => $c->_get_title_from_topicid($topicid),
+        );
+        return $c->render(template => 'topicmoveform');
+    }
+    $c->set_info('Überschrift des Themas wurde geändert.');
+    $c->show_topiclist;
+}
+
+sub move_topic_do {
+    my $c = shift;
+    my $topicid = $c->param('topicid');
+    my $dbh = $c->dbh;
+    my $r = $dbh->selectall_arrayref(
+        'SELECT "userfrom" FROM "topics" WHERE "id"=?',
+        undef, $topicid
+    );
+    unless ( $r and 'ARRAY' eq ref($r) and @$r and $r->[0]->[0] == $c->session->{userid} ) {
+        $c->set_error('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde.');
+        return $c->show_topiclist;
+    }
+    $dbh->do(
+        'UPDATE "posts" SET "topicid"=? WHERE "topicid"=?',
+        undef, $c->param('topicidto'), $topicid
+    );
+    my $r2 = $dbh->selectall_arrayref(
+        'SELECT COUNT("id") FROM "posts" WHERE "topicid"=?',
+        undef, $topicid
+    );
+    if ( !$r2 or 'ARRAY' ne ref($r2) or $r2->[0]->[0] ) {
+        $c->set_error('Die Beiträge konnten nicht verschoben werden.');
+        return $c->show_topiclist;
+    }
+    $dbh->do(
+        'DELETE FROM "topics" WHERE "id"=?',
+        undef, $topicid
+    );
+    $c->set_info('Die Beiträge wurden in ein anderes Thema verschoben');
+    $c->show_topiclist;
 }
 
 sub show {
