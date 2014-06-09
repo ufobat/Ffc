@@ -13,7 +13,8 @@
         
     </h2>
     <p>
-        Neue empfangene Nachrichten:
+        Ungelesene Nachrichten vom Benutzer:
         <% if ( $u->[2] ) { %> <span class="mark"><%= $u->[2] %></span><% } else { %>0<% } %>
+    </p>
 % }
 </div>

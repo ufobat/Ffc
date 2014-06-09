@@ -10,7 +10,7 @@
            title="Beiträge zum Thema anzeigen"><%= $t->[2] %></a>
     </h2>
     <p>
-        Neue Beiträge zum Thema: 
+        Ungelesene Beiträge zum Thema: 
         <% if ( $t->[4] ) { %><span class="mark"><%= $t->[4] %></span><% } else { %>0<% } %>
 % if ( $t->[1] == session->{userid} ) {
         (<a href="<%= url_for 'forum_edit_topic', topicid => $t->[0] %>"
