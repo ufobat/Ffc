@@ -16,6 +16,10 @@ sub install_routes {
     $l->route('/topic/:topicid/edit', topicid => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'edit_topic_form')
       ->name('edit_forum_topic_form');
+    $l->route('/topic/:topicid/moveto/:topicidto', topicid => $Ffc::Digqr, topicidto => $Ffc::Digqr)
+      ->via('get')
+      ->to(controller => 'forum', action => 'move_topic_do')
+      ->name('move_forum_topic_do');
     $l->route('/topic/:topicid/edit', topicid => $Ffc::Digqr)->via('post')
       ->to(controller => 'forum', action => 'edit_topic_do')
       ->name('edit_forum_topic_do');
