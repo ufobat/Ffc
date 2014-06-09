@@ -62,7 +62,7 @@ sub show {
     $c->stash(
         backurl => $c->url_for('show_pmsgs_userlist'),
         heading => 
-            'Private Nachrichten mit Benutzer "' . $c->_get_username . '"',
+            'Private Nachrichten mit "' . $c->_get_username . '"',
     );
     my ( $dbh, $uid, $utoid ) = ( $c->dbh, $c->session->{userid}, $c->param('userid') );
     my $lastseen = $dbh->selectall_arrayref(
@@ -98,7 +98,7 @@ sub add { $_[0]->add_post($_[0]->param('userid'), undef) }
 sub edit_form {
     my $c = shift;
     $c->stash( heading => 
-        'Private Nachricht mit Benutzer "' . $c->_get_username . '" ändern' );
+        'Private Nachricht mit "' . $c->_get_username . '" ändern' );
     $c->edit_post_form();
 }
 
@@ -107,7 +107,7 @@ sub edit_do { $_[0]->edit_post_do() }
 sub delete_check {
     my $c = shift;
     $c->stash( heading => 
-        'Private Nachricht mit Benutzer "' . $c->_get_username . '" entfernen' );
+        'Private Nachricht mit "' . $c->_get_username . '" entfernen' );
     $c->delete_post_check();
 }
 
@@ -116,7 +116,7 @@ sub delete_do { $_[0]->delete_post_do() }
 sub upload_form {
     my $c = shift;
     $c->stash( heading => 
-        'Eine Datei zur privaten Nachrichten mit Benutzer "' . $c->_get_username . '" anhängen' );
+        'Eine Datei zur privaten Nachrichten mit "' . $c->_get_username . '" anhängen' );
     $c->upload_post_form();
 }
 
@@ -127,7 +127,7 @@ sub download {  $_[0]->download_post() }
 sub delete_upload_check {
     my $c = shift;
     $c->stash( heading => 
-        'Einen Dateianhang der privaten Nachrichten mit Benutzer "' . $c->_get_username . '" löschen' );
+        'Einen Dateianhang der privaten Nachrichten mit "' . $c->_get_username . '" löschen' );
     $c->delete_upload_post_check();
 }
 
