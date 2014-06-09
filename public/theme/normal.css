@@ -166,7 +166,7 @@ a:focus, .linkalike:focus {
     display: inline;
 }
 .menu > * {
-    padding: 0 1em;
+    padding: 0 .75em;
 }
 form {
     display: inline;
