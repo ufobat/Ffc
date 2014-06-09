@@ -123,7 +123,6 @@ sub add_topic_do {
         return $c->add_topic_form;
     }
     $c->param(topicid => $r->[0]->[0]);
-    $c->set_info('Ein neues Thema wurde begonnen.');
     return $c->add;
 }
 
@@ -149,11 +148,28 @@ sub edit_topic_form {
     );
     $c->render(template => 'topicform');
 }
+
+sub _check_topic_edit {
+    my $c = shift;
+    my $topicid = shift() // $c->param('topicid');
+    my $r = $c->dbh->selectall_arrayref(
+        'SELECT "userfrom" FROM "topics" WHERE "id"=?',
+        undef, $topicid
+    );
+    unless ( $r and 'ARRAY' eq ref($r) and @$r and $r->[0]->[0] == $c->session->{userid} ) {
+        $c->set_error('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde.');
+        $c->show_topiclist;
+        return;
+    }
+}
+
 sub edit_topic_do {
     my $c = shift;
-    return $c->edit_topic_form unless $c->_check_titlestring;
+    my $titlestring = $c->param('titlestring');
     my $topicid = $c->param('topicid');
-    if ( my $topicidto = $c->_get_topicid_for_title ) {
+    return unless $c->_check_topic_edit($topicid);
+    return $c->edit_topic_form unless $c->_check_titlestring($titlestring);
+    if ( my $topicidto = $c->_get_topicid_for_title($titlestring) ) {
         if ( $topicidto == $topicid ) {
             $c->set_warning('Der Titel wurde nicht verändert.');
             return $c->show_topiclist;
@@ -168,6 +184,10 @@ sub edit_topic_do {
         return $c->render(template => 'topicmoveform');
     }
     $c->set_info('Überschrift des Themas wurde geändert.');
+    $c->dbh->do(
+        'UPDATE "topics" SET "title"=? WHERE "id"=?',
+        undef, $titlestring, $topicid
+    );
     $c->show_topiclist;
 }
 
@@ -175,14 +195,7 @@ sub move_topic_do {
     my $c = shift;
     my $topicid = $c->param('topicid');
     my $dbh = $c->dbh;
-    my $r = $dbh->selectall_arrayref(
-        'SELECT "userfrom" FROM "topics" WHERE "id"=?',
-        undef, $topicid
-    );
-    unless ( $r and 'ARRAY' eq ref($r) and @$r and $r->[0]->[0] == $c->session->{userid} ) {
-        $c->set_error('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde.');
-        return $c->show_topiclist;
-    }
+    return unless $c->_check_topic_edit($topicid);
     $dbh->do(
         'UPDATE "posts" SET "topicid"=? WHERE "topicid"=?',
         undef, $c->param('topicidto'), $topicid
