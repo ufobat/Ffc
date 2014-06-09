@@ -1,7 +1,7 @@
 % layout 'board', act => 'pmsgs';
 <div class="headbox">
 <h1>Privatnachrichten mit Benutzern</h1>
-<p>Im folgenden findet siche eine Liste aller aktiven Benutzer, mit denen Nachrichten ausgetauscht werden können. Um eine Konversation anzuzeigen, muss auf den entsprechenden Link zur Konversation geklickt werden.</p>
+<p>Im folgenden findet siche eine Liste aller aktiven Benutzer. Um Privatnachrichten mit einem Benutzer auszutauschen, muss die über den Link die Konversation angezeigt werden.</p>
 </div>
 % for my $u ( @$users ) {
 <div class="postbox userlist<%== $u->[2] ? ' newpost' : '' %>">
@@ -9,14 +9,12 @@
          alt="Avatar für Benutzer &quot;<%= $u->[1] %>&quot;" />
     <h1>
         <%= $u->[1] %>
+        <% if ( $u->[2] ) { %>(Neu: <span class="mark"><%= $u->[2] %></span>)<% } %>
     </h1>
     <p>
-        Neue empfangene Nachrichten:
-        <% if ( $u->[2] ) { %><span class="mark"><%= $u->[2] %></span><% } else { %>0<% } %>,
-        empfangene Nachrichten gesamt: <%= $u->[3] // 0 %>,
-        gesendete Nachrichten: <%= $u->[4] // 0 %>
-    </p>
-    <p><a href="<%= url_for 'show_pmsgs', userid => $u->[0] %>"
-       title="Privatnachrichten mit Benutzer &qout;<%= $u->[1] %>&quot; ansehen">Konversation mit Benuter &quot;<%= $u->[1] %>&quot; öffnen</a></p>
+        Empfangen: <%= $u->[3] // 0 %>,
+        gesendet: <%= $u->[4] // 0 %>,
+        <a href="<%= url_for 'show_pmsgs', userid => $u->[0] %>"
+           title="Privatnachrichten mit Benutzer &qout;<%= $u->[1] %>&quot; ansehen">die gesamte Konversation anzeigen</a></p>
 </div>
 % }

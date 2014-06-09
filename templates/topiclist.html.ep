@@ -1,0 +1,18 @@
+% layout 'board', act => 'pmsgs';
+<div class="headbox">
+<h1>Allgemeines Forum</h1>
+<p>Hier befinden sich Themen für alle Benutzer. Um die Beiträge zu einem Thema zu sehen, klicken Sie bitte das Thema an. Um ein neues Thema anzulegen, <a href="<%= url_for 'forum_new_topic' %>" title="Neues Thema anlegen">klicken Sie bitte hier</a>.</p>
+</div>
+<div class="postbox topiclist">
+% for my $t ( @$topics ) {
+    <h1<%== $t->[2] ? ' class="newpost"' : '' %>>
+        <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"
+           title="Beiträge zum Thema anzeigen"><%= $t->[1] %></a>
+    </h1>
+    <p>
+        Neue Beiträge: <% if ( $t->[2] ) { %><span class="mark"><%= $t->[2] %></span><% } else { %>0<% } %>,
+        Beiträge gesamt: <%= $t->[3] %>,
+        eigene Beiträge: <%= $t->[4] %>
+    </p>
+% }
+</div>

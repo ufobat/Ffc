@@ -13,8 +13,6 @@ sub install_routes {
     Ffc::Plugin::Posts::install_routes_posts($l, 'pmsgs', '/pmsgs/:userid', userid => $Ffc::Digqr);
 }
 
-sub additional_params { return $_[0]->param('userid') }
-
 sub where_select {
     my $uid = $_[0]->session->{userid};
     my $cid = $_[0]->param('userid');
@@ -62,22 +60,6 @@ sub show_userlist {
         ORDER BY "msgcount_newtome" DESC, UPPER(u."name") ASC',
         undef, $uid, $uid, $uid, $uid, $uid
     ) );
-
-=pod
-
-        'SELECT u."id", u."name", COUNT(pn."id") AS "msgcount_new", COUNT(po."id") AS "msgcount_other", COUNT(pm."id") AS "msgcount_me" 
-        FROM "users" u
-        LEFT OUTER JOIN "posts" po ON po."userfrom"=u."id" AND po."userto"=?
-        LEFT OUTER JOIN "posts" pm ON pm."userto"=u."id" AND pm."userfrom"=?
-        LEFT OUTER JOIN "lastseenmsgs" l ON l."userfromid"=u."id" AND l."userid"=?
-        LEFT OUTER JOIN "posts" pn ON pn."userfrom"=u."id" AND pn."userto"=? AND pn."id">COALESCE(l."lastseen",-1)
-        WHERE u."active"=1 AND u."id"<>? 
-        GROUP BY u."id"
-        ORDER BY "msgcount_new" DESC, UPPER(u."name") ASC',
-        undef, $uid, $uid, $uid, $uid, $uid
-    ) );
-
-=cut
 
     $c->render(template => 'userlist');
 }

@@ -76,11 +76,6 @@ sub where_modify {
         $_[0]->session->{userid};
 }
 
-# Folgende Subroutine stellt Parameter für URL's zur Verfügung. Das
-# können zum Beispiel Parameter sein, die sich aus der Route herleiten
-# und nicht Bestandteil der "Posts"-Plugin-Routen sind.
-sub additional_params { return () }
-
 # Folge-Aktionen werden über Routennamen oder fertige Routen-URL's in
 # Stash-Variablen gespeichert. Bestimmte Aktionen werden im Verlauf der
 # Arbeit des Plugins "Posts" mit dynamischen Werten versehen und müssen
@@ -113,7 +108,10 @@ sub additional_params { return () }
 # "pageurl" angeboten, über welche die Seitenschaltung abgewickelt wird.
 sub show {
     my $c = shift;
-    $c->stash( heading => 'Persönliche Notizen' ); # Überschrift
+    $c->stash( 
+        heading     => 'Persönliche Notizen', # Überschrift
+        description => 'Hier können Texte und Dateianhänge für den eigenen internen Bedarf abgelegt werden.', # Kurzbeschreibung
+    );
     # Das folgende ist der Plugin-Helper-Aufruf, über den die Anzeige erfolgt.
     # Dieser Aufruf bekommt einen "WHERE"-Bestandteil und die Liste der entsprechenden Parameter.
     # Der Where-Bestandteil ist der für Anzeigen von Beiträgen.

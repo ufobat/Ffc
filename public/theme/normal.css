@@ -153,7 +153,7 @@ a:focus, .linkalike:focus {
     padding: .1em 0;
     border-top-width: 0;
 }
-h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
+.topiclist p, h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
     font-size: .75em;
 }
 .menu input[type="text"] {
@@ -228,32 +228,27 @@ img.smiley, img.icon {
     width: 1em;
     height: 1em;
 }
-ul.attachements {
+ul.topiclist, ul.attachements {
     list-style: none;
 }
 li {
     margin-left: 2em;
 }
-input.activesearch {
-    border-color: palevioletred;
-    background-color: lemonchiffon;
-}
 .userlist .avatar {
     height: 3.5em;
     margin-top: 1em;
+}
+.topiclist h1 {
+    font-size: 1em;
 }
 .mark {
     color: palevioletred;
     font-weight: bolder;
 }
-.newpost {
+.newpost, .newpost .avatar {
     border-color: palevioletred;
 }
-.newpost h1, .newpost .title {
+h1.newpost, .newpost h1, .newpost .title, input.activesearch {
     background: lemonchiffon;
-    border-bottom-color: palevioletred;
-}
-.newpost .avatar {
     border-color: palevioletred;
 }
-
