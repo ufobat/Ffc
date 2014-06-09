@@ -1,18 +1,24 @@
-% layout 'board', act => 'pmsgs';
+% layout 'board';
 <div class="headbox">
 <h1>Allgemeines Forum</h1>
-<p>Hier befinden sich Themen für alle Benutzer. Um die Beiträge zu einem Thema zu sehen, klicken Sie bitte das Thema an. Um ein neues Thema anzulegen, <a href="<%= url_for 'forum_new_topic' %>" title="Neues Thema anlegen">klicken Sie bitte hier</a>.</p>
+<p>Hier befinden sich Themen für alle Benutzer. Um die Beiträge zu einem Thema zu sehen, klicken Sie bitte das Thema an. Um ein neues Thema zu beginnen, <a href="<%= url_for 'add_forum_topic_form' %>" title="Neues Thema beginnen">klicken Sie bitte hier</a>.</p>
 </div>
 <div class="postbox topiclist">
 % for my $t ( @$topics ) {
-    <h1<%== $t->[2] ? ' class="newpost"' : '' %>>
+    <h2<%== $t->[4] ? ' class="newpost"' : '' %>>
         <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"
-           title="Beiträge zum Thema anzeigen"><%= $t->[1] %></a>
-    </h1>
+           title="Beiträge zum Thema anzeigen"><%= $t->[2] %></a>
+    </h2>
     <p>
-        Neue Beiträge: <% if ( $t->[2] ) { %><span class="mark"><%= $t->[2] %></span><% } else { %>0<% } %>,
-        Beiträge gesamt: <%= $t->[3] %>,
-        eigene Beiträge: <%= $t->[4] %>
+        Neue Beiträge zum Thema: 
+        <% if ( $t->[4] ) { %><span class="mark"><%= $t->[4] %></span><% } else { %>0<% } %>
+% if ( $t->[1] == session->{userid} ) {
+        (<a href="<%= url_for 'forum_edit_topic', topicid => $t->[0] %>"
+            title="Den Titel dieses Themas bearbeiten">Titel bearbeiten</a>)
+% }
     </p>
 % }
 </div>
+% if ( @$topics >= configdata->{topiclimit} or $page > 1 ) {
+%= include 'parts/pagelinks', more => @$topics >= configdata->{topiclimit} ? 1 : 0
+% }

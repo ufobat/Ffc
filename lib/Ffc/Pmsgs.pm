@@ -4,9 +4,6 @@ use Mojo::Base 'Mojolicious::Controller';
 
 sub install_routes { 
     my $l = shift;
-    $l->route('/pmsgs/query')->via('post')
-      ->to(controller => 'pmsgs', action => 'query_userlist')
-      ->name('query_pmsgs_userlist');
     $l->route('/pmsgs')->via('get')
       ->to(controller => 'pmsgs', action => 'show_userlist')
       ->name('show_pmsgs_userlist');
@@ -29,15 +26,8 @@ sub where_modify {
         $uid, $uid, $cid, $cid;
 }
 
-sub query_userlist {
-    my $c = shift;
-    $c->session->{query} = $c->param('query');
-    $c->show_userlist;
-}
-
 sub show_userlist {
     my $c = shift;
-    $c->stash(queryurl => $c->url_for('query_pmsgs_userlist'));
     my $uid = $c->session->{userid};
     $c->stash( users => $c->dbh->selectall_arrayref(
         'SELECT u."id", u."name",
@@ -45,20 +35,12 @@ sub show_userlist {
                 FROM "posts" p
                 LEFT OUTER JOIN "lastseenmsgs" l ON l."userid"=? AND l."userfromid"=u."id"
                 WHERE p."userfrom"=u."id" AND p."userto"=? AND p."id">COALESCE(l."lastseen",-1)
-            ) AS "msgcount_newtome",
-            (SELECT COUNT("id") 
-                FROM "posts" 
-                WHERE "userfrom"=u."id" AND "userto"=?
-            ) AS "msgcount_tome",
-            (SELECT COUNT("id") 
-                FROM "posts" 
-                WHERE "userto"=u."id" AND "userfrom"=?
-            ) AS "msgcount_fromme"
+            ) AS "msgcount_newtome"
         FROM "users" u
         WHERE u."active"=1 AND u."id"<>? 
         GROUP BY u."id"
         ORDER BY "msgcount_newtome" DESC, UPPER(u."name") ASC',
-        undef, $uid, $uid, $uid, $uid, $uid
+        undef, $uid, $uid, $uid
     ) );
 
     $c->render(template => 'userlist');
@@ -77,9 +59,11 @@ sub _get_username {
 }
 sub show {
     my $c = shift;
-    $c->stash(backurl => $c->url_for('show_pmsgs_userlist'));
-    $c->stash( heading => 
-        'Private Nachrichten mit Benutzer "' . $c->_get_username . '"' );
+    $c->stash(
+        backurl => $c->url_for('show_pmsgs_userlist'),
+        heading => 
+            'Private Nachrichten mit Benutzer "' . $c->_get_username . '"',
+    );
     my ( $dbh, $uid, $utoid ) = ( $c->dbh, $c->session->{userid}, $c->param('userid') );
     my $lastseen = $dbh->selectall_arrayref(
         'SELECT "lastseen"
@@ -114,7 +98,7 @@ sub add { $_[0]->add_post($_[0]->param('userid'), undef) }
 sub edit_form {
     my $c = shift;
     $c->stash( heading => 
-        'Private Nachrichten mit Benutzer "' . $c->_get_username . '" ändern' );
+        'Private Nachricht mit Benutzer "' . $c->_get_username . '" ändern' );
     $c->edit_post_form();
 }
 
@@ -123,7 +107,7 @@ sub edit_do { $_[0]->edit_post_do() }
 sub delete_check {
     my $c = shift;
     $c->stash( heading => 
-        'Private Nachrichten mit Benutzer "' . $c->_get_username . '" entfernen' );
+        'Private Nachricht mit Benutzer "' . $c->_get_username . '" entfernen' );
     $c->delete_post_check();
 }
 

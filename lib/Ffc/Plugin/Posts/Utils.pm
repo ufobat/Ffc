@@ -11,7 +11,7 @@ sub _setup_stash {
     $c->stash( 
         # Routenname für Abbrüche, der auf die Einstiegsseite der Beitragsübersicht verweißt.
         # Diese Route wird direkt als URL festgelegt, da sie keine weiteren Daten braucht.
-        returl   => $c->url_for("show_$cname"),
+        returl   => $c->url_for("show_$cname", page => 1),
         # Routenname für Filter-Suchen aus dem Menü heraus.
         # Diese Route wird direkt als URL festgelegt, da sie keine weiteren Daten braucht.
         queryurl => $c->url_for("query_$cname"),

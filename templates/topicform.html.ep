@@ -1,0 +1,27 @@
+% layout 'board';
+<div class="postbox headbox">
+% if ( $topicid ) {
+    <h1>Themenüberschrift verändern</h1>
+<form action="<%= url_for 'edit_forum_topic_do' %>" method="post">
+    <p>Verändern Sie im folgenden Eingabefeld die Überschrift für das gewählte Thema.</p>
+% } else {
+    <h1>Ein neues Thema beginnen</h1>
+<form action="<%= url_for 'add_forum_topic_do' %>" method="post">
+    <p>Geben Sie hier eine Überschrift für ihr Thema an.</p>
+% }
+    <p><input type="text" class="titlestring" name="titlestring" value="<%= $titlestring %>" /></p>
+% if ( $topicid ) {
+    <p>
+        <%= submit_button 'Überschrift ändern', class => 'linkalike send' %>,
+% } else {
+    <p>Geben Sie einen ersten Beitrag für das neue Thema ein.</p>
+    <p><textarea name="textdata" id="textinput" class="edit inedit" ><%== $textdata // '' %></textarea></p>
+    <p>
+        <%= submit_button 'Thema anlegen', class => 'linkalike send' %>
+% }
+        (<a href="<%= url_for 'show_forum_topiclist' %>" title="&Auml;nderung abbrechen">Abbrechen</a>,
+        <a href="<%= url_for 'help' %>" target="_blank">Hilfe</a>)
+    </p>
+</form>
+</div>
+

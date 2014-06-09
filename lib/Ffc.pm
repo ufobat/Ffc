@@ -40,7 +40,8 @@ sub _install_routes {
 sub _install_routes_helper {
     my $l = $_[0];
     # Standardseitenauslieferungen
-    $l->any('/')->to('forum#show')->name('show');
+    $l->any('/')->to(controller => 'forum', action => 'show_topiclist')
+      ->name('show');
     $l->any('/help' => sub { $_[0]->render(template => 'help') } )
       ->name('help');
     $l->get('/session' => sub { $_[0]->render( json => $_[0]->session() ) } )

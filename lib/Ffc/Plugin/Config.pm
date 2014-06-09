@@ -62,7 +62,7 @@ sub register {
 
     $app->defaults({
         act      => 'forum',
-        queryurl => 'query_forum',
+        queryurl => '',
         page     => 1,
         lastseen => -1,
         postid   => undef,
