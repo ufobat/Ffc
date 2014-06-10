@@ -55,14 +55,14 @@ sub show_userlist {
 
 sub _get_username {
     my $c = shift;
-    my $name = $c->dbh->selectall_arrayref(
-        'SELECT "name" FROM "users" WHERE "id"=?', undef, $c->param('userid'));
-    unless ( $name and 'ARRAY' eq ref($name) and @$name ) {
+    my $name = $c->get_single_value(
+        'SELECT "name" FROM "users" WHERE "id"=?', $c->param('userid'));
+    unless ( $name ) {
         $c->set_error(
             'Benutzername für Benutzerid "'.($c->param('userid') // '<NULL>').'" konnte nicht ermittelt werden');
         return 'Unbekannt';
     }
-    return $name->[0]->[0];
+    return $name;
 }
 sub show {
     my $c = shift;
@@ -72,19 +72,16 @@ sub show {
             'Private Nachrichten mit "' . $c->_get_username . '"',
     );
     my ( $dbh, $uid, $utoid ) = ( $c->dbh, $c->session->{userid}, $c->param('userid') );
-    my $lastseen = $dbh->selectall_arrayref(
+    my $lastseen = $c->get_single_value(
         'SELECT "lastseen"
         FROM "lastseenmsgs"
         WHERE "userid"=? AND "userfromid"=?',
-        undef, $uid, $utoid
+        $uid, $utoid
     );
-    $lastseen = $lastseen && 'ARRAY' eq ref($lastseen) && @$lastseen ? $lastseen->[0]->[0] : undef;
     $c->stash( lastseen => $lastseen // -1 );
-    my $newlastseen = $dbh->selectall_arrayref(
+    my $newlastseen = $c->get_single_value(
         'SELECT "id" FROM "posts" WHERE "userto"=? AND "userfrom"=? ORDER BY "id" DESC LIMIT 1',
-        undef, $uid, $utoid);
-    $newlastseen = $newlastseen && 'ARRAY' eq ref($newlastseen) && @$newlastseen 
-        ? $newlastseen->[0]->[0] : -1;
+        $uid, $utoid);
     if ( defined $lastseen ) {
         $dbh->do(
             'UPDATE "lastseenmsgs" SET "lastseen"=? WHERE "userid"=? AND "userfromid"=?',

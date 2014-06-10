@@ -122,11 +122,11 @@ sub add_topic_do {
         'SELECT "id" FROM "topics" WHERE "userfrom"=? ORDER BY "id" DESC LIMIT 1',
         $uid 
     );
-    unless ( $r ) {
+    unless ( defined $r ) {
         $c->set_error('Das Thema konnte irgendwie nicht angelegt werden. Bitte versuchen Sie es erneut.');
         return $c->add_topic_form;
     }
-    $c->param(topicid => $r->[0]->[0]);
+    $c->param(topicid => $r);
     return $c->add;
 }
 
@@ -134,9 +134,9 @@ sub _get_title_from_topicid {
     my $c = shift;
     my $r = $c->get_single_value(
         'SELECT "title" FROM "topics" WHERE "id"=?',
-        shift() // $_[0]->param('topicid')
+        shift() // $c->param('topicid')
     );
-    unless ( $r ) {
+    unless ( defined $r ) {
         $c->set_error('Konnte das gewünschte Thema nicht finden.');
         return $c->show_topiclist;
     }
@@ -159,11 +159,12 @@ sub _check_topic_edit {
         'SELECT "userfrom" FROM "topics" WHERE "id"=?',
         $topicid
     );
-    unless ( $r ) {
+    unless ( defined $r ) {
         $c->set_error('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde.');
         $c->show_topiclist;
         return;
     }
+    return $r == $c->session->{userid} ? 1 : 0;
 }
 
 sub edit_topic_do {

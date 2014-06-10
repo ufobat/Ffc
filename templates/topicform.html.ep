@@ -12,7 +12,7 @@
     <p><input type="text" class="titlestring" name="titlestring" value="<%= $titlestring %>" /></p>
 % if ( $topicid ) {
     <p>
-        <%= submit_button 'Überschrift ändern', class => 'linkalike send' %>,
+        <%= submit_button 'Überschrift ändern', class => 'linkalike send' %>
 % } else {
     <p>Geben Sie einen ersten Beitrag für das neue Thema ein.</p>
     <p><textarea name="textdata" id="textinput" class="edit inedit" ><%== $textdata // '' %></textarea></p>
