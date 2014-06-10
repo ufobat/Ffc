@@ -2,6 +2,14 @@ package Ffc::Plugin::Posts; # Utils
 use 5.010;
 use strict; use warnings; use utf8;
 
+
+sub _get_single_value {
+    my ( $c, $sql, @params ) = @_;
+    my $lastseen = $c->dbh->selectall_arrayref( $sql, undef, @params );
+    return -1 unless $lastseen and 'ARRAY' eq ref($lastseen) and @$lastseen;
+    return $lastseen->[0]->[0];
+}
+
 # Diese Hilfsfunktion setzt den Rahmen für alle Formulare innerhalb
 # der Beitrags-Handling-Routinen. Es legt einige Stash-Variablen fest,
 # die von allen Templates benötigt werden

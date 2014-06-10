@@ -18,6 +18,13 @@ sub where_select {
         $uid, $uid, $cid, $cid;
 }
 
+sub lastseen { 
+    return $_[0]->get_single_value(
+        'SELECT "lastseen" FROM "lastseenmsgs" WHERE "userid"=? AND "userfromid"=?',
+        $_[0]->session->{userid}, $_[0]->param('userid')
+    );
+}
+
 sub where_modify {
     my $uid = $_[0]->session->{userid};
     my $cid = $_[0]->param('userid');

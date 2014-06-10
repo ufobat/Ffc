@@ -76,6 +76,12 @@ sub where_modify {
         $_[0]->session->{userid};
 }
 
+# Folgende Methode ermittelt eine letzte bekannte Beitrags-ID innerhalb
+# eines Zweiges. Anhand dieser ID wird bei neuen Beiträgen ermittelt,
+# ob eine Warnung angezeigt wird oder nicht. Gibt es keine Notwendigkeit
+# das zu prüfen, kann hier einfach "undef" zurück gegeben werden.
+sub lastseen { return }
+
 # Folge-Aktionen werden über Routennamen oder fertige Routen-URL's in
 # Stash-Variablen gespeichert. Bestimmte Aktionen werden im Verlauf der
 # Arbeit des Plugins "Posts" mit dynamischen Werten versehen und müssen

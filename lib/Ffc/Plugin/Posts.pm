@@ -30,6 +30,7 @@ sub register {
     $app->helper( download_post            => \&_download_post            );
     $app->helper( delete_upload_post_check => \&_delete_upload_post_check );
     $app->helper( delete_upload_post_do    => \&_delete_upload_post_do    );
+    $app->helper( get_single_value         => \&_get_single_value         );
     return $self;
 }
 

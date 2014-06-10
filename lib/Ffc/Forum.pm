@@ -40,6 +40,13 @@ sub where_modify {
         $_[0]->param('topicid');
 }
 
+sub lastseen { 
+    return $_[0]->lastseen(
+        'SELECT "lastseen" FROM "lastseenforum" WHERE "userid"=? AND "topicid"=?',
+        $_[0]->session->{userid}, $_[0]->param('topicid')
+    );
+}
+
 sub show_topiclist {
     my $c = shift;
     my $page = $c->param('page') // 1;
@@ -76,13 +83,10 @@ sub add_topic_form {
 }
 
 sub _get_topicid_for_title {
-    my $c = shift;
-    my $r = $c->dbh->selectall_arrayref(
+    return $_[0]->get_single_value(
         'SELECT "id" FROM "topics" WHERE "title"=?',
-        undef, shift() // $c->param('titlestring'));
-    return ''
-        unless $r and 'ARRAY' eq ref($r) and @$r;
-    return $r->[0]->[0];
+        shift() // $_[0]->param('titlestring')
+    );
 }
 
 sub _check_titlestring {
@@ -114,11 +118,11 @@ sub add_topic_do {
         'INSERT INTO "topics" ("userfrom", "title") VALUES (?,?)',
         undef, $uid, $titlestring
     );
-    my $r = $dbh->selectall_arrayref(
+    my $r = $c->get_single_value(
         'SELECT "id" FROM "topics" WHERE "userfrom"=? ORDER BY "id" DESC LIMIT 1',
-        undef, $uid 
+        $uid 
     );
-    unless ( $r and 'ARRAY' eq ref($r) and @$r ) {
+    unless ( $r ) {
         $c->set_error('Das Thema konnte irgendwie nicht angelegt werden. Bitte versuchen Sie es erneut.');
         return $c->add_topic_form;
     }
@@ -128,16 +132,15 @@ sub add_topic_do {
 
 sub _get_title_from_topicid {
     my $c = shift;
-    my $topicid = shift() // $c->param('topicid');
-    my $r = $c->dbh->selectall_arrayref(
+    my $r = $c->get_single_value(
         'SELECT "title" FROM "topics" WHERE "id"=?',
-        undef, $topicid
+        shift() // $_[0]->param('topicid')
     );
-    unless ( $r and 'ARRAY' eq ref($r) and @$r ) {
+    unless ( $r ) {
         $c->set_error('Konnte das gewünschte Thema nicht finden.');
         return $c->show_topiclist;
     }
-    return $r->[0]->[0];
+    return $r;
 }
 
 sub edit_topic_form {
@@ -152,11 +155,11 @@ sub edit_topic_form {
 sub _check_topic_edit {
     my $c = shift;
     my $topicid = shift() // $c->param('topicid');
-    my $r = $c->dbh->selectall_arrayref(
+    my $r = $c->get_single_value(
         'SELECT "userfrom" FROM "topics" WHERE "id"=?',
-        undef, $topicid
+        $topicid
     );
-    unless ( $r and 'ARRAY' eq ref($r) and @$r and $r->[0]->[0] == $c->session->{userid} ) {
+    unless ( $r ) {
         $c->set_error('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde.');
         $c->show_topiclist;
         return;
@@ -200,11 +203,11 @@ sub move_topic_do {
         'UPDATE "posts" SET "topicid"=? WHERE "topicid"=?',
         undef, $c->param('topicidto'), $topicid
     );
-    my $r2 = $dbh->selectall_arrayref(
+    my $r2 = $c->get_single_value(
         'SELECT COUNT("id") FROM "posts" WHERE "topicid"=?',
-        undef, $topicid
+        , $topicid
     );
-    if ( !$r2 or 'ARRAY' ne ref($r2) or $r2->[0]->[0] ) {
+    unless ( $r2 ) {
         $c->set_error('Die Beiträge konnten nicht verschoben werden.');
         return $c->show_topiclist;
     }
@@ -223,20 +226,16 @@ sub show {
         backurl => $c->url_for('show_forum_topiclist'),
         heading => $c->_get_title_from_topicid,
     );
-    my $lastseen = $dbh->selectall_arrayref(
+    my $lastseen = $c->get_single_value(
         'SELECT "lastseen"
         FROM "lastseenforum"
         WHERE "userid"=? AND "topicid"=?',
-        undef, $uid, $topicid
+        $uid, $topicid
     );
-    $lastseen = $lastseen && 'ARRAY' eq ref($lastseen) && @$lastseen 
-        ? $lastseen->[0]->[0] : undef;
     $c->stash( lastseen => $lastseen // -1 );
-    my $newlastseen = $dbh->selectall_arrayref(
+    my $newlastseen = $c->get_single_value(
         'SELECT "id" FROM "posts" WHERE "userto" IS NULL AND "topicid"=? ORDER BY "id" DESC LIMIT 1',
-        undef, $topicid);
-    $newlastseen = $newlastseen && 'ARRAY' eq ref($newlastseen) && @$newlastseen 
-        ? $newlastseen->[0]->[0] : -1;
+        undef, $topicid) // -1;
     if ( defined $lastseen ) {
         $dbh->do(
             'UPDATE "lastseenforum" SET "lastseen"=? WHERE "userid"=? AND "topicid"=?',
