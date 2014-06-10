@@ -258,3 +258,32 @@ input[type="text"].titlestring {
     font-size: 1.25em;
     font-weight: bolder;
 }
+.help {
+    color: silver;
+}
+.alert {
+    color: #c00;
+    text-transform: uppercase;
+    font-weight: bolder;
+}
+.linethrough {
+    text-decoration: line-through;
+}
+.underline {
+    text-decoration: underline;
+}
+.bold {
+    font-weight: bolder;
+}
+.italic {
+    font-style: italic;
+}
+.quote {
+    color: dimgrey;
+}
+.emotion {
+    color: dimgrey;
+    font-variant: small-caps;
+}
+.emotion:before { content:"*" }
+.emotion:after  { content:"*" }
