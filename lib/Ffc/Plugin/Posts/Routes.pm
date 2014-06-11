@@ -20,23 +20,25 @@ sub install_routes_posts {
     $l->route("$start/new", @startps)->via('post')
       ->to(controller => $cname, action => 'add')->name("add_${cname}");
 
-    # Mit der folgenden Route wird der bearbeitete Beitrag mit
-    # seinen Änderungen abgespeichert.
-    $l->route("$start/edit/:postid", @startps)->via('post')
-      ->to(controller => $cname, action => 'edit_do')->name("edit_${cname}_do");
-    # Mit dieser Route wird ein Bearbeitungsformular für einen
-    # Beitrag erstellt.
-    $l->route("$start/edit/:postid", @startps, postid => $Ffc::Digqr)->via('get')
-      ->to(controller => $cname, action => 'edit_form')->name("edit_${cname}_form");
-    
-    # Diese Route löscht einen Beitrag mit all seinen Anhängen und allem.
-    $l->route("$start/delete/:postid", @startps)->via('post')
-      ->to(controller => $cname, action => 'delete_do')->name("delete_${cname}_do");
-    # Diese Route erzeugt ein Bestätigungsformular, was den Benutzer
-    # fragt, ob er den gewünschten Beitrag tatsächlich und unwiderbringlich
-    # löschen möchte.
-    $l->route("$start/delete/:postid", @startps, postid => $Ffc::Digqr)->via('get')
-      ->to(controller => $cname, action => 'delete_check')->name("delete_${cname}_check");
+    if ( $cname ne 'pmsgs' ) {
+        # Mit der folgenden Route wird der bearbeitete Beitrag mit
+        # seinen Änderungen abgespeichert.
+        $l->route("$start/edit/:postid", @startps)->via('post')
+          ->to(controller => $cname, action => 'edit_do')->name("edit_${cname}_do");
+        # Mit dieser Route wird ein Bearbeitungsformular für einen
+        # Beitrag erstellt.
+        $l->route("$start/edit/:postid", @startps, postid => $Ffc::Digqr)->via('get')
+          ->to(controller => $cname, action => 'edit_form')->name("edit_${cname}_form");
+        
+        # Diese Route löscht einen Beitrag mit all seinen Anhängen und allem.
+        $l->route("$start/delete/:postid", @startps)->via('post')
+          ->to(controller => $cname, action => 'delete_do')->name("delete_${cname}_do");
+        # Diese Route erzeugt ein Bestätigungsformular, was den Benutzer
+        # fragt, ob er den gewünschten Beitrag tatsächlich und unwiderbringlich
+        # löschen möchte.
+        $l->route("$start/delete/:postid", @startps, postid => $Ffc::Digqr)->via('get')
+          ->to(controller => $cname, action => 'delete_check')->name("delete_${cname}_check");
+    }
 
     # Folgende Route lädt Dateien zu einem Beitrag hoch.
     $l->route("$start/upload/:postid", @startps)->via('post')
