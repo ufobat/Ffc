@@ -4,7 +4,7 @@ use strict; use warnings; use utf8;
 
 sub _upload_post_form {
     my $c = shift;
-    $c->stash( dourl => $c->url_for('upload_'.$c->stash('controller').'_do') );
+    $c->stash( dourl => $c->url_for('upload_'.$c->stash('controller').'_do', $c->additional_params) );
     _setup_stash($c);
     return unless _get_single_post($c, @_);
     $c->render( template => 'upload_form' );

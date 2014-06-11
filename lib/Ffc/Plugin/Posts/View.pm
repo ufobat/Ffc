@@ -23,7 +23,7 @@ sub _show_posts {
     $query = "\%$query\%" if $query;
     my $cname = $c->stash('controller');
     $c->stash( 
-        dourl   => $c->url_for("add_${cname}"),    # Neuen Beitrag erstellen
+        dourl   => $c->url_for("add_${cname}", $c->additional_params ), # Neuen Beitrag erstellen
         editurl => "edit_${cname}_form",           # Formuar zum Bearbeiten von Beiträgen
         delurl  => "delete_${cname}_check",        # Formular, um den Löschvorgang einzuleiten
         uplurl  => "upload_${cname}_form",         # Formular für Dateiuploads

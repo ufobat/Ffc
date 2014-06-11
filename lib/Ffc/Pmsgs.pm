@@ -35,6 +35,10 @@ sub lastseen {
     return @$r ? $r->[0]->[0] : -1;
 }
 
+sub additional_params {
+    return userid => $_[0]->param('userid');
+}
+
 sub show_userlist {
     my $c = shift;
     my $uid = $c->session->{userid};

@@ -1,5 +1,15 @@
 <div class="postbox headbox">
-<% if ( $heading ) { %><h1><%= $heading %></h1><% } %>
+% if ( $heading ) {
+    <h1>
+        <%= $heading %>
+%   if ( $topicediturl ) {
+        <span class="smallfont">
+            (<a href="<%= $topicediturl %>"
+                title="Die Themenüberschrift ändern">ändern</a>)
+        </span>
+%   }
+    </h1>
+% }
 <% if ( $description ) { %><p><%= $description %></p><% } %>
 <form action="<%== $dourl %>" accept-charset="UTF-8" method="POST">
 <p class="insertformbuttons">

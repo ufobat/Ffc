@@ -49,6 +49,10 @@ sub lastseen {
     return @$r ? $r->[0]->[0] : undef;
 }
 
+sub additional_params {
+    return topicid => $_[0]->param('topicid');
+}
+
 sub show_topiclist {
     my $c = shift;
     my $page = $c->param('page') // 1;
@@ -145,34 +149,36 @@ sub add_topic_do {
 sub _get_title_from_topicid {
     my $c = shift;
     my $r = $c->dbh->selectall_arrayref(
-        'SELECT "title" FROM "topics" WHERE "id"=?',
+        'SELECT "title", "userfrom" FROM "topics" WHERE "id"=?',
         undef, shift() // $c->param('topicid')
     );
     unless ( @$r ) {
         $c->set_error('Konnte das gewünschte Thema nicht finden.');
-        return $c->show_topiclist;
+        $c->show_topiclist;
+        return;
     }
-    return $r->[0]->[0];
+    return wantarray ? @{$r->[0]} : $r->[0]->[0];
 }
 
 sub edit_topic_form {
     my $c = shift;
     $c->stash(
         topicid     => $c->param('topicid'),
-        titlestring => $c->param('titlestring') // $c->_get_title_from_topicid,
+        titlestring => $c->param('titlestring') // scalar($c->_get_title_from_topicid),
     );
     $c->render(template => 'topicform');
 }
 
 sub _check_topic_edit {
     my $c = shift;
+    return 1 if $c->session->{admin};
     my $topicid = shift() // $c->param('topicid');
     my $r = $c->dbh->selectall_arrayref(
         'SELECT "userfrom" FROM "topics" WHERE "id"=?',
         undef, $topicid
     );
     unless ( @$r ) {
-        $c->set_error('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde.');
+        $c->set_error('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde und Sie auch kein Administrator sind.');
         $c->show_topiclist;
         return;
     }
@@ -188,14 +194,14 @@ sub edit_topic_do {
     if ( my $topicidto = $c->_get_topicid_for_title($titlestring) ) {
         if ( $topicidto == $topicid ) {
             $c->set_warning('Der Titel wurde nicht verändert.');
-            return $c->show_topiclist;
+            return $c->show;
         }
         $c->set_warning('Das gewünschte Thema existiert bereits.');
         $c->stash(
             topicid   => $topicid,
             topicidto => $topicidto,
-            titlestringdest => $c->_get_title_from_topicid($topicidto),
-            titlestringorig => $c->_get_title_from_topicid($topicid),
+            titlestringdest => scalar($c->_get_title_from_topicid($topicidto)),
+            titlestringorig => scalar($c->_get_title_from_topicid($topicid)),
         );
         return $c->render(template => 'topicmoveform');
     }
@@ -204,7 +210,7 @@ sub edit_topic_do {
         'UPDATE "topics" SET "title"=? WHERE "id"=?',
         undef, $titlestring, $topicid
     );
-    $c->show_topiclist;
+    $c->show;
 }
 
 sub move_topic_do {
@@ -237,16 +243,22 @@ sub move_topic_do {
         undef, $topicid
     );
     $c->set_info('Die Beiträge wurden in ein anderes Thema verschoben');
-    $c->show_topiclist;
+    $c->stash(topicid => $topicidto);
+    $c->param(topicid => $topicidto);
+    $c->show;
 }
 
 sub show {
     my $c = shift;
     my ( $dbh, $uid, $topicid ) = ( $c->dbh, $c->session->{userid}, $c->param('topicid') );
+    my ( $heading, $userfrom ) = $c->_get_title_from_topicid;
     $c->stash(
+        topicid => $topicid,
         backurl => $c->url_for('show_forum_topiclist'),
-        heading => $c->_get_title_from_topicid,
+        heading => $heading,
     );
+    $c->stash( topicediturl => $c->url_for('edit_forum_topic_form', topicid => $topicid) )
+        if $uid eq $userfrom or $c->session->{admin};
     my $lastseen = $c->dbh->selectall_arrayref(
         'SELECT "lastseen"
         FROM "lastseenforum"

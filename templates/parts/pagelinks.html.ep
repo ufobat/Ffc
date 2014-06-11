@@ -1,12 +1,12 @@
 <div class="pages">
 % if ( $more ) {
-    <a href="<%= url_for $pageurl, page => $page + 1 %>" 
+    <a href="<%= url_for $pageurl, page => $page + 1, @$additional_params %>" 
        title="Zur nächsten Seite gehen">&lt; Ältere Beiträge</a>
 % }
 % if ( $page > 1 ) {
     <%= $more ? ' /' : '' %>
 %   if ( $page > 2 ) {
-    <a href="<%= url_for $pageurl, page => $page - 1 %>" 
+    <a href="<%= url_for $pageurl, page => $page - 1, @$additional_params %>" 
        title="Zur vorherigen Seite gehen">Jüngere Beiträge &gt;</a>
 %   }
     <%= $page > 2 ? ' /' : '' %>

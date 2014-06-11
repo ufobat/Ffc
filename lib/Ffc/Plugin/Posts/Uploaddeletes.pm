@@ -6,7 +6,7 @@ use File::Spec qw(catfile);
 
 sub _delete_upload_post_check {
     my $c = shift;
-    $c->stash( dourl => $c->url_for('delete_upload_'.$c->stash('controller').'_do') );
+    $c->stash( dourl => $c->url_for('delete_upload_'.$c->stash('controller').'_do', $c->additional_params) );
     _setup_stash($c);
     return unless _get_single_post($c, @_);
     $c->render( template => 'delete_upload_check' );

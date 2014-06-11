@@ -66,11 +66,12 @@ sub register {
         page     => 1,
         lastseen => -1,
         postid   => undef,
+        additional_params => [],
         map( {;$_.'count' => 0} 
             qw(newmsgs newpost note) ),
         map( {;$_ => ''} 
             qw(error info warning query textdata heading description
-               dourl returl editurl msgurl delurl uplurl delupl downld backurl ) ),
+               dourl returl editurl msgurl delurl uplurl delupl downld backurl topicediturl ) ),
         map( {;$_ => $config->{$_} || $Defaults{$_}} 
             qw(favicon commoncattitle title) ),
     });

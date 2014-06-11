@@ -82,6 +82,10 @@ sub where_modify {
 # das zu prüfen, kann hier einfach "undef" zurück gegeben werden.
 sub lastseen { return }
 
+# Folgende Methode weißt den URL's im Template zusätzliche Parameter zu,
+# die für die fertige URL zu verwenden sind. Anders geht das irgendwie nicht.
+sub additional_params { return () }
+
 # Folge-Aktionen werden über Routennamen oder fertige Routen-URL's in
 # Stash-Variablen gespeichert. Bestimmte Aktionen werden im Verlauf der
 # Arbeit des Plugins "Posts" mit dynamischen Werten versehen und müssen

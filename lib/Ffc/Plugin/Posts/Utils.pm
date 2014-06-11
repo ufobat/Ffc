@@ -20,6 +20,9 @@ sub _setup_stash {
         # Hierbei handelt es sich auch um eine Array-Referenz, welche zusätzliche Daten
         # enthalten kann.
         downld   => "download_att_$cname",
+        # Der folgende Eintrag beschreibt zusätzliche Parameter, die bei jeder URL
+        # mit angegeben werden müssen.
+        additional_params => [ $c->additional_params ],
     );
 }
 
