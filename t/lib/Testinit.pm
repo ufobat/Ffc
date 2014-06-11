@@ -73,19 +73,19 @@ sub test_dbh {
 sub test_error {
     my ( $t, $error ) = @_;
     $t->content_like(
-        qr~<div\s+class="error">\s*<h1>Fehler</h1>\s*$error\s*</div>~);
+        qr~<div\s+class="error">\s*<h1>Fehler</h1>\s*<p>\s*$error\s*</p>\s*</div>~);
 }
 
 sub test_info {
     my ( $t, $info ) = @_;
     $t->content_like(
-        qr~<div\s+class="info">\s*<h1>Hinweis</h1>\s*$info\s*</div>~);
+        qr~<div\s+class="info">\s*<h1>Hinweis</h1>\s*<p>\s*$info\s*</p>\s*</div>~);
 }
 
 sub test_warning {
     my ( $t, $warning ) = @_;
     $t->content_like(
-        qr~<div\s+class="info">\s*<h1>Warnung</h1>\s*$warning\s*</div>~);
+        qr~<div\s+class="info">\s*<h1>Warnung</h1>\s*<p>\s*$warning\s*</p>\s*</div>~);
 }
 
 sub test_add_user { &test_add_users } # Alias
