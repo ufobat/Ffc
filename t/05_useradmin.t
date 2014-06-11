@@ -282,7 +282,7 @@ sub test_emailadresses {
 }
 sub test_emailadresslist {
     note 'check that user email adress list visible for admin';
-    my $emailadresslist = join ';', map { $_->[1] || () } sort {uc($a->[0]) cmp uc($b->[0])} @users;
+    my $emailadresslist = join '; ', map { $_->[1] || () } sort {uc($a->[0]) cmp uc($b->[0])} @users;
     $t->get_ok('/options/form');
     if ( $emailadresslist ) {
         $t->content_like(qr~<h2>Liste verfügbarer Emailadressen:</h2>~)
