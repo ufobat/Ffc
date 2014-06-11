@@ -109,25 +109,21 @@ sub _download_post {
     my $filename = $c->dbh->selectall_arrayref( $sql, undef, $fileid, @wherep );
     unless ( @$filename ) {
         $c->set_error('Konnte die gewünschte Datei in der Datenbank nicht finden.');
-        return $c->show;
+        return $c->renderd(404);
     }
     $filename = $filename->[0]->[0];
     my $file = catfile(@{$c->datapath}, 'uploads', $fileid);
     unless ( -e $file ) {
         $c->set_error('Konnte die gewünschte Datei im Dateisystem nicht finden.');
-        return $c->show;
+        return $c->renderd(404);
     }
-    my $content = '';
-    if ( open my $fh, '<', $file ) {
-        local $/;
-        $content = <$fh>;
-    }
-    else {
-        $c->set_error('Konnte die gewünschte Datei im Dateisystem nicht auslesen.');
-        return $c->show;
-    }
-    $c->res->headers->header('Content-Disposition' => qq~attachment; filename="$filename"~);
-    $c->render(data => $content);
+    $file = Mojo::Asset::File->new(path => $file);
+    my $headers = Mojo::Headers->new();
+    $headers->add( 'Content-Disposition', 'attachment;filename=' . $filename );
+    $headers->add( 'Content-Length' => $file->size );
+    $c->res->content->headers($headers);
+    $c->res->content->asset($file);
+    $c->rendered(200);
 }
 
 1;
