@@ -56,9 +56,9 @@ sub register {
         $config->{urlshorten} = $Defaults{urlshorten};
     }
 
-    $app->helper(datapath     => sub { $datapath });
-    $app->helper(dbh          => sub { $dbh      });
-    $app->helper(configdata   => sub { $config   });
+    $app->helper(datapath     => sub { $datapath  });
+    $app->helper(dbh          => sub { $self->dbh });
+    $app->helper(configdata   => sub { $config    });
 
     $app->defaults({
         act      => 'forum',
@@ -147,7 +147,8 @@ sub dbh {
     my $self = $_[0];
     return $self->{dbh} if $self->{dbh};
     $self->{dbfile} = catdir @{ $self->_datapath() }, 'database.sqlite3';
-    $self->{dbh} = DBI->connect("DBI:SQLite:database=$self->{dbfile}", { AutoCommit => 1, RaiseError => 1 })
+    $self->{dbh} = DBI->connect("DBI:SQLite:database=$self->{dbfile}", 
+        '', '', { AutoCommit => 1, RaiseError => 1 })
         or die qq~could not connect to database "$self->{dbfile}": $DBI::errstr~;
     $self->{dbh}->{sqlite_unicode} = 1;
     return $self->{dbh};

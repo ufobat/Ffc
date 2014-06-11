@@ -3,13 +3,6 @@ use 5.010;
 use strict; use warnings; use utf8;
 
 
-sub _get_single_value {
-    my ( $c, $sql, @params ) = @_;
-    my $v = $c->dbh->selectall_arrayref( $sql, undef, @params );
-    return unless $v and 'ARRAY' eq ref($v) and @$v;
-    return $v->[0]->[0];
-}
-
 # Diese Hilfsfunktion setzt den Rahmen für alle Formulare innerhalb
 # der Beitrags-Handling-Routinen. Es legt einige Stash-Variablen fest,
 # die von allen Templates benötigt werden

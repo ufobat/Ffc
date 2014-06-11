@@ -18,19 +18,21 @@ sub where_select {
         $uid, $uid, $cid, $cid;
 }
 
-sub lastseen { 
-    return $_[0]->get_single_value(
-        'SELECT "lastseen" FROM "lastseenmsgs" WHERE "userid"=? AND "userfromid"=?',
-        $_[0]->session->{userid}, $_[0]->param('userid')
-    );
-}
-
 sub where_modify {
     my $uid = $_[0]->session->{userid};
     my $cid = $_[0]->param('userid');
     return 
         '"userto" IS NOT NULL AND "userfrom"<>"userto" AND ("userfrom"=? OR "userto"=?) AND ("userfrom"=? OR "userto"=?)', 
         $uid, $uid, $cid, $cid;
+}
+
+sub lastseen { 
+    my $c = shift;
+    my $r = $c->dbh->selectall_arrayref(
+        'SELECT "lastseen" FROM "lastseenmsgs" WHERE "userid"=? AND "userfromid"=?',
+        undef, $c->session->{userid}, $c->param('userid')
+    );
+    return @$r ? $r->[0]->[0] : -1;
 }
 
 sub show_userlist {
@@ -55,15 +57,16 @@ sub show_userlist {
 
 sub _get_username {
     my $c = shift;
-    my $name = $c->get_single_value(
-        'SELECT "name" FROM "users" WHERE "id"=?', $c->param('userid'));
-    unless ( $name ) {
+    my $name = $c->dbh->selectall_arrayref(
+        'SELECT "name" FROM "users" WHERE "id"=?', undef, $c->param('userid'));
+    unless ( @$name ) {
         $c->set_error(
             'Benutzername für Benutzerid "'.($c->param('userid') // '<NULL>').'" konnte nicht ermittelt werden');
         return 'Unbekannt';
     }
-    return $name;
+    return $name->[0]->[0];
 }
+
 sub show {
     my $c = shift;
     $c->stash(
@@ -72,22 +75,25 @@ sub show {
             'Private Nachrichten mit "' . $c->_get_username . '"',
     );
     my ( $dbh, $uid, $utoid ) = ( $c->dbh, $c->session->{userid}, $c->param('userid') );
-    my $lastseen = $c->get_single_value(
+    my $lastseen = $dbh->selectall_arrayref(
         'SELECT "lastseen"
         FROM "lastseenmsgs"
         WHERE "userid"=? AND "userfromid"=?',
-        $uid, $utoid
+        undef, $uid, $utoid
     );
-    $c->stash( lastseen => $lastseen // -1 );
-    my $newlastseen = $c->get_single_value(
+    my $newlastseen = $dbh->selectall_arrayref(
         'SELECT "id" FROM "posts" WHERE "userto"=? AND "userfrom"=? ORDER BY "id" DESC LIMIT 1',
-        $uid, $utoid);
-    if ( defined $lastseen ) {
+        undef, $uid, $utoid);
+    $newlastseen = @$newlastseen ? $newlastseen->[0]->[0] : -1;
+
+    if ( @$lastseen ) {
+        $c->stash( lastseen => $lastseen->[0]->[0] );
         $dbh->do(
             'UPDATE "lastseenmsgs" SET "lastseen"=? WHERE "userid"=? AND "userfromid"=?',
             undef, $newlastseen, $uid, $utoid );
     }
     else {
+        $c->stash( lastseen => -1 );
         $dbh->do(
             'INSERT INTO "lastseenmsgs" ("userid", "userfromid", "lastseen") VALUES (?,?,?)',
             undef, $uid, $utoid, $newlastseen );
