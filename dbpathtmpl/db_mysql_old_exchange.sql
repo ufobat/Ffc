@@ -7,7 +7,7 @@ CREATE TABLE `newstart_users` (
   `email` varchar(1024) NOT NULL DEFAULT '',
   `avatar` varchar(128) NOT NULL DEFAULT '',
   `admin` tinyint(1) NOT NULL DEFAULT '0',
-  `bgcolor` varchar(24) NOT NULL DEFAULT '',
+  `bgcolor` varchar(24) NOT NULL DEFAULT ''
 );
 
 CREATE TABLE `newstart_topics` (
