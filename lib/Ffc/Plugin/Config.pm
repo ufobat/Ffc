@@ -100,16 +100,16 @@ sub register {
     });
     $app->hook( before_routes => sub { 
         my $c = $_[0];
-        my $s = $c->session;
-        my $uid = $s->{userid};
+        my $uid = $c->session->{userid};
         my $dbh = $c->dbh;
         $c->stash(
             newpostcount => $dbh->selectall_arrayref(
                     'SELECT COUNT(p."id")
                     FROM "posts" p
+                    INNER JOIN "topics" t on t."id"=p."topicid"
                     LEFT OUTER JOIN "lastseenforum" l ON l."topicid"=p."topicid" AND l."userid"=?
-                    WHERE p."userto" IS NULL AND p."id">COALESCE(l."lastseen",-1)',
-                    undef, $uid
+                    WHERE p."userto" IS NULL AND p."userfrom"<>? AND p."id">COALESCE(l."lastseen",-1)',
+                    undef, $uid, $uid
                 )->[0]->[0],
             newmsgscount => $dbh->selectall_arrayref(
                     'SELECT COUNT(p."id")

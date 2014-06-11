@@ -5,13 +5,13 @@
 </div>
 <div class="postbox topiclist">
 % for my $t ( @$topics ) {
-    <h2<%== $t->[4] ? ' class="newpost"' : '' %>>
+    <h2<%== $t->[3] ? ' class="newpost"' : '' %>>
         <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"
            title="Beiträge zum Thema anzeigen"><%= $t->[2] %></a>
     </h2>
     <p>
         Ungelesene Beiträge zum Thema: 
-        <% if ( $t->[4] ) { %><span class="mark"><%= $t->[4] %></span><% } else { %>0<% } %>
+        <% if ( $t->[3] ) { %><span class="mark"><%= $t->[3] %></span><% } else { %>0<% } %>
 % if ( $t->[1] == session->{userid} ) {
         (<a href="<%= url_for 'edit_forum_topic_form', topicid => $t->[0] %>"
             title="Den Titel dieses Themas bearbeiten">Titel bearbeiten</a>)

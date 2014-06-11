@@ -58,7 +58,7 @@ sub show_topiclist {
         page     => $page,
         pageurl  => 'show_forum_topiclist_page',
         topics => $c->dbh->selectall_arrayref(
-            'SELECT t."id", t."userfrom", t."title", t."posted",
+            'SELECT t."id", t."userfrom", t."title",
                 (SELECT COUNT(p."id") 
                     FROM "posts" p
                     LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=p."topicid"
@@ -118,6 +118,9 @@ sub add_topic_do {
         $c->param(topicid => $topicid);
         return $c->add();
     }
+    else {
+        $c->set_error('');
+    }
     my $dbh = $c->dbh;
     $dbh->do(
         'INSERT INTO "topics" ("userfrom", "title") VALUES (?,?)',
@@ -131,7 +134,7 @@ sub add_topic_do {
         $c->set_error('Das Thema konnte irgendwie nicht angelegt werden. Bitte versuchen Sie es erneut.');
         return $c->add_topic_form;
     }
-    $c->param(topicid => $r);
+    $c->param(topicid => $r->[0]->[0]);
     return $c->add;
 }
 
@@ -203,11 +206,15 @@ sub edit_topic_do {
 sub move_topic_do {
     my $c = shift;
     my $topicid = $c->param('topicid');
+    my $topicidto = $c->param('topicidto');
+    my $uid = $c->session->{userid};
     my $dbh = $c->dbh;
+
     return unless $c->_check_topic_edit($topicid);
+
     $dbh->do(
         'UPDATE "posts" SET "topicid"=? WHERE "topicid"=?',
-        undef, $c->param('topicidto'), $topicid
+        undef, $topicidto, $topicid
     );
     my $r = $c->dbh->selectall_arrayref(
         'SELECT COUNT("id") FROM "posts" WHERE "topicid"=?',
@@ -219,6 +226,10 @@ sub move_topic_do {
     }
     $dbh->do(
         'DELETE FROM "topics" WHERE "id"=?',
+        undef, $topicid
+    );
+    $dbh->do(
+        'DELETE FROM "lastseenforum" WHERE "topicid"=?',
         undef, $topicid
     );
     $c->set_info('Die Beiträge wurden in ein anderes Thema verschoben');
