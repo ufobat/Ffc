@@ -79,6 +79,8 @@ sub register {
     for my $w ( qw(info error warning ) ) {
         $app->helper( "set_$w" => 
             sub { shift()->stash($w => join ' ', @_) } );
+        $app->helper( "set_${w}_f" => 
+            sub { shift()->flash($w => join ' ', @_) } );
     }
 
     $app->helper( fontsize =>

@@ -17,16 +17,16 @@ sub _delete_post_do {
     my ( $wheres, @wherep ) = $c->where_modify;
     my $postid = $c->param('postid');
     unless ( $postid and $postid =~ $Ffc::Digqr ) {
-        $c->set_error('Konnte den Beitrag nicht ändern, da die Beitragsnummer irgendwie verloren ging');
-        return $c->show();
+        $c->set_error_f('Konnte den Beitrag nicht ändern, da die Beitragsnummer irgendwie verloren ging');
+        return _redirect_to_show($c);
     }
     {
         my $sql = q~SELECT "id" FROM "posts" WHERE "id"=?~;
         $sql   .= qq~ AND $wheres~ if $wheres;
         my $post = $c->dbh->selectall_arrayref( $sql, undef, $postid, @wherep );
         unless ( @$post ) {
-            $c->set_error('Der angegebene Beitrag konnte nicht entfernt werden.');
-            return $c->show();
+            $c->set_error_f('Der angegebene Beitrag konnte nicht entfernt werden.');
+            return _redirect_to_show($c);
         }
     }
     my $atts = 0;
@@ -39,7 +39,7 @@ sub _delete_post_do {
             my $file = catfile(@{$c->datapath}, 'uploads', $r->[0]);
             unlink $file or $delerr++;
         }
-        $c->set_warning("$delerr Anhänge konnten nicht entfernt werden.")
+        $c->set_warning_f("$delerr Anhänge konnten nicht entfernt werden.")
             if $delerr;
     }
     if ( $atts ) {
@@ -51,8 +51,8 @@ sub _delete_post_do {
         $sql   .= qq~ AND $wheres~ if $wheres;
         $c->dbh->do( $sql, undef, $postid, @wherep );
     }
-    $c->set_info('Der Beitrag wurde komplett entfernt');
-    $c->show();
+    $c->set_info_f('Der Beitrag wurde komplett entfernt');
+    _redirect_to_show($c);
 }
 
 

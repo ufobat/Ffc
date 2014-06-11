@@ -13,7 +13,7 @@ sub _pagination {
 sub _query_posts {
     my $c = shift;
     $c->session->{query} = $c->param('query');
-    $c->show;
+    _redirect_to_show($c);
 }
 
 sub _show_posts {

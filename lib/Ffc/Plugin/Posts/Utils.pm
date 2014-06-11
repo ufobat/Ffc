@@ -26,6 +26,10 @@ sub _setup_stash {
     );
 }
 
+sub _redirect_to_show {
+    $_[0]->redirect_to('show_'.$_[0]->stash('controller'), $_[0]->additional_params)
+}
+
 sub _get_single_post {
     my $c = shift;
     my ( $wheres, @wherep ) = $c->where_select;

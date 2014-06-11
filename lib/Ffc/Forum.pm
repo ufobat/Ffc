@@ -178,8 +178,8 @@ sub _check_topic_edit {
         undef, $topicid
     );
     unless ( @$r ) {
-        $c->set_error('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde und Sie auch kein Administrator sind.');
-        $c->show_topiclist;
+        $c->set_error_f('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde und Sie auch kein Administrator sind.');
+        $c->redirect_to('show_forum_topiclist');
         return;
     }
     return $r->[0]->[0] == $c->session->{userid} ? 1 : 0;
@@ -193,8 +193,8 @@ sub edit_topic_do {
     return $c->edit_topic_form unless $c->_check_titlestring($titlestring);
     if ( my $topicidto = $c->_get_topicid_for_title($titlestring) ) {
         if ( $topicidto == $topicid ) {
-            $c->set_warning('Der Titel wurde nicht verändert.');
-            return $c->show;
+            $c->set_warning_f('Der Titel wurde nicht verändert.');
+            return $c->redirect_to('show_forum', topicid => $topicid);
         }
         $c->set_warning('Das gewünschte Thema existiert bereits.');
         $c->stash(
@@ -205,12 +205,12 @@ sub edit_topic_do {
         );
         return $c->render(template => 'topicmoveform');
     }
-    $c->set_info('Überschrift des Themas wurde geändert.');
     $c->dbh->do(
         'UPDATE "topics" SET "title"=? WHERE "id"=?',
         undef, $titlestring, $topicid
     );
-    $c->show;
+    $c->set_info_f('Überschrift des Themas wurde geändert.');
+    $c->redirect_to('show_forum', topicid => $topicid);
 }
 
 sub move_topic_do {
@@ -231,8 +231,8 @@ sub move_topic_do {
         undef, $topicid
     );
     if ( $r->[0]->[0] ) {
-        $c->set_error('Die Beiträge konnten nicht verschoben werden.');
-        return $c->show_topiclist;
+        $c->set_error_f('Die Beiträge konnten nicht verschoben werden.');
+        return $c->redirect_to('show_forum_topiclist');
     }
     $dbh->do(
         'DELETE FROM "topics" WHERE "id"=?',
@@ -242,10 +242,8 @@ sub move_topic_do {
         'DELETE FROM "lastseenforum" WHERE "topicid"=?',
         undef, $topicid
     );
-    $c->set_info('Die Beiträge wurden in ein anderes Thema verschoben');
-    $c->stash(topicid => $topicidto);
-    $c->param(topicid => $topicidto);
-    $c->show;
+    $c->set_info_f('Die Beiträge wurden in ein anderes Thema verschoben');
+    $c->redirect_to('show_forum', topicid => $topicidto);
 }
 
 sub show {

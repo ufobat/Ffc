@@ -1,21 +1,21 @@
-% if ( $error or $warning or $info ) {
+% if ( $error or $warning or $info or flash('info') or flash('error') or flash('warning') ) {
 <div class="messagebox">
-% if ( $error ) {
+% if ( $error or flash('error') ) {
 <div class="error">
     <h1>Fehler</h1>
-    <%= $error %>
+    <p><%= $error %> <%= flash('error') %></p>
 </div>
 % }
-% if ( $warning ) {
+% if ( $warning or flash('warning') ) {
 <div class="warning">
     <h1>Warnung</h1>
-    <%= $warning %>
+    <p><%= $warning %> <%= flash('warning') %></p>
 </div>
 % }
-% if ( $info ) {
+% if ( $info or flash('info') ) {
 <div class="info">
     <h1>Hinweis</h1>
-    <%= $info %>
+    <p><%= $info %> <%= flash('info') %></p>
 </div>
 % }
 </div>

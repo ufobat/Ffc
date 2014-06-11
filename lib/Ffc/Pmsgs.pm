@@ -109,6 +109,10 @@ sub query { $_[0]->query_posts }
 
 sub add { $_[0]->add_post($_[0]->param('userid'), undef) }
 
+=pod
+
+=head1 das folgende brauchen wir bei privatnachrichten nicht!!!
+
 sub edit_form {
     my $c = shift;
     $c->stash( heading => 
@@ -126,6 +130,8 @@ sub delete_check {
 }
 
 sub delete_do { $_[0]->delete_post_do() }
+
+=cut
 
 sub upload_form {
     my $c = shift;

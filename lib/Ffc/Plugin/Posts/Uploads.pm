@@ -17,57 +17,57 @@ sub _upload_post_do {
     my $file = $c->param('attachement');
     my $postid = $c->param('postid');
     unless ( $postid and $postid =~ $Ffc::Digqr ) {
-        $c->set_error('Konnte keinen Anhang zu dem Beitrag hochladen, da die Beitragsnummer irgendwie verloren ging');
-        return $c->show();
+        $c->set_error_f('Konnte keinen Anhang zu dem Beitrag hochladen, da die Beitragsnummer irgendwie verloren ging');
+        return _redirect_to_show($c);
     }
     {
         my $sql = q~SELECT "id" FROM "posts" WHERE "id"=?~;
         $sql   .= qq~ AND $wheres~ if $wheres;
         my $post = $c->dbh->selectall_arrayref( $sql, undef, $postid, @wherep );
         unless ( @$post ) {
-            $c->set_error('Zum angegebene Beitrag kann kein Anhang hochgeladen werden.');
-            return $c->show();
+            $c->set_error_f('Zum angegebene Beitrag kann kein Anhang hochgeladen werden.');
+            return _redirect_to_show($c);
         }
     }
     
     unless ( $file ) {
-        $c->set_error('Kein Anhang angegeben.');
-        return $c->show;
+        $c->set_error_f('Kein Anhang angegeben.');
+        return _redirect_to_show($c);
     }
     unless ( $file->isa('Mojo::Upload') ) {
-        $c->set_error('Keine Datei als Anhang angegeben.');
-        return $c->show;
+        $c->set_error_f('Keine Datei als Anhang angegeben.');
+        return _redirect_to_show($c);
     }
     if ( $file->size < 1 ) {
-        $c->set_error('Datei ist zu klein, sollte mindestens 1B groß sein.');
-        return $c->show;
+        $c->set_error_f('Datei ist zu klein, sollte mindestens 1B groß sein.');
+        return _redirect_to_show($c);
     }
     if ( $file->size > 2000000 ) {
-        $c->set_error('Datei ist zu groß, darf maximal 2MB groß sein.');
-        return $c->show;
+        $c->set_error_f('Datei ist zu groß, darf maximal 2MB groß sein.');
+        return _redirect_to_show($c);
     }
 
     my $filename = $file->filename;
 
     unless ( $filename ) {
-        $c->set_error('Der Dateiname zum Hochladenfehlt.');
-        return $c->show;
+        $c->set_error_f('Der Dateiname zum hochladen fehlt.');
+        return _redirect_to_show($c);
     }
     if ( 2 > length $filename ) {
-        $c->set_error('Dateiname ist zu kurz, muss mindestens 2 Zeichen inklusive Dateiendung enthalten.');
-        return $c->show;
+        $c->set_error_f('Dateiname ist zu kurz, muss mindestens 2 Zeichen inklusive Dateiendung enthalten.');
+        return _redirect_to_show($c);
     }
     if ( 200 < length $filename ) {
-        $c->set_error('Dateiname ist zu lang, darf maximal 200 Zeichen lang sein.');
-        return $c->show;
+        $c->set_error_f('Dateiname ist zu lang, darf maximal 200 Zeichen lang sein.');
+        return _redirect_to_show($c);
     }
     if ( $file->filename =~ m/\A\./xms ) {
-        $c->set_error('Der Dateiname darf nicht mit einem "." beginnen.');
-        return $c->show;
+        $c->set_error_f('Der Dateiname darf nicht mit einem "." beginnen.');
+        return _redirect_to_show($c);
     }
     if ( $filename =~ m/(?:\.\.|\/)/xmso ) {
-        $c->set_error('Der Dateiname darf weder ".." noch "/" enthalten.');
-        return $c->show;
+        $c->set_error_f('Der Dateiname darf weder ".." noch "/" enthalten.');
+        return _redirect_to_show($c);
     }
 
     $c->dbh->do('INSERT INTO "attachements" ("filename", "postid") VALUES (?,?)',
@@ -79,17 +79,17 @@ sub _upload_post_do {
         $fileid = $fileid->[0]->[0];
     }
     else {
-        $c->set_error('Beim Dateiupload ist etwas schief gegangen, ich finde die Datei nicht mehr in der Datenbank');
-        return $c->show;
+        $c->set_error_f('Beim Dateiupload ist etwas schief gegangen, ich finde die Datei nicht mehr in der Datenbank');
+        return _redirect_to_show($c);
     }
 
     unless ( $file->move_to(catfile(@{$c->datapath}, 'uploads', $fileid)) ) {
-        $c->set_error('Das Hochladen des Anhanges ist fehlgeschlagen.');
-        return $c->show;
+        $c->set_error_f('Das Hochladen des Anhanges ist fehlgeschlagen.');
+        return _redirect_to_show($c);
     }
 
-    $c->set_info('Datei an den Beitrag angehängt');
-    $c->show;
+    $c->set_info_f('Datei an den Beitrag angehängt');
+    _redirect_to_show($c);
 };
 
 sub _download_post {

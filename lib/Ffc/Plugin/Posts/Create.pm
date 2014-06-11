@@ -19,8 +19,8 @@ EOSQL
         $c->session->{userid}, $userto, $topicid, $text, $c->pre_format($text)
     );
 
-    $c->set_info('Ein neuer Beitrag wurde erstellt');
-    $c->show;
+    $c->set_info_f('Ein neuer Beitrag wurde erstellt');
+    _redirect_to_show($c);
 }
 
 sub _edit_post_form {
@@ -51,8 +51,8 @@ sub _edit_post_do {
             . qq~WHERE "id"=?~;
     $sql .= qq~ AND $wheres~ if $wheres;
     $c->dbh->do( $sql, undef, $text, $c->pre_format($text), $postid, @wherep );
-    $c->set_info('Der Beitrag wurde geändert');
-    return $c->show;
+    $c->set_info_f('Der Beitrag wurde geändert');
+    _redirect_to_show($c);
 }
 
 1;
