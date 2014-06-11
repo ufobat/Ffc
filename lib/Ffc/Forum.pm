@@ -63,9 +63,13 @@ sub show_topiclist {
                     FROM "posts" p
                     LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=p."topicid"
                     WHERE p."userto" IS NULL AND p."userfrom"<>? AND p."topicid"=t."id" AND p."id">COALESCE(l."lastseen",-1)
-                ) AS "entrycount_new"
+                ) AS "entrycount_new",
+                (SELECT MAX(p2."id")
+                    FROM "posts" p2
+                    WHERE p2."userto" IS NULL AND p2."topicid"=t."id"
+                ) AS "sorting"
             FROM "topics" t
-            ORDER BY "entrycount_new" DESC, UPPER(t."title") ASC
+            ORDER BY CASE WHEN "entrycount_new">0 THEN 1 ELSE 0 END DESC, "sorting" DESC
             LIMIT ? OFFSET ?',
             undef, $uid, $uid, $topiclimit, ( $page - 1 ) * $topiclimit
         ),
