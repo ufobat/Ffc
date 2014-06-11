@@ -154,7 +154,7 @@ a:focus, .linkalike:focus {
     padding: .1em 0;
     border-top-width: 0;
 }
-.userlist p, .topiclist p, h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
+.userlist p, h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
     font-size: .75em;
 }
 .menu input[type="text"] {
@@ -241,6 +241,9 @@ li {
 }
 .userlist h2, .topiclist h2 {
     font-size: 1em;
+}
+.topiclist h2 {
+    border: none;
 }
 .mark {
     color: palevioletred;
