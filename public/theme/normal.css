@@ -242,9 +242,6 @@ li {
 .userlist h2, .topiclist h2 {
     font-size: 1em;
 }
-.topiclist h2 {
-    border-color: white;
-}
 .mark {
     color: palevioletred;
     font-weight: bolder;
