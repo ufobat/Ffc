@@ -14,8 +14,6 @@ CREATE TABLE "users" (
 CREATE TABLE "topics" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
   "userfrom" int(11) NOT NULL,
-  "posted" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "altered" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "title" varchar(256) NOT NULL
 );
 
