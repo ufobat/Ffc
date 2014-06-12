@@ -16,6 +16,9 @@ sub install_routes {
     $l->route('/topic/:topicid/ignore', topicid => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'ignore_topic_do')
       ->name('ignore_forum_topic_do');
+    $l->route('/topic/:topicid/unignore', topicid => $Ffc::Digqr)->via('get')
+      ->to(controller => 'forum', action => 'unignore_topic_do')
+      ->name('unignore_forum_topic_do');
     $l->route('/topic/:topicid/edit', topicid => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'edit_topic_form')
       ->name('edit_forum_topic_form');
@@ -87,8 +90,12 @@ sub show_topiclist {
     $c->render(template => 'topiclist');
 }
 
-sub ignore_topic_do {
+sub   ignore_topic_do { $_[0]->_handle_ignore_topic_do(1) }
+sub unignore_topic_do { $_[0]->_handle_ignore_topic_do(0) }
+
+sub _handle_ignore_topic_do {
     my $c = shift;
+    my $ignore = shift;
     my $topicid = $c->param('topicid');
     my $lastseen = $c->dbh->selectall_arrayref(
         'SELECT "lastseen"
@@ -98,15 +105,20 @@ sub ignore_topic_do {
     );
     if ( @$lastseen ) {
         $c->dbh->do(
-            'UPDATE "lastseenforum" SET "ignore"=1 WHERE "userid"=? AND "topicid"=?',
-            undef, $c->session->{userid}, $topicid );
+            'UPDATE "lastseenforum" SET "ignore"=? WHERE "userid"=? AND "topicid"=?',
+            undef, $ignore, $c->session->{userid}, $topicid );
     }
     else {
         $c->dbh->do(
-            'INSERT INTO "lastseenforum" ("userid", "topicid", "ignore") VALUES (?,?,1)',
-            undef, $c->session->{userid}, $topicid);
+            'INSERT INTO "lastseenforum" ("userid", "topicid", "ignore") VALUES (?,?,?)',
+            undef, $c->session->{userid}, $topicid, $ignore);
     }
-    $c->set_info('Zum gewählten Thema werden keine neuen Beiträge mehr angezeigt.');
+    if ( $ignore ) {
+        $c->set_info('Zum gewählten Thema werden keine neuen Beiträge mehr angezeigt.');
+    }
+    else {
+        $c->set_info('Das gewählte Thema wird jetzt nicht mehr ignoriert.');
+    }
     $c->show_topiclist;
 }
 
@@ -298,13 +310,13 @@ sub show {
     if ( @$lastseen ) {
         $c->stash( lastseen => $lastseen->[0]->[0] );
         $dbh->do(
-            'UPDATE "lastseenforum" SET "lastseen"=?, "ignore"=0 WHERE "userid"=? AND "topicid"=?',
+            'UPDATE "lastseenforum" SET "lastseen"=? WHERE "userid"=? AND "topicid"=?',
             undef, $newlastseen, $uid, $topicid );
     }
     else {
         $c->stash( lastseen => -1 );
         $dbh->do(
-            'INSERT INTO "lastseenforum" ("userid", "topicid", "lastseen", "ignore") VALUES (?,?,?,0)',
+            'INSERT INTO "lastseenforum" ("userid", "topicid", "lastseen") VALUES (?,?,?)',
             undef, $uid, $topicid, $newlastseen );
     }
     $c->show_posts();

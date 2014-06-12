@@ -13,7 +13,7 @@
             Neu: <span class="mark"><%= $t->[3] %></span>,
 % }
 % if ( $t->[5] ) {
-        <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"
+        <a href="<%= url_for 'unignore_forum_topic_do', topicid => $t->[0] %>"
            title="Beiträge zum Thema anzeigen, Thema nicht mehr ignorieren">ignoriert</a>
 % } else {
         <a href="<%= url_for 'ignore_forum_topic_do', topicid => $t->[0] %>"
