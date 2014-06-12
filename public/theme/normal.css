@@ -157,6 +157,9 @@ a:focus, .linkalike:focus {
 .smallfont, .userlist p, h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
     font-size: .75em;
 }
+.smallfont {
+    font-weight: normal;
+}
 .menu input[type="text"] {
     width: 7.5em;
 }
