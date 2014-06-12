@@ -62,7 +62,6 @@ sub register {
 
     $app->defaults({
         act      => 'forum',
-        queryurl => '',
         page     => 1,
         lastseen => -1,
         postid   => undef,
@@ -70,7 +69,7 @@ sub register {
         map( {;$_.'count' => 0} 
             qw(newmsgs newpost note) ),
         map( {;$_ => ''} 
-            qw(error info warning query textdata heading description
+            qw(error info warning query textdata heading description backtext queryurl
                dourl returl editurl msgurl delurl uplurl delupl downld backurl topicediturl ) ),
         map( {;$_ => $config->{$_} || $Defaults{$_}} 
             qw(favicon commoncattitle title) ),
