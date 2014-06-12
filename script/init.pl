@@ -12,6 +12,7 @@ srand;
 
 my $uname = 'admin'; # name of initial first user
 
+my $debug = $ARGV[0] ? 1 : 0;
 die 'error: please provide a "FFC_DATA_PATH" environment variable'
     unless $ENV{FFC_DATA_PATH};
 die 'error: "FFC_DATA_PATH" environment variable needs to be a directory'
@@ -100,9 +101,14 @@ sub generate_random_security {
         'INSERT INTO users (name, password, admin, active) VALUES (?,?,?,1)',
         undef, $uname, sha512_base64($pw, $salt), 1);
 
-    say 'ok: initial cookiesecret, salt, admin user and password:';
-    say $csecret;
-    say $salt;
+    if ( $debug ) {
+        say 'ok: initial cookiesecret, salt, admin user and password:';
+        say $csecret;
+        say $salt;
+    }
+    else {
+        say 'ok: initial admin user and password:';
+    }
     say $uname;
     say $pw;
 }

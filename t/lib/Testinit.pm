@@ -14,8 +14,8 @@ use lib
   catdir(splitdir(File::Basename::dirname(__FILE__)), '..', '..', 'lib');
 
 our $Script 
-    = catfile splitdir(File::Basename::dirname(__FILE__)),
-        '..', '..', 'script', 'init.pl';
+    = catfile( splitdir(File::Basename::dirname(__FILE__)),
+        '..', '..', 'script', 'init.pl' ) . ' debug';
 our @Chars = ('a' .. 'z', 'A' .. 'Z', 0 .. 9);
 {
     my %Strings;
