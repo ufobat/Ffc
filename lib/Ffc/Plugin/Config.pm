@@ -89,6 +89,7 @@ sub register {
         sub { $Styles[$_[0]->session()->{style} ? 1 : 0] } );
     $app->helper( hash_password  => 
         sub { sha512_base64 $_[1], $secconfig->{cryptsalt} } );
+    $app->helper( counting => \&_counting );
 
     $app->hook( before_render => sub { 
         my $c = $_[0];
@@ -101,35 +102,37 @@ sub register {
                     : ( $s->{backgroundcolor} || $config->{backgroundcolor} ),
         );
     });
-    $app->hook( before_routes => sub { 
-        my $c = $_[0];
-        my $uid = $c->session->{userid};
-        my $dbh = $c->dbh;
-        $c->stash(
-            newpostcount => $dbh->selectall_arrayref(
-                    'SELECT COUNT(p."id")
-                    FROM "posts" p
-                    INNER JOIN "topics" t on t."id"=p."topicid"
-                    LEFT OUTER JOIN "lastseenforum" l ON l."topicid"=p."topicid" AND l."userid"=?
-                    WHERE p."userto" IS NULL AND p."userfrom"<>? AND ( COALESCE(l."ignore",0)=1 OR p."id">COALESCE(l."lastseen",-1) )',
-                    undef, $uid, $uid
-                )->[0]->[0],
-            newmsgscount => $dbh->selectall_arrayref(
-                    'SELECT COUNT(p."id")
-                    FROM "posts" p
-                    INNER JOIN "users" u ON u."id"<>? AND u."id"=p."userfrom" AND u."active"=1
-                    LEFT OUTER JOIN "lastseenmsgs" l ON l."userfromid"=u."id" AND l."userid"=?
-                    WHERE p."userto"=? AND p."id">COALESCE(l."lastseen",-1)',
-                    undef, $uid, $uid, $uid
-                )->[0]->[0],
-            notecount => $dbh->selectall_arrayref(
-                    'SELECT COUNT("id") FROM "posts" WHERE "userfrom"=? AND "userfrom"="userto"',
-                    undef, $uid
-                )->[0]->[0],
-        );
-    });
+    $app->hook( before_routes => \&_counting );
 
     return $self;
+}
+
+sub _counting { 
+    my $c = $_[0];
+    my $uid = $c->session->{userid};
+    my $dbh = $c->dbh;
+    $c->stash(
+        newpostcount => $dbh->selectall_arrayref(
+                'SELECT COUNT(p."id")
+                FROM "posts" p
+                INNER JOIN "topics" t on t."id"=p."topicid"
+                LEFT OUTER JOIN "lastseenforum" l ON l."topicid"=p."topicid" AND l."userid"=?
+                WHERE p."userto" IS NULL AND p."userfrom"<>? AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",-1)',
+                undef, $uid, $uid
+            )->[0]->[0],
+        newmsgscount => $dbh->selectall_arrayref(
+                'SELECT COUNT(p."id")
+                FROM "posts" p
+                INNER JOIN "users" u ON u."id"<>? AND u."id"=p."userfrom" AND u."active"=1
+                LEFT OUTER JOIN "lastseenmsgs" l ON l."userfromid"=u."id" AND l."userid"=?
+                WHERE p."userto"=? AND p."id">COALESCE(l."lastseen",-1)',
+                undef, $uid, $uid, $uid
+            )->[0]->[0],
+        notecount => $dbh->selectall_arrayref(
+                'SELECT COUNT("id") FROM "posts" WHERE "userfrom"=? AND "userfrom"="userto"',
+                undef, $uid
+            )->[0]->[0],
+    );
 }
 
 sub _datapath {
