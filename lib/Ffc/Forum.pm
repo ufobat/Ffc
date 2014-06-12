@@ -10,6 +10,9 @@ sub install_routes {
     $l->route('/topic/new')->via('get')
       ->to(controller => 'forum', action => 'add_topic_form')
       ->name('add_forum_topic_form');
+    $l->route('/topic/query')->via('post')
+      ->to(controller => 'forum', action => 'topic_query')
+      ->name('forum_topic_query');
     $l->route('/topic/new')->via('post')
       ->to(controller => 'forum', action => 'add_topic_do')
       ->name('add_forum_topic_do');
@@ -63,16 +66,23 @@ sub additional_params {
     return topicid => $_[0]->param('topicid');
 }
 
+sub topic_query {
+    $_[0]->session->{query} = $_[0]->param('query');
+    $_[0]->show_topiclist;
+}
+
 sub show_topiclist {
     my $c = shift;
     my $page = $c->param('page') // 1;
     my $topiclimit = $c->configdata->{topiclimit};
     my $uid = $c->session->{userid};
+    my $query = $c->session->{query};
     $c->stash(
+        queryurl => $c->url_for('forum_topic_query'),
         page     => $page,
         pageurl  => 'show_forum_topiclist_page',
-        topics => $c->dbh->selectall_arrayref(
-            'SELECT t."id", t."userfrom", t."title",
+        topics   => $c->dbh->selectall_arrayref( << 'EOSQL'
+            SELECT t."id", t."userfrom", t."title",
                 (SELECT COUNT(p."id") 
                     FROM "posts" p
                     LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=p."topicid"
@@ -85,9 +95,15 @@ sub show_topiclist {
                 l2."ignore"
             FROM "topics" t
             LEFT OUTER JOIN "lastseenforum" l2 ON l2."userid"=? AND l2."topicid"=t."id"
+EOSQL
+            . ( $query ? << 'EOSQL' : '' )
+            WHERE t."title" LIKE ?
+EOSQL
+            . << 'EOSQL'
             ORDER BY CASE WHEN "entrycount_new">0 THEN 1 ELSE 0 END DESC, "sorting" DESC
-            LIMIT ? OFFSET ?',
-            undef, $uid, $uid, $uid, $topiclimit, ( $page - 1 ) * $topiclimit
+            LIMIT ? OFFSET ?
+EOSQL
+            ,undef, $uid, $uid, $uid, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit
         ),
     );
 
