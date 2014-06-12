@@ -119,7 +119,7 @@ sub _download_post {
     }
     $file = Mojo::Asset::File->new(path => $file);
     my $headers = Mojo::Headers->new();
-    $headers->add( 'Content-Disposition', 'attachment;filename=' . $filename );
+    $headers->add( 'Content-Disposition', qq~attachment;filename="$filename"~ );
     $headers->add( 'Content-Length' => $file->size );
     $c->res->content->headers($headers);
     $c->res->content->asset($file);

@@ -27,7 +27,7 @@ sub avatar_show {
     my $file = $c->dbh->selectall_arrayref(
         'SELECT avatar FROM users WHERE id=?'
         , undef, $u);
-    if ( $file and 'ARRAY' eq ref($file) and $file = $file->[0]->[0] ) {
+    if ( @$file and ($file = $file->[0]->[0]) ) {
         $filename = quote encode 'UTF-8', $file;
         $filetype = $file =~ m/\.(png|jpe?g|bmp|gif)\z/xmiso ? lc($1) : '*';
         $file = catfile @{$c->datapath}, 'avatars', $file;
@@ -41,7 +41,7 @@ sub avatar_show {
     $file = Mojo::Asset::File->new(path => $file);
     my $headers = Mojo::Headers->new();
     $headers->add( 'Content-Type', 'image/'.$filetype );
-    $headers->add( 'Content-Disposition', 'inline;filename=' . $filename );
+    $headers->add( 'Content-Disposition', qq~inline;filename="$filename"~ );
     $headers->add( 'Content-Length' => $file->size );
     $c->res->content->headers($headers);
     $c->res->content->asset($file);
