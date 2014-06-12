@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 149;
+use Test::More tests => 145;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 
@@ -69,7 +69,6 @@ note 'test /config with custom settings';
     title => 'Webseitentitel',
     postlimit => 12,
     sessiontimeout => 21,
-    commoncattitle => 'Ffc-Test',
     urlshorten => 4,
     backgroundcolor => 'Hintergrundfarbe',
     fixbackgroundcolor => 1,
