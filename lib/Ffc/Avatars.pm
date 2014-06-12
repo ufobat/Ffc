@@ -41,7 +41,7 @@ sub avatar_show {
     $file = Mojo::Asset::File->new(path => $file);
     my $headers = Mojo::Headers->new();
     $headers->add( 'Content-Type', 'image/'.$filetype );
-    $headers->add( 'Content-Disposition', qq~inline;filename="$filename"~ );
+    $headers->add( 'Content-Disposition', qq~inline;filename=$filename~ );
     $headers->add( 'Content-Length' => $file->size );
     $c->res->content->headers($headers);
     $c->res->content->asset($file);

@@ -1,6 +1,8 @@
 package Ffc::Plugin::Posts; # Uploads
 use 5.010;
 use strict; use warnings; use utf8;
+use Mojo::Util 'quote';
+use Encode qw( encode decode_utf8 );
 
 sub _upload_post_form {
     my $c = shift;
@@ -109,9 +111,10 @@ sub _download_post {
     my $filename = $c->dbh->selectall_arrayref( $sql, undef, $fileid, @wherep );
     unless ( @$filename ) {
         $c->set_error('Konnte die gewünschte Datei in der Datenbank nicht finden.');
-        return $c->renderd(404);
+        return $c->rendered(404);
     }
-    $filename = $filename->[0]->[0];
+    
+    $filename = quote encode 'UTF-8', $filename->[0]->[0];
     my $file = catfile(@{$c->datapath}, 'uploads', $fileid);
     unless ( -e $file ) {
         $c->set_error('Konnte die gewünschte Datei im Dateisystem nicht finden.');
@@ -119,7 +122,7 @@ sub _download_post {
     }
     $file = Mojo::Asset::File->new(path => $file);
     my $headers = Mojo::Headers->new();
-    $headers->add( 'Content-Disposition', qq~attachment;filename="$filename"~ );
+    $headers->add( 'Content-Disposition', qq~attachment; filename=$filename~ );
     $headers->add( 'Content-Length' => $file->size );
     $c->res->content->headers($headers);
     $c->res->content->asset($file);
