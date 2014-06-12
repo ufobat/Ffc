@@ -1,7 +1,7 @@
 % layout 'board';
 <div class="headbox">
 <h1>Privatnachrichten mit Benutzern</h1>
-<p>Im folgenden findet siche eine Liste aller aktiven Benutzer. Um Privatnachrichten mit einem Benutzer auszutauschen, klicken Sie bitte auf den Benutzernamen.</p>
+<p>Klicke auf einen Benutzernamen, um Nachrichten mit diesem Benutzer auszutauschen.</p>
 </div>
 <div class="postbox userlist">
 % for my $u ( @$users ) {

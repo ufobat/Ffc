@@ -1,7 +1,7 @@
 % layout 'board';
 <div class="headbox">
 <h1>Allgemeines Forum</h1>
-<p>Hier befinden sich Themen für alle Benutzer. Um die Beiträge zu einem Thema zu sehen, klicken Sie bitte das Thema an. Um ein neues Thema zu beginnen, <a href="<%= url_for 'add_forum_topic_form' %>" title="Neues Thema beginnen">klicken Sie bitte hier</a>.</p>
+<p><a href="<%= url_for 'add_forum_topic_form' %>" title="Neues Thema beginnen">Klicke hier</a>, um ein neues Thema zu beginnen.</p>
 </div>
 <div class="postbox topiclist">
 % for my $t ( @$topics ) {
