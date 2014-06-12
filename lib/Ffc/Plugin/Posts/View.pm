@@ -20,9 +20,9 @@ sub _show_posts {
     my $c = shift;
     my ( $wheres, @wherep ) = $c->where_select;
     my $query  = $c->session->{query};
-    $query = "\%$query\%" if $query;
     my $cname = $c->stash('controller');
     $c->stash( 
+        query   => $query,
         dourl   => $c->url_for("add_${cname}", $c->additional_params ), # Neuen Beitrag erstellen
         editurl => "edit_${cname}_form",           # Formuar zum Bearbeiten von Beiträgen
         delurl  => "delete_${cname}_check",        # Formular, um den Löschvorgang einzuleiten
@@ -47,7 +47,7 @@ sub _show_posts {
     $sql .= 'ORDER BY p."id" DESC LIMIT ? OFFSET ?';
 
     my $posts = $c->dbh->selectall_arrayref(
-        $sql, undef, @wherep, ( $query || () ), _pagination($c)
+        $sql, undef, @wherep, ( $query ? "\%$query\%" : () ), _pagination($c)
     );
     $c->stash(posts => $posts );
 

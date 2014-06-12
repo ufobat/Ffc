@@ -67,8 +67,9 @@ sub additional_params {
 }
 
 sub topic_query {
-    $_[0]->session->{query} = $_[0]->param('query');
-    $_[0]->show_topiclist;
+    my $c = shift;
+    $c->session->{topicquery} = $c->param('query');
+    $c->show_topiclist;
 }
 
 sub show_topiclist {
@@ -76,9 +77,10 @@ sub show_topiclist {
     my $page = $c->param('page') // 1;
     my $topiclimit = $c->configdata->{topiclimit};
     my $uid = $c->session->{userid};
-    my $query = $c->session->{query};
+    my $query = $c->session->{topicquery};
     $c->stash(
         queryurl => $c->url_for('forum_topic_query'),
+        query    => $query,
         page     => $page,
         pageurl  => 'show_forum_topiclist_page',
         topics   => $c->dbh->selectall_arrayref( << 'EOSQL'
@@ -97,7 +99,7 @@ sub show_topiclist {
             LEFT OUTER JOIN "lastseenforum" l2 ON l2."userid"=? AND l2."topicid"=t."id"
 EOSQL
             . ( $query ? << 'EOSQL' : '' )
-            WHERE t."title" LIKE ?
+            WHERE UPPER(t."title") LIKE UPPER(?)
 EOSQL
             . << 'EOSQL'
             ORDER BY CASE WHEN "entrycount_new">0 THEN 1 ELSE 0 END DESC, "sorting" DESC
