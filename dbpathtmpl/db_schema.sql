@@ -69,8 +69,6 @@ INSERT INTO "config" ("key", "value")
 INSERT INTO "config" ("key", "value") 
   VALUES ('sessiontimeout','432000');
 INSERT INTO "config" ("key", "value") 
-  VALUES ('commoncattitle','Allgemein');
-INSERT INTO "config" ("key", "value") 
   VALUES ('urlshorten','30');
 INSERT INTO "config" ("key", "value") 
   VALUES ('backgroundcolor','');

@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 657;
+use Test::More tests => 588;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -34,9 +34,6 @@ my @Settings = (
     [ sessiontimeout => 'Maximale Benutzersitzungsdauer', 'number',
         [10 + int( rand 90),110 + int(rand 90)],['asdf'],
         'Die Zeit der Benutzersitzungsmaximallänge muss eine Zahl in Sekunden sein' ],
-    [ commoncattitle => 'Titel der allgemeinen Kategorie', 'text',
-        [rstr(), rstr(), scalar('a' x 256)], ['a', scalar('a' x 257)],
-        'Der Name der allgemeinen Kategorie muss zwischen zwei und 256 Zeichen lang sein' ],
     [ urlshorten => 'Maximale Länge für die URL-Darstellung', 'number',
         [10 + int( rand 90),110 + int(rand 90)],['asdf'],
         'Die Länge, auf die URLs in der Anzeige gekürzt werden, muss eine Zahl sein' ],
