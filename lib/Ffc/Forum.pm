@@ -270,13 +270,13 @@ sub show {
     if ( @$lastseen ) {
         $c->stash( lastseen => $lastseen->[0]->[0] );
         $dbh->do(
-            'UPDATE "lastseenforum" SET "lastseen"=? WHERE "userid"=? AND "topicid"=?',
+            'UPDATE "lastseenforum" SET "lastseen"=?, "hidden"=0 WHERE "userid"=? AND "topicid"=?',
             undef, $newlastseen, $uid, $topicid );
     }
     else {
         $c->stash( lastseen => -1 );
         $dbh->do(
-            'INSERT INTO "lastseenforum" ("userid", "topicid", "lastseen") VALUES (?,?,?)',
+            'INSERT INTO "lastseenforum" ("userid", "topicid", "lastseen", "hidden") VALUES (?,?,?,0)',
             undef, $uid, $topicid, $newlastseen );
     }
     $c->show_posts();
