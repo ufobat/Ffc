@@ -117,14 +117,13 @@ sub _handle_ignore_topic_do {
             'INSERT INTO "lastseenforum" ("userid", "topicid", "ignore") VALUES (?,?,?)',
             undef, $c->session->{userid}, $topicid, $ignore);
     }
-    $c->counting;
     if ( $ignore ) {
-        $c->set_info('Zum gewählten Thema werden keine neuen Beiträge mehr angezeigt.');
+        $c->set_info_f('Zum gewählten Thema werden keine neuen Beiträge mehr angezeigt.');
     }
     else {
-        $c->set_info('Das gewählte Thema wird jetzt nicht mehr ignoriert.');
+        $c->set_info_f('Das gewählte Thema wird jetzt nicht mehr ignoriert.');
     }
-    $c->show_topiclist;
+    $c->redirect_to('show_forum_topiclist');
 }
 
 sub add_topic_form {
