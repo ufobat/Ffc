@@ -13,6 +13,9 @@ sub install_routes {
     $l->route('/topic/new')->via('post')
       ->to(controller => 'forum', action => 'add_topic_do')
       ->name('add_forum_topic_do');
+    $l->route('/topic/:topicid/ignore', topicid => $Ffc::Digqr)->via('get')
+      ->to(controller => 'forum', action => 'ignore_topic_do')
+      ->name('ignore_forum_topic_do');
     $l->route('/topic/:topicid/edit', topicid => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'edit_topic_form')
       ->name('edit_forum_topic_form');
@@ -66,20 +69,45 @@ sub show_topiclist {
                 (SELECT COUNT(p."id") 
                     FROM "posts" p
                     LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=p."topicid"
-                    WHERE p."userto" IS NULL AND p."userfrom"<>? AND p."topicid"=t."id" AND p."id">COALESCE(l."lastseen",-1)
+                    WHERE p."userto" IS NULL AND p."userfrom"<>? AND p."topicid"=t."id" AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",-1)
                 ) AS "entrycount_new",
                 (SELECT MAX(p2."id")
                     FROM "posts" p2
                     WHERE p2."userto" IS NULL AND p2."topicid"=t."id"
-                ) AS "sorting"
+                ) AS "sorting",
+                l2."ignore"
             FROM "topics" t
+            LEFT OUTER JOIN "lastseenforum" l2 ON l2."userid"=? AND l2."topicid"=t."id"
             ORDER BY CASE WHEN "entrycount_new">0 THEN 1 ELSE 0 END DESC, "sorting" DESC
             LIMIT ? OFFSET ?',
-            undef, $uid, $uid, $topiclimit, ( $page - 1 ) * $topiclimit
+            undef, $uid, $uid, $uid, $topiclimit, ( $page - 1 ) * $topiclimit
         ),
     );
 
     $c->render(template => 'topiclist');
+}
+
+sub ignore_topic_do {
+    my $c = shift;
+    my $topicid = $c->param('topicid');
+    my $lastseen = $c->dbh->selectall_arrayref(
+        'SELECT "lastseen"
+        FROM "lastseenforum"
+        WHERE "userid"=? AND "topicid"=?',
+        undef, $c->session->{userid}, $topicid
+    );
+    if ( @$lastseen ) {
+        $c->dbh->do(
+            'UPDATE "lastseenforum" SET "ignore"=1 WHERE "userid"=? AND "topicid"=?',
+            undef, $c->session->{userid}, $topicid );
+    }
+    else {
+        $c->dbh->do(
+            'INSERT INTO "lastseenforum" ("userid", "topicid", "ignore") VALUES (?,?,1)',
+            undef, $c->session->{userid}, $topicid);
+    }
+    $c->set_info('Zum gewählten Thema werden keine neuen Beiträge mehr angezeigt.');
+    $c->show_topiclist;
 }
 
 sub add_topic_form {
@@ -270,13 +298,13 @@ sub show {
     if ( @$lastseen ) {
         $c->stash( lastseen => $lastseen->[0]->[0] );
         $dbh->do(
-            'UPDATE "lastseenforum" SET "lastseen"=?, "hidden"=0 WHERE "userid"=? AND "topicid"=?',
+            'UPDATE "lastseenforum" SET "lastseen"=?, "ignore"=0 WHERE "userid"=? AND "topicid"=?',
             undef, $newlastseen, $uid, $topicid );
     }
     else {
         $c->stash( lastseen => -1 );
         $dbh->do(
-            'INSERT INTO "lastseenforum" ("userid", "topicid", "lastseen", "hidden") VALUES (?,?,?,0)',
+            'INSERT INTO "lastseenforum" ("userid", "topicid", "lastseen", "ignore") VALUES (?,?,?,0)',
             undef, $uid, $topicid, $newlastseen );
     }
     $c->show_posts();

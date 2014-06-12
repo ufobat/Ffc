@@ -32,7 +32,7 @@ CREATE TABLE "lastseenforum" (
   "userid" integer NOT NULL,
   "topicid" integer NOT NULL,
   "lastseen" integer NOT NULL DEFAULT '0',
-  "hidden" tinyint(1) NOT NULL DEFAULT '0',
+  "ignore" tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY ("userid", "topicid")
 );
 

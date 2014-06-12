@@ -111,7 +111,7 @@ sub register {
                     FROM "posts" p
                     INNER JOIN "topics" t on t."id"=p."topicid"
                     LEFT OUTER JOIN "lastseenforum" l ON l."topicid"=p."topicid" AND l."userid"=?
-                    WHERE p."userto" IS NULL AND p."userfrom"<>? AND p."id">COALESCE(l."lastseen",-1)',
+                    WHERE p."userto" IS NULL AND p."userfrom"<>? AND ( COALESCE(l."ignore",0)=1 OR p."id">COALESCE(l."lastseen",-1) )',
                     undef, $uid, $uid
                 )->[0]->[0],
             newmsgscount => $dbh->selectall_arrayref(

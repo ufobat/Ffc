@@ -8,9 +8,18 @@
     <h2<%== $t->[3] ? ' class="newpost"' : '' %>>
         <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"
            title="Beiträge zum Thema anzeigen"><%= $t->[2] %></a>
-% if ( $t->[3] ) {
-        <span class="smallfont">(Neu: <span class="mark"><%= $t->[3] %></span>)</span>
+        <span class="smallfont">(
+% if ( $t->[3] and not $t->[5] ) {
+            Neu: <span class="mark"><%= $t->[3] %></span>,
 % }
+% if ( $t->[5] ) {
+        <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"
+           title="Beiträge zum Thema anzeigen, Thema nicht mehr ignorieren">ignoriert</a>
+% } else {
+        <a href="<%= url_for 'ignore_forum_topic_do', topicid => $t->[0] %>"
+           title="Thema ignorieren und keine neuen Beiträge anzeigen">ignorieren</a>
+% }
+    )</span>
     </h2>
 % }
 </div>
