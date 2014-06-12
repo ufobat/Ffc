@@ -313,9 +313,11 @@ sub show {
     my ( $dbh, $uid, $topicid ) = ( $c->dbh, $c->session->{userid}, $c->param('topicid') );
     my ( $heading, $userfrom ) = $c->_get_title_from_topicid;
     $c->stash(
-        topicid => $topicid,
-        backurl => $c->url_for('show_forum_topiclist'),
-        heading => $heading,
+        topicid  => $topicid,
+        backurl  => $c->url_for('show_forum_topiclist'),
+        backtext => 'zur Themenliste',
+        msgurl   => 'show_pmsgs',
+        heading  => $heading,
     );
     $c->stash( topicediturl => $c->url_for('edit_forum_topic_form', topicid => $topicid) )
         if $uid eq $userfrom or $c->session->{admin};

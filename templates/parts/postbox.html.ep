@@ -22,9 +22,9 @@
            title="Einen Anhang zum Beitrag hinzufügen">anhängen</a>
 %  }
     )
-% } elsif ( $msgurl and $controller ne 'pmsgs' ) {
+% } elsif ( $controller eq 'forum' ) {
         (
-        <a href="<%= url_for $msgurl, userid => $post->[3], @$additional_params %>" 
+        <a href="<%= url_for 'show_pmsgs', userid => $post->[1] %>" 
            title="Private Nachricht an den Verfasser &quot;<%= $post->[4] %>&quot; schreiben">Privatnachricht</a>
         )
 % }

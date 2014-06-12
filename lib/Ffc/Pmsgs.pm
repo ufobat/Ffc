@@ -78,8 +78,9 @@ sub _get_username {
 sub show {
     my $c = shift;
     $c->stash(
-        backurl => $c->url_for('show_pmsgs_userlist'),
-        heading => 
+        backurl  => $c->url_for('show_pmsgs_userlist'),
+        backtext => 'zur Benutzerliste',
+        heading  => 
             'Private Nachrichten mit "' . $c->_get_username . '"',
     );
     my ( $dbh, $uid, $utoid ) = ( $c->dbh, $c->session->{userid}, $c->param('userid') );

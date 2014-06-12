@@ -18,7 +18,7 @@
 % }
 %= submit_button 'Senden', class => 'linkalike send'
 (<a href="<%== $returl %>" title="&Auml;nderung abbrechen">Abbrechen</a>,
-<a href="<%= url_for 'help' %>" target="_blank">Hilfe</a><% if ( $backurl ) { %>, <a href="<%== $backurl %>" title="Zurück">zurück</a><% } %>)
+<a href="<%= url_for 'help' %>" target="_blank">Hilfe</a><% if ( $backurl ) { %>, <a href="<%== $backurl %>" title="Zurück"><%= $backtext || 'zurück' %></a><% } %>)
 
 </p>
 <p>
