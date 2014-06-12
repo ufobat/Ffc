@@ -48,12 +48,16 @@ sub show_userlist {
                 FROM "posts" p
                 LEFT OUTER JOIN "lastseenmsgs" l ON l."userid"=? AND l."userfromid"=u."id"
                 WHERE p."userfrom"=u."id" AND p."userto"=? AND p."id">COALESCE(l."lastseen",-1)
-            ) AS "msgcount_newtome"
+            ) AS "msgcount_newtome",
+            (SELECT MAX(p2."id")
+                FROM "posts" p2
+                WHERE p2."userfrom"=? AND p2."userto"=u."id"
+            ) AS "sorting"
         FROM "users" u
         WHERE u."active"=1 AND u."id"<>? 
         GROUP BY u."id"
-        ORDER BY "msgcount_newtome" DESC, UPPER(u."name") ASC',
-        undef, $uid, $uid, $uid
+        ORDER BY "msgcount_newtome" DESC, "sorting" DESC, UPPER(u."name") ASC',
+        undef, $uid, $uid, $uid, $uid
     ) );
 
     $c->render(template => 'userlist');
