@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= $title %></title>
+    <title><%= $title %> (<%= $newpostcount %>/<%= $newmsgscount %>)</title>
     <%= stylesheet stylefile() %>
     <link rel="icon" type="image/ico" href="<%= url_for $favicon %>" />
 %= include 'layouts/parts/styleinc'
