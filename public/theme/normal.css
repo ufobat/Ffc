@@ -215,12 +215,8 @@ a.coloroption:hover {
     color: gainsboro;
     background: whitesmoke;
     margin: -0.25em 0 .5em 1em;
-    font-variant: small-caps;
-    font-weight: bolder;
     float: right;
-    font-size: 1em;
-    font-family: serif;
-    font-style: italic;
+    font-size: .5em;
     max-width: 7.5em;
     min-width: 2.5em;
     height: 5em;
