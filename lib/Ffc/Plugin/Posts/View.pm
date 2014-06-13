@@ -33,7 +33,8 @@ sub _show_posts {
     _setup_stash($c);
 
     my $sql = qq~SELECT\n~
-        .qq~p."id", uf."id", uf."name", ut."id", ut."name", p."topicid", p."posted", p."altered", p."cache"\n~
+        .qq~p."id", uf."id", uf."name", ut."id", ut."name", p."topicid", ~
+        .qq~datetime(p."posted",'localtime'), datetime(p."altered",'localtime'), p."cache"\n~
         .qq~FROM "posts" p\n~
         .qq~INNER JOIN "users" uf ON p."userfrom"=uf."id"\n~
         .qq~LEFT OUTER JOIN "users" ut ON p."userto"=ut."id"\n~;
