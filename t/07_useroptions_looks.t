@@ -7,7 +7,7 @@ use Testinit;
 use Ffc::Plugin::Config;
 
 use Test::Mojo;
-use Test::More tests => 926;
+use Test::More tests => 930;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
@@ -184,7 +184,10 @@ sub test_email {
     is $dbh->selectall_arrayref(
         'SELECT email FROM users WHERE name=?'
         , undef, $user1)->[0]->[0], '', 'emailadress not set in database';
-    $t->post_ok('/options/email', form => { email => 'me@home.de' })
+    is $dbh->selectall_arrayref(
+        'SELECT newsmail FROM users WHERE name=?'
+        , undef, $user1)->[0]->[0], 1, 'newsmail still active in database';
+    $t->post_ok('/options/email', form => { email => 'me@home.de', newsmail => 0 })
       ->status_is(200)
       ->content_like(qr'active activeoptions">Optionen<')
       ->content_like(qr'name="email" type="email" value="me@home.de"');
@@ -192,7 +195,10 @@ sub test_email {
     is $dbh->selectall_arrayref(
         'SELECT email FROM users WHERE name=?'
         , undef, $user1)->[0]->[0], 'me@home.de', 'emailadress set in database';
-    $t->post_ok('/options/email', form => { email => 'him@work.com' })
+    is $dbh->selectall_arrayref(
+        'SELECT newsmail FROM users WHERE name=?'
+        , undef, $user1)->[0]->[0], 0, 'newsmail now inactive in database';
+    $t->post_ok('/options/email', form => { email => 'him@work.com', newsmail => 1 })
       ->status_is(200)
       ->content_like(qr'active activeoptions">Optionen<')
       ->content_like(qr'name="email" type="email" value="him@work.com"');
@@ -200,6 +206,9 @@ sub test_email {
     is $dbh->selectall_arrayref(
         'SELECT email FROM users WHERE name=?'
         , undef, $user1)->[0]->[0], 'him@work.com', 'emailadress set in database';
+    is $dbh->selectall_arrayref(
+        'SELECT newsmail FROM users WHERE name=?'
+        , undef, $user1)->[0]->[0], 1, 'newsmail now active again in database';
     login($user2, $pass2);
     $t->get_ok('/options/form')
       ->status_is(200)
@@ -208,6 +217,9 @@ sub test_email {
     is $dbh->selectall_arrayref(
         'SELECT email FROM users WHERE name=?'
         , undef, $user2)->[0]->[0], '', 'emailadress not set in database';
+    is $dbh->selectall_arrayref(
+        'SELECT newsmail FROM users WHERE name=?'
+        , undef, $user1)->[0]->[0], 1, 'newsmail active in database';
     login($user1, $pass1);
     $t->get_ok('/options/form')
       ->status_is(200)

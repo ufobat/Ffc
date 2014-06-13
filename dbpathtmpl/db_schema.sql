@@ -5,6 +5,7 @@ CREATE TABLE "users" (
   "lastseen"  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "active" tinyint(1) NOT NULL DEFAULT '0',
   "email" varchar(1024) NOT NULL DEFAULT '',
+  "newsmail" tinyint(1) NOT NULL DEFAULT '1',
   "avatar" varchar(128) NOT NULL DEFAULT '',
   "admin" tinyint(1) NOT NULL DEFAULT '0',
   "bgcolor" varchar(24) NOT NULL DEFAULT '',

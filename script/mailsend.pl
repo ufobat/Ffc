@@ -33,7 +33,7 @@ my $t = Test::Mojo->new;
 my $users = $config->dbh->selectall_arrayref( << 'EOSQL' );
     SELECT "name", "email", "id" 
     FROM "users" 
-    WHERE "email" IS NOT NULL AND "email"<>'' 
+    WHERE "email" IS NOT NULL AND "email"<>'' AND "newsmail"=1 
     ORDER BY UPPER("name"), "id"
 EOSQL
 

@@ -28,24 +28,31 @@ sub options_form {
     $c->stash(fontsizes => \%Ffc::Plugin::Config::FontSizeMap);
     $c->counting;
     my $r = $c->dbh->selectall_arrayref(
-        'SELECT email, admin FROM users WHERE UPPER(name)=UPPER(?)'
+        'SELECT email, admin, newsmail FROM users WHERE UPPER(name)=UPPER(?)'
         , undef, $c->session->{user});
-    my ( $email, $admin ) = ( ( $r and ref($r) eq 'ARRAY' ) ? (@{$r->[0]}) : ('', 0) );
-    $c->stash(email => $email);
+    my ( $email, $admin, $newsmail ) = ( ( $r and ref($r) eq 'ARRAY' ) ? (@{$r->[0]}) : ('', 0) );
+    $c->stash(
+        email    => $email,
+        newsmail => $newsmail,
+    );
     if ( $admin ) {
         my $userlist = $c->dbh->selectall_arrayref(
                 'SELECT u.id, u.name, u.active, u.admin, u.email FROM users u WHERE UPPER(u.name) != UPPER(?) ORDER BY UPPER(u.name) ASC'
                 , undef, $c->session->{user});
-        $c->stash(useremails => join '; ', map { $_->[4] || () } @$userlist );
-        $c->stash(userlist => $userlist);
-        $c->stash(configoptions => \@Ffc::Options::Settings);
-        $c->stash(configdata => $c->configdata);
+        $c->stash(
+            useremails    => join( '; ', map { $_->[4] || () } @$userlist ),
+            userlist      => $userlist,
+            configoptions => \@Ffc::Options::Settings,
+            configdata    => $c->configdata,
+        );
     }
     else {
-        $c->stash(useremails    => '');
-        $c->stash(userlist      => []);
-        $c->stash(configoptions => []);
-        $c->stash(configdata    => {});
+        $c->stash(
+            useremails    => '',
+            userlist      => [],
+            configoptions => [],
+            configdata    => {},
+        );
     }
     $c->render(template => 'optionsform');
 }

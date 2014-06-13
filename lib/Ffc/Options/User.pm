@@ -58,6 +58,7 @@ sub bg_color {
 sub set_email {
     my $c = shift;
     my $email = $c->param('email');
+    my $newsmail = $c->param('newsmail') ? 1 : 0;
     unless ( $email ) {
         $c->set_error('Email-Adresse nicht gesetzt');
         return $c->options_form();
@@ -71,8 +72,8 @@ sub set_email {
         return $c->options_form();
     }
     $c->dbh->do(
-        'UPDATE users SET email=? WHERE UPPER(name)=UPPER(?)'
-        , undef, $email, $c->session->{user});
+        'UPDATE users SET email=?, newsmail=? WHERE UPPER(name)=UPPER(?)'
+        , undef, $email, $newsmail, $c->session->{user});
     $c->set_info('Email-Adresse geändert');
     $c->options_form();
 }
