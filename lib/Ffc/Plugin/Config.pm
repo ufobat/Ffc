@@ -88,6 +88,7 @@ sub register {
         sub { $Styles[$_[0]->session()->{style} ? 1 : 0] } );
     $app->helper( hash_password  => 
         sub { sha512_base64 $_[1], $secconfig->{cryptsalt} } );
+    $app->helper( counting => \&_counting );
 
     $app->hook( before_render => sub { 
         my $c = $_[0];
@@ -100,7 +101,6 @@ sub register {
                     : ( $s->{backgroundcolor} || $config->{backgroundcolor} ),
         );
     });
-    $app->hook( before_routes => \&_counting );
 
     return $self;
 }

@@ -26,15 +26,6 @@ sub where_modify {
         $uid, $uid, $cid, $cid;
 }
 
-sub lastseen { 
-    my $c = shift;
-    my $r = $c->dbh->selectall_arrayref(
-        'SELECT "lastseen" FROM "lastseenmsgs" WHERE "userid"=? AND "userfromid"=?',
-        undef, $c->session->{userid}, $c->param('userid')
-    );
-    return @$r ? $r->[0]->[0] : -1;
-}
-
 sub additional_params {
     return userid => $_[0]->param('userid');
 }
@@ -42,6 +33,7 @@ sub additional_params {
 sub show_userlist {
     my $c = shift;
     my $uid = $c->session->{userid};
+    $c->counting;
     $c->stash( users => $c->dbh->selectall_arrayref(
         'SELECT u."id", u."name",
             (SELECT COUNT(p."id") 
@@ -77,6 +69,7 @@ sub _get_username {
 
 sub show {
     my $c = shift;
+    $c->counting;
     $c->stash(
         backurl  => $c->url_for('show_pmsgs_userlist'),
         backtext => 'zur Benutzerliste',
@@ -120,6 +113,7 @@ sub add { $_[0]->add_post($_[0]->param('userid'), undef) }
 
 sub edit_form {
     my $c = shift;
+    $c->counting;
     $c->stash( heading => 
         'Private Nachricht mit "' . $c->_get_username . '" ändern' );
     $c->edit_post_form();
@@ -129,6 +123,7 @@ sub edit_do { $_[0]->edit_post_do() }
 
 sub delete_check {
     my $c = shift;
+    $c->counting;
     $c->stash( heading => 
         'Private Nachricht mit "' . $c->_get_username . '" entfernen' );
     $c->delete_post_check();
@@ -140,6 +135,7 @@ sub delete_do { $_[0]->delete_post_do() }
 
 sub upload_form {
     my $c = shift;
+    $c->counting;
     $c->stash( heading => 
         'Eine Datei zur privaten Nachrichten mit "' . $c->_get_username . '" anhängen' );
     $c->upload_post_form();
@@ -151,6 +147,7 @@ sub download {  $_[0]->download_post() }
 
 sub delete_upload_check {
     my $c = shift;
+    $c->counting;
     $c->stash( heading => 
         'Einen Dateianhang der privaten Nachrichten mit "' . $c->_get_username . '" löschen' );
     $c->delete_upload_post_check();

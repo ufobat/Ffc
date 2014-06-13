@@ -16,12 +16,11 @@ sub where_modify {
         $_[0]->session->{userid};
 }
 
-sub lastseen { return }
-
 sub additional_params { return () }
 
 sub show {
     my $c = shift;
+    $c->counting;
     $c->stash( 
         heading     => 'Persönliche Notizen', # Überschrift
         description => 'Hier können Texte und Dateianhänge für den eigenen internen Bedarf abgelegt werden.', # Kurzbeschreibung
@@ -35,6 +34,7 @@ sub add { $_[0]->add_post($_[0]->session->{userid}, undef) }
 
 sub edit_form {
     my $c = shift;
+    $c->counting;
     $c->stash( heading => 'Persönliche Notiz ändern'); # Überschrift für das Eingabeformular
     $c->edit_post_form();
 }
@@ -43,6 +43,7 @@ sub edit_do { $_[0]->edit_post_do() }
 
 sub delete_check {
     my $c = shift;
+    $c->counting;
     $c->stash( heading => 'Persönliche Notiz entfernen' ); # Überschrift für das Prüfungsformular
     $c->delete_post_check();
 }
@@ -51,6 +52,7 @@ sub delete_do { $_[0]->delete_post_do() }
 
 sub upload_form {
     my $c = shift;
+    $c->counting;
     $c->stash( heading => 'Eine Datei zu einer persönlichen Notiz hochladen' ); # Überschrift für das Eingabeformular
     $c->upload_post_form();
 }
@@ -61,6 +63,7 @@ sub download {  $_[0]->download_post() }
 
 sub delete_upload_check {
     my $c = shift;
+    $c->counting;
     $c->stash( heading => 'Einen Dateianhang an einer Notiz entfernen' ); # Überschrift für das Bestätigungsformular
     $c->delete_upload_post_check();
 }

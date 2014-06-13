@@ -26,6 +26,7 @@ sub query {
 sub options_form {
     my $c = shift;
     $c->stash(fontsizes => \%Ffc::Plugin::Config::FontSizeMap);
+    $c->counting;
     my $r = $c->dbh->selectall_arrayref(
         'SELECT email, admin FROM users WHERE UPPER(name)=UPPER(?)'
         , undef, $c->session->{user});

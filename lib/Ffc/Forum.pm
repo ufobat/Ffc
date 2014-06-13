@@ -49,19 +49,6 @@ sub where_modify {
         $_[0]->param('topicid');
 }
 
-sub lastseen { 
-    my $c = shift;
-    my $r = $c->dbh->selectall_arrayref(
-        'SELECT "lastseen" FROM "lastseenforum" WHERE "userid"=? AND "topicid"=?',
-        undef, $c->session->{userid}, $c->param('topicid')
-    );
-    return @$r ? $r->[0]->[0] : undef;
-}
-
-sub count_new {
-    my $c = shift;
-}
-
 sub additional_params {
     return topicid => $_[0]->param('topicid');
 }
@@ -74,6 +61,7 @@ sub topic_query {
 
 sub show_topiclist {
     my $c = shift;
+    $c->counting;
     my $page = $c->param('page') // 1;
     my $topiclimit = $c->configdata->{topiclimit};
     my $uid = $c->session->{userid};
@@ -117,6 +105,7 @@ sub unignore_topic_do { $_[0]->_handle_ignore_topic_do(0) }
 
 sub _handle_ignore_topic_do {
     my $c = shift;
+    $c->counting;
     my $ignore = shift;
     my $topicid = $c->param('topicid');
     my $lastseen = $c->dbh->selectall_arrayref(
@@ -146,6 +135,7 @@ sub _handle_ignore_topic_do {
 
 sub add_topic_form {
     my $c = shift;
+    $c->counting;
     $c->stash(
         titlestring => $c->param('titlestring') // '',
         topicid     => undef,
@@ -224,6 +214,7 @@ sub _get_title_from_topicid {
 
 sub edit_topic_form {
     my $c = shift;
+    $c->counting;
     $c->stash(
         topicid     => $c->param('topicid'),
         titlestring => $c->param('titlestring') // scalar($c->_get_title_from_topicid),
@@ -277,6 +268,7 @@ sub edit_topic_do {
 
 sub move_topic_do {
     my $c = shift;
+    $c->counting;
     my $topicid = $c->param('topicid');
     my $topicidto = $c->param('topicidto');
     my $uid = $c->session->{userid};
@@ -312,6 +304,7 @@ sub show {
     my $c = shift;
     my ( $dbh, $uid, $topicid ) = ( $c->dbh, $c->session->{userid}, $c->param('topicid') );
     my ( $heading, $userfrom ) = $c->_get_title_from_topicid;
+    $c->counting;
     $c->stash(
         topicid  => $topicid,
         backurl  => $c->url_for('show_forum_topiclist'),
@@ -352,6 +345,7 @@ sub add { $_[0]->add_post( undef, $_[0]->param('topicid') ) }
 
 sub edit_form {
     my $c = shift;
+    $c->counting;
     $c->stash( heading => 
         'Beitrag zum Thema "' . $c->_get_title_from_topicid . '" ändern' );
     $c->edit_post_form();
@@ -361,6 +355,7 @@ sub edit_do { $_[0]->edit_post_do() }
 
 sub delete_check {
     my $c = shift;
+    $c->counting;
     $c->stash( heading => 
         'Beitrag zum Thema "' . $c->_get_title_from_topicid . '" entfernen' );
     $c->delete_post_check();
@@ -370,6 +365,7 @@ sub delete_do { $_[0]->delete_post_do() }
 
 sub upload_form {
     my $c = shift;
+    $c->counting;
     $c->stash( heading => 
         'Eine Datei zum Beitrag zum Thema "' . $c->_get_title_from_topicid . '" anhängen' );
     $c->upload_post_form();
@@ -381,6 +377,7 @@ sub download {  $_[0]->download_post() }
 
 sub delete_upload_check {
     my $c = shift;
+    $c->counting;
     $c->stash( heading => 
         'Eine Datei zum Beitrag zum Thema "' . $c->_get_title_from_topicid . '" löschen' );
     $c->delete_upload_post_check();
