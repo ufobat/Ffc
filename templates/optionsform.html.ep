@@ -54,7 +54,7 @@
 <div class="postbox options">
     <a name="set_email"></a>
     <h1>E-Mail-Adresse einstellen</h1>
-    <p>(Mit der Emailadresse kann der Administrator des Forums ggf. Nachrichten außerhalb des Forums verschicken)</p>
+    <p>(Mit der Emailadresse kann der Administrator des Forums ggf. Nachrichten außerhalb des Forums verschicken. Außerdem können, falls das so eingerichtet wurde, Informationsemails über neue Beiträge und Nachrichten per Email verschickt werden.)</p>
     <form action="<%= url_for 'set_email' %>#set_email" method="POST">
         <p><%= email_field email => $email %></p>
         <p><button type="submit" class="linkalike">Emailadresse speichern</button></p>
