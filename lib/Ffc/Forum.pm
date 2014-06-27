@@ -125,7 +125,7 @@ sub _handle_ignore_topic_do {
             undef, $c->session->{userid}, $topicid, $ignore);
     }
     if ( $ignore ) {
-        $c->set_info_f('Zum gewählten Thema werden keine neuen Beiträge mehr angezeigt.');
+        $c->set_info_f('Zum gewählten Thema werden keine neuen Beiträge mehr angezählt.');
     }
     else {
         $c->set_info_f('Das gewählte Thema wird jetzt nicht mehr ignoriert.');
