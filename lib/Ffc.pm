@@ -8,9 +8,6 @@ our $Usrqr = qr(\w{2,32})xmso;
 our $Catqr = qr(.{1,64})xmso;
 our $Fszqr = qr(-?\d{1,3})xmso;
 
-our $Optky 
-    = qr(title|postlimit|sessiontimeout|commoncattitle|urlshorten|backgroundcolor|fixbackgroundcolor|favicon|topiclimit)xmso;
-
 # This method will run once at server start
 sub startup {
     my $app = shift;

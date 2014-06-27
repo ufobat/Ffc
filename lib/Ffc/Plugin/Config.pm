@@ -13,7 +13,6 @@ our @Styles = (
 );
 our %Defaults = (
     favicon            => '/theme/img/favicon.png',
-    commoncattitle     => 'Allgemein',
     title              => 'Ffc Forum',
     cookiename         => 'Ffc_Forum',
     urlshorten         => 30,
@@ -71,8 +70,6 @@ sub register {
         map( {;$_ => ''} 
             qw(error info warning query textdata heading description backtext queryurl
                dourl returl editurl msgurl delurl uplurl delupl downld backurl topicediturl ) ),
-        map( {;$_ => $config->{$_} || $Defaults{$_}} 
-            qw(favicon commoncattitle title) ),
     });
 
     for my $w ( qw(info error warning ) ) {
@@ -99,6 +96,7 @@ sub register {
                 $config->{fixbackgroundcolor}
                     ? $config->{backgroundcolor}
                     : ( $s->{backgroundcolor} || $config->{backgroundcolor} ),
+            map( {;$_ => $config->{$_} || $Defaults{$_}} qw(favicon title) ),
         );
     });
 

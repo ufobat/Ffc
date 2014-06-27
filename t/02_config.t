@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 38;
+use Test::More tests => 36;
 use Test::Mojo;
 
 use DBI;
@@ -20,7 +20,6 @@ test_config({
     postlimit => 10,
     title => 'Neues Ffc-Forum',
     sessiontimeout => 3600,
-    commoncattitle => 'Allgemeines',
     urlshorten => 27,
     backgroundcolor => '#cc9933',
     fixbackgroundcolor => 1,
@@ -58,7 +57,7 @@ sub test_config {
     is_deeply $config, $Config->_config(), 'config data ok';
     for my $c (qw( fixbackgroundcolor favicon
     cookiename postlimit title sessiontimeout
-    commoncattitle urlshorten backgroundcolor)) {
+    urlshorten backgroundcolor)) {
         $t->json_is("/$c", $config->{$c});
     }
     my $dbh = $Config->dbh();
