@@ -36,7 +36,7 @@ h2 {
 h3 {
     text-decoration: underline;
 }
-.loginform, .menu, .pages, .headbox {
+.loginform, .menu, .headbox, .pages {
     background: whitesmoke;
 }
 img {
@@ -154,7 +154,7 @@ a:focus, .linkalike:focus {
     padding: .1em 0;
     border-top-width: 0;
 }
-.smallfont, .userlist p, h2, .attachementtitle, .menu, .footerlinks, .pages, .insertformbuttons, .headbox .userinfo {
+.smallfont, .userlist p, h2, .attachementtitle, .menu, .pages, .insertformbuttons, .headbox .userinfo {
     font-size: .75em;
 }
 .smallfont {
