@@ -13,7 +13,7 @@ our @Settings = (
         'Hier kann die Anzahl der auf einer Seite gleichzeitig angezeigten Forenbeiträge beschränkt werden',
         'Die Anzahl gleichzeitig angezeigter Beiträge muss eine Zahl sein' ],
     [ topiclimit => 'Überschriftenanzahl', qr(\A\d+\z)xmso, 1, 'number',
-        'Anzahl der auf der Seite angezeigten Überschriften ändern',
+        'Anzahl der auf einer Seite angezeigten Überschriften ändern',
         'Hier kann die Anzahl der auf einer Seite gleichzeitig angezeigten Forenüberschriften beschränkt werden',
         'Die Anzahl gleichzeitig angezeigter Forenüberschriften muss eine Zahl sein' ],
     [ sessiontimeout => 'Maximale Benutzersitzungsdauer', qr(\A\d+\z)xmso, 1, 'number',
