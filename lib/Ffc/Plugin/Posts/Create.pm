@@ -11,21 +11,18 @@ sub _add_post {
         return $c->show;
     }
     if ( $userto or $topicid ) {
-        my $sql = 'SELECT CASE WHEN MAX(p.id)>l.lastseen THEN 1 ELSE 0 END'
-            . ' FROM users u INNER JOIN lastseen'
-            . ( $userto 
+        my $sql = 'SELECT'
+            . ' CASE WHEN MAX(COALESCE(p.id,-1))>MAX(COALESCE(l.lastseen,-1)) THEN 1 ELSE 0 END'
+            . ' FROM users u LEFT OUTER JOIN posts p ON p.userfrom<>? AND p.'
+            . ( $userto ? 'userto=?' : 'topicid=?' )
+            . ' LEFT OUTER JOIN lastseen' . ( $userto 
                 ? 'msgs l ON l.userid=u.id AND l.userfromid=?' 
                 : 'forum l ON l.userid=u.id AND l.topicid=?' )
-            . ' INNER JOIN posts p ON p.userfrom<>? AND p.'
-            . ( $userto 
-                ? 'userfrom=?'
-                : 'topicid=?' )
-            . ' GROUP BY l.userid';
+            . ' WHERE u.id=? GROUP BY u.id';
         my $r = $c->dbh->selectall_arrayref( 
-            $sql, undef, 
-            ( $userto 
-                ? ($userto, $c->session->{userid}, $userto) 
-                : ($topicid, $c->session->{userid}, $topicid) ),
+            $sql, undef, $c->session->{userid},
+            ( $userto ? ($userto, $userto) : ($topicid, $topicid) ),
+            $c->session->{userid},
         );
         if ( $r->[0]->[0] ) {
             $c->stash(textdata => $text);
