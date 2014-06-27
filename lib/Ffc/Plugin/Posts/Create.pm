@@ -10,6 +10,29 @@ sub _add_post {
         $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen)');
         return $c->show;
     }
+    if ( $userto or $topicid ) {
+        my $sql = 'SELECT CASE WHEN MAX(p.id)>l.lastseen THEN 1 ELSE 0 END'
+            . ' FROM users u INNER JOIN lastseen'
+            . ( $userto 
+                ? 'msgs l ON l.userid=u.id AND l.userfromid=?' 
+                : 'forum l ON l.userid=u.id AND l.topicid=?' )
+            . ' INNER JOIN posts p ON p.userfrom<>? AND p.'
+            . ( $userto 
+                ? 'userfrom=?'
+                : 'topicid=?' )
+            . ' GROUP BY l.userid';
+        my $r = $c->dbh->selectall_arrayref( 
+            $sql, undef, 
+            ( $userto 
+                ? ($userto, $c->session->{userid}, $userto) 
+                : ($topicid, $c->session->{userid}, $topicid) ),
+        );
+        if ( $r->[0]->[0] ) {
+            $c->stash(textdata => $text);
+            $c->set_warning('Es wurde zwischenzeitlich ein neuer Beitrag erstellt, bitte prüfen!');
+            return $c->show;
+        }
+    }
     $c->dbh->do( << 'EOSQL', undef,
 INSERT INTO "posts"
     ("userfrom", "userto", "topicid", "textdata", "cache")
