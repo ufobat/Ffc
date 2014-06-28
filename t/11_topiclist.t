@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 177;
+use Test::More tests => 193;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 
@@ -109,17 +109,20 @@ login1();
 $t->get_ok('/topic/2')->status_is(200)->content_like(qr~/topic/2/edit~);
 $t->get_ok('/topic/2/edit')->status_is(200)
   ->content_like(qr~Themenüberschrift verändern~)
+  ->content_like(qr~<a href="/forum" title="&Auml;nderung abbrechen">Abbrechen</a>~)
   ->content_like(qr~<form action="/topic/2/edit" method="post">~)
   ->content_like(qr~<input type="text" class="titlestring" name="titlestring" value="$Topics[1]" />~);
 
 $t->post_ok('/topic/2/edit', form => { titlestring => 'a' })->status_is(200)
   ->content_like(qr~Themenüberschrift verändern~)
+  ->content_like(qr~<a href="/forum" title="&Auml;nderung abbrechen">Abbrechen</a>~)
   ->content_like(qr~<form action="/topic/2/edit" method="post">~)
   ->content_like(qr~<input type="text" class="titlestring" name="titlestring" value="a" />~);
 ch_err('Die Übschrift ist zu kurz und muss mindestens zwei Zeichen enthalten.');
 
 $t->post_ok('/topic/2/edit', form => { titlestring => $tit })->status_is(200)
   ->content_like(qr~Themenüberschrift verändern~)
+  ->content_like(qr~<a href="/forum" title="&Auml;nderung abbrechen">Abbrechen</a>~)
   ->content_like(qr~<form action="/topic/2/edit" method="post">~)
   ->content_like(qr~<input type="text" class="titlestring" name="titlestring" value="$tit" />~);
 ch_err('Die Überschrift ist zu lang und darf höchstens 256 Zeichen enthalten.');
