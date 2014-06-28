@@ -268,7 +268,7 @@ sub edit_topic_do {
         'UPDATE "topics" SET "title"=? WHERE "id"=?',
         undef, $titlestring, $topicid
     );
-    $c->set_info_f('Überschrift des Themas wurde geändert.');
+    $c->set_info_f('Die Überschrift des Themas wurde geändert.');
     $c->redirect_to('show_forum', topicid => $topicid);
 }
 
