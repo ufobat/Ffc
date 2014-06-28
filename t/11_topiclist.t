@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 83;
+use Test::More tests => 84;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 
@@ -66,6 +66,7 @@ $t->post_ok('/topic/new', form => {titlestring => $Topics[0], textdata => $Artic
 $t->header_like( Location => qr{\Ahttps?://localhost:\d+/topic/1}xms );
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~$Topics[0]~)->content_like(qr~/topic/1~);
+ch_nfo('Ein neuer Beitrag wurde erstellt');
 $t->get_ok('/topic/1')->status_is(200)
   ->content_like(qr~$Topics[0]~)->content_like(qr~$Articles[0][0]~);
 
