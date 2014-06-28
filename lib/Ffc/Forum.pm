@@ -173,6 +173,12 @@ sub add_topic_do {
     my $uid = $c->session->{userid};
     my $titlestring = $c->param('titlestring');
     return $c->add_topic_form unless $c->_check_titlestring;
+    my $text = $c->param('textdata');
+    if ( !defined($text) or (2 > length $text) ) {
+        $c->stash(textdata => $text);
+        $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen)');
+        return $c->add_topic_form;
+    }
     if ( my $topicid = $c->_get_topicid_for_title ) {
         $c->set_warning('Das Thema gab es bereits, der eingegebene Beitrag wurde zum Thema hinzugefügt.');
         $c->param(topicid => $topicid);
