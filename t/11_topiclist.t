@@ -127,16 +127,19 @@ $t->post_ok('/topic/2/edit', form => { titlestring => $tit })->status_is(200)
   ->content_like(qr~<input type="text" class="titlestring" name="titlestring" value="$tit" />~);
 ch_err('Die Überschrift ist zu lang und darf höchstens 256 Zeichen enthalten.');
 
+my $oldtopic = $Topics[1];
 $Topics[1] = Testinit::test_randstring();
 $t->post_ok('/topic/2/edit', form => { titlestring => $Topics[1] })->status_is(302);
 $t->header_like( Location => qr{\Ahttps?://localhost:\d+/topic/2}xms );
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~$Topics[1]~)->content_like(qr~/topic/2~);
+  ->content_like(qr~$Topics[1]~)->content_like(qr~/topic/2~)->content_unlike(qr~$oldtopic~);
 ch_nfo('Die Überschrift des Themas wurde geändert.');
 $t->get_ok('/topic/2')->status_is(200)
   ->content_like(qr~$Topics[1]~)->content_like(qr~$Articles[1][0]~);
 
 login2();
+$t->get_ok('/')->status_is(200)
+  ->content_like(qr~$Topics[1]~)->content_like(qr~/topic/2~)->content_unlike(qr~$oldtopic~);
 $t->get_ok('/topic/2')->status_is(200)
   ->content_like(qr~$Topics[1]~)->content_like(qr~$Articles[1][0]~);
 
