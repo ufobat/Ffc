@@ -17,31 +17,29 @@ Features
 * Private Nachrichten zwischen einzelnen Benutzern möglich
 * Eigene Notizen für die Benutzer selbst möglich
 * Das Forum kann mit einem einzigen Kommando eingerichtet werden, wobei ein initialer Administratoraccount bereits angelegt wird
-* Das Forum arbeitet innerhalb einesfestgelegten Verzeichnisses
+* Das Forum arbeitet innerhalb eines festgelegten Verzeichnisses
 * Dateien für Uploads und Avatare werden in Unterverzeichnissen abgelegt
 * Alle Benutzerdaten, Foreneinstellungen und Beiträge werden in einer SQLite-Datenbank innerhalb des festgelegten Verzeichnisses abgelegt
 * Das festgelegte Foremverzeichnis ist transparent und portabel
-* Forenbeiträge können in von Administratoren verwalteten Kategorien abgelegt werden
+* Forenbeiträge werden in Themen sortiert, die jeder Benutzer frei anlegen kann
+* Themenüberschriften können geändert werden
+* Wird eine Themenüberschrift in ein bereits existierendes Thema geändert, dann werden die Beiträge in dieses andere Thema verschoben
 * Foren-, Nachrichten- und Notizbeiträge enthalten primär lediglich den Text ohne Titel
 * Diese Beiträge haben alle intern die selbe technische Struktur
-* Foren- und Nachrichtenbeiträge können Kommentiert werden
 * Allen Beiträgen können Dateien via Upload angehängt werden durch den Beitragsersteller
 * Uploads können jederzeit gelöscht werden vom hochladenden Benutzer gelöscht werden
 * Foren- und Nachrichtenbeträge können in einer flachen Struktur von allen Teilnehmern kommentiert werden
-* Foren- und Nachrichtenbeiträge können vom Verfasser gelöscht und verändert werden, solange sie nicht kommentiert wurden
 * Notizen können jederzeit vom Verfasser gelöscht und verändert werden
-* Alle Beiträge und Kommentare können mit einer Art Markup versehen werden
+* Alle Beiträge können mit einer Art Markup versehen werden
 * Links in Beiträgen werden automatisch erkannt und als HTML-Links dargestellt
-* Bilder in Beiträgen werden automatisch erkannt und als HTML-Bildervorschauen dargestellt
 * Bilder in Anhängen werden automatisch erkannt und als HTML-Bildervorschauen dargestellt
-* Forenbeiträge können durchsucht werden über ein einfaches Suchfeld
+* Beiträge und Forenüberschriften können durchsucht werden über ein einfaches SuchfeldA in der Menüzeile
 * Foreneinstellungen, die von Administratoren vorgenommen werden können:
   * Benutzerverwaltung mit Passwortangange, aktivieren und deaktiveren von Benutzern sowie Adminstratorenstatus setzen
   * Webseitenhintergrundfarbe und ob Benutzer diese Farbe selber noch ändern können
   * Favoritenicon und Webseitentitel
   * Anzahl der gleichzeitig angezeigten Beiträge auf einer Seite
   * Anzahl der Buchstaben die von einer URL dargestellt werden (URL-Shortener), die vollständige URL wird über ein Tooltip dargestellt
-  * Titel der allgemeinen Kategorie, die immer da ist (Kategorien werden ausgeblendet, wenn es nur diese Kategorie gibt)
 * Foreneinstellungen, die von Benutzern vorgenommen werden können:
   * Passwortwechsel
   * Email-Adresse angeben (diese kann vom Administrator lediglich ausserhalb des Forums verwendet werden)
