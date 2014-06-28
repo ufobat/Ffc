@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 193;
+use Test::More tests => 199;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 
