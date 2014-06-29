@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 199;
+use Test::More tests => 242;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 
@@ -143,6 +143,30 @@ $t->get_ok('/')->status_is(200)
 $t->get_ok('/topic/2')->status_is(200)
   ->content_like(qr~$Topics[1]~)->content_like(qr~$Articles[1][0]~);
 
+my $newtopic = Testinit::test_randstring();
+$t->post_ok('/topic/2/edit', form => { titlestring => $newtopic })->status_is(302);
+$t->header_like( Location => qr{\Ahttps?://localhost:\d+/topic/2}xms );
+$t->get_ok('/topic/2')->status_is(200)
+  ->content_like(qr~$Topics[1]~)->content_like(qr~/topic/2~)->content_unlike(qr~$newtopic~);
+ch_err('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde und Sie auch kein Administrator sind.');
+
+Testinit::test_login($t, $admin, $apass);
+$oldtopic = $Topics[1];
+$Topics[1] = Testinit::test_randstring();
+$t->post_ok('/topic/2/edit', form => { titlestring => $Topics[1] })->status_is(302);
+$t->header_like( Location => qr{\Ahttps?://localhost:\d+/topic/2}xms );
+$t->get_ok('/')->status_is(200)
+  ->content_like(qr~$Topics[1]~)->content_like(qr~/topic/2~)->content_unlike(qr~$oldtopic~);
+ch_nfo('Die Überschrift des Themas wurde geändert.');
+$t->get_ok('/topic/2')->status_is(200)
+  ->content_like(qr~$Topics[1]~)->content_like(qr~$Articles[1][0]~);
+
 #############################################################################
 ### Themen zusammenführen
+login2();
+
+$oldtopic = $Topics[0];
+$Topics[0] = Testinit::test_randstring();
+$t->post_ok('/topic/1/edit', form => { titlestring => $Topics[0] })->status_is(302);
+$t->header_like( Location => qr{\Ahttps?://localhost:\d+/topic/1}xms );
 

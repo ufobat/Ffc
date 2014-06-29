@@ -236,12 +236,12 @@ sub _check_topic_edit {
         'SELECT "userfrom" FROM "topics" WHERE "id"=?',
         undef, $topicid
     );
-    unless ( @$r ) {
+    unless ( @$r and $r->[0]->[0] == $c->session->{userid} ) {
         $c->set_error_f('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde und Sie auch kein Administrator sind.');
-        $c->redirect_to('show_forum_topiclist');
+        $c->redirect_to('show_forum', topicid => $topicid);
         return;
     }
-    return $r->[0]->[0] == $c->session->{userid} ? 1 : 0;
+    return 1;
 }
 
 sub edit_topic_do {
