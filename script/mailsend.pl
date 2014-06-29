@@ -63,7 +63,7 @@ for my $u ( @$users ) {
     $smtp->mail($sender);
     $smtp->to($u->[1]);
     $smtp->data();
-    $smtp->datasend("Subject: Neue Nachrichten\n");
+    $smtp->datasend("Subject: Neue Nachrichten in $title\n");
     $smtp->datasend("To: $u->[1]\n");
     $smtp->datasend("\n");
     $smtp->datasend("Hallo $u->[0],\n\n");
