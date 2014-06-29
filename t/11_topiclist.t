@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 242;
+use Test::More tests => 296;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 
@@ -17,10 +17,11 @@ Testinit::test_add_users( $t, $admin, $apass, $user1, $pass1, $user2, $pass2 );
 my ( @Topics, @Articles );
 my $tit = 'a' x 257;
 
-sub login1 { Testinit::test_login($t, $user1, $pass1) }
-sub login2 { Testinit::test_login($t, $user2, $pass2) }
-sub ch_err { Testinit::test_error( $t, @_ ) }
-sub ch_nfo { Testinit::test_info(  $t, @_ ) }
+sub login1 { Testinit::test_login(   $t, $user1, $pass1 ) }
+sub login2 { Testinit::test_login(   $t, $user2, $pass2 ) }
+sub ch_err { Testinit::test_error(   $t, @_             ) }
+sub ch_nfo { Testinit::test_info(    $t, @_             ) }
+sub ch_wrn { Testinit::test_warning( $t, @_             ) }
 
 #############################################################################
 ### Ausgangslage checken
@@ -165,8 +166,31 @@ $t->get_ok('/topic/2')->status_is(200)
 ### Themen zusammenführen
 login2();
 
-$oldtopic = $Topics[0];
-$Topics[0] = Testinit::test_randstring();
-$t->post_ok('/topic/1/edit', form => { titlestring => $Topics[0] })->status_is(302);
-$t->header_like( Location => qr{\Ahttps?://localhost:\d+/topic/1}xms );
+$t->post_ok('/topic/1/edit', form => { titlestring => $Topics[1] })->status_is(200)
+  ->content_like(qr~<a href="/topic/1/moveto/2" title="Alle Beiträge in das andere Thema verschieben">~)
+  ->content_like(qr~<a href="/topic/1/edit" title="Überschrift des Themas und dessen Beiträge beibehalten">~);
+ch_wrn('Das gewünschte Thema existiert bereits.');
+
+login1(); # Fehler
+$t->get_ok('/topic/1/moveto/2')->status_is(302);
+$t->header_like( Location => qr{\Ahttps?://localhost:\d+/forum}xms );
+$t->get_ok('/')->status_is(200)
+  ->content_like(qr~"/topic/new"~)->content_like(qr~<div class="postbox topiclist">~)
+  ->content_like(qr~$Topics[0]~)->content_like(qr~/topic/1~)
+  ->content_like(qr~$Topics[1]~)->content_like(qr~/topic/2~);
+ch_err('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde und Sie auch kein Administrator sind.');
+
+login2();
+$t->get_ok('/topic/1/moveto/2')->status_is(302);
+$t->header_like( Location => qr{\Ahttps?://localhost:\d+/topic/2}xms );
+$t->get_ok('/topic/2')->status_is(200);
+ch_nfo('Die Beiträge wurden in ein anderes Thema verschoben.');
+$t->content_like(qr~$_~) for @{$Articles[0]}, @{$Articles[1]};
+$t->get_ok('/')->status_is(200)
+  ->content_like(qr~"/topic/new"~)->content_like(qr~<div class="postbox topiclist">~)
+  ->content_unlike(qr~$Topics[0]~)->content_unlike(qr~/topic/1~)
+  ->content_like(qr~$Topics[1]~)->content_like(qr~/topic/2~);
+$t->get_ok('/topic/1')->status_is(200)
+  ->content_like(qr~"/topic/new"~)->content_like(qr~<div class="postbox topiclist">~);
+ch_err('Konnte das gewünschte Thema nicht finden.');
 

@@ -280,7 +280,7 @@ sub move_topic_do {
     my $uid = $c->session->{userid};
     my $dbh = $c->dbh;
 
-    return unless $c->_check_topic_edit($topicid);
+    return $c->redirect_to('show_forum_topiclist') unless $c->_check_topic_edit($topicid);
 
     $dbh->do(
         'UPDATE "posts" SET "topicid"=? WHERE "topicid"=?',
@@ -302,7 +302,7 @@ sub move_topic_do {
         'DELETE FROM "lastseenforum" WHERE "topicid"=?',
         undef, $topicid
     );
-    $c->set_info_f('Die Beiträge wurden in ein anderes Thema verschoben');
+    $c->set_info_f('Die Beiträge wurden in ein anderes Thema verschoben.');
     $c->redirect_to('show_forum', topicid => $topicidto);
 }
 
@@ -310,6 +310,7 @@ sub show {
     my $c = shift;
     my ( $dbh, $uid, $topicid ) = ( $c->dbh, $c->session->{userid}, $c->param('topicid') );
     my ( $heading, $userfrom ) = $c->_get_title_from_topicid;
+    return unless $heading;
     $c->counting;
     $c->stash(
         topicid  => $topicid,

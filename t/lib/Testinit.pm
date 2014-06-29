@@ -85,7 +85,7 @@ sub test_info {
 sub test_warning {
     my ( $t, $warning ) = @_;
     $t->content_like(
-        qr~<div\s+class="info">\s*<h1>Warnung</h1>\s*<p>\s*$warning\s*</p>\s*</div>~);
+        qr~<div\s+class="warning">\s*<h1>Warnung</h1>\s*<p>\s*$warning\s*</p>\s*</div>~);
 }
 
 sub test_add_user { &test_add_users } # Alias
