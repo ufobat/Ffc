@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 588;
+use Test::More tests => 657;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -25,6 +25,9 @@ my @Settings = (
     [ title => 'Webseitentitel', 'text',
         [rstr(), rstr(), scalar('a' x 256)], ['a', scalar('a' x 257)],
         'Der Titel muss zwischen zwei und 256 Zeichen lang sein' ],
+    [ cookiename => 'Cookie-Name', 'text',
+        [rstr(), rstr(), scalar('a' x 256)], ['a', scalar('a' x 257)],
+        'Der Name für Cookies muss zwischen zwei und 256 Zeichen lang sein' ],
     [ postlimit => 'Beitragsanzahl', 'number',
         [10 + int( rand 90),110 + int(rand 90)],['asdf'],
         'Die Anzahl gleichzeitig angezeigter Beiträge muss eine Zahl sein' ],
