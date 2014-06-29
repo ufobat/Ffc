@@ -44,8 +44,8 @@ sub _upload_post_do {
         $c->set_error_f('Datei ist zu klein, sollte mindestens 1B groß sein.');
         return _redirect_to_show($c);
     }
-    if ( $file->size > 2000000 ) {
-        $c->set_error_f('Datei ist zu groß, darf maximal 2MB groß sein.');
+    if ( $file->size > 100000000 ) {
+        $c->set_error_f('Datei ist zu groß, darf maximal 100MB groß sein.');
         return _redirect_to_show($c);
     }
 
