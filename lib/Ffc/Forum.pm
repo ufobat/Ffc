@@ -61,7 +61,8 @@ sub topic_query {
 
 sub generate_topiclist {
     my $c = shift;
-    my $page = $c->param('page') // 1;
+    my $page = $c->stash('action') eq 'show_topiclist' ? $c->param('page') : 1;
+    $page = 1 unless $page;
     my $topiclimit = $c->configdata->{topiclimit};
     my $uid = $c->session->{userid};
     my $query = $c->session->{topicquery};
