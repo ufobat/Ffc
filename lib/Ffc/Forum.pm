@@ -61,12 +61,18 @@ sub topic_query {
 
 sub generate_topiclist {
     my $c = shift;
-    my $page = $c->stash('action') eq 'show_topiclist' ? $c->param('page') : 1;
-    $page = 1 unless $page;
+    my $stashkey = shift;
+    my $page = 1;
+    if ( $stashkey ) {
+        $page = $c->param('page') // 1;
+    }
+    else {
+        $stashkey = 'topics';
+    }
     my $topiclimit = $c->configdata->{topiclimit};
     my $uid = $c->session->{userid};
     my $query = $c->session->{topicquery};
-    $c->stash( topics => $c->dbh->selectall_arrayref( << 'EOSQL'
+    $c->stash( $stashkey => $c->dbh->selectall_arrayref( << 'EOSQL'
         SELECT t."id", t."userfrom", t."title",
             (SELECT COUNT(p."id") 
                 FROM "posts" p
@@ -97,6 +103,7 @@ sub show_topiclist {
     $c->counting;
     my $page = $c->param('page') // 1;
     my $query = $c->session->{topicquery};
+    $c->generate_topiclist('topics_for_list');
     $c->stash(
         queryurl => $c->url_for('forum_topic_query'),
         query    => $query,

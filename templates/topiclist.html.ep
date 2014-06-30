@@ -4,7 +4,7 @@
 <p><a href="<%= url_for 'add_forum_topic_form' %>" title="Neues Thema beginnen">Klicke hier</a>, um ein neues Thema zu beginnen.</p>
 </div>
 <div class="postbox topiclist">
-% for my $t ( @$topics ) {
+% for my $t ( @$topics_for_list ) {
     <h2<%== $t->[3] ? ' class="newpost"' : '' %>>
         <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"
            title="Beiträge zum Thema anzeigen"><%= $t->[2] %></a>
