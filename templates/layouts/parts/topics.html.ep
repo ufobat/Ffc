@@ -1,0 +1,9 @@
+<div class="topicpopup">
+% for my $t ( @$topics ) {
+    <p>
+        <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"
+           title="Beiträge zum Thema anzeigen"><%= $t->[2] %></a>
+        <% if ( $t->[3] and not $t->[5] ) { %>(<span class="mark"><%= $t->[3] %></span>)<% } %>
+    </p>
+% }
+</div>

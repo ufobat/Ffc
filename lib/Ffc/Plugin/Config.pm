@@ -6,6 +6,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use DBI;
 use File::Spec::Functions qw(splitdir catdir);
 use Digest::SHA 'sha512_base64';
+use Ffc::Forum;
 
 our @Styles = (
     '/theme/normal.css', 
@@ -90,6 +91,7 @@ sub register {
     $app->hook( before_render => sub { 
         my $c = $_[0];
         my $s = $c->session;
+        Ffc::Forum::generate_topiclist($c);
         $c->stash(
             fontsize => $s->{fontsize} // 0,
             backgroundcolor => 

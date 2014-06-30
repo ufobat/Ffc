@@ -10,22 +10,35 @@
 <!-- Angemeldet als "<%= session()->{user} %>" !-->
 
 <div class="menu">
-    <a href="<%= url_for 'show_forum_topiclist', page => 1 %>" title="Nachrichten für alle angemeldeten Benutzer in der Art einer öffentlichen Diskussion"><span class="linktext linkforum<%= $controller eq 'forum' ? ' active activeforum' : '' %>">Forum<% if ( $newpostcount ) { %> (<span class="mark"><%= $newpostcount %></span>)<% } %></span></a>
-    <a href="<%= url_for 'show_pmsgs_userlist' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkpmsgs<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>">Nachrichten<% if ( $newmsgscount ) { %> (<span class="mark"><%= $newmsgscount %></span>)<% } %></span></a>
-    <a href="<%= url_for 'show_notes', page => 1 %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
+    <div class="menuentry">
+        <a href="<%= url_for 'show_forum_topiclist', page => 1 %>" title="Nachrichten für alle angemeldeten Benutzer in der Art einer öffentlichen Diskussion"><span class="linktext linkforum<%= $controller eq 'forum' ? ' active activeforum' : '' %>">Forum<% if ( $newpostcount ) { %> (<span class="mark"><%= $newpostcount %></span>)<% } %></span></a>
+<%= $topics && @$topics && $action ne 'show_topiclist' ? include('layouts/parts/topics') : '' %>
+    </div>
+    <div class="menuentry">
+        <a href="<%= url_for 'show_pmsgs_userlist' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkpmsgs<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>">Nachrichten<% if ( $newmsgscount ) { %> (<span class="mark"><%= $newmsgscount %></span>)<% } %></span></a>
+    </div>
+    <div class="menuentry">
+        <a href="<%= url_for 'show_notes', page => 1 %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
+    </div>
 % if ( $queryurl ) {
+    <div class="menuentry">
 <form action="<%== $queryurl %>" accept-charset="UTF-8" method="POST">
 %= text_field query => $query, $query ? (class => 'activesearch') : ()
     <button type="submit" class="linkalike">» Suche</button>
 </form>
+    </div>
 % } else {
 <span style="visibility: hidden">
 %= text_field query => session()->{query}, session()->{query} ? (class => 'activesearch') : ()
     <button type="submit" class="linkalike">» Suche</button>
 </span>
 % }
-    <a href="<%= url_for 'options_form' %>" title="Verschiedene Einstellungen für diese Plattform den eigenen Wünschen anpassen"><span class="linktext linkoptions<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Optionen</span></a>
-    <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linkalike linklogout">abmelden</span></a>
+    <div class="menuentry">
+        <a href="<%= url_for 'options_form' %>" title="Verschiedene Einstellungen für diese Plattform den eigenen Wünschen anpassen"><span class="linktext linkoptions<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Optionen</span></a>
+    </div>
+    <div class="menuentry">
+        <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linkalike linklogout">abmelden</span></a>
+    </div>
 </div>
 
 %= include 'parts/messageboxes'
