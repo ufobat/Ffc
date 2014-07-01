@@ -65,6 +65,9 @@ sub generate_topiclist {
     my $page = 1;
     if ( $stashkey ) {
         $page = $c->param('page') // 1;
+        if ( my $ts = $c->stash('topics') and $page == 1 ) {
+            return $c->stash( topics_for_list => $ts );
+        }
     }
     else {
         $stashkey = 'topics';
@@ -109,6 +112,7 @@ sub show_topiclist {
         query    => $query,
         page     => $page,
         pageurl  => 'show_forum_topiclist_page',
+        returl   => $c->url_for('show_forum_topiclist'),
     );
 
     $c->render(template => 'topiclist');

@@ -91,7 +91,6 @@ sub register {
     $app->hook( before_render => sub { 
         my $c = $_[0];
         my $s = $c->session;
-        Ffc::Forum::generate_topiclist($c);
         $c->stash(
             fontsize => $s->{fontsize} // 0,
             backgroundcolor => 
@@ -131,6 +130,7 @@ sub _counting {
                 undef, $uid
             )->[0]->[0],
     );
+    Ffc::Forum::generate_topiclist($c);
 }
 
 sub _datapath {
