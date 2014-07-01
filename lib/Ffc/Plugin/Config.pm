@@ -65,7 +65,8 @@ sub register {
         page     => 1,
         lastseen => -1,
         postid   => undef,
-        additional_params => [],
+        map( {; $_ => [] }
+            qw(additional_params topics) ),
         map( {;$_.'count' => 0} 
             qw(newmsgs newpost note) ),
         map( {;$_ => ''} 
