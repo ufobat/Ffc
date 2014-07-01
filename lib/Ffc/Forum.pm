@@ -125,7 +125,6 @@ sub unignore_topic_do { $_[0]->_handle_ignore_topic_do(0) }
 
 sub _handle_ignore_topic_do {
     my $c = shift;
-    $c->counting;
     my $ignore = shift;
     my $topicid = $c->param('topicid');
     my $lastseen = $c->dbh->selectall_arrayref(
@@ -276,6 +275,7 @@ sub edit_topic_do {
             return $c->redirect_to('show_forum', topicid => $topicid);
         }
         $c->set_warning('Das gewünschte Thema existiert bereits.');
+        $c->counting;
         $c->stash(
             topicid   => $topicid,
             topicidto => $topicidto,
@@ -294,7 +294,6 @@ sub edit_topic_do {
 
 sub move_topic_do {
     my $c = shift;
-    $c->counting;
     my $topicid = $c->param('topicid');
     my $topicidto = $c->param('topicidto');
     my $uid = $c->session->{userid};
