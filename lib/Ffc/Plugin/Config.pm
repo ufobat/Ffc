@@ -7,6 +7,7 @@ use DBI;
 use File::Spec::Functions qw(splitdir catdir);
 use Digest::SHA 'sha512_base64';
 use Ffc::Forum;
+use Ffc::Pmsgs;
 
 our @Styles = (
     '/theme/normal.css', 
@@ -132,6 +133,7 @@ sub _counting {
             )->[0]->[0],
     );
     Ffc::Forum::generate_topiclist($c);
+    Ffc::Pmsgs::generate_userlist($c);
 }
 
 sub _datapath {

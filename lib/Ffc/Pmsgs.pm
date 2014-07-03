@@ -30,10 +30,9 @@ sub additional_params {
     return userid => $_[0]->param('userid');
 }
 
-sub show_userlist {
+sub generate_userlist {
     my $c = shift;
     my $uid = $c->session->{userid};
-    $c->counting;
     $c->stash( users => $c->dbh->selectall_arrayref(
         'SELECT u."id", u."name",
             (SELECT COUNT(p."id") 
@@ -51,8 +50,11 @@ sub show_userlist {
         ORDER BY "msgcount_newtome" DESC, "sorting" DESC, UPPER(u."name") ASC',
         undef, $uid, $uid, $uid, $uid
     ) );
+}
 
-    $c->render(template => 'userlist');
+sub show_userlist {
+    $_[0]->counting;
+    $_[0]->render(template => 'userlist');
 }
 
 sub _get_username {
