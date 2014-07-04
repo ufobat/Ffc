@@ -70,7 +70,7 @@ Installation einer neuen Instanz (eigenständiges Forum)
 
 Ein Verzeichnis muss angelegt werden, in dem der Webserverbenutzeraccount schreibenden Zugriff erhält. Dieses Verzeichnis ist das Arbeitsverzeichnis der Instanz. Eine Instanz ist ein in sich geschlossenes Forum mit eigener Datenhaltung und eigenen Benutzeraccounts. Die Software kann mehrere Instanzen in verschiedenen Arbeitsverzeichnissen verwalten. 
 
-Innerhalb des Arbeitsverzeichnisses werden Dateien in Unterverzeichnissen abgelegt. Die Textdaten, Benutzerdaten sowie die Konfiguration erfolgt über eine SQLite-Datenbankdatei innerhalb des Arbeitsverzeichnisses.
+Innerhalb des Arbeitsverzeichnisses werden im Betrieb Dateien in Unterverzeichnissen abgelegt. Die Textdaten, Benutzerdaten sowie die Konfiguration erfolgt über eine SQLite-Datenbankdatei innerhalb des Arbeitsverzeichnisses.
 
 Die Software verwendet die Umgebungsvariable **`FFC_DATA_PATH`**, um festzustellen, mit welcher Instanz sie gerade läuft und entsprechend welches Arbeitsverzeichnis sie verwenden muss. Diese Umgebungsvariable **`FFC_DATA_PATH`** muss beim Aufruf des Initialisierungsscriptes sowie beim Lauf der Software im Web auf den Pfad zum Arbeitsverzeichnis gesetzt werden. Ist die Variable nicht gesetzt, kommen entsprechende Fehlermeldungen.
 
@@ -80,7 +80,7 @@ Außerdem wird ein erster Administratoren-Account mit Zufallspasswort angelegt. 
 
 Anschließend muss der Webserver so konfiguriert werden, dass das Script `script/ffc` mit der passenden Umgebungsvariable **`FFC_DATA_PATH`** als URL für diese Instanz im Web verfügbar ist. Diese Konfiguration ist von Webserver zu Webserver verschieden. Weitere Hinweise kann man auch im Internet in der Mojolicious-Dokumentation unter Deployment finden.
 
-Unter der so eingerichteten URL sollte, wenn alles passt, anschließend das entsprechende Forum verfügbar sein. Hier kann man sich mit den vom `script/init.pl` gelieferten Daten anmelden und kann entsprechende weiterführende Konfigurationen (Foreneinstellungen, Kategorieeinstellungen, Benutzerverwaltung) unter dem Menüpunkt "Optionen" vornehmen.
+Unter der so eingerichteten URL sollte, wenn alles passt, anschließend das entsprechende Forum verfügbar sein. Hier kann man sich mit den vom `script/init.pl` gelieferten Daten anmelden und kann entsprechende weiterführende Konfigurationen (Foreneinstellungen und Benutzerverwaltung) unter dem Menüpunkt "Optionen" vornehmen.
 
 Copyright und Lizenz
 ====================
