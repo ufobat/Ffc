@@ -30,28 +30,6 @@ sub additional_params {
     return userid => $_[0]->param('userid');
 }
 
-sub generate_userlist {
-    my $c = shift;
-    my $uid = $c->session->{userid};
-    $c->stash( users => $c->dbh->selectall_arrayref(
-        'SELECT u."id", u."name",
-            (SELECT COUNT(p."id") 
-                FROM "posts" p
-                LEFT OUTER JOIN "lastseenmsgs" l ON l."userid"=? AND l."userfromid"=u."id"
-                WHERE p."userfrom"=u."id" AND p."userto"=? AND p."id">COALESCE(l."lastseen",-1)
-            ) AS "msgcount_newtome",
-            (SELECT MAX(p2."id")
-                FROM "posts" p2
-                WHERE p2."userfrom"=? AND p2."userto"=u."id"
-            ) AS "sorting"
-        FROM "users" u
-        WHERE u."active"=1 AND u."id"<>? 
-        GROUP BY u."id"
-        ORDER BY "msgcount_newtome" DESC, "sorting" DESC, UPPER(u."name") ASC',
-        undef, $uid, $uid, $uid, $uid
-    ) );
-}
-
 sub show_userlist {
     $_[0]->counting;
     $_[0]->render(template => 'userlist');

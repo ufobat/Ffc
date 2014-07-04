@@ -10,9 +10,6 @@ sub install_routes {
     $l->route('/topic/new')->via('get')
       ->to(controller => 'forum', action => 'add_topic_form')
       ->name('add_forum_topic_form');
-    $l->route('/topic/query')->via('post')
-      ->to(controller => 'forum', action => 'topic_query')
-      ->name('forum_topic_query');
     $l->route('/topic/new')->via('post')
       ->to(controller => 'forum', action => 'add_topic_do')
       ->name('add_forum_topic_do');
@@ -59,50 +56,10 @@ sub topic_query {
     $c->show_topiclist;
 }
 
-sub generate_topiclist {
-    my $c = shift;
-    my $stashkey = shift;
-    my $page = 1;
-    if ( $stashkey ) {
-        $page = $c->param('page') // 1;
-    }
-    else {
-        $stashkey = 'topics';
-    }
-    my $topiclimit = $c->configdata->{topiclimit};
-    my $uid = $c->session->{userid};
-    my $query = $c->session->{topicquery};
-    $c->stash( $stashkey => $c->dbh->selectall_arrayref( << 'EOSQL'
-        SELECT t."id", t."userfrom", t."title",
-            (SELECT COUNT(p."id") 
-                FROM "posts" p
-                LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=p."topicid"
-                WHERE p."userto" IS NULL AND p."userfrom"<>? AND p."topicid"=t."id" AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",-1)
-            ) AS "entrycount_new",
-            (SELECT MAX(p2."id")
-                FROM "posts" p2
-                WHERE p2."userto" IS NULL AND p2."topicid"=t."id"
-            ) AS "sorting",
-            l2."ignore"
-        FROM "topics" t
-        LEFT OUTER JOIN "lastseenforum" l2 ON l2."userid"=? AND l2."topicid"=t."id"
-EOSQL
-        . ( $query ? << 'EOSQL' : '' )
-        WHERE UPPER(t."title") LIKE UPPER(?)
-EOSQL
-        . << 'EOSQL'
-        ORDER BY CASE WHEN "entrycount_new">0 THEN 1 ELSE 0 END DESC, "sorting" DESC
-        LIMIT ? OFFSET ?
-EOSQL
-        ,undef, $uid, $uid, $uid, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit
-    ));
-}
-
 sub show_topiclist {
     my $c = shift;
     $c->counting;
     my $page = $c->param('page') // 1;
-    my $query = $c->session->{topicquery};
     if ( $page == 1 ) {
         $c->stash(topics_for_list => $c->stash('topics'));
     }
@@ -110,8 +67,6 @@ sub show_topiclist {
         $c->generate_topiclist('topics_for_list');
     }
     $c->stash(
-        queryurl => $c->url_for('forum_topic_query'),
-        query    => $query,
         page     => $page,
         pageurl  => 'show_forum_topiclist_page',
         returl   => $c->url_for('show_forum_topiclist'),
