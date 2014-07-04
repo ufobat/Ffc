@@ -194,29 +194,3 @@ $t->get_ok('/topic/1')->status_is(200)
   ->content_like(qr~"/topic/new"~)->content_like(qr~<div class="postbox topiclist">~);
 ch_err('Konnte das gewünschte Thema nicht finden.');
 
-push @Topics, Testinit::test_randstring();
-push @Articles, [Testinit::test_randstring()];
-$t->post_ok('/topic/new', form => {titlestring => $Topics[2], textdata => $Articles[2][0]})->status_is(302);
-$t->header_like( Location => qr{\Ahttps?://localhost:\d+/topic/3}xms );
-$t->get_ok('/')->status_is(200)
-  ->content_like(qr~$Topics[2]~)->content_like(qr~/topic/3~);
-ch_nfo('Ein neuer Beitrag wurde erstellt');
-$t->get_ok('/topic/3')->status_is(200)
-  ->content_like(qr~$Topics[2]~)->content_like(qr~$Articles[2][0]~);
-
-$t->post_ok('/topic/query', form => { query => $Topics[1] })->status_is(200);
-$t->content_like(qr~<input class="activesearch" name="query" type="text" value="$Topics[1]" />~)
-  ->content_like(qr~$Topics[1]~)->content_like(qr'/topic/2')
-  ->content_unlike(qr~$Topics[2]~)->content_unlike(qr'/topic/3')
-  ->content_unlike(qr~$Topics[0]~)->content_unlike(qr'/topic/1');
-$t->get_ok('/')->status_is(200);
-$t->content_like(qr~<input class="activesearch" name="query" type="text" value="$Topics[1]" />~)
-  ->content_like(qr~$Topics[1]~)->content_like(qr'/topic/2')
-  ->content_unlike(qr~$Topics[2]~)->content_unlike(qr'/topic/3')
-  ->content_unlike(qr~$Topics[0]~)->content_unlike(qr'/topic/1');
-$t->post_ok('/topic/query', form => { query => '' })->status_is(200);
-$t->content_like(qr~<input name="query" type="text" value="" />~)
-  ->content_like(qr~$Topics[1]~)->content_like(qr'/topic/2')
-  ->content_like(qr~$Topics[2]~)->content_like(qr'/topic/3')
-  ->content_unlike(qr~$Topics[0]~)->content_unlike(qr'/topic/1');
-
