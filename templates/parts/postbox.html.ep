@@ -22,7 +22,7 @@
            title="Einen Anhang zum Beitrag hinzufügen">anhängen</a>
 %  }
     )
-% } elsif ( $controller eq 'forum' ) {
+% } elsif ( $controller eq 'forum' and $action ne 'upload_form' and $action ne 'delete_check' ) {
         (
         <a href="<%= url_for 'show_pmsgs', userid => $post->[1] %>" 
            title="Private Nachricht an den Verfasser &quot;<%= $post->[2] %>&quot; schreiben">Privatnachricht</a>
