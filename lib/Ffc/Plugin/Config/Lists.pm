@@ -28,8 +28,8 @@ sub _counting {
                 undef, $uid
             )->[0]->[0],
     );
-    Ffc::Forum::generate_topiclist($c);
-    Ffc::Pmsgs::generate_userlist($c);
+    $c->generate_topiclist();
+    $c->generate_userlist();
 }
 
 sub _generate_topiclist {
