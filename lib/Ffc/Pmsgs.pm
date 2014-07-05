@@ -7,7 +7,7 @@ sub install_routes {
     $l->route('/pmsgs')->via('get')
       ->to(controller => 'pmsgs', action => 'show_userlist')
       ->name('show_pmsgs_userlist');
-    $l->route('/pmsgs/search')->via('post')
+    $l->route('/pmsgs/search')
       ->to(controller => 'pmsgs', action => 'search')
       ->name('search_pmsgs_posts');
     Ffc::Plugin::Posts::install_routes_posts($l, 'pmsgs', '/pmsgs/:userid', userid => $Ffc::Digqr);
@@ -40,9 +40,15 @@ sub additional_params {
 }
 
 sub search { 
-    $_[0]->stash( queryurl => $_[0]->url_for('search_pmsgs_posts') );
-    $_[0]->counting;
-    $_[0]->search_posts;
+    my $c = shift;
+    if ( $c->param('query') ) {
+        $c->stash( queryurl => $c->url_for('search_pmsgs_posts') );
+        $c->counting;
+        $c->search_posts;
+    }
+    else {
+        $c->show_userlist;
+    }
 }
 
 sub show_userlist {

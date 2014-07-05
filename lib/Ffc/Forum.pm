@@ -7,7 +7,7 @@ sub install_routes {
     $l->route('/forum')->via('get')
       ->to(controller => 'forum', action => 'show_topiclist')
       ->name('show_forum_topiclist');
-    $l->route('/forum/search')->via('post')
+    $l->route('/forum/search')
       ->to(controller => 'forum', action => 'search')
       ->name('search_forum_posts');
     $l->route('/topic/new')->via('get')
@@ -60,9 +60,15 @@ sub additional_params {
 }
 
 sub search { 
-    $_[0]->stash( queryurl => $_[0]->url_for('search_forum_posts') );
-    $_[0]->counting;
-    $_[0]->search_posts;
+    my $c = shift;
+    if ( $c->param('query') ) {
+        $c->stash( queryurl => $c->url_for('search_forum_posts') );
+        $c->counting;
+        $c->search_posts;
+    }
+    else {
+        $c->show_topiclist;
+    }
 }
 
 sub show_topiclist {

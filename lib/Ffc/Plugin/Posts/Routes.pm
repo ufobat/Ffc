@@ -10,7 +10,7 @@ sub install_routes_posts {
       ->to(controller => $cname, action => 'show')->name("show_${cname}");
     # Diese Route führt zur Routine, welche das Filterfeld aus dem Menü
     # umsetzt.
-    $l->route("$start/query", @startps)->via('post')
+    $l->route("$start/query", @startps)
       ->to(controller => $cname, action => 'query')->name("query_${cname}");
     # Diese Route wird für die Seitenweiterschaltung verwendet.
     $l->route("$start/:page", @startps, page => $Ffc::Digqr)->via('get')
