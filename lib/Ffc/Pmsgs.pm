@@ -40,7 +40,7 @@ sub additional_params {
 }
 
 sub search { 
-    $_[0]->stash( queryurl => $_[0]->url_for('search_forum_posts') );
+    $_[0]->stash( queryurl => $_[0]->url_for('search_pmsgs_posts') );
     $_[0]->counting;
     $_[0]->search_posts;
 }
@@ -49,7 +49,7 @@ sub show_userlist {
     my $c = shift;
     $c->counting;
     $c->session->{query} = '';
-    $c->stash( queryurl => $c->url_for('search_forum_posts') );
+    $c->stash( queryurl => $c->url_for('search_pmsgs_posts') );
     $c->render(template => 'userlist');
 }
 

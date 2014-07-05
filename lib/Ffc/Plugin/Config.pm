@@ -61,7 +61,6 @@ sub register {
     $app->helper(configdata   => sub { $config    });
 
     $app->defaults({
-        act      => 'forum',
         page     => 1,
         lastseen => -1,
         postid   => undef,

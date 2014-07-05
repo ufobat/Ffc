@@ -72,7 +72,12 @@ sub _show_posts {
 
     $c->get_attachements($posts, $wheres, @wherep);
 
-    return $c->render(template => 'posts');
+    if ( $c->stash('action') eq 'search' ) {
+        $c->render(template => 'search');
+    }
+    else {
+        $c->render(template => 'posts');
+    }
 }
 
 1;
