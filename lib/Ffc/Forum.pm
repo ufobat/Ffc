@@ -7,6 +7,9 @@ sub install_routes {
     $l->route('/forum')->via('get')
       ->to(controller => 'forum', action => 'show_topiclist')
       ->name('show_forum_topiclist');
+    $l->route('/forum/search')->via('post')
+      ->to(controller => 'forum', action => 'search')
+      ->name('search_forum_posts');
     $l->route('/topic/new')->via('get')
       ->to(controller => 'forum', action => 'add_topic_form')
       ->name('add_forum_topic_form');
@@ -36,9 +39,15 @@ sub install_routes {
 }
 
 sub where_select { 
-    return 
-        'p."userto" IS NULL AND p."topicid"=?',
-        $_[0]->param('topicid');
+    my $topicid = $_[0]->param('topicid');
+    if ( $topicid ) {
+        return 
+            'p."userto" IS NULL AND p."topicid"=?',
+            $topicid;
+    }
+    else {
+        return 'p."userto" IS NULL';
+    }
 }
 sub where_modify {
     return
@@ -50,16 +59,16 @@ sub additional_params {
     return topicid => $_[0]->param('topicid');
 }
 
-sub topic_query {
-    my $c = shift;
-    $c->session->{topicquery} = $c->param('query');
-    $c->show_topiclist;
+sub search { 
+    $_[0]->stash( queryurl => $_[0]->url_for('search_forum_posts') );
+    $_[0]->search_posts;
 }
 
 sub show_topiclist {
     my $c = shift;
     $c->counting;
     my $page = $c->param('page') // 1;
+    $c->session->{query} = '';
     if ( $page == 1 ) {
         $c->stash(topics_for_list => $c->stash('topics'));
     }
@@ -70,6 +79,7 @@ sub show_topiclist {
         page     => $page,
         pageurl  => 'show_forum_topiclist_page',
         returl   => $c->url_for('show_forum_topiclist'),
+        queryurl => $c->url_for('search_forum_posts'),
     );
 
     $c->render(template => 'topiclist');

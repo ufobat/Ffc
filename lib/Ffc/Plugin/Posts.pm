@@ -20,6 +20,7 @@ sub register {
     my ( $self, $app ) = @_;
     $app->helper( show_posts               => \&_show_posts               );
     $app->helper( query_posts              => \&_query_posts              );
+    $app->helper( search_posts             => \&_search_posts             );
     $app->helper( add_post                 => \&_add_post                 );
     $app->helper( edit_post_form           => \&_edit_post_form           );
     $app->helper( edit_post_do             => \&_edit_post_do             );
@@ -31,6 +32,8 @@ sub register {
     $app->helper( delete_upload_post_check => \&_delete_upload_post_check );
     $app->helper( delete_upload_post_do    => \&_delete_upload_post_do    );
     $app->helper( get_single_value         => \&_get_single_value         );
+    $app->helper( get_show_sql             => \&_get_show_sql             );
+    $app->helper( get_attachements         => \&_get_attachements         );
     return $self;
 }
 

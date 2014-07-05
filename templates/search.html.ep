@@ -1,0 +1,8 @@
+% layout 'board';
+<div class="postbox headbox">
+    <h1>Suchergebnisse</h1>
+</div>
+% for my $p ( @$posts) {
+%= include 'parts/postbox', post => $p
+% }
+

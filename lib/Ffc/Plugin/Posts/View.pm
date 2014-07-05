@@ -10,10 +10,40 @@ sub _pagination {
     return $postlimit, ( $page - 1 ) * $postlimit;
 }
 
+sub _search_posts {
+    my $c = shift;
+    $c->session->{query} = $c->param('query');
+    _show_posts($c);
+}
+
 sub _query_posts {
     my $c = shift;
     $c->session->{query} = $c->param('query');
     _redirect_to_show($c);
+}
+
+sub _get_show_sql {
+    my ( $c, $wheres, $noorder ) = @_;
+    my $query  = $c->session->{query};
+
+    my $sql = qq~SELECT\n~
+        .qq~p."id", uf."id", uf."name", ut."id", ut."name", p."topicid", ~
+        .qq~datetime(p."posted",'localtime'), datetime(p."altered",'localtime'), p."cache", ~
+        .qq~t."title"\n~
+        .qq~FROM "posts" p\n~
+        .qq~INNER JOIN "users" uf ON p."userfrom"=uf."id"\n~
+        .qq~LEFT OUTER JOIN "users" ut ON p."userto"=ut."id"\n~
+        .qq~LEFT OUTER JOIN "topics" t ON p."topicid"=t."id"\n~;
+    if ( $wheres ) {
+        $sql .= "WHERE $wheres\n"
+             . ( $query ? qq~AND UPPER(p."textdata") LIKE UPPER(?)\n~ : "\n" );
+    }
+    elsif ( $query ) {
+        $sql .= qq~WHERE UPPER(p."textdata") LIKE UPPER(?)\n~;
+    }
+
+    $sql .= 'ORDER BY p."id" DESC LIMIT ? OFFSET ?' unless $noorder;
+    return $sql;
 }
 
 sub _show_posts {
@@ -32,27 +62,13 @@ sub _show_posts {
     );
     _setup_stash($c);
 
-    my $sql = qq~SELECT\n~
-        .qq~p."id", uf."id", uf."name", ut."id", ut."name", p."topicid", ~
-        .qq~datetime(p."posted",'localtime'), datetime(p."altered",'localtime'), p."cache"\n~
-        .qq~FROM "posts" p\n~
-        .qq~INNER JOIN "users" uf ON p."userfrom"=uf."id"\n~
-        .qq~LEFT OUTER JOIN "users" ut ON p."userto"=ut."id"\n~;
-    if ( $wheres ) {
-        $sql .= "WHERE $wheres\n"
-             . ( $query ? qq~AND UPPER(p."textdata") LIKE UPPER(?)\n~ : "\n" );
-    }
-    elsif ( $query ) {
-        $sql .= qq~WHERE UPPER(p."textdata") LIKE UPPER(?)\n~;
-    }
-    $sql .= 'ORDER BY p."id" DESC LIMIT ? OFFSET ?';
-
+    my $sql = $c->get_show_sql($wheres);
     my $posts = $c->dbh->selectall_arrayref(
         $sql, undef, @wherep, ( $query ? "\%$query\%" : () ), _pagination($c)
     );
-    $c->stash(posts => $posts );
+    $c->stash(posts => $posts);
 
-    _get_attachements($c, $posts, $wheres, @wherep);
+    $c->get_attachements($posts, $wheres, @wherep);
 
     return $c->render(template => 'posts');
 }

@@ -38,4 +38,16 @@
 % }
     </ul>
 % }
+% if ( $action eq 'search' and ( $post->[3] or $post->[5] ) ) {
+    <h2>
+%   if ( $post->[3] ) {
+        <a href="<%= url_for show_pmsgs => userid => $post->[3] %>"
+            title="Konversation öffnen">Konversation mit dem Benutzer &quot;<%= $post->[4] %>&quot; anzeigen</a>
+%   }
+%   if ( $post->[5] ) {
+        <a href="<%= url_for show_forum => topicid => $post->[5] %>"
+            title="Thema öffnen">Thema &quot;<%= $post->[9] %>&quot; anzeigen</a>
+%   }
+    </h2>
+% }
 </div>

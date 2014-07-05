@@ -7,15 +7,24 @@ sub install_routes {
     $l->route('/pmsgs')->via('get')
       ->to(controller => 'pmsgs', action => 'show_userlist')
       ->name('show_pmsgs_userlist');
+    $l->route('/pmsgs/search')->via('post')
+      ->to(controller => 'pmsgs', action => 'search')
+      ->name('search_pmsgs_posts');
     Ffc::Plugin::Posts::install_routes_posts($l, 'pmsgs', '/pmsgs/:userid', userid => $Ffc::Digqr);
 }
 
 sub where_select {
     my $uid = $_[0]->session->{userid};
     my $cid = $_[0]->param('userid');
-    return 
-        'p."userto" IS NOT NULL AND p."userfrom"<>p."userto" AND (p."userfrom"=? OR p."userto"=?) AND (p."userfrom"=? OR p."userto"=?)', 
-        $uid, $uid, $cid, $cid;
+    my $sql = 'p."userto" IS NOT NULL AND p."userfrom"<>p."userto" AND (p."userfrom"=? OR p."userto"=?)';
+    if ( $cid ) {
+        return 
+            $sql . ' AND (p."userfrom"=? OR p."userto"=?)', 
+            $uid, $uid, $cid, $cid;
+    }
+    else {
+        return $sql, $uid, $uid;
+    }
 }
 
 sub where_modify {
@@ -30,9 +39,17 @@ sub additional_params {
     return userid => $_[0]->param('userid');
 }
 
+sub search { 
+    $_[0]->stash( queryurl => $_[0]->url_for('search_forum_posts') );
+    $_[0]->search_posts;
+}
+
 sub show_userlist {
-    $_[0]->counting;
-    $_[0]->render(template => 'userlist');
+    my $c = shift;
+    $c->counting;
+    $c->session->{query} = '';
+    $c->stash( queryurl => $c->url_for('search_forum_posts') );
+    $c->render(template => 'userlist');
 }
 
 sub _get_username {

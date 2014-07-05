@@ -15,21 +15,20 @@ sub startup {
     $app->plugin('Ffc::Plugin::Formats');
     $app->plugin('Ffc::Plugin::Posts');
     $app->helper(login_ok => sub { $_[0]->session->{user} ? 1 : 0 });
-    _install_routes($app->routes);
+    _install_routes($app);
 }
 
 sub _install_routes {
-    my $l = Ffc::Auth::install_routes($_[0]);
+    my $app = shift;
+    my $l = Ffc::Auth::install_routes($app->routes);
     use Ffc::Options;
     use Ffc::Auth;
     use Ffc::Avatars;
     use Ffc::Forum;
     use Ffc::Pmsgs;
     use Ffc::Notes;
-    use Ffc::Search;
     Ffc::Avatars::install_routes($l);
     Ffc::Options::install_routes($l);
-    Ffc::Search::install_routes($l);
     Ffc::Forum::install_routes($l);
     Ffc::Pmsgs::install_routes($l);
     Ffc::Notes::install_routes($l);
