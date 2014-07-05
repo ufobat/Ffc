@@ -9,13 +9,11 @@ use strict; use warnings; use utf8;
 sub _setup_stash {
     my $c = shift;
     my $cname = $c->stash('controller');
+    my $act = $c->stash('action');
     $c->stash( 
         # Routenname für Abbrüche, der auf die Einstiegsseite der Beitragsübersicht verweißt.
         # Diese Route wird direkt als URL festgelegt, da sie keine weiteren Daten braucht.
         returl   => $c->url_for("show_$cname", page => 1),
-        # Routenname für Filter-Suchen aus dem Menü heraus.
-        # Diese Route wird direkt als URL festgelegt, da sie keine weiteren Daten braucht.
-        queryurl => $c->url_for("query_$cname"),
         # Der folgende Routenname wird für den Download von Dateianhängen benötigt.
         # Hierbei handelt es sich auch um eine Array-Referenz, welche zusätzliche Daten
         # enthalten kann.
@@ -24,6 +22,11 @@ sub _setup_stash {
         # mit angegeben werden müssen.
         additional_params => [ $c->additional_params ],
     );
+    $c->stash(
+        # Routenname für Filter-Suchen aus dem Menü heraus.
+        # Diese Route wird direkt als URL festgelegt, da sie keine weiteren Daten braucht.
+        queryurl => $c->url_for("query_$cname"),
+    ) if $act ne 'search';
 }
 
 sub _redirect_to_show {

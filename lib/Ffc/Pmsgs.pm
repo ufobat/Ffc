@@ -41,6 +41,7 @@ sub additional_params {
 
 sub search { 
     $_[0]->stash( queryurl => $_[0]->url_for('search_forum_posts') );
+    $_[0]->counting;
     $_[0]->search_posts;
 }
 

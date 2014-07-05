@@ -48,6 +48,7 @@ sub _get_show_sql {
 
 sub _show_posts {
     my $c = shift;
+    my $queryurl = shift;
     my ( $wheres, @wherep ) = $c->where_select;
     my $query  = $c->session->{query};
     my $cname = $c->stash('controller');
@@ -61,6 +62,7 @@ sub _show_posts {
         pageurl => "show_${cname}_page",           # Seitenweiterschaltung
     );
     _setup_stash($c);
+    $c->stash(queryurl => $queryurl) if $queryurl;
 
     my $sql = $c->get_show_sql($wheres);
     my $posts = $c->dbh->selectall_arrayref(
