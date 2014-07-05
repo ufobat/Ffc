@@ -25,7 +25,7 @@
 % if ( $queryurl ) {
 <form action="<%== $queryurl %>" accept-charset="UTF-8" method="POST">
 % if ( $query ) {
-    <a href="<%= $queryurl %>" title="Suchanfrage zurück setzen">X</a>
+    <a href="<%= $queryurl %>" title="Suchanfrage zurück setzen">x</a>
 % } else {
     <span style="visibility: hidden"><a href="<%= $queryurl %>" title="Suchanfrage zurück setzen">X</a></span>
 % }
