@@ -19,7 +19,7 @@ sub _search_posts {
 sub _query_posts {
     my $c = shift;
     $c->session->{query} = $c->param('query');
-    _redirect_to_show($c);
+    $c->show;
 }
 
 sub _get_show_sql {
@@ -52,18 +52,22 @@ sub _show_posts {
     my ( $wheres, @wherep ) = $c->where_select;
     my $query  = $c->session->{query};
     my $cname = $c->stash('controller');
-    $c->stash( 
-        query   => $query,
-        dourl   => $c->url_for("add_${cname}", $c->additional_params ), # Neuen Beitrag erstellen
-        editurl => "edit_${cname}_form",           # Formuar zum Bearbeiten von Beiträgen
-        delurl  => "delete_${cname}_check",        # Formular, um den Löschvorgang einzuleiten
-        uplurl  => "upload_${cname}_form",         # Formular für Dateiuploads
-        delupl  => "delete_upload_${cname}_check", # Formular zum entfernen von Anhängen
-        pageurl => "show_${cname}_page",           # Seitenweiterschaltung
-    );
+    $c->stash( query   => $query );
+    if ( $c->stash('action') ne 'search' ) {
+        $c->stash(
+            dourl   => $c->url_for("add_${cname}", $c->additional_params ), # Neuen Beitrag erstellen
+            editurl => "edit_${cname}_form",           # Formuar zum Bearbeiten von Beiträgen
+            delurl  => "delete_${cname}_check",        # Formular, um den Löschvorgang einzuleiten
+            uplurl  => "upload_${cname}_form",         # Formular für Dateiuploads
+            delupl  => "delete_upload_${cname}_check", # Formular zum entfernen von Anhängen
+            pageurl => "show_${cname}_page",
+        );
+    }
+    else {
+        $c->stash( pageurl => "search_${cname}_posts_page" );
+    }
     _setup_stash($c);
     $c->stash(queryurl => $queryurl) if $queryurl;
-
     my $sql = $c->get_show_sql($wheres);
     my $posts = $c->dbh->selectall_arrayref(
         $sql, undef, @wherep, ( $query ? "\%$query\%" : () ), _pagination($c)

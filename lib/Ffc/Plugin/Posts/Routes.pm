@@ -15,6 +15,14 @@ sub install_routes_posts {
     # Diese Route wird für die Seitenweiterschaltung verwendet.
     $l->route("$start/:page", @startps, page => $Ffc::Digqr)->via('get')
       ->to(controller => $cname, action => 'show')->name("show_${cname}_page");
+
+    # Diese Routen sorgen für die allgemeine Suche und deren Seitenweiterschaltung
+    $l->route("/$cname/search")
+      ->to(controller => $cname, action => 'search')
+      ->name("search_${cname}_posts");
+    $l->route("/$cname/search/:page", page => $Ffc::Digqr)
+      ->to(controller => $cname, action => 'search')
+      ->name("search_${cname}_posts_page");
     
     # Die folgende Route fügt einen neuen Beitrag hinzu.
     $l->route("$start/new", @startps)->via('post')

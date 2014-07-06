@@ -7,9 +7,6 @@ sub install_routes {
     $l->route('/forum')->via('get')
       ->to(controller => 'forum', action => 'show_topiclist')
       ->name('show_forum_topiclist');
-    $l->route('/forum/search')
-      ->to(controller => 'forum', action => 'search')
-      ->name('search_forum_posts');
     $l->route('/topic/new')->via('get')
       ->to(controller => 'forum', action => 'add_topic_form')
       ->name('add_forum_topic_form');

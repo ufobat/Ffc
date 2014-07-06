@@ -7,9 +7,6 @@ sub install_routes {
     $l->route('/pmsgs')->via('get')
       ->to(controller => 'pmsgs', action => 'show_userlist')
       ->name('show_pmsgs_userlist');
-    $l->route('/pmsgs/search')
-      ->to(controller => 'pmsgs', action => 'search')
-      ->name('search_pmsgs_posts');
     Ffc::Plugin::Posts::install_routes_posts($l, 'pmsgs', '/pmsgs/:userid', userid => $Ffc::Digqr);
 }
 

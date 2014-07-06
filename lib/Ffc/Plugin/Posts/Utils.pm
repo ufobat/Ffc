@@ -33,6 +33,10 @@ sub _redirect_to_show {
     $_[0]->redirect_to('show_'.$_[0]->stash('controller'), $_[0]->additional_params)
 }
 
+sub _redirect_to_search {
+    $_[0]->redirect_to('search_'.$_[0]->stash('controller').'_posts')
+}
+
 sub _get_single_post {
     my $c = shift;
     my ( $wheres, @wherep ) = $c->where_select;

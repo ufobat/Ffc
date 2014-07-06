@@ -69,7 +69,7 @@ sub register {
         map( {;$_.'count' => 0} 
             qw(newmsgs newpost note) ),
         map( {;$_ => ''} 
-            qw(error info warning query textdata heading description backtext queryurl
+            qw(error info warning query textdata heading description backtext queryurl pageurl
                dourl returl editurl msgurl delurl uplurl delupl downld backurl topicediturl ) ),
     });
 
