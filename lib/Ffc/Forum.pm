@@ -56,17 +56,7 @@ sub additional_params {
     return topicid => $_[0]->param('topicid');
 }
 
-sub search { 
-    my $c = shift;
-    if ( $c->param('query') ) {
-        $c->stash( queryurl => $c->url_for('search_forum_posts') );
-        $c->counting;
-        $c->search_posts;
-    }
-    else {
-        $c->show_topiclist;
-    }
-}
+sub search { $_[0]->search_posts }
 
 sub show_topiclist {
     my $c = shift;

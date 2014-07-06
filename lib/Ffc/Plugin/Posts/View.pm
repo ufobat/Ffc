@@ -12,7 +12,15 @@ sub _pagination {
 
 sub _search_posts {
     my $c = shift;
-    $c->session->{query} = $c->param('query');
+    my $cname = $c->stash('controller');
+    $c->stash( 
+        queryurl => $c->url_for("search_${cname}_posts"),
+        returl   => $c->url_for("search_${cname}_posts"),
+    );
+    $c->counting;
+    if ( my $q = $c->param('query') ) {
+        $c->session->{query} = $q;
+    }
     _show_posts($c);
 }
 
@@ -52,7 +60,7 @@ sub _show_posts {
     my ( $wheres, @wherep ) = $c->where_select;
     my $query  = $c->session->{query};
     my $cname = $c->stash('controller');
-    $c->stash( query   => $query );
+    $c->stash( query => $query );
     if ( $c->stash('action') ne 'search' ) {
         $c->stash(
             dourl   => $c->url_for("add_${cname}", $c->additional_params ), # Neuen Beitrag erstellen
@@ -62,11 +70,13 @@ sub _show_posts {
             delupl  => "delete_upload_${cname}_check", # Formular zum entfernen von Anhängen
             pageurl => "show_${cname}_page",
         );
+        _setup_stash($c);
     }
     else {
         $c->stash( pageurl => "search_${cname}_posts_page" );
+        _setup_stash($c);
+        $c->stash( additional_params => [] );
     }
-    _setup_stash($c);
     $c->stash(queryurl => $queryurl) if $queryurl;
     my $sql = $c->get_show_sql($wheres);
     my $posts = $c->dbh->selectall_arrayref(
@@ -74,12 +84,11 @@ sub _show_posts {
     );
     $c->stash(posts => $posts);
 
-    $c->get_attachements($posts, $wheres, @wherep);
-
     if ( $c->stash('action') eq 'search' ) {
         $c->render(template => 'search');
     }
     else {
+        $c->get_attachements($posts, $wheres, @wherep);
         $c->render(template => 'posts');
     }
 }

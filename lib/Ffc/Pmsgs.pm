@@ -36,17 +36,7 @@ sub additional_params {
     return userid => $_[0]->param('userid');
 }
 
-sub search { 
-    my $c = shift;
-    if ( $c->param('query') ) {
-        $c->stash( queryurl => $c->url_for('search_pmsgs_posts') );
-        $c->counting;
-        $c->search_posts;
-    }
-    else {
-        $c->show_userlist;
-    }
-}
+sub search { $_[0]->search_posts }
 
 sub show_userlist {
     my $c = shift;
