@@ -10,7 +10,7 @@ body {
     background: url('img/hg.png') no-repeat top center fixed gainsboro;
     max-width: 46em;
 }
-body > *, .topicpopup, .userspopup {
+body > *, .popup {
     padding: 0 1em 1em 1em;
     margin-top: .5em;
     background: white;
@@ -36,7 +36,7 @@ h2 {
 h3 {
     text-decoration: underline;
 }
-.loginform, .menu, .headbox, .pages, .topicpopup, .userspopup {
+.loginform, .menu, .headbox, .pages, .popup {
     background: whitesmoke;
 }
 img {
@@ -289,7 +289,7 @@ input[type="text"].titlestring {
 }
 .emotion:before { content:"*" }
 .emotion:after  { content:"*" }
-.topicpopup, .userspopup {
+.popup {
     display: none;
     position: absolute;
     text-align: left;
@@ -297,7 +297,7 @@ input[type="text"].titlestring {
     box-shadow: 0 0 1px dimgray;
     padding: .5em 1em;
 }
-.menuentry:hover .topicpopup, .menuentry:hover .userspopup {
+.menuentry:hover .popup {
     display: inline;
 }
 .menu, .pages {

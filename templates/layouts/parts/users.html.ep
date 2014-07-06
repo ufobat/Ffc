@@ -1,4 +1,4 @@
-<div class="userspopup">
+<div class="userspopup popup">
 % for my $u ( @$users ) {
     <p>
         <a href="<%= url_for 'show_pmsgs', userid => $u->[0] %>"

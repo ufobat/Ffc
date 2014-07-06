@@ -1,4 +1,4 @@
-<div class="topicpopup">
+<div class="topicpopup popup">
 % for my $t ( @$topics ) {
     <p>
         <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"
