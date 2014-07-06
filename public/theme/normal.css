@@ -300,5 +300,5 @@ input[type="text"].titlestring {
     display: inline;
 }
 .menu, .pages {
-    border-color: transparent;
+    border-color: whitesmoke;
 }
