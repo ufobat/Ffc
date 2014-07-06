@@ -295,6 +295,7 @@ input[type="text"].titlestring {
     text-align: left;
     margin-top: 1.25em;
     box-shadow: 0 0 1px dimgray;
+    padding: .5em 1em;
 }
 .menuentry:hover .topicpopup, .menuentry:hover .userspopup {
     display: inline;
