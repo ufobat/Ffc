@@ -36,7 +36,7 @@ sub additional_params {
     return userid => $_[0]->param('userid');
 }
 
-sub search { $_[0]->search_posts }
+sub search { $_[0]->search_posts(); }
 
 sub show_userlist {
     my $c = shift;

@@ -75,7 +75,10 @@ sub _show_posts {
     else {
         $c->stash( pageurl => "search_${cname}_posts_page" );
         _setup_stash($c);
-        $c->stash( additional_params => [] );
+        $c->stash( 
+            additional_params => [],
+            returl            => $c->url_for("search_${cname}_posts"),
+        );
     }
     $c->stash(queryurl => $queryurl) if $queryurl;
     my $sql = $c->get_show_sql($wheres);

@@ -56,7 +56,7 @@ sub additional_params {
     return topicid => $_[0]->param('topicid');
 }
 
-sub search { $_[0]->search_posts }
+sub search { $_[0]->search_posts(); }
 
 sub show_topiclist {
     my $c = shift;
