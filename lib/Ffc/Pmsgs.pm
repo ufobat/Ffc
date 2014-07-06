@@ -2,6 +2,8 @@ package Ffc::Pmsgs;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 
+use Ffc::Pmsgs::Userlist;
+
 sub install_routes { 
     my $l = shift;
     $l->route('/pmsgs')->via('get')
@@ -37,26 +39,6 @@ sub additional_params {
 }
 
 sub search { $_[0]->search_posts(); }
-
-sub show_userlist {
-    my $c = shift;
-    $c->counting;
-    $c->session->{query} = '';
-    $c->stash( queryurl => $c->url_for('search_pmsgs_posts') );
-    $c->render(template => 'userlist');
-}
-
-sub _get_username {
-    my $c = shift;
-    my $name = $c->dbh->selectall_arrayref(
-        'SELECT "name" FROM "users" WHERE "id"=?', undef, $c->param('userid'));
-    unless ( @$name ) {
-        $c->set_error(
-            'Benutzername für Benutzerid "'.($c->param('userid') // '<NULL>').'" konnte nicht ermittelt werden');
-        return 'Unbekannt';
-    }
-    return $name->[0]->[0];
-}
 
 sub show {
     my $c = shift;
