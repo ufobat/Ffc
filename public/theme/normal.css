@@ -300,6 +300,3 @@ input[type="text"].titlestring {
 .menuentry:hover .popup {
     display: inline;
 }
-.menu, .pages {
-    border-color: whitesmoke;
-}
