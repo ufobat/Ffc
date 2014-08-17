@@ -14,9 +14,9 @@ my ( $user1, $pass1 ) = ( Testinit::test_randstring(), Testinit::test_randstring
 my ( $user2, $pass2 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
 Testinit::test_add_users( $t, $admin, $apass, $user1, $pass1, $user2, $pass2 );
 
-sub logina { Testinit::test_login(   $t, $admin, $apass ) }
-sub login1 { Testinit::test_login(   $t, $user1, $pass1 ) }
-sub login2 { Testinit::test_login(   $t, $user2, $pass2 ) }
+sub logina { Testinit::test_login( $t, $admin, $apass ) }
+sub login1 { Testinit::test_login( $t, $user1, $pass1 ) }
+sub login2 { Testinit::test_login( $t, $user2, $pass2 ) }
 
 sub check_list {
     my ($lu, $lui, $u1, $u1i, $u1o, $u2, $u2i, $u2o) = @_;
