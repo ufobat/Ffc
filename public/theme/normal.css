@@ -294,8 +294,10 @@ input[type="text"].titlestring {
     position: absolute;
     text-align: left;
     margin-top: 1.25em;
-    box-shadow: 0 0 1px dimgray;
     padding: .5em 1em;
+}
+.popup, .messagebox > div {
+    box-shadow: 0 0 2px dimgray;
 }
 .menuentry:hover .popup {
     display: inline;
