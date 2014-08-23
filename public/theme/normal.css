@@ -231,8 +231,12 @@ img.smiley, img.icon {
     width: 1em;
     height: 1em;
 }
-ul.topiclist, ul.attachements {
+ul.topiclist {
     list-style: none;
+}
+ol.attachements li img {
+    vertical-align: top;
+    margin-bottom: 0.5em;
 }
 li {
     margin-left: 2em;
