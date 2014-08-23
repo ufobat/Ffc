@@ -300,7 +300,7 @@ input[type="text"].titlestring {
     margin-top: 1.25em;
     padding: .5em 1em;
 }
-.popup, .messagebox > div {
+.popup, .messagebox > div, textarea:focus, textarea.inedit, input:focus {
     box-shadow: 0 0 2px dimgray;
 }
 .menuentry:hover .popup {
