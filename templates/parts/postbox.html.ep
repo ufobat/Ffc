@@ -5,6 +5,7 @@
         <%== $post->[2] ? post_format($post->[2]) . ',' : '' %>
 % }
         <%= format_timestamp($post->[6]) %>
+% if ( not $postid ) {
     (
 % if ( ( $editurl or $delurl or $uplurl ) and $post->[1] == session()->{userid} ) {
 %  if ( $controller ne 'pmsgs' ) {
@@ -28,6 +29,7 @@
         <a href="<%= url_for "display_$controller", postid => $post->[0], @$additional_params %>" 
            title="Beitrag einzeln anzeigen zum Verlinken">Link</a>
     )
+% }
     </h2>
 %== $post->[8];
 % if ( my @attments = grep { $_->[1] == $post->[0] } @$attachements ) {
