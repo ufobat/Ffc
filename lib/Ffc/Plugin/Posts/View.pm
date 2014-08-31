@@ -31,7 +31,7 @@ sub _query_posts {
 }
 
 sub _get_show_sql {
-    my ( $c, $wheres, $noorder ) = @_;
+    my ( $c, $wheres, $noorder, $postid ) = @_;
     my $query  = $c->session->{query};
 
     my $sql = qq~SELECT\n~
@@ -49,6 +49,15 @@ sub _get_show_sql {
     elsif ( $query ) {
         $sql .= qq~WHERE UPPER(p."textdata") LIKE UPPER(?)\n~;
     }
+    if ( $postid ) {
+        if ( $wheres or $query ) {
+            $sql .= q~AND ~;
+        }
+        else {
+            $sql .= q~WHERE ~;
+        }
+        $sql .= qq~p."id"=?\n~;
+    }
 
     $sql .= 'ORDER BY p."id" DESC LIMIT ? OFFSET ?' unless $noorder;
     return $sql;
@@ -59,6 +68,7 @@ sub _show_posts {
     my $queryurl = shift;
     my ( $wheres, @wherep ) = $c->where_select;
     my $query  = $c->session->{query};
+    my $postid = $c->param('postid');
     my $cname = $c->stash('controller');
     $c->stash( query => $query );
     if ( $c->stash('action') ne 'search' ) {
@@ -81,9 +91,9 @@ sub _show_posts {
         );
     }
     $c->stash(queryurl => $queryurl) if $queryurl;
-    my $sql = $c->get_show_sql($wheres);
+    my $sql = $c->get_show_sql($wheres, undef, $postid);
     my $posts = $c->dbh->selectall_arrayref(
-        $sql, undef, @wherep, ( $query ? "\%$query\%" : () ), _pagination($c)
+        $sql, undef, @wherep, ( $query ? "\%$query\%" : () ), ($postid || ()),  _pagination($c)
     );
     $c->stash(posts => $posts);
 
@@ -92,7 +102,12 @@ sub _show_posts {
     }
     else {
         $c->get_attachements($posts, $wheres, @wherep);
-        $c->render(template => 'posts');
+        if ( $postid ) {
+            $c->render(template => 'display');
+        }
+        else {
+            $c->render(template => 'posts');
+        }
     }
 }
 

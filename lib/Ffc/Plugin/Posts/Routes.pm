@@ -8,6 +8,11 @@ sub install_routes_posts {
     # Die erste Route zeigt die Liste der passenden Beiträge an.
     $l->route($start, @startps)->via('get')
       ->to(controller => $cname, action => 'show')->name("show_${cname}");
+    # Mit dieser Route kann man direkt auf einen Beitrag verlinken, der
+    # dann in einem extra Fenster angezeigt wird ohne Schnörkel und Menü
+    # und so
+    $l->route("$start/display/:postid", @startps, postid => $Ffc::Digqr)->via('get')
+      ->to(controller => $cname, action => 'show')->name("display_${cname}");
     # Diese Route führt zur Routine, welche das Filterfeld aus dem Menü
     # umsetzt.
     $l->route("$start/query", @startps)->via('post')

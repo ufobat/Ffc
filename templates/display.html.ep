@@ -1,0 +1,5 @@
+% layout 'display';
+% for my $p ( @$posts) {
+%= include 'parts/postbox', post => $p
+% }
+

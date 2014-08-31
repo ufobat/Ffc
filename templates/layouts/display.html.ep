@@ -1,0 +1,5 @@
+%= include 'layouts/parts/header';
+%= include 'parts/messageboxes'
+%= content
+%= include 'layouts/parts/footer';
+

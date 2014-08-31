@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><%= $title %> (<%= $newpostcount %>/<%= $newmsgscount %>)</title>
-    <%= stylesheet stylefile() %>
-    <link rel="icon" type="image/ico" href="<%= url_for $favicon %>" />
-%= include 'layouts/parts/styleinc'
-  </head>
-  <body>
-<!-- Angemeldet als "<%= session()->{user} %>" !-->
-
+%= include 'layouts/parts/header';
 <div class="menu">
     <div class="menuentry">
 <%= $topics && @$topics ? include('layouts/parts/topics') : '' %>
@@ -51,5 +41,4 @@
 
 %= content
 
-  </body>
-</html>
+%= include 'layouts/parts/footer';
