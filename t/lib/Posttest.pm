@@ -3,25 +3,35 @@ use warnings;
 use utf8;
 use 5.010;
 
+use Testinit;
+use Test::Mojo;
+
+my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
+
+my ( $user1, $pass1 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
+my ( $user2, $pass2 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
+Testinit::test_add_users( $t, $admin, $apass, $user1, $pass1, $user2, $pass2 );
+
+sub logina { Testinit::test_login( $t, $admin, $apass ) }
+sub login1 { Testinit::test_login( $t, $user1, $pass1 ) }
+sub login2 { Testinit::test_login( $t, $user2, $pass2 ) }
+
+sub info    { Testinit::test_info(    $t, @_ ) }
+sub error   { Testinit::test_error(   $t, @_ ) }
+sub warning { Testinit::test_warning( $t, @_ ) }
+
 sub run_tests {
-    my ( $urlpref, $check_env_sub, $t, $users ) = @_;
+    my ( $urlpref, $check_env_sub ) = @_;
     my @entries;
 
     # shortcuts for user logins
-    my $logina = sub { Testinit::test_login( $t, $users->[0][0], $users->[0][1] ) };
-    my $login1 = sub { Testinit::test_login( $t, $users->[1][0], $users->[1][1] ) };
-    my $login2 = sub { Testinit::test_login( $t, $users->[2][0], $users->[2][1] ) };
 
-    my $i = sub { Testinit::test_info(    $t, @_ ) };
-    my $e = sub { Testinit::test_error(   $t, @_ ) };
-    my $w = sub { Testinit::test_warning( $t, @_ ) };
+    $check_env_sub->($t, \@entries);
 
-    $check_env_sub->(\@entries);
-
-    $login1->();
+    login1();
 
     $t->post_ok("$urlpref/new", form => {})->status_is(200);
-    $e->('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\)');
+    error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\)');
 }
 
 1;
