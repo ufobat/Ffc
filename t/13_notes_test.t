@@ -3,7 +3,7 @@ use Mojo::Base -strict;
 use FindBin;
 use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
-use Posttest;
+require Posttest;
 
 use Test::Mojo;
 use Test::More tests => 50;
