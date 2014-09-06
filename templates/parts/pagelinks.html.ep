@@ -1,4 +1,7 @@
 <div class="pages">
+% if ( $page > 1 ) {
+    Seite <%= $page %> /
+% }
 % if ( $more ) {
     <a href="<%= url_for $pageurl, page => $page + 1, @$additional_params %>" 
        title="Zur nächsten Seite gehen">&lt; Ältere Beiträge</a>
