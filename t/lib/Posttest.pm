@@ -97,6 +97,10 @@ sub check_pages {
                 $t->content_like(qr/$e->[1]/);
             }
         }
+        $t->get_ok("/notes/display/$_->[0]")
+          ->status_is(200)
+          ->content_like(qr~$_->[1]~)
+            for @entries;
     }
     else {
         $t->get_ok( '/notes' )->status_is(200);

@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 require Posttest;
 
 use Test::Mojo;
-use Test::More tests => 179;
+use Test::More tests => 228;
 
 # runs a standardized test suite
 run_tests('/notes', \&check_env);
@@ -19,6 +19,10 @@ sub check_env {
     login2();
     $t->get_ok('/notes')->status_is(200);
     $t->content_unlike(qr~$_->[1]~) for @$entries;
+    for my $e ( @$entries ) {
+        $t->get_ok("/notes/display/$e->[0]")->status_is(200);
+        $t->content_unlike(qr~$e->[1]~)->content_unlike(qr~postbox~);
+    }
 }
 
 
