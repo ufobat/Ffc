@@ -6,6 +6,8 @@ use 5.010;
 use Testinit;
 use Test::Mojo;
 
+our $Postlimit = 3;
+
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 
 my ( $user1, $pass1 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
@@ -20,8 +22,16 @@ sub info    { Testinit::test_info(    $t, @_ ) }
 sub error   { Testinit::test_error(   $t, @_ ) }
 sub warning { Testinit::test_warning( $t, @_ ) }
 
+sub set_postlimit {
+    my ( $t ) = @_;
+    $t->post_ok('/options/admin/boardsettings/postlimit',
+        form => { optionvalue => $Postlimit })
+      ->status_is(200);
+}
+
 sub run_tests {
     my ( $urlpref, $check_env_sub ) = @_;
+    set_postlimit($t);
     my @entries;
 
     # shortcuts for user logins

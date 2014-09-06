@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 require Posttest;
 
 use Test::Mojo;
-use Test::More tests => 50;
+use Test::More tests => 52;
 
 # runs a standardized test suite
 run_tests( '/notes', \&check_env );
@@ -14,6 +14,7 @@ run_tests( '/notes', \&check_env );
 # checks for correct appearance of side effects
 sub check_env {
     my ( $t, $entries ) = @_;
+    #die $main::Postlimit;
     login1();
     if ( @$entries ) {
         $t->get_ok( '/notes/' )->status_is(200);
