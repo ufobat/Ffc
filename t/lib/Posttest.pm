@@ -67,7 +67,7 @@ sub update_text {
       ->header_like(location => qr~http://localhost:\d+$Urlpref~);
     $t->get_ok($Urlpref)->status_is(200);
     if ( $entry->[2] eq $user ) {
-        $entry->[1] = $str;
+        $entry->[1] = "<p>\\s*$str\\s*</p>";
         info('Der Beitrag wurde geändert');
     }
     else {
@@ -82,7 +82,7 @@ sub insert_text {
       ->status_is(302)->content_is('')
       ->header_like(location => qr~http://localhost:\d+$Urlpref~);
     $t->get_ok($Urlpref)->status_is(200)->content_like(qr~$str~);
-    unshift @entries, my $entry = [$#entries + 2, $str, $from // $user1];
+    unshift @entries, my $entry = [$#entries + 2, "<p>\\s*$str\\s*</p>", $from // $user1];
     return $entry;
 }
 
