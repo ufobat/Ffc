@@ -93,7 +93,7 @@ sub add_attachement {
       ->header_like(location => qr~http://localhost:\d+$Urlpref~);
     $t->get_ok($Urlpref)->status_is(200);
     if ( $entry->[2] eq $user ) {
-        push @{$entry->[3]}, [ $attcnt++, $str, $nam ];
+        push @{$entry->[4]}, [ $attcnt++, $str, $nam ];
         info('Datei an den Beitrag angehängt');
     }
     else {
@@ -128,13 +128,13 @@ sub update_text {
 }
 
 sub insert_text {
-    my ( $from ) = @_;
+    my ( $from, $to ) = @_;
     my $str = Testinit::test_randstring();
     $t->post_ok("$Urlpref/new", form => { textdata => $str })
       ->status_is(302)->content_is('')
       ->header_like(location => qr~http://localhost:\d+$Urlpref~);
     $t->get_ok($Urlpref)->status_is(200)->content_like(qr~$str~);
-    unshift @entries, my $entry = [$#entries + 2, $str, $from // $user1, []];
+    unshift @entries, my $entry = [$#entries + 2, $str, $from // $user1, $to, []];
     return $entry;
 }
 
