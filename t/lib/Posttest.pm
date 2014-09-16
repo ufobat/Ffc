@@ -13,6 +13,7 @@ our $Check_env = sub { die 'not implemented' };
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my @entries;
+my $attcnt = 1;
 
 my ( $user1, $pass1 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
 my ( $user2, $pass2 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
@@ -55,19 +56,70 @@ sub run_tests {
     login1();
     update_text($user1, $_) for 1, 3, 6;
     ck();
+
+    login2();
+    add_attachement($user2, 0);
+
+    login1();
+    add_attachement($user1, $_) for 1, 3, 3, 5, 5, 5, 6;
+    ck();
+}
+
+sub add_attachement {
+    my ( $user, $i ) = @_;
+    my $entry = $entries[$i] or die "no entry count '$i' available";
+    my ( $str, $nam ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
+    $nam .= '.png';
+    $t->get_ok("$Urlpref/upload/$entry->[0]")->status_is(200);
+    if ( $entry->[2] eq $user ) { 
+        $t->content_like(qr~<p>\s*$entry->[1]\s*</p>~xms);
+        $t->content_like(qr~<form action="$Urlpref/upload/$entry->[0]"\s+accept-charset="UTF-8"\s+enctype="multipart/form-data"\s+method="POST">~);
+    }
+    else {
+        $t->content_unlike(qr~<p>\s*$entry->[1]\s*</p>~xms);
+        warning('Keine passenden Beiträge gefunden');
+    }
+    $t->post_ok("$Urlpref/upload/$entry->[0]", 
+        form => { 
+            postid => $entry->[0],
+            attachement => {
+                file => Mojo::Asset::Memory->new->add_chunk($str),
+                filename => $nam,
+                content_type => 'image/png',
+            },
+        }
+    );
+    $t->status_is(302)->content_is('')
+      ->header_like(location => qr~http://localhost:\d+$Urlpref~);
+    $t->get_ok($Urlpref)->status_is(200);
+    if ( $entry->[2] eq $user ) {
+        push @{$entry->[3]}, [ $attcnt++, $str, $nam ];
+        info('Datei an den Beitrag angehängt');
+    }
+    else {
+        error('Zum angegebene Beitrag kann kein Anhang hochgeladen werden.');
+    }
 }
 
 sub update_text {
     my ( $user, $i ) = @_;
     my $entry = $entries[$i] or die "no entry count '$i' available";
     my $str = Testinit::test_randstring();
+    $t->get_ok("$Urlpref/edit/$entry->[0]")->status_is(200);
+    if ( $entry->[2] eq $user ) { 
+        $t->content_like(qr~$entry->[1]\s*</textarea>~xms);
+    }
+    else {
+        $t->content_unlike(qr~$entry->[1]\s*</textarea>~xms);
+        warning('Keine passenden Beiträge gefunden');
+    }
     $t->post_ok("$Urlpref/edit/$entry->[0]", 
         form => { textdata => $str, postid => $entry->[0] })
       ->status_is(302)->content_is('')
       ->header_like(location => qr~http://localhost:\d+$Urlpref~);
     $t->get_ok($Urlpref)->status_is(200);
     if ( $entry->[2] eq $user ) {
-        $entry->[1] = "<p>\\s*$str\\s*</p>";
+        $entry->[1] = $str;
         info('Der Beitrag wurde geändert');
     }
     else {
@@ -82,7 +134,7 @@ sub insert_text {
       ->status_is(302)->content_is('')
       ->header_like(location => qr~http://localhost:\d+$Urlpref~);
     $t->get_ok($Urlpref)->status_is(200)->content_like(qr~$str~);
-    unshift @entries, my $entry = [$#entries + 2, "<p>\\s*$str\\s*</p>", $from // $user1];
+    unshift @entries, my $entry = [$#entries + 2, $str, $from // $user1, []];
     return $entry;
 }
 
@@ -95,7 +147,7 @@ sub check_pages {
         $t->get_ok($Urlpref)->status_is(200);
         for my $e ( @entries[0 .. $main::Postlimit - 1] ) {
             next unless $e;
-            $t->content_like(qr/$e->[1]/);
+            $t->content_like(qr~<p>\s*$e->[1]\s*</p>~);
         }
         for my $page ( 1 .. $pages ) {
             my $offset = ( $page - 1 ) * $main::Postlimit;
@@ -124,7 +176,7 @@ sub check_pages {
         }
         $t->get_ok("/notes/display/$_->[0]")
           ->status_is(200)
-          ->content_like(qr~$_->[1]~)
+          ->content_like(qr~<p>\s*$_->[1]\s*</p>~)
             for @entries;
     }
     else {

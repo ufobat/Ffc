@@ -1,3 +1,4 @@
+% if ( $post and ref($post) eq 'ARRAY' and $#$post ) {
 <div class="postbox<%= $post->[1] != session->{userid} && $lastseen < $post->[0] && $controller ne 'notes' ? ' newpost' : '' %>">
     <h2 class="title">
 % if ( $controller ne 'notes' ) {
@@ -53,3 +54,4 @@
     </h2>
 % }
 </div>
+% }
