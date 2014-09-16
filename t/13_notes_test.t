@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 require Posttest;
 
 use Test::Mojo;
-use Test::More tests => 909;
+use Test::More tests => 917;
 
 # runs a standardized test suite
 run_tests('/notes', \&check_env);
@@ -24,8 +24,10 @@ sub check_env {
     }
     check_pages();
     login2();
+    $t->content_like(qr~Notizen\s*</span>\s*</a>~);
     check_wrong_user($t, $entries);
     logina();
+    $t->content_like(qr~Notizen\s*</span>\s*</a>~);
     check_wrong_user($t, $entries);
 }
 
