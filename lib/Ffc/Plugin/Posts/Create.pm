@@ -66,7 +66,15 @@ sub _edit_post_do {
         return $c->edit_form;
     }
 
-    my $sql = qq~UPDATE "posts"\n~
+    my $sql = qq~ SELECT COUNT("id")\nFROM "posts"\n~
+            . qq~ WHERE "id"=?~;
+    $sql .= qq~ AND $wheres~ if $wheres;
+    unless ( $c->dbh->selectall_arrayref( $sql, undef, $postid, @wherep )->[0]->[0] ) {
+        $c->set_error_f('Kein passender Beitrag zum ändern gefunden');
+        return _redirect_to_show($c);
+    }
+
+    $sql = qq~UPDATE "posts"\n~
             . qq~SET "textdata"=?, "cache"=?, "altered"=current_timestamp\n~
             . qq~WHERE "id"=?~;
     $sql .= qq~ AND $wheres~ if $wheres;
