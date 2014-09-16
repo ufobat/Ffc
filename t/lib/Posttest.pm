@@ -48,16 +48,41 @@ sub run_tests {
     login1();
     map { insert_text() } 1 .. $Postlimit * 2 + 1;
     ck();
+
+    login2();
+    update_text($user2, 0);
+
+    login1();
+    update_text($user1, $_) for 1, 3, 6;
+    ck();
+}
+
+sub update_text {
+    my ( $user, $i ) = @_;
+    my $entry = $entries[$i] or die "no entry count '$i' available";
+    my $str = Testinit::test_randstring();
+    $t->post_ok("$Urlpref/edit/$entry->[0]", 
+        form => { textdata => $str, postid => $entry->[0] })
+      ->status_is(302)->content_is('')
+      ->header_like(location => qr~http://localhost:\d+$Urlpref~);
+    $t->get_ok($Urlpref)->status_is(200);
+    if ( $entry->[2] eq $user ) {
+        $entry->[1] = $str;
+        info('Der Beitrag wurde geändert');
+    }
+    else {
+        error('Kein passender Beitrag zum ändern gefunden');
+    }
 }
 
 sub insert_text {
-    my ( $user ) = @_;
+    my ( $from ) = @_;
     my $str = Testinit::test_randstring();
     $t->post_ok("$Urlpref/new", form => { textdata => $str })
       ->status_is(302)->content_is('')
       ->header_like(location => qr~http://localhost:\d+$Urlpref~);
     $t->get_ok($Urlpref)->status_is(200)->content_like(qr~$str~);
-    unshift @entries, my $entry = [$#entries + 2, $str, $user // $user1];
+    unshift @entries, my $entry = [$#entries + 2, $str, $from // $user1];
     return $entry;
 }
 

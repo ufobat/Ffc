@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 require Posttest;
 
 use Test::Mojo;
-use Test::More tests => 285;
+use Test::More tests => 485;
 
 # runs a standardized test suite
 run_tests('/notes', \&check_env);
