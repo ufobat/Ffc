@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 require Posttest;
 
 use Test::Mojo;
-use Test::More tests => 905;
+use Test::More tests => 909;
 
 # runs a standardized test suite
 run_tests('/notes', \&check_env);
@@ -14,7 +14,14 @@ run_tests('/notes', \&check_env);
 # checks for correct appearance of side effects
 sub check_env {
     my ( $t, $entries ) = @_;
+    my $cnt = @$entries;
     login1();
+    if ( $cnt ) {
+        $t->content_like(qr~Notizen\s+\(<span\s+class="notecount">$cnt</span>\)\s*</span>\s*</a>~);
+    }
+    else {
+        $t->content_like(qr~Notizen\s*</span>\s*</a>~);
+    }
     check_pages();
     login2();
     check_wrong_user($t, $entries);
