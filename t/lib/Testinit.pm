@@ -16,18 +16,11 @@ use lib
 our $Script 
     = catfile( splitdir(File::Basename::dirname(__FILE__)),
         '..', '..', 'script', 'init.pl' ) . ' debug';
-our @Chars = ('a' .. 'z', 'A' .. 'Z', 0 .. 9);
+our @Chars = ('a' .. 'z', 'A' .. 'Z');
 {
-    my %Strings;
-    my $ts = sub { join '', map { $Chars[int rand @Chars] } 1 .. 10 };
-    sub test_randstring {
-        my $str = $ts->();
-        while ( exists $Strings{$str} ) {
-            $str = $ts->();
-        }
-        $Strings{$str} = 1;
-        return $str;
-    }
+    my $scnt = 1;
+    my $ts = sub { join '', map { $Chars[int rand @Chars] } 1 .. 3 };
+    sub test_randstring { sprintf "%s%04d%s", $ts->(), $scnt++, $ts->() }
 }
 
 sub start_test {
