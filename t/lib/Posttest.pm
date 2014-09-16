@@ -152,8 +152,9 @@ sub check_pages {
         for my $page ( 1 .. $pages ) {
             my $offset = ( $page - 1 ) * $main::Postlimit;
             my $limit = $offset + $main::Postlimit - 1;
+            my $plink = "$Urlpref/$page";
 
-            $t->get_ok( "$Urlpref/$page" )->status_is(200);
+            $t->get_ok( $plink )->status_is(200);
             
             if ( $page > 1 ) {
                 $t->content_like(qr~href="$Urlpref"~);
@@ -172,16 +173,32 @@ sub check_pages {
                 my $e = $entries[$i];
                 next unless $e;
                 $t->content_like(qr/$e->[1]/);
+                check_attachements($e->[4]);
+                $t->get_ok( $plink )->status_is(200);
             }
         }
-        $t->get_ok("/notes/display/$_->[0]")
+        $t->get_ok("$Urlpref/display/$_->[0]")
           ->status_is(200)
           ->content_like(qr~<p>\s*$_->[1]\s*</p>~)
             for @entries;
     }
     else {
-        $t->get_ok( '/notes' )->status_is(200);
+        $t->get_ok( $Urlpref )->status_is(200);
     }
 }
+
+sub check_attachements {
+    my ( $attachements ) = @_;
+    for my $att ( @$attachements ) {
+        $t->content_like(qr"$Urlpref/download/$att->[0]")
+          ->content_like(qr~alt="$att->[2]"~);
+    }
+    for my $att ( @$attachements ) {
+        $t->get_ok("$Urlpref/download/$att->[0]")
+          ->status_is(200)
+          ->content_like(qr~$att->[1]~);
+    }
+}
+
 1;
 
