@@ -8,7 +8,7 @@ body {
     font-family: sans-serif;
     color: black;
     background: url('img/hg.png') no-repeat top center fixed gainsboro;
-    max-width: 46em;
+    max-width: 48em;
 }
 body > *, .popup {
     padding: 0 1em 1em 1em;
@@ -172,7 +172,7 @@ a:focus, .linkalike:focus {
     display: inline;
 }
 .menu > * {
-    padding: 0 .75em;
+    padding: 0 .5em;
 }
 form {
     display: inline;
