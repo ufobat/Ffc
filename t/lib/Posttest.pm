@@ -35,7 +35,7 @@ sub set_postlimit {
     info('Beitragsanzahl geändert');
 }
 
-sub ck { $Check_env->($t, \@entries) }
+sub ck { $Check_env->($t, shift() // \@entries, @_) }
 
 sub run_tests {
     ( $Urlpref, $Check_env ) = @_;
@@ -43,6 +43,7 @@ sub run_tests {
 
     ck();
 
+# test new entries
     $t->post_ok("$Urlpref/new", form => {})->status_is(200);
     error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\)');
 
@@ -50,6 +51,7 @@ sub run_tests {
     map { insert_text() } 1 .. $Postlimit * 2 + 1;
     ck();
 
+# test text updates
     login2();
     update_text($user2, 0);
 
@@ -57,12 +59,34 @@ sub run_tests {
     update_text($user1, $_) for 1, 3, 6;
     ck();
 
+# test query filter
+    login2();
+    query_string($entries[0][1]);
+    ck();
+    login1();
+    my $filter = query_string();
+    ck([$entries[$filter]], scalar(@entries));
+
+# test add attachements
     login2();
     add_attachement($user2, 0);
 
     login1();
     add_attachement($user1, $_) for 1, 3, 3, 5, 5, 5, 6;
     ck();
+}
+
+sub query_string {
+    my $filter = $Postlimit + 1;
+    my $str = $entries[$filter][1];
+    $t->post_ok("$Urlpref/query", form => { query => $str })
+      ->status_is(200)
+      ->content_like(qr~<input\s+class="activesearch"\s+name="query"\s+type="text"\s+value="$str"\s+\/>~);
+    for my $i ( 0 .. $#entries ) {
+        next if $i == $filter;
+        $t->content_unlike(qr~$entries[$i][1]~);
+    }
+    return $filter;
 }
 
 sub add_attachement {

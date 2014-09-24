@@ -6,15 +6,15 @@ use lib "$FindBin::Bin/../lib";
 require Posttest;
 
 use Test::Mojo;
-use Test::More tests => 917;
+use Test::More tests => 1235;
 
 # runs a standardized test suite
 run_tests('/notes', \&check_env);
 
 # checks for correct appearance of side effects
 sub check_env {
-    my ( $t, $entries ) = @_;
-    my $cnt = @$entries;
+    my ( $t, $entries, $cnt ) = @_;
+    $cnt = @$entries unless $cnt;
     login1();
     if ( $cnt ) {
         $t->content_like(qr~Notizen\s+\(<span\s+class="notecount">$cnt</span>\)\s*</span>\s*</a>~);
