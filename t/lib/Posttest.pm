@@ -43,7 +43,7 @@ sub run_tests {
 
     ck();
 
-    diag 'test new entries';
+    #diag 'test new entries';
     $t->post_ok("$Urlpref/new", form => {})->status_is(200);
     error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\)');
 
@@ -51,16 +51,16 @@ sub run_tests {
     map { insert_text() } 1 .. $Postlimit * 2 + 1;
     ck();
 
-    diag 'test text updates fail';
+    #diag 'test text updates fail';
     login2();
     update_text($user2, 0);
 
-    diag 'test text updates work';
+    #diag 'test text updates work';
     login1();
     update_text($user1, $_) for 1, 3, 6;
     ck();
 
-    diag 'test query filter';
+    #diag 'test query filter';
     login2();
     query_string($entries[0][1]);
     ck();
@@ -68,25 +68,25 @@ sub run_tests {
     my $filter = query_string();
     ck([$entries[$filter]], scalar(@entries));
 
-    diag 'test add attachements fails';
+    #diag 'test add attachements fails';
     login2();
     add_attachement($user2, 0);
 
-    diag 'test add attachements works';
+    #diag 'test add attachements works';
     login1();
     add_attachement($user1, $_) for 1, 3, 3, 5, 5, 5, 6; # array id's
     ck();
 
-    diag 'test delete single attachements fails';
+    #diag 'test delete single attachements fails';
     login2();
     del_attachement($user2, 6 => 7);
 
-    diag 'test delete single attachements works';
+    #diag 'test delete single attachements works';
     login1();
     del_attachement($user1, @$_) for [1 => 1], [5 => 6], [5 => 5]; # array id's to db id's!!!
     ck();
 
-    diag 'test delete complete posts (check attachements)';
+    #diag 'test delete complete posts (check attachements)';
 }
 
 sub del_attachement {
