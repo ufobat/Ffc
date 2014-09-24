@@ -13,7 +13,7 @@ run_tests('/notes', \&check_env);
 
 # checks for correct appearance of side effects
 sub check_env {
-    my ( $t, $entries, $cnt ) = @_;
+    my ( $t, $entries, $delents, $delatts, $cnt ) = @_;
     $cnt = @$entries unless $cnt;
     login1();
     if ( $cnt ) {

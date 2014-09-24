@@ -12,7 +12,7 @@ our $Urlpref = '/';
 our $Check_env = sub { die 'not implemented' };
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
-my @entries;
+my ( @entries, @delatts, @delents );
 my $attcnt = 1;
 
 my ( $user1, $pass1 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
@@ -35,7 +35,7 @@ sub set_postlimit {
     info('Beitragsanzahl geändert');
 }
 
-sub ck { $Check_env->($t, shift() // \@entries, @_) }
+sub ck { $Check_env->($t, shift() // \@entries, \@delents, \@delatts, @_) }
 
 sub run_tests {
     ( $Urlpref, $Check_env ) = @_;
@@ -74,6 +74,38 @@ sub run_tests {
     login1();
     add_attachement($user1, $_) for 1, 3, 3, 5, 5, 5, 6;
     ck();
+
+# test delete single attachements
+    #login2();
+    #del_attachement($user2, [6 => 0]);
+    #die;
+    #login1();
+    #del_attachement($user1, $_) for [1 => 0], [5 => 2], [5 => 1];
+    #ck();
+
+# test delete complete posts (check attachements)
+}
+
+sub del_attachement {
+    my ( $user, $eid, $aid ) = ( $_[0], @{$_[1]} );
+    $t->get_ok("$Urlpref/upload/delete/$eid/$aid")->status_is(200);
+    if ( $entries[$eid][2] eq $user ) {
+        $t->content_like(qr~<form\s+action="$Urlpref/upload/delete/$eid/$aid"\s+accept-charset="UTF-8"\s+method="POST">\s*<input\s+class="linkalike\s+send"\s+type="submit"\s+value="Entfernen"\s+/>\s*</form>~)
+          ->content_like(qr~Möchten Sie den gezeigten Anhang zu unten gezeigtem Beitrag wirklich löschen?~);
+    }
+    else {
+        warning(qq~Keine passenden Beiträge gefunden~);
+    }
+    $t->post_ok("$Urlpref/upload/delete/$eid/$aid")
+      ->status_is(302)->content_is('')
+      ->header_like(location => qr~http://localhost:\d+$Urlpref~);
+    $t->get_ok("$Urlpref/display/$eid")->status_is(200);
+    if ( $entries[$eid][2] eq $user ) {
+        info(qq~Anhang entfernt~);
+    }
+    else {
+        warning(qq~Keine passenden Beiträge gefunden~);
+    }
 }
 
 sub query_string {
