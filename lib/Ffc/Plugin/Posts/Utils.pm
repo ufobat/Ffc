@@ -65,6 +65,7 @@ sub _get_single_post {
     else {
         $c->set_warning('Keine passenden Beiträge gefunden');
         $c->stash( post => '' );
+        return;
     }
 
     $c->stash( textdata => $textdata );

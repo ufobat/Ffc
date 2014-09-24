@@ -47,7 +47,10 @@ sub _edit_post_form {
     my $c = shift;
     $c->stash( dourl => $c->url_for('edit_'.$c->stash('controller').'_do', $c->additional_params) );
     _setup_stash($c);
-    return unless _get_single_post($c, @_);
+    unless ( _get_single_post($c, @_) ) {
+        $c->set_error_f('Konnte keinen passenden Beitrag zum Ändern finden');
+        return _redirect_to_show($c);
+    }
     $c->render( template => 'edit_form' );
 }
 
@@ -57,9 +60,9 @@ sub _edit_post_do {
     my $postid = $c->param('postid');
     my $text = $c->param('textdata');
     unless ( $postid and $postid =~ $Ffc::Digqr ) {
-        $c->set_error('Konnte den Beitrag nicht ändern, da die Beitragsnummer irgendwie verloren ging');
+        $c->set_error_f('Konnte den Beitrag nicht ändern, da die Beitragsnummer irgendwie verloren ging');
         $c->stash(textdata => $text);
-        return $c->show;
+        return _redirect_to_show($c);
     }
     if ( !defined($text) or (2 > length $text) ) {
         $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen)');

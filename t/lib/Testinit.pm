@@ -77,6 +77,7 @@ sub test_info {
 
 sub test_warning {
     my ( $t, $warning ) = @_;
+    use Carp;
     $t->content_like(
         qr~<div\s+class="warning">\s*<h1>Warnung</h1>\s*<p>\s*$warning\s*</p>\s*</div>~);
 }

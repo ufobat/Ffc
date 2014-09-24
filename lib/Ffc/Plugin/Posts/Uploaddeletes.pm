@@ -8,7 +8,10 @@ sub _delete_upload_post_check {
     my $c = shift;
     $c->stash( dourl => $c->url_for('delete_upload_'.$c->stash('controller').'_do', $c->additional_params) );
     _setup_stash($c);
-    return unless _get_single_post($c, @_);
+    unless ( _get_single_post($c, @_) ) {
+        $c->set_error_f('Konnte keinen passenden Beitrag zum Löschen der Anhänge finden');
+        return _redirect_to_show($c);
+    }
     $c->render( template => 'delete_upload_check' );
 }
 
@@ -20,7 +23,10 @@ sub _delete_upload_post_do {
         $c->set_error_f('Kann den Anhang nicht löschen, da die IDs für den Beitrag oder den Anhang unterwegs irgendwie verloren gegangen sind');
         return _redirect_to_show($c);
     }
-    return unless _get_single_post($c, @_);
+    unless ( _get_single_post($c, @_) ) {
+        $c->set_error_f('Konnte keinen passenden Beitrag zum Löschen der Anhänge finden');
+        return _redirect_to_show($c);
+    }
     $c->stash(textdata => '');
     my $post = $c->stash('post');
     if ( $post->[0] != $c->stash('postid') ) {
@@ -48,6 +54,7 @@ sub _delete_upload_post_do {
         return _redirect_to_show($c);
     }
     $c->dbh->do('DELETE FROM "attachements" WHERE "id"=?', undef, $fileid);
+    $c->set_info_f('Anhang entfernt');
     _redirect_to_show($c);
 }
 

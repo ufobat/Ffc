@@ -43,7 +43,7 @@ sub run_tests {
 
     ck();
 
-# test new entries
+    diag 'test new entries';
     $t->post_ok("$Urlpref/new", form => {})->status_is(200);
     error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\)');
 
@@ -51,15 +51,16 @@ sub run_tests {
     map { insert_text() } 1 .. $Postlimit * 2 + 1;
     ck();
 
-# test text updates
+    diag 'test text updates fail';
     login2();
     update_text($user2, 0);
 
+    diag 'test text updates work';
     login1();
     update_text($user1, $_) for 1, 3, 6;
     ck();
 
-# test query filter
+    diag 'test query filter';
     login2();
     query_string($entries[0][1]);
     ck();
@@ -67,44 +68,53 @@ sub run_tests {
     my $filter = query_string();
     ck([$entries[$filter]], scalar(@entries));
 
-# test add attachements
+    diag 'test add attachements fails';
     login2();
     add_attachement($user2, 0);
 
+    diag 'test add attachements works';
     login1();
-    add_attachement($user1, $_) for 1, 3, 3, 5, 5, 5, 6;
+    add_attachement($user1, $_) for 1, 3, 3, 5, 5, 5, 6; # array id's
     ck();
 
-# test delete single attachements
-    #login2();
-    #del_attachement($user2, [6 => 0]);
-    #die;
-    #login1();
-    #del_attachement($user1, $_) for [1 => 0], [5 => 2], [5 => 1];
-    #ck();
+    diag 'test delete single attachements fails';
+    login2();
+    del_attachement($user2, 6 => 7);
 
-# test delete complete posts (check attachements)
+    diag 'test delete single attachements works';
+    login1();
+    del_attachement($user1, @$_) for [1 => 1], [5 => 6], [5 => 5]; # array id's to db id's!!!
+    ck();
+
+    diag 'test delete complete posts (check attachements)';
 }
 
 sub del_attachement {
-    my ( $user, $eid, $aid ) = ( $_[0], @{$_[1]} );
-    $t->get_ok("$Urlpref/upload/delete/$eid/$aid")->status_is(200);
+    my ( $user, $eid, $aid ) = @_;
+    my $edbid = $entries[$eid][0];
+    $t->get_ok("$Urlpref/upload/delete/$edbid/$aid");
     if ( $entries[$eid][2] eq $user ) {
-        $t->content_like(qr~<form\s+action="$Urlpref/upload/delete/$eid/$aid"\s+accept-charset="UTF-8"\s+method="POST">\s*<input\s+class="linkalike\s+send"\s+type="submit"\s+value="Entfernen"\s+/>\s*</form>~)
+        $t->status_is(200)
+          ->content_like(qr~<form\s+action="$Urlpref/upload/delete/$edbid/$aid"\s+accept-charset="UTF-8"\s+method="POST">\s*<input\s+class="linkalike\s+send"\s+type="submit"\s+value="Entfernen"\s+/>\s*</form>~)
           ->content_like(qr~Möchten Sie den gezeigten Anhang zu unten gezeigtem Beitrag wirklich löschen?~);
     }
     else {
-        warning(qq~Keine passenden Beiträge gefunden~);
+        $t->status_is(302)->content_is('')
+          ->header_like(location => qr~http://localhost:\d+$Urlpref~);
+        $t->get_ok($Urlpref)->status_is(200);
+        error('Konnte keinen passenden Beitrag zum Löschen der Anhänge finden');
     }
-    $t->post_ok("$Urlpref/upload/delete/$eid/$aid")
+    $t->post_ok("$Urlpref/upload/delete/$edbid/$aid")
       ->status_is(302)->content_is('')
       ->header_like(location => qr~http://localhost:\d+$Urlpref~);
-    $t->get_ok("$Urlpref/display/$eid")->status_is(200);
+    $t->get_ok($Urlpref)->status_is(200);
     if ( $entries[$eid][2] eq $user ) {
         info(qq~Anhang entfernt~);
+        push @delatts, grep { $aid == $_->[0] } @{ $entries[$eid][4] };
+        $entries[$eid][4] = [ grep { $aid != $_->[0] } @{ $entries[$eid][4] } ];
     }
     else {
-        warning(qq~Keine passenden Beiträge gefunden~);
+        error('Konnte keinen passenden Beitrag zum Löschen der Anhänge finden');
     }
 }
 
@@ -126,14 +136,17 @@ sub add_attachement {
     my $entry = $entries[$i] or die "no entry count '$i' available";
     my ( $str, $nam ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
     $nam .= '.png';
-    $t->get_ok("$Urlpref/upload/$entry->[0]")->status_is(200);
+    $t->get_ok("$Urlpref/upload/$entry->[0]");
     if ( $entry->[2] eq $user ) { 
+        $t->status_is(200);
         $t->content_like(qr~<p>\s*$entry->[1]\s*</p>~xms);
         $t->content_like(qr~<form action="$Urlpref/upload/$entry->[0]"\s+accept-charset="UTF-8"\s+enctype="multipart/form-data"\s+method="POST">~);
     }
     else {
-        $t->content_unlike(qr~<p>\s*$entry->[1]\s*</p>~xms);
-        warning('Keine passenden Beiträge gefunden');
+        $t->status_is(302)->content_is('')
+          ->header_like(location => qr~http://localhost:\d+$Urlpref~);
+        $t->get_ok($Urlpref)->status_is(200);
+        error('Konnte keinen passenden Beitrag um Anhänge hochzuladen finden');
     }
     $t->post_ok("$Urlpref/upload/$entry->[0]", 
         form => { 
@@ -161,13 +174,16 @@ sub update_text {
     my ( $user, $i ) = @_;
     my $entry = $entries[$i] or die "no entry count '$i' available";
     my $str = Testinit::test_randstring();
-    $t->get_ok("$Urlpref/edit/$entry->[0]")->status_is(200);
+    $t->get_ok("$Urlpref/edit/$entry->[0]");
     if ( $entry->[2] eq $user ) { 
+        $t->status_is(200);
         $t->content_like(qr~$entry->[1]\s*</textarea>~xms);
     }
     else {
-        $t->content_unlike(qr~$entry->[1]\s*</textarea>~xms);
-        warning('Keine passenden Beiträge gefunden');
+        $t->status_is(302)->content_is('')
+          ->header_like(location => qr~http://localhost:\d+$Urlpref~);
+        $t->get_ok($Urlpref)->status_is(200);
+        error('Konnte keinen passenden Beitrag zum Ändern finden');
     }
     $t->post_ok("$Urlpref/edit/$entry->[0]", 
         form => { textdata => $str, postid => $entry->[0] })
@@ -231,15 +247,23 @@ sub check_pages {
                 $t->content_like(qr/$e->[1]/);
                 check_attachements($e->[4]);
                 $t->get_ok( $plink )->status_is(200);
+                check_delattachements();
             }
         }
-        $t->get_ok("$Urlpref/display/$_->[0]")
-          ->status_is(200)
-          ->content_like(qr~<p>\s*$_->[1]\s*</p>~)
-            for @entries;
+        for my $e ( @entries ) {
+            $t->get_ok("$Urlpref/display/$e->[0]")
+              ->status_is(200)
+              ->content_like(qr~<p>\s*$e->[1]\s*</p>~);
+            check_delattachements();
+        }
     }
     else {
         $t->get_ok( $Urlpref )->status_is(200);
+    }
+    for my $att ( @delatts ) {
+        $t->get_ok("$Urlpref/download/$att->[0]")
+          ->status_is(404)
+          ->content_unlike(qr~alt="$att->[2]"~);
     }
 }
 
@@ -253,6 +277,13 @@ sub check_attachements {
         $t->get_ok("$Urlpref/download/$att->[0]")
           ->status_is(200)
           ->content_like(qr~$att->[1]~);
+    }
+}
+
+sub check_delattachements {
+    for my $att ( @delatts ) {
+        $t->content_unlike(qr"$Urlpref/download/$att->[0]")
+          ->content_unlike(qr~alt="$att->[2]"~);
     }
 }
 
