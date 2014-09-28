@@ -86,7 +86,19 @@ sub run_tests {
     del_attachement($user1, @$_) for [1 => 1], [5 => 6], [5 => 5]; # array id's to db id's!!!
     ck();
 
-    #diag 'test delete complete posts (check attachements)';
+    #diag 'test delete complete posts (check attachements) fails';
+    login2();
+    del_post($user2, 1);
+
+    #diag 'test delete complete posts (check attachements) works';
+    login1();
+    del_post($user1, 3);
+    ck();
+}
+
+sub del_post {
+    my ( $user, $eid ) = @_;
+    my $edbid = $entries[$eid][0];
 }
 
 sub del_attachement {
