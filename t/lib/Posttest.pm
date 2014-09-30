@@ -110,6 +110,20 @@ sub del_post {
         $t->get_ok($Urlpref)->status_is(200);
         error('Konnte keinen passenden Beitrag zum Löschen finden');
     }
+    $t->post_ok("$Urlpref/delete/$edbid")
+      ->status_is(302)->content_is('')
+      ->header_like(location => qr~http://localhost:\d+$Urlpref~);
+    $t->get_ok($Urlpref)->status_is(200);
+    if ( $entries[$eid][2] eq $user ) {
+        push @delatts, @{ $entries[$eid][4] };
+        push @delents, $entries[$eid];
+        $entries[$eid][4] = [];
+        splice @entries, $eid, 1;
+        info('Der Beitrag wurde komplett entfernt');
+    }
+    else {
+        error('Konnte keinen passenden Beitrag zum Löschen finden');
+    }
 }
 
 sub del_attachement {
@@ -262,6 +276,8 @@ sub check_pages {
                 my $str = "$Urlpref/" . ($page - 1);
                 $t->content_like(qr~href="$str"~);
             }
+
+            $t->content_unlike(qr~$_->[1]~) for @delents;
             
             for my $i ( $offset .. $limit ) {
                 next if $i < 0;
@@ -287,6 +303,11 @@ sub check_pages {
         $t->get_ok("$Urlpref/download/$att->[0]")
           ->status_is(404)
           ->content_unlike(qr~alt="$att->[2]"~);
+    }
+    for my $e ( @delents ) {
+        $t->get_ok("$Urlpref/display/$e->[0]")
+          ->status_is(200)
+          ->content_unlike(qr~$e->[1]~);
     }
 }
 

@@ -28,7 +28,7 @@ sub _delete_post_do {
         $sql   .= qq~ AND $wheres~ if $wheres;
         my $post = $c->dbh->selectall_arrayref( $sql, undef, $postid, @wherep );
         unless ( @$post ) {
-            $c->set_error_f('Der angegebene Beitrag konnte nicht entfernt werden.');
+            $c->set_error_f('Konnte keinen passenden Beitrag zum Löschen finden');
             return _redirect_to_show($c);
         }
     }
