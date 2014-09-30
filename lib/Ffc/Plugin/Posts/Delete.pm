@@ -8,7 +8,10 @@ sub _delete_post_check {
     my $c = shift;
     $c->stash( dourl => $c->url_for('delete_'.$c->stash('controller').'_do', $c->additional_params) );
     _setup_stash($c);
-    return unless _get_single_post($c, @_);
+    unless ( _get_single_post($c, @_) ) {
+        $c->set_error_f('Konnte keinen passenden Beitrag zum Löschen finden');
+        return _redirect_to_show($c);
+    }
     $c->render( template => 'delete_check' );
 }
 
