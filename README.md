@@ -15,30 +15,32 @@ Features
 * Flaches Forum (blogartige Darstellung) für alle Benutzer zugänglich
 * Benutzer werden händisch von einem Administrator angelegt und müssen sich anmelden
 * Private Nachrichten zwischen einzelnen Benutzern möglich
-* Eigene Notizen für die Benutzer selbst möglich
-* Das Forum kann mit einem einzigen Kommando eingerichtet werden, wobei ein initialer Administratoraccount bereits angelegt wird
+* Eigene Notizen zum eigenen Gebrauch für die Benutzer
+* Das Forum kann mit einem einzigen Kommando eingerichtet werden, wobei ein initialer Administratoraccount sofort mit angelegt wird für die weiterführende Konfiguration
 * Das Forum arbeitet innerhalb eines festgelegten Verzeichnisses
 * Dateien für Uploads und Avatare werden in Unterverzeichnissen abgelegt
 * Alle Benutzerdaten, Foreneinstellungen und Beiträge werden in einer SQLite-Datenbank innerhalb des festgelegten Verzeichnisses abgelegt
 * Das festgelegte Foremverzeichnis ist transparent und portabel
 * Forenbeiträge werden in Themen sortiert, die jeder Benutzer frei anlegen kann
-* Themenüberschriften können geändert werden
+* Themenüberschriften können frei vom Benutzer, der das Thema angelegt hat, geändert werden
 * Wird eine Themenüberschrift in ein bereits existierendes Thema geändert, dann werden die Beiträge in dieses andere Thema verschoben
 * Foren-, Nachrichten- und Notizbeiträge enthalten primär lediglich den Text ohne Titel
 * Diese Beiträge haben alle intern die selbe technische Struktur
 * Allen Beiträgen können Dateien via Upload angehängt werden durch den Beitragsersteller
-* Uploads können jederzeit gelöscht werden vom hochladenden Benutzer gelöscht werden
-* Foren- und Nachrichtenbeträge können in einer flachen Struktur von allen Teilnehmern kommentiert werden
-* Notizen können jederzeit vom Verfasser gelöscht und verändert werden
+* Autoren können ihre Beiträge im Forum oder in den Notzen jederzeit löschen, nicht jedoch in den Privatnachrichten
+* Uploads können jederzeit vom hochladenden Benutzer gelöscht werden
 * Alle Beiträge können mit einer Art Markup versehen werden
 * Links in Beiträgen werden automatisch erkannt und als HTML-Links dargestellt
 * Bilder in Anhängen werden automatisch erkannt und als HTML-Bildervorschauen dargestellt
-* Beiträge und Forenüberschriften können durchsucht werden über ein einfaches SuchfeldA in der Menüzeile
+* Beiträge und Forenüberschriften können durchsucht werden über ein einfaches Suchfeld in der Menüzeile
+* Über CSS werden Popups über die Menüzeile für Privatnachichten und Forenthemen angeboten, hier wird auch die Anzahl neuer Beiträge hinterlegt
+* Die Startseite für das Forum enthält eine Liste von Überschriften geordnet nach neuesten Beiträgen, ähnlich verhält es sich auch mit der Startseite für Privatnachrichten, wo die Benutzernamen gelistet werden
+  * In beiden Startseiten wird jeweils die Anzahl neuer Beiträge mit angezeigt
 * Foreneinstellungen, die von Administratoren vorgenommen werden können:
   * Benutzerverwaltung mit Passwortangange, aktivieren und deaktiveren von Benutzern sowie Adminstratorenstatus setzen
   * Webseitenhintergrundfarbe und ob Benutzer diese Farbe selber noch ändern können
   * Favoritenicon und Webseitentitel
-  * Anzahl der gleichzeitig angezeigten Beiträge auf einer Seite
+  * Anzahl der gleichzeitig angezeigten Überschriften auf der Startseite sowie Anzahl der Beiträge auf einer Seite
   * Anzahl der Buchstaben die von einer URL dargestellt werden (URL-Shortener), die vollständige URL wird über ein Tooltip dargestellt
 * Foreneinstellungen, die von Benutzern vorgenommen werden können:
   * Passwortwechsel
@@ -46,7 +48,7 @@ Features
   * Hintergrundfarbe der Forenwebseite (falls der Administrator das erlaubt, was voreingestellt ist)
   * Ein Avatarbild hochladen, was neben jedem Beitrag oder Kommentar dargestellt wird (Avatar des Verfassers)
   * Schriftgröße und Breitbildanzeige (Normalanzeige ist so eine schmale blogartige Seite) können Geräteabhängig eingerichtet werden
-* Das Forum verwendet die Programmiersprache Perl, das Webframework Mojolicious sowie SQLite als Datenbank
+* Das Forum verwendet die Programmiersprache Perl, das Webframework Mojolicious sowie SQLite als Datenbank, daneben wird HTML5 und CSS3 verwendet
 * Die Software enthält eine umfangreiche Testsuite, in der besonderer Wert auf Datensicherheit und Zuverlässigkeit gelegt wird
 
 Installation
