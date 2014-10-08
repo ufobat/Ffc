@@ -38,7 +38,8 @@ sub set_postlimit {
 sub ck { $Check_env->($t, shift() // \@entries, \@delents, \@delatts, @_) }
 
 sub run_tests {
-    ( $Urlpref, $Check_env ) = @_;
+    my ( $do_attachements, $do_edit, $do_delete );
+    ( $Urlpref, $Check_env, $do_attachements, $do_edit, $do_delete ) = @_;
     set_postlimit($t);
 
     ck();
@@ -51,14 +52,22 @@ sub run_tests {
     map { insert_text() } 1 .. $Postlimit * 2 + 1;
     ck();
 
-    #diag 'test text updates fail';
-    login2();
-    update_text($user2, 0);
+    if ( $do_edit ) {
+        #diag 'test text updates fail';
+        login2();
+        update_text($user2, 0);
 
-    #diag 'test text updates work';
-    login1();
-    update_text($user1, $_) for 1, 3, 6;
-    ck();
+        #diag 'test text updates work';
+        login1();
+        update_text($user1, $_) for 1, 3, 6;
+        ck();
+    }
+    else {
+        # diag 'check, that no edits are possible';
+        login1();
+        no_update_text($user1, 6);
+        ck();
+    }
 
     #diag 'test query filter';
     login2();
@@ -68,32 +77,59 @@ sub run_tests {
     my $filter = query_string();
     ck([$entries[$filter]], scalar(@entries));
 
-    #diag 'test add attachements fails';
-    login2();
-    add_attachement($user2, 0);
+    if ( $do_attachements ) {
+        #diag 'test add attachements fails';
+        login2();
+        add_attachement($user2, 0);
 
-    #diag 'test add attachements works';
-    login1();
-    add_attachement($user1, $_) for 1, 3, 3, 5, 5, 5, 6; # array id's
-    ck();
+        #diag 'test add attachements works';
+        login1();
+        add_attachement($user1, $_) for 1, 3, 3, 5, 5, 5, 6; # array id's
+        ck();
 
-    #diag 'test delete single attachements fails';
-    login2();
-    del_attachement($user2, 6 => 7);
+        #diag 'test delete single attachements fails';
+        login2();
+        del_attachement($user2, 6 => 7);
 
-    #diag 'test delete single attachements works';
-    login1();
-    del_attachement($user1, @$_) for [1 => 1], [5 => 6], [5 => 5]; # array id's to db id's!!!
-    ck();
+        #diag 'test delete single attachements works';
+        login1();
+        del_attachement($user1, @$_) for [1 => 1], [5 => 6], [5 => 5]; # array id's to db id's!!!
+        ck();
+    }
+    else {
+        # diag 'check, that no attachement-operations are available';
+        login1();
+        no_attachements($user1, 1);
+        ck();
+    }
 
-    #diag 'test delete complete posts (check attachements) fails';
-    login2();
-    del_post($user2, 1);
+    if ( $do_delete ) {
+        #diag 'test delete complete posts (check attachements) fails';
+        login2();
+        del_post($user2, 1);
 
-    #diag 'test delete complete posts (check attachements) works';
-    login1();
-    del_post($user1, 3);
-    ck();
+        #diag 'test delete complete posts (check attachements) works';
+        login1();
+        del_post($user1, 3);
+        ck();
+    }
+    else {
+        # diag 'check, that no delete operations on the entries is available';
+        login1();
+        no_delete($user1, 3);
+        ck();
+    }
+}
+
+sub no_delete {
+    my ( $user, $i ) = @_;
+    my $entry = $entries[$i] or die "no entry count '$i' available";
+    my $str = Testinit::test_randstring();
+    $t->get_ok("$Urlpref/delete/$entry->[0]")
+      ->status_is(404);
+    $t->post_ok("$Urlpref/delete/$entry->[0]", 
+        form => { textdata => $str, postid => $entry->[0] })
+      ->status_is(404);
 }
 
 sub del_post {
@@ -124,6 +160,29 @@ sub del_post {
     else {
         error('Konnte keinen passenden Beitrag zum Löschen finden');
     }
+}
+
+sub no_attachements {
+    my ( $user, $i ) = @_;
+    my $entry = $entries[$i] or die "no entry count '$i' available";
+    my $str = Testinit::test_randstring();
+    my $nam = Testinit::test_randstring();
+    $t->get_ok("$Urlpref/upload/$entry->[0]")
+      ->status_is(404);
+    $t->post_ok("$Urlpref/upload/$entry->[0]", 
+        form => { 
+            postid => $entry->[0],
+            attachement => {
+                file => Mojo::Asset::Memory->new->add_chunk($str),
+                filename => $nam,
+                content_type => 'image/png',
+            },
+        }
+    )->status_is(404);
+    $t->get_ok("$Urlpref/upload/delete/$entry->[0]/1")
+      ->status_is(404);
+    $t->post_ok("$Urlpref/upload/delete/$entry->[0]/1")
+      ->status_is(404);
 }
 
 sub del_attachement {
@@ -234,6 +293,17 @@ sub update_text {
     else {
         error('Kein passender Beitrag zum ändern gefunden');
     }
+}
+
+sub no_update_text {
+    my ( $user, $i ) = @_;
+    my $entry = $entries[$i] or die "no entry count '$i' available";
+    my $str = Testinit::test_randstring();
+    $t->get_ok("$Urlpref/edit/$entry->[0]")
+      ->status_is(404);
+    $t->post_ok("$Urlpref/edit/$entry->[0]", 
+        form => { textdata => $str, postid => $entry->[0] })
+      ->status_is(404);
 }
 
 sub insert_text {

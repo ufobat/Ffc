@@ -9,7 +9,8 @@ use Test::Mojo;
 use Test::More tests => 1993;
 
 # runs a standardized test suite
-run_tests('/notes', \&check_env);
+#   run_tests( $Urlpref, $Check_env, $do_attachements, $do_edit, $do_delete );
+run_tests('/notes', \&check_env, 1, 1, 1);
 
 # checks for correct appearance of side effects
 sub check_env {
