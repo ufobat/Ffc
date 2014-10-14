@@ -9,17 +9,17 @@ sub install_routes {
     $l->route('/pmsgs')->via('get')
       ->to(controller => 'pmsgs', action => 'show_userlist')
       ->name('show_pmsgs_userlist');
-    Ffc::Plugin::Posts::install_routes_posts($l, 'pmsgs', '/pmsgs/:userid', userid => $Ffc::Digqr);
+    Ffc::Plugin::Posts::install_routes_posts($l, 'pmsgs', '/pmsgs/:usertoid', usertoid => $Ffc::Digqr);
 }
 
 sub where_select {
     my $uid = $_[0]->session->{userid};
-    my $cid = $_[0]->param('userid');
+    my $cid = $_[0]->param('usertoid');
     my $sql = 'p."userto" IS NOT NULL AND p."userfrom"<>p."userto" AND (p."userfrom"=? OR p."userto"=?)';
     if ( $cid ) {
         return 
-            $sql . ' AND (p."userfrom"=? OR p."userto"=?)', 
-            $uid, $uid, $cid, $cid;
+            $sql . ' AND (p."userfrom"=? OR p."userto"=?) AND (?<>?)', 
+            $uid, $uid, $cid, $cid, $uid, $cid;
     }
     else {
         return $sql, $uid, $uid;
@@ -28,14 +28,14 @@ sub where_select {
 
 sub where_modify {
     my $uid = $_[0]->session->{userid};
-    my $cid = $_[0]->param('userid');
+    my $cid = $_[0]->param('usertoid');
     return 
-        '"userto" IS NOT NULL AND "userfrom"<>"userto" AND ("userfrom"=? OR "userto"=?) AND ("userfrom"=? OR "userto"=?)', 
-        $uid, $uid, $cid, $cid;
+        '"userto" IS NOT NULL AND "userfrom"<>"userto" AND ("userfrom"=? OR "userto"=?) AND ("userfrom"=? OR "userto"=?) AND (?<>?)', 
+        $uid, $uid, $cid, $cid, $uid, $cid;
 }
 
 sub additional_params {
-    return userid => $_[0]->param('userid');
+    return usertoid => $_[0]->param('usertoid');
 }
 
 sub search { $_[0]->search_posts(); }
@@ -49,7 +49,7 @@ sub show {
         heading  => 
             'Private Nachrichten mit "' . $c->_get_username . '"',
     );
-    my ( $dbh, $uid, $utoid ) = ( $c->dbh, $c->session->{userid}, $c->param('userid') );
+    my ( $dbh, $uid, $utoid ) = ( $c->dbh, $c->session->{userid}, $c->param('usertoid') );
     my $lastseen = $dbh->selectall_arrayref(
         'SELECT "lastseen"
         FROM "lastseenmsgs"
@@ -78,7 +78,7 @@ sub show {
 
 sub query { $_[0]->query_posts }
 
-sub add { $_[0]->add_post($_[0]->param('userid'), undef) }
+sub add { $_[0]->add_post($_[0]->param('usertoid'), undef) }
 
 =pod
 

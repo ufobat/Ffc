@@ -46,6 +46,7 @@ sub test_login {
     my ( $t, $u, $p ) = @_;
 
     test_logout($t);
+    #diag "login as user '$u'";
 
     $t->post_ok('/login', form => { username => $u, password => $p })
       ->status_is(302)
