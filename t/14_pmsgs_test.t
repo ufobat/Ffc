@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 require Posttest;
 
 use Test::Mojo;
-use Test::More tests => 333;
+use Test::More tests => 1146;
 
 my $cname = 'pmsgs';
 
@@ -21,7 +21,28 @@ sub check_env {
     $cnt = @$entries unless $cnt;
     ok 1, 'checked that sub "check_env" ran';
     my $newcnt = grep { $_->[5] } @$entries;
-    #check_pages(\&login2, "/$cname/2");
+    test_data_security($t, $entries, $delents, $delatts);
+}
+
+# test that no one other than the conversationists have access to their messages
+sub test_data_security {
+    my ($t, $entries, $delents, $delatts) = @_;
+    logina();
+    for my $e ( @$entries, @$delents ) {
+        for my $i ( 1 .. 3 ) {
+            $t->get_ok("/$cname/$i/display/$e->[0]")->status_is(200);
+            $t->content_unlike(qr~$e->[1]~)->content_unlike(qr~postbox~);
+            for my $att ( @{ $e->[4] } ) {
+                $t->content_unlike(qr"/$cname/$i/download/$att->[0]")
+                  ->content_unlike(qr~alt="$att->[2]"~);
+            }
+            for my $att ( @{ $e->[4] } ) {
+                $t->get_ok("/$cname/$i/download/$att->[0]")
+                  ->status_is(404)
+                  ->content_unlike(qr~$att->[1]~);
+            }
+        }
+    }
 }
 
 
