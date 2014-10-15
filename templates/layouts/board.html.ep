@@ -1,12 +1,12 @@
 %= include 'layouts/parts/header';
 <div class="menu">
     <div class="menuentry">
-<%= $topics && @$topics ? include('layouts/parts/topics') : '' %>
         <a href="<%= url_for 'show_forum_topiclist', page => 1 %>" title="Nachrichten für alle angemeldeten Benutzer in der Art einer öffentlichen Diskussion"><span class="linktext linkforum<%= $controller eq 'forum' ? ' active activeforum' : '' %>">Forum<% if ( $newpostcount ) { %> (<span class="mark"><%= $newpostcount %></span>)<% } %></span></a>
+<%= $topics && @$topics ? include('layouts/parts/topics') : '' %>
     </div>
     <div class="menuentry">
-<%= $users && @$users ? include('layouts/parts/users') : '' %>
         <a href="<%= url_for 'show_pmsgs_userlist' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkpmsgs<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>">Nachrichten<% if ( $newmsgscount ) { %> (<span class="mark"><%= $newmsgscount %></span>)<% } %></span></a>
+<%= $users && @$users ? include('layouts/parts/users') : '' %>
     </div>
     <div class="menuentry">
         <a href="<%= url_for 'show_notes', page => 1 %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>

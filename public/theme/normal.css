@@ -297,7 +297,7 @@ input[type="text"].titlestring {
     display: none;
     position: absolute;
     text-align: left;
-    margin-top: 1.25em;
+    margin-top: auto;
     padding: .5em 1em;
 }
 .popup, .messagebox > div {
@@ -306,7 +306,14 @@ input[type="text"].titlestring {
 textarea:focus, textarea.inedit {
     box-shadow: inset 0 0 3px dimgray;
 }
-.menuentry:hover .popup {
-    display: inline;
+@media screen {
+    .menuentry { 
+        display: inline-block; 
+        margin: 0;
+        padding-top: 1px;
+    }
+    .menuentry:hover .popup {
+        display: block;
+    }
 }
 
