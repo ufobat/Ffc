@@ -18,6 +18,8 @@ my $attcnt = 1;
 my ( $user1, $pass1 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
 my ( $user2, $pass2 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
 Testinit::test_add_users( $t, $admin, $apass, $user1, $pass1, $user2, $pass2 );
+our @Users = ( $admin, $user1, $user2 );
+sub users { $Users[$_[0]] }
 
 sub logina { Testinit::test_login( $t, $admin, $apass ) }
 sub login1 { Testinit::test_login( $t, $user1, $pass1 ) }
@@ -38,8 +40,8 @@ sub set_postlimit {
 sub ck { $Check_env->($t, shift() // \@entries, \@delents, \@delatts, @_) }
 
 sub run_tests {
-    my ( $do_attachements, $do_edit, $do_delete );
-    ( $Urlpref, $Check_env, $do_attachements, $do_edit, $do_delete ) = @_;
+    my ( $from, $to, $do_attachements, $do_edit, $do_delete );
+    ( $from, $to, $Urlpref, $Check_env, $do_attachements, $do_edit, $do_delete ) = @_;
     set_postlimit($t);
 
     ck();
@@ -49,7 +51,7 @@ sub run_tests {
     error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\)');
 
     login1();
-    map { insert_text() } 1 .. $Postlimit * 2 + 1;
+    map { insert_text($Users[$from], ( $to && $Users[$to] ) ) } 1 .. $Postlimit * 2 + 1;
     ck();
 
     if ( $do_edit ) {
@@ -316,7 +318,12 @@ sub insert_text {
       ->header_like(location => qr~http://localhost:\d+$Urlpref~);
     $t->get_ok($Urlpref)->status_is(200)->content_like(qr~$str~);
 # $entry = [ $id, $textdata, $userfromid, $usertoid, [$attachements], $is_new_or_altered ];
-    unshift @entries, my $entry = [$#entries + 2, $str, $from // $user1, $to, [], 1];
+    return add_entry_testarray($str, $from, $to, [], 1);
+}
+
+sub add_entry_testarray {
+    my ( $str, $from, $to, $attsarray, $changed ) = @_;
+    unshift @entries, my $entry = [$#entries + 2, $str, $from // 1, $to, $attsarray, $changed];
     return $entry;
 }
 
@@ -410,5 +417,5 @@ sub check_delattachements {
     }
 }
 
-1;
+$t;
 
