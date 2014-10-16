@@ -275,6 +275,7 @@ sub update_text {
     $t->get_ok("$Urlpref/edit/$entry->[0]");
     if ( $entry->[2] eq $user ) { 
         $t->status_is(200);
+#        use Data::Dumper; warn Dumper \@entries, $user, $i;
         $t->content_like(qr~$entry->[1]\s*</textarea>~xms);
     }
     else {
@@ -289,7 +290,6 @@ sub update_text {
       ->header_like(location => qr~http://localhost:\d+$Urlpref~);
     $t->get_ok($Urlpref)->status_is(200);
     if ( $entry->[2] eq $user ) {
-# $entry = [ $id, $textdata, $userfromid, $usertoid, [$attachements], $is_new_or_altered ];
         $entry->[1] = $str;
         $entry->[5] = 1;
         info('Der Beitrag wurde geändert');
@@ -321,10 +321,14 @@ sub insert_text {
     return add_entry_testarray($str, $from, $to, [], 1);
 }
 
-sub add_entry_testarray {
-    my ( $str, $from, $to, $attsarray, $changed ) = @_;
-    unshift @entries, my $entry = [$#entries + 2, $str, $from // 1, $to, $attsarray, $changed];
-    return $entry;
+{
+    my $lastid = 0;
+    sub lastid { $lastid = shift }
+    sub add_entry_testarray {
+        my ( $str, $from, $to, $attsarray, $changed ) = @_;
+        unshift @entries, my $entry = [++$lastid, $str, $from // $user1, $to, $attsarray, $changed];
+        return $entry;
+    }
 }
 
 # prüft alle einträge, ob sie in der richtigen seite auftauchen

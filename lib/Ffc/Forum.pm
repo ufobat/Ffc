@@ -40,6 +40,12 @@ sub install_routes {
 sub where_select { 
     my $topicid = $_[0]->param('topicid');
     if ( $topicid ) {
+        my $action = $_[0]->stash('action');
+        if ( $action =~ m~\A(?:delete|edit|upload)~xmsio ) {
+            return 
+                'p."userto" IS NULL AND p."topicid"=? AND p."userfrom"=?',
+                $topicid, $_[0]->session->{userid};
+        }
         return 
             'p."userto" IS NULL AND p."topicid"=?',
             $topicid;
@@ -50,8 +56,8 @@ sub where_select {
 }
 sub where_modify {
     return
-        '"userto" IS NULL AND "topicid"=?',
-        $_[0]->param('topicid');
+        '"userto" IS NULL AND "topicid"=? AND "userfrom"=?',
+        $_[0]->param('topicid'), $_[0]->session->{userid};
 }
 
 sub additional_params {

@@ -56,6 +56,7 @@ sub _get_single_post {
         .qq~WHERE p."id"=?~;
     $sql .= qq~ AND $wheres~ if $wheres;
     my $post = $c->dbh->selectall_arrayref( $sql, undef, $postid, @wherep );
+    #use Data::Dumper; warn Dumper $sql, [$postid, @wherep], $post;
     my $textdata = $c->param('textdata') // '';
     if ( $post and @$post ) {
         $textdata = $post->[0]->[9] unless $textdata;

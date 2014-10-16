@@ -80,32 +80,6 @@ sub query { $_[0]->query_posts }
 
 sub add { $_[0]->add_post($_[0]->param('usertoid'), undef) }
 
-=pod
-
-=head1 das folgende brauchen wir bei privatnachrichten nicht!!!
-
-sub edit_form {
-    my $c = shift;
-    $c->counting;
-    $c->stash( heading => 
-        'Private Nachricht mit "' . $c->_get_username . '" ändern' );
-    $c->edit_post_form();
-}
-
-sub edit_do { $_[0]->edit_post_do() }
-
-sub delete_check {
-    my $c = shift;
-    $c->counting;
-    $c->stash( heading => 
-        'Private Nachricht mit "' . $c->_get_username . '" entfernen' );
-    $c->delete_post_check();
-}
-
-sub delete_do { $_[0]->delete_post_do() }
-
-=cut
-
 sub upload_form {
     my $c = shift;
     $c->counting;
