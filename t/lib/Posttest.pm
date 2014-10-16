@@ -55,7 +55,7 @@ sub run_tests {
     ck();
 
     if ( $do_edit ) {
-        diag 'test text updates fail';
+        #diag 'test text updates fail';
         login2();
         update_text($user2, 0);
 
