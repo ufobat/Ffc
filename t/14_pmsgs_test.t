@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 require Posttest;
 
 use Test::Mojo;
-use Test::More tests => 1394;
+use Test::More tests => 2135;
 
 my $cname = 'pmsgs';
 
@@ -44,6 +44,7 @@ sub check_env {
             Ungelesene\s+Nachrichten\s+vom\s+Benutzer:\s*0~xmsi);
     }
     $t->get_ok("/pmsgs/2")->status_is(200);
+    check_pages();
     map { $_->[3] and $_->[3] eq $user2 and $_->[5] = 0 } @$entries;
     test_data_security($t, $entries, $delents, $delatts);
 }
