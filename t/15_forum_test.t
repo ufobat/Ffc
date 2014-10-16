@@ -54,7 +54,6 @@ sub check_env {
 
     # login zum lesen
     login2();
-    diag 'login2()';
     my $newcnt = grep { !$_->[3] and $_->[5] } @$entries;
     my $newcntsum = $newcnt + 2;
     $t->get_ok('/')->status_is(200)
@@ -63,7 +62,7 @@ sub check_env {
     #use Data::Dumper; diag Dumper $newcnt, $newcntsum, $entries;
     check_for_topic_count($t, $Topics[$_], $_ + 1, $_ ? 1 : $newcnt) for 0 .. $#Topics;
 
-    diag 'da fehlt noch was!!!';
+    note 'da fehlt noch was!!!';
     return 1;
 
     # gelesen markieren
