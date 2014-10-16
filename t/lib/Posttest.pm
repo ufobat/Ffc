@@ -46,16 +46,16 @@ sub run_tests {
 
     ck();
 
+    login1();
     #diag 'test new entries';
     $t->post_ok("$Urlpref/new", form => {})->status_is(200);
     error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\)');
 
-    login1();
     map { insert_text($Users[$from], ( $to && $Users[$to] ) ) } 1 .. $Postlimit * 2 + 1;
     ck();
 
     if ( $do_edit ) {
-        #diag 'test text updates fail';
+        diag 'test text updates fail';
         login2();
         update_text($user2, 0);
 
@@ -297,6 +297,7 @@ sub update_text {
     else {
         error('Kein passender Beitrag zum ändern gefunden');
     }
+    $_->[5] = 0 for @entries;
 }
 
 sub no_update_text {
