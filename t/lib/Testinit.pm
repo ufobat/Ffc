@@ -55,6 +55,8 @@ sub test_login {
       ->status_is(200)
       ->content_like(qr/Angemeldet als "$u"/);
 
+    note "logged in as '$u'";
+
     return $t;
 }
 
