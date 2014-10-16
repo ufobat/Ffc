@@ -64,7 +64,7 @@ $t->content_like(qr~<input type="text" class="titlestring" name="titlestring" va
 $t->content_like(qr~<textarea name="textdata" id="textinput" class="edit inedit" >$Articles[0][0]</textarea>~);
 
 $t->post_ok('/topic/new', form => {titlestring => $Topics[0], textdata => $Articles[0][0]})->status_is(302);
-$t->header_like( Location => qr{\Ahttps?://localhost:\d+/topic/1}xms );
+$t->header_like( Location => qr{\A/topic/1}xms );
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~$Topics[0]~)->content_like(qr~/topic/1~);
 ch_nfo('Ein neuer Beitrag wurde erstellt');
@@ -79,7 +79,7 @@ $t->get_ok('/topic/1')->status_is(200)
   ->content_like(qr~$Topics[0]~)->content_like(qr~$Articles[0][0]~);
 
 $t->post_ok('/topic/new', form => {titlestring => $Topics[0], textdata => $Articles[0][1]})->status_is(302);
-$t->header_like( Location => qr{\Ahttps?://localhost:\d+/topic/1}xms );
+$t->header_like( Location => qr{\A/topic/1}xms );
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~$Topics[0]~)->content_like(qr~/topic/1~);
 ch_nfo('Ein neuer Beitrag wurde erstellt');
@@ -93,7 +93,7 @@ push @Topics, Testinit::test_randstring();
 push @Articles, [Testinit::test_randstring()];
 $t->post_ok('/topic/new', form => {titlestring => $Topics[1], textdata => $Articles[1][0]})->status_is(302);
 
-$t->header_like( Location => qr{\Ahttps?://localhost:\d+/topic/2}xms );
+$t->header_like( Location => qr{\A/topic/2}xms );
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~$Topics[0]~)->content_like(qr~/topic/1~)
   ->content_like(qr~$Topics[1]~)->content_like(qr~/topic/2~);
@@ -131,7 +131,7 @@ ch_err('Die Überschrift ist zu lang und darf höchstens 256 Zeichen enthalten.'
 my $oldtopic = $Topics[1];
 $Topics[1] = Testinit::test_randstring();
 $t->post_ok('/topic/2/edit', form => { titlestring => $Topics[1] })->status_is(302);
-$t->header_like( Location => qr{\Ahttps?://localhost:\d+/topic/2}xms );
+$t->header_like( Location => qr{\A/topic/2}xms );
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~$Topics[1]~)->content_like(qr~/topic/2~)->content_unlike(qr~$oldtopic~);
 ch_nfo('Die Überschrift des Themas wurde geändert.');
@@ -146,7 +146,7 @@ $t->get_ok('/topic/2')->status_is(200)
 
 my $newtopic = Testinit::test_randstring();
 $t->post_ok('/topic/2/edit', form => { titlestring => $newtopic })->status_is(302);
-$t->header_like( Location => qr{\Ahttps?://localhost:\d+/topic/2}xms );
+$t->header_like( Location => qr{\A/topic/2}xms );
 $t->get_ok('/topic/2')->status_is(200)
   ->content_like(qr~$Topics[1]~)->content_like(qr~/topic/2~)->content_unlike(qr~$newtopic~);
 ch_err('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde und Sie auch kein Administrator sind.');
@@ -155,7 +155,7 @@ Testinit::test_login($t, $admin, $apass);
 $oldtopic = $Topics[1];
 $Topics[1] = Testinit::test_randstring();
 $t->post_ok('/topic/2/edit', form => { titlestring => $Topics[1] })->status_is(302);
-$t->header_like( Location => qr{\Ahttps?://localhost:\d+/topic/2}xms );
+$t->header_like( Location => qr{\A/topic/2}xms );
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~$Topics[1]~)->content_like(qr~/topic/2~)->content_unlike(qr~$oldtopic~);
 ch_nfo('Die Überschrift des Themas wurde geändert.');
@@ -173,7 +173,7 @@ ch_wrn('Das gewünschte Thema existiert bereits.');
 
 login1(); # Fehler
 $t->get_ok('/topic/1/moveto/2')->status_is(302);
-$t->header_like( Location => qr{\Ahttps?://localhost:\d+/forum}xms );
+$t->header_like( Location => qr{\A/forum}xms );
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~"/topic/new"~)->content_like(qr~<div class="postbox topiclist">~)
   ->content_like(qr~$Topics[0]~)->content_like(qr~/topic/1~)
@@ -182,7 +182,7 @@ ch_err('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde und S
 
 login2();
 $t->get_ok('/topic/1/moveto/2')->status_is(302);
-$t->header_like( Location => qr{\Ahttps?://localhost:\d+/topic/2}xms );
+$t->header_like( Location => qr{\A/topic/2}xms );
 $t->get_ok('/topic/2')->status_is(200);
 ch_nfo('Die Beiträge wurden in ein anderes Thema verschoben.');
 $t->content_like(qr~$_~) for @{$Articles[0]}, @{$Articles[1]};

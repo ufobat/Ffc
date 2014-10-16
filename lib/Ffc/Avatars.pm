@@ -35,7 +35,7 @@ sub avatar_show {
     else {
         $file = '';
     }
-    return $c->render_static($DefaultAvatar)
+    return $c->reply->static($DefaultAvatar)
         unless $file and -e $file;
 
     $file = Mojo::Asset::File->new(path => $file);

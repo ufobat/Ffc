@@ -144,13 +144,13 @@ sub del_post {
     }
     else {
         $t->status_is(302)->content_is('')
-          ->header_like(location => qr~http://localhost:\d+$Urlpref~);
+          ->header_like(location => qr~$Urlpref~);
         $t->get_ok($Urlpref)->status_is(200);
         error('Konnte keinen passenden Beitrag zum Löschen finden');
     }
     $t->post_ok("$Urlpref/delete/$edbid")
       ->status_is(302)->content_is('')
-      ->header_like(location => qr~http://localhost:\d+$Urlpref~);
+      ->header_like(location => qr~$Urlpref~);
     $t->get_ok($Urlpref)->status_is(200);
     if ( $entries[$eid][2] eq $user ) {
         push @delatts, @{ $entries[$eid][4] };
@@ -198,13 +198,13 @@ sub del_attachement {
     }
     else {
         $t->status_is(302)->content_is('')
-          ->header_like(location => qr~http://localhost:\d+$Urlpref~);
+          ->header_like(location => qr~$Urlpref~);
         $t->get_ok($Urlpref)->status_is(200);
         error('Konnte keinen passenden Beitrag zum Löschen der Anhänge finden');
     }
     $t->post_ok("$Urlpref/upload/delete/$edbid/$aid")
       ->status_is(302)->content_is('')
-      ->header_like(location => qr~http://localhost:\d+$Urlpref~);
+      ->header_like(location => qr~$Urlpref~);
     $t->get_ok($Urlpref)->status_is(200);
     if ( $entries[$eid][2] eq $user ) {
         info(qq~Anhang entfernt~);
@@ -242,7 +242,7 @@ sub add_attachement {
     }
     else {
         $t->status_is(302)->content_is('')
-          ->header_like(location => qr~http://localhost:\d+$Urlpref~);
+          ->header_like(location => qr~$Urlpref~);
         $t->get_ok($Urlpref)->status_is(200);
         error('Konnte keinen passenden Beitrag um Anhänge hochzuladen finden');
     }
@@ -257,7 +257,7 @@ sub add_attachement {
         }
     );
     $t->status_is(302)->content_is('')
-      ->header_like(location => qr~http://localhost:\d+$Urlpref~);
+      ->header_like(location => qr~$Urlpref~);
     $t->get_ok($Urlpref)->status_is(200);
     if ( $entry->[2] eq $user ) {
         push @{$entry->[4]}, [ $attcnt++, $str, $nam ];
@@ -280,14 +280,14 @@ sub update_text {
     }
     else {
         $t->status_is(302)->content_is('')
-          ->header_like(location => qr~http://localhost:\d+$Urlpref~);
+          ->header_like(location => qr~$Urlpref~);
         $t->get_ok($Urlpref)->status_is(200);
         error('Konnte keinen passenden Beitrag zum Ändern finden');
     }
     $t->post_ok("$Urlpref/edit/$entry->[0]", 
         form => { textdata => $str, postid => $entry->[0] })
       ->status_is(302)->content_is('')
-      ->header_like(location => qr~http://localhost:\d+$Urlpref~);
+      ->header_like(location => qr~$Urlpref~);
     $t->get_ok($Urlpref)->status_is(200);
     if ( $entry->[2] eq $user ) {
         $entry->[1] = $str;
@@ -316,7 +316,7 @@ sub insert_text {
     my $str = Testinit::test_randstring();
     $t->post_ok("$Urlpref/new", form => { textdata => $str })
       ->status_is(302)->content_is('')
-      ->header_like(location => qr~http://localhost:\d+$Urlpref~);
+      ->header_like(location => qr~$Urlpref~);
     $t->get_ok($Urlpref)->status_is(200)->content_like(qr~$str~);
 # $entry = [ $id, $textdata, $userfromid, $usertoid, [$attachements], $is_new_or_altered ];
     return add_entry_testarray($str, $from, $to, [], 1);

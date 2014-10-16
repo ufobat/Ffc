@@ -153,7 +153,7 @@ sub file_db_ok {
             }
         }
     )->status_is(200);
-    error('Dateiname fehlt.');
+    error('Dateiname ist zu kurz, muss mindestens 6 Zeichen inklusive Dateiendung enthalten.');
     is file_db_ok('', $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
     ok !@dirlist, 'no files in storage directory';

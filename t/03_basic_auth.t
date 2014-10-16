@@ -41,7 +41,7 @@ check_notloggedin();
 note 'working login';
 $t->post_ok('/login', form => { username => $admin, password => $pass })
   ->status_is(302)
-  ->header_like(location => qr~https?://localhost:\d+/~);
+  ->header_like(location => qr~/~);
 $t->get_ok('/');
 check_loggedin();
 note 'working logout';
@@ -61,7 +61,7 @@ note 'working login with active user';
 $dbh->do('UPDATE users SET active=1 WHERE UPPER(name)=UPPER(?)', undef, $admin);
 $t->post_ok('/login', form => { username => $admin, password => $pass })
   ->status_is(302)
-  ->header_like(location => qr~https?://localhost:\d+/~);
+  ->header_like(location => qr~/~);
 $t->get_ok('/');
 check_loggedin();
 note 'test disabling user';
@@ -77,7 +77,7 @@ $t->get_ok('/');
 check_notloggedin();
 $t->post_ok('/login', form => { username => $admin, password => $pass })
   ->status_is(302)
-  ->header_like(location => qr~https?://localhost:\d+/~);
+  ->header_like(location => qr~/~);
 $t->get_ok('/');
 check_loggedin();
 
