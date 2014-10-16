@@ -62,7 +62,7 @@ Die Software muss in ein Verzeichnis ausgecheckt oder kopiert werden, in dem der
 Die vorrausgesetzten technischen Komponenten müssen installiert werden:  
 
 * Perl Version 5.014 oder höher
-* Mojolicious 4.0 oder höher
+* Mojolicious 5:50 oder höher
 * DBI Version 1.63 oder höher
 * DBD::SQLite Version 1.4 oder höher
 * SQLite Version 3.7.3 oder höher
