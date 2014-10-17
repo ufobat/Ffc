@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 my $t = require Posttest;
 
 use Test::Mojo;
-use Test::More tests => 739;
+use Test::More tests => 1707;
 
 my $cname = 'forum';
 
