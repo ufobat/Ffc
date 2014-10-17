@@ -197,7 +197,16 @@ Das ist eine Liste
 Das auch
 # weil ich es kann
 #du nicht?
-# hui~;
+# hui
+ Hallo
+   die "Welt" da!
+ - Hui
+ - Bui
+ # bui
+ # tada
+ = dingens
+
+~;
     my $controlstring = qq~<ul>
 <li>Hallo</li>
 <li>Welt</li>
@@ -211,7 +220,16 @@ Das auch
 <li>weil ich es kann</li>
 <li>du nicht?</li>
 <li>hui</li>
-</ol>~;
+</ol>
+<pre>
+Hallo
+  die "Welt" da!
+- Hui
+- Bui
+# bui
+# tada
+= dingens
+</pre>~;
     $t->post_ok('/pre_format', form => { text => $teststring, urlshorten => 30 })->content_is($controlstring);
 
     $teststring = q~- Hallo~;

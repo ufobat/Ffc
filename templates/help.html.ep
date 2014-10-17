@@ -23,6 +23,7 @@
         <li><code>=</code> am Zeilenanfang: Erzeugt eine Zwischenüberschrift</li>
         <li><code>-</code> am Zeilenanfang: Erzeugt eine Liste</li>
         <li><code>#</code> am Zeilenanfang: Erzeugt eine Aufzählungsliste</li>
+        <li><code> </code> (Leerzeichen) am Zeilenanfang: Erzeugt einen vorformattierten Text (für Programmcode zum Beispiel)</li>
     </ul>
 </div>
 <div class="postbox helptext">
