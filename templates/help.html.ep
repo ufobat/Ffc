@@ -31,10 +31,7 @@
 </div>
 <div class="postbox helptext">
     <h2>Bilder</h2>
-    <p>Bilder werden weitestgehend automatisch erkannt und entsprechend als Vorschaubilder markiert, sobald sie im Text auftauchen.</p>
-    <p>Die Vorschau wird dabei lediglich verkleinert dargestellt, im Hintergrund wird das Bild vollständig geladen. Deswegen ist es ratsam, die Bilder nicht zu groß zu wählen, aus Rücksicht auf Mitbenutzer mit smalen Internetleitungen (mobiles Surfen, Arbeitsplatz).</p>
-    <p>In den Optionen kann über ein entsprechendes Häkchen eingestellt werden, dass die Vorschaubilder nicht angezeigt werden und nur als Links repräsentiert werden, was zum Beispiel am Arbeitsplatz durchaus sinnvoll sein kann.</p>
-    <p>Bilder werden generell mit einem Link versehen, der diese Bilder auf einer Extra-Seite in Vollgröße anzeigt im Browser, wenn man auf das Bild klickt.</p>
+    <p>Bilder werden weitestgehend automatisch erkannt und entsprechend als Links zur Bildquelle markiert, sobald sie im Text auftauchen.</p>
 </div>
 <div class="postbox helptext">
     <h2>Dateianhänge</h2>
