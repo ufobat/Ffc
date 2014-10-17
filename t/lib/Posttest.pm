@@ -21,9 +21,9 @@ Testinit::test_add_users( $t, $admin, $apass, $user1, $pass1, $user2, $pass2 );
 our @Users = ( $admin, $user1, $user2 );
 sub users { $Users[$_[0]] }
 
-sub logina { Testinit::test_login( $t, $admin, $apass ) }
-sub login1 { Testinit::test_login( $t, $user1, $pass1 ) }
-sub login2 { Testinit::test_login( $t, $user2, $pass2 ) }
+sub logina { Testinit::test_login( $t, $admin, $apass ) && note 'logina' }
+sub login1 { Testinit::test_login( $t, $user1, $pass1 ) && note 'login1' }
+sub login2 { Testinit::test_login( $t, $user2, $pass2 ) && note 'login2' }
 
 sub info    { Testinit::test_info(    $t, @_ ) }
 sub error   { Testinit::test_error(   $t, @_ ) }
@@ -147,6 +147,7 @@ sub del_post {
           ->header_like(location => qr~$Urlpref~);
         $t->get_ok($Urlpref)->status_is(200);
         error('Konnte keinen passenden Beitrag zum Löschen finden');
+        seen_entries();
     }
     $t->post_ok("$Urlpref/delete/$edbid")
       ->status_is(302)->content_is('')
@@ -200,6 +201,7 @@ sub del_attachement {
         $t->status_is(302)->content_is('')
           ->header_like(location => qr~$Urlpref~);
         $t->get_ok($Urlpref)->status_is(200);
+        seen_entries();
         error('Konnte keinen passenden Beitrag zum Löschen der Anhänge finden');
     }
     $t->post_ok("$Urlpref/upload/delete/$edbid/$aid")
@@ -244,6 +246,7 @@ sub add_attachement {
         $t->status_is(302)->content_is('')
           ->header_like(location => qr~$Urlpref~);
         $t->get_ok($Urlpref)->status_is(200);
+        seen_entries();
         error('Konnte keinen passenden Beitrag um Anhänge hochzuladen finden');
     }
     $t->post_ok("$Urlpref/upload/$entry->[0]", 
@@ -283,6 +286,7 @@ sub update_text {
           ->header_like(location => qr~$Urlpref~);
         $t->get_ok($Urlpref)->status_is(200);
         error('Konnte keinen passenden Beitrag zum Ändern finden');
+        seen_entries();
     }
     $t->post_ok("$Urlpref/edit/$entry->[0]", 
         form => { textdata => $str, postid => $entry->[0] })
@@ -297,7 +301,7 @@ sub update_text {
     else {
         error('Kein passender Beitrag zum ändern gefunden');
     }
-    $_->[5] = 0 for @entries;
+    seen_entries();
 }
 
 sub no_update_text {
@@ -345,15 +349,17 @@ sub check_pages {
         my $pages = @entries / $main::Postlimit;
         $pages = 1 + int $pages if int($pages) != abs($pages);
         $t->get_ok($Urlpref)->status_is(200);
-        for my $e ( @entries[0 .. $main::Postlimit - 1] ) {
-            next unless $e;
-            $t->content_like(qr~<p>\s*$e->[1]\s*</p>~);
+        for my $i ( 0 .. $main::Postlimit - 1 ) {
+            if ( $i <= $#entries and my $e = $entries[$i] ) {
+                $t->content_like(qr~<p>\s*$e->[1]\s*</p>~);
+            }
         }
         for my $page ( 1 .. $pages ) {
             my $offset = ( $page - 1 ) * $main::Postlimit;
             my $limit = $offset + $main::Postlimit - 1;
             my $plink = "$Urlpref/$page";
 
+            #diag "page=$page, offset=$offset, limit=$limit, postlimit=$main::Postlimit, entrix=$#entries, scalar=" . scalar @entries;
             $t->get_ok( $plink )->status_is(200);
             
             if ( $page > 1 ) {
@@ -420,6 +426,11 @@ sub check_delattachements {
         $t->content_unlike(qr"$Urlpref/download/$att->[0]")
           ->content_unlike(qr~alt="$att->[2]"~);
     }
+}
+
+sub seen_entries {
+    $_->[5] = 0 for @entries;
+    note 'marked all entries as seen';
 }
 
 $t;

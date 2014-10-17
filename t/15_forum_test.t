@@ -62,16 +62,15 @@ sub check_env {
     #use Data::Dumper; diag Dumper $newcnt, $newcntsum, $entries;
     check_for_topic_count($t, $Topics[$_], $_ + 1, $_ ? 1 : $newcnt) for 0 .. $#Topics;
 
-    note 'da fehlt noch was!!!';
-    return 1;
-
     # gelesen markieren
-    $newcntsum = 1;
     $t->get_ok('/topic/1')->status_is(200)
       ->content_like(qr~<title>Ffc Forum \($newcntsum/0\)</title>~)
       ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span></a>~xms);
+    $entries->[-1]->[5] = 0;
+
     check_pages(\&login2, '/topic/1');
     $_->[5] = 0 for @$entries;
+    $newcntsum = 2;
 
     # jetzt wurde einiges gelesen
     $t->get_ok('/')->status_is(200)
@@ -79,6 +78,9 @@ sub check_env {
       ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span></a>~xms);
     check_for_topic_count($t, $Topics[0], 1, 0);
     check_for_topic_count($t, $Topics[$_], $_ + 1, 1) for 1 .. $#Topics;
+
+    # testen, ob das mit dem ignorieren von themen hinhaut
+    diag 'test ignore topics';
 }
 
 sub check_for_topic_count {
