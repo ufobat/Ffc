@@ -7,6 +7,7 @@ body {
     padding: 0 .5em;
     font-family: sans-serif;
     color: black;
+    background: url('img/hg2.png') fixed gainsboro;
     background: url('img/hg.png') no-repeat top center fixed gainsboro;
     max-width: 48em;
 }
@@ -306,6 +307,14 @@ input[type="text"].titlestring {
 textarea:focus, textarea.inedit {
     box-shadow: inset 0 0 3px dimgray;
 }
+.postbox pre {
+    font-family: monospace;
+    color: dimgray;
+    border-left: 1px gainsboro solid;
+    padding-left: .75em;
+    font-size: 1em;
+}
+
 @media screen {
     .menuentry { 
         display: inline-block; 
