@@ -54,7 +54,7 @@ check_for_topic_count($t, $Topics[1], 2, 0);
 check_for_topic_count($t, $Topics[2], 3, 1);
 
 # und wieder unignorieren
-my $newcntsum = 2;
+$newcntsum = 2;
 $t->get_ok('/topic/2/unignore')->status_is(302)
   ->header_like(location => qr~\A/~);
 $t->get_ok('/')->status_is(200)
