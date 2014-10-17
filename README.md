@@ -10,7 +10,7 @@ simpler technischer Struktur.
 Features
 --------
 
-![Screenshot](https://raw.github.com/4FriendsForum/Ffc/newstart/public/Screenshot.png)
+![Screenshot](https://raw.github.com/4FriendsForum/Ffc/master/public/Screenshot.png)
 
 * Flaches Forum (blogartige Darstellung) für alle Benutzer zugänglich
 * Benutzer werden händisch von einem Administrator angelegt und müssen sich anmelden
