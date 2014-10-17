@@ -7,7 +7,7 @@ body {
     padding: 0 .5em;
     font-family: sans-serif;
     color: black;
-    background: url('img/hg.png') no-repeat top center fixed gainsboro;
+    background: url('img/stripes.png') fixed gainsboro;
     max-width: 48em;
 }
 body > *, .popup {
