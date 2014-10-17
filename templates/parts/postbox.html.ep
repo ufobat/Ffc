@@ -28,7 +28,7 @@
            title="Private Nachricht an den Verfasser &quot;<%= $post->[2] %>&quot; schreiben">Privatnachricht</a>,
 % }
         <a href="<%= url_for "display_$controller", postid => $post->[0], @$additional_params %>" 
-           title="Beitrag einzeln anzeigen zum Verlinken">Link</a>
+           title="Beitrag einzeln anzeigen zum verlinken">verlinken</a>
     )
 % }
     </h2>
