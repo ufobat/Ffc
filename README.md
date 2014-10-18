@@ -16,6 +16,7 @@ Features
 * Benutzer werden händisch von einem Administrator angelegt und müssen sich anmelden
 * Private Nachrichten zwischen einzelnen Benutzern möglich
 * Eigene Notizen zum eigenen Gebrauch für die Benutzer
+* Instant-Chat, der über ein eigenes Browserfenster losgelöst vom Forum verwendet werden kann
 * Das Forum kann mit einem einzigen Kommando eingerichtet werden, wobei ein initialer Administratoraccount sofort mit angelegt wird für die weiterführende Konfiguration
 * Das Forum arbeitet innerhalb eines festgelegten Verzeichnisses
 * Dateien für Uploads und Avatare werden in Unterverzeichnissen abgelegt
