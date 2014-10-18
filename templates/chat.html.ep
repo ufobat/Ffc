@@ -3,6 +3,7 @@
   <head>
     <title><%= $title %> - Chat (0/0/0)</title>
     <%= stylesheet 'theme/chat.css' %>
+    <%= javascript '/js/chat.js' %>
     <link rel="icon" type="image/ico" href="<%= url_for $favicon %>" />
   </head>
   <body>

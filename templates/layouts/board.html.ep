@@ -12,6 +12,9 @@
         <a href="<%= url_for 'show_notes', page => 1 %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
     </div>
     <div class="menuentry">
+        <a href="<%= url_for 'chat_window' %>" title="Kleiner Instant-Chat für aktuell angemeldente Benutzer" target="_blank"><span class="linktext linkchat">Chat</span></a>
+    </div>
+    <div class="menuentry">
 % if ( $queryurl ) {
 <form action="<%== $queryurl %>" accept-charset="UTF-8" method="POST">
 % if ( $query ) {

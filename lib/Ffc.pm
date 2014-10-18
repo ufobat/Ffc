@@ -27,11 +27,13 @@ sub _install_routes {
     use Ffc::Forum;
     use Ffc::Pmsgs;
     use Ffc::Notes;
+    use Ffc::Chat;
     Ffc::Avatars::install_routes($l);
     Ffc::Options::install_routes($l);
     Ffc::Forum::install_routes($l);
     Ffc::Pmsgs::install_routes($l);
     Ffc::Notes::install_routes($l);
+    Ffc::Chat::install_routes($l);
     _install_routes_helper($l);
 }
 
