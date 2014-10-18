@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= $title %> - Chat (0/0/0)</title>
+    <title>QC (0/0/0) - <%= $title %></title>
     <%= stylesheet 'theme/chat.css' %>
     <%= javascript '/js/chat.js' %>
     <link rel="icon" type="image/ico" href="<%= url_for $favicon %>" />
@@ -14,13 +14,16 @@
    <div id="buttonlist">
     <button name="send">Senden</button>
     <select name="refreshtime" id="refreshtime">
-     <option value="1">1 Minute</option>
-     <option value="2">2 Minuten</option>
-     <option value="3">3 Minuten</option>
-     <option value="5">5 Minuten</option>
-     <option value="7">7 Minuten</option>
-     <option value="10">10 Minuten</option>
-     <option value="15">15 Minuten</option>
+     <option value="1">1 Sekunde</option>
+     <option value="15">15 Sekunden</option>
+     <option value="30">30 Sekunden</option>
+     <option value="60" selected="selected">1 Minute</option>
+     <option value="120">2 Minuten</option>
+     <option value="180">3 Minuten</option>
+     <option value="300">5 Minuten</option>
+     <option value="420">7 Minuten</option>
+     <option value="600">10 Minuten</option>
+     <option value="900">15 Minuten</option>
     </select>
    </div>
   </body>
