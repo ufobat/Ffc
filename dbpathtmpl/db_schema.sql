@@ -9,6 +9,10 @@ CREATE TABLE "users" (
   "avatar" varchar(128) NOT NULL DEFAULT '',
   "admin" tinyint(1) NOT NULL DEFAULT '0',
   "bgcolor" varchar(24) NOT NULL DEFAULT '',
+  "inchat" tinyint(1) NOT NULL DEFAULT '0',
+  "lastchatid" integer NOT NULL DEFAULT '0',
+  "lastseenchat" timestamp,
+  "chatrefreshsecs" integer NOT NULL DEFAULT 60,
   UNIQUE ("name")
 );
 
@@ -50,6 +54,12 @@ CREATE TABLE "attachements" (
   "filename" varchar(256)
 );
 
+CREATE TABLE "chat" (
+    "id" integer PRIMARY KEY AUTOINCREMENT,
+    "userfromid" integer NOT NULL,
+    "msg" varchar(1024) NOT NULL
+);
+
 CREATE TABLE "config" (
   "key" varchar(32) NOT NULL,
   "value" varchar(256) NOT NULL DEFAULT '',
@@ -63,7 +73,7 @@ INSERT INTO "config" ("key", "value")
 INSERT INTO "config" ("key", "value") 
   VALUES ('cryptsalt','');
 INSERT INTO "config" ("key", "value") 
-  VALUES ('postlimit','7');
+  VALUES ('postlimit','14');
 INSERT INTO "config" ("key", "value") 
   VALUES ('topiclimit','21');
 INSERT INTO "config" ("key", "value") 
