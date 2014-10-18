@@ -48,17 +48,16 @@ div, textarea {
     padding: 0;
     margin: 1px;
 }
-#userlist {
-    overflow: visible;
-}
 #buttonlist {
     vertical-align: top;
+    text-align: center;
 }
 button, #refreshtime {
     background: silver;
     border-color: gray;
-    width: 100px;
+    width: 118px;
     height: 20px;
+    text-align: center;
 }
 button:hover, #refreshtime:hover {
     border-color: silver;
@@ -82,4 +81,11 @@ option {
 }
 #msg:focus {
     border-color: dimgray;
+}
+#userlist .timestamp {
+    color: gray;
+    margin-left: 10px;
+}
+#userlist .username {
+    white-space: nowrap;
 }
