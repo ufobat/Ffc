@@ -103,7 +103,16 @@ EOSQL
     $_->[2] = $c->format_timestamp( $_->[2] ) for @$users;
 
     # und die notwendigen daten als json zurück geben
-    $c->render( json => [$msgs, $users] );
+# # returned dataset:
+# [ 
+#        # msgs:
+#    [ "userfromid", "userfromname", "msg" ],
+#        # users:
+#    [ "username", "lastseenchatactive", "chatrefreshsecs" ],
+#        # countings: 
+#    "newpostcount", "newmsgscount"
+# ]
+    $c->render( json => [$msgs, $users, $c->newpostcount, $c->newmsgscount] );
 }
 
 1;

@@ -2,30 +2,38 @@ package Ffc::Plugin::Config;
 use 5.010;
 use strict; use warnings; use utf8;
 
+sub _newpostcount {
+    my $uid = $_[0]->session->{userid};
+    return $_[0]->dbh->selectall_arrayref(
+        'SELECT COUNT(p."id")
+        FROM "posts" p
+        INNER JOIN "topics" t on t."id"=p."topicid"
+        LEFT OUTER JOIN "lastseenforum" l ON l."topicid"=p."topicid" AND l."userid"=?
+        WHERE p."userto" IS NULL AND p."userfrom"<>? AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",-1)',
+        undef, $uid, $uid
+    )->[0]->[0];
+}
+
+sub _newmsgscount {
+    my $uid = $_[0]->session->{userid};
+    return $_[0]->dbh->selectall_arrayref(
+        'SELECT COUNT(p."id")
+        FROM "posts" p
+        INNER JOIN "users" u ON u."id"<>? AND u."id"=p."userfrom" AND u."active"=1
+        LEFT OUTER JOIN "lastseenmsgs" l ON l."userfromid"=u."id" AND l."userid"=?
+        WHERE p."userto"=? AND p."id">COALESCE(l."lastseen",-1)',
+        undef, $uid, $uid, $uid
+    )->[0]->[0];
+}
+
 sub _counting { 
     my $c = $_[0];
-    my $uid = $c->session->{userid};
-    my $dbh = $c->dbh;
     $c->stash(
-        newpostcount => $dbh->selectall_arrayref(
-                'SELECT COUNT(p."id")
-                FROM "posts" p
-                INNER JOIN "topics" t on t."id"=p."topicid"
-                LEFT OUTER JOIN "lastseenforum" l ON l."topicid"=p."topicid" AND l."userid"=?
-                WHERE p."userto" IS NULL AND p."userfrom"<>? AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",-1)',
-                undef, $uid, $uid
-            )->[0]->[0],
-        newmsgscount => $dbh->selectall_arrayref(
-                'SELECT COUNT(p."id")
-                FROM "posts" p
-                INNER JOIN "users" u ON u."id"<>? AND u."id"=p."userfrom" AND u."active"=1
-                LEFT OUTER JOIN "lastseenmsgs" l ON l."userfromid"=u."id" AND l."userid"=?
-                WHERE p."userto"=? AND p."id">COALESCE(l."lastseen",-1)',
-                undef, $uid, $uid, $uid
-            )->[0]->[0],
-        notecount => $dbh->selectall_arrayref(
+        newpostcount => _newpostcount($c),
+        newmsgscount => _newmsgscount($c),
+        notecount => $c->dbh->selectall_arrayref(
                 'SELECT COUNT("id") FROM "posts" WHERE "userfrom"=? AND "userfrom"="userto"',
-                undef, $uid
+                undef, $c->session->{userid}
             )->[0]->[0],
     );
     $c->generate_topiclist();

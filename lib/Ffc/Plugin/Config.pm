@@ -86,7 +86,9 @@ sub register {
         sub { $Styles[$_[0]->session()->{style} ? 1 : 0] } );
     $app->helper( hash_password  => 
         sub { sha512_base64 $_[1], $secconfig->{cryptsalt} } );
-    $app->helper( counting => \&_counting );
+    $app->helper( counting     => \&_counting );
+    $app->helper( newpostcount => \&_newpostcount );
+    $app->helper( newmsgscount => \&_newmsgscount );
     $app->helper( generate_topiclist => \&_generate_topiclist );
     $app->helper( generate_userlist => \&_generate_userlist );
 
