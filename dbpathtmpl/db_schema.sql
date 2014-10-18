@@ -12,6 +12,7 @@ CREATE TABLE "users" (
   "inchat" tinyint(1) NOT NULL DEFAULT '0',
   "lastchatid" integer NOT NULL DEFAULT '0',
   "lastseenchat" timestamp,
+  "lastseenchatactive" timestamp,
   "chatrefreshsecs" integer NOT NULL DEFAULT 60,
   UNIQUE ("name")
 );
