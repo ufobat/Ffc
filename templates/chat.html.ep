@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= $title %> - Chat (0/0/0)</title>
+    <%= stylesheet 'theme/chat.css' %>
+    <link rel="icon" type="image/ico" href="<%= url_for $favicon %>" />
+  </head>
+  <body>
+   <div id="msglog"></div>
+   <div id="userlist"></div>
+   <br />
+   <textarea id="msg" name="msg"></textarea>
+   <div id="buttonlist">
+    <button name="send">Senden</button>
+    <select name="refreshtime" id="refreshtime">
+     <option value="1">1 Minute</option>
+     <option value="2">2 Minuten</option>
+     <option value="3">3 Minuten</option>
+     <option value="5">5 Minuten</option>
+     <option value="7">7 Minuten</option>
+     <option value="10">10 Minuten</option>
+     <option value="15">15 Minuten</option>
+    </select>
+   </div>
+  </body>
+</html>
