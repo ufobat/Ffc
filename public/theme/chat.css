@@ -10,11 +10,7 @@ body {
     background: gainsboro;
     overflow: hidden;
     width: 460px;
-    min-width: 460px;
-    max-width: 460px;
     height: 276px;
-    min-height: 276px;
-    max-height: 276px;
     margin: auto;
 }
 div, textarea, button, select {
@@ -31,8 +27,7 @@ div, textarea {
 }
 #userlist, #buttonlist {
     width: 120px;
-    min-width: 120px;
-    max-width: 120px;
+    border-color: transparent;
 }
 #msg, #buttonlist {
     height: 60px;
@@ -41,8 +36,6 @@ div, textarea {
 }
 #userlist, #msglog {
     height: 200px;
-    min-height: 200px;
-    max-height: 200px;
 }
 #msglog {
     background: whitesmoke;
@@ -55,8 +48,8 @@ div, textarea {
     padding: 0;
     margin: 1px;
 }
-#buttonlist, #userlist {
-    border-color: transparent;
+#userlist {
+    overflow: visible;
 }
 #buttonlist {
     vertical-align: top;
@@ -65,11 +58,7 @@ button, #refreshtime {
     background: silver;
     border-color: gray;
     width: 100px;
-    min-width: 100px;
-    max-width: 100px;
-    height: 16px;
-    min-height: 20px;
-    max-height: 20px;
+    height: 20px;
 }
 button:hover, #refreshtime:hover {
     border-color: silver;
