@@ -93,14 +93,14 @@ EOSQL
 
     # benutzerliste ermitteln, die im chat sind
     $sql = << 'EOSQL';
-SELECT "name", "lastseenchatactive", "chatrefreshsecs"
+SELECT "name", "lastseenchatactive"
 FROM "users"
 WHERE "lastseenchat"+"chatrefreshsecs"<=CURRENT_TIMESTAMP
 ORDER BY "name", "id"
 EOSQL
 
     my $users = $dbh->selectall_arrayref( $sql );
-    $_->[2] = $c->format_timestamp( $_->[2] ) for @$users;
+    $_->[1] = $c->format_timestamp( $_->[1] ) for @$users;
 
     # und die notwendigen daten als json zurück geben
 # # returned dataset:
@@ -108,7 +108,7 @@ EOSQL
 #        # msgs:
 #    [ "userfromid", "userfromname", "msg" ],
 #        # users:
-#    [ "username", "lastseenchatactive", "chatrefreshsecs" ],
+#    [ "username", "lastseenchatactive" ],
 #        # countings: 
 #    "newpostcount", "newmsgscount"
 # ]
