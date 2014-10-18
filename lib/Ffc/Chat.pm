@@ -95,7 +95,7 @@ EOSQL
     $sql = << 'EOSQL';
 SELECT "name", "lastseenchatactive"
 FROM "users"
-WHERE "lastseenchat"+"chatrefreshsecs"<=CURRENT_TIMESTAMP
+WHERE "lastseenchat"+"chatrefreshsecs"<=CURRENT_TIMESTAMP AND "inchat"=1
 ORDER BY "name", "id"
 EOSQL
 
