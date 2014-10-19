@@ -11,6 +11,10 @@
         title: ['QC (', '/', '/', ') - <%= $title %>'],
         user:  '<%= session->{user} %>',
         refresh: '60',
+        leaveurl: '<%= url_for "chat_leave" %>',
+        refreshseturl: '<%= url_for "chat_set_refresh", refresh => "#refreshtime#" %>',
+        focusedurl: '<%= url_for "chat_receive_focused" %>',
+        unfocusedurl: '<%= url_for "chat_receive_unfocused" %>',
       };
     </script>
   </head>

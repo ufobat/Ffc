@@ -11,13 +11,13 @@ sub install_routes {
          ->name('chat_window');
 
     # die route ist für nachrichten genauso wie für statusabfragen zuständig
-    $_[0]->route('/chat/recieve/focused')->via(qw(GET POST))
-         ->to(controller => 'chat', action => 'recieve_focused')
-         ->name('chat_recieve');
+    $_[0]->route('/chat/receive/focused')->via(qw(GET POST))
+         ->to(controller => 'chat', action => 'receive_focused')
+         ->name('chat_receive_focused');
 
-    $_[0]->route('/chat/recieve/unfocused')->via(qw(GET POST))
-         ->to(controller => 'chat', action => 'recieve_unfocused')
-         ->name('chat_recieve');
+    $_[0]->route('/chat/receive/unfocused')->via(qw(GET POST))
+         ->to(controller => 'chat', action => 'receive_unfocused')
+         ->name('chat_receive_unfocused');
 
     # benutzer verlässt den chat (schließt das fenster)
     $_[0]->route('/chat/leave')->via(qw(GET))
@@ -50,9 +50,9 @@ sub leave_chat {
     $c->render( text => 'ok' );
 }
 
-sub recieve_focused   { recieve($_[0], 1) }
-sub recieve_unfocused { recieve($_[0], 0) }
-sub recieve {
+sub receive_focused   { _receive($_[0], 1) }
+sub receive_unfocused { _receive($_[0], 0) }
+sub _receive {
     my ( $c, $active ) = @_;
     my $msg = $c->param('msg');
     my $dbh = $c->dbh;
@@ -95,11 +95,11 @@ EOSQL
     $sql = << 'EOSQL';
 SELECT 
     "name", 
-    CASE WHEN "lastseenchatactive">0 THEN DATETIME("lastseenchatactive",'localtime') ELSE '' END,
+    CASE WHEN COALESCE("lastseenchatactive",0)>0 THEN DATETIME("lastseenchatactive",'localtime') ELSE '' END,
     "chatrefreshsecs"
 FROM "users"
 WHERE 
-    CASE WHEN "lastseenchat" IS NULL THEN 0 ELSE "lastseenchat" END +"chatrefreshsecs"<=CURRENT_TIMESTAMP
+    CASE WHEN COALESCE("lastseenchat",0)>0 THEN STRFTIME('%f',"lastseenchat") ELSE 0 END +"chatrefreshsecs"<=CURRENT_TIMESTAMP
     AND "inchat"=1
 ORDER BY "name", "id"
 EOSQL
