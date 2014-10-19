@@ -11,8 +11,8 @@ CREATE TABLE "users" (
   "bgcolor" varchar(24) NOT NULL DEFAULT '',
   "inchat" tinyint(1) NOT NULL DEFAULT '0',
   "lastchatid" integer NOT NULL DEFAULT '0',
-  "lastseenchat" timestamp,
-  "lastseenchatactive" timestamp,
+  "lastseenchat" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "lastseenchatactive" timestamp NOT NULL DEFAULT CURRENT_TIMESAMP,
   "chatrefreshsecs" integer NOT NULL DEFAULT 60,
   UNIQUE ("name")
 );

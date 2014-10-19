@@ -5,27 +5,29 @@ use Mojo::Util 'quote';
 use Encode qw( encode decode_utf8 );
 
 sub install_routes {
+    my $r = $_[0];
+
     # die route erzeugt lediglich das chatfenster
-    $_[0]->route('/chat')->via('get')
+    $r->route('/chat')->via('get')
          ->to(controller => 'chat', action => 'chat_window_open')
          ->name('chat_window');
 
     # die route ist für nachrichten genauso wie für statusabfragen zuständig
-    $_[0]->route('/chat/receive/focused')->via(qw(GET POST))
+    $r->route('/chat/receive/focused')->via(qw(GET POST))
          ->to(controller => 'chat', action => 'receive_focused')
          ->name('chat_receive_focused');
 
-    $_[0]->route('/chat/receive/unfocused')->via(qw(GET POST))
+    $r->route('/chat/receive/unfocused')->via(qw(GET POST))
          ->to(controller => 'chat', action => 'receive_unfocused')
          ->name('chat_receive_unfocused');
 
     # benutzer verlässt den chat (schließt das fenster)
-    $_[0]->route('/chat/leave')->via(qw(GET))
+    $r->route('/chat/leave')->via(qw(GET))
          ->to(controller => 'chat', action => 'leave_chat')
          ->name('chat_leave');
 
     # refresh-timer umsetzen
-    $_[0]->route('/chat/refresh/:refresh', refresh => $Ffc::Digit)->via(qw(GET))
+    $r->route('/chat/refresh/:refresh', refresh => $Ffc::Digit)->via(qw(GET))
          ->to(controller => 'chat', action => 'set_refresh')
          ->name('chat_set_refresh');
 }
@@ -61,7 +63,7 @@ sub _receive {
         $msg =~ s/\A\s+//xmso;
         $msg =~ s/\s+\z//xmso;
         next unless $msg;
-        $dbh->do('INSERT INTO "chat" ("userfromid", "text") VALUES (?,?)',
+        $dbh->do('INSERT INTO "chat" ("userfromid", "msg") VALUES (?,?)',
             undef, $c->session->{userid}, $msg);
     } # ende neue nachricht erhalten
 
@@ -70,7 +72,8 @@ sub _receive {
 SELECT c."id", u."name", c."msg" 
 FROM "chat" c 
 INNER JOIN "users" u ON u."id"=c."userfromid"
-WHERE c."id" > ( SELECT u2."lastchatid" FROM "users" u2 WHERE u2."id"=? LIMIT 1 )
+INNER JOIN "users" u2 ON u2."id"=?
+WHERE c."id" > u2."lastchatid"
 ORDER BY c."id" DESC
 LIMIT ?;
 EOSQL
@@ -80,27 +83,25 @@ EOSQL
     $_->[2] = quote($_->[2]) for @$msgs;
 
     # refresh-timer aktualsieren
-    $sql = << 'EOSQL';
-UPDATE "users" SET 
-    "lastchatid"=CASE WHEN COALESCE(?,0)>0 THEN ? ELSE COALESCE((SELECT MAX("id") FROM "chat" LIMIT 1),0) END, 
+    $sql = q~UPDATE "users" SET 
+    "lastchatid"=?,
     "inchat"=1, 
-    "lastseenchat"=CURRENT_TIMESTAMP,
-    "lastseenchatactive"=CASE WHEN ?=1 THEN CURRENT_TIMESTAMP ELSE 0 END
-WHERE "id"=?
-EOSQL
-
-    $dbh->do( $sql, undef, $msgs->[0]->[0], $msgs->[0]->[0], $active, $c->session->{userid} );
+    "lastseenchat"=CURRENT_TIMESTAMP~;
+    $sql .= qq~,\n    "lastseenchatactive"=CURRENT_TIMESTAMP~ if $active;
+    $sql .= qq~\nWHERE "id"=?~;
+    $dbh->do( $sql, undef, ( @$msgs ? $msgs->[0]->[0] : 0 ), $c->session->{userid} );
 
     # benutzerliste ermitteln, die im chat sind
     $sql = << 'EOSQL';
 SELECT 
     "name", 
-    CASE WHEN COALESCE("lastseenchatactive",0)>0 THEN DATETIME("lastseenchatactive",'localtime') ELSE '' END,
+    DATETIME("lastseenchatactive",'localtime'),
     "chatrefreshsecs"
 FROM "users"
 WHERE 
-    CASE WHEN COALESCE("lastseenchat",0)>0 THEN STRFTIME('%f',"lastseenchat") ELSE 0 END +"chatrefreshsecs"<=CURRENT_TIMESTAMP
-    AND "inchat"=1
+    --CASE WHEN COALESCE("lastseenchat",0)<>0 THEN STRFTIME('%s',"lastseenchat") ELSE 0 END +"chatrefreshsecs"<=CURRENT_TIMESTAMP
+    --AND
+    "inchat"=1
 ORDER BY "name", "id"
 EOSQL
 
