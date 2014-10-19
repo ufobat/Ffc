@@ -11,21 +11,21 @@ sub install_routes {
          ->name('chat_window');
 
     # die route ist für nachrichten genauso wie für statusabfragen zuständig
-    $_[0]->route('/chat/recieve/focused')->via('any')
+    $_[0]->route('/chat/recieve/focused')->via(qw(GET POST))
          ->to(controller => 'chat', action => 'recieve_focused')
          ->name('chat_recieve');
 
-    $_[0]->route('/chat/recieve/unfocused')->via('any')
+    $_[0]->route('/chat/recieve/unfocused')->via(qw(GET POST))
          ->to(controller => 'chat', action => 'recieve_unfocused')
          ->name('chat_recieve');
 
     # benutzer verlässt den chat (schließt das fenster)
-    $_[0]->route('/chat/leave')->via(qw(GET POST))
+    $_[0]->route('/chat/leave')->via(qw(GET))
          ->to(controller => 'chat', action => 'leave_chat')
          ->name('chat_leave');
 
     # refresh-timer umsetzen
-    $_[0]->route('/chat/refresh/:refresh', refresh => $Ffc::Digit)->via(qw(GET POST))
+    $_[0]->route('/chat/refresh/:refresh', refresh => $Ffc::Digit)->via(qw(GET))
          ->to(controller => 'chat', action => 'set_refresh')
          ->name('chat_set_refresh');
 }
@@ -35,7 +35,7 @@ sub set_refresh {
     my $refresh = $c->param('refresh');
     if ( $refresh ) {
         $c->dbh->do('UPDATE "users" SET "chatrefreshsecs"=? WHERE "id"=?', undef,
-            $c->session->{userid}, $refresh );
+            $refresh, $c->session->{userid} );
     }
     $c->render( text => 'ok' );
 }
@@ -77,30 +77,35 @@ EOSQL
 
     my $msgs = $dbh->selectall_arrayref( $sql, undef,
          $c->session->{userid}, $c->configdata->{postlimit} );
+    $_->[2] = quote($_->[2]) for @$msgs;
 
     # refresh-timer aktualsieren
     $sql = << 'EOSQL';
 UPDATE "users" SET 
-    "lastchatid"=CASE WHEN ?>0 THEN ? ELSE (SELECT MAX("id") FROM "chat") END, 
+    "lastchatid"=CASE WHEN COALESCE(?,0)>0 THEN ? ELSE COALESCE((SELECT MAX("id") FROM "chat" LIMIT 1),0) END, 
     "inchat"=1, 
     "lastseenchat"=CURRENT_TIMESTAMP,
     "lastseenchatactive"=CASE WHEN ?=1 THEN CURRENT_TIMESTAMP ELSE 0 END
 WHERE "id"=?
 EOSQL
 
-    $dbh->do( $sql, undef, 
-        ($msgs->[0]->[0] || 0), $msgs->[0]->[0], $active, $c->session->{userid} );
+    $dbh->do( $sql, undef, $msgs->[0]->[0], $msgs->[0]->[0], $active, $c->session->{userid} );
 
     # benutzerliste ermitteln, die im chat sind
     $sql = << 'EOSQL';
-SELECT "name", "lastseenchatactive"
+SELECT 
+    "name", 
+    CASE WHEN "lastseenchatactive">0 THEN DATETIME("lastseenchatactive",'localtime') ELSE '' END,
+    "chatrefreshsecs"
 FROM "users"
-WHERE "lastseenchat"+"chatrefreshsecs"<=CURRENT_TIMESTAMP AND "inchat"=1
+WHERE 
+    CASE WHEN "lastseenchat" IS NULL THEN 0 ELSE "lastseenchat" END +"chatrefreshsecs"<=CURRENT_TIMESTAMP
+    AND "inchat"=1
 ORDER BY "name", "id"
 EOSQL
 
     my $users = $dbh->selectall_arrayref( $sql );
-    $_->[1] = $c->format_timestamp( $_->[1] ) for @$users;
+    $_->[1] = $c->format_timestamp( $_->[1] || 0 ) for @$users;
 
     # und die notwendigen daten als json zurück geben
 # # returned dataset:
@@ -108,7 +113,7 @@ EOSQL
 #        # msgs:
 #    [ "userfromid", "userfromname", "msg" ],
 #        # users:
-#    [ "username", "lastseenchatactive" ],
+#    [ "username", "lastseenchatactive", "chatrefreshsecs" ],
 #        # countings: 
 #    "newpostcount", "newmsgscount"
 # ]

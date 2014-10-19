@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>QC (0/0/0) - <%= $title %></title>
+    <%= stylesheet 'theme/chat.css' %>
+    <%= javascript '/js/chat.js' %>
+    <link rel="icon" type="image/ico" href="<%= url_for $favicon %>" />
+    <%= include 'layouts/parts/styleinc' %>
+    <script type="text/javascript">
+      ffcdata = {
+        title: ['QC (', '/', '/', ') - <%= $title %>'],
+        user:  '<%= session->{user} %>',
+        refresh: '60',
+      };
+    </script>
+  </head>
+  <body>
+<!-- Angemeldet als "<%= session()->{user} %>" !-->
+
+%= content
+
+  </body>
+</html>

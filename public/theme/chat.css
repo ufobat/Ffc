@@ -27,7 +27,6 @@ div, textarea {
 }
 #userlist, #buttonlist {
     width: 120px;
-    border-color: transparent;
 }
 #msg, #buttonlist {
     height: 60px;
@@ -51,6 +50,7 @@ div, textarea {
 #buttonlist {
     vertical-align: top;
     text-align: center;
+    border-color: transparent;
 }
 button, #refreshtime {
     background: silver;
@@ -88,4 +88,7 @@ option {
 }
 #userlist .username {
     white-space: nowrap;
+}
+#userlist {
+    background: gainsboro;
 }
