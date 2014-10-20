@@ -93,7 +93,8 @@ EOSQL
 SELECT 
     "name", 
     DATETIME("lastseenchatactive",'localtime'),
-    "chatrefreshsecs"
+    "chatrefreshsecs",
+    "id"
 FROM "users"
 WHERE 
     (CAST(STRFTIME('%s',"lastseenchat") AS integer)+"chatrefreshsecs")>=CAST(STRFTIME('%s',CURRENT_TIMESTAMP) AS integer)

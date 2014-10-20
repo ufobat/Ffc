@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 469;
+use Test::More tests => 523;
 use Test::Mojo;
 use Data::Dumper;
 
@@ -32,7 +32,8 @@ sub bothusers {
     my $i = 0;
     for my $u ( sort {$a->[0] cmp $b->[0]} [$user,60], [$admin,$aref] ) {
         $t->json_is("/1/$i/0" => $u->[0])
-          ->json_is("/1/$i/2" => $u->[1]);
+          ->json_is("/1/$i/2" => $u->[1])
+          ->json_is("/1/$i/3" => $i + 1 );
         $i++;
     }
 }
