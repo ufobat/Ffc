@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 335;
+use Test::More tests => 469;
 use Test::Mojo;
 use Data::Dumper;
 
@@ -28,8 +28,9 @@ for my $u (
 # schaun, ob bei einer rückantwort im json-format beide user in richtiger reihenfolge auftauchen
 sub bothusers {
     my $t = $_[0];
+    my $aref = $_[1] || 42;
     my $i = 0;
-    for my $u ( sort {$a->[0] cmp $b->[0]} [$user,60], [$admin,42] ) {
+    for my $u ( sort {$a->[0] cmp $b->[0]} [$user,60], [$admin,$aref] ) {
         $t->json_is("/1/$i/0" => $u->[0])
           ->json_is("/1/$i/2" => $u->[1]);
         $i++;
@@ -67,9 +68,9 @@ sub check_receive_messages {
     my $lcsa1 = get_lastchatseenactive(2);
     my $str = Testinit::test_randstring();
     $t1->post_ok($url, form => { msg => $str })->status_is(200);
-    sleep 2;
+    sleep 1.2;
     $t2->get_ok($url)->status_is(200)
-       ->json_is('/0/0' => [++$id,$admin,qq~"$str"~])
+       ->json_is('/0/0/0' => ++$id)->json_is('/0/0/1' => $admin)->json_is('/0/0/2' => $str)
        ->json_is('/2' => $fcnt)->json_is('/3' => $pcnt);
     bothusers($t2);
     my $lcsa2 = get_lastchatseenactive(2);
@@ -78,11 +79,11 @@ sub check_receive_messages {
 
     $str = Testinit::test_randstring();
     $t1->post_ok($url, form => { msg => $str })->status_is(200);
-    sleep 2;
+    sleep 1.2;
     my $str2 = Testinit::test_randstring();
     $t2->post_ok($url, form => { msg => $str2 })->status_is(200)
-       ->json_is('/0/1' => [++$id,$admin,qq~"$str"~])
-       ->json_is('/0/0' => [++$id,$user,qq~"$str2"~])
+       ->json_is('/0/1/0' => ++$id)->json_is('/0/1/1' => $admin)->json_is('/0/1/2' => $str)
+       ->json_is('/0/0/0' => ++$id)->json_is('/0/0/1' => $user)->json_is('/0/0/2' => $str2)
        ->json_is('/2' => $fcnt)->json_is('/3' => $pcnt);
     bothusers($t2);
 
@@ -123,31 +124,48 @@ $t2->get_ok('/pmsgs/1')->status_is(200)
 check_receive_messages(1,1,0);
 check_receive_messages(0,1,0);
 
-exit;
-
 # Status für den ersten Benutzer zurücksetzen für die folgenden Tests
 $t1->get_ok('/chat/receive/focused')->status_is(200);
+$t2->get_ok('/chat/receive/focused')->status_is(200);
 
 # schauen ob chat verlassen funktioniert
-$t2->get_ok('/chat/receive/focused')->status_is(200)
-   ->json_is([[[]],[sort {$a->[0] cmp $b->[0]} [$user,'',60], [$admin,'',42]],0,0]);
+$t2->get_ok('/chat/receive/focused')->status_is(200);
+bothusers($t2);
 $t1->get_ok('/chat/leave')->status_is(200)->content_is('ok');
 $t2->get_ok('/chat/receive/focused')->status_is(200)
-   ->json_is([[[]],[[$user,'',60]],0,0]);
+   ->json_has('/0')->json_hasnt('/0/0')
+   ->json_is('/1/0/0' => $user)->json_is('/1/0/2' => 60)
+   ->json_hasnt('/1/1')
+   ->json_is('/2' => 1)->json_is('/3' => 0);
+
+# und wieder rein in den chat (mit neuen nachrichten)
+my $str3 = Testinit::test_randstring();
+$t2->post_ok('/chat/receive/focused', form => { msg => $str3 })->status_is(200);
 $t1->get_ok('/chat')->status_is(200)
    ->content_like(qr~<!-- Angemeldet als "$admin" !-->~);
 $t1->get_ok('/chat/receive/focused')->status_is(200)
-   ->json_is([[[]],[sort {$a->[0] cmp $b->[0]} [$user,'',60], [$admin,'',42]],0,0]);
-$t2->get_ok('/chat/receive/focused')->status_is(200)
-   ->json_is([[[]],[sort {$a->[0] cmp $b->[0]} [$user,'',60], [$admin,'',42]],0,0]);
+   ->json_is('/0/0/0' => ++$id)->json_is('/0/0/1' => $user)->json_is('/0/0/2' => $str3);
+$t2->get_ok('/chat/receive/focused')->status_is(200);
+bothusers($t2);
+bothusers($t1);
 
 # schauen, ob das automatische ablaufen auch funktioniert
-$t2->get_ok('/chat/receive/focused')->status_is(200)
-   ->json_is([[[]],[sort {$a->[0] cmp $b->[0]} [$user,'',60], [$admin,'',42]],0,0]);
-$t1->get_ok('/chat/receive/focused')->status_is(200)
-   ->json_is([[[]],[sort {$a->[0] cmp $b->[0]} [$user,'',60], [$admin,'',42]],0,0]);
 $t1->get_ok('/chat/refresh/1')->status_is(200)->content_is('ok');
-exit; sleep 2;
+sleep 3;
 $t2->get_ok('/chat/receive/focused')->status_is(200)
-   ->json_is([[[]],[[$user,'',60]],0,0]);
+   ->json_has('/0')->json_hasnt('/0/0')
+   ->json_is('/1/0/0' => $user)->json_is('/1/0/2' => 60)
+   ->json_hasnt('/1/1')
+   ->json_is('/2' => 1)->json_is('/3' => 0);
+
+# und wieder rein in den chat (mit neuen nachrichten)
+$str3 = Testinit::test_randstring();
+$t2->post_ok('/chat/receive/focused', form => { msg => $str3 })->status_is(200);
+$t1->get_ok('/chat')->status_is(200)
+   ->content_like(qr~<!-- Angemeldet als "$admin" !-->~);
+$t1->get_ok('/chat/receive/focused')->status_is(200)
+   ->json_is('/0/0/0' => ++$id)->json_is('/0/0/1' => $user)->json_is('/0/0/2' => $str3);
+$t2->get_ok('/chat/receive/focused')->status_is(200);
+bothusers($t2,1);
+bothusers($t1,1);
 

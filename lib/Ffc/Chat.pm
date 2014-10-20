@@ -1,7 +1,6 @@
 package Ffc::Chat;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
-use Mojo::Util 'quote';
 use Encode qw( encode decode_utf8 );
 
 sub install_routes {
@@ -69,27 +68,25 @@ sub _receive {
 
     # rückgabe erzeugen
     my $sql = << 'EOSQL';
-SELECT c."id", u."name", c."msg" 
+SELECT c."id", uf."name", c."msg", c."posted"
 FROM "chat" c 
-INNER JOIN "users" u ON u."id"=c."userfromid"
-INNER JOIN "users" u2 ON u2."id"=?
-WHERE c."id" > u2."lastchatid"
+INNER JOIN "users" uf ON uf."id"=c."userfromid"
+WHERE c."id">(SELECT u2."lastchatid" FROM "users" u2 WHERE u2."id"=? LIMIT 1)
 ORDER BY c."id" DESC
 LIMIT ?;
 EOSQL
 
     my $msgs = $dbh->selectall_arrayref( $sql, undef,
-         $c->session->{userid}, $c->configdata->{postlimit} );
-    $_->[2] = quote($_->[2]) for @$msgs;
+         $c->session->{userid}, $c->configdata->{postlimit} * 3 );
+    $_->[3] = $c->format_timestamp($_->[3]) for @$msgs;
 
     # refresh-timer aktualsieren
-    $sql = q~UPDATE "users" SET 
-    "lastchatid"=?,
-    "inchat"=1, 
-    "lastseenchat"=CURRENT_TIMESTAMP~;
+    $sql = qq~UPDATE "users" SET\n~;
+    $sql .= qq~    "lastchatid"=?,\n~ if @$msgs;
+    $sql .= qq~    "inchat"=1,\n    "lastseenchat"=CURRENT_TIMESTAMP~;
     $sql .= qq~,\n    "lastseenchatactive"=CURRENT_TIMESTAMP~ if $active;
     $sql .= qq~\nWHERE "id"=?~;
-    $dbh->do( $sql, undef, ( @$msgs ? $msgs->[0]->[0] : 0 ), $c->session->{userid} );
+    $dbh->do( $sql, undef, ( @$msgs ? $msgs->[0]->[0] : () ), $c->session->{userid} );
 
     # benutzerliste ermitteln, die im chat sind
     $sql = << 'EOSQL';
@@ -99,9 +96,8 @@ SELECT
     "chatrefreshsecs"
 FROM "users"
 WHERE 
-    --CASE WHEN COALESCE("lastseenchat",0)<>0 THEN STRFTIME('%s',"lastseenchat") ELSE 0 END +"chatrefreshsecs"<=CURRENT_TIMESTAMP
-    --AND
-    "inchat"=1
+    (CAST(STRFTIME('%s',"lastseenchat") AS integer)+"chatrefreshsecs")>=CAST(STRFTIME('%s',CURRENT_TIMESTAMP) AS integer)
+    AND "inchat"=1
 ORDER BY "name", "id"
 EOSQL
 

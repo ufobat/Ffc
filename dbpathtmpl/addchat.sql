@@ -7,6 +7,7 @@ ALTER TABLE "users" ADD COLUMN "chatrefreshsecs" integer NOT NULL DEFAULT 60;
 CREATE TABLE "chat" (
     "id" integer PRIMARY KEY AUTOINCREMENT,
     "userfromid" integer NOT NULL,
-    "msg" varchar(1024) NOT NULL
+    "msg" varchar(1024) NOT NULL,
+    "posted" timestamp NOT NULL CURRENT_TIMESTAMP
 );
 

@@ -56,9 +56,10 @@ CREATE TABLE "attachements" (
 );
 
 CREATE TABLE "chat" (
-    "id" integer PRIMARY KEY AUTOINCREMENT,
-    "userfromid" integer NOT NULL,
-    "msg" varchar(1024) NOT NULL
+   "id" integer PRIMARY KEY AUTOINCREMENT,
+   "userfromid" integer NOT NULL,
+   "msg" varchar(1024) NOT NULL,
+  "posted" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE "config" (
