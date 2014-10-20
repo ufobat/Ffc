@@ -35,9 +35,9 @@
     <h1>Passwort ändern</h1>
     <p>(Aus Sicherheitsgründen sollte das eigene Passwort regelmäßig geändert werden)</p>
     <form action="<%= url_for 'set_password' %>#set_password" method="POST">
-        <p><%= password_field 'oldpw' %> (Altes Passwort zur Bestätigung)</p>
-        <p><%= password_field 'newpw1' %> (Neues Passwort, 8 - 64 Zeichen)</p>
-        <p><%= password_field 'newpw2' %> (Neues Passwort wiederholen)</p>
+        <p><%= password_field 'oldpw'  => '' %> (Altes Passwort zur Bestätigung)</p>
+        <p><%= password_field 'newpw1' => '' %> (Neues Passwort, 8 - 64 Zeichen)</p>
+        <p><%= password_field 'newpw2' => '' %> (Neues Passwort wiederholen)</p>
         <p><button type="submit" class="linkalike">Passwort ändern</button></p>
     </form>
 </div>
