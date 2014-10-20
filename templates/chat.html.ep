@@ -39,7 +39,8 @@
    <br />
    <textarea id="msg" name="msg"></textarea>
    <div id="buttonlist">
-    <button name="send">Senden</button>
+    <button name="send" id="send">Senden</button>
+    <button name="reload" id="reload">Laden</button>
     <select name="refreshtime" id="refreshtime">
      <option value="1">1 Sekunde</option>
      <option value="15">15 Sekunden</option>
