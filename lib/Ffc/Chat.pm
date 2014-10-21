@@ -99,7 +99,7 @@ FROM "users"
 WHERE 
     (CAST(STRFTIME('%s',"lastseenchat") AS integer)+"chatrefreshsecs")>=CAST(STRFTIME('%s',CURRENT_TIMESTAMP) AS integer)
     AND "inchat"=1
-ORDER BY "name", "id"
+ORDER BY UPPER("name"), "id"
 EOSQL
 
     my $users = $dbh->selectall_arrayref( $sql );
