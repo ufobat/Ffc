@@ -6,6 +6,7 @@
     <p>Verändern Sie im folgenden Eingabefeld die Überschrift für das gewählte Thema.</p>
     <p class="insertformbuttons">
         <%= submit_button 'Überschrift ändern', class => 'linkalike send' %>
+        (<a href="<%= url_for 'show_forum_topiclist' %>" title="&Auml;nderung abbrechen">Abbrechen</a>)
     </p>
 % } else {
     <h1>Ein neues Thema beginnen</h1>
