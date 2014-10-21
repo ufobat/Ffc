@@ -28,12 +28,12 @@ sub ch_wrn { Testinit::test_warning( $t, @_             ) }
 
 login1();
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~<div class="postbox topiclist">\s*</div>~)
+  ->content_unlike(qr~<div class="postbox topiclist">\s*</div>~)
   ->content_like(qr~<a href="/topic/new" title=~);
 
 login2();
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~<div class="postbox topiclist">\s*</div>~);
+  ->content_unlike(qr~<div class="postbox topiclist">\s*</div>~);
 
 #############################################################################
 ### Neues Thema beginnen - Fehlerbehandlung
