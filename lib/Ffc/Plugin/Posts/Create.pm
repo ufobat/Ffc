@@ -10,8 +10,8 @@ sub _add_post {
         $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen)');
         return $c->show;
     }
-    my $controller = $c->stash('controller');
-    if ( $controller ne 'notes' and ( $userto or $topicid ) ) {
+    #my $controller = $c->stash('controller');
+    if ( $userto or $topicid ) {
         my $sql = 'SELECT'
             . ' CASE WHEN MAX(COALESCE(p.id,0))>MAX(COALESCE(l.lastseen,0)) THEN 1 ELSE 0 END'
             . ' FROM users u LEFT OUTER JOIN posts p ON p.userfrom<>? AND p.'
