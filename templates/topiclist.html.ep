@@ -3,6 +3,7 @@
 <h1>Allgemeines Forum</h1>
 <p><a href="<%= url_for 'add_forum_topic_form' %>" title="Neues Thema beginnen">Klicke hier</a>, um ein neues Thema zu beginnen.</p>
 </div>
+% if ( @$topics_for_list ) {
 <div class="postbox topiclist">
 % for my $t ( @$topics_for_list ) {
     <h2<%== $t->[3] ? ' class="newpost"' : '' %>>
@@ -23,6 +24,7 @@
     </h2>
 % }
 </div>
+% }
 % if ( @$topics >= configdata->{topiclimit} or $page > 1 ) {
 %= include 'parts/pagelinks', more => @$topics >= configdata->{topiclimit} ? 1 : 0
 % }

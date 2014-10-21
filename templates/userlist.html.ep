@@ -3,6 +3,7 @@
 <h1>Privatnachrichten mit Benutzern</h1>
 <p>Klicke auf einen Benutzernamen, um Nachrichten mit diesem Benutzer auszutauschen.</p>
 </div>
+% if ( @$users ) {
 <div class="postbox userlist">
 % for my $u ( @$users ) {
     <h2<%== $u->[2] ? ' class="newpost"' : '' %>>
@@ -17,3 +18,4 @@
     </p>
 % }
 </div>
+% }
