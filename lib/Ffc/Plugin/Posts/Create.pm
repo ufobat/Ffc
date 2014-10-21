@@ -16,7 +16,8 @@ sub _add_post {
             . ' CASE WHEN MAX(COALESCE(p.id,-1))>MAX(COALESCE(l.lastseen,-1)) THEN 1 ELSE 0 END'
             . ' FROM users u LEFT OUTER JOIN posts p ON p.userfrom<>? AND p.'
             . ( $userto ? 'userto=?' : 'topicid=?' )
-            . ' LEFT OUTER JOIN lastseen' . ( $controller eq 'pmsgs' 
+            . ' LEFT OUTER JOIN lastseen' 
+            . ( $controller eq 'pmsgs' 
                 ? 'msgs l ON l.userid=u.id AND l.userfromid=?' 
                 : 'forum l ON l.userid=u.id AND l.topicid=?' )
             . ' WHERE u.id=? GROUP BY u.id';
