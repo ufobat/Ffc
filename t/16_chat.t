@@ -30,7 +30,7 @@ sub bothusers {
     my $t = $_[0];
     my $aref = $_[1] || 42;
     my $i = 0;
-    for my $u ( sort {$a->[0] cmp $b->[0]} [$user,60], [$admin,$aref] ) {
+    for my $u ( sort {uc($a->[0]) cmp uc($b->[0])} [$user,60], [$admin,$aref] ) {
         $t->json_is("/1/$i/0" => $u->[0])
           ->json_is("/1/$i/2" => $u->[1])
           ->json_is("/1/$i/3" => $i + 1 );
