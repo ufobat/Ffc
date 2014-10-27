@@ -249,6 +249,10 @@ li {
 }
 .userlist h2, .topiclist h2 {
     font-size: 1em;
+    clear: both;
+}
+.topiclist h2 .smallfont {
+    float: right;
 }
 .mark {
     color: palevioletred;
