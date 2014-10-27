@@ -10,9 +10,11 @@ body {
     background: url('img/stripes.png') fixed gainsboro;
     max-width: 48em;
 }
-body > *, .popup {
+body > * {
     padding: 0 1em 1em 1em;
     margin-top: .5em;
+}
+body > *, .popup {
     background: white;
     border: 1px gray solid;    
 }
@@ -298,6 +300,8 @@ input[type="text"].titlestring {
     position: absolute;
     text-align: left;
     margin-top: auto;
+}
+.popup > * {
     padding: .5em 1em;
 }
 .popup, .messagebox > div {

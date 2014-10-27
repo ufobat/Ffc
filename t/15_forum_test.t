@@ -89,6 +89,7 @@ sub check_env {
     check_for_topic_count($t, $Topics[$_], $_ + 1, $_ ? 1 : $newcnt) for 0 .. $#Topics;
 
     # gelesen markieren
+    $newcntsum = 2;
     $t->get_ok('/topic/1')->status_is(200)
       ->content_like(qr~<title>Ffc Forum \($newcntsum/0\)</title>~)
       ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span></a>~xms);
