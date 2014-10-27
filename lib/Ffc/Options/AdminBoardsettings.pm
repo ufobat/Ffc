@@ -26,7 +26,7 @@ our @Settings = (
         'Die Zeit der Benutzersitzungsmaximallänge muss eine Zahl in Sekunden sein' ],
     [ urlshorten => 'Maximale Länge für die URL-Darstellung', qr(\A\d+\z)xmso, 1, 'number',
         'Längen-Kürzung für URL-Anzeige ändern',
-        'URLs werden in Beiträgen auf diese Anzahl von Zeichen in der Darstellung zurecht gekürzt, damit die in den Beiträgen nicht zu lang werden, die gesamte URL ist jedoch im Tooltip ersichtlich',
+        'URLs werden in Beiträgen und im Foren-Popup im Menü auf diese Anzahl von Zeichen in der Darstellung zurecht gekürzt, damit die in den Beiträgen nicht zu lang werden, die gesamte URL ist jedoch im Tooltip ersichtlich',
         'Die Länge, auf die URLs in der Anzeige gekürzt werden, muss eine Zahl sein' ],
     [ backgroundcolor => 'Hintergrundfarbe', qr(\A(?:|\#[0-9a-f]{6}|\w{2,128})\z)msoi, 1, 'color',
         'Hintergrundfarbe für die Webseite ändern',
