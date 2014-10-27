@@ -302,7 +302,7 @@ input[type="text"].titlestring {
     margin-top: auto;
 }
 .popup > * {
-    padding: .5em 1em;
+    padding: .5em .75em;
 }
 .popup, .messagebox > div {
     box-shadow: 0 0 2px dimgray;
