@@ -64,6 +64,7 @@ sub register {
         page     => 1,
         lastseen => -1,
         postid   => undef,
+        topicid  => undef,
         map( {; $_ => [] }
             qw(additional_params topics users attachements) ),
         map( {;$_.'count' => 0} 
