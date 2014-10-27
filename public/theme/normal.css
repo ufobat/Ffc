@@ -333,4 +333,11 @@ textarea:focus, textarea.inedit {
         display: block;
     }
 }
-
+.menuentry:first-child {
+    font-size: 1.25em;
+    font-weight: bolder;
+}
+.menuentry:first-child .popup {
+    font-size: 1em;
+    font-weight: normal;
+}
