@@ -6,7 +6,6 @@
     </div>
     <div class="menuentry">
         <a href="<%= url_for 'show_pmsgs_userlist' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkpmsgs<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>">Nachrichten<% if ( $newmsgscount ) { %> (<span class="mark"><%= $newmsgscount %></span>)<% } %></span></a>
-<%= $users && @$users ? include('layouts/parts/users') : '' %>
     </div>
     <div class="menuentry">
         <a href="<%= url_for 'show_notes', page => 1 %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>

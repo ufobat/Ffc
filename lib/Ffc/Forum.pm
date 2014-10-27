@@ -71,7 +71,6 @@ sub show {
     my ( $dbh, $uid, $topicid ) = ( $c->dbh, $c->session->{userid}, $c->param('topicid') );
     my ( $heading, $userfrom ) = $c->_get_title_from_topicid;
     return unless $heading;
-    $c->counting;
     $c->stash(
         topicid  => $topicid,
         backurl  => $c->url_for('show_forum_topiclist'),
@@ -103,6 +102,7 @@ sub show {
             'INSERT INTO "lastseenforum" ("userid", "topicid", "lastseen") VALUES (?,?,?)',
             undef, $uid, $topicid, $newlastseen );
     }
+    $c->counting;
     $c->show_posts();
 }
 
