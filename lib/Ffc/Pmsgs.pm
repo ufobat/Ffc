@@ -42,7 +42,6 @@ sub search { $_[0]->search_posts(); }
 
 sub show {
     my $c = shift;
-    $c->counting;
     $c->stash(
         backurl  => $c->url_for('show_pmsgs_userlist'),
         backtext => 'zur Benutzerliste',
@@ -73,6 +72,7 @@ sub show {
             'INSERT INTO "lastseenmsgs" ("userid", "userfromid", "lastseen") VALUES (?,?,?)',
             undef, $uid, $utoid, $newlastseen );
     }
+    $c->counting;
     $c->show_posts();
 }
 
