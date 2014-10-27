@@ -14,7 +14,7 @@ our @Settings = (
         'Der Name für Cookies muss zwischen zwei und 256 Zeichen lang sein' ],
     [ postlimit => 'Beitragsanzahl', qr(\A\d+\z)xmso, 1, 'number',
         'Anzahl der auf einer Seite angezeigten Beiträge ändern',
-        'Hier kann die Anzahl der auf einer Seite gleichzeitig angezeigten Forenbeiträge beschränkt werden',
+        'Hier kann die Anzahl der auf einer Seite und im Menü-Popup gleichzeitig angezeigten Forenbeiträge beschränkt werden',
         'Die Anzahl gleichzeitig angezeigter Beiträge muss eine Zahl sein' ],
     [ topiclimit => 'Überschriftenanzahl', qr(\A\d+\z)xmso, 1, 'number',
         'Anzahl der auf einer Seite angezeigten Überschriften ändern',
