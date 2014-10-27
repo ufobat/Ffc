@@ -304,9 +304,10 @@ input[type="text"].titlestring {
     position: absolute;
     text-align: left;
     margin-top: auto;
+    padding: .25em .5em;
 }
 .popup > * {
-    padding: .5em .75em;
+    padding: .25em;
 }
 .popup, .messagebox > div {
     box-shadow: 0 0 2px dimgray;
