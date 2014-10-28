@@ -56,7 +56,7 @@ admin();
 $t->get_ok('/options/form')
   ->status_is(200)
   ->content_like(qr~<input type="(?:text|number|checkbox)" name="optionvalue" value="[^"]*"(?: checked="checked")? />~)
-  ->content_like(qr'active activeoptions">Optionen<');
+  ->content_like(qr'active activeoptions">Einstellungen<');
 
 for my $s ( @Settings ) {
     my ( $key, $title, $itype, $goodv, $badv, $error ) = @$s;
@@ -68,10 +68,10 @@ for my $s ( @Settings ) {
       ->status_is(200)
       ->content_unlike(qr~<form action="/options/admin/boardsettings/$key#boardsettingsadmin" method="POST">~)
       ->content_unlike(qr~<input type="$itype" name="optionvalue" value="[^"]*" (?:checked="checked")? />~)
-      ->content_like(qr'active activeoptions">Optionen<');
+      ->content_like(qr'active activeoptions">Einstellungen<');
     $t->post_ok("/options/admin/boardsettings/$key")
       ->status_is(200)
-      ->content_like(qr'active activeoptions">Optionen<');
+      ->content_like(qr'active activeoptions">Einstellungen<');
     error('Nur Administratoren dürfen das');
     
     note qq~checking that admin users can reach option "$key"~;
@@ -85,7 +85,7 @@ for my $s ( @Settings ) {
     my $info = "$title geändert";
     $t->post_ok($url)
       ->status_is(200)
-      ->content_like(qr'active activeoptions">Optionen<');
+      ->content_like(qr'active activeoptions">Einstellungen<');
     if ( $key =~ m/favicon|backgroundcolor|fixbackgroundcolor/xmso ) {
         info($info);
     }
@@ -96,14 +96,14 @@ for my $s ( @Settings ) {
         note qq~testing with bad value "$i"~;
         $t->post_ok($url, form => { optionvalue => $i } )
           ->status_is(200)
-          ->content_like(qr'active activeoptions">Optionen<');
+          ->content_like(qr'active activeoptions">Einstellungen<');
         error($error);
     }
     for my $i ( @$goodv ) {
         note qq~testing with good value "$i"~;
         $t->post_ok($url, form => { optionvalue => $i } )
           ->status_is(200)
-          ->content_like(qr'active activeoptions">Optionen<');
+          ->content_like(qr'active activeoptions">Einstellungen<');
         info($info);
         $t->get_ok('/config')
           ->status_is(200)

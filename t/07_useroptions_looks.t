@@ -47,7 +47,7 @@ sub test_font_size {
         login($user1, $pass1);
         $t->get_ok("/options/fontsize/$i")
           ->status_is(200)
-          ->content_like(qr'active activeoptions">Optionen<');
+          ->content_like(qr'active activeoptions">Einstellungen<');
         info('Schriftgröße geändert');
         $t->get_ok('/')
           ->status_is(200)
@@ -84,7 +84,7 @@ sub test_bgcolor {
     login($user1, $pass1);
     $t->post_ok("/options/bgcolor/color", form => {})
       ->status_is(200)
-      ->content_like(qr'active activeoptions">Optionen<');
+      ->content_like(qr'active activeoptions">Einstellungen<');
     info('Hintergrundfarbe zurück gesetzt');
 
     for my $c ( @good ) {
@@ -98,7 +98,7 @@ sub test_bgcolor {
             info($goodreset);
         }
         $t->status_is(200)
-          ->content_like(qr'active activeoptions">Optionen<');
+          ->content_like(qr'active activeoptions">Einstellungen<');
         $t->get_ok('/')
           ->status_is(200)
           ->content_like(qr~Angemeldet als "$user1"~);
@@ -139,7 +139,7 @@ sub test_theme_switcher {
         $t->get_ok('/options/switchtheme')
           ->status_is(200)
           ->content_like(qr~Angemeldet als "$user1"~)
-          ->content_like(qr'active activeoptions">Optionen<');
+          ->content_like(qr'active activeoptions">Einstellungen<');
         info('Ansicht gewechselt');
         $t->get_ok('/')
           ->status_is(200)
@@ -158,12 +158,12 @@ sub test_email {
     login($user1, $pass1);
     $t->post_ok('/options/email')
       ->status_is(200)
-      ->content_like(qr'active activeoptions">Optionen<');
+      ->content_like(qr'active activeoptions">Einstellungen<');
     error('Email-Adresse nicht gesetzt');
     $t->post_ok('/options/email', form => { email => '' })
       ->status_is(200)
       ->content_like(qr'name="email" type="email" value=""')
-      ->content_like(qr'active activeoptions">Optionen<');
+      ->content_like(qr'active activeoptions">Einstellungen<');
     error('Email-Adresse nicht gesetzt');
     is $dbh->selectall_arrayref(
         'SELECT email FROM users WHERE name=?'
@@ -171,7 +171,7 @@ sub test_email {
     $t->post_ok('/options/email', form => { email => ('a' x 1025 ) })
       ->status_is(200)
       ->content_like(qr'name="email" type="email" value="a{1025}"')
-      ->content_like(qr'active activeoptions">Optionen<');
+      ->content_like(qr'active activeoptions">Einstellungen<');
     error('Email-Adresse darf maximal 1024 Zeichen lang sein');
     is $dbh->selectall_arrayref(
         'SELECT email FROM users WHERE name=?'
@@ -179,7 +179,7 @@ sub test_email {
     $t->post_ok('/options/email', form => { email => ('a' x 100 ) })
       ->status_is(200)
       ->content_like(qr'name="email" type="email" value="a{100}"')
-      ->content_like(qr'active activeoptions">Optionen<');
+      ->content_like(qr'active activeoptions">Einstellungen<');
     error('Email-Adresse sieht komisch aus');
     is $dbh->selectall_arrayref(
         'SELECT email FROM users WHERE name=?'
@@ -189,7 +189,7 @@ sub test_email {
         , undef, $user1)->[0]->[0], 1, 'newsmail still active in database';
     $t->post_ok('/options/email', form => { email => 'me@home.de', newsmail => 0 })
       ->status_is(200)
-      ->content_like(qr'active activeoptions">Optionen<')
+      ->content_like(qr'active activeoptions">Einstellungen<')
       ->content_like(qr'name="email" type="email" value="me@home.de"');
     info('Email-Adresse geändert');
     is $dbh->selectall_arrayref(
@@ -200,7 +200,7 @@ sub test_email {
         , undef, $user1)->[0]->[0], 0, 'newsmail now inactive in database';
     $t->post_ok('/options/email', form => { email => 'him@work.com', newsmail => 1 })
       ->status_is(200)
-      ->content_like(qr'active activeoptions">Optionen<')
+      ->content_like(qr'active activeoptions">Einstellungen<')
       ->content_like(qr'name="email" type="email" value="him@work.com"');
     info('Email-Adresse geändert');
     is $dbh->selectall_arrayref(
@@ -213,7 +213,7 @@ sub test_email {
     $t->get_ok('/options/form')
       ->status_is(200)
       ->content_like(qr'name="email" type="email" value=""')
-      ->content_like(qr'active activeoptions">Optionen<');
+      ->content_like(qr'active activeoptions">Einstellungen<');
     is $dbh->selectall_arrayref(
         'SELECT email FROM users WHERE name=?'
         , undef, $user2)->[0]->[0], '', 'emailadress not set in database';
@@ -224,7 +224,7 @@ sub test_email {
     $t->get_ok('/options/form')
       ->status_is(200)
       ->content_like(qr'name="email" type="email" value="him@work.com"')
-      ->content_like(qr'active activeoptions">Optionen<');
+      ->content_like(qr'active activeoptions">Einstellungen<');
 }
 
 sub test_bgcolor_configoptions {
@@ -257,7 +257,7 @@ sub test_bgcolor_configoptions {
     $t->app->configdata->{fixbackgroundcolor} = 1;
     $t->get_ok('/options/form')
       ->status_is(200)
-      ->content_like(qr'active activeoptions">Optionen<')
+      ->content_like(qr'active activeoptions">Einstellungen<')
       ->content_unlike(qr'Einstellungen zur Hintergrundfarbe');
     $t->get_ok('/')
       ->status_is(200)
