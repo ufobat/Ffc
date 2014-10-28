@@ -1,7 +1,7 @@
     <div class="menuentry refreshlink">
         <a href="<%= url_for $pageurl %>"
             title="Diese Seite neu laden"
-        >Aktualisieren</a>
+        >aktualisieren</a>
     </div>
 
     <div class="menuentry">
