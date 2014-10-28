@@ -2,9 +2,7 @@
 <div class="menu">
 %= include 'layouts/parts/menu';
 </div>
-
 %= include 'parts/messageboxes';
-
 %= content
-
+%= include 'layouts/parts/javascript';
 %= include 'layouts/parts/footer';

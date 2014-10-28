@@ -1,0 +1,8 @@
+<script type="text/javascript">
+    window.setInterval(function(){
+        if ( !document.hasFocus() ) {
+            location.reload();
+            console.log('reloaded');
+        }
+    }, 300000);
+</script>
