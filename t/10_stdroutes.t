@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 145;
+use Test::More tests => 141;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 
@@ -71,7 +71,6 @@ note 'test /config with custom settings';
     sessiontimeout => 21,
     urlshorten => 4,
     backgroundcolor => 'Hintergrundfarbe',
-    fixbackgroundcolor => 1,
     favicon => 'Favoritenicon-Link',
 );
 

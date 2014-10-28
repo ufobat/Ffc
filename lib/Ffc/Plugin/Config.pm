@@ -8,10 +8,6 @@ use File::Spec::Functions qw(splitdir catdir);
 use Digest::SHA 'sha512_base64';
 use Ffc::Plugin::Config::Lists;
 
-our @Styles = (
-    '/theme/normal.css', 
-    '/theme/breit.css',
-);
 our %Defaults = (
     favicon            => '/theme/img/favicon.png',
     title              => 'Ffc Forum',
@@ -20,17 +16,6 @@ our %Defaults = (
     sessiontimeout     => 259200,
     postlimit          => 7,
     backgroundcolor    => '',
-    fixbackgroundcolor => 0,
-);
-our %FontSizeMap = (
-    -3, 0.25,
-    -2, 0.5,
-    -1, 0.75,
-     0, 1,
-     1, 1.25,
-     2, 1.5,
-     3, 1.75,
-     4, 2,
 );
 
 sub register {
@@ -63,8 +48,8 @@ sub register {
     $app->defaults({
         page     => 1,
         lastseen => -1,
-        postid   => undef,
-        topicid  => undef,
+        map( {; $_ => undef }
+            qw(postid topicid) ),
         map( {; $_ => [] }
             qw(additional_params topics users attachements) ),
         map( {;$_.'count' => 0} 
@@ -81,10 +66,6 @@ sub register {
             sub { shift()->flash($w => join ' ', @_) } );
     }
 
-    $app->helper( fontsize =>
-        sub { $FontSizeMap{$_[1]} || 1 } );
-    $app->helper( stylefile => 
-        sub { $Styles[$_[0]->session()->{style} ? 1 : 0] } );
     $app->helper( hash_password  => 
         sub { sha512_base64 $_[1], $secconfig->{cryptsalt} } );
     $app->helper( counting => \&_counting );
@@ -95,11 +76,7 @@ sub register {
         my $c = $_[0];
         my $s = $c->session;
         $c->stash(
-            fontsize => $s->{fontsize} // 0,
-            backgroundcolor => 
-                $config->{fixbackgroundcolor}
-                    ? $config->{backgroundcolor}
-                    : ( $s->{backgroundcolor} || $config->{backgroundcolor} ),
+            backgroundcolor => $s->{backgroundcolor} || $config->{backgroundcolor},
             map( {;$_ => $config->{$_} || $Defaults{$_}} qw(favicon title) ),
         );
     });

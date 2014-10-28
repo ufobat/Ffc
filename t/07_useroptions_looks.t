@@ -7,7 +7,7 @@ use Testinit;
 use Ffc::Plugin::Config;
 
 use Test::Mojo;
-use Test::More tests => 930;
+use Test::More tests => 501;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
@@ -24,53 +24,16 @@ login($user1, $pass1);
 $t->get_ok('/')
   ->status_is(200)
   ->content_like(qr~Angemeldet als "$user1"~)
-  ->content_unlike(qr'background-color:')
-  ->content_unlike(qr'font-size:');
+  ->content_unlike(qr'background-color:');
 
 login($user2, $pass2);
 $t->get_ok('/')
   ->status_is(200)
   ->content_like(qr~Angemeldet als "$user2"~)
-  ->content_unlike(qr'background-color:')
-  ->content_unlike(qr'font-size:');
+  ->content_unlike(qr'background-color:');
 
-test_font_size();
 test_bgcolor();
-test_theme_switcher();
 test_email();
-test_bgcolor_configoptions();
-
-sub test_font_size {
-    note 'checking font size changes';
-    for my $i ( sort( {$a <=> $b} keys %Ffc::Plugin::Config::FontSizeMap ), 0 ) {
-        my $s = $Ffc::Plugin::Config::FontSizeMap{$i};
-        login($user1, $pass1);
-        $t->get_ok("/options/fontsize/$i")
-          ->status_is(200)
-          ->content_like(qr'active activeoptions">Einstellungen<');
-        info('Schriftgröße geändert');
-        $t->get_ok('/')
-          ->status_is(200)
-          ->content_like(qr~Angemeldet als "$user1"~);
-        if ( $i == 0 ) {
-            $t->content_unlike(qr~font-size:~);
-        }
-        else {
-            $t->content_like(qr~font-size:\s*${s}em~);
-        }
-
-        login($user2, $pass2);
-        $t->get_ok('/')
-          ->status_is(200)
-          ->content_like(qr~Angemeldet als "$user2"~);
-        if ( $i == 0 ) {
-            $t->content_unlike(qr~font-size:~);
-        }
-        else {
-            $t->content_like(qr~font-size:\s*${s}em~);
-        }
-    }
-}
 
 sub test_bgcolor {
     note 'checking background colors';
@@ -127,29 +90,6 @@ sub test_bgcolor {
           ->status_is(200)
           ->content_like(qr~Angemeldet als "$user2"~)
           ->content_unlike(qr~background-color:~);
-    }
-}
-
-sub test_theme_switcher {
-    note 'checking theme switcher';
-    my $b = 0;
-    for ( 0 .. 3 ) {
-        $b = $b ? 0 : 1;
-        login($user1, $pass1);
-        $t->get_ok('/options/switchtheme')
-          ->status_is(200)
-          ->content_like(qr~Angemeldet als "$user1"~)
-          ->content_like(qr'active activeoptions">Einstellungen<');
-        info('Ansicht gewechselt');
-        $t->get_ok('/')
-          ->status_is(200)
-          ->content_like(qr~Angemeldet als "$user1"~)
-          ->content_like(qr~href="$Ffc::Plugin::Config::Styles[$b]"~);
-        login($user2, $pass2);
-        $t->get_ok('/')
-          ->status_is(200)
-          ->content_like(qr~Angemeldet als "$user2"~)
-          ->content_like(qr~href="$Ffc::Plugin::Config::Styles[$b]"~);
     }
 }
 
@@ -225,54 +165,5 @@ sub test_email {
       ->status_is(200)
       ->content_like(qr'name="email" type="email" value="him@work.com"')
       ->content_like(qr'active activeoptions">Einstellungen<');
-}
-
-sub test_bgcolor_configoptions {
-    my @Chars = ('a' .. 'z', 0 .. 9);
-    note 'checking background chooser with default background color in config';
-    my $sbgcolor = $t->app->configdata->{backgroundcolor} = 
-        join '', 'c4', map {$Chars[int rand @Chars]} 1 .. 4;
-    my $mbgcolor = 'my' . uc $sbgcolor;
-    isnt $sbgcolor, $mbgcolor;
-
-    $t->get_ok("/options/bgcolor/none");
-    info('Hintergrundfarbe zurück gesetzt');
-    $t->get_ok('/')
-      ->status_is(200)
-      ->content_like(qr~background-color:\s*$sbgcolor~);
-
-    $t->post_ok("/options/bgcolor/color", form => { bgcolor => $mbgcolor });
-    info('Hintergrundfarbe angepasst');
-    $t->get_ok('/')
-      ->status_is(200)
-      ->content_like(qr~background-color:\s*$mbgcolor~);
-
-    $t->get_ok("/options/bgcolor/none");
-    info('Hintergrundfarbe zurück gesetzt');
-    $t->get_ok('/')
-      ->status_is(200)
-      ->content_like(qr~background-color:\s*$sbgcolor~);
-
-    note 'checking background chooser disabled via config param';
-    $t->app->configdata->{fixbackgroundcolor} = 1;
-    $t->get_ok('/options/form')
-      ->status_is(200)
-      ->content_like(qr'active activeoptions">Einstellungen<')
-      ->content_unlike(qr'Einstellungen zur Hintergrundfarbe');
-    $t->get_ok('/')
-      ->status_is(200)
-      ->content_like(qr~background-color:\s*$sbgcolor~);
-    
-    $t->post_ok("/options/bgcolor/color", form => { bgcolor => $mbgcolor });
-    error('Ändern der Hintergrundfarbe vom Forenadministrator deaktiviert');
-    $t->get_ok('/')
-      ->status_is(200)
-      ->content_like(qr~background-color:\s*$sbgcolor~);
-
-    $t->get_ok("/options/bgcolor/none");
-    info('Hintergrundfarbe zurück gesetzt');
-    $t->get_ok('/')
-      ->status_is(200)
-      ->content_like(qr~background-color:\s*$sbgcolor~);
 }
 

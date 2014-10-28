@@ -4,23 +4,6 @@
     <p>Hier können Einstellungen für Forum und Konteninformationen vorgenommen werden.</p>
 </div>
 <div class="postbox options">
-    <h1>Schriftgröße und Darstellung</h1>
-    <p>(Schriftgrößen sind abhängig von Browsereinstellungen)</p>
-    <p>
-% for my $fs ( sort {$a <=> $b} keys %$fontsizes ) {
-        <a href="<%= url_for font_size => fontsize => $fs %>" 
-            title="Schriftgröße <%= $fs ? fontsize($fs) : 'normal' %>"<% if ( $fs != $fontsize ) { %> style="font-size: <%= $fontsize ? fontsize($fs) / fontsize($fontsize) : fontsize($fs) %>em"<% } else { %> class="active"<% } %>><%= $fs < 0 ? '-' x ( 0 - $fs ) : '+' x $fs %>A</a>
-% }
-    </p>
-    <p>(Das Forum kann über die gesamte Browserfensterbreite oder schmal und zentriert dargestellt werden)</p>
-    <p>
-        <a href="<%= url_for 'switch_theme' %>?<%= session()->{style} %>">Anzeige des Forums
-            <%= session()->{style} ? 'in schmaler zentrierter Blogform' : 'über die gesamte Browserfensterbreite' %></a>
-    </p>
-    <p>(Diese Anzeigeeinstellungen gelten nur für diese Browsersitzung)</p>
-</div> 
-% unless ( configdata()->{fixbackgroundcolor} ) {
-<div class="postbox options">
     <h1>Hintergrundfarbe des Forums</h1>
     <p>(Die Hintergrundfarbe muss eine Webfarbe (siehe Wikipedia) oder eine Angabe in hexadizimaler Farbschreibweise (<code>#00aaff</code>) sein - moderne Webbrowser bieten an dieser Stelle auch eine einfache Farbauswahl an, in der man sich die gewünschte Farbe einfach per Klick auswählen kann)</p>
     <form action="<%= url_for 'bg_color_form' %>#bgcolor" title="Hintergrundfarbe" method="POST">
@@ -29,7 +12,6 @@
     </form>
     <p><a href="<%= url_for 'no_bg_color' %>#bgcolor">Standardhintergrundfarbe des Forums</a></p>
 </div>
-% }
 <div class="postbox options">
     <a name="set_password"></a>
     <h1>Passwort ändern</h1>

@@ -2,7 +2,7 @@
 <html>
   <head>
     <title><%= $title %></title>
-    <%= stylesheet stylefile() %>
+    <%= stylesheet 'theme/style.css' %>
     <link rel="icon" type="image/ico" href="<%= url_for $favicon %>" />
 %= include 'layouts/parts/styleinc'
   </head>
