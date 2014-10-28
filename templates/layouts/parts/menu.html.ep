@@ -1,0 +1,50 @@
+<div class="menu">
+    <div class="menuentry refreshlink">
+        <a href="<%= url_for $pageurl %>"
+            title="Diese Seite neu laden"
+        >aktualisieren</a>
+    </div>
+
+    <div class="menuentry">
+        <a href="<%= url_for 'show_forum_topiclist', page => 1 %>" title="Nachrichten für alle angemeldeten Benutzer in der Art einer öffentlichen Diskussion"><span class="linktext linkforum<%= $controller eq 'forum' ? ' active activeforum' : '' %>">Forum<% if ( $newpostcount ) { %> (<span class="mark"><%= $newpostcount %></span>)<% } %></span></a>
+<%= $topics && @$topics ? include('layouts/parts/topics') : '' %>
+    </div>
+    <div class="menuentry">
+        <a href="<%= url_for 'show_pmsgs_userlist' %>" title="Nachrichten, die nur du und dein jeweiliger Gesprächspartner lesen können"><span class="linktext linkpmsgs<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>">Nachrichten<% if ( $newmsgscount ) { %> (<span class="mark"><%= $newmsgscount %></span>)<% } %></span></a>
+<%= $users && @$users ? include('layouts/parts/users') : '' %>
+    </div>
+    <div class="menuentry">
+        <a href="<%= url_for 'show_notes', page => 1 %>" title="Kleine Notizen für dich selber und niemanden sonst"><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
+    </div>
+<script type="text/javascript">
+document.write('\
+    <div class="menuentry">\
+        <a href="#" onClick="window.open(\'<%= url_for 'chat_window' %>\',\'ffcchat\',\'width=468,height=284,resizable=no,menubar=no,location=no,scrollbars=no,status=no,toolbar=no\')" title="Kleiner Instant-Chat für aktuell angemeldente Benutzer"><span class="linktext linkchat">Chat</span></a>\
+    </div>\
+');
+</script>
+    <div class="menuentry">
+% if ( $queryurl ) {
+<form action="<%== $queryurl %>" accept-charset="UTF-8" method="POST">
+% if ( $query ) {
+    <a href="<%= url_for "/$controller" %>" title="Suchanfrage zurück setzen">x</a>
+% } else {
+    <span style="visibility: hidden"><a href="<%= url_for "/$controller" %>" title="Suchanfrage zurück setzen">X</a></span>
+% }
+%= text_field query => $query, $query ? (class => 'activesearch') : ()
+    <button type="submit" class="linkalike">»Suche</button>
+</form>
+% } else {
+        <span style="visibility: hidden">
+            %= text_field query => session()->{query}, session()->{query} ? (class => 'activesearch') : ()
+            <button type="submit" class="linkalike">» Suche</button>
+        </span>
+% }
+    </div>
+    <div class="menuentry">
+        <a href="<%= url_for 'options_form' %>" title="Verschiedene Einstellungen für diese Plattform den eigenen Wünschen anpassen"><span class="linktext linkoptions<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
+    </div>
+    <div class="menuentry logoutbutton">
+        <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linkalike linklogout">abmelden</span></a>
+    </div>
+</div>
