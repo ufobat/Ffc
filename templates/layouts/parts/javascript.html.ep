@@ -1,5 +1,6 @@
 <script type="text/javascript">
     window.setInterval(function(){
-        if ( !document.hasFocus() ) location.reload();
+        if ( !document.hasFocus() && document.getElementById('textinput').value === '' )
+            location.reload();
     }, 300000);
 </script>
