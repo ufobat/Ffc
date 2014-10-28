@@ -111,12 +111,12 @@ sub check_env {
 sub check_for_topic_count {
     my ( $t, $top, $i, $new ) = @_;
     if ( $new ) {
-        $t->content_like(qr~$top->[0]\s*\.\.\.</a>\s*\(<span\s+class="mark">$new</span>\)\s*</p>~xms)
+        $t->content_like(qr~$top->[0]\s*</a>\s*\.\.\.\s*\(<span\s+class="mark">$new</span>\)\s*</p>~xms)
           ->content_like(qr~$top->[0]</a>\s*
                 <span\s+class="smallfont">\(\s*Neu:\s+<span\s+class="mark">$new</span>,\s+<a\s+href="/topic/$i/(?:un)?ignore"~xms);
     }
     else {
-        $t->content_like(qr~$top->[0]\s*\.\.\.</a>\s*</p>~xms)
+        $t->content_like(qr~$top->[0]\s*</a>\s*\.\.\.\s*</p>~xms)
           ->content_like(qr~$top->[0]</a>\s*
                 <span\s+class="smallfont">\(\s*<a\s+href="/topic/$i/(?:un)?ignore"~xms);
     }
