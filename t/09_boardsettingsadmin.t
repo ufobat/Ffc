@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 657;
+use Test::More tests => 579;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -43,9 +43,6 @@ my @Settings = (
     [ backgroundcolor => 'Hintergrundfarbe', 'text',
         ['#aaBB99', '#aabb99', '', 'SlateBlue', scalar('a' x 128), 'aa'], ['#aabbfg', 'asdf ASD', '11$AA', '#aacc999', 'a', scalar('a' x 129), 'aa#bbcc'],
         'Die Hintergrundfarbe für die Webseite muss in hexadezimaler Schreibweise mit führender Raute oder als Webfarbenname angegeben werden' ],
-    [ fixbackgroundcolor => 'Hintergrundfarbe unveränderlich vorgegeben', 'checkbox',
-        [0,1,'',1], ['asdf', 22],
-        'Der Hintergrundfarbzwang muss ein Schalter sein' ],
     [ favicon => 'Favoritenicon-Link', 'text',
         [rstr(), '', rstr(), scalar('a' x 256)], [scalar('a' x 257)],
         'Die URL zum Favoritenicon darf höchstens 256 Zeichen lang sein' ],
