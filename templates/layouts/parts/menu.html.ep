@@ -34,7 +34,7 @@
 % }
     </div>
     <div class="menuentry">
-        <a href="<%= url_for 'options_form' %>" title="Verschiedene Einstellungen für diese Plattform den eigenen Wünschen anpassen"><span class="linktext linkoptions<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Optionen</span></a>
+        <a href="<%= url_for 'options_form' %>" title="Verschiedene Einstellungen für diese Plattform den eigenen Wünschen anpassen"><span class="linktext linkoptions<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
     </div>
     <div class="menuentry logoutbutton">
         <a href="<%= url_for 'logout' %>" title="Vom System abmelden"><span class="linkalike linklogout">abmelden</span></a>
