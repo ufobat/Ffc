@@ -1,8 +1,9 @@
 package Ffc::Chat;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
-use Mojo::Util 'quote';
-use Encode qw( encode decode_utf8 );
+use Mojo::Util 'xml_escape';
+
+sub _noop { $Ffc::Digqr };
 
 sub install_routes {
     my $r = $_[0];
@@ -62,9 +63,10 @@ sub _receive {
     if ( $msg ) { # neue nachricht erhalten
         $msg =~ s/\A\s+//xmso;
         $msg =~ s/\s+\z//xmso;
-        next unless $msg;
-        $dbh->do('INSERT INTO "chat" ("userfromid", "msg") VALUES (?,?)',
-            undef, $c->session->{userid}, $msg);
+        if ( $msg ) {
+            $dbh->do('INSERT INTO "chat" ("userfromid", "msg") VALUES (?,?)',
+                undef, $c->session->{userid}, $msg);
+        }
     } # ende neue nachricht erhalten
 
     # rückgabe erzeugen
@@ -80,7 +82,7 @@ EOSQL
     my $msgs = $dbh->selectall_arrayref( $sql, undef,
          $c->session->{userid}, $c->configdata->{postlimit} * 3 );
     for my $m ( @$msgs ) {
-        $m->[$_] = quote($m->[$_]) for 1, 2;
+        $m->[$_] = xml_escape($m->[$_]) for 1, 2;
         $m->[3] = $c->format_timestamp($m->[3], 1);
     }
 
@@ -107,7 +109,10 @@ ORDER BY UPPER("name"), "id"
 EOSQL
 
     my $users = $dbh->selectall_arrayref( $sql );
-    $_->[1] = $c->format_timestamp( $_->[1] || 0 ) for @$users;
+    for my $u ( @$users ) {
+        $u->[1] = $c->format_timestamp( $u->[1] || 0 );
+        $u->[0] = xml_escape($u->[0]);
+    }
 
     # und die notwendigen daten als json zurück geben
 # # returned dataset:

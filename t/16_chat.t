@@ -59,7 +59,6 @@ $t1->get_ok('/chat/receive/focused')->status_is(200)
    ->json_has('/0')->json_hasnt('/0/0')
    ->json_is('/2' => 0)->json_is('/3' => 0);
 bothusers($t1);
-
 sub check_receive_messages {
     my $focused = $_[0] || 0;
     my $fcnt    = $_[1] || 0;
