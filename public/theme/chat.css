@@ -14,7 +14,7 @@ body {
     margin: auto;
 }
 div, textarea, button, select {
-    border: 1px silver solid;
+    border: 1px gray solid;
 }
 div, textarea {
     display: inline-block;
@@ -54,7 +54,7 @@ div, textarea {
 }
 button, #refreshtime {
     background: silver;
-    border-color: gray;
+    border-color: dimgray;
     height: 20px;
     text-align: center;
 }
@@ -67,7 +67,7 @@ button {
     width: 54px;
 }
 button:active, #refreshtime:active {
-    border-color: dimgray;
+    border-color: black;
     background: white;
     cursor: pointer;
 }
