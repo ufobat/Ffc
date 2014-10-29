@@ -235,5 +235,7 @@ ffcdata.init = function() {
     t_start();
     receive();
     document.getElementById('msg').focus();
+
+    ffcdata.receive = receive;
 };
 
