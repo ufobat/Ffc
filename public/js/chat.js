@@ -39,6 +39,8 @@ ffcdata.init = function() {
      ************************************************************************/
     var set_title = function(newchatcount, newpostcount, newmsgscount) {
         var tp = ffcdata.title;
+        if ( document.hasFocus() )
+            newchatcount = 0;
         var str = tp[0]+newchatcount+tp[1]+newpostcount+tp[2]+newmsgscount+tp[3];
         document.getElementsByTagName("title")[0].firstChild.data = str;
         // console.log('title updated');
