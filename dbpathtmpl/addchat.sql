@@ -3,6 +3,8 @@ ALTER TABLE "users" ADD COLUMN "lastchatid" integer NOT NULL DEFAULT '0';
 ALTER TABLE "users" ADD COLUMN "lastseenchat" timestamp;
 ALTER TABLE "users" ADD COLUMN "lastseenchatactive" timestamp;
 ALTER TABLE "users" ADD COLUMN "chatrefreshsecs" integer NOT NULL DEFAULT 60;
+UPDATE "users" SET "lastseenchat"=CURRENT_TIMESTAMP;
+UPDATE "users" SET "lastseenchatactive"=CURRENT_TIMESTAMP;
 
 CREATE TABLE "chat" (
     "id" integer PRIMARY KEY AUTOINCREMENT,
