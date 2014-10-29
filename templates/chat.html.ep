@@ -41,7 +41,7 @@
    <div id="buttonlist">
     <button name="send" id="send">Senden</button>
     <button name="reload" id="reload">Laden</button>
-    <select name="refreshtime" id="refreshtime">
+    <select name="refreshtime" id="refreshtime" onChange="ffcdata.set_refresh(this.value)">
      <option value="1">1 Sekunde</option>
      <option value="15">15 Sekunden</option>
      <option value="30">30 Sekunden</option>

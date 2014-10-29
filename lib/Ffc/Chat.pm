@@ -1,6 +1,7 @@
 package Ffc::Chat;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
+use Mojo::Util 'quote';
 use Encode qw( encode decode_utf8 );
 
 sub install_routes {
@@ -26,7 +27,7 @@ sub install_routes {
          ->name('chat_leave');
 
     # refresh-timer umsetzen
-    $r->route('/chat/refresh/:refresh', refresh => $Ffc::Digit)->via(qw(GET))
+    $r->route('/chat/refresh/:refresh', refresh => $Ffc::Digqr)->via(qw(GET))
          ->to(controller => 'chat', action => 'set_refresh')
          ->name('chat_set_refresh');
 }
@@ -78,7 +79,10 @@ EOSQL
 
     my $msgs = $dbh->selectall_arrayref( $sql, undef,
          $c->session->{userid}, $c->configdata->{postlimit} * 3 );
-    $_->[3] = $c->format_timestamp($_->[3]) for @$msgs;
+    for my $m ( @$msgs ) {
+        $m->[$_] = quote($m->[$_]) for 1, 2;
+        $m->[3] = $c->format_timestamp($m->[3], 1);
+    }
 
     # refresh-timer aktualsieren
     $sql = qq~UPDATE "users" SET\n~;
