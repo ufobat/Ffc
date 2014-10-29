@@ -48,6 +48,8 @@ sub _install_routes_helper {
       ->name('sessiondata');
     $l->get('/config' => sub { $_[0]->render( json => $_[0]->configdata() ) } )
       ->name('configdata');
+    $l->get('/counts' => sub { $_[0]->render( json => [ $_[0]->newpostcount(), $_[0]->newmsgscount() ] ) } )
+      ->name('countings');
 }
 
 1;
