@@ -71,19 +71,19 @@ sub _receive {
 
     # rückgabe erzeugen
     my $sql = << 'EOSQL';
-SELECT uf."name", c."msg", c."posted"
+SELECT c."id", uf."name", c."msg", c."posted"
 FROM "chat" c 
 INNER JOIN "users" uf ON uf."id"=c."userfromid"
-WHERE c."id">(SELECT u2."lastchatid" FROM "users" u2 WHERE u2."id"=? LIMIT 1)
-ORDER BY uf."name" ASC
+WHERE c."id">COALESCE((SELECT u2."lastchatid" FROM "users" u2 WHERE u2."id"=? LIMIT 1),0)
+ORDER BY c."id" DESC
 LIMIT ?;
 EOSQL
 
     my $msgs = $dbh->selectall_arrayref( $sql, undef,
-         $c->session->{userid}, $c->configdata->{postlimit} * 3 );
+         $c->session->{userid}, $c->configdata->{postlimit} * 10 );
     for my $m ( @$msgs ) {
-        $m->[$_] = xml_escape($m->[$_]) for 0, 1;
-        $m->[2] = $c->format_timestamp($m->[2], 1);
+        $m->[$_] = xml_escape($m->[$_]) for 1, 2;
+        $m->[3] = $c->format_timestamp($m->[3], 1);
     }
 
     # refresh-timer aktualsieren
