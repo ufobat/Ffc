@@ -80,10 +80,10 @@ option {
     width: 118px;
 }
 #msg:hover {
-    border-color: darkgray;
+    border-color: dimgray;
 }
 #msg:focus {
-    border-color: dimgray;
+    border-color: black;
 }
 #userlist .timestamp {
     color: gray;
