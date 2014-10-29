@@ -149,7 +149,7 @@ ffcdata.init = function() {
      *** Refresh-Zeit ändern                                              ***
      ************************************************************************/
     var set_refresh = function(value) {
-        var url = ffcdata.refreshseturl.substring(0, ffcdata.refreshseturl.length - 3);
+        var url = ffcdata.refreshseturl.substring(0, ffcdata.refreshseturl.length - 2);
         request('GET', url + value, null, function(res){ 
             if ( res != 'ok' ) {
                 new Error('Set refresh time failed');
