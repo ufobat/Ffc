@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 98;
+use Test::More tests => 100;
 
 srand;
 
@@ -27,6 +27,11 @@ srand;
         my $c = shift;
         $c->prepare;
         $c->render(text => $c->format_timestamp($c->param('text')));
+    };
+    any '/format_timestamp_oj' => sub {
+        my $c = shift;
+        $c->prepare;
+        $c->render(text => $c->format_timestamp($c->param('text'), 1));
     };
     any '/pre_format' => sub {
         my $c = shift;
@@ -72,6 +77,18 @@ my $t = Test::Mojo->new;
         my $stamp = sprintf '%04d-%02d-%02d %02d:%02d:%02d', @time[5,4,3,2,1,0];
         $t->post_ok('/format_timestamp', form => { text => $stamp })
           ->content_is('jetzt');
+    }
+    {
+        my @time = localtime;
+        if ( $time[0] > 55 ) {
+            sleep 6; # fix (workarround) testing bug with edge case on minute switch
+            @time = localtime;
+        }
+        $time[5] += 1900; $time[4]++;
+        my $stamp = sprintf '%04d-%02d-%02d %02d:%02d:%02d', @time[5,4,3,2,1,0];
+        my $check = sprintf '%02d:%02d', @time[2,1];
+        $t->post_ok('/format_timestamp_oj', form => { text => $stamp })
+          ->content_is($check);
     }
     {
         my @time = localtime; $time[5] += 1900; $time[4]++;
