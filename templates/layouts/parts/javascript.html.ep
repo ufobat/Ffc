@@ -9,8 +9,11 @@
         }();
     }
     window.setInterval(function(){
-        if ( !document.hasFocus() && (!document.getElementById('textinput') || document.getElementById('textinput').value === '') )
+        if ( !document.hasFocus() 
+          && (!document.getElementById('textinput') 
+            || document.getElementById('textinput').value === '') ) {
             location.reload();
+        }
     }, <%= session()->{autorefresh} %> * 60000 );
 </script>
 % }
