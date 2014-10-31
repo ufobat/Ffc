@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= $title %> (<%= $newpostcount %>/<%= $newmsgscount %>), zuletzt aktualsiert <%= sprintf '%02d:%02d', (localtime)[2,1] %></title>
+    <title><%= $title %> (<%= $newpostcount %>/<%= $newmsgscount %>)</title>
     <%= stylesheet '/theme/style.css' %>
     <link rel="icon" type="image/ico" href="<%= url_for $favicon %>" />
 %= include 'layouts/parts/styleinc'

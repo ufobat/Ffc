@@ -1,5 +1,6 @@
 % if ( session()->{autorefresh} ) {
 <script type="text/javascript">
+    // Browser-Shortcomings ausgleichen
     if ( !document.hasFocus ) {
         document.hasFocus = function() {
             var hfocus = true;
@@ -8,6 +9,8 @@
             return function() { return hfocus; };
         }();
     }
+
+    // Auto-Refresh einsetzen
     window.setInterval(function(){
         if ( !document.hasFocus() 
           && (!document.getElementById('textinput') 
@@ -15,5 +18,13 @@
             location.reload();
         }
     }, <%= session()->{autorefresh} %> * 60000 );
+    
+    // Aktualisierungszeitpunkt nach lokaler Uhrzeit in den Titel schreiben
+    (function(){
+        var mytitle = document.getElementsByTagName("title")[0].firstChild.data;
+        var mytime  = new Date();
+        document.getElementsByTagName("title")[0].firstChild.data
+            = mytitle + ', zuletzt aktualisiert ' + mytime.getHours() + ':' + mytime.getMinutes();
+    }());
 </script>
 % }
