@@ -17,17 +17,19 @@ Features
 * Private Nachrichten zwischen einzelnen Benutzern möglich
 * Eigene Notizen zum eigenen Gebrauch für die Benutzer
 * Instant-Chat, der über ein eigenes Browserfenster losgelöst vom Forum verwendet werden kann
+* Beiträge werden in einem prominenten Feld gleich oben auf einer entsprechenden Webseite eingegeben, dieses Textfeld klappt sich via CSS automatisch auf, wenn man in das kleine Feld hinein klickt oder beim Bearbeiten eines Beitrages
+* Die Webseite kann sich über Javascript automatisch innerhalb eines vom Benutzer festgelegten Zeitintervalles (Default 3 Minuten) neu laden, sobald sie im Hintergrund ist und kein Text im Beitragstextfeld eingegeben wurde
 * Das Forum kann mit einem einzigen Kommando eingerichtet werden, wobei ein initialer Administratoraccount sofort mit angelegt wird für die weiterführende Konfiguration
 * Das Forum arbeitet innerhalb eines festgelegten Verzeichnisses
 * Dateien für Uploads und Avatare werden in Unterverzeichnissen abgelegt
 * Alle Benutzerdaten, Foreneinstellungen und Beiträge werden in einer SQLite-Datenbank innerhalb des festgelegten Verzeichnisses abgelegt
-* Das festgelegte Foremverzeichnis ist transparent und portabel
+* Das festgelegte Forenverzeichnis ist transparent und portabel
 * Forenbeiträge werden in Themen sortiert, die jeder Benutzer frei anlegen kann
 * Themenüberschriften können frei vom Benutzer, der das Thema angelegt hat, geändert werden
 * Wird eine Themenüberschrift in ein bereits existierendes Thema geändert, dann werden die Beiträge in dieses andere Thema verschoben
 * Foren-, Nachrichten- und Notizbeiträge enthalten primär lediglich den Text ohne Titel
-* Diese Beiträge haben alle intern die selbe technische Struktur
-* Allen Beiträgen können Dateien via Upload angehängt werden durch den Beitragsersteller
+* Diese Beiträge (Forum, Privatnachrichten, Notizen) haben alle intern die selbe technische Struktur
+* Allen Beiträgen (Forum, Privatnachrichten, Notizen) können Dateien via Upload angehängt werden durch den Beitragsersteller
 * Autoren können ihre Beiträge im Forum oder in den Notzen jederzeit löschen, nicht jedoch in den Privatnachrichten
 * Uploads können jederzeit vom hochladenden Benutzer gelöscht werden
 * Alle Beiträge können mit einer Art Markup versehen werden
@@ -36,19 +38,19 @@ Features
 * Beiträge und Forenüberschriften können durchsucht werden über ein einfaches Suchfeld in der Menüzeile
 * Über CSS werden Popups über die Menüzeile für Privatnachichten und Forenthemen angeboten, hier wird auch die Anzahl neuer Beiträge hinterlegt
 * Die Startseite für das Forum enthält eine Liste von Überschriften geordnet nach neuesten Beiträgen, ähnlich verhält es sich auch mit der Startseite für Privatnachrichten, wo die Benutzernamen gelistet werden
-  * In beiden Startseiten wird jeweils die Anzahl neuer Beiträge mit angezeigt
+  * In beiden Startseiten wird jeweils die Anzahl neuer Beiträge zusammen mit einer farblichen Markierung angezeigt
 * Foreneinstellungen, die von Administratoren vorgenommen werden können:
   * Benutzerverwaltung mit Passwortangange, aktivieren und deaktiveren von Benutzern sowie Adminstratorenstatus setzen
-  * Webseitenhintergrundfarbe und ob Benutzer diese Farbe selber noch ändern können
+  * Default-Webseitenhintergrundfarbe
   * Favoritenicon und Webseitentitel
-  * Anzahl der gleichzeitig angezeigten Überschriften auf der Startseite sowie Anzahl der Beiträge auf einer Seite
-  * Anzahl der Buchstaben die von einer URL dargestellt werden (URL-Shortener), die vollständige URL wird über ein Tooltip dargestellt
+  * Anzahl der gleichzeitig angezeigten Überschriften auf der Startseite und damit auch im Foren-Menü-Popup sowie Anzahl der Beiträge auf einer Seite
+  * Anzahl der Buchstaben die von einer URL oder von einem Thema im Foren-Menü-Popup dargestellt werden (URL-Shortener), die vollständige URL wird über ein Tooltip dargestellt
 * Foreneinstellungen, die von Benutzern vorgenommen werden können:
   * Passwortwechsel
   * Email-Adresse angeben (diese kann vom Administrator lediglich ausserhalb des Forums verwendet werden)
   * Hintergrundfarbe der Forenwebseite (falls der Administrator das erlaubt, was voreingestellt ist)
   * Ein Avatarbild hochladen, was neben jedem Beitrag oder Kommentar dargestellt wird (Avatar des Verfassers)
-  * Schriftgröße und Breitbildanzeige (Normalanzeige ist so eine schmale blogartige Seite) können Geräteabhängig eingerichtet werden
+  * Minutenintervall für automatisches Neuladen der Forenwebseite, wenn diese im Hintergrund ist und kein Text eingegeben wurde (kann darüber auch deaktiviert werden, setzt man den Wert auf 0)
 * Das Forum verwendet die Programmiersprache Perl, das Webframework Mojolicious sowie SQLite als Datenbank, daneben wird HTML5 und CSS3 verwendet
 * Die Software enthält eine umfangreiche Testsuite, in der besonderer Wert auf Datensicherheit und Zuverlässigkeit gelegt wird
 
