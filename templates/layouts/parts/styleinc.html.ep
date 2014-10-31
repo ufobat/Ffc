@@ -1,9 +1,7 @@
 % if ( $backgroundcolor ) {
     <style type="text/css">
       body {
-%   if ( $backgroundcolor ) {
         background-color: <%= $backgroundcolor %>;
-%   }
       }
     </style>
 % }
