@@ -339,7 +339,7 @@ input[type="text"].titlestring {
     float: right;
 }
 #reloadtime {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 0;
     border: none;
