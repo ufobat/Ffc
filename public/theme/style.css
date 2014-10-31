@@ -338,12 +338,4 @@ input[type="text"].titlestring {
 .logoutbutton {
     float: right;
 }
-#reloadtime {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    border: none;
-    background: transparent;
-    padding: 1px;
-}
 
