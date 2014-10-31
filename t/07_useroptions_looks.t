@@ -7,7 +7,7 @@ use Testinit;
 use Ffc::Plugin::Config;
 
 use Test::Mojo;
-use Test::More tests => 573;
+use Test::More tests => 589;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
@@ -199,6 +199,23 @@ sub test_autorefresh {
     error('Automatisches Neuladen der Seite konnte nicht geändert werden');
     $t->get_ok('/session')->status_is(200)
       ->json_is('/autorefresh', 3);
+
+    # Korrektes Umsetzen
+    $new = 5 + int rand 100;
+    $t->post_ok('/options/autorefresh', form => { refresh => $new })->status_is(200)
+      ->content_like(qr~window\.setInterval\(function\(\)\{~)
+      ->content_like(qr~\}, $new \* 60000 \)~);
+    info('Automatisches Neuladen der Seite auf '.$new.' Minuten eingestellt');
+    $t->get_ok('/session')->status_is(200)
+      ->json_is('/autorefresh', $new);
+
+    # Deaktivieren
+    $t->post_ok('/options/autorefresh', form => { refresh => 0 })->status_is(200)
+      ->content_unlike(qr~window\.setInterval\(function\(\)\{~)
+      ->content_unlike(qr~\}, $new \* 60000 \)~);
+    info('Automatisches Neuladen der Seite deaktiviert');
+    $t->get_ok('/session')->status_is(200)
+      ->json_is('/autorefresh', 0);
 
     # Korrektes Umsetzen
     $new = 5 + int rand 100;
