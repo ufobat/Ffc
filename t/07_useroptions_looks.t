@@ -111,7 +111,7 @@ sub test_email {
         , undef, $user1)->[0]->[0], '', 'emailadress not set in database';
     $t->post_ok('/options/email', form => { email => ('a' x 1025 ) })
       ->status_is(200)
-      ->content_like(qr'name="email" type="email" value="a{1025}"')
+      ->content_like(qr'name="email" type="email" value=""')
       ->content_like(qr'active activeoptions">Einstellungen<');
     error('Email-Adresse darf maximal 1024 Zeichen lang sein');
     is $dbh->selectall_arrayref(
@@ -119,7 +119,7 @@ sub test_email {
         , undef, $user1)->[0]->[0], '', 'emailadress not set in database';
     $t->post_ok('/options/email', form => { email => ('a' x 100 ) })
       ->status_is(200)
-      ->content_like(qr'name="email" type="email" value="a{100}"')
+      ->content_like(qr'name="email" type="email" value=""')
       ->content_like(qr'active activeoptions">Einstellungen<');
     error('Email-Adresse sieht komisch aus');
     is $dbh->selectall_arrayref(

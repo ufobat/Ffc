@@ -46,7 +46,7 @@
     <h1>E-Mail-Adresse einstellen</h1>
     <p>(Mit der Emailadresse kann der Administrator des Forums ggf. Nachrichten außerhalb des Forums verschicken. Außerdem können, falls das so eingerichtet wurde, Informationsemails über neue Beiträge und Nachrichten per Email verschickt werden.)</p>
     <form action="<%= url_for 'set_email' %>#set_email" method="POST">
-        <p><input type="email" name="email" value="<%= $email %>" /></p>
+        <p><input name="email" type="email" value="<%= $email %>" /></p>
         <p>
             <input type="checkbox" name="newsmail"<%== $newsmail ? ' checked="checked"' : '' %> />
             Benachrichtigungen per Email erhalten
