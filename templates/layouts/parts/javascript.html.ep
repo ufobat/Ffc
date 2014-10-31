@@ -9,11 +9,8 @@
         }();
     }
     window.setInterval(function(){
-        console.log('reloading part 1');
-        if ( !document.hasFocus() && (!document.getElementById('textinput') || document.getElementById('textinput').value === '') ) {
-            console.log('reloading part 2');
+        if ( !document.hasFocus() && (!document.getElementById('textinput') || document.getElementById('textinput').value === '') )
             location.reload();
-        }
     }, <%= session()->{autorefresh} %> * 60000 );
 </script>
 % }
