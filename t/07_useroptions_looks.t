@@ -7,7 +7,7 @@ use Testinit;
 use Ffc::Plugin::Config;
 
 use Test::Mojo;
-use Test::More tests => 501;
+use Test::More tests => 573;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
@@ -34,6 +34,7 @@ $t->get_ok('/')
 
 test_bgcolor();
 test_email();
+test_autorefresh();
 
 sub test_bgcolor {
     note 'checking background colors';
@@ -165,5 +166,55 @@ sub test_email {
       ->status_is(200)
       ->content_like(qr'name="email" type="email" value="him@work.com"')
       ->content_like(qr'active activeoptions">Einstellungen<');
+}
+
+sub test_autorefresh {
+    # Default prüfen
+    login($user1, $pass1);
+    $t->get_ok('/')->status_is(200)
+      ->content_like(qr~window\.setInterval\(function\(\){~)
+      ->content_like(qr~\}, 3 \* 60000 \)~);
+    $t->get_ok('/session')->status_is(200)
+      ->json_is('/autorefresh', 3);
+    login($user2, $pass2);
+    $t->get_ok('/')->status_is(200)
+      ->content_like(qr~window\.setInterval\(function\(\){~)
+      ->content_like(qr~\}, 3 \* 60000 \)~);
+    $t->get_ok('/session')->status_is(200)
+      ->json_is('/autorefresh', 3);
+
+    # Fehlerhaftes umsetzen ohne Daten
+    $t->post_ok('/options/autorefresh')->status_is(200)
+      ->content_like(qr~window\.setInterval\(function\(\)\{~)
+      ->content_like(qr~\}, 3 \* 60000 \)~);
+    error('Automatisches Neuladen der Seite konnte nicht geändert werden');
+    $t->get_ok('/session')->status_is(200)
+      ->json_is('/autorefresh', 3);
+
+    # Fehlerhaftes umsetzen mit String
+    my $new = 'xyz';
+    $t->post_ok('/options/autorefresh', form => { refresh => $new })->status_is(200)
+      ->content_like(qr~window\.setInterval\(function\(\)\{~)
+      ->content_like(qr~\}, 3 \* 60000 \)~);
+    error('Automatisches Neuladen der Seite konnte nicht geändert werden');
+    $t->get_ok('/session')->status_is(200)
+      ->json_is('/autorefresh', 3);
+
+    # Korrektes Umsetzen
+    $new = 5 + int rand 100;
+    $t->post_ok('/options/autorefresh', form => { refresh => $new })->status_is(200)
+      ->content_like(qr~window\.setInterval\(function\(\)\{~)
+      ->content_like(qr~\}, $new \* 60000 \)~);
+    info('Automatisches Neuladen der Seite auf '.$new.' Minuten eingestellt');
+    $t->get_ok('/session')->status_is(200)
+      ->json_is('/autorefresh', $new);
+
+    # Schaun, dass der andere Benutzer nicht betroffen ist
+    login($user1, $pass1);
+    $t->get_ok('/')->status_is(200)
+      ->content_like(qr~window\.setInterval\(function\(\){~)
+      ->content_like(qr~\}, 3 \* 60000 \)~);
+    $t->get_ok('/session')->status_is(200)
+      ->json_is('/autorefresh', 3);
 }
 

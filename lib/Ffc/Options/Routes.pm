@@ -5,20 +5,10 @@ sub install_routes {
     my $o = $_[0]->bridge('/options')->name('options_bridge');
 
     # Optionsformular
-    $o->post('/query')
-      ->to('options#query')
-      ->name('query_options');
     $o->get('/form')
       ->to('options#options_form')
       ->name('options_form');
     
-    # Einfache Benutzeroptionen (Schalter)
-    $o->get('/switchtheme')
-      ->to('options#switch_theme')
-      ->name('switch_theme');
-    $o->get('/fontsize/:fontsize', [fontsize => $Ffc::Fszqr])
-      ->to('options#font_size')
-      ->name('font_size');
     my $b = $o->bridge('/bgcolor')->name('bgcolor_bridge');
     $b->get('/none')
       ->to('options#no_bg_color')
@@ -31,7 +21,7 @@ sub install_routes {
     $o->post("/$_")
       ->to("options#set_$_")
       ->name("set_$_")
-        for qw(email password);
+        for qw(email password autorefresh);
 
     # Administratorenoptionen
     my $oa = $o->bridge('/admin')

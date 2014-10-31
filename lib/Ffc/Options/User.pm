@@ -1,20 +1,20 @@
 package Ffc::Options; # User
 use strict; use warnings; use utf8;
 
-sub switch_theme {
-    my $c = shift;
-    my $s = $c->session();
-    $s->{style} = $s->{style} ? 0 : 1;
-    $c->set_info('Ansicht gewechselt');
-    $c->options_form();
-}
-
-sub font_size {
-    my $c = shift;
-    my $fs = $c->param('fontsize');
-    $c->session()->{fontsize} = $fs
-        if defined $c->fontsize($fs);
-    $c->set_info('Schriftgröße geändert');
+sub set_autorefresh {
+    my $c = $_[0];
+    my $ar = $c->param('refresh') // '';
+    if ( $ar =~ m/(\d+)/xms ) {
+        $ar = $1;
+    }
+    else {
+        $c->set_error('Automatisches Neuladen der Seite konnte nicht geändert werden');
+        return $c->options_form();
+    }
+    $c->session->{autorefresh} = $ar;
+    $c->dbh->do('UPDATE "users" SET "autorefresh"=? WHERE "id"=?',
+        undef, $ar, $c->session->{userid});
+    $c->set_info('Automatisches Neuladen der Seite auf '.$ar.' Minuten eingestellt');
     $c->options_form();
 }
 

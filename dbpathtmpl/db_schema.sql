@@ -9,6 +9,7 @@ CREATE TABLE "users" (
   "avatar" varchar(128) NOT NULL DEFAULT '',
   "admin" tinyint(1) NOT NULL DEFAULT '0',
   "bgcolor" varchar(24) NOT NULL DEFAULT '',
+  "autorefresh" integer NOT NULL DEFAULT 3,
   "inchat" tinyint(1) NOT NULL DEFAULT '0',
   "lastchatid" integer NOT NULL DEFAULT '0',
   "lastseenchat" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

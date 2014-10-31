@@ -13,6 +13,14 @@
     <p><a href="<%= url_for 'no_bg_color' %>#bgcolor">Standardhintergrundfarbe des Forums</a></p>
 </div>
 <div class="postbox options">
+    <h1>Automatisches Neuladen der Forenwebseite</h1>
+    <p>(Hier kann die Anzahl der Minuten eingestellt werden, aller wievieler sich die Webseite aktualisiert, wenn sie im Hintergrund ist, stellt man &quot;0&quot; ein, so aktualisiert sich die Seite nie von alleine neu, standardmäßig sind hier 3 Minuten eingestellt)</p>
+    <form action="<%= url_for 'set_autorefresh' %>#autorefresh" title="Automatisches Neuladen" method="POST">
+        <input type="number" name="autorefresh" value="<%= session()->{autorefresh} %>" /> Minuten,
+        <button type="submit" class="linkalike">Zeitraum ändern</button>
+    </form>
+</div>
+<div class="postbox options">
     <a name="set_password"></a>
     <h1>Passwort ändern</h1>
     <p>(Aus Sicherheitsgründen sollte das eigene Passwort regelmäßig geändert werden)</p>

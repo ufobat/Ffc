@@ -1,6 +1,8 @@
+% if ( session()->{autorefresh} ) {
 <script type="text/javascript">
     window.setInterval(function(){
         if ( !document.hasFocus() && (!document.getElementById('textinput') || document.getElementById('textinput').value === '') )
             location.reload();
-    }, 300000);
+    }, <%= session()->{autorefresh} %> * 60000 );
 </script>
+% }

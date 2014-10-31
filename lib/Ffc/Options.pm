@@ -17,12 +17,6 @@ sub check_admin {
     return 1;
 }
 
-sub query {
-    my $c = shift;
-    $c->session->{query} = $c->param('query');
-    $c->options_form;
-}
-
 sub options_form {
     my $c = shift;
     $c->stash(fontsizes => \%Ffc::Plugin::Config::FontSizeMap);
