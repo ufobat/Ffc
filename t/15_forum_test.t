@@ -45,7 +45,7 @@ my $newcntsum = 1;
 $t->get_ok('/topic/2/ignore')->status_is(302)
   ->header_like(location => qr~\A/~);
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~<title>Ffc Forum \($newcntsum/0\)</title>~)
+  ->content_like(qr~<title>Ffc Forum \($newcntsum/0\)~)
   ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span></a>~xms)
   ->content_like(qr~href="/topic/2/unignore"~)
   ->content_like(qr~href="/topic/1/ignore"~);
@@ -58,7 +58,7 @@ $newcntsum = 2;
 $t->get_ok('/topic/2/unignore')->status_is(302)
   ->header_like(location => qr~\A/~);
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~<title>Ffc Forum \($newcntsum/0\)</title>~)
+  ->content_like(qr~<title>Ffc Forum \($newcntsum/0\)~)
   ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span></a>~xms)
   ->content_like(qr~href="/topic/2/ignore"~)
   ->content_like(qr~href="/topic/1/ignore"~);
@@ -74,7 +74,7 @@ sub check_env {
     # login als urheber
     login1();
     $t->get_ok('/')->status_is(200)
-      ->content_like(qr~<title>Ffc Forum \(0/0\)</title>~)
+      ->content_like(qr~<title>Ffc Forum \(0/0\)~)
       ->content_like(qr~activeforum">Forum</span></a>~);
     check_for_topic_count($t, $Topics[$_], $_ + 1, 0) for 0 .. $#Topics;
 
@@ -83,7 +83,7 @@ sub check_env {
     my $newcnt = grep { !$_->[3] and $_->[5] } @$entries;
     my $newcntsum = $newcnt + 2;
     $t->get_ok('/')->status_is(200)
-      ->content_like(qr~<title>Ffc Forum \($newcntsum/0\)</title>~)
+      ->content_like(qr~<title>Ffc Forum \($newcntsum/0\)~)
       ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span></a>~xms);
     #use Data::Dumper; diag Dumper $newcnt, $newcntsum, $entries;
     check_for_topic_count($t, $Topics[$_], $_ + 1, $_ ? 1 : $newcnt) for 0 .. $#Topics;
@@ -91,7 +91,7 @@ sub check_env {
     # gelesen markieren
     $newcntsum = 2;
     $t->get_ok('/topic/1')->status_is(200)
-      ->content_like(qr~<title>Ffc Forum \($newcntsum/0\)</title>~)
+      ->content_like(qr~<title>Ffc Forum \($newcntsum/0\)~)
       ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span></a>~xms);
     $entries->[-1]->[5] = 0;
 
@@ -101,7 +101,7 @@ sub check_env {
 
     # jetzt wurde einiges gelesen
     $t->get_ok('/')->status_is(200)
-      ->content_like(qr~<title>Ffc Forum \($newcntsum/0\)</title>~)
+      ->content_like(qr~<title>Ffc Forum \($newcntsum/0\)~)
       ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span></a>~xms);
     check_for_topic_count($t, $Topics[0], 1, 0);
     check_for_topic_count($t, $Topics[$_], $_ + 1, 1) for 1 .. $#Topics;

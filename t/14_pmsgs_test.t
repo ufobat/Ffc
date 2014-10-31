@@ -31,13 +31,13 @@ sub check_env {
       ->content_like(qr~/pmsgs/2~)
       ->content_unlike(qr~/pmsgs/3~);
     if ( $newcnt ) {
-        $t->content_like(qr~<title>Ffc\s+Forum\s+\(0/$newcnt\)</title>~xmsi);
+        $t->content_like(qr~<title>Ffc\s+Forum\s+\(0/$newcnt\)~xmsi);
         $t->content_like(qr~title="Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>\s*\(<span\s+class="mark">$newcnt</span>\)\s+</p>~xmsi); 
         $t->content_like(qr~Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>\s*</p>\s*</h2>\s*<p>\s*
             Ungelesene\s+Nachrichten\s+vom\s+Benutzer:\s*<span\s+class="mark">$newcnt</span>~xmsi);
     }
     else {
-        $t->content_like(qr~<title>Ffc\s+Forum\s+\(0/0\)</title>~xmsi);
+        $t->content_like(qr~<title>Ffc\s+Forum\s+\(0/0\)~xmsi);
         $t->content_like(qr~title="Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>\s*</p>~xmsi);
         $t->content_like(qr~Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>\s*</p>\s*</h2>\s*<p>\s*
             Ungelesene\s+Nachrichten\s+vom\s+Benutzer:\s*0~xmsi);
