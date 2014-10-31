@@ -23,8 +23,11 @@
     (function(){
         var mytitle = document.getElementsByTagName("title")[0].firstChild.data;
         var mytime  = new Date();
+        var myh = mytime.getHours(), mym = mytime.getMinutes();
         document.getElementsByTagName("title")[0].firstChild.data
-            = mytitle + ', zuletzt aktualisiert ' + mytime.getHours() + ':' + mytime.getMinutes();
+            = mytitle + ', zuletzt aktualisiert ' 
+                      + ( myh < 10 ? '0'+myh : myh ) 
+                      + ':' + ( mym < 10 ? '0'+mym : mym );
     }());
 </script>
 % }
