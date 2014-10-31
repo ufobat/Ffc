@@ -19,19 +19,25 @@ Folgende Systemvorraussetzungen müssen erfüllt sein:
 
 Verzeichnis für das Forum anlegen und für Webserver zugänglich machen:
 
-`$ mkdir "Forenpfad"; chmod 750 "Forenpfad"; chown "Webserveruser:Webservergruppe" "Forenpfad"`
+```
+$ mkdir "Forenpfad"; chmod 750 "Forenpfad"; chown "Webserveruser:Webservergruppe" "Forenpfad"
+```
 
 Verzeichnis für das Forum vorbereiten (dieses Kommando liefert am Ende die Daten für den ersten Administratorenaccount, also Benutzername "admin" und zugehöriges zufälliges Passwort):
 
-`$ FFC_DATA_PATH="Forenpfad" "script/init.pl"`
+```
+$ FFC_DATA_PATH="Forenpfad" "script/init.pl"
+```
 
 Den Webserver so konfigurieren, dass er mit der entsprechenden Pfadvariable `FFC_DATA_PATH="Forenpfad"` das Script `script/ffc` aufrufen kann. Im Apache kann das wie folgt aussehen:
 
-`<Location /forum.pl>
+```
+<Location /forum.pl>
     SetEnv FFC_DATA_PATH Forenpfad
 </Location>
 ScriptAlias /forum.pl "script/ffc"
-AddHandler cgi-script .pl`
+AddHandler cgi-script .pl
+```
 
 Alternativ kann auch eine der anderen Möglichkeiten angewendet werden, wie man eine Mojolicious-Anwendung zum laufen bringt. Diese Information entnehmen Sie bitte der entsprechenden Mojolicious-Dokumentation oder der Dokumentation ihres Webservers. Wichtig ist nur, dass für das Funktionieren des Forums die passende Umgebungsvariable "FFC_DATA_PATH" auf das Forenverzeichnis gesetzt ist. Über diese Variable können auch mehrere Foren parallel eingerichtet werden auf einem Webserver.
 
