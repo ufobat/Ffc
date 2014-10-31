@@ -1,3 +1,18 @@
+/************************************************************************
+ *** Bugfix für diverse Browser ohne document.hasFocus()              ***
+ ************************************************************************/
+if ( !document.hasFocus ) {
+    document.hasFocus = function() {
+        var hfocus = true;
+        document.onfocus = function() { hfocus = true;  };
+        document.onblur  = function() { hfocus = false; };
+        return function() { return hfocus; };
+    }();
+}
+
+/************************************************************************
+ *** Initialisierung mit allen notwendigen Funktionen                 ***
+ ************************************************************************/
 ffcdata.init = function() {
     var refresh = 60;
     var to;

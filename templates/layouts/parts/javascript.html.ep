@@ -1,8 +1,19 @@
 % if ( session()->{autorefresh} ) {
 <script type="text/javascript">
+    if ( !document.hasFocus ) {
+        document.hasFocus = function() {
+            var hfocus = true;
+            window.onfocus = function() { hfocus = true;  };
+            window.onblur  = function() { hfocus = false; };
+            return function() { return hfocus; };
+        }();
+    }
     window.setInterval(function(){
-        if ( !document.hasFocus() && (!document.getElementById('textinput') || document.getElementById('textinput').value === '') )
+        console.log('reloading part 1');
+        if ( !document.hasFocus() && (!document.getElementById('textinput') || document.getElementById('textinput').value === '') ) {
+            console.log('reloading part 2');
             location.reload();
+        }
     }, <%= session()->{autorefresh} %> * 60000 );
 </script>
 % }
