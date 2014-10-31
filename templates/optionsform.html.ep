@@ -25,9 +25,9 @@
     <h1>Passwort ändern</h1>
     <p>(Aus Sicherheitsgründen sollte das eigene Passwort regelmäßig geändert werden)</p>
     <form action="<%= url_for 'set_password' %>#set_password" method="POST">
-        <p><%= password_field 'oldpw'  => '' %> (Altes Passwort zur Bestätigung)</p>
-        <p><%= password_field 'newpw1' => '' %> (Neues Passwort, 8 - 64 Zeichen)</p>
-        <p><%= password_field 'newpw2' => '' %> (Neues Passwort wiederholen)</p>
+        <p><input type="password" name="oldpw" value="" /> (Altes Passwort zur Bestätigung)</p>
+        <p><input type="password" name="newpw1" value="" /> (Neues Passwort, 8 - 64 Zeichen)</p>
+        <p><input type="password" name="newpw2" value="" /> (Neues Passwort wiederholen)</p>
         <p><button type="submit" class="linkalike">Passwort ändern</button></p>
     </form>
 </div>
@@ -35,9 +35,9 @@
     <a name="avatarupload"></a>
     <h1>Benutzeravatar verwalten</h1>
     <p>(Benutzeravatare dürfen maximal 150Kb groß sein, der Dateiname darf höchstens 80 Zeichen enthalten und das Bild muss vom Typ PNG, JPG, BMP oder GIF sein)</p>
-    <p><a href="<%= url_for avatar_show => userid => session()->{userid} %>"><img src="<%= url_for avatar_show => userid => session()->{userid} %>" /></a></p>
+    <p><a href="<%= url_for avatar_show => userid => session()->{userid} %>"><img src="<%= url_for avatar_show => userid => session()->{userid} %>" alt="Benutzeravatar" /></a></p>
     <form action="<%= url_for 'avatar_upload' %>#avatarupload" enctype="multipart/form-data" method="POST">
-        <%= file_field avatarfile => (accept => 'image/*') %>
+        <input name="avatarfile" type="file" accept="image/*" />
         <button type="submit" class="linkalike">Avatar hochladen</button>
     </form>
 </div>
@@ -46,7 +46,7 @@
     <h1>E-Mail-Adresse einstellen</h1>
     <p>(Mit der Emailadresse kann der Administrator des Forums ggf. Nachrichten außerhalb des Forums verschicken. Außerdem können, falls das so eingerichtet wurde, Informationsemails über neue Beiträge und Nachrichten per Email verschickt werden.)</p>
     <form action="<%= url_for 'set_email' %>#set_email" method="POST">
-        <p><%= email_field email => $email %></p>
+        <p><input type="email" name="email" value="<%= $email %>" /></p>
         <p>
             <input type="checkbox" name="newsmail"<%== $newsmail ? ' checked="checked"' : '' %> />
             Benachrichtigungen per Email erhalten

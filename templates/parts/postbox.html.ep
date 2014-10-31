@@ -2,7 +2,7 @@
 <div class="postbox<%= $post->[1] != session->{userid} && $lastseen < $post->[0] && $controller ne 'notes' ? ' newpost' : '' %>">
     <h2 class="title">
 % if ( $controller ne 'notes' ) {
-        <img class="avatar" src="<%= url_for 'avatar_show', userid => $post->[1] // session->{userid} %>" />
+        <img class="avatar" src="<%= url_for 'avatar_show', userid => $post->[1] // session->{userid} %>" alt="" />
         <%== $post->[2] ? post_format($post->[2]) . ',' : '' %>
 % }
         <%= format_timestamp($post->[6]) %>
