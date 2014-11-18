@@ -22,38 +22,6 @@ sub show_topiclist {
     $c->render(template => 'topiclist');
 }
 
-sub   ignore_topic_do { $_[0]->_handle_ignore_topic_do(1) }
-sub unignore_topic_do { $_[0]->_handle_ignore_topic_do(0) }
-
-sub _handle_ignore_topic_do {
-    my $c = shift;
-    my $ignore = shift;
-    my $topicid = $c->param('topicid');
-    my $lastseen = $c->dbh->selectall_arrayref(
-        'SELECT "lastseen"
-        FROM "lastseenforum"
-        WHERE "userid"=? AND "topicid"=?',
-        undef, $c->session->{userid}, $topicid
-    );
-    if ( @$lastseen ) {
-        $c->dbh->do(
-            'UPDATE "lastseenforum" SET "ignore"=? WHERE "userid"=? AND "topicid"=?',
-            undef, $ignore, $c->session->{userid}, $topicid );
-    }
-    else {
-        $c->dbh->do(
-            'INSERT INTO "lastseenforum" ("userid", "topicid", "ignore") VALUES (?,?,?)',
-            undef, $c->session->{userid}, $topicid, $ignore);
-    }
-    if ( $ignore ) {
-        $c->set_info_f('Zum gewählten Thema werden keine neuen Beiträge mehr angezählt.');
-    }
-    else {
-        $c->set_info_f('Das gewählte Thema wird jetzt nicht mehr ignoriert.');
-    }
-    $c->redirect_to('show_forum_topiclist');
-}
-
 sub add_topic_form {
     my $c = shift;
     $c->counting;
@@ -225,6 +193,46 @@ sub move_topic_do {
     );
     $c->set_info_f('Die Beiträge wurden in ein anderes Thema verschoben.');
     $c->redirect_to('show_forum', topicid => $topicidto);
+}
+
+sub   ignore_topic_do { $_[0]->_handle_ignore_topic_do(1) }
+sub unignore_topic_do { $_[0]->_handle_ignore_topic_do(0) }
+sub _handle_ignore_topic_do {
+    $_[0]->_handle_val_topic_do('ignore', $_[1],
+        'Zum gewählten Thema werden keine neuen Beiträge mehr angezählt.',
+        'Das gewählte Thema wird jetzt nicht mehr ignoriert.');
+}
+
+sub   pin_topic_do { $_[0]->_handle_pin_topic_do(1) }
+sub unpin_topic_do { $_[0]->_handle_pin_topic_do(0) }
+sub _handle_pin_topic_do {
+    $_[0]->_handle_val_topic_do('pin', $_[1],
+        'Das gewählte Thema wird immer oben angeheftet.', 
+        'Das gewählte Thema wird jetzt nicht mehr oben angeheftet.');
+}
+
+sub _handle_val_topic_do {
+    my ( $c, $name, $val, $dotxt, $undotxt ) = @_;
+    my $topicid = $c->param('topicid');
+    my $lastseen = $c->dbh->selectall_arrayref(
+        'SELECT "lastseen"
+        FROM "lastseenforum"
+        WHERE "userid"=? AND "topicid"=?',
+        undef, $c->session->{userid}, $topicid
+    );
+    if ( @$lastseen ) {
+        $c->dbh->do(
+            qq~UPDATE "lastseenforum" SET "$name"=? WHERE "userid"=? AND "topicid"=?~,
+            undef, $val, $c->session->{userid}, $topicid );
+    }
+    else {
+        $c->dbh->do(
+            qq~INSERT INTO "lastseenforum" ("userid", "topicid", "$name") VALUES (?,?,?)~,
+            undef, $c->session->{userid}, $topicid, $val);
+    }
+    if ( $val ) { $c->set_info_f( $dotxt   ) }
+    else        { $c->set_info_f( $undotxt ) }
+    $c->redirect_to('show_forum_topiclist');
 }
 
 1;

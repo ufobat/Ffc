@@ -53,7 +53,11 @@ sub _generate_topiclist {
     my $topiclimit = $c->configdata->{topiclimit};
     my $uid = $c->session->{userid};
     my $query = $c->session->{topicquery};
-    $c->stash( $stashkey => [ sort {uc($a->[2]) cmp uc($b->[2])} @{ $c->dbh->selectall_arrayref( << 'EOSQL'
+    $c->stash( $stashkey =>
+        # [ sort {
+        #    $b->[6] <=> $a->[6] or uc($a->[2]) cmp uc($b->[2])
+        #} @{ 
+            $c->dbh->selectall_arrayref( << 'EOSQL'
         SELECT t."id", t."userfrom", t."title",
             (SELECT COUNT(p."id") 
                 FROM "posts" p
@@ -64,7 +68,8 @@ sub _generate_topiclist {
                 FROM "posts" p2
                 WHERE p2."userto" IS NULL AND p2."topicid"=t."id"
             ) AS "sorting",
-            l2."ignore"
+            COALESCE(l2."ignore",0),
+            COALESCE(l2."pin",0)
         FROM "topics" t
         LEFT OUTER JOIN "lastseenforum" l2 ON l2."userid"=? AND l2."topicid"=t."id"
 EOSQL
@@ -72,11 +77,14 @@ EOSQL
         WHERE UPPER(t."title") LIKE UPPER(?)
 EOSQL
         . << 'EOSQL'
-        ORDER BY CASE WHEN "entrycount_new">0 THEN 1 ELSE 0 END DESC, "sorting" DESC
+        -- ORDER BY COALESCE(l2."pin",0) DESC, CASE WHEN "entrycount_new">0 THEN 1 ELSE 0 END DESC, "sorting" DESC
+        ORDER BY COALESCE(l2."pin", 0) DESC, UPPER(t."title") ASC, "sorting" DESC
         LIMIT ? OFFSET ?
 EOSQL
         ,undef, $uid, $uid, $uid, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit
-    ) } ] );
+    ) 
+#} ]
+    );
 }
 
 sub _generate_userlist {

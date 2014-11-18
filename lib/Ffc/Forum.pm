@@ -9,18 +9,32 @@ sub install_routes {
     $l->route('/forum')->via('get')
       ->to(controller => 'forum', action => 'show_topiclist')
       ->name('show_forum_topiclist');
+
+    # Neue Themen erstellen
     $l->route('/topic/new')->via('get')
       ->to(controller => 'forum', action => 'add_topic_form')
       ->name('add_forum_topic_form');
     $l->route('/topic/new')->via('post')
       ->to(controller => 'forum', action => 'add_topic_do')
       ->name('add_forum_topic_do');
+
+    # Ignorieren von Überschriften
     $l->route('/topic/:topicid/ignore', topicid => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'ignore_topic_do')
       ->name('ignore_forum_topic_do');
     $l->route('/topic/:topicid/unignore', topicid => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'unignore_topic_do')
       ->name('unignore_forum_topic_do');
+
+    # Pinnen (anheften oder favorisieren) von Überschriften
+    $l->route('/topic/:topicid/pin', topicid => $Ffc::Digqr)->via('get')
+      ->to(controller => 'forum', action => 'pin_topic_do')
+      ->name('pin_forum_topic_do');
+    $l->route('/topic/:topicid/unpin', topicid => $Ffc::Digqr)->via('get')
+      ->to(controller => 'forum', action => 'unpin_topic_do')
+      ->name('unpin_forum_topic_do');
+
+    # Überschriften ändern
     $l->route('/topic/:topicid/edit', topicid => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'edit_topic_form')
       ->name('edit_forum_topic_form');
@@ -31,6 +45,8 @@ sub install_routes {
     $l->route('/topic/:topicid/edit', topicid => $Ffc::Digqr)->via('post')
       ->to(controller => 'forum', action => 'edit_topic_do')
       ->name('edit_forum_topic_do');
+
+    # Seitenweiterschaltung
     $l->route('/forum/:page', page => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'show_topiclist')
       ->name('show_forum_topiclist_page');

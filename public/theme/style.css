@@ -228,6 +228,9 @@ a.coloroption:hover {
     overflow: hidden;
     text-align: center;
 }
+.pin {
+    border-color: gold;
+}
 img.smiley, img.icon {
     border: none;
     width: 1em;
@@ -264,6 +267,10 @@ li {
 h2.newpost, .newpost h1, .newpost .title, input.activesearch {
     background: lemonchiffon;
     border-color: palevioletred;
+}
+h2.newpinpost {
+    background: lightyellow;
+    border-color: orange;
 }
 input[type="text"].titlestring {
     width: 100%;

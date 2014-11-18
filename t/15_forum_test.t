@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 my $t = require Posttest;
 
 use Test::Mojo;
-use Test::More tests => 1735;
+use Test::More tests => 1749;
 
 my $cname = 'forum';
 
@@ -66,6 +66,19 @@ info('Das gewählte Thema wird jetzt nicht mehr ignoriert.');
 check_for_topic_count($t, $Topics[1], 2, 1);
 check_for_topic_count($t, $Topics[2], 3, 1);
 
+# das anpinnen von themen ausprobieren
+$t->get_ok('/topic/2/pin')->status_is(302)
+  ->header_like(location => qr~\A/~);
+$t->get_ok('/')->status_is(200)
+  ->content_like(qr~href="/topic/2/unpin"~)
+  ->content_like(qr~href="/topic/1/pin"~);
+# und wieder unanpinnen
+$t->get_ok('/topic/2/unpin')->status_is(302)
+  ->header_like(location => qr~\A/~);
+$t->get_ok('/')->status_is(200)
+  ->content_like(qr~href="/topic/2/pin"~)
+  ->content_like(qr~href="/topic/1/pin"~);
+
 # checks for correct appearance of side effects
 sub check_env {
     my ( $t, $entries, $delents, $delatts, $cnt ) = @_;
@@ -113,12 +126,13 @@ sub check_for_topic_count {
     if ( $new ) {
         $t->content_like(qr~$top->[0]\s*</a>\s*\.\.\.\s*\(<span\s+class="mark">$new</span>\)\s*</p>~xms)
           ->content_like(qr~$top->[0]</a>\s*
-                <span\s+class="smallfont">\(\s*Neu:\s+<span\s+class="mark">$new</span>,\s+<a\s+href="/topic/$i/(?:un)?ignore"~xms);
+                <span\s+class="smallfont">\(\s*Neu:\s+<span\s+class="mark">$new</span>,
+                \s+<a\s+href="/topic/$i/(?:un)?(?:ignore|pin)"~xms);
     }
     else {
         $t->content_like(qr~$top->[0]\s*</a>\s*\.\.\.\s*</p>~xms)
           ->content_like(qr~$top->[0]</a>\s*
-                <span\s+class="smallfont">\(\s*<a\s+href="/topic/$i/(?:un)?ignore"~xms);
+                <span\s+class="smallfont">\(\s*<a\s+href="/topic/$i/(?:un)?(?:ignore|pin)"~xms);
     }
 }
 

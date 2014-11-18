@@ -40,6 +40,7 @@ CREATE TABLE "lastseenforum" (
   "topicid" integer NOT NULL,
   "lastseen" integer NOT NULL DEFAULT '0',
   "ignore" tinyint(1) NOT NULL DEFAULT '0',
+  "pin" tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY ("userid", "topicid")
 );
 
