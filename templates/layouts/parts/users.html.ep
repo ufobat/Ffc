@@ -2,8 +2,8 @@
 % for my $u ( @$users ) {
     <p>
         <a href="<%= url_for 'show_pmsgs', usertoid => $u->[0] %>"
-           title="Privatnachrichten mit Benutzer &quot;<%= $u->[1] %>&quot; ansehen"><%= $u->[1] %></a>
-        <% if ( $u->[2] ) { %>(<span class="mark"><%= $u->[2] %></span>)<% } %>
+           title="Privatnachrichten mit Benutzer &quot;<%= $u->[1] %>&quot; ansehen"><%= $u->[1] %></a><% if ( $u->[2] ) { %>
+        (<span class="mark"><%= $u->[2] %></span>)<% } %>
     </p>
 % }
 </div>
