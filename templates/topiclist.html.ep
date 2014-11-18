@@ -15,10 +15,10 @@
 % }
 % if ( $t->[6] ) {
         <a href="<%= url_for 'unpin_forum_topic_do', topicid => $t->[0] %>"
-           title="Thema normal in der Liste einsortieren">einsortieren</a>
+           title="Thema normal in der Liste einsortieren">einsortieren</a>,
 % } else {
         <a href="<%= url_for 'pin_forum_topic_do', topicid => $t->[0] %>"
-           title="Thema immer oben in der Liste mit anzeigen">anheften</a>
+           title="Thema immer oben in der Liste mit anzeigen">anheften</a>,
 % }
 % if ( $t->[5] ) {
         <a href="<%= url_for 'unignore_forum_topic_do', topicid => $t->[0] %>"
