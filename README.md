@@ -63,6 +63,8 @@ Features
 * Forenbeiträge werden in Themen sortiert, die jeder Benutzer frei anlegen kann
 * Themenüberschriften können frei vom Benutzer, der das Thema angelegt hat, geändert werden
 * Wird eine Themenüberschrift in ein bereits existierendes Thema geändert, dann werden die Beiträge in dieses andere Thema verschoben
+* Themen können vom Benutzer ignoriert werden, dann werden die nicht mehr hervor gehoben, wenn neue Beiträge von anderen Benutzern erstellt werden in dem Thema
+* Themen können von den Benutzern auch "angeheftet" werden, dann erscheinen sie immer mit ganz oben in der Themenliste
 * Foren-, Nachrichten- und Notizbeiträge enthalten primär lediglich den Text ohne Titel
 * Diese Beiträge (Forum, Privatnachrichten, Notizen) haben alle intern die selbe technische Struktur
 * Allen Beiträgen (Forum, Privatnachrichten, Notizen) können Dateien via Upload angehängt werden durch den Beitragsersteller
@@ -75,6 +77,7 @@ Features
 * Über CSS werden Popups über die Menüzeile für Privatnachichten und Forenthemen angeboten, hier wird auch die Anzahl neuer Beiträge hinterlegt
 * Die Startseite für das Forum enthält eine Liste von Überschriften geordnet nach neuesten Beiträgen, ähnlich verhält es sich auch mit der Startseite für Privatnachrichten, wo die Benutzernamen gelistet werden
   * In beiden Startseiten wird jeweils die Anzahl neuer Beiträge zusammen mit einer farblichen Markierung angezeigt
+  * Wahlweise kann vom Administrator für die globale Startseite (die, die auf die Themenliste verweist) auch ein bestimmtes Thema statt einer Überrsichtsseite über die Themen eingestellt werden
 * Foreneinstellungen, die von Administratoren vorgenommen werden können:
   * Benutzerverwaltung mit Passwortangange, aktivieren und deaktiveren von Benutzern sowie Adminstratorenstatus setzen
   * Default-Webseitenhintergrundfarbe
