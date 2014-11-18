@@ -133,6 +133,20 @@
     </form>
 </div>
 % }
+<div class="suboption boardsetting_form">
+    <a name="adminstartuppage"></a>
+    <h2>Optionales Thema für die Startseite festlegen:</h2>
+    <p>(Hier kann wahlweise ein Thema eingestellt werden, welches auf der Startseite anstatt der Liste aller Themen angezeigt wird)</p>
+    <form action="<%= url_for 'set_starttopic' %>#adminstartuppage" method="POST">
+        <select name="topicid">
+            <option value="">Themenliste (Standard)</option>
+% for my $th ( @$themes ) {
+            <option value="<%= $th->[0] %>"<%== configdata()->{starttopic} == $th->[0] ? ' selected="selected"' : '' %>><%= $th->[1] %></option>
+% }
+        </select>
+        <button type="submit" class="linkalike">Speichern</button>
+    </form>
+</div>
 </div>
 % }
 

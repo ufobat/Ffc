@@ -9,13 +9,14 @@ use Digest::SHA 'sha512_base64';
 use Ffc::Plugin::Config::Lists;
 
 our %Defaults = (
-    favicon            => '/theme/img/favicon.png',
-    title              => 'Ffc Forum',
-    cookiename         => 'Ffc_Forum',
-    urlshorten         => 30,
-    sessiontimeout     => 259200,
-    postlimit          => 7,
-    backgroundcolor    => '',
+    favicon         => '/theme/img/favicon.png',
+    title           => 'Ffc Forum',
+    cookiename      => 'Ffc_Forum',
+    urlshorten      => 30,
+    sessiontimeout  => 259200,
+    postlimit       => 7,
+    backgroundcolor => '',
+    starttopic      => 0,
 );
 
 sub register {
@@ -39,6 +40,9 @@ sub register {
 
     unless ( $config->{urlshorten} and $config->{urlshorten} =~ m/\A\d+\z/xmso ) {
         $config->{urlshorten} = $Defaults{urlshorten};
+    }
+    unless ( $config->{starttopic} and $config->{starttopic} =~ m/\A\d+\z/xmso ) {
+        $config->{starttopic} = $Defaults{starttopic};
     }
 
     $app->helper(datapath     => sub { $datapath  });

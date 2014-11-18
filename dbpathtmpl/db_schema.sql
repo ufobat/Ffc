@@ -92,4 +92,6 @@ INSERT INTO "config" ("key", "value")
   VALUES ('fixbackgroundcolor','0');
 INSERT INTO "config" ("key", "value") 
   VALUES ('favicon','');
+INSERT INTO "config" ("key", "value") 
+  VALUES ('starttopic','0');
 

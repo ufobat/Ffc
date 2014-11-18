@@ -33,11 +33,15 @@ sub options_form {
         my $userlist = $c->dbh->selectall_arrayref(
                 'SELECT u.id, u.name, u.active, u.admin, u.email FROM users u WHERE UPPER(u.name) != UPPER(?) ORDER BY UPPER(u.name) ASC'
                 , undef, $c->session->{user});
+        my $themes = $c->dbh->selectall_arrayref(
+                'SELECT "id", SUBSTR("title", 0, ?) FROM "topics" ORDER BY UPPER("title")'
+                 , undef, $c->configdata->{urlshorten});
         $c->stash(
             useremails    => join( '; ', map { $_->[4] || () } @$userlist ),
             userlist      => $userlist,
             configoptions => \@Ffc::Options::Settings,
             configdata    => $c->configdata,
+            themes        => $themes,
         );
     }
     else {
@@ -46,6 +50,7 @@ sub options_form {
             userlist      => [],
             configoptions => [],
             configdata    => {},
+            themes        => [],
         );
     }
     $c->render(template => 'optionsform');

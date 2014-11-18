@@ -40,6 +40,11 @@ sub install_routes {
     $oa->post('/boardsettings/:optionkey', [optionkey => $Ffc::Optky])
        ->to('options#boardsettingsadmin')
        ->name('boardsetting');
+
+    # Startseite
+    $oa->post('/set_starttopic')
+       ->to('options#set_starttopic')
+       ->name('set_starttopic');
 }
 
 1;

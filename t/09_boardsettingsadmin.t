@@ -11,7 +11,6 @@ use Test::More tests => 579;
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
 Testinit::test_add_user( $t, $admin, $apass, $user, $pass );
-my @testkats;
 sub admin { Testinit::test_login( $t, $admin, $apass ) }
 sub user  { Testinit::test_login( $t, $user,  $pass  ) }
 sub error { Testinit::test_error( $t, @_             ) }

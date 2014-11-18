@@ -61,5 +61,21 @@ sub boardsettingsadmin {
     $c->options_form();
 }
 
+sub set_starttopic {
+    my $c = shift;
+    my $tid = $c->param('topicid');
+    $tid = 0 unless $tid;
+    if ( $tid =~ $Ffc::Digqr ) {
+        $c->dbh->do(q~UPDATE "config" SET "value"=? WHERE "key"='starttopic'~,
+            undef, $tid);
+        $c->configdata->{starttopic} = $tid;
+        $c->set_info("Startseitenthema geändert");
+    }
+    else {
+        $c->set_error('Fehler beim Setzen der Startseite');
+    }
+    $c->options_form();
+}
+
 1;
 

@@ -1,6 +1,15 @@
 package Ffc::Forum;
 use strict; use warnings; use utf8;
 
+sub show_startuppage {
+    if ( $_[0]->configdata->{starttopic} ) {
+        $_[0]->redirect_to('show_forum', topicid => $_[0]->configdata->{starttopic});
+    }
+    else {
+        $_[0]->show_topiclist;
+    }
+}
+
 sub show_topiclist {
     my $c = shift;
     $c->counting;
