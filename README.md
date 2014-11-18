@@ -39,6 +39,8 @@ ScriptAlias /forum.pl "script/ffc"
 AddHandler cgi-script .pl
 ```
 
+Anschließend sollte man sich mit den oben gelieferten Anmeldedaten (als "admin") am neu eingerichteten Forum anmelden und dort in den Einstellungen zumindest die Werte für den Cookie-Namen sowie dem Webseitentitel ändern, damit man mit etwaigen anderen Installationen der Software unter der selben Domain nicht in Konflikt kommt. Dann kann man auch schon die ersten echten Benutzer anlegen (wahlweise auch als Administratoren) oder weitere Foreneinstellungen (wie zum Beispiel die Hintergrundfarbe) ändern. Von einem anderen Administratorenaccount (falls einer angelegt wurde), kann der Benutzer "admin" dann auch deaktiviert werden wenn man den nicht benötigt, da der sonst auch immer in den Privatnachrichten als Ansprechpartner verfügbar ist.
+
 Alternativ kann auch eine der anderen Möglichkeiten angewendet werden, wie man eine Mojolicious-Anwendung zum laufen bringt. Diese Information entnehmen Sie bitte der entsprechenden Mojolicious-Dokumentation oder der Dokumentation ihres Webservers. Wichtig ist nur, dass für das Funktionieren des Forums die passende Umgebungsvariable "FFC_DATA_PATH" auf das Forenverzeichnis gesetzt ist. Über diese Variable können auch mehrere Foren parallel eingerichtet werden auf einem Webserver.
 
 Features
