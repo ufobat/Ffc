@@ -197,16 +197,11 @@ sub _make_goody {
 sub _make_link {
     my ( $start, $url, $end, $c ) = @_;
     $url =~ s/"/\%22/xmso;
-    if ( $url =~ m(jpe?g|gif|bmp|png\z)xmsio ) {
-        return qq~$start<a href="$url" title="Externes Bild" target="_blank"><img src="$url" class="extern" title="Externes Bild" /></a>$end~;
-    }
-    else {
-        my $url_xmlencode = $url;
-        _xml_escape($url_xmlencode);
-            my $url_show = $url_xmlencode;
-        _stripped_url($c, $url_xmlencode);
-        return qq~$start<a href="$url" title="Externe Webseite: $url_show" target="_blank">$url_xmlencode</a>$end~;
-    }
+    my $url_xmlencode = $url;
+    _xml_escape($url_xmlencode);
+        my $url_show = $url_xmlencode;
+    _stripped_url($c, $url_xmlencode);
+    return qq~$start<a href="$url" title="Externe Webseite: $url_show" target="_blank">$url_xmlencode</a>$end~;
 }
 
 sub _stripped_url {
@@ -229,7 +224,7 @@ sub _make_smiley {
 #    $ext = 'svg' if $Smiley{$x} eq 'smile';
     return qq~$s<img class="smiley" src="~
         . $c->url_for("/theme/img/smileys/$Smiley{$x}.png")
-        . qq~" alt="$y" />~;
+        . qq~" alt="$y" title="$y" />~;
 }
 
 1;
