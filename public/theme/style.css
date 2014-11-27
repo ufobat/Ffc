@@ -331,11 +331,6 @@ input[type="text"].titlestring {
     margin: 0;
     padding-top: 1px;
 }
-@media screen {
-    .menuentry:hover .popup {
-        display: block;
-    }
-}
 .postbox {
     clear: both;
 }
@@ -344,6 +339,11 @@ input[type="text"].titlestring {
 }
 .logoutbutton {
     float: right;
+}
+@media (orientation: landscape) {
+    .menuentry:hover .popup {
+        display: block;
+    }
 }
 @media (orientation: portrait) {
     body {
@@ -357,5 +357,8 @@ input[type="text"].titlestring {
     }
     .refreshlink, .chatlink {
         display: none;
+    }
+    .menu, textarea {
+        font-size: 1em;
     }
 }
