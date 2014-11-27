@@ -349,9 +349,9 @@ input[type="text"].titlestring {
     body {
         padding: 0;
         margin: 0;
+        max-width: none;
     }
     body > * {
-        width: 100%;
         padding: 0 1em 1em 1em;
         border-width: 1px 0 1px 0; 
     }
