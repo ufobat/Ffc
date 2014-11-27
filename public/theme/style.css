@@ -355,7 +355,7 @@ input[type="text"].titlestring {
         padding: 0 1em 1em 1em;
         border-width: 1px 0 1px 0; 
     }
-    .refreshlink, .chatlink {
+    .refreshlink, .chatlink, .optionslink {
         display: none;
     }
     .menu, textarea {
