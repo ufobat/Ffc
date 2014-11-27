@@ -331,14 +331,14 @@ input[type="text"].titlestring {
     margin: 0;
     padding-top: 1px;
 }
-.postbox {
-    clear: both;
-}
 .refreshlink {
     float: left;
 }
 .logoutbutton {
     float: right;
+}
+.postbox {
+    clear: both;
 }
 @media (orientation: landscape) {
     .menuentry:hover .popup {
@@ -360,5 +360,12 @@ input[type="text"].titlestring {
     }
     .menu, textarea {
         font-size: 1em;
+    }
+    .postbox textarea, .postbox textarea:focus, .postbox textarea.inedit {
+        min-width: none;
+        max-width: none;
+        min-height: none;
+        max-height: none;
+        height: 3em;
     }
 }
