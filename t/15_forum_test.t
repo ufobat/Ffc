@@ -103,10 +103,11 @@ sub check_env {
 
     # gelesen markieren
     $newcntsum = 2;
+    my $u1 = users(1);
     $t->get_ok('/topic/1')->status_is(200)
       ->content_like(qr~<title>Ffc Forum \($newcntsum/0\)~)
       ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span></a>~xms)
-      ->content_like(qr~/pmsgs/2"\s+title="Private\s+Nachricht\s+an\s+den\s+Verfasser~xms);
+      ->content_like(qr~/pmsgs/2"\s+title="Private\s+Nachricht\s+an\s+den\s+Verfasser\s+&quot;$u1&quot;\s+schreiben">Privatnachricht</a>~xms);
     $entries->[-1]->[5] = 0;
 
     check_pages(\&login2, '/topic/1');
