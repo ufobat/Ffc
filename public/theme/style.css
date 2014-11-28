@@ -156,7 +156,7 @@ a:focus, .linkalike:focus {
     padding: .1em 0;
     border-top-width: 0;
 }
-@media (min-width: 768px) {
+@media all and (min-width: 768px ) {
     .smallfont, .userlist p, h2, .attachementtitle, .menu, .pages, .insertformbuttons, .headbox .userinfo {
         font-size: .75em;
     }
@@ -342,12 +342,12 @@ input[type="text"].titlestring {
 .postbox {
     clear: both;
 }
-@media (min-width: 768px) {
+@media all and (min-width: 769px) {
     .menuentry:hover .popup {
         display: block;
     }
 }
-@media (max-width: 768px) {
+@media all and (max-width: 768px) {
     body {
         padding: 0;
         margin: 0;
