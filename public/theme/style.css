@@ -340,12 +340,12 @@ input[type="text"].titlestring {
 .postbox {
     clear: both;
 }
-@media (orientation: landscape) {
+@media all and (min-width: 480px) {
     .menuentry:hover .popup {
         display: block;
     }
 }
-@media (orientation: portrait) {
+@media all and (max-width: 480px) {
     body {
         padding: 0;
         margin: 0;
@@ -369,7 +369,7 @@ input[type="text"].titlestring {
         max-height: none;
         height: 3em;
     }
-    .smallfont, .userlist p, h2, .attachementtitle, .menu, .pages, .insertformbuttons, .headbox .userinfo {
+    .smallfont, .userlist p, h2, .attachementtitle, .menu, .pages, .insertformbuttons, .headbox .userinfo, .messagebox, input[type="text"].titlestring {
         font-size: 1em;
     }
 }

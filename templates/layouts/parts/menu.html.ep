@@ -41,7 +41,7 @@ document.write('\
         </span>
 % }
     </div>
-    <div class="menuentry">
+    <div class="menuentry optionslink">
         <a href="<%= url_for 'options_form' %>" title="Verschiedene Einstellungen für diese Plattform den eigenen Wünschen anpassen"><span class="linktext linkoptions<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
     </div>
     <div class="menuentry logoutbutton">
