@@ -156,8 +156,10 @@ a:focus, .linkalike:focus {
     padding: .1em 0;
     border-top-width: 0;
 }
-.smallfont, .userlist p, h2, .attachementtitle, .menu, .pages, .insertformbuttons, .headbox .userinfo {
-    font-size: .75em;
+@media all and (min-width: 480px) {
+    .smallfont, .userlist p, h2, .attachementtitle, .menu, .pages, .insertformbuttons, .headbox .userinfo {
+        font-size: .75em;
+    }
 }
 .smallfont {
     font-weight: normal;
