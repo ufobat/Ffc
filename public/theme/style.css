@@ -156,7 +156,7 @@ a:focus, .linkalike:focus {
     padding: .1em 0;
     border-top-width: 0;
 }
-@media all and (min-width: 768px ) {
+@media all and (min-width: 1000px ) {
     .smallfont, .userlist p, h2, .attachementtitle, .menu, .pages, .insertformbuttons, .headbox .userinfo {
         font-size: .75em;
     }
@@ -342,12 +342,12 @@ input[type="text"].titlestring {
 .postbox {
     clear: both;
 }
-@media all and (min-width: 769px) {
+@media all and (min-width: 1001px) {
     .menuentry:hover .popup {
         display: block;
     }
 }
-@media all and (max-width: 768px) {
+@media all and (max-width: 1000px) {
     body {
         padding: 0;
         margin: 0;
@@ -360,18 +360,25 @@ input[type="text"].titlestring {
     .refreshlink, .chatlink, .optionslink {
         display: none;
     }
-    textarea, intput[type="text"] {
+    textarea, input[type="text"] {
         font-family: sans-serif;
     }
-    .postbox textarea, .postbox textarea:focus, .postbox textarea.inedit {
+    textarea, .postbox textarea, .postbox textarea:focus, .postbox textarea.inedit {
+        font-size: 2em;
+        font-family: sans-serif;
         margin-top: 1em;
         min-width: none;
         max-width: none;
         min-height: none;
         max-height: none;
-        height: 3em;
+        height: 5em;
+        width: inherit;
     }
     .smallfont, .userlist p, h2, .attachementtitle, .menu, .pages, .insertformbuttons, .headbox .userinfo, .messagebox, input[type="text"].titlestring {
-        font-size: 1em;
+        font-size: 2em;
+    }
+    img.smiley, img.icon {
+        width: 2em;
+        height: 2em;
     }
 }
