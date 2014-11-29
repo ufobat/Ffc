@@ -340,10 +340,10 @@ input[type="text"].titlestring {
 .postbox {
     clear: both;
 }
+.postbox textarea, input[type="text"].titlestring {
+    width: 100%;
+}
 @media all and (min-width: 1001px) {
-    .postbox textarea, input[type="text"].titlestring {
-        width: 100%;
-    }
     body {
         max-width: 48em;
     }
