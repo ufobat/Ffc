@@ -364,7 +364,7 @@ input[type="text"].titlestring {
         font-family: sans-serif;
     }
     textarea, .postbox textarea, .postbox textarea:focus, .postbox textarea.inedit {
-        font-size: 2em;
+        font-size: 1em;
         font-family: sans-serif;
         margin-top: 1em;
         min-width: none;
@@ -375,10 +375,6 @@ input[type="text"].titlestring {
         width: inherit;
     }
     .smallfont, .userlist p, h2, .attachementtitle, .menu, .pages, .insertformbuttons, .headbox .userinfo, .messagebox, input[type="text"].titlestring {
-        font-size: 2em;
-    }
-    img.smiley, img.icon {
-        width: 2em;
-        height: 2em;
+        font-size: 1em;
     }
 }
