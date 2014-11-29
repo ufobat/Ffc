@@ -1,4 +1,3 @@
-@import url('colors.css');
 * {
     margin: 0;
     padding: 0;
@@ -6,14 +5,27 @@
 body {
     margin: 0 auto 5px auto;
     padding: 0 .5em;
+    font-family: sans-serif;
     color: black;
+    background: gainsboro;
 }
 body > * {
     padding: 0 1em 1em 1em;
     margin-top: 3px;
 }
+body > *, .popup {
+    background: white;
+    border: 1px gray solid;    
+}
 body > * > * {
     margin: .75em 0;
+}
+h1, h2, h3 {
+    font-weight: bolder;
+    text-decoration: none;
+}
+h1, h2 {
+    border-bottom: 1px gainsboro solid;
 }
 h1, h2, h3 {
     font-size: 1em;
@@ -21,15 +33,116 @@ h1, h2, h3 {
 h1 {
     font-size: 1.25em;
 }
+h2 {
+    color: gray;
+}
+h3 {
+    text-decoration: underline;
+}
+.loginform, .menu, .headbox, .pages, .popup {
+    background: whitesmoke;
+}
 img {
     max-width: 13em;
     max-height: 8em;
 }
+input, textarea, select {
+    border: 1px silver solid;
+    background: white;
+    color: #006;
+    font-family: sans-serif;
+}
+input:hover, textarea:hover, select:hover {
+    border-color: steelblue;
+}
+input:focus, textarea:focus, select:focus {
+    border-color: dodgerblue;
+}
 a, .linkalike {
+    color: steelblue;
+    text-decoration: underline;
     display: inline;
+    border: none;
+    background: none;
+    font-family: sans-serif;
+}
+a > img {
+    border: 1px steelblue solid;
+}
+a:hover, .linkalike:hover {
+    color: dodgerblue;
+    text-decoration: none;
+    cursor: pointer;
+}
+a:hover > img {
+    border-color: dodgerblue;
+}
+.active {
+    background: steelblue;
+    color: white;
+    text-decoration: none;
+}
+.active:hover, a.active:hover {
+    background: dodgerblue;
+    color: white;
+}
+a:focus, .linkalike:focus {
+    color: gainsboro;
+}
+.active:focus, a.active:focus {
+    color: gray;
+    background: lightsteelblue;
+}
+.messagebox {
+    border: none;
+    background: transparent;
 }
 .messagebox > * {
+    border: 1px silver solid;
     padding: .25em;
+}
+@media all and (min-width: 1001px) {
+    .messagebox {
+        padding: 1em 0 0 0;
+        width: 22em;
+        position: fixed;
+        bottom: 0;
+        right: 0;
+    }
+    .messagebox > * {
+        width: 20em;
+        margin: .25em .25em .25em auto;
+    }
+    .messagebox:hover > * {
+        margin-right: -19.5em;
+    }
+    .messagebox:hover > *:hover {
+        margin-right: .25em;
+    }
+}
+.warning, .warning h1 {
+    color: saddlebrown;
+    border-color: chocolate;
+    background: lemonchiffon;
+}
+.warning h1 {
+    color: chocolate;
+}
+.info, .info h1 {
+    color: darkgreen;
+    border-color: forestgreen;
+    background: palegreen;
+}
+.info h1 {
+    color: forestgreen;
+}
+.error, .error h1 {
+    color: darkred;
+    border-color: firebrick;
+    background: peachpuff;
+}
+.error h1 {
+    color: firebrick;
 }
 .pages {
     padding: .25em;
@@ -40,8 +153,23 @@ a, .linkalike {
     padding: .1em 0;
     border-top-width: 0;
 }
-.menu input[type="text"] {
-    width: 5em;
+@media all and (min-width: 1000px ) {
+    input[type="color"], input[type="url"], input[type="email"], input[type="text"], input[type="password"] {
+        width: 16em;
+    }
+    .menu input[type="text"] {
+        width: 5em;
+    }
+    .smallfont, .userlist p, h2, .attachementtitle, .menu, .pages, .insertformbuttons, .headbox .userinfo {
+        font-size: .75em;
+    }
+
+    .messagebox {
+        font-size: 1.25em;
+    }
+    .messagebox h1 {
+        font-size: 1em;
+    }
 }
 .smallfont {
     font-weight: normal;
@@ -52,20 +180,48 @@ a, .linkalike {
 .menu > * {
     padding: 0 .5em;
 }
+.menu button {
+    border: none;
+    background: none;
+    display: inline;
+}
 form {
     display: inline;
 }
 .options form > * {
     margin: 0.5em 0;
 }
+a.coloroption:hover {
+    border-color: dodgerblue;
+}
 .suboption {
+    background: whitesmoke;
+    border: 1px gainsboro solid;
     margin-left: .75em;
+}
+.suboption h2 {
+    color: black;
+}
+@media all and (min-width: 1001px) {
+    .postbox textarea {
+        min-width: 100%;
+        max-width: 100%;
+        max-height: 54em;
+        min-height: 2em;
+        height: 2em;
+    }
+    .postbox textarea:focus, .postbox textarea.inedit {
+        height: 24em;
+    }
 }
 .postbox img {
     max-width: 256px;
     max-height: 128px;
+    border: 1px gray solid;
 }
 .postbox .avatar {
+    color: gainsboro;
+    background: whitesmoke;
     margin: -0.25em 0 .5em 1em;
     float: right;
     font-size: 1em;
@@ -75,7 +231,11 @@ form {
     overflow: hidden;
     text-align: center;
 }
+.pin {
+    border-color: gold;
+}
 img.smiley, img.icon {
+    border: none;
     width: 1em;
     height: 1em;
 }
@@ -100,9 +260,53 @@ li {
 .topiclist h2 .smallfont {
     float: right;
 }
+.mark {
+    color: palevioletred;
+    font-weight: bolder;
+}
+.newpost, .newpost .avatar {
+    border-color: palevioletred;
+}
+h2.newpost, .newpost h1, .newpost .title, input.activesearch {
+    background: lemonchiffon;
+    border-color: palevioletred;
+}
+h2.newpinpost {
+    background: lightyellow;
+    border-color: orange;
+}
 input[type="text"].titlestring {
     font-weight: bolder;
 }
+.help {
+    color: silver;
+}
+.alert {
+    color: #c00;
+    text-transform: uppercase;
+    font-weight: bolder;
+}
+.linethrough {
+    text-decoration: line-through;
+}
+.underline {
+    text-decoration: underline;
+}
+.bold {
+    font-weight: bolder;
+}
+.italic {
+    font-style: italic;
+}
+.quote {
+    color: dimgrey;
+}
+.emotion {
+    color: dimgrey;
+    font-variant: small-caps;
+}
+.emotion:before { content:"*" }
+.emotion:after  { content:"*" }
 .popup {
     display: none;
     position: absolute;
@@ -113,7 +317,13 @@ input[type="text"].titlestring {
 .popup > * {
     padding: .25em;
 }
+.popup, .messagebox > div {
+    box-shadow: 0 0 2px dimgray;
+}
 .postbox pre {
+    font-family: monospace;
+    color: dimgray;
+    border-left: 1px gainsboro solid;
     padding-left: .75em;
 }
 .menuentry { 
@@ -130,8 +340,46 @@ input[type="text"].titlestring {
 .postbox {
     clear: both;
 }
-.postbox textarea, input[type="text"].titlestring {
-    width: 100%;
+@media all and (min-width: 1001px) {
+    .postbox textarea, input[type="text"].titlestring {
+        width: 100%;
+    }
+    body {
+        max-width: 48em;
+    }
+    input[type="text"].titlestring {
+        font-size: 1.25em;
+    }
+    .postbox pre, .suboption h2 {
+        font-size: 1em;
+    }
+    .menuentry:hover .popup {
+        display: block;
+    }
 }
-@import url('large.css');
-@import url('small.css');
+@media all and (max-width: 1000px) {
+    body {
+        padding: 0;
+        margin: 0;
+        max-width: none;
+    }
+    body > * {
+        padding: 0 1em 1em 1em;
+        border-width: 1px 0 1px 0; 
+    }
+    .refreshlink, .chatlink, .optionslink {
+        display: none;
+    }
+    textarea, input[type="text"] {
+        font-family: sans-serif;
+    }
+    textarea, .postbox textarea, .postbox textarea:focus, .postbox textarea.inedit {
+        font-family: sans-serif;
+        margin-top: 1em;
+        min-width: none;
+        max-width: none;
+        min-height: none;
+        max-height: none;
+        height: 5em;
+    }
+}
