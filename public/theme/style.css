@@ -3,9 +3,6 @@
     padding: 0;
 }
 body {
-    margin: 0 auto 5px auto;
-    padding: 0 .5em;
-    font-family: sans-serif;
     color: black;
     background: gainsboro;
 }
@@ -50,7 +47,6 @@ input, textarea, select {
     border: 1px silver solid;
     background: white;
     color: #006;
-    font-family: sans-serif;
 }
 input:hover, textarea:hover, select:hover {
     border-color: steelblue;
@@ -64,7 +60,6 @@ a, .linkalike {
     display: inline;
     border: none;
     background: none;
-    font-family: sans-serif;
 }
 a > img {
     border: 1px steelblue solid;
@@ -153,7 +148,7 @@ a:focus, .linkalike:focus {
     padding: .1em 0;
     border-top-width: 0;
 }
-@media all and (min-width: 1000px ) {
+@media all and (min-width: 1001px ) {
     input[type="color"], input[type="url"], input[type="email"], input[type="text"], input[type="password"] {
         width: 16em;
     }
@@ -321,7 +316,6 @@ input[type="text"].titlestring {
     box-shadow: 0 0 2px dimgray;
 }
 .postbox pre {
-    font-family: monospace;
     color: dimgray;
     border-left: 1px gainsboro solid;
     padding-left: .75em;
@@ -346,6 +340,8 @@ input[type="text"].titlestring {
 @media all and (min-width: 1001px) {
     body {
         max-width: 48em;
+        margin: 0 auto 5px auto;
+        padding: 0 .5em;
     }
     input[type="text"].titlestring {
         font-size: 1.25em;
@@ -358,11 +354,6 @@ input[type="text"].titlestring {
     }
 }
 @media all and (max-width: 1000px) {
-    body {
-        padding: 0;
-        margin: 0;
-        max-width: none;
-    }
     body > * {
         padding: 0 1em 1em 1em;
         border-width: 1px 0 1px 0; 
@@ -370,11 +361,7 @@ input[type="text"].titlestring {
     .refreshlink, .chatlink, .optionslink {
         display: none;
     }
-    textarea, input[type="text"] {
-        font-family: sans-serif;
-    }
     textarea, .postbox textarea, .postbox textarea:focus, .postbox textarea.inedit {
-        font-family: sans-serif;
         margin-top: 1em;
         min-width: none;
         max-width: none;
