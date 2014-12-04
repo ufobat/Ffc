@@ -2,11 +2,12 @@
 <html>
   <head>
     <title><%= $title %> (<%= $newpostcount %>/<%= $newmsgscount %>)</title>
-    <%= stylesheet '/theme/style.css' %>
+    <%= stylesheet '/theme/large.css', media => 'all and (min-width: 1001px)' %>
+    <%= stylesheet '/theme/small.css', media => 'all and (max-width: 1000px)' %>
     <link rel="icon" type="image/ico" href="<%= url_for $favicon %>" />
 %= include 'layouts/parts/styleinc'
   </head>
   <body>
-<!-- Angemeldet als "<%= session()->{user} %>" !-->
+<!-- Angemeldet als "<%= session()->{user} || '&lt;noone&gt;' %>" !-->
 
 

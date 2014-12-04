@@ -96,24 +96,22 @@ a:focus, .linkalike:focus {
     border: 1px silver solid;
     padding: .25em;
 }
-@media all and (min-width: 1001px) {
-    .messagebox {
-        padding: 1em 0 0 0;
-        width: 22em;
-        position: fixed;
-        bottom: 0;
-        right: 0;
-    }
-    .messagebox > * {
-        width: 20em;
-        margin: .25em .25em .25em auto;
-    }
-    .messagebox:hover > * {
-        margin-right: -19.5em;
-    }
-    .messagebox:hover > *:hover {
-        margin-right: .25em;
-    }
+.messagebox {
+    padding: 1em 0 0 0;
+    width: 22em;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
+.messagebox > * {
+    width: 20em;
+    margin: .25em .25em .25em auto;
+}
+.messagebox:hover > * {
+    margin-right: -19.5em;
+}
+.messagebox:hover > *:hover {
+    margin-right: .25em;
 }
 .warning, .warning h1 {
     color: saddlebrown;
@@ -148,23 +146,21 @@ a:focus, .linkalike:focus {
     padding: .1em 0;
     border-top-width: 0;
 }
-@media all and (min-width: 1001px ) {
-    input[type="color"], input[type="url"], input[type="email"], input[type="text"], input[type="password"] {
-        width: 16em;
-    }
-    .menu input[type="text"] {
-        width: 5em;
-    }
-    .smallfont, .userlist p, h2, .attachementtitle, .menu, .pages, .insertformbuttons, .headbox .userinfo {
-        font-size: .75em;
-    }
+input[type="color"], input[type="url"], input[type="email"], input[type="text"], input[type="password"] {
+    width: 16em;
+}
+.menu input[type="text"] {
+    width: 5em;
+}
+.smallfont, .userlist p, h2, .attachementtitle, .menu, .pages, .insertformbuttons, .headbox .userinfo {
+    font-size: .75em;
+}
 
-    .messagebox {
-        font-size: 1.25em;
-    }
-    .messagebox h1 {
-        font-size: 1em;
-    }
+.messagebox {
+    font-size: 1.25em;
+}
+.messagebox h1 {
+    font-size: 1em;
 }
 .smallfont {
     font-weight: normal;
@@ -197,17 +193,15 @@ a.coloroption:hover {
 .suboption h2 {
     color: black;
 }
-@media all and (min-width: 1001px) {
-    .postbox textarea {
-        min-width: 100%;
-        max-width: 100%;
-        max-height: 54em;
-        min-height: 2em;
-        height: 2em;
-    }
-    .postbox textarea:focus, .postbox textarea.inedit {
-        height: 24em;
-    }
+.postbox textarea {
+    min-width: 100%;
+    max-width: 100%;
+    max-height: 54em;
+    min-height: 2em;
+    height: 2em;
+}
+.postbox textarea:focus, .postbox textarea.inedit {
+    height: 24em;
 }
 .postbox img {
     max-width: 256px;
@@ -337,36 +331,18 @@ input[type="text"].titlestring {
 .postbox textarea, input[type="text"].titlestring {
     width: 100%;
 }
-@media all and (min-width: 1001px) {
-    body {
-        max-width: 48em;
-        margin: 0 auto 5px auto;
-        padding: 0 .5em;
-    }
-    input[type="text"].titlestring {
-        font-size: 1.25em;
-    }
-    .postbox pre, .suboption h2 {
-        font-size: 1em;
-    }
-    .menuentry:hover .popup {
-        display: block;
-    }
+body {
+    max-width: 48em;
+    margin: 0 auto 5px auto;
+    padding: 0 .5em;
 }
-@media all and (max-width: 1000px) {
-    body > * {
-        padding: 0 1em 1em 1em;
-        border-width: 1px 0 1px 0; 
-    }
-    .refreshlink, .chatlink, .optionslink {
-        display: none;
-    }
-    textarea, .postbox textarea, .postbox textarea:focus, .postbox textarea.inedit {
-        margin-top: 1em;
-        min-width: none;
-        max-width: none;
-        min-height: none;
-        max-height: none;
-        height: 5em;
-    }
+input[type="text"].titlestring {
+    font-size: 1.25em;
 }
+.postbox pre, .suboption h2 {
+    font-size: 1em;
+}
+.menuentry:hover .popup {
+    display: block;
+}
+
