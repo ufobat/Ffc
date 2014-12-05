@@ -84,7 +84,7 @@ check_loggedin();
 sub check_notloggedin {
     note 'check that i am not logged in';
     $t->status_is(200)
-      ->content_like(qr/Nicht angemeldet/)
+      ->content_like(qr/Angemeldet als "\&lt;noone\&gt;"/)
       ->content_like(qr/<input type="text" name="username"/)
       ->content_like(qr/<input type="password" name="password"/)
       ->content_like(qr~<form action="/login" method="POST">~i)

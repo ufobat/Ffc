@@ -384,12 +384,12 @@ sub check_file_online {
     logout();
     $t->get_ok("/avatar/$userid1")
       ->status_is(200)
-      ->content_like(qr/Nicht\s+angemeldet/xms)
+      ->content_like(qr/Angemeldet\s+als\s+"\&lt;noone\&gt;"/xms)
       ->content_unlike(qr~$files[0]{content}~xms)
       ->content_unlike(qr~$files[1]{content}~xms);
     $t->get_ok("/avatar/$userid2")
       ->status_is(200)
-      ->content_like(qr/Nicht\s+angemeldet/xms)
+      ->content_like(qr/Angemeldet\s+als\s+"\&lt;noone\&gt;"/xms)
       ->content_unlike(qr~$files[0]{content}~xms)
       ->content_unlike(qr~$files[1]{content}~xms);
 }

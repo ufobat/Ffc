@@ -2,12 +2,13 @@
 <html>
   <head>
     <title><%= $title %> (<%= $newpostcount %>/<%= $newmsgscount %>)</title>
-    <%= stylesheet '/theme/large.css', media => 'all and (min-width: 1001px)' %>
-    <%= stylesheet '/theme/small.css', media => 'all and (max-width: 1000px)' %>
+    <%= stylesheet '/theme/colors.css' %>
+    <%= stylesheet '/theme/large.css', media => 'all and (min-device-width: 769px)' %>
+    <%= stylesheet '/theme/small.css', media => 'all and (max-device-width: 768px)' %>
     <link rel="icon" type="image/ico" href="<%= url_for $favicon %>" />
 %= include 'layouts/parts/styleinc'
   </head>
   <body>
-<!-- Angemeldet als "<%= session()->{user} || '&lt;noone&gt;' %>" !-->
+<!-- Angemeldet als "<%= session()->{user} || '<noone>' %>" !-->
 
 

@@ -1,0 +1,190 @@
+body {
+    color: black;
+    background: gainsboro;
+}
+body > *, .popup {
+    background: white;
+    border: 1px gray solid;    
+}
+h1, h2 {
+    border-bottom: 1px gainsboro solid;
+}
+h1, h2, h3 {
+    font-weight: bolder;
+    text-decoration: none;
+}
+h2 {
+    color: gray;
+}
+h3 {
+    text-decoration: underline;
+}
+.loginform, .menu, .headbox, .pages, .popup {
+    background: whitesmoke;
+}
+input, textarea, select {
+    background: white;
+    color: #006;
+    border: 1px silver solid;
+}
+input:hover, textarea:hover, select:hover {
+    border-color: steelblue;
+}
+input:focus, textarea:focus, select:focus {
+    border-color: dodgerblue;
+}
+a > img {
+    border: 1px steelblue solid;
+}
+a, .linkalike {
+    color: steelblue;
+    text-decoration: underline;
+    border: none;
+    background: none;
+}
+a:hover, .linkalike:hover {
+    color: dodgerblue;
+    text-decoration: none;
+    cursor: pointer;
+}
+a:hover > img {
+    border-color: dodgerblue;
+}
+.active {
+    background: steelblue;
+    color: white;
+    text-decoration: none;
+}
+.active:hover, a.active:hover {
+    background: dodgerblue;
+    color: white;
+}
+a:focus, .linkalike:focus {
+    color: gainsboro;
+}
+.active:focus, a.active:focus {
+    color: gray;
+    background: lightsteelblue;
+}
+.messagebox {
+    border: none;
+    background: transparent;
+}
+.messagebox > * {
+    border: 1px silver solid;
+}
+.warning, .warning h1 {
+    color: saddlebrown;
+    border-color: chocolate;
+    background: lemonchiffon;
+}
+.warning h1 {
+    color: chocolate;
+}
+.info, .info h1 {
+    color: darkgreen;
+    border-color: forestgreen;
+    background: palegreen;
+}
+.info h1 {
+    color: forestgreen;
+}
+.error, .error h1 {
+    color: darkred;
+    border-color: firebrick;
+    background: peachpuff;
+}
+.error h1 {
+    color: firebrick;
+}
+.menu button {
+    border: none;
+    background: none;
+    display: inline;
+}
+a.coloroption:hover {
+    border-color: dodgerblue;
+}
+.suboption {
+    background: whitesmoke;
+    border: 1px gainsboro solid;
+}
+.suboption h2 {
+    color: black;
+}
+.postbox img {
+    border: 1px gray solid;
+}
+.postbox .avatar {
+    color: gainsboro;
+    background: whitesmoke;
+}
+.pin {
+    border-color: gold;
+}
+img.smiley, img.icon {
+    border: none;
+}
+ul.topiclist {
+    list-style: none;
+}
+.mark {
+    color: palevioletred;
+}
+.newpost, .newpost .avatar {
+    border-color: palevioletred;
+}
+h2.newpost, .newpost h1, .newpost .title, input.activesearch {
+    background: lemonchiffon;
+    border-color: palevioletred;
+}
+h2.newpinpost {
+    background: lightyellow;
+    border-color: orange;
+}
+.mark {
+    font-weight: bolder;
+}
+input[type="text"].titlestring {
+    font-weight: bolder;
+}
+.help {
+    color: silver;
+}
+.alert {
+    color: #c00;
+    text-transform: uppercase;
+    font-weight: bolder;
+}
+.linethrough {
+    text-decoration: line-through;
+}
+.underline {
+    text-decoration: underline;
+}
+.bold {
+    font-weight: bolder;
+}
+.italic {
+    font-style: italic;
+}
+.quote {
+    color: dimgrey;
+}
+.emotion {
+    color: dimgrey;
+    font-variant: small-caps;
+}
+.emotion:before { content:"*" }
+.emotion:after  { content:"*" }
+.popup, .messagebox > div {
+    box-shadow: 0 0 2px dimgray;
+}
+.postbox pre {
+    color: dimgray;
+    border-left: 1px gainsboro solid;
+}
+.functionlinks {
+    font-weight: normal;
+}
+

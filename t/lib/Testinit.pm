@@ -39,7 +39,7 @@ sub start_test {
 sub test_logout {
     $_[0]->get_ok('/logout')
          ->status_is(200)
-         ->content_like(qr/Nicht angemeldet/);
+         ->content_like(qr/Angemeldet als "\&lt;noone\&gt;"/);
 }
 
 sub test_login {

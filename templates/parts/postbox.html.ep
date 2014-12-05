@@ -7,7 +7,7 @@
 % }
         <%= format_timestamp($post->[6]) %>
 % if ( not $postid ) {
-    (
+    <span class="functionlinks">(
 % if ( ( $editurl or $delurl or $uplurl ) and $post->[1] == session()->{userid} ) {
 %  if ( $controller ne 'pmsgs' ) {
 %   if ( $editurl ) {
@@ -30,7 +30,7 @@
         <a href="<%= url_for "display_$controller", postid => $post->[0], @$additional_params %>" 
            title="Beitrag einzeln anzeigen zum verlinken"
            target="_blank">verlinken</a>
-    )
+    )</span>
 % }
     </h2>
 %== $post->[8];
