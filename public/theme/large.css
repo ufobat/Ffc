@@ -70,9 +70,6 @@ input[type="color"], input[type="url"], input[type="email"], input[type="text"],
 .smallfont {
     font-weight: normal;
 }
-.menuentry {
-    display: inline;
-}
 .menu > * {
     padding: 0 .5em;
 }
