@@ -57,3 +57,13 @@ h2 .smallfont, .functionlinks {
     display: block;
     font-weight: normal;
 }
+.messagebox {
+    padding: 0;
+}
+.messagebox * {
+    padding: .25em .5em;
+    border-width: 0 0 4px 0;
+}
+.popup, .messagebox > div {
+    box-shadow: none;
+}
