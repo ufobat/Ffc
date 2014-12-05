@@ -187,4 +187,9 @@ input[type="text"].titlestring {
 .functionlinks {
     font-weight: normal;
 }
+.pagestretch {
+    color: transparent;
+    border: none;
+    background: none;
+}
 
