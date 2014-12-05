@@ -9,7 +9,7 @@ body > * {
 .menuentry, .menu form {
     display: inline;
 }
-.popup, .refreshlink, .chatlink, .optionslink {
+.popup, .refreshlink, .chatlink, .optionslink, .logoutbutton {
     display: none;
 }
 .menu input[type="text"] {
