@@ -146,12 +146,6 @@ li {
     margin: 0;
     padding-top: 1px;
 }
-.refreshlink {
-    float: left;
-}
-.logoutbutton {
-    float: right;
-}
 .postbox {
     clear: both;
 }
@@ -174,4 +168,10 @@ input[type="text"].titlestring {
 }
 .pagestretch {
     display: none;
+}
+.refreshlink {
+    float: left;
+}
+.logoutbutton {
+    float: right;
 }
