@@ -3,8 +3,8 @@
   <head>
     <title><%= $title %> (<%= $newpostcount %>/<%= $newmsgscount %>)</title>
     <%= stylesheet '/theme/colors.css' %>
-    <%= stylesheet '/theme/large.css', media => 'all and (min-device-width: 769px)' %>
-    <%= stylesheet '/theme/small.css', media => 'all and (max-device-width: 768px)' %>
+    <%= stylesheet '/theme/large.css', media => 'all and (min-device-width: 1001px)' %>
+    <%= stylesheet '/theme/small.css', media => 'all and (max-device-width: 1000px)' %>
     <link rel="icon" type="image/ico" href="<%= url_for $favicon %>" />
 %= include 'layouts/parts/styleinc'
   </head>
