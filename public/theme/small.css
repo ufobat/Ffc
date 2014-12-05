@@ -31,6 +31,9 @@ input, textarea, select {
     width: 100%;
     height: 5em;
 }
+.headbox textarea:focus {
+    width: inherit;
+}
 .postbox .avatar {
     width: 3em;
     height: 3em;
