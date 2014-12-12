@@ -175,3 +175,7 @@ input[type="text"].titlestring {
 .logoutbutton {
     float: right;
 }
+.titlebanner {
+    display: none;
+}
+

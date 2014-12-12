@@ -1,6 +1,7 @@
 body {
     color: black;
     background: gainsboro;
+    font-family: sans-serif;
 }
 body > *, .popup {
     background: white;
@@ -8,6 +9,9 @@ body > *, .popup {
 }
 h1, h2 {
     border-bottom: 1px gainsboro solid;
+}
+.titlebanner {
+    border-bottom-color: gray;
 }
 h1, h2, h3 {
     font-weight: bolder;

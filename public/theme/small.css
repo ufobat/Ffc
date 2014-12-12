@@ -53,6 +53,9 @@ p {
 .userlist h2, .topiclist h2 {
     margin: .5em 0;
 }
+.userlist p, .topiclist .smallfont {
+    text-align: right;
+}
 h2 .smallfont, .functionlinks {
     display: block;
     font-weight: normal;
@@ -67,3 +70,8 @@ h2 .smallfont, .functionlinks {
 .popup, .messagebox > div {
     box-shadow: none;
 }
+img {
+    max-width: 13em;
+    max-height: 8em;
+}
+

@@ -9,6 +9,7 @@
 %= include 'layouts/parts/styleinc'
   </head>
   <body>
-<!-- Angemeldet als "<%= session()->{user} || '<noone>' %>" !-->
+    <h1 class="titlebanner"<%== $backgroundcolor ? qq~ style="background: $backgroundcolor"~ : '' %>><%= $title %></h1>
+    <!-- Angemeldet als "<%= session()->{user} || '<noone>' %>" !-->
 
 
