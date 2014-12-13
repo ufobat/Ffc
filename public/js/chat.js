@@ -56,7 +56,7 @@ ffcdata.init = function() {
         var tp = ffcdata.title;
         if ( document.hasFocus() )
             newchatcount = 0;
-        var str = tp[0]+newchatcount+tp[1]+newpostcount+tp[2]+newmsgscount+tp[3];
+        var str = tp[0]+newchatcount+tp[1]+(newpostcount+newmsgscount)+tp[2];
         document.getElementsByTagName("title")[0].firstChild.data = str;
         // console.log('title updated');
     };
