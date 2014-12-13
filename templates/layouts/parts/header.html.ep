@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= $title %> (<%= $newpostcount %>/<%= $newmsgscount %>)</title>
+    <title>[<%= $newpostcount + $newmsgscount %>] <%= $title %></title>
     <%= stylesheet '/theme/colors.css' %>
     <%= stylesheet '/theme/large.css', media => 'all and (min-device-width: 1001px)' %>
     <%= stylesheet '/theme/small.css', media => 'all and (max-device-width: 1000px)' %>
