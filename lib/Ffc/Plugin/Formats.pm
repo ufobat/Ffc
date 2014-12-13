@@ -4,7 +4,7 @@ use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Plugin';
 
 our @Smilies = (
-    [ look       => ['O.O', '0.0',                                ] ],
+    [ look       => ['O.O', '0.0',  'O_O',  '0_0',                ] ],
     [ what       => ['o.O', 'O.o',  'O.ò',  'ó.O',                ] ],
     [ smile      => [':)',  ':-)',  '=)',                         ] ],
     [ tongue     => [':P',  ':-P',  '=P',   ':p',  ':-p',  '=p',  ] ],

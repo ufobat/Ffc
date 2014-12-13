@@ -318,7 +318,7 @@ Achso \@$testuser: $testuser oder http://www.$testuser.de weil ja!
 
 _test1_, +test2+, -test3-, ~test4~, !test5!, *test6*
 _test_1_, +test+2+, -test-3-, ~test~4~, !test!5!, *test*6*
-look: O.O 0.0,
+look: O.O 0.0 O_O 0_0,
 what: o.O O.o O.ò ó.O,
 tongue: :P :-P =P :p :-p =p,
 ooo: :O :-O =O :o :-o =o,
@@ -356,7 +356,7 @@ sub controlstring_withimages {
 <p>Achso \@$testuser: $testuser oder <a href="http://www.$testuser.de" title="Externe Webseite: http://www.$testuser.de" target="_blank">http://www.$testuser.de</a> weil ja!</p>
 <p><span class="underline">test1</span>, <span class="bold">test2</span>, <span class="linethrough">test3</span>, <span class="italic">test4</span>, <span class="alert">test5 !!!</span>, <span class="emotion">test6</span></p>
 <p><span class="underline">test 1</span>, <span class="bold">test 2</span>, <span class="linethrough">test 3</span>, <span class="italic">test 4</span>, <span class="alert">test 5 !!!</span>, <span class="emotion">test 6</span></p>
-<p>look: <img class="smiley" src="/theme/img/smileys/look.png" alt="O.O" title="O.O" /> <img class="smiley" src="/theme/img/smileys/look.png" alt="0.0" title="0.0" />,</p>
+<p>look: <img class="smiley" src="/theme/img/smileys/look.png" alt="O.O" title="O.O" /> <img class="smiley" src="/theme/img/smileys/look.png" alt="0.0" title="0.0" /> <img class="smiley" src="/theme/img/smileys/look.png" alt="O_O" title="O_O" /> <img class="smiley" src="/theme/img/smileys/look.png" alt="0_0" title="0_0" />,</p>
 <p>what: <img class="smiley" src="/theme/img/smileys/what.png" alt="o.O" title="o.O" /> <img class="smiley" src="/theme/img/smileys/what.png" alt="O.o" title="O.o" /> <img class="smiley" src="/theme/img/smileys/what.png" alt="O.ò" title="O.ò" /> <img class="smiley" src="/theme/img/smileys/what.png" alt="ó.O" title="ó.O" />,</p>
 <p>tongue: <img class="smiley" src="/theme/img/smileys/tongue.png" alt=":P" title=":P" /> <img class="smiley" src="/theme/img/smileys/tongue.png" alt=":-P" title=":-P" /> <img class="smiley" src="/theme/img/smileys/tongue.png" alt="=P" title="=P" /> <img class="smiley" src="/theme/img/smileys/tongue.png" alt=":p" title=":p" /> <img class="smiley" src="/theme/img/smileys/tongue.png" alt=":-p" title=":-p" /> <img class="smiley" src="/theme/img/smileys/tongue.png" alt="=p" title="=p" />,</p>
 <p>ooo: <img class="smiley" src="/theme/img/smileys/ooo.png" alt=":O" title=":O" /> <img class="smiley" src="/theme/img/smileys/ooo.png" alt=":-O" title=":-O" /> <img class="smiley" src="/theme/img/smileys/ooo.png" alt="=O" title="=O" /> <img class="smiley" src="/theme/img/smileys/ooo.png" alt=":o" title=":o" /> <img class="smiley" src="/theme/img/smileys/ooo.png" alt=":-o" title=":-o" /> <img class="smiley" src="/theme/img/smileys/ooo.png" alt="=o" title="=o" />,</p>

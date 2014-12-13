@@ -2,7 +2,7 @@
 % title 'Hilfe';
 <div class="postbox helptext">
     <h2>Beiträge erstellen</h2>
-    <p>Über das Textfeld im oberen Bereich der Webseite können Beiträge erstellt werden. Diese erscheinen dann in der ausgewählten Kategorie. Bei Privatnachrichten muss vorher ein Konversationsteilnehmer ausgewählt werden.</p>
+    <p>Über das Textfeld im oberen Bereich der Webseite können Beiträge erstellt werden. Diese erscheinen dann im ausgewählten Thema. Bei Privatnachrichten muss vorher ein Konversationsteilnehmer ausgewählt werden.</p>
     <p>Wird zwischenzeitlich ein Beitrag von einem anderen Benutzer in der selben Kategorie oder Konversation erstellt, während man selber einen Beitrag schreibt, erscheint eine Warnung. Dann kann man den Beitrag gegebenenfalls noch einmal überarbeiten, muss ihn aber dann noch einmal explizit speichern.</p>
 </div>
 <div class="postbox helptext">
@@ -36,9 +36,9 @@
 </div>
 <div class="postbox helptext">
     <h2>Dateianhänge</h2>
-    <p>Anhänge können an bestehende Beiträge angefügt werden. Dazu muss zuerst der Beitrag erstellt werden, anschließend kann über den Link "Anhang" eine neue Datei hinzugefügt werden. Dieser Datei kann man Wahlweise auch eine Beschreibung mitgeben. Gibt man keine Beschreibung an, wird als Beschreibung der Dateiname verwendet.</p>
-    <p>Anhänge werden unterhalb des Beitrages angezeigt. Bilder werden dabei als kleinere Vorschau angezeigt, falls unter Optionen die Bildanzeige aktiviert ist (Standard). Anhänge werden außerdem mit einem Download-Link hinterlegt, sodass man sie direkt mit einem Klick herunterladen kann.</p>
-    <p>Für das Löschen von eigenen Anhängen ist neben dem Anhang ein entsprechender Link ("Löschen") hinterlegt, welcher über eine Bestätigungsseite den Anhang komplett entfernt. Wird ein Beitrag gelöscht, werden sämltiche Anhänge ebenfalls gelöscht.</p>
+    <p>Anhänge können an bestehende Beiträge angefügt werden. Dazu muss zuerst der Beitrag erstellt werden, anschließend kann über den Link "anhängen" eine neue Datei hinzugefügt werden.</p>
+    <p>Anhänge werden unterhalb des Beitrages angezeigt. Bilder werden dabei als kleinere Vorschau angezeigt. Anhänge werden mit einem Download-Link hinterlegt, sodass man sie direkt mit einem Klick herunterladen kann.</p>
+    <p>Für das Löschen von eigenen Anhängen ist neben dem Anhang ein entsprechender Link ("entfernen") hinterlegt, welcher über eine Bestätigungsseite den Anhang komplett entfernt. Wird ein Beitrag gelöscht, werden sämltiche Anhänge ebenfalls gelöscht.</p>
 </div>
 <div class="postbox helptext">
     <h2>Beiträge bearbeiten und löschen</h2>
@@ -52,7 +52,7 @@
     <p>Smileys können direkt in ihrer Textrepräsentation eingegeben werden und werden nach Möglichkeit automatisch ersetzt.</p>
     <p>Folgende Smileys werden erkannt:</p>
     <ul>
-        <li><img class="smiley" src="<%= url_for "/theme/img/smileys/look.png" %>" /> (Erstaunt guggen): <code>O.O 0.0</code></li>
+        <li><img class="smiley" src="<%= url_for "/theme/img/smileys/look.png" %>" /> (Erstaunt guggen): <code>O.O 0.0 O_O 0_0</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/what.png" %>" /> (Fragend dreinblicken): <code>o.O O.o O.ò ó.O</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/tongue.png" %>" /> (Frech werden): <code>:P :-P =P :p :-p =p</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/ooo.png" %>" /> (Überraschung andeuten): <code>:O :-O =O :o :-o =o</code></li>
