@@ -49,7 +49,6 @@ a, .linkalike {
     margin: 0;
     text-align: center;
     padding: .1em 0;
-    border-top-width: 0;
 }
 input[type="color"], input[type="url"], input[type="email"], input[type="text"], input[type="password"] {
     width: 16em;
@@ -176,6 +175,9 @@ input[type="text"].titlestring {
     float: right;
 }
 .titlebanner {
-    display: none;
+    font-size: 2em;
+    padding: 0;
+    text-align: center;
+    border: none;
 }
 
