@@ -35,8 +35,8 @@ input, textarea, select {
     width: inherit;
 }
 .postbox .avatar {
-    width: 3em;
-    height: 3em;
+    width: 5em;
+    height: 5em;
     vertical-align: top;
     border-width: 4px;
 }
