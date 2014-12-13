@@ -1,13 +1,14 @@
 % layout 'login';
+<div class="postbox headbox">
+    <h1>Anmeldebereich</h1>
+    <p>Melden Sie sich hier mit dem Benutzernamen und Passwort an, welches Sie von einem Administrator des Forums erhalten haben.</p>
+</div>
 <div class="postbox loginform">
+    <h2 class="title">Anmeldung</h2>
 %= form_for login => begin
-    <table>
-        <tr><td>Benutzer:</td><td><input type="text" name="username" class="loginfield" /></td></tr>
-        <tr><td>Passwort:</td><td><input type="password" name="password" class="loginfield" /></td></tr>
-        <tr><td></td><td>
-            <input type="submit" value="anmelden" class="linkalike" />
-        </td></tr>
-    </table>
+    <p>Benutzer: <input type="text" name="username" class="loginfield" /></p>
+    <p>Passwort: <input type="password" name="password" class="loginfield" /></p>
+    <p><input type="submit" value="anmelden" class="linkalike" /></p>
 % end
 </div>
 
