@@ -19,7 +19,7 @@
 <script type="text/javascript">
 document.write('\
     <div class="menuentry chatlink">\
-        <a href="#" onClick="window.open(\'<%= url_for 'chat_window' %>\',\'ffcchat\',\'width=468,height=284,resizable=no,menubar=no,location=no,scrollbars=no,status=no,toolbar=no\')" title="Kleiner Instant-Chat für aktuell angemeldente Benutzer"><span class="linktext linkchat">Chat</span></a>\
+        <a href="#" onClick="window.open(\'<%= url_for 'chat_window' %>\',\'ffcchat\',\'width=628,height=384,resizable=no,menubar=no,location=no,scrollbars=no,status=no,toolbar=no\')" title="Kleiner Instant-Chat für aktuell angemeldente Benutzer"><span class="linktext linkchat">Chat</span></a>\
     </div>\
 ');
 </script>
