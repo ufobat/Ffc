@@ -33,13 +33,13 @@ sub check_env {
     if ( $newcnt ) {
         $t->content_like(qr~<title>\($newcnt\)\s+Ffc\s+Forum~xmsi);
         $t->content_like(qr~title="Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>\s*\(<span\s+class="mark">$newcnt</span>\)\s+</p>~xmsi); 
-        $t->content_like(qr~Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>\s*</p>\s*</h2>\s*<p>\s*
+        $t->content_like(qr~Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>\s*<span\s+class="smallfont">\s*
             Ungelesene\s+Nachrichten\s+vom\s+Benutzer:\s*<span\s+class="mark">$newcnt</span>~xmsi);
     }
     else {
         $t->content_like(qr~<title>\(0\)\s+Ffc\s+Forum~xmsi);
-        $t->content_like(qr~title="Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>\s*</p>~xmsi);
-        $t->content_like(qr~Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>\s*</p>\s*</h2>\s*<p>\s*
+        $t->content_like(qr~title="Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>~xmsi);
+        $t->content_like(qr~Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>\s*<span\s+class="smallfont">\s*
             Ungelesene\s+Nachrichten\s+vom\s+Benutzer:\s*0~xmsi);
     }
     $t->get_ok("/pmsgs/2")->status_is(200);
@@ -68,5 +68,4 @@ sub test_data_security {
         }
     }
 }
-
 

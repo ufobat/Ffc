@@ -27,7 +27,7 @@
         <a href="<%= url_for 'ignore_forum_topic_do', topicid => $t->[0] %>"
            title="Thema ignorieren und keine neuen Beiträge anzeigen">ignorieren</a>
 % }
-    )</span>
+        )</span>
     </h2>
 % }
 </div>

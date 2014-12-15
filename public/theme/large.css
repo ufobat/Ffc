@@ -179,4 +179,8 @@ input[type="text"].titlestring {
     text-align: center;
     border: none;
 }
+.userlist .smallfont {
+    display: block;
+    margin-top: .75em;
+}
 
