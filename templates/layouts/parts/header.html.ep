@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>(<%= $newpostcount + $newmsgscount %>) <%= $title %></title>
+    <title><% if ( $controller ne 'auth' ) { %>(<%= $newpostcount + $newmsgscount %>) <% } %><%= $title %></title>
     <%= stylesheet '/theme/colors.css' %>
     <%= stylesheet '/theme/large.css', media => 'all and (min-device-width: 801px)' %>
     <%= stylesheet '/theme/small.css', media => 'all and (max-device-width: 800px)' %>
