@@ -1,5 +1,5 @@
 /************************************************************************
- *** Bugfix für diverse Browser ohne document.hasFocus()              ***
+ *** Bugfix fuer diverse Browser ohne document.hasFocus()             ***
  ************************************************************************/
 if ( !document.hasFocus ) {
     document.hasFocus = function() {
@@ -50,7 +50,7 @@ ffcdata.init = function() {
     };
 
     /************************************************************************
-     *** Titelstring der Webseite ändern                                  ***
+     *** Titelstring der Webseite aendern                                 ***
      ************************************************************************/
     var set_title = function(newchatcount, newpostcount, newmsgscount) {
         var tp = ffcdata.title;
@@ -70,7 +70,7 @@ ffcdata.init = function() {
     };
 
     /************************************************************************
-     *** Benutzerliste befüllen                                           ***
+     *** Benutzerliste befuellen                                          ***
      ************************************************************************/
     var update_userlist = function(users) {
         var ul = '';
@@ -161,7 +161,7 @@ ffcdata.init = function() {
     };
 
     /************************************************************************
-     *** Refresh-Zeit ändern                                              ***
+     *** Refresh-Zeit aendern                                             ***
      ************************************************************************/
     var set_refresh = function(value) {
         var url = ffcdata.refreshseturl.substring(0, ffcdata.refreshseturl.length - 2);
@@ -187,7 +187,7 @@ ffcdata.init = function() {
     };
 
     /************************************************************************
-     *** Chatfenster anwählen                                             ***
+     *** Chatfenster anwaehlen                                            ***
      ************************************************************************/
     window.onfocus = function() {
         // console.log('got focused');
