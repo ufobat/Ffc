@@ -34,11 +34,9 @@ input, textarea, select {
     background: gainsboro;
 }
 .headbox textarea {
-    width: 100%;
+    width: 90%;
+    font-size: 2.5em;
     height: 5em;
-}
-.headbox textarea:focus {
-    width: inherit;
 }
 .postbox .avatar {
     width: 5em;
