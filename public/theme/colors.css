@@ -5,7 +5,7 @@ body {
 }
 body > *, .popup {
     background: white;
-    border: 1px gray solid;    
+    border: 1px gray solid;
 }
 h1, h2 {
     border-bottom: 1px gainsboro solid;
