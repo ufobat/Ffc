@@ -23,7 +23,7 @@ sub show {
     $c->counting;
     $c->stash( 
         heading     => 'Persönliche Notizen', # Überschrift
-        description => 'Hier können Texte und Dateianhänge ausschließlich ür den eigenen Bedarf abgelegt werden.', # Kurzbeschreibung
+        description => 'Hier können Texte und Dateianhänge ausschließlich für den eigenen Bedarf abgelegt werden.', # Kurzbeschreibung
     );
     $c->show_posts();
 }
