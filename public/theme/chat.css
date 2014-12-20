@@ -31,6 +31,8 @@ div, textarea {
 #msg, #buttonlist {
     height: 60px;
     min-height: 60px;
+}
+#buttonlist {
     max-height: 60px;
 }
 #userlist, #msglog {
