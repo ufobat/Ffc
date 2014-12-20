@@ -16,6 +16,8 @@ if ( !document.hasFocus ) {
 ffcdata.init = function() {
     var refresh = 60;
     var to;
+    var history_list = new Array();
+    var history_pointer = 0;
 
     /************************************************************************
      *** Standard-Request-Funktion                                        ***
@@ -241,16 +243,55 @@ ffcdata.init = function() {
     /************************************************************************
      *** Enter-Absenden                                                   ***
      ************************************************************************/
+    var isShift = false;
     document.getElementById('msg').onkeydown = function(e) {
-        if ( e.keyCode == 13 && !e.shiftKey && !e.ctrlKey && !e.altKey) {
+        if ( e.keyCode == 16 ) {
+            isShift = true;
+        }
+
+        if ( e.keyCode == 13 && !isShift ) {
             // console.log('enter-key send triggered');
+            var msg = document.getElementById('msg');
+            var msgval = msg.value;
+            if ( msgval ) {
+                history_list.push(msgval);
+                history_pointer = history_list.length;
+            }
             sendit();
         }
     };
     document.getElementById('msg').onkeyup = function(e) {
-        if ( e.keyCode == 13 && !e.shiftKey && !e.ctrlKey && !e.altKey) {
+        if ( e.keyCode == 16 ) {
+            isShift = false;
+        }
+
+        if ( e.keyCode == 13 && !isShift ) {
             // console.log('enter-key send done');
             cleanmsg();
+        }
+
+        if ( isShift && e.keyCode == 38 && history_pointer > 0 ) { // shift + up arrow, history back
+            var msg = document.getElementById('msg');
+            var msgval = msg.value;
+            if ( msgval.length > 0 && history_list[history_pointer] != msgval ) {
+                history_list[history_pointer] = msgval;
+            }
+            history_pointer--;
+            msg.value = history_list[history_pointer];
+        }
+        if ( isShift && e.keyCode == 40 && history_pointer < history_list.length ) { // shift + down arrow, history foreward
+            var msg = document.getElementById('msg');
+            var msgval = msg.value;
+            if ( msgval.length > 0 && history_list[history_pointer] != msgval ) {
+                history_list[history_pointer] = msgval;
+            }
+            history_pointer++;
+            if ( history_pointer < history_list.length ) {
+                msg.value = history_list[history_pointer];
+            }
+            else {
+                msg.value = '';
+            }
         }
     };
 
