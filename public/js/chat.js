@@ -50,6 +50,14 @@ ffcdata.init = function() {
     };
 
     /************************************************************************
+     *** Chat-Text formatieren                                            ***
+     ************************************************************************/
+    var textfilter = function(txt) {
+        txt = txt.replace(/(([\(|\s])?|^)(https?:\/\/[^\)\s]+?)(\)|,?\s|$)/g, '$1<a href="$3" target="_blank" title="Externe Webadresse! ($3)">$3</a>$4');
+        return(txt);
+    }
+
+    /************************************************************************
      *** Titelstring der Webseite aendern                                 ***
      ************************************************************************/
     var set_title = function(newchatcount, newpostcount, newmsgscount) {
@@ -96,7 +104,7 @@ ffcdata.init = function() {
         var msglog = document.getElementById('msglog');
         var ml = msglog.innerHTML;
         for ( var i = 0; i < msgs.length; i++ ) {
-            ml = ml +'<p><span class="username">' + msgs[i][1] + '</span>: ' + msgs[i][2] + '</p>\n';
+            ml = ml +'<p><span class="username">' + msgs[i][1] + '</span>: ' + textfilter(msgs[i][2]) + '</p>\n';
         }
         msglog.innerHTML = ml;
 
