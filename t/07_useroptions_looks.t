@@ -7,7 +7,7 @@ use Testinit;
 use Ffc::Plugin::Config;
 
 use Test::Mojo;
-use Test::More tests => 589;
+use Test::More tests => 712;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
@@ -47,18 +47,23 @@ sub test_bgcolor {
     note 'color reset without form parameter';
     login($user1, $pass1);
     $t->post_ok("/options/bgcolor/color", form => {})
-      ->status_is(200)
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr'active activeoptions">Einstellungen<');
     info('Hintergrundfarbe zurück gesetzt');
 
     for my $c ( @good ) {
         login($user1, $pass1);
         if ( $c ) {
-            $t->post_ok("/options/bgcolor/color", form => { bgcolor => $c });
+            $t->post_ok("/options/bgcolor/color", form => { bgcolor => $c })
+              ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+            $t->get_ok('/options/form')->status_is(200);
             info($goodmsg);
         }
         else {
-            $t->get_ok("/options/bgcolor/none");
+            $t->get_ok("/options/bgcolor/none")
+              ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+            $t->get_ok('/options/form')->status_is(200);
             info($goodreset);
         }
         $t->status_is(200)
@@ -83,7 +88,9 @@ sub test_bgcolor {
     }
     for my $c ( @bad ) {
         login($user1, $pass1);
-        $t->post_ok("/options/bgcolor/color", form => { bgcolor => $c });
+        $t->post_ok("/options/bgcolor/color", form => { bgcolor => $c })
+          ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+        $t->get_ok('/options/form')->status_is(200);
         error($badmsg);
 
         login($user2, $pass2);
@@ -98,11 +105,13 @@ sub test_email {
     note 'checking email entry';
     login($user1, $pass1);
     $t->post_ok('/options/email')
-      ->status_is(200)
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr'active activeoptions">Einstellungen<');
     error('Email-Adresse nicht gesetzt');
     $t->post_ok('/options/email', form => { email => '' })
-      ->status_is(200)
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr'name="email" type="email" value=""')
       ->content_like(qr'active activeoptions">Einstellungen<');
     error('Email-Adresse nicht gesetzt');
@@ -110,7 +119,8 @@ sub test_email {
         'SELECT email FROM users WHERE name=?'
         , undef, $user1)->[0]->[0], '', 'emailadress not set in database';
     $t->post_ok('/options/email', form => { email => ('a' x 1025 ) })
-      ->status_is(200)
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr'name="email" type="email" value=""')
       ->content_like(qr'active activeoptions">Einstellungen<');
     error('Email-Adresse darf maximal 1024 Zeichen lang sein');
@@ -118,7 +128,8 @@ sub test_email {
         'SELECT email FROM users WHERE name=?'
         , undef, $user1)->[0]->[0], '', 'emailadress not set in database';
     $t->post_ok('/options/email', form => { email => ('a' x 100 ) })
-      ->status_is(200)
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr'name="email" type="email" value=""')
       ->content_like(qr'active activeoptions">Einstellungen<');
     error('Email-Adresse sieht komisch aus');
@@ -129,7 +140,8 @@ sub test_email {
         'SELECT newsmail FROM users WHERE name=?'
         , undef, $user1)->[0]->[0], 1, 'newsmail still active in database';
     $t->post_ok('/options/email', form => { email => 'me@home.de', newsmail => 0 })
-      ->status_is(200)
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr'active activeoptions">Einstellungen<')
       ->content_like(qr'name="email" type="email" value="me@home.de"');
     info('Email-Adresse geändert');
@@ -140,7 +152,8 @@ sub test_email {
         'SELECT newsmail FROM users WHERE name=?'
         , undef, $user1)->[0]->[0], 0, 'newsmail now inactive in database';
     $t->post_ok('/options/email', form => { email => 'him@work.com', newsmail => 1 })
-      ->status_is(200)
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr'active activeoptions">Einstellungen<')
       ->content_like(qr'name="email" type="email" value="him@work.com"');
     info('Email-Adresse geändert');
@@ -184,7 +197,9 @@ sub test_autorefresh {
       ->json_is('/autorefresh', 3);
 
     # Fehlerhaftes umsetzen ohne Daten
-    $t->post_ok('/options/autorefresh')->status_is(200)
+    $t->post_ok('/options/autorefresh')
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr~window\.setInterval\(function\(\)\{~)
       ->content_like(qr~\}, 3 \* 60000 \)~);
     error('Automatisches Neuladen der Seite konnte nicht geändert werden');
@@ -193,7 +208,9 @@ sub test_autorefresh {
 
     # Fehlerhaftes umsetzen mit String
     my $new = 'xyz';
-    $t->post_ok('/options/autorefresh', form => { refresh => $new })->status_is(200)
+    $t->post_ok('/options/autorefresh', form => { refresh => $new })
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr~window\.setInterval\(function\(\)\{~)
       ->content_like(qr~\}, 3 \* 60000 \)~);
     error('Automatisches Neuladen der Seite konnte nicht geändert werden');
@@ -202,7 +219,9 @@ sub test_autorefresh {
 
     # Korrektes Umsetzen
     $new = 5 + int rand 100;
-    $t->post_ok('/options/autorefresh', form => { refresh => $new })->status_is(200)
+    $t->post_ok('/options/autorefresh', form => { refresh => $new })
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr~window\.setInterval\(function\(\)\{~)
       ->content_like(qr~\}, $new \* 60000 \)~);
     info('Automatisches Neuladen der Seite auf '.$new.' Minuten eingestellt');
@@ -210,7 +229,9 @@ sub test_autorefresh {
       ->json_is('/autorefresh', $new);
 
     # Deaktivieren
-    $t->post_ok('/options/autorefresh', form => { refresh => 0 })->status_is(200)
+    $t->post_ok('/options/autorefresh', form => { refresh => 0 })
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200)
       ->content_unlike(qr~window\.setInterval\(function\(\)\{~)
       ->content_unlike(qr~\}, $new \* 60000 \)~);
     info('Automatisches Neuladen der Seite deaktiviert');
@@ -219,7 +240,9 @@ sub test_autorefresh {
 
     # Korrektes Umsetzen
     $new = 5 + int rand 100;
-    $t->post_ok('/options/autorefresh', form => { refresh => $new })->status_is(200)
+    $t->post_ok('/options/autorefresh', form => { refresh => $new })
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr~window\.setInterval\(function\(\)\{~)
       ->content_like(qr~\}, $new \* 60000 \)~);
     info('Automatisches Neuladen der Seite auf '.$new.' Minuten eingestellt');

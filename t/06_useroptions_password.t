@@ -5,7 +5,7 @@ use lib "$FindBin::Bin/lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 78;
+use Test::More tests => 108;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -37,23 +37,33 @@ check_optionsform();
 
 note 'wrong use of password change form';
 $t->post_ok('/options/password');
+$t->status_is(302)->content_is('')->header_is(Location => '/options/form');
+$t->get_ok('/options/form')->status_is(200);
 error('Altes Passwort nicht angegeben');
 check_optionsform();
 
 $t->post_ok('/options/password', form => { oldpw => $pass });
+$t->status_is(302)->content_is('')->header_is(Location => '/options/form');
+$t->get_ok('/options/form')->status_is(200);
 error('Neues Passwort nicht angegeben');
 check_optionsform();
 
 $t->post_ok('/options/password', form => { oldpw => $pass, newpw1 => $newpass });
+$t->status_is(302)->content_is('')->header_is(Location => '/options/form');
+$t->get_ok('/options/form')->status_is(200);
 error('Neues Passwort nicht angegeben');
 check_optionsform();
 
 $t->post_ok('/options/password', form => { oldpw => $pass, newpw1 => $newpass, newpw2 => $pass });
+$t->status_is(302)->content_is('')->header_is(Location => '/options/form');
+$t->get_ok('/options/form')->status_is(200);
 error('Neue Passworte stimmen nicht überein');
 check_optionsform();
 
 note 'working password change';
 $t->post_ok('/options/password', form => { oldpw => $pass, newpw1 => $newpass, newpw2 => $newpass });
+$t->status_is(302)->content_is('')->header_is(Location => '/options/form');
+$t->get_ok('/options/form')->status_is(200);
 info('Passwortwechsel erfolgreich');
 check_optionsform();
 Testinit::test_logout($t);
