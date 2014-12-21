@@ -10,8 +10,8 @@ use Ffc::Options::AdminBoardsettings;
 sub check_admin {
     my $c = shift;
     unless ( $c->session->{admin} ) {
-        $c->set_error('Nur Administratoren dürfen das');
-        $c->options_form();
+        $c->set_error_f('Nur Administratoren dürfen das');
+        $c->redirect_to('options_form');
         return;
     }
     return 1;

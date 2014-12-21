@@ -48,59 +48,57 @@ sub avatar_show {
     $c->rendered(200);
 }
 
-sub options_form { &Ffc::Options::options_form }
-
 sub avatar_upload {
     my $c = shift;
     my $u = $c->session->{user};
     my $file = $c->param('avatarfile');
     
     unless ( $file ) {
-        $c->set_error('Kein Avatarbild angegeben.');
-        return $c->options_form;
+        $c->set_error_f('Kein Avatarbild angegeben.');
+        return $c->redirect_to('options_form');
     }
     unless ( $file->isa('Mojo::Upload') ) {
-        $c->set_error('Keine Datei als Avatarbild angegeben.');
-        return $c->options_form;
+        $c->set_error_f('Keine Datei als Avatarbild angegeben.');
+        return $c->redirect_to('options_form');
     }
     if ( $file->size < 100 ) {
-        $c->set_error('Datei ist zu klein, sollte mindestens 100B groß sein.');
-        return $c->options_form;
+        $c->set_error_f('Datei ist zu klein, sollte mindestens 100B groß sein.');
+        return $c->redirect_to('options_form');
     }
     if ( $file->size > 150000 ) {
-        $c->set_error('Datei ist zu groß, darf maximal 150Kb groß sein.');
-        return $c->options_form;
+        $c->set_error_f('Datei ist zu groß, darf maximal 150Kb groß sein.');
+        return $c->redirect_to('options_form');
     }
 
     my $filename = $file->filename ne 'avatarfile' ? $u . '_' . $file->filename : '';
 
     unless ( $filename ) {
-        $c->set_error('Dateiname fehlt.');
-        return $c->options_form;
+        $c->set_error_f('Dateiname fehlt.');
+        return $c->redirect_to('options_form');
     }
     if ( (length($u) + 8) > length $filename ) {
-        $c->set_error('Dateiname ist zu kurz, muss mindestens 6 Zeichen inklusive Dateiendung enthalten.');
-        return $c->options_form;
+        $c->set_error_f('Dateiname ist zu kurz, muss mindestens 6 Zeichen inklusive Dateiendung enthalten.');
+        return $c->redirect_to('options_form');
     }
     if ( 80 < length $filename ) {
-        $c->set_error('Dateiname ist zu lang, darf maximal 80 Zeichen lang sein.');
-        return $c->options_form;
+        $c->set_error_f('Dateiname ist zu lang, darf maximal 80 Zeichen lang sein.');
+        return $c->redirect_to('options_form');
     }
     if ( $file->filename =~ m/\A\./xms ) {
-        $c->set_error('Dateiname darf nicht mit einem "." beginnen.');
-        return $c->options_form;
+        $c->set_error_f('Dateiname darf nicht mit einem "." beginnen.');
+        return $c->redirect_to('options_form');
     }
     if ( $filename !~ m/\.(?:png|jpe?g|bmp|gif)\z/ximso ) {
-        $c->set_error('Datei ist keine Bilddatei, muss PNG, JPG, BMP oder GIF sein.');
-        return $c->options_form;
+        $c->set_error_f('Datei ist keine Bilddatei, muss PNG, JPG, BMP oder GIF sein.');
+        return $c->redirect_to('options_form');
     }
     if ( $filename =~ m/(?:\.\.|\/)/xmso ) {
-        $c->set_error('Dateiname darf weder ".." noch "/" enthalten.');
-        return $c->options_form;
+        $c->set_error_f('Dateiname darf weder ".." noch "/" enthalten.');
+        return $c->redirect_to('options_form');
     }
     unless ( $file->move_to(catfile(@{$c->datapath}, 'avatars', $filename)) ) {
-        $c->set_error('Dateiupload für das Avatarbild fehlgeschlagen.');
-        return $c->options_form;
+        $c->set_error_f('Dateiupload für das Avatarbild fehlgeschlagen.');
+        return $c->redirect_to('options_form');
     }
     my $old = $c->dbh->selectall_arrayref(
         'SELECT avatar FROM users WHERE UPPER(name)=UPPER(?)'
@@ -111,8 +109,8 @@ sub avatar_upload {
     }
     $c->dbh->do('UPDATE users SET avatar=? WHERE UPPER(name)=UPPER(?)'
         , undef, $filename, $u);
-    $c->set_info('Avatarbild aktualisiert.');
-    $c->options_form;
+    $c->set_info_f('Avatarbild aktualisiert.');
+    $c->redirect_to('options_form');
 }
 
 1;

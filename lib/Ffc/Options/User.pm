@@ -8,15 +8,15 @@ sub set_autorefresh {
         $ar = $1;
     }
     else {
-        $c->set_error('Automatisches Neuladen der Seite konnte nicht geändert werden');
-        return $c->options_form();
+        $c->set_error_f('Automatisches Neuladen der Seite konnte nicht geändert werden');
+        return $c->redirect_to('options_form');
     }
     $c->session->{autorefresh} = $ar;
     $c->dbh->do('UPDATE "users" SET "autorefresh"=? WHERE "id"=?',
         undef, $ar, $c->session->{userid});
-    $c->set_info( 'Automatisches Neuladen der Seite '. (
+    $c->set_info_f( 'Automatisches Neuladen der Seite '. (
         $ar ? 'auf '.$ar.' Minuten eingestellt' : 'deaktiviert' ) );
-    $c->options_form();
+    $c->redirect_to('options_form');
 }
 
 sub no_bg_color {
@@ -26,19 +26,19 @@ sub no_bg_color {
     $c->dbh()->do(
         'UPDATE users SET bgcolor=? WHERE UPPER(name)=UPPER(?)',
         undef, '', $s->{user});
-    $c->set_info('Hintergrundfarbe zurück gesetzt');
-    $c->options_form();
+    $c->set_info_f('Hintergrundfarbe zurück gesetzt');
+    $c->redirect_to('options_form');
 }
 
 sub bg_color {
     my $c = shift;
     my $bgcolor = $c->param('bgcolor') // '';
     if ( $bgcolor !~ qr(\A(?:|\#[0-9a-f]{6}|\w{2,128})\z)xmsio ) {
-        $c->set_error('Die Hintergrundfarbe für die Webseite muss in hexadezimaler Schreibweise mit führender Raute oder als Webfarbenname angegeben werden');
-        $c->set_warning($bgcolor);
+        $c->set_error_f('Die Hintergrundfarbe für die Webseite muss in hexadezimaler Schreibweise mit führender Raute oder als Webfarbenname angegeben werden');
+        $c->set_warning_f($bgcolor);
     }
     elsif ( $c->configdata()->{fixbackgroundcolor} ) {
-        $c->set_error('Ändern der Hintergrundfarbe vom Forenadministrator deaktiviert');
+        $c->set_error_f('Ändern der Hintergrundfarbe vom Forenadministrator deaktiviert');
     }
     else {
         my $s = $c->session();
@@ -47,13 +47,13 @@ sub bg_color {
             undef, $bgcolor, $s->{user});
         $s->{backgroundcolor} = $bgcolor;
         if ( $bgcolor ) {
-            $c->set_info('Hintergrundfarbe angepasst');
+            $c->set_info_f('Hintergrundfarbe angepasst');
         }
         else {
-            $c->set_info('Hintergrundfarbe zurück gesetzt');
+            $c->set_info_f('Hintergrundfarbe zurück gesetzt');
         }
     }
-    $c->options_form();
+    $c->redirect_to('options_form');
 }
 
 sub set_email {
@@ -61,22 +61,22 @@ sub set_email {
     my $email = $c->param('email');
     my $newsmail = $c->param('newsmail') ? 1 : 0;
     unless ( $email ) {
-        $c->set_error('Email-Adresse nicht gesetzt');
-        return $c->options_form();
+        $c->set_error_f('Email-Adresse nicht gesetzt');
+        return $c->redirect_to('options_form');
     }
     if ( 1024 < length $email ) {
-        $c->set_error('Email-Adresse darf maximal 1024 Zeichen lang sein');
-        return $c->options_form();
+        $c->set_error_f('Email-Adresse darf maximal 1024 Zeichen lang sein');
+        return $c->redirect_to('options_form');
     }
     unless ( $email =~ m/.+\@.+\.\w+/xmso ) {
-        $c->set_error('Email-Adresse sieht komisch aus');
-        return $c->options_form();
+        $c->set_error_f('Email-Adresse sieht komisch aus');
+        return $c->redirect_to('options_form');
     }
     $c->dbh->do(
         'UPDATE users SET email=?, newsmail=? WHERE UPPER(name)=UPPER(?)'
         , undef, $email, $newsmail, $c->session->{user});
-    $c->set_info('Email-Adresse geändert');
-    $c->options_form();
+    $c->set_info_f('Email-Adresse geändert');
+    $c->redirect_to('options_form');
 }
 
 sub set_password {
@@ -86,16 +86,16 @@ sub set_password {
     my $npw2 = $c->param('newpw2');
 
     unless ( $opw ) {
-        $c->set_error('Altes Passwort nicht angegeben');
-        return $c->options_form();
+        $c->set_error_f('Altes Passwort nicht angegeben');
+        return $c->redirect_to('options_form');
     }
     unless ( $npw1 and $npw2 ) {
-        $c->set_error('Neues Passwort nicht angegeben');
-        return $c->options_form();
+        $c->set_error_f('Neues Passwort nicht angegeben');
+        return $c->redirect_to('options_form');
     }
     if ( $npw1 ne $npw2 ) {
-        $c->set_error('Neue Passworte stimmen nicht überein');
-        return $c->options_form();
+        $c->set_error_f('Neue Passworte stimmen nicht überein');
+        return $c->redirect_to('options_form');
     }
 
     my $u = $c->session->{user};
@@ -110,13 +110,13 @@ sub set_password {
         , undef, $u, $p)->[0]->[0];
 
     if ( $i ) {
-        $c->set_info('Passwortwechsel erfolgreich');
+        $c->set_info_f('Passwortwechsel erfolgreich');
     }
     else {
-        $c->set_error('Passwortwechsel fehlgeschlagen')
+        $c->set_error_f('Passwortwechsel fehlgeschlagen')
     }
 
-    $c->options_form();
+    $c->redirect_to('options_form');
 }
 
 1;

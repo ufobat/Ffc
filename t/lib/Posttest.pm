@@ -33,7 +33,8 @@ sub set_postlimit {
     logina();
     $t->post_ok('/options/admin/boardsettings/postlimit',
         form => { optionvalue => $Postlimit })
-      ->status_is(200);
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200);
     info('Beitragsanzahl geändert');
 }
 

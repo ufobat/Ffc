@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 523;
+use Test::More tests => 528;
 use Test::Mojo;
 use Data::Dumper;
 

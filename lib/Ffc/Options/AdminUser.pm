@@ -13,16 +13,16 @@ sub useradmin {
     my $overok   = $c->param('overwriteok');
 
     unless ( $username ) {
-        $c->set_error('Benutzername nicht angegeben');
-        return $c->options_form();
+        $c->set_error_f('Benutzername nicht angegeben');
+        return $c->redirect_to('options_form');
     }
     if ( $username !~ m/\A$Ffc::Usrqr\z/xmso) {
-        $c->set_error('Benutzername passt nicht (muss zwischen 2 und 32 Buchstaben haben)');
-        return $c->options_form();
+        $c->set_error_f('Benutzername passt nicht (muss zwischen 2 und 32 Buchstaben haben)');
+        return $c->redirect_to('options_form');
     }
     if ( $newpw1 and $newpw2 and $newpw1 ne $newpw2 ) {
-        $c->set_error('Passworte stimmen nicht überein');
-        return $c->options_form();
+        $c->set_error_f('Passworte stimmen nicht überein');
+        return $c->redirect_to('options_form');
     }
 
     my $exists = $c->dbh->selectall_arrayref(
@@ -30,12 +30,12 @@ sub useradmin {
         , undef, $username)->[0]->[0];
 
     if ( $exists and not $overok ) {
-        $c->set_error('Benutzer existiert bereits, das Überschreiben-Häkchen ist allerdings nicht gesetzt');
-        return $c->options_form();
+        $c->set_error_f('Benutzer existiert bereits, das Überschreiben-Häkchen ist allerdings nicht gesetzt');
+        return $c->redirect_to('options_form');
     }
     unless ( $exists or ( $newpw1 and $newpw2 ) ) {
-        $c->set_error('Neuen Benutzern muss ein Passwort gesetzt werden');
-        return $c->options_form();
+        $c->set_error_f('Neuen Benutzern muss ein Passwort gesetzt werden');
+        return $c->redirect_to('options_form');
     }
 
     my @pw = ( $newpw1 ? $c->hash_password($newpw1) : () );
@@ -44,16 +44,16 @@ sub useradmin {
         $sql .= ', password=?' if @pw;
         $sql .= ' WHERE UPPER(name)=UPPER(?)';
         $c->dbh->do($sql, undef, $isactive, $isadmin, @pw, $username);
-        $c->set_info(qq~Benutzer "$username" geändert~);
+        $c->set_info_f(qq~Benutzer "$username" geändert~);
     }
     else {
         $c->dbh->do(
             'INSERT INTO users (name, password, active, admin) VALUES (?,?,?,?)'
             , undef, $username, @pw, $isactive, $isadmin);
-        $c->set_info(qq~Benutzer "$username" angelegt~);
+        $c->set_info_f(qq~Benutzer "$username" angelegt~);
     }
 
-    $c->options_form();
+    $c->redirect_to('options_form');
 }
 
 1;

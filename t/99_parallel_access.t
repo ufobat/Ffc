@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 369;
+use Test::More tests => 474;
 use File::Spec::Functions qw(splitdir);
 use Test::Mojo;
 

@@ -45,20 +45,20 @@ sub boardsettingsadmin {
 
     my ( $tit, $re, $rechk, $err ) = @{ ( grep {$optkey eq $_->[0]} @Settings )[0] }[1,2,3,7];
     unless ( $tit ) {
-        $c->options_form();
+        $c->redirect_to('options_form');
         return; # theoretisch nicht möglich laut routen
     }
     if ( ( $rechk and $optvalue =~ $re ) or ( not $rechk and ( $optvalue eq '1' or not $optvalue ) ) ) {
         $c->dbh->do('UPDATE "config" SET "value"=? WHERE "key"=?',
             undef, $optvalue, $optkey);
         $c->configdata->{$optkey} = $optvalue;
-        $c->set_info("$tit geändert");
+        $c->set_info_f("$tit geändert");
     }
     else {
-        $c->set_error($err);
+        $c->set_error_f($err);
     }
 
-    $c->options_form();
+    $c->redirect_to('options_form');
 }
 
 sub set_starttopic {
@@ -69,12 +69,12 @@ sub set_starttopic {
         $c->dbh->do(q~UPDATE "config" SET "value"=? WHERE "key"='starttopic'~,
             undef, $tid);
         $c->configdata->{starttopic} = $tid;
-        $c->set_info("Startseitenthema geändert");
+        $c->set_info_f("Startseitenthema geändert");
     }
     else {
-        $c->set_error('Fehler beim Setzen der Startseite');
+        $c->set_error_f('Fehler beim Setzen der Startseite');
     }
-    $c->options_form();
+    $c->redirect_to('options_form');
 }
 
 1;

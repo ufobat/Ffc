@@ -68,8 +68,10 @@ sub test_dbh {
 
 sub test_error {
     my ( $t, $error ) = @_;
-    $t->content_like(
-        qr~<div\s+class="error">\s*<h1>Fehler</h1>\s*<p>\s*$error\s*</p>\s*</div>~);
+    $t->content_like(qr~<div\s+class="error">\s*<h1>Fehler</h1>\s*<p>\s*$error\s*</p>\s*</div>~);
+    unless ( $t->success ) {
+       diag(Dumper([caller(1)])); 
+    }
 }
 
 sub test_info {
@@ -95,6 +97,8 @@ sub test_add_users {
         my $pass = shift;
         last unless $user and $pass;
         $t->post_ok('/options/admin/useradd', form => {username => $user, newpw1 => $pass, newpw2 => $pass, active => 1})
+          ->status_is(302)->header_is(Location => '/options/form')->content_is('');
+        $t->get_ok('/options/form')->status_is(200)
           ->content_like(qr~Benutzer \&quot;$user\&quot; angelegt~);
         $cnt++;
     }
