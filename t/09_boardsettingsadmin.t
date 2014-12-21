@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 579;
+use Test::More tests => 808;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -66,7 +66,8 @@ for my $s ( @Settings ) {
       ->content_unlike(qr~<input type="$itype" name="optionvalue" value="[^"]*" (?:checked="checked")? />~)
       ->content_like(qr'active activeoptions">Einstellungen<');
     $t->post_ok("/options/admin/boardsettings/$key")
-      ->status_is(200)
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr'active activeoptions">Einstellungen<');
     error('Nur Administratoren dürfen das');
     
@@ -80,7 +81,8 @@ for my $s ( @Settings ) {
     my $url = "/options/admin/boardsettings/$key";
     my $info = "$title geändert";
     $t->post_ok($url)
-      ->status_is(200)
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr'active activeoptions">Einstellungen<');
     if ( $key =~ m/favicon|backgroundcolor|fixbackgroundcolor/xmso ) {
         info($info);
@@ -91,14 +93,16 @@ for my $s ( @Settings ) {
     for my $i ( @$badv ) {
         note qq~testing with bad value "$i"~;
         $t->post_ok($url, form => { optionvalue => $i } )
-          ->status_is(200)
+          ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+        $t->get_ok('/options/form')->status_is(200)
           ->content_like(qr'active activeoptions">Einstellungen<');
         error($error);
     }
     for my $i ( @$goodv ) {
         note qq~testing with good value "$i"~;
         $t->post_ok($url, form => { optionvalue => $i } )
-          ->status_is(200)
+          ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+        $t->get_ok('/options/form')->status_is(200)
           ->content_like(qr'active activeoptions">Einstellungen<');
         info($info);
         $t->get_ok('/config')
