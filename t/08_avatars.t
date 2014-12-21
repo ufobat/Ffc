@@ -9,7 +9,7 @@ use File::Temp qw~tempfile tempdir~;
 use File::Spec::Functions qw(catfile catdir splitdir);
 
 use Test::Mojo;
-use Test::More tests => 247;
+use Test::More tests => 317;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
@@ -73,7 +73,8 @@ sub file_db_ok {
 {
     note 'test without file attachement';
     $t->post_ok('/avatar/upload')
-      ->status_is(200);
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200);
     error('Kein Avatarbild angegeben.');
     is file_db_ok('', $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
@@ -83,7 +84,8 @@ sub file_db_ok {
 {
     note 'test without file as parameter';
     $t->post_ok('/avatar/upload', form => { avatarfile => 'test' })
-      ->status_is(200);
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200);
     error('Keine Datei als Avatarbild angegeben.');
     is file_db_ok('test', $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
@@ -102,7 +104,8 @@ sub file_db_ok {
                 content_type => 'image/png',
             }
         }
-    )->status_is(200);
+    )->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200);
     error('Datei ist zu klein, sollte mindestens 100B groß sein.');
     is file_db_ok($fn, $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
@@ -121,7 +124,8 @@ sub file_db_ok {
                 content_type => 'image/png',
             }
         }
-    )->status_is(200);
+    )->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200);
     error('Datei ist zu groß, darf maximal 150Kb groß sein.');
     is file_db_ok($fn, $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
@@ -136,7 +140,8 @@ sub file_db_ok {
                 content_type => 'image/png',
             }
         }
-    )->status_is(200);
+    )->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200);
     error('Dateiname fehlt.');
     is file_db_ok('', $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
@@ -152,7 +157,8 @@ sub file_db_ok {
                 content_type => 'image/png',
             }
         }
-    )->status_is(200);
+    )->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200);
     error('Dateiname ist zu kurz, muss mindestens 6 Zeichen inklusive Dateiendung enthalten.');
     is file_db_ok('', $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
@@ -169,7 +175,8 @@ sub file_db_ok {
                 content_type => 'image/png',
             }
         }
-    )->status_is(200);
+    )->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200);
     error('Dateiname ist zu kurz, muss mindestens 6 Zeichen inklusive Dateiendung enthalten.');
     is file_db_ok($fn, $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
@@ -186,7 +193,8 @@ sub file_db_ok {
                 content_type => 'image/png',
             }
         }
-    )->status_is(200);
+    )->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200);
     error('Dateiname ist zu lang, darf maximal 80 Zeichen lang sein.');
     is file_db_ok($fn, $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
@@ -203,7 +211,8 @@ sub file_db_ok {
                 content_type => 'image/png',
             }
         }
-    )->status_is(200);
+    )->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200);
     error('Dateiname darf nicht mit einem &quot;.&quot; beginnen.');
     is file_db_ok($fn, $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
@@ -222,7 +231,8 @@ sub file_db_ok {
                 content_type => 'image/png',
             }
         }
-    )->status_is(200);
+    )->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200);
     error('Datei ist keine Bilddatei, muss PNG, JPG, BMP oder GIF sein.');
     is file_db_ok($fn, $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
@@ -239,7 +249,8 @@ sub file_db_ok {
                 content_type => 'image/png',
             }
         }
-    )->status_is(200);
+    )->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200);
     error('Dateiname darf weder &quot;..&quot; noch &quot;/&quot; enthalten.');
     is file_db_ok($fn, $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
@@ -256,7 +267,8 @@ sub file_db_ok {
                 content_type => 'image/png',
             }
         }
-    )->status_is(200);
+    )->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200);
     error('Dateiname darf weder &quot;..&quot; noch &quot;/&quot; enthalten.');
     is file_db_ok($fn, $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
@@ -322,7 +334,8 @@ sub check_file_online {
                 content_type => 'image/png',
             }
         }
-    )->status_is(200);
+    )->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200);
     info('Avatarbild aktualisiert.');
     ok !file_ok($fn, $content, $user1), 'file in file system ok';
     ok !file_db_ok($fn, $user1), 'file in database';
@@ -345,7 +358,8 @@ sub check_file_online {
                 content_type => 'image/png',
             }
         }
-    )->status_is(200);
+    )->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200);
     info('Avatarbild aktualisiert.');
     ok !file_ok($fn, $content, $user1), 'file in file system ok';
     ok !file_db_ok($fn, $user1), 'file in database';
@@ -369,7 +383,8 @@ sub check_file_online {
                 content_type => 'image/png',
             }
         }
-    )->status_is(200);
+    )->status_is(302)->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200);
     info('Avatarbild aktualisiert.');
     ok !file_ok($fn, $content, $user2), 'file in file system ok';
     ok !file_db_ok($fn, $user2), 'file in database';

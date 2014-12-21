@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 104;
+use Test::More tests => 118;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 
@@ -46,7 +46,9 @@ login2();
 check_list($user2, 3, $admin, 1, 1, $user1, 2, 1);
 
 logina();
-$t->post_ok("/options/admin/usermod/$user1", form => {active => 0, overwriteok => 1})->status_is(200);
+$t->post_ok("/options/admin/usermod/$user1", form => {active => 0, overwriteok => 1})->status_is(302)
+  ->content_is('')->header_is(Location => '/options/form');
+$t->get_ok('/options/form')->status_is(200);
 Testinit::test_info($t, qq~Benutzer \&quot;$user1\&quot; geändert~);
 
 check_list($admin, 1, $user1, 2, 0, $user2, 3, 1);
