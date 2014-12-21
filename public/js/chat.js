@@ -249,7 +249,7 @@ ffcdata.init = function() {
             isShift = true;
         }
 
-        if ( e.keyCode == 13 && !isShift ) {
+        if ( e.keyCode == 13 ) {
             // console.log('enter-key send triggered');
             var msg = document.getElementById('msg');
             var msgval = msg.value;
@@ -265,7 +265,7 @@ ffcdata.init = function() {
             isShift = false;
         }
 
-        if ( e.keyCode == 13 && !isShift ) {
+        if ( e.keyCode == 13 ) {
             // console.log('enter-key send done');
             cleanmsg();
         }
