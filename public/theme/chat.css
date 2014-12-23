@@ -2,7 +2,7 @@
     padding: 0px;
     margin: 0px;
     font-size: 10px;
-    font-family: monospace;
+    font-family: sans-serif;
     color: black;
 }
 body {
@@ -69,7 +69,7 @@ button:hover, #refreshtime:hover {
     cursor: pointer;
 }
 button {
-    width: 54px;
+    width: 72px;
 }
 button:active, #refreshtime:active {
     border-color: black;
