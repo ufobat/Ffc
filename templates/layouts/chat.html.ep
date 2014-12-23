@@ -18,7 +18,6 @@
     <%= javascript '/js/chat.js' %>
   </head>
   <body>
-   <h1 class="titlebanner"><%= $title %> - Chat</h1>
    <!-- Angemeldet als "<%= session()->{user} %>" !-->
 
 %= content
