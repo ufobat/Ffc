@@ -1,21 +1,28 @@
 % layout 'chat';
-   <div id="msglog"></div>
-   <div id="userlist"></div>
-   <br />
-   <textarea id="msg" name="msg"></textarea>
-   <div id="buttonlist">
-    <button name="send" id="send">Senden</button>
-    <button name="reload" id="reload">Laden</button>
-    <select name="refreshtime" id="refreshtime">
-     <option value="1">1 Sekunde</option>
-     <option value="15">15 Sekunden</option>
-     <option value="30">30 Sekunden</option>
-     <option value="60">1 Minute</option>
-     <option value="120">2 Minuten</option>
-     <option value="180">3 Minuten</option>
-     <option value="300">5 Minuten</option>
-     <option value="420">7 Minuten</option>
-     <option value="600">10 Minuten</option>
-     <option value="900">15 Minuten</option>
-    </select>
-   </div>
+   <table>
+    <tr>
+     <td><div id="msglog"></div></td>
+     <td><div id="userlist"></div></td>
+    </tr>
+    <tr>
+     <td><textarea id="msg" name="msg"></textarea>
+     <td>
+      <div id="buttonlist">
+       <button name="send" id="send">Senden</button>
+       <button name="reload" id="reload">Laden</button>
+       <select name="refreshtime" id="refreshtime">
+        <option value="1">1 Sekunde</option>
+        <option value="15">15 Sekunden</option>
+        <option value="30">30 Sekunden</option>
+        <option value="60">1 Minute</option>
+        <option value="120">2 Minuten</option>
+        <option value="180">3 Minuten</option>
+        <option value="300">5 Minuten</option>
+        <option value="420">7 Minuten</option>
+        <option value="600">10 Minuten</option>
+        <option value="900">15 Minuten</option>
+       </select>
+      </div>
+     </td>
+    </tr>
+   </table>
