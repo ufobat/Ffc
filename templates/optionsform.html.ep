@@ -14,7 +14,7 @@
 </div>
 <div class="postbox options">
     <h1>Automatisches Neuladen der Forenwebseite</h1>
-    <p>(Hier kann die Anzahl der Minuten eingestellt werden, aller wievieler sich die Webseite aktualisiert, wenn sie im Hintergrund ist, stellt man &quot;0&quot; ein, so aktualisiert sich die Seite nie von alleine neu, standardmäßig sind hier 3 Minuten eingestellt)</p>
+    <p>(Hier kann die Anzahl der Minuten eingestellt werden, aller wievieler sich die Webseite (der Teil mit dem Forum, für den Chat muss die Auswahlbox im Chatfenster unabhängig hiervon verwendet werden) aktualisiert, wenn sie im Hintergrund ist, stellt man &quot;0&quot; ein, so aktualisiert sich die Seite nie von alleine neu, standardmäßig sind hier 3 Minuten eingestellt)</p>
     <form action="<%= url_for 'set_autorefresh' %>#autorefresh" title="Automatisches Neuladen" method="POST">
         <input type="number" name="refresh" value="<%= session()->{autorefresh} %>" /> Minuten,
         <button type="submit" class="linkalike">Zeitraum ändern</button>
