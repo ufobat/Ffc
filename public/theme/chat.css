@@ -15,6 +15,7 @@ body {
 }
 table {
     border-collapse: collapse;
+    border: none;
 }
 div, textarea, button, select {
     border: 1px gray solid;
