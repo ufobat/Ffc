@@ -96,3 +96,11 @@ option {
 #userlist {
     background: gainsboro;
 }
+.titlebanner {
+    background: inherit;
+    font-size: 1em;
+    padding: 0;
+    text-align: center;
+    border: none;
+}
+
