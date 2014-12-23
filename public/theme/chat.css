@@ -1,21 +1,21 @@
 * {
     padding: 0px;
     margin: 0px;
-    font-size: 10px;
     font-family: sans-serif;
     color: black;
 }
 body {
-    padding: 4px;
     background: gainsboro;
     overflow: hidden;
-    width: 620px;
-    height: 376px;
-    margin: auto;
+    width: 50em;
+    height: 30em;
+    margin: 0 auto;
+    padding: .5em auto;
 }
 table {
     border-collapse: collapse;
     border: none;
+    margin: 0 auto;
 }
 div, textarea, button, select {
     border: 1px gray solid;
@@ -25,33 +25,29 @@ div, textarea {
     overflow: auto;
 }
 #msglog, #msg {
-    width: 400px;
-    min-width: 400px;
-    max-width: 400px;
+    width: 30em;
+    min-width: 30em;
+    max-width: 30em;
 }
 #userlist, #buttonlist {
-    width: 200px;
+    width: 15em;
 }
 #msg, #buttonlist {
-    height: 60px;
-    min-height: 60px;
+    height: 5em;
+    min-height: 5em;
 }
 #buttonlist {
-    max-height: 60px;
+    max-height: 60em;
 }
 #userlist, #msglog {
-    height: 300px;
+    height: 20em;
 }
 #msglog {
     background: whitesmoke;
 }
-#userlist, #msg, #msglog {
-    padding: 1px;
-    margin: 1px;
-}
-#buttonlist, button {
-    padding: 0;
-    margin: 1px;
+#buttonlist, #userlist, #msg, #msglog {
+    padding: .25em;
+    margin: .25em;
 }
 #buttonlist {
     vertical-align: top;
@@ -60,7 +56,7 @@ div, textarea {
 button, #refreshtime {
     background: silver;
     border-color: dimgray;
-    height: 20px;
+    height: 1.5em;
     text-align: center;
 }
 button:hover, #refreshtime:hover {
@@ -69,7 +65,7 @@ button:hover, #refreshtime:hover {
     cursor: pointer;
 }
 button {
-    width: 72px;
+    width: 7.5em;
 }
 button:active, #refreshtime:active {
     border-color: black;
@@ -81,8 +77,8 @@ option {
     cursor: pointer;
 }
 #refreshtime {
-    margin-top: 18px;
-    width: 118px;
+    margin-top: .75em;
+    width: 15em;
 }
 #msg:hover {
     border-color: dimgray;
@@ -92,7 +88,7 @@ option {
 }
 #userlist .timestamp {
     color: gray;
-    margin-left: 10px;
+    margin-left: 1.5em;
 }
 #userlist .username {
     white-space: nowrap;
