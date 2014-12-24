@@ -52,12 +52,14 @@ div, textarea {
 #buttonlist {
     vertical-align: top;
     border-color: transparent;
+    margin-top: -0.5em;
 }
 button, #refreshtime {
     background: silver;
     border-color: dimgray;
     height: 1.5em;
-    text-align: center;
+    width: 8em;
+    margin-top: .5em;
 }
 button:hover, #refreshtime:hover {
     border-color: silver;
@@ -65,7 +67,10 @@ button:hover, #refreshtime:hover {
     cursor: pointer;
 }
 button {
-    width: 7.5em;
+    text-align: center;
+}
+#refreshtime {
+    text-align: left;
 }
 button:active, #refreshtime:active {
     border-color: black;
@@ -75,10 +80,6 @@ button:active, #refreshtime:active {
 option {
     background: white;
     cursor: pointer;
-}
-#refreshtime {
-    margin-top: .75em;
-    width: 15em;
 }
 #msg:hover {
     border-color: dimgray;

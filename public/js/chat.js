@@ -222,6 +222,17 @@ ffcdata.init = function() {
     };
 
     /************************************************************************
+     *** Message-Log leeren                                               ***
+     ************************************************************************/
+    var clrscr = function() {
+        document.getElementById('msglog').innerHTML = '';
+    };
+    document.getElementById('clrscr').onclick = function(e) {
+        // console.log('clear message log');
+        clrscr();
+    };
+
+    /************************************************************************
      *** Absenden                                                         ***
      ************************************************************************/
     var sendit = function() {

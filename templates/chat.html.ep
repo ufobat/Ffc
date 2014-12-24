@@ -23,6 +23,7 @@
         <option value="600">10 Minuten</option>
         <option value="900">15 Minuten</option>
        </select>
+       <button name="clrscr" id="clrscr">Log leeren</button>
       </div>
      </td>
     </tr>
