@@ -1,3 +1,6 @@
 % if ( $backgroundcolor ) {
     <style type="text/css">body { background-color: <%= $backgroundcolor %> }</style>
 % }
+% if ( configdata()->{customcss} ) {
+    <%= stylesheet configdata()->{customcss} %>
+% }

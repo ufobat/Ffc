@@ -36,6 +36,10 @@ our @Settings = (
         'Link zum Favoritenicon ändern',
         'Dieser Link kann statt des Standard-Favoritenicons verwendet werden, welches verwendet wird, sollte diese Option leer gelassen werden',
         'Die URL zum Favoritenicon darf höchstens 256 Zeichen lang sein' ],
+    [ customcss => 'Eigene CSS-Stylesheet-Datei', qr(\A.{0,256}\z)xmso, 1, 'url',
+        'Link zu einer CSS-Datei für eigene Stylesheet-Angaben ändern',
+        'Dieser Link wird verwendet, um, falls da was angegeben ist, zusätzlich zum Foren-Stylesheet eine weitere Datei einzubinden, in der man mit eigenen CSS-Angaben das Aussehen des Forums noch sehr viel detaillierter anpassen kann',
+        'Die URL zur CSS-Datei darf höchstens 256 Zeichen lang sein' ],
 );
 
 sub boardsettingsadmin {

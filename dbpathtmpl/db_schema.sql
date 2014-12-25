@@ -93,5 +93,7 @@ INSERT INTO "config" ("key", "value")
 INSERT INTO "config" ("key", "value") 
   VALUES ('favicon','');
 INSERT INTO "config" ("key", "value") 
+  VALUES ('customcss','');
+INSERT INTO "config" ("key", "value") 
   VALUES ('starttopic','0');
 
