@@ -126,7 +126,7 @@ sub file_db_ok {
         }
     )->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200);
-    error('Datei ist zu groß, darf maximal 150Kb groß sein.');
+    error('Datei ist zu groß, darf maximal 150000B groß sein.');
     is file_db_ok($fn, $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
     ok !@dirlist, 'no files in storage directory';

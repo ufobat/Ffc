@@ -7,6 +7,7 @@ CREATE TABLE "users" (
   "email" varchar(1024) NOT NULL DEFAULT '',
   "newsmail" tinyint(1) NOT NULL DEFAULT '1',
   "avatar" varchar(128) NOT NULL DEFAULT '',
+  "avatartype" varchar(16) NOT NULL DEFAULT '',
   "admin" tinyint(1) NOT NULL DEFAULT '0',
   "bgcolor" varchar(24) NOT NULL DEFAULT '',
   "autorefresh" integer NOT NULL DEFAULT 3,

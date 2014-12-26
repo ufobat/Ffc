@@ -7,6 +7,7 @@ use DBI;
 use File::Spec::Functions qw(splitdir catdir);
 use Digest::SHA 'sha512_base64';
 use Ffc::Plugin::Config::Lists;
+use Ffc::Plugin::Config::Uploads;
 
 our %Defaults = (
     favicon         => '/theme/img/favicon.png',
@@ -72,11 +73,12 @@ sub register {
 
     $app->helper( hash_password  => 
         sub { sha512_base64 $_[1], $secconfig->{cryptsalt} } );
-    $app->helper( counting     => \&_counting );
-    $app->helper( newpostcount => \&_newpostcount );
-    $app->helper( newmsgscount => \&_newmsgscount );
+    $app->helper( counting           => \&_counting );
+    $app->helper( newpostcount       => \&_newpostcount );
+    $app->helper( newmsgscount       => \&_newmsgscount );
     $app->helper( generate_topiclist => \&_generate_topiclist );
-    $app->helper( generate_userlist => \&_generate_userlist );
+    $app->helper( generate_userlist  => \&_generate_userlist );
+    $app->helper( image_upload       => \&_image_upload );
 
     $app->hook( before_render => sub { 
         my $c = $_[0];
