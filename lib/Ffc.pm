@@ -20,17 +20,20 @@ sub startup {
 
 sub _install_routes {
     my $app = shift;
-    my $l = Ffc::Auth::install_routes($app->routes);
+    my $r = $app->routes;
+
+    use Ffc::Favicon;
+    Ffc::Favicon::install_routes($r);
+
+    my $l = Ffc::Auth::install_routes($r);
     use Ffc::Options;
     use Ffc::Auth;
     use Ffc::Avatars;
-    use Ffc::Favicon;
     use Ffc::Forum;
     use Ffc::Pmsgs;
     use Ffc::Notes;
     use Ffc::Chat;
     Ffc::Avatars::install_routes($l);
-    Ffc::Favicon::install_routes($l);
     Ffc::Options::install_routes($l);
     Ffc::Forum::install_routes($l);
     Ffc::Pmsgs::install_routes($l);

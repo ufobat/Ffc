@@ -136,7 +136,7 @@
 <div class="suboption boardsetting_form">
     <a name="faviconuploadform"></a>
     <h2>Upload eines eigenen Favoriten-Icons</h2>
-    <p>(Hier kann ein neues Favoriten-Icon hochgeladen werden, welches dann in der Browser-Tableiste oder in den Lesezeichen des Browsers verwendet wird)</p>
+    <p>(Hier kann ein neues Favoriten-Icon hochgeladen werden, welches dann in der Browser-Tableiste oder in den Lesezeichen des Browsers verwendet wird. Das originale Icon findest du <a href="<%= url_for '/theme/img/favicon.png' %>" title="Standard-Favoriten-Icon">hier</a>.)</p>
     <p><a href="<%= url_for 'favicon_show' %>"><img src="<%= url_for 'favicon_show' %>" alt="Derzeitiges Favoriten-Icon" /></a> (derzeitiges Favoriten-Icon)</p>
     <form action="<%= url_for 'favicon_upload' %>#faviconuploadform" enctype="multipart/form-data" method="POST">
         <input name="faviconfile" type="file" accept="image/*" />

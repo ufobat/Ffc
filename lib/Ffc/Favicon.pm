@@ -6,6 +6,7 @@ use Mojo::Util 'quote';
 use Encode qw( encode decode_utf8 );
 
 sub install_routes {
+    # Obacht! Alle Routen hier drin funktionieren ohne Anmeldung, also keinen Scheiß hier bauen!
     $_[0]->route('/favicon/show')
       ->via('get')
       ->to('favicon#favicon_show')
