@@ -85,6 +85,7 @@ Features
   * Favoritenicon und Webseitentitel
   * Anzahl der gleichzeitig angezeigten Überschriften auf der Startseite und damit auch im Foren-Menü-Popup sowie Anzahl der Beiträge auf einer Seite
   * Anzahl der Buchstaben die von einer URL oder von einem Thema im Foren-Menü-Popup dargestellt werden (URL-Shortener), die vollständige URL wird über ein Tooltip dargestellt
+  * Es kann außerdem eine URL zu einer eigenen CSS-Stylesheet-Datei angegeben werden, welche dann nach allen anderen Stylesheetvorgaben eingebunden wird in die Webseite und über die im Bedarfsfall sämtliche Anzeigeeinstellungen für die Webseite überschrieben oder verändert werden können
 * Foreneinstellungen, die von Benutzern vorgenommen werden können:
   * Passwortwechsel
   * Email-Adresse angeben (diese kann vom Administrator lediglich ausserhalb des Forums verwendet werden)
