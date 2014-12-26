@@ -27,10 +27,11 @@ sub avatar_show {
     my $file = $c->dbh->selectall_arrayref(
         'SELECT avatar, avatartype FROM users WHERE id=?'
         , undef, $u);
-    if ( @$file and ($filename = $file->[0]->[0]) and ($filetype = $file->[0]->[1]) ) {
-        $filename = quote encode 'UTF-8', $filename. ($filetype ? ".$filetype" : '');
-        $filetype = '*' unless $filetype;
+    if ( @$file and ($filename = $file->[0]->[0]) ) {
+        $filename = $filename . ($file->[0]->[1] ? ".$file->[0]->[1]" : '');
+        $filetype = $file->[0]->[1] || $filename =~ m/\.(png|jpe?g|bmp|gif)\z/xmiso ? lc($1) : '*';
         $file = catfile @{$c->datapath}, 'avatars', $filename;
+        $filename = quote encode 'UTF-8', $filename;
     }
     else {
         $file = '';
