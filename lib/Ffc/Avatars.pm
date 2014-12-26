@@ -4,7 +4,6 @@ use Mojo::Base 'Mojolicious::Controller';
 use File::Spec::Functions qw(catfile);
 use Mojo::Util 'quote';
 use Encode qw( encode decode_utf8 );
-use Ffc::Options;
 
 our $DefaultAvatar = catfile 'theme', 'img', 'avatar.png';
 
@@ -28,8 +27,7 @@ sub avatar_show {
         'SELECT avatar, avatartype FROM users WHERE id=?'
         , undef, $u);
     if ( @$file and ($filename = $file->[0]->[0]) ) {
-        $filename = $filename . ($file->[0]->[1] ? ".$file->[0]->[1]" : '');
-        $filetype = $file->[0]->[1] || $filename =~ m/\.(png|jpe?g|bmp|gif)\z/xmiso ? lc($1) : '*';
+        $filetype = $file->[0]->[1] || ( $filename =~ m/\.(png|jpe?g|bmp|gif)\z/xmiso ? lc($1) : '*' );
         $file = catfile @{$c->datapath}, 'avatars', $filename;
         $filename = quote encode 'UTF-8', $filename;
     }
@@ -56,7 +54,7 @@ sub avatar_upload {
     my ( $filename, $filetype ) 
         = $c->image_upload(
             'avatarfile', 'Avatarbild', 100, 150000, 8, 80, 
-            sub{ return [ 'avatars', ($_[0] ne 'avatarfile' ? $u . '_' . $_[0] : '') ] });
+            sub{ return [ 'avatars', $u . '_' . $_[0] ] });
     return $c->redirect_to('options_form')
         unless $filename;
 

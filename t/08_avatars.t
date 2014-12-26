@@ -62,11 +62,12 @@ sub file_ok {
 sub file_db_ok {
     my ( $filename, $user ) = @_;
     my $r = $dbh->selectall_arrayref(
-        'SELECT avatar FROM users WHERE UPPER(name)=UPPER(?)'
+        'SELECT avatar, avatartype FROM users WHERE UPPER(name)=UPPER(?)'
         , undef, $user);
     return 'nouser' unless $r and 'ARRAY' eq ref $r;
     return 'nofileindb' unless $r->[0]->[0];
     return 'wrongfileindb' if $r->[0]->[0] ne "${user}_$filename";
+    return 'wronfiletypeindb' if $r->[0]->[1] ne 'png';
     return;
 }
 
@@ -153,13 +154,13 @@ sub file_db_ok {
     $t->post_ok('/avatar/upload', form => {
             avatarfile => {
                 file => Mojo::Asset::Memory->new->add_chunk('a' x 10000),
-                filename => '',
+                filename => 'a',
                 content_type => 'image/png',
             }
         }
     )->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200);
-    error('Dateiname ist zu kurz, muss mindestens 6 Zeichen inklusive Dateiendung enthalten.');
+    error('Dateiname ist zu kurz, muss mindestens 8 Zeichen inklusive Dateiendung enthalten.');
     is file_db_ok('', $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
     ok !@dirlist, 'no files in storage directory';
@@ -177,7 +178,7 @@ sub file_db_ok {
         }
     )->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200);
-    error('Dateiname ist zu kurz, muss mindestens 6 Zeichen inklusive Dateiendung enthalten.');
+    error('Dateiname ist zu kurz, muss mindestens 8 Zeichen inklusive Dateiendung enthalten.');
     is file_db_ok($fn, $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
     ok !@dirlist, 'no files in storage directory';

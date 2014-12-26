@@ -1,6 +1,7 @@
 package Ffc::Plugin::Config;
 use 5.010;
 use strict; use warnings; use utf8;
+use File::Spec::Functions qw(catfile);
 
 sub _image_upload {
     my ( $c, $param, $name, $min_s, $max_s, $min_l, $max_l, $filenamesub ) = @_;
@@ -26,7 +27,7 @@ sub _image_upload {
 
     my $filename = $file->filename;
 
-    unless ( $filename ) {
+    unless ( $filename and $filename ne $param ) {
         $c->set_error_f('Dateiname fehlt.');
         return;
     }
@@ -60,7 +61,7 @@ sub _image_upload {
         return;
     }
 
-    return $filename, $filetype;
+    return $path->[-1], $filetype;
 }
 
 1;
