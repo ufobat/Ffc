@@ -73,7 +73,7 @@ note 'test /config with custom settings';
     sessiontimeout => 21,
     urlshorten => 4,
     backgroundcolor => 'Hintergrundfarbe',
-    favicon => 'Favoritenicon-Link',
+    customcss => 'CSS-Datei',
 );
 
 Testinit::test_login($t, $admin, $apass);

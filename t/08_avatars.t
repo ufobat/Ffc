@@ -234,7 +234,7 @@ sub file_db_ok {
         }
     )->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200);
-    error('Datei ist keine Bilddatei, muss PNG, JPG, BMP oder GIF sein.');
+    error('Datei ist keine Bilddatei, muss PNG, JPG, BMP, ICO oder GIF sein.');
     is file_db_ok($fn, $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
     ok !@dirlist, 'no files in storage directory';

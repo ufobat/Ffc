@@ -6,15 +6,10 @@ use Mojo::Util 'quote';
 use Encode qw( encode decode_utf8 );
 
 sub install_routes {
-    my $p = $_[0]->bridge('/favicon')->name('favicons_bridge');
-    $p->route('/show')
+    $_[0]->route('/favicon/show')
       ->via('get')
       ->to('favicon#favicon_show')
       ->name('favicon_show');
-    $p->route('/upload')
-      ->via('post')
-      ->to('favicon#favicon_upload')
-      ->name('favicon_upload');
 }
 
 sub favicon_show {
@@ -30,6 +25,20 @@ sub favicon_show {
     $c->res->content->headers($headers);
     $c->res->content->asset($file);
     $c->rendered(200);
+}
+
+sub favicon_upload {
+    my $c = shift;
+    my ( $filename, $filetype ) 
+        = $c->image_upload(
+            'faviconfile', 'Favoriten-Icon', 100, 50000, 8, 80, 
+            sub{ return [ 'favicon' ] });
+    return $c->redirect_to('options_form')
+        unless $filename;
+
+    $c->dbh->do('UPDATE config SET value=? WHERE key=?', undef, $filetype, 'favicontype');
+    $c->set_info_f('Favoriten-Icon aktualisiert.');
+    $c->redirect_to('options_form');
 }
 
 1;

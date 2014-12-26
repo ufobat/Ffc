@@ -10,7 +10,6 @@ use Ffc::Plugin::Config::Lists;
 use Ffc::Plugin::Config::Uploads;
 
 our %Defaults = (
-    favicon         => '/theme/img/favicon.png',
     title           => 'Ffc Forum',
     cookiename      => 'Ffc_Forum',
     urlshorten      => 30,
@@ -84,8 +83,8 @@ sub register {
         my $c = $_[0];
         my $s = $c->session;
         $c->stash(
-            backgroundcolor => $s->{backgroundcolor} || $config->{backgroundcolor},
-            map( {;$_ => $config->{$_} || $Defaults{$_}} qw(favicon title) ),
+            backgroundcolor => ( $s->{backgroundcolor} || $config->{backgroundcolor} ),
+            title           => ( $config->{title}      || $Defaults{title}           ),
         );
     });
 

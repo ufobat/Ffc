@@ -44,8 +44,8 @@ sub _image_upload {
         $c->set_error_f('Dateiname darf nicht mit einem "." beginnen.');
         return;
     }
-    if ( $filename !~ m/\.(png|jpe?g|bmp|gif)\z/ximso ) {
-        $c->set_error_f('Datei ist keine Bilddatei, muss PNG, JPG, BMP oder GIF sein.');
+    if ( $filename !~ m/\.(png|jpe?g|bmp|gif|ico)\z/ximso ) {
+        $c->set_error_f('Datei ist keine Bilddatei, muss PNG, JPG, BMP, ICO oder GIF sein.');
         return;
     }
     my $filetype = $1;

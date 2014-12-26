@@ -45,6 +45,11 @@ sub install_routes {
     $oa->post('/set_starttopic')
        ->to('options#set_starttopic')
        ->name('set_starttopic');
+
+    # Favoritenicon
+    $oa->post('/favicon')
+       ->to('favicon#favicon_upload')
+       ->name('favicon_upload');
 }
 
 1;
