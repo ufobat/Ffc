@@ -24,11 +24,13 @@ sub _install_routes {
     use Ffc::Options;
     use Ffc::Auth;
     use Ffc::Avatars;
+    use Ffc::Favicon;
     use Ffc::Forum;
     use Ffc::Pmsgs;
     use Ffc::Notes;
     use Ffc::Chat;
     Ffc::Avatars::install_routes($l);
+    Ffc::Favicon::install_routes($l);
     Ffc::Options::install_routes($l);
     Ffc::Forum::install_routes($l);
     Ffc::Pmsgs::install_routes($l);

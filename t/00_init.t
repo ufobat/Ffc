@@ -15,7 +15,7 @@ use File::Temp;
 use File::Spec::Functions qw(catfile);
 use Digest::SHA 'sha512_base64';
 
-use Test::More tests => 150;
+use Test::More tests => 174;
 
 my $script = $Testinit::Script;
 note "testing init script '$script'";
@@ -60,6 +60,7 @@ sub check_paths {
         [ qq'$testpath/avatars',          1 ],
         [ qq'$testpath/uploads',          1 ],
         [ qq'$testpath/database.sqlite3', 0 ],
+        [ qq'$testpath/favicon',          0 ],
     ) {
         my ( $p, $d ) = @$path;
         if ( $noexist ) {
@@ -131,6 +132,7 @@ sub test_path {
         qr~ok: path '$testpath/uploads' as upload allready exists~,
         qr~ok: using '$testpath/database\.sqlite3' as database store~,
         qr~ok: path '$testpath/database\.sqlite3' as database allready exists~,
+        qr~ok: using '$testpath/favicon' as favicon store~,
         qr~ok: check user and group priviledges of the data path!~,
         qr~ok: database allready existed, no admin user created~,
     );
@@ -155,6 +157,7 @@ sub test_path {
         qr~ok: using '$testpath/uploads' as upload store~,
         qr~ok: path '$testpath/uploads' as upload allready exists~,
         qr~ok: using '$testpath/database\.sqlite3' as database store~,
+        qr~ok: using '$testpath/favicon' as favicon store~,
         qr~ok: check user and group priviledges of the data path!~,
         qr~ok: initial cookiesecret, salt, admin user and password:~,
         qr~ok: cookiesecret set to random '.{32}'~,

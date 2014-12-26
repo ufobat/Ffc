@@ -19,16 +19,19 @@ die 'error: "FFC_DATA_PATH" environment variable needs to be a directory'
     unless -e -d $ENV{FFC_DATA_PATH};
 my @BasePath = splitdir $ENV{FFC_DATA_PATH};
 my $BasePath = catdir @BasePath;
-my @BaseRoot 
-    = (splitdir(File::Basename::dirname(__FILE__)),'..','dbpathtmpl');
+my @BaseRoot = splitdir File::Basename::dirname(__FILE__);
+my @DBRoot   = ( @BaseRoot, '..', 'dbpathtmpl' );
+my @FavRoot  = ( @BaseRoot, '..', 'public', 'theme', 'img' );
 
 my ( $uid, $gid ) = (stat($BasePath))[4,5];
 say "ok: using '$uid' as data path owner and '$gid' as data path group";
 
 my $AvatarPath     = catdir @BasePath, 'avatars';
 my $UploadPath     = catdir @BasePath, 'uploads';
+my $FavIconSource  = catdir @FavRoot,  'favicon.png';
+my $FavIconPath    = catdir @BasePath, 'favicon';
 my $DatabasePath   = catdir @BasePath, 'database.sqlite3';
-my $DatabaseSource = catdir @BaseRoot, 'database.sqlite3';
+my $DatabaseSource = catdir @DBRoot,   'database.sqlite3';
 
 generate_paths();
 
@@ -39,6 +42,7 @@ sub generate_paths {
         [ avatar   => $AvatarPath,   1, 0770, '',              0 ],
         [ upload   => $UploadPath,   1, 0770, '',              0 ],
         [ database => $DatabasePath, 0, 0660, $DatabaseSource, 1 ],
+        [ favicon  => $FavIconPath,  0, 0660, $FavIconSource,  0 ],
     ) {
         my ( $name, $path, $isdir, $mode, $copy, $db ) = @$d;
 
