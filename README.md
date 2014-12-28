@@ -47,7 +47,6 @@ Features
 --------
 
 ![Screenshot](https://raw.github.com/4FriendsForum/Ffc/master/public/Screenshot.png)
-![Screenshot Chat](https://raw.github.com/4FriendsForum/Ffc/master/public/Screenshot_Chat.png)
 
 * Flaches Forum (blogartige Darstellung) für alle Benutzer zugänglich
 * Benutzer werden händisch von einem Administrator angelegt und müssen sich anmelden
