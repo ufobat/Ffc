@@ -104,4 +104,7 @@ option {
     text-align: center;
     border: none;
 }
+#msglog .username {
+    color: gray;
+}
 
