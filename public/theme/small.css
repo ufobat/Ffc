@@ -9,7 +9,7 @@ body > * {
 .menuentry, .menu form {
     display: inline;
 }
-.popup, .refreshlink, .chatlink, .optionslink {
+.popup, .refreshlink, .chatlink {
     display: none;
 }
 .menu input[type="text"] {
@@ -67,9 +67,12 @@ h2 .smallfont, .functionlinks {
 .messagebox {
     padding: 0;
 }
-.messagebox * {
+.messagebox *, .suboption {
     padding: .25em .5em;
     border-width: 0 0 4px 0;
+}
+.options {
+    padding: 0;
 }
 .popup, .messagebox > div {
     box-shadow: none;
