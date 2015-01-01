@@ -1,7 +1,7 @@
         <li>
             <a href="<%= url_for $downld, fileid => $attachement->[0], @$additional_params %>" 
                title="Diesen Anhang herunterladen">
-% if ( $attachement->[2] =~ m/(?:bmp|png|jpe?g|gif)\z/ximso ) {
+% if ( $attachement->[3] ) {
                <img src="<%= url_for $downld, fileid => $attachement->[0], @$additional_params %>" title="Bildervorschau des Anhanges" alt="<%= $attachement->[2] %>"/></a>
 % } else {
                <%= $attachement->[2] %></a>

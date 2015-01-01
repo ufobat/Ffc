@@ -55,7 +55,10 @@ CREATE TABLE "lastseenmsgs" (
 CREATE TABLE "attachements" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
   "postid" int(11) NOT NULL,
-  "filename" varchar(256)
+  "filename" varchar(256),
+  "content_type" varchar(128),
+  "isimage" tinyint(1) NOT NULL DEFAULT '0',
+  "inline" tinyint(1) NOT NULL DEFAULT '0'
 );
 
 CREATE TABLE "chat" (

@@ -34,7 +34,6 @@ sub _upload_post_do {
             return _redirect_to_show($c);
         }
     }
-    
     unless ( $file ) {
         $c->set_error_f('Kein Anhang angegeben.');
         return _redirect_to_show($c);
@@ -75,8 +74,9 @@ sub _upload_post_do {
         return _redirect_to_show($c);
     }
 
-    $c->dbh->do('INSERT INTO "attachements" ("filename", "postid") VALUES (?,?)',
-        undef, $filename, $postid);
+    my $content_type = $file->headers->content_type || '';
+    $c->dbh->do('INSERT INTO "attachements" ("filename", "content_type", "isimage", "inline", "postid") VALUES (?,?,?,?,?)',
+        undef, $filename, $content_type, ($content_type =~ m/\A(?:image)/xmsio ? 1 : 0), ($content_type =~ m/\A(?:image|audio|video)/xmsio ? 1 : 0), $postid);
     my $fileid = $c->dbh->selectall_arrayref(
         'SELECT "id" FROM "attachements" WHERE "postid"=? ORDER BY "id" DESC LIMIT 1',
         undef, $postid);
@@ -106,7 +106,7 @@ sub _download_post {
         return $c->show;
     }
     my $sql = qq~SELECT\n~
-            . qq~a."filename"\n~
+            . qq~a."filename", a."content_type", a."isimage", a."inline"\n~
             . qq~FROM "attachements" a\n~
             . qq~INNER JOIN "posts" p ON a."postid"=p."id"\n~
             . qq~WHERE a."id"=?~;
@@ -117,7 +117,8 @@ sub _download_post {
         return $c->rendered(404);
     }
     
-    $filename = quote encode 'UTF-8', $filename->[0]->[0];
+    my ( $content_type, $isimage, $inline ) = @{$filename->[0]}[1,2,3];
+    $filename = $filename->[0]->[0];
     my $file = catfile(@{$c->datapath}, 'uploads', $fileid);
     unless ( -e $file ) {
         $c->set_error('Konnte die gewünschte Datei im Dateisystem nicht finden.');
@@ -125,8 +126,32 @@ sub _download_post {
     }
     $file = Mojo::Asset::File->new(path => $file);
     my $headers = Mojo::Headers->new();
-    $headers->add( 'Content-Disposition', qq~attachment; filename=$filename~ );
     $headers->add( 'Content-Length' => $file->size );
+    unless ( $content_type ) {
+        if ( $filename =~ m~\.(\w+)\z~xmso ) {
+            my $fe = $1;
+            if ( $fe =~ m~png|jpe?g|ico|bmp|gif~xmsio ) {
+                $content_type = "image/$fe";
+                $isimage = 1;
+                $inline  = 1;
+            }
+            else {
+                $content_type = "*/$fe";
+                $isimage = 0;
+                $inline  = 0;
+            }
+        }
+        else {
+            $content_type = '*/*';
+            $isimage = 0;
+            $inline  = 0;
+        }
+    }
+    $headers->add( 'Content-Type', $content_type );
+    $headers->add( 'Content-Disposition', 
+        ($inline ? 'inline' : 'attachment') 
+        . qq~; filename=~ 
+        . quote( encode 'UTF-8', $filename ) );
     $c->res->content->headers($headers);
     $c->res->content->asset($file);
     $c->rendered(200);

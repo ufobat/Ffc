@@ -98,6 +98,11 @@ sub run_tests {
         login1();
         del_attachement($user1, @$_) for [1 => 1], [5 => 6], [5 => 5]; # array id's to db id's!!!
         ck();
+
+        # diag 'test attache a no image file';
+        login2();
+        add_attachement($user2, 0, 1);
+        ck();
     }
     else {
         # diag 'check, that no attachement-operations are available';
@@ -233,10 +238,10 @@ sub query_string {
 }
 
 sub add_attachement {
-    my ( $user, $i ) = @_;
+    my ( $user, $i, $ext ) = @_;
     my $entry = $entries[$i] or die "no entry count '$i' available";
     my ( $str, $nam ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
-    $nam .= '.png';
+    $nam .= $ext ? '.txt' : '.png';
     $t->get_ok("$Urlpref/upload/$entry->[0]");
     if ( $entry->[2] eq $user ) { 
         $t->status_is(200);
@@ -256,7 +261,7 @@ sub add_attachement {
             attachement => {
                 file => Mojo::Asset::Memory->new->add_chunk($str),
                 filename => $nam,
-                content_type => 'image/png',
+                'Content-Type' => $ext ? '*/txt' : 'image/png',
             },
         }
     );
@@ -418,7 +423,20 @@ sub check_attachements {
     for my $att ( @$attachements ) {
         $t->get_ok("$Urlpref/download/$att->[0]")
           ->status_is(200)
-          ->content_like(qr~$att->[1]~);
+          ->content_like(qr~$att->[1]~)
+          ->header_like('Content-Disposition', qr~(?:inline|attachment);\s*filename=.*~xmsio);
+        my ( $isimage, $filename ) = (
+            $t->tx->res->headers->{headers}->{'content-disposition'}->[0] =~ m~(inline|attachment);\s*filename=(.*)~xmsio
+                ? ( $1, $2 ) : ( '', '' ) );
+        ok $filename eq qq~"$att->[2]"~, 'file name in header is ok';
+        if ( $filename =~ m~\.png"\z~xmsio ) {
+            ok $isimage eq 'inline', 'attachement is an image';
+            $t->header_is('Content-Type', 'image/png');
+        }
+        else {
+            ok $isimage eq 'attachment', 'attachement is no image';
+            $t->header_is('Content-Type', '*/txt');
+        }
     }
 }
 
