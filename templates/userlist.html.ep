@@ -11,7 +11,8 @@
         <a href="<%= url_for 'show_pmsgs', usertoid => $u->[0] %>"
            title="Privatnachrichten mit Benutzer &quot;<%= $u->[1] %>&quot; ansehen"><%= $u->[1] %></a>
         <span class="smallfont">
-            Ungelesene Nachrichten vom Benutzer:
+            Zuletzt gesehen: <%= format_timestamp($u->[4]) %>,
+            ungelesene Nachrichten:
             <% if ( $u->[2] ) { %> <span class="mark"><%= $u->[2] %></span><% } else { %>0<% } %>
         </span>
 % }
