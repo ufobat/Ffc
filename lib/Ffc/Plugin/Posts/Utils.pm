@@ -78,7 +78,7 @@ sub _get_attachements {
     my ( $wheres, @wherep ) = $c->where_select;
     my $posts = shift;
     my $sql = qq~SELECT\n~
-            . qq~a."id", a."postid", a."filename", a."isimage",\n~
+            . qq~a."id", a."postid", a."filename", a."isimage", a."inline",\n~
             . qq~CASE WHEN p."userfrom"=? THEN 1 ELSE 0 END AS "deleteable"\n~
             . qq~FROM "attachements" a\n~
             . qq~INNER JOIN "posts" p ON a."postid"=p."id"\n~
