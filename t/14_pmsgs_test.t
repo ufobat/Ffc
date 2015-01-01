@@ -34,15 +34,17 @@ sub check_env {
         $t->content_like(qr~<title>\($newcnt\)\s+Ffc\s+Forum~xmsi);
         $t->content_like(qr~title="Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>\s*\(<span\s+class="mark">$newcnt</span>\)\s+</p>~xmsi); 
         $t->content_like(qr~Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>\s*<span\s+class="smallfont">\s*
-            Zuletzt\s+gesehen:\s+(?:(?:\d\d\.\d\d\.\d\d(?:\d\d),\s*)?(?:\d\d:\d\d)|jetzt),\s+
-            ungelesene\s+Nachrichten:\s*<span\s+class="mark">$newcnt</span>~xmsi);
+#            Zuletzt\s+gesehen:\s+(?:(?:\d\d\.\d\d\.\d\d(?:\d\d),\s*)?(?:\d\d:\d\d)|jetzt),\s+
+#            ungelesene\s+Nachrichten:\s*<span\s+class="mark">$newcnt</span>
+            Ungelesene\s+Nachrichten\s+vom\s+Benutzer:\s*<span\s+class="mark">$newcnt</span>~xmsi);
     }
     else {
         $t->content_like(qr~<title>\(0\)\s+Ffc\s+Forum~xmsi);
         $t->content_like(qr~title="Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>~xmsi);
         $t->content_like(qr~Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>\s*<span\s+class="smallfont">\s*
-            Zuletzt\s+gesehen:\s+(?:(?:\d\d\.\d\d\.\d\d(?:\d\d),\s*)?(?:\d\d:\d\d)|jetzt),\s+
-            ungelesene\s+Nachrichten:\s*0~xmsi);
+#            Zuletzt\s+gesehen:\s+(?:(?:\d\d\.\d\d\.\d\d(?:\d\d),\s*)?(?:\d\d:\d\d)|jetzt),\s+
+#            ungelesene\s+Nachrichten:\s*0
+            Ungelesene\s+Nachrichten\s+vom\s+Benutzer:\s*0~xmsi);
     }
     $t->get_ok("/pmsgs/2")->status_is(200);
     check_pages(\&login2, '/pmsgs/2');

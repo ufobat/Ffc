@@ -94,8 +94,7 @@ sub _generate_userlist {
             (SELECT MAX(p2."id")
                 FROM "posts" p2
                 WHERE p2."userfrom"=? AND p2."userto"=u."id"
-            ) AS "sorting",
-            u."lastseen"
+            ) AS "sorting" -- , u."lastseen"
         FROM "users" u
         WHERE u."active"=1 AND u."id"<>? 
         GROUP BY u."id"
