@@ -52,9 +52,16 @@ sub avatar_upload {
     my $u = $c->session->{user};
     
     my ( $filename, $filetype ) 
-        = $c->image_upload(
+        = $c->file_upload(
             'avatarfile', 'Avatarbild', 100, 150000, 8, 80, 
-            sub{ return [ 'avatars', $u . '_' . $_[0] ] });
+            sub { 
+                unless ( $_[0]->is_image($_[3]) ) {
+                    $_[0]->set_error_f('Datei ist keine Bilddatei, muss PNG, JPG, BMP, ICO oder GIF sein.');
+                    return;
+                }
+                return [ 'avatars', $u . '_' . $_[1] ];
+            }
+        );
     return $c->redirect_to('options_form')
         unless $filename;
 

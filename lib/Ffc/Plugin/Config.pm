@@ -7,7 +7,6 @@ use DBI;
 use File::Spec::Functions qw(splitdir catdir);
 use Digest::SHA 'sha512_base64';
 use Ffc::Plugin::Config::Lists;
-use Ffc::Plugin::Config::Uploads;
 
 our %Defaults = (
     title           => 'Ffc Forum',

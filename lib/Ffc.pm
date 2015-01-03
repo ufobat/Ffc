@@ -13,6 +13,7 @@ sub startup {
     my $app = shift;
     $app->plugin('Ffc::Plugin::Config');
     $app->plugin('Ffc::Plugin::Formats');
+    $app->plugin('Ffc::Plugin::Uploads');
     $app->plugin('Ffc::Plugin::Posts');
     $app->helper(login_ok => sub { $_[0]->session->{user} ? 1 : 0 });
     _install_routes($app);

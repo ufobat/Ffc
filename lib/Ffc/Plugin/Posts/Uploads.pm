@@ -34,62 +34,27 @@ sub _upload_post_do {
             return _redirect_to_show($c);
         }
     }
-    unless ( $file ) {
-        $c->set_error_f('Kein Anhang angegeben.');
-        return _redirect_to_show($c);
-    }
-    unless ( $file->isa('Mojo::Upload') ) {
-        $c->set_error_f('Keine Datei als Anhang angegeben.');
-        return _redirect_to_show($c);
-    }
-    if ( $file->size < 1 ) {
-        $c->set_error_f('Datei ist zu klein, sollte mindestens 1B groß sein.');
-        return _redirect_to_show($c);
-    }
-    if ( $file->size > 100000000 ) {
-        $c->set_error_f('Datei ist zu groß, darf maximal 100MB groß sein.');
-        return _redirect_to_show($c);
-    }
-
-    my $filename = $file->filename;
-
+    my $fileid;
+    my $filepathsub = sub { 
+        my ($c, $filename, $filetype, $content_type) = @_;
+        $c->dbh->do('INSERT INTO "attachements" ("filename", "content_type", "isimage", "inline", "postid") VALUES (?,?,?,?,?)',
+            undef, $filename, $content_type, ($c->is_image($content_type)?1:0), ($c->is_inline($content_type)?1:0), $postid);
+        $fileid = $c->dbh->selectall_arrayref(
+            'SELECT "id" FROM "attachements" WHERE "postid"=? ORDER BY "id" DESC LIMIT 1',
+            undef, $postid);
+        if ( @$fileid ) {
+            $fileid = $fileid->[0]->[0];
+        }
+        else {
+            $c->set_error_f('Beim Dateiupload ist etwas schief gegangen, ich finde die Datei nicht mehr in der Datenbank');
+            return;
+        }
+        return [ 'uploads', $fileid ];
+    };
+    my ( $filename )
+        = $c->file_upload( 'attachement', 'Dateianhang', 1, 100000000, 2, 200, $filepathsub);
     unless ( $filename ) {
-        $c->set_error_f('Der Dateiname zum hochladen fehlt.');
-        return _redirect_to_show($c);
-    }
-    if ( 2 > length $filename ) {
-        $c->set_error_f('Dateiname ist zu kurz, muss mindestens 2 Zeichen inklusive Dateiendung enthalten.');
-        return _redirect_to_show($c);
-    }
-    if ( 200 < length $filename ) {
-        $c->set_error_f('Dateiname ist zu lang, darf maximal 200 Zeichen lang sein.');
-        return _redirect_to_show($c);
-    }
-    if ( $file->filename =~ m/\A\./xms ) {
-        $c->set_error_f('Der Dateiname darf nicht mit einem "." beginnen.');
-        return _redirect_to_show($c);
-    }
-    if ( $filename =~ m/(?:\.\.|\/)/xmso ) {
-        $c->set_error_f('Der Dateiname darf weder ".." noch "/" enthalten.');
-        return _redirect_to_show($c);
-    }
-
-    my $content_type = $file->headers->content_type || '';
-    $c->dbh->do('INSERT INTO "attachements" ("filename", "content_type", "isimage", "inline", "postid") VALUES (?,?,?,?,?)',
-        undef, $filename, $content_type, ($content_type =~ m/\A(?:image)/xmsio ? 1 : 0), ($content_type =~ m/\A(?:image|audio|video)/xmsio ? 1 : 0), $postid);
-    my $fileid = $c->dbh->selectall_arrayref(
-        'SELECT "id" FROM "attachements" WHERE "postid"=? ORDER BY "id" DESC LIMIT 1',
-        undef, $postid);
-    if ( @$fileid ) {
-        $fileid = $fileid->[0]->[0];
-    }
-    else {
-        $c->set_error_f('Beim Dateiupload ist etwas schief gegangen, ich finde die Datei nicht mehr in der Datenbank');
-        return _redirect_to_show($c);
-    }
-
-    unless ( $file->move_to(catfile(@{$c->datapath}, 'uploads', $fileid)) ) {
-        $c->set_error_f('Das Hochladen des Anhanges ist fehlgeschlagen.');
+        $c->dbh->do('DELETE FROM "attachements" WHERE "id"=?', undef, $fileid) if defined $fileid;
         return _redirect_to_show($c);
     }
 

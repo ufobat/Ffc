@@ -241,7 +241,7 @@ sub add_attachement {
     my ( $user, $i, $ext ) = @_;
     my $entry = $entries[$i] or die "no entry count '$i' available";
     my ( $str, $nam ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
-    $nam .= $ext ? '.txt' : '.png';
+    $nam .= $ext ? '.exe' : '.png';
     $t->get_ok("$Urlpref/upload/$entry->[0]");
     if ( $entry->[2] eq $user ) { 
         $t->status_is(200);
@@ -261,7 +261,7 @@ sub add_attachement {
             attachement => {
                 file => Mojo::Asset::Memory->new->add_chunk($str),
                 filename => $nam,
-                'Content-Type' => $ext ? '*/txt' : 'image/png',
+                'Content-Type' => $ext ? '*/exe' : 'image/png',
             },
         }
     );
