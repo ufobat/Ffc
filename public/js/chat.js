@@ -56,6 +56,7 @@ ffcdata.init = function() {
      ************************************************************************/
     var textfilter = function(txt) {
         txt = txt.replace(/(([\(|\s])?|^)(https?:\/\/[^\)\s]+?)(\)|,?\s|$)/g, '$1<a href="$3" target="_blank" title="Externe Webadresse! ($3)">$3</a>$4');
+        txt = txt.replace(ffcdata.userre, '<span class="myself">$1</span>');
         return(txt);
     }
 

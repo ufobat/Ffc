@@ -9,6 +9,7 @@
       ffcdata = {
         title: ['(', ') Chat - (', ') <%= $title %>'],
         user:  '<%= session->{user} %>',
+        userre:  /(<%= session->{user} %>)/i,
         leaveurl: '<%= url_for "chat_leave" %>',
         refreshseturl: '<%= url_for "chat_set_refresh", refresh => 33 %>',
         focusedurl: '<%= url_for "chat_receive_focused" %>',

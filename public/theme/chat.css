@@ -107,6 +107,9 @@ option {
 #msglog .username, .ownmsg, .timestamp {
     color: gray;
 }
+#msglog .username {
+    font-weight: bold;
+}
 .ownmsg .username {
     color: silver;
 }
@@ -114,7 +117,11 @@ option {
     font-size: .75em;
 }
 #msglog p {
-    text-indent: -0.75em;
-    padding-left: 0.75em;
+    text-indent: -2em;
+    padding-left: 2em;
+}
+.myself {
+    color: red;
+    font-weight: bold;
 }
 
