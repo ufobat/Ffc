@@ -71,7 +71,7 @@ sub _receive {
 
     # rückgabe erzeugen
     my $sql = << 'EOSQL';
-SELECT c."id", uf."name", c."msg", c."posted"
+SELECT c."id", uf."name", c."msg", datetime(c."posted", 'localtime')
 FROM "chat" c 
 INNER JOIN "users" uf ON uf."id"=c."userfromid"
 WHERE c."id">COALESCE((SELECT u2."lastchatid" FROM "users" u2 WHERE u2."id"=? LIMIT 1),0)
