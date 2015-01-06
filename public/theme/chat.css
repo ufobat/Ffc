@@ -113,6 +113,9 @@ option {
 .ownmsg .username {
     color: silver;
 }
+.timestamp {
+    font-size: 0.75em;
+}
 #msglog p {
     text-indent: -2em;
     padding-left: 2em;
