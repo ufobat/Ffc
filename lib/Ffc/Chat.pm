@@ -75,7 +75,7 @@ SELECT c."id", uf."name", c."msg", datetime(c."posted", 'localtime')
 FROM "chat" c 
 INNER JOIN "users" uf ON uf."id"=c."userfromid"
 WHERE c."id">COALESCE((SELECT u2."lastchatid" FROM "users" u2 WHERE u2."id"=? LIMIT 1),0)
-ORDER BY c."id" DESC
+ORDER BY c."id" ASC
 LIMIT ?;
 EOSQL
 
@@ -92,7 +92,7 @@ EOSQL
     $sql .= qq~    "inchat"=1,\n    "lastseenchat"=CURRENT_TIMESTAMP~;
     $sql .= qq~,\n    "lastseenchatactive"=CURRENT_TIMESTAMP~ if $active;
     $sql .= qq~\nWHERE "id"=?~;
-    $dbh->do( $sql, undef, ( @$msgs ? $msgs->[0]->[0] : () ), $c->session->{userid} );
+    $dbh->do( $sql, undef, ( @$msgs ? $msgs->[-1]->[0] : () ), $c->session->{userid} );
 
     # benutzerliste ermitteln, die im chat sind
     $sql = << 'EOSQL';
