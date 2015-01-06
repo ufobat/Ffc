@@ -38,6 +38,7 @@
     <h2>Dateianhänge</h2>
     <p>Anhänge können an bestehende Beiträge angefügt werden. Dazu muss zuerst der Beitrag erstellt werden, anschließend kann über den Link "anhängen" eine neue Datei hinzugefügt werden.</p>
     <p>Anhänge werden unterhalb des Beitrages angezeigt. Bilder werden dabei als kleinere Vorschau angezeigt. Anhänge werden mit einem Download-Link hinterlegt, sodass man sie direkt mit einem Klick herunterladen kann.</p>
+    <p>Die Sortierung der Anhänge in der Anzeige erfolgt alphabetisch. Damit kann man zum Beispiel durch Nummerierung in den Dateinamen eine bestimmte Sortierung erzwingen. Bei zwei gleich benannten Dateien (sollte eigentlich vermieden werden aus Gründen der Übersicht), wird die zuerst hochgeladene Datei auch zuerst dargestellt.</p>
     <p>Für das Löschen von eigenen Anhängen ist neben dem Anhang ein entsprechender Link ("entfernen") hinterlegt, welcher über eine Bestätigungsseite den Anhang komplett entfernt. Wird ein Beitrag gelöscht, werden sämltiche Anhänge ebenfalls gelöscht.</p>
 </div>
 <div class="postbox helptext">
