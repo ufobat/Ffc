@@ -106,7 +106,9 @@ ffcdata.init = function() {
         var msglog = document.getElementById('msglog');
         var ml = msglog.innerHTML;
         for ( var i = 0; i < msgs.length; i++ ) {
-            ml = ml +'<p><span class="username">' + msgs[i][1] + '</span>: ' + textfilter(msgs[i][2]) + '</p>\n';
+            ml = ml + '<p' + (ffcdata.user === msgs[i][1] ? ' class="ownmsg"' : '') + '>'
+               + '<span class="timestamp">(' + msgs[i][3] + ')</span> '
+               + '<span class="username">' + msgs[i][1] + '</span>: ' + textfilter(msgs[i][2]) + '</p>\n';
         }
         msglog.innerHTML = ml;
 

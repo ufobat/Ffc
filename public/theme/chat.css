@@ -104,7 +104,17 @@ option {
     text-align: center;
     border: none;
 }
-#msglog .username {
+#msglog .username, .ownmsg, .timestamp {
     color: gray;
+}
+.ownmsg .username {
+    color: silver;
+}
+.timestamp {
+    font-size: .75em;
+}
+#msglog p {
+    text-indent: -0.75em;
+    padding-left: 0.75em;
 }
 
