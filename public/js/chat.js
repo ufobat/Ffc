@@ -200,7 +200,6 @@ ffcdata.init = function() {
             }
             else {
                 t_stop();
-                refresh = t;
                 receive();
                 // console.log('set_refresh ok');
             }

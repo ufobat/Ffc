@@ -40,7 +40,7 @@ sub set_refresh {
         $c->dbh->do('UPDATE "users" SET "chatrefreshsecs"=? WHERE "id"=?', undef,
             $refresh, $c->session->{userid} );
     }
-    $c->render( text => 'ok' );
+    $c->render( json => 'ok' );
 }
 
 sub chat_window_open { $_[0]->render( template => 'chat' ) }
