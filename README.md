@@ -53,6 +53,9 @@ Features
 * Private Nachrichten zwischen einzelnen Benutzern möglich
 * Eigene Notizen zum eigenen Gebrauch für die Benutzer
 * Instant-Chat, der über ein eigenes Browserfenster losgelöst vom Forum verwendet werden kann
+  * Mehrzeilige Chatnachrichten möglich
+  * Hervorhebungen für URLs, Quelltext (mit spezieller Notation '/code') sowie den eigenen Benutzernamen in Chatnachrichten möglich
+  * Chatnachrichten werden immer nur nach festgelegtem und einfach änderbaren Intervallen abgeholt
 * Beiträge werden in einem prominenten Feld gleich oben auf einer entsprechenden Webseite eingegeben, dieses Textfeld klappt sich via CSS automatisch auf, wenn man in das kleine Feld hinein klickt oder beim Bearbeiten eines Beitrages
 * Die Webseite kann sich über Javascript automatisch innerhalb eines vom Benutzer festgelegten Zeitintervalles (Default 3 Minuten) neu laden, sobald sie im Hintergrund ist und kein Text im Beitragstextfeld eingegeben wurde
 * Das Forum kann mit einem einzigen Kommando eingerichtet werden, wobei ein initialer Administratoraccount sofort mit angelegt wird für die weiterführende Konfiguration

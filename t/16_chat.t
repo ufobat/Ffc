@@ -67,7 +67,7 @@ sub check_receive_messages {
 
     my $lcsa1 = get_lastchatseenactive(2);
     my $str = Testinit::test_randstring();
-    $t1->post_ok($url, form => { msg => $str })->status_is(200);
+    $t1->post_ok($url, json => [ msg => $str ])->status_is(200);
     sleep 1.2;
     $t2->get_ok($url)->status_is(200)
        ->json_is('/0/0/0' => ++$id)->json_is('/0/0/1' => $admin)->json_is('/0/0/2' => $str)
@@ -78,10 +78,10 @@ sub check_receive_messages {
     else            { ok $lcsa1 = $lcsa2, 'lastchatseenactive not updated' }
 
     $str = Testinit::test_randstring();
-    $t1->post_ok($url, form => { msg => $str })->status_is(200);
+    $t1->post_ok($url, json => [ msg => $str ])->status_is(200);
     sleep 1.2;
     my $str2 = Testinit::test_randstring();
-    $t2->post_ok($url, form => { msg => $str2 })->status_is(200)
+    $t2->post_ok($url, json => [ msg => $str2 ])->status_is(200)
        ->json_is('/0/1/0' => ++$id)->json_is('/0/1/1' => $admin)->json_is('/0/1/2' => $str)
        ->json_is('/0/0/0' => ++$id)->json_is('/0/0/1' => $user)->json_is('/0/0/2' => $str2)
        ->json_is('/2' => $fcnt)->json_is('/3' => $pcnt);
@@ -140,7 +140,7 @@ $t2->get_ok('/chat/receive/focused')->status_is(200)
 
 # und wieder rein in den chat (mit neuen nachrichten)
 my $str3 = Testinit::test_randstring();
-$t2->post_ok('/chat/receive/focused', form => { msg => $str3 })->status_is(200);
+$t2->post_ok('/chat/receive/focused', json => [ msg => $str3 ])->status_is(200);
 $t1->get_ok('/chat')->status_is(200)
    ->content_like(qr~<!-- Angemeldet als "$admin" !-->~);
 $t1->get_ok('/chat/receive/focused')->status_is(200)
@@ -160,7 +160,7 @@ $t2->get_ok('/chat/receive/focused')->status_is(200)
 
 # und wieder rein in den chat (mit neuen nachrichten)
 $str3 = Testinit::test_randstring();
-$t2->post_ok('/chat/receive/focused', form => { msg => $str3 })->status_is(200);
+$t2->post_ok('/chat/receive/focused', json => [ msg => $str3 ])->status_is(200);
 $t1->get_ok('/chat')->status_is(200)
    ->content_like(qr~<!-- Angemeldet als "$admin" !-->~);
 $t1->get_ok('/chat/receive/focused')->status_is(200)

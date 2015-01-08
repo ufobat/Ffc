@@ -35,8 +35,10 @@ ffcdata.init = function() {
             });
 
             if ( methd === 'POST' ) {
-                req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                req.send(data[0] + '=' + data[1]);
+                req.setRequestHeader("Content-type", "multipart/formdata");
+                //req.setRequestHeader("Content-length", data.toString().length);
+                req.setRequestHeader("Connection", "close");
+                req.send(JSON.stringify(data));
             }
             else {
                 req.send();
@@ -55,8 +57,19 @@ ffcdata.init = function() {
      *** Chat-Text formatieren                                            ***
      ************************************************************************/
     var textfilter = function(txt) {
-        txt = txt.replace(/(([\(|\s])?|^)(https?:\/\/[^\)\s]+?)(\)|,?\s|$)/g, '$1<a href="$3" target="_blank" title="Externe Webadresse! ($3)">$3</a>$4');
-        txt = txt.replace(ffcdata.userre, '<span class="myself">$1</span>');
+        txt = txt.replace(/\\/g, '\\\\');
+        txt = txt.replace(/</g, '&lt;');
+        txt = txt.replace(/>/g, '&gt;');
+        txt = txt.replace(/"/g, '&quot;');
+        if ( txt.match(/^\/code\s+/) ) {
+            txt = txt.replace(/^\/code\s+/, '');
+            txt = '<pre>' + txt + '</pre>';
+        }
+        else {
+            txt = txt.replace(/(([\(|\s])?|^)(https?:\/\/[^\)\s]+?)(\)|,?\s|$)/g, '$1<a href="$3" target="_blank" title="Externe Webadresse! ($3)">$3</a>$4');
+            txt = txt.replace(/\n/g, '<br />');
+            txt = txt.replace(ffcdata.userre, '<span class="myself">$1</span>');
+        }
         return(txt);
     }
 
@@ -104,19 +117,21 @@ ffcdata.init = function() {
      *** Neue Chatnachrichten anzeigen                                    ***
      ************************************************************************/
     var add_msgs = function(msgs) {
-        var msglog = document.getElementById('msglog');
-        var ml = msglog.innerHTML;
-        for ( var i = msgs.length - 1; i >= 0; i-- ) {
-            ml = ml + '<p' + (ffcdata.user === msgs[i][1] ? ' class="ownmsg"' : '') + '>'
-               + '<span class="timestamp">(' + msgs[i][3] + ')</span> '
-               + '<span class="username">' + msgs[i][1] + '</span>: ' + textfilter(msgs[i][2]) + '</p>\n';
+        if ( msgs.length > 0 ) {
+            var msglog = document.getElementById('msglog');
+            var ml = msglog.innerHTML;
+            for ( var i = msgs.length - 1; i >= 0; i-- ) {
+                ml = ml + '<p' + (ffcdata.user === msgs[i][1] ? ' class="ownmsg"' : '') + '>'
+                   + '<span class="timestamp">(' + msgs[i][3] + ')</span> '
+                   + '<span class="username">' + msgs[i][1] + '</span>: ' + textfilter(msgs[i][2]) + '</p>\n';
+            }
+            msglog.innerHTML = ml;
+
+            var scrollHeight = Math.max(msglog.scrollHeight, msglog.clientHeight);
+            msglog.scrollTop = scrollHeight - msglog.clientHeight;
+
+            // console.log('new messages added');
         }
-        msglog.innerHTML = ml;
-
-        var scrollHeight = Math.max(msglog.scrollHeight, msglog.clientHeight);
-        msglog.scrollTop = scrollHeight - msglog.clientHeight;
-
-        // console.log('new messages added');
     };
 
     /************************************************************************
@@ -263,7 +278,7 @@ ffcdata.init = function() {
             isShift = true;
         }
 
-        if ( e.keyCode == 13 ) {
+        if ( e.keyCode == 13 && !isShift ) {
             // console.log('enter-key send triggered');
             var msg = document.getElementById('msg');
             var msgval = msg.value;
@@ -279,7 +294,7 @@ ffcdata.init = function() {
             isShift = false;
         }
 
-        if ( e.keyCode == 13 ) {
+        if ( e.keyCode == 13 && !isShift  ) {
             // console.log('enter-key send done');
             cleanmsg();
         }

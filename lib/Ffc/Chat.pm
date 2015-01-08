@@ -57,9 +57,9 @@ sub receive_focused   { _receive($_[0], 1) }
 sub receive_unfocused { _receive($_[0], 0) }
 sub _receive {
     my ( $c, $active ) = @_;
-    my $msg = $c->param('msg');
     my $dbh = $c->dbh;
-
+    my $msg = '';
+    $msg = $c->req->json->[1] if $c->req->method eq 'POST';
     if ( $msg ) { # neue nachricht erhalten
         $msg =~ s/\A\s+//xmso;
         $msg =~ s/\s+\z//xmso;

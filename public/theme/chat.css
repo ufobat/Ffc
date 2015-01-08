@@ -117,11 +117,16 @@ option {
     font-size: 0.75em;
 }
 #msglog p {
-    text-indent: -2em;
-    padding-left: 2em;
+    text-indent: -1em;
+    padding-left: 1em;
 }
 .myself {
     color: red;
     font-weight: bold;
+}
+#msglog pre {
+    font-family: monospace;
+    font-size: 1em;
+    color: chocolate;
 }
 
