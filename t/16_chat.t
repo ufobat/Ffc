@@ -9,7 +9,7 @@ use Test::Mojo;
 use Data::Dumper;
 
 my ( $t1, $path, $admin, $apass, $dbh ) = Testinit::start_test();
-my ( $user, $pass ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
+my ( $user, $pass ) = ( 'x'.Testinit::test_randstring(), Testinit::test_randstring() );
 Testinit::test_add_users( $t1, $admin, $apass, $user, $pass );
 my $t2 = Test::Mojo->new('Ffc');
 my $id = 0;
