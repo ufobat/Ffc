@@ -85,7 +85,7 @@
     <p>Der Instantchat kann über die Menüzeile erreicht werden. Hierzu muss im Webbrowser JavaScript entsprechend eingeschalten sein.</p>
     <p>Im Chat können im unteren Textfeld auf der linken Seite Nachrichten eingegeben werden. Durch drücken der &quot;Enter&quot;-Taste oder durch betätigen des &quot;Senden&quot;-Knopfes wird die Nachricht versendet. Wird die &quot;Enter&quot;-Taste gleichzeitig mit gedrückter &quot;Shift&quot;-Taste betätigt, so erzeugt dies einen Zeilenumbruch in der Textnachricht.</p>
     <p>Die Auswahlbox wählt das Zeitintervall, innerhalb dessen neue Nachrichten im Chat nachgeladen werden. Der Knopf &quot;Laden&quot; holt ebenfalls neue Nachrichten ab.</p>
-    <p>Durch Voranstellen von <code>/code </code> innerhalb der Chatnachricht, wird ein Code-Teil im Chat angezeigt.</p>
+    <p>Durch Voranstellen von <code>/code </code> am Beginn der Chatnachricht, wird die Nachricht als vorformatierter Quellcode im Chat angezeigt.</p>
     <p>Eigene Chatnachrichten, URL's und der eigene Benutzername werden im Chat hervorgehoben.</p>
 </div>
 
