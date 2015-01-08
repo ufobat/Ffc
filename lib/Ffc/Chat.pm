@@ -59,7 +59,7 @@ sub _receive {
     my ( $c, $active ) = @_;
     my $dbh = $c->dbh;
     my $msg = '';
-    $msg = $c->req->json->[1] if $c->req->method eq 'POST';
+    $msg = $c->req->json if $c->req->method eq 'POST';
     if ( $msg ) { # neue nachricht erhalten
         $msg =~ s/\A\s+//xmso;
         $msg =~ s/\s+\z//xmso;

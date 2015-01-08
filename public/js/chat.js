@@ -183,7 +183,7 @@ ffcdata.init = function() {
         if ( document.hasFocus() )
             url = ffcdata.focusedurl;
         if ( msg )
-            request('POST', url, ['msg', msg], resolve);
+            request('POST', url, msg, resolve);
         else
             request('GET', url, null, resolve);
     };
