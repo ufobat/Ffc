@@ -1,5 +1,9 @@
 % layout 'display';
 % for my $p ( @$posts) {
 %= include 'parts/postbox', post => $p
+%   if ( $topicid ) {
+        <div class="pages"><a href="<%= url_for 'show_forum', topicid => $topicid %>"
+           title="Beiträge zum Thema anzeigen">Thema anzeigen</a></div>
+%   }
 % }
 
