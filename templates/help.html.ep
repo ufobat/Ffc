@@ -8,6 +8,7 @@
 <div class="postbox helptext">
     <h2>Textformatierungen</h2>
     <p>Die folgenden Formatierungsmöglichkeiten für Forenbeiträge, private Nachrichten oder Notizen bestehen. Anstatt von Leerzeichen zwischen Wörtern müssen die entsprechenden Formatierungszeichen verwendet werden. Chatnachrichten können nicht formatiert werden.</p> 
+    <p>Ist Javascript aktiviert, so erscheinen über den Eingabefeldern für Beiträge kleine graue Buttons, über die ebenfalls die folgenden Änderungen angewendet werden können. Die Buttons wirken in einer Auswahl von Text.</p>
     <ul>
         <li><code>_un_ter_</code>: <span class="underline">Unterstreichungen</span></li>
         <li><code>+fe+tt+</code>: <span class="bold">Fettschrift</span></li>
@@ -19,6 +20,8 @@
 </div>
 <div class="postbox helptext">
     <h2>Textstrukturierungen</h2>
+    <p>Folgende Methoden stehen zur Verfügung, um Texte inhaltlich zu strukturieren und müssen an den Anfang einer entsprechenden Zeile gesetzt werden.</p>
+    <p>Ist Javascript aktiviert, erscheinen über den Eingabefeldern für Beiträge kleine graue Buttons, die ebenfalls die Zeile, in der der Cursor steht oder die Zeilen, die ausgewählt wurden, entsprechend behandeln.</p>
     <ul>
         <li><code>=</code> am Zeilenanfang: Erzeugt eine Zwischenüberschrift</li>
         <li><code>-</code> am Zeilenanfang: Erzeugt eine Liste</li>
