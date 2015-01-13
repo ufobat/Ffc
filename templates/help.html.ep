@@ -20,7 +20,7 @@
 </div>
 <div class="postbox helptext">
     <h2>Textstrukturierungen</h2>
-    <p>Folgende Methoden stehen zur Verfügung, um Texte inhaltlich zu strukturieren und müssen an den Anfang einer entsprechenden Zeile gesetzt werden.</p>
+    <p>Folgende Methoden stehen zur Verfügung, um Texte inhaltlich zu strukturieren. Die Formatierungszeichen müssen an den Anfang einer entsprechenden Zeile gesetzt werden.</p>
     <p>Ist Javascript aktiviert, erscheinen über den Eingabefeldern für Beiträge kleine graue Buttons, die ebenfalls die Zeile, in der der Cursor steht oder die Zeilen, die ausgewählt wurden, entsprechend behandeln.</p>
     <ul>
         <li><code>=</code> am Zeilenanfang: Erzeugt eine Zwischenüberschrift</li>
