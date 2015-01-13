@@ -22,7 +22,9 @@ window.onload = function(){
         if ( !start ) start = 0;
         else          start = tinput.value.substr(0,sel[0]).lastIndexOf(" ");
 
-        var end = tinput.value.substr(sel[1] - 1, tinput.value.length).search(/\W/);
+        var end = sel[1];
+        if ( !end || sel[0] === sel[1] ) end = end - 1;
+        end = tinput.value.substr(sel[1], tinput.value.length).search(/\W/);
         if ( end === -1 ) end = tinput.value.length;
 
         return [start, end + sel[1]];
