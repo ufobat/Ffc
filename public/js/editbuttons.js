@@ -19,11 +19,11 @@ window.onload = function(){
     };
     var wordboundaries = function(sel){
         var start = tinput.value.substr(0,sel[0]).match(/ /);
-        if ( start == -1 ) start = 0;
-        else               start = tinput.value.substr(0,sel[0]).lastIndexOf(" ");
+        if ( !start ) start = 0;
+        else          start = tinput.value.substr(0,sel[0]).lastIndexOf(" ");
 
         var end = tinput.value.substr(sel[1], tinput.value.length).search(/\W/);
-        if ( end == -1 ) end = tinput.value.length;
+        if ( end === -1 ) end = tinput.value.length;
 
         return [start, end + sel[1]];
     };
