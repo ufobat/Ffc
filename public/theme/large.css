@@ -183,4 +183,7 @@ input[type="text"].titlestring {
     display: block;
     margin-top: .75em;
 }
+.buttonalike, .buttonalike:active, .buttonalike:focus {
+    margin-bottom: .25em;
+}
 

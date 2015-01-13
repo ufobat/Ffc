@@ -200,4 +200,19 @@ input[type="text"].titlestring {
 .pages, .menu {
     background: #f0f0f0;
 }
+.buttonalike, .buttonalike:active, .buttonalike:focus {
+    color: black;
+    background: gainsboro;
+    border: none;
+    cursor: pointer;
+    min-width: 1.5em;
+    padding: 0;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+}
+.buttonalike:hover {
+    background: white;
+    color: black;
+}
 

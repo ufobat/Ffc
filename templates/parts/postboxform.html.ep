@@ -21,9 +21,13 @@
     <input type="hidden" name="postid" value="<%= $postid %>" />
 % }
 %= submit_button 'senden', class => 'linkalike send'
-(<a href="<%== $returl %>" title="&Auml;nderung abbrechen">abbrechen</a>,
-<a href="<%= url_for 'help' %>" target="_blank">Hilfe</a><% if ( $backurl ) { %>, <a href="<%== $backurl %>" title="zurück"><%= $backtext || 'zurück' %></a><% } %>)
-
+(
+<a href="<%== $returl %>" title="&Auml;nderung abbrechen">abbrechen</a>,
+<a href="<%= url_for 'help' %>" target="_blank">Hilfe</a><% if ( $backurl ) { %>, <a href="<%== $backurl %>" title="zurück"><%= $backtext || 'zurück' %></a><% } %><script type="text/javascript">
+    document.write(', <a href="#" class="buttonalike" id="h1button" title="Überschrift"><u><b>Ü</b></u></a><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung"><u>u</u></a><a href="#" class="buttonalike" id="linethroughtbutton" title="Durchgestrichen"><strike>d</strike></a><a href="#" class="buttonalike" id="boldbutton" title="Fett markiert"><b>f</b></a><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben"><i>k</i></a><a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Quelltext"><code>C</code></a><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste">&sup1;</a><a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste">&middot;</a>');
+</script>
+<%= javascript '/js/editbuttons.js' %>
+)
 </p>
 <p>
     <textarea 
