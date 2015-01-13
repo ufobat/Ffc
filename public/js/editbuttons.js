@@ -12,14 +12,28 @@ window.onload = function(){
         tinput.selectionStart = pos;
         tinput.selectionEnd   = pos;
     }
+    var linestartpos = function(sel) {
+        var lio = tinput.value.substr(0,sel[0]).lastIndexOf("\n");
+        if ( lio == -1 ) lio = 0;
+        return lio;
+    };
+    var wordboundaries = function(sel){
+        var start = tinput.value.substr(0,sel[0]).match(/ /);
+        if ( start == -1 ) start = 0;
+        else               start = tinput.value.substr(0,sel[0]).lastIndexOf(" ");
+
+        var end = tinput.value.substr(sel[1], tinput.value.length).search(/\W/);
+        if ( end == -1 ) end = tinput.value.length;
+
+        return [start, end + sel[1]];
+    };
 
     // Zeilen insgesamt markieren
     var linestarter = function(str){
         // console.log('mark linestart with "' + str + '"');
         tinput.focus();
         var sel = selection();
-        var lio = tinput.value.substr(0,sel[0]).lastIndexOf("\n");
-        if ( lio == -1 ) lio = 0;
+        var lio = linestartpos(sel);
         var txt = tinput.value.substr(lio, sel[1]);
         var txt2 = txt.replace(/\n/g, "\n"+str);
         if ( lio == 0 ) txt2 = str + txt2;
@@ -32,7 +46,7 @@ window.onload = function(){
         // console.log('escape selection with "' + str + '"');
         tinput.focus();
 
-        var sel = selection();
+        var sel = wordboundaries(selection());
         var txt = tinput.value.substr(sel[0], sel[1] - sel[0]);
         if ( !txt ) return;
 
@@ -65,4 +79,6 @@ window.onload = function(){
     document.getElementById('boldbutton').onclick          = function(){ strngescape('+')  };
     document.getElementById('linethroughtbutton').onclick  = function(){ strngescape('-')  };
     document.getElementById('italicbutton').onclick        = function(){ strngescape('~')  };
+    document.getElementById('attentionbutton').onclick     = function(){ strngescape('!')  };
+    document.getElementById('emotionalbutton').onclick     = function(){ strngescape('*')  };
 };
