@@ -16,23 +16,25 @@ window.onload = function(){
     // Zeilen insgesamt markieren
     var linestarter = function(str){
         // console.log('mark linestart with "' + str + '"');
-        var pos = selection()[0] || 0;
-        position(pos);
         tinput.focus();
-        var lio = tinput.value.substr(0,pos).lastIndexOf("\n");
+        var sel = selection();
+        var lio = tinput.value.substr(0,sel[0]).lastIndexOf("\n");
         if ( lio == -1 ) lio = 0;
-        else             lio = lio + 1;
-        tinput.value = tinput.value.substr(0,lio) + str + tinput.value.substr(lio, tinput.value.length);
+        var txt = tinput.value.substr(lio, sel[1]);
+        var txt2 = txt.replace(/\n/g, "\n"+str);
+        if ( lio == 0 ) txt2 = str + txt2;
+        tinput.value = tinput.value.substr(0,lio) + txt2 + tinput.value.substr(lio + txt.length, tinput.value.length);
+        position(lio + txt2.length);
     };
 
     // Spezielle Escape-Funktionen
     var strngescape = function(str){
         // console.log('escape selection with "' + str + '"');
+        tinput.focus();
+
         var sel = selection();
         var txt = tinput.value.substr(sel[0], sel[1] - sel[0]);
         if ( !txt ) return;
-        position(sel[1]);
-        tinput.focus();
 
         var border = ['', ''];
         var mtch = txt.match(/^\W+/);
@@ -46,8 +48,12 @@ window.onload = function(){
             txt = txt.substr(0, txt.length - border[1].length - 1);
         }
 
+        var cnt = txt.match(/\W+/g);
+        if ( !cnt ) cnt = [];
         txt = border[0] + str + txt.replace(/\W+/g, str) + str + border[1];
         tinput.value = tinput.value.slice(0,sel[0]) + txt + tinput.value.slice(sel[1],tinput.value.length - 1);
+
+        position(sel[1] + ( 2 * str.length ) + ( cnt.length * str.length ) + border[0].length);
     };
 
     // Buttonereignisse registrieren
