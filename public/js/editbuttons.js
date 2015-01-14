@@ -101,6 +101,9 @@ window.onload = function(){
     document.getElementById('italicbutton').onclick        = function(){ strngescape('~')  };
     document.getElementById('attentionbutton').onclick     = function(){ strngescape('!')  };
     document.getElementById('emotionalbutton').onclick     = function(){ strngescape('*')  };
-    document.getElementById('closetextabutton').onclick    = closetextarea;
-    tinput.onfocus = opentextarea;
+
+    if ( !tinput.className.match(/inedit/i) ) {
+        document.getElementById('closetextabutton').onclick    = closetextarea;
+        tinput.onfocus = opentextarea;
+    }
 };
