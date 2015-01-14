@@ -1,4 +1,6 @@
 window.onload = function(){
+    if ( window.matchMedia('(max-device-width: 801px)').matches ) return;
+
     var tinput = document.getElementById('textinput');
 
     // Auswahltext ermitteln
