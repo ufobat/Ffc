@@ -215,4 +215,13 @@ input[type="text"].titlestring {
     background: white;
     color: black;
 }
+.nodisplay {
+    display: none;
+}
+.blockdisplay {
+    display: block;
+}
+.textright {
+    text-align: right;
+}
 

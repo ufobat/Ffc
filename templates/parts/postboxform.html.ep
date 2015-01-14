@@ -24,9 +24,19 @@
 (
 <a href="<%== $returl %>" title="&Auml;nderung abbrechen">abbrechen</a>,
 <a href="<%= url_for 'help' %>" target="_blank">Hilfe</a><% if ( $backurl ) { %>, <a href="<%== $backurl %>" title="zurück"><%= $backtext || 'zurück' %></a><% } %><script type="text/javascript">
-    document.write('<span class="editbuttons">, <a href="#" class="buttonalike" id="h1button" title="Überschrift (zeilenweise, \'=\' am Zeilenanfang)"><u><b>Ü</b></u></a><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung (wortweise, \'_\')"><u>u</u></a><a href="#" class="buttonalike" id="linethroughtbutton" title="Durchgestrichen (wortweise, \'-\')"><strike>d</strike></a><a href="#" class="buttonalike" id="boldbutton" title="Fett markiert (wortweise, \'+\')"><b>f</b></a><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben (wortweise, \'~\')"><i>k</i></a><a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Quelltext (zeilenweise, \' \', am Zeilenanfang)"><code>C</code></a><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, \'#\' am Zeilenanfang)">&sup1;</a><a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste (zeilenweise, \'-\' am Zeilenanfang)">&middot;</a><a href="#" class="buttonalike" id="attentionbutton" title="Aufmerksamkeit (wortweise, \'!\')">!</a><a href="#" class="buttonalike" id="emotionalbutton" title="Emotional (wortweise, \'*\')">*</a></span>');
+    document.write('<span class="editbuttons">, ');
+    document.write('<a href="#" class="buttonalike" id="h1button" title="Überschrift (zeilenweise, \'=\' am Zeilenanfang)"><u><b>Ü</b></u></a>');
+    document.write('<a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung (wortweise, \'_\')"><u>u</u></a>');
+    document.write('<a href="#" class="buttonalike" id="linethroughtbutton" title="Durchgestrichen (wortweise, \'-\')"><strike>d</strike></a>');
+    document.write('<a href="#" class="buttonalike" id="boldbutton" title="Fett markiert (wortweise, \'+\')"><b>f</b></a>');
+    document.write('<a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben (wortweise, \'~\')"><i>k</i></a>');
+    document.write('<a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Quelltext (zeilenweise, \' \', am Zeilenanfang)"><code>C</code></a>');
+    document.write('<a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, \'#\' am Zeilenanfang)">&sup1;</a>');
+    document.write('<a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste (zeilenweise, \'-\' am Zeilenanfang)">&middot;</a>');
+    document.write('<a href="#" class="buttonalike" id="attentionbutton" title="Aufmerksamkeit (wortweise, \'!\')">!</a>');
+    document.write('<a href="#" class="buttonalike" id="emotionalbutton" title="Emotional (wortweise, \'*\')">*</a>');
+    document.write('</span>');
 </script>
-<%= javascript '/js/editbuttons.js' %>
 )
 </p>
 <p>
@@ -36,5 +46,9 @@
         class="edit<%= $textdata ? ' inedit' : '' %>"
     ><%== $textdata // '' %></textarea>
 </p>
+<script type="text/javascript">
+    document.write('<p id="closetextap" class="textright nodisplay"><a href="#" class="buttonalike" id="closetextabutton" title="Textfeld wieder zusammen klappen">Textfeld einklappen</a></p>');
+</script>
 </form>
 </div>
+<%= javascript '/js/editbuttons.js' %>

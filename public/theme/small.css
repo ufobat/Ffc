@@ -81,7 +81,7 @@ img {
     max-width: 13em;
     max-height: 8em;
 }
-.editbuttons {
+.editbuttons, .closetextap {
     display: none;
 }
 

@@ -72,6 +72,24 @@ window.onload = function(){
         position(sel[1] + ( 2 * str.length ) + ( cnt.length * str.length ) + border[0].length);
     };
 
+    // Textfeld-Klappungen
+    var tinputclass = tinput.className;
+    var tap = document.getElementById('closetextap');
+    var closetextarea = function(){ 
+        // console.log('closetext');
+        tinput.className = tinputclass;
+        tap.className = 'textright nodisplay';
+    };
+    var opentextarea = function(){
+        // console.log('opentext');
+        if ( tap.className !== 'textright nodisplay' ) return;
+        if ( !tinputclass )
+            tinput.className = 'inedit';
+        else
+            tinput.className = tinputclass + ' inedit';
+        tap.className = 'textright displayblock';
+    };
+
     // Buttonereignisse registrieren
     document.getElementById('h1button').onclick            = function(){ linestarter('= ') };
     document.getElementById('unorderedlistbutton').onclick = function(){ linestarter('- ') };
@@ -83,4 +101,6 @@ window.onload = function(){
     document.getElementById('italicbutton').onclick        = function(){ strngescape('~')  };
     document.getElementById('attentionbutton').onclick     = function(){ strngescape('!')  };
     document.getElementById('emotionalbutton').onclick     = function(){ strngescape('*')  };
+    document.getElementById('closetextabutton').onclick    = closetextarea;
+    tinput.onfocus = opentextarea;
 };
