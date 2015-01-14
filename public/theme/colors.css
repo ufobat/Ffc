@@ -176,7 +176,7 @@ input[type="text"].titlestring {
 .italic {
     font-style: italic;
 }
-.quote {
+.quote, .postbox blockquote {
     color: dimgrey;
 }
 .emotion {
@@ -188,9 +188,12 @@ input[type="text"].titlestring {
 .popup, .messagebox > div {
     box-shadow: 0 0 2px dimgray;
 }
-.postbox pre, .postbox blockquote {
-    color: dimgray;
+.postbox blockquote {
     border-left: 1px gainsboro solid;
+}
+.postbox pre {
+    color: chocolate;
+    border-left: 1px palegoldenrod solid;
 }
 .functionlinks {
     font-weight: normal;
