@@ -36,8 +36,9 @@
     document.write('<a href="#" class="buttonalike" id="linethroughtbutton" title="Durchgestrichen (wortweise, \'-\')"><strike>d</strike></a> ');
     document.write('<a href="#" class="buttonalike" id="h1button" title="Überschrift (zeilenweise, \'=\' am Zeilenanfang)"><u><b>Ü</b></u></a>');
     document.write('<a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste (zeilenweise, \'-\' am Zeilenanfang)">&middot;</a>');
-    document.write('<a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, \'#\' am Zeilenanfang)">&sup1;</a>');
-    document.write('<a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Quelltext (zeilenweise, \' \', am Zeilenanfang)"><code>C</code></a> ');
+    document.write('<a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, \'#\' am Zeilenanfang)">&sup1;</a> ');
+    document.write('<a href="#" class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat (zeilenweise, \'|\', am Zeilenanfang)">&quot;</a>');
+    document.write('<a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext (zeilenweise, \' \', am Zeilenanfang)"><code>C</code></a> ');
     document.write('<a href="#" class="buttonalike" id="attentionbutton" title="Aufmerksamkeit (wortweise, \'!\')">!</a>');
     document.write('<a href="#" class="buttonalike" id="emotionalbutton" title="Emotional (wortweise, \'*\')">*</a>');
     document.write('</span>');

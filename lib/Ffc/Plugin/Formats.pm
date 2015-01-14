@@ -11,7 +11,7 @@ our @Smilies = (
     [ ooo        => [':O',  ':-O',  '=O',   ':o',  ':-o',  '=o',  ] ],
     [ sad        => [':(',  ':-(',  '=(',                         ] ],
     [ crying     => [':,(', ':\'(',                               ] ],
-    [ sunny      => ['B)',  '8)',   'B-)',  '8-)',                ] ],
+    [ sunny      => ['8)',  'B-)',  '8-)',                        ] ],
     [ twinkling  => [';)',  ';-)',                                ] ],
     [ laughting  => [':D',  '=D',   ':-D',  'LOL',                ] ],
     [ rofl       => ['XD',  'X-D',  'ROFL',                       ] ],
@@ -69,7 +69,7 @@ sub _pre_format_text {
     $s =~ s/\s+\z//gxmso;
     _xml_escape($s);
     my $o = '';
-    my ( $ul, $ol, $q, $pre ) = ( 0, 0, 0, 0 );
+    my ( $ul, $ol, $q, $pre, $bq ) = ( 0, 0, 0, 0, 0 );
     for my $s ( split /(?:\r?\n\r?)+/, $s ) {
         # normal text
         next if $s =~ m/\A\s*\z/xmso;
@@ -124,6 +124,19 @@ sub _pre_format_text {
                 $ol = 0;
             }
 
+            # blockquotes
+            if ( $s =~ m/\A\s*\|\s*(.+)\z/xmso ) {
+                unless ( $bq ) {
+                    $bq = 1;
+                    $o .= "<blockquote>\n";
+                }
+                $o .= "<p>$1";
+            }
+            elsif ( $bq ) {
+                $o .= "</blockquote>\n";
+                $bq = 0;
+            }
+
         } # end of normal text (no pre)
         
         # preformatted text
@@ -140,7 +153,7 @@ sub _pre_format_text {
         }
         
         # normal text
-        unless ( $ul or $ol or $h3 or $pre ) {
+        unless ( $ul or $ol or $bq or $h3 or $pre ) {
             $o .= '<p>';
         }
         # multiline quoting beginnen
@@ -148,7 +161,7 @@ sub _pre_format_text {
             $o .= qq~<span class="quote">~;
         }
         # normal text
-        unless ( $ul or $ol or $pre ) {
+        unless ( $ul or $ol or $bq or $pre ) {
             $o .= $s;
         }
         # multiline quoting abschliessen
@@ -164,6 +177,7 @@ sub _pre_format_text {
     $o .= '</ul>' if $ul;
     $o .= '</ol>' if $ol;
     $o .= '</pre>' if $pre;
+    $o .= '</blockquote>' if $bq;
     chomp $o;
     return $o;
 }

@@ -94,6 +94,7 @@ window.onload = function(){
 
     // Buttonereignisse registrieren
     document.getElementById('h1button').onclick            = function(){ linestarter('= ') };
+    document.getElementById('quotebutton').onclick         = function(){ linestarter('| ') };
     document.getElementById('unorderedlistbutton').onclick = function(){ linestarter('- ') };
     document.getElementById('orderedlistbutton').onclick   = function(){ linestarter('# ') };
     document.getElementById('prebutton').onclick           = function(){ linestarter('  ') };

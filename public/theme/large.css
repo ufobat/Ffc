@@ -136,7 +136,7 @@ li {
 .popup > * {
     padding: .25em;
 }
-.postbox pre {
+.postbox pre, .postbox blockquote {
     padding-left: .75em;
 }
 .menuentry { 

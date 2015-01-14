@@ -222,6 +222,13 @@ Das auch
  # bui
  # tada
  = dingens
+Hahaha
+| das +ist+ ein
+| mehrzeiliges
+| zitat
+oder nicht?
+
+  was?
 
 ~;
     my $controlstring = qq~<ul>
@@ -246,6 +253,16 @@ Hallo
 # bui
 # tada
 = dingens
+</pre>
+<p>Hahaha</p>
+<blockquote>
+<p>das <span class="bold">ist</span> ein</p>
+<p>mehrzeiliges</p>
+<p>zitat</p>
+</blockquote>
+<p>oder nicht?</p>
+<pre>
+ was?
 </pre>~;
     $t->post_ok('/pre_format', form => { text => $teststring, urlshorten => 30 })->content_is($controlstring);
 
@@ -333,7 +350,7 @@ yes: (y) (Y),
 no: (n) (N),
 down: -.-,
 nope: :/ :-/ :\\ :-\\ =/ =\\,
-sunny: B) B-) 8) 8-),
+sunny: B-) 8) 8-),
 cats: ^^,
 love: <3,
 devilsmile: >:) >:-) >=),
@@ -371,7 +388,7 @@ sub controlstring_withimages {
 <p>no: <img class="smiley" src="/theme/img/smileys/no.png" alt="(n)" title="(n)" /> <img class="smiley" src="/theme/img/smileys/no.png" alt="(N)" title="(N)" />,</p>
 <p>down: <img class="smiley" src="/theme/img/smileys/down.png" alt="-.-" title="-.-" />,</p>
 <p>nope: <img class="smiley" src="/theme/img/smileys/nope.png" alt=":/" title=":/" /> <img class="smiley" src="/theme/img/smileys/nope.png" alt=":-/" title=":-/" /> <img class="smiley" src="/theme/img/smileys/nope.png" alt=":\\" title=":\\" /> <img class="smiley" src="/theme/img/smileys/nope.png" alt=":-\\" title=":-\\" /> <img class="smiley" src="/theme/img/smileys/nope.png" alt="=/" title="=/" /> <img class="smiley" src="/theme/img/smileys/nope.png" alt="=\\" title="=\\" />,</p>
-<p>sunny: <img class="smiley" src="/theme/img/smileys/sunny.png" alt="B)" title="B)" /> <img class="smiley" src="/theme/img/smileys/sunny.png" alt="B-)" title="B-)" /> <img class="smiley" src="/theme/img/smileys/sunny.png" alt="8)" title="8)" /> <img class="smiley" src="/theme/img/smileys/sunny.png" alt="8-)" title="8-)" />,</p>
+<p>sunny: <img class="smiley" src="/theme/img/smileys/sunny.png" alt="B-)" title="B-)" /> <img class="smiley" src="/theme/img/smileys/sunny.png" alt="8)" title="8)" /> <img class="smiley" src="/theme/img/smileys/sunny.png" alt="8-)" title="8-)" />,</p>
 <p>cats: <img class="smiley" src="/theme/img/smileys/cats.png" alt="^^" title="^^" />,</p>
 <p>love: <img class="smiley" src="/theme/img/smileys/love.png" alt="&lt;3" title="&lt;3" />,</p>
 <p>devilsmile: <img class="smiley" src="/theme/img/smileys/devilsmile.png" alt="&gt;:)" title="&gt;:)" /> <img class="smiley" src="/theme/img/smileys/devilsmile.png" alt="&gt;:-)" title="&gt;:-)" /> <img class="smiley" src="/theme/img/smileys/devilsmile.png" alt="&gt;=)" title="&gt;=)" />,</p>

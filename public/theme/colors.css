@@ -188,7 +188,7 @@ input[type="text"].titlestring {
 .popup, .messagebox > div {
     box-shadow: 0 0 2px dimgray;
 }
-.postbox pre {
+.postbox pre, .postbox blockquote {
     color: dimgray;
     border-left: 1px gainsboro solid;
 }
