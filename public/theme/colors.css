@@ -38,6 +38,9 @@ input:hover, textarea:hover, select:hover {
 input:focus, textarea:focus, select:focus {
     border-color: dodgerblue;
 }
+textarea {
+    resize: vertical;
+}
 a > img {
     border: 1px steelblue solid;
 }

@@ -104,6 +104,7 @@ window.onload = function(){
     document.getElementById('attentionbutton').onclick     = function(){ strngescape('!')  };
     document.getElementById('emotionalbutton').onclick     = function(){ strngescape('*')  };
 
+    tinput.style.resize = 'none';
     if ( !tinput.className.match(/inedit/i) ) {
         document.getElementById('closetextabutton').onclick    = closetextarea;
         tinput.onfocus = opentextarea;

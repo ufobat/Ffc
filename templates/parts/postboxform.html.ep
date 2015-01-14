@@ -31,12 +31,12 @@
 <a href="<%= url_for 'help' %>" target="_blank">Hilfe</a><script type="text/javascript">
     document.write('<span class="editbuttons">, ');
     document.write('<a href="#" class="buttonalike" id="boldbutton" title="Fett markiert (wortweise, \'+\')"><b>f</b></a>');
-    document.write('<a href="#" class="buttonalike" id="linethroughtbutton" title="Durchgestrichen (wortweise, \'-\')"><strike>d</strike></a>');
+    document.write('<a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben (wortweise, \'~\')"><i>k</i></a>');
     document.write('<a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung (wortweise, \'_\')"><u>u</u></a>');
-    document.write('<a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben (wortweise, \'~\')"><i>k</i></a> ');
+    document.write('<a href="#" class="buttonalike" id="linethroughtbutton" title="Durchgestrichen (wortweise, \'-\')"><strike>d</strike></a> ');
     document.write('<a href="#" class="buttonalike" id="h1button" title="Überschrift (zeilenweise, \'=\' am Zeilenanfang)"><u><b>Ü</b></u></a>');
     document.write('<a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste (zeilenweise, \'-\' am Zeilenanfang)">&middot;</a>');
-    document.write('<a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, \'#\' am Zeilenanfang)">&sup1;</a> ');
+    document.write('<a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, \'#\' am Zeilenanfang)">&sup1;</a>');
     document.write('<a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Quelltext (zeilenweise, \' \', am Zeilenanfang)"><code>C</code></a> ');
     document.write('<a href="#" class="buttonalike" id="attentionbutton" title="Aufmerksamkeit (wortweise, \'!\')">!</a>');
     document.write('<a href="#" class="buttonalike" id="emotionalbutton" title="Emotional (wortweise, \'*\')">*</a>');
