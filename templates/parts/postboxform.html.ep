@@ -9,7 +9,7 @@
             title="Die Themenüberschrift ändern">ändern</a><% if ( $topicid ) { %>,<% } %> 
 %     }
         <a href="<%= url_for 'ignore_forum_topic_do', topicid => $topicid %>" 
-            title="Das Thema ignorieren">ignorieren</a> 
+            title="Das Thema ignorieren">ignorieren</a><% if ( $backurl ) { %>, <a href="<%== $backurl %>" title="zurück"><%= $backtext || 'zurück' %></a><% } %>
         )</span> 
 %   }
     </h1>
@@ -23,7 +23,7 @@
 %= submit_button 'senden', class => 'linkalike send'
 (
 <a href="<%== $returl %>" title="&Auml;nderung abbrechen">abbrechen</a>,
-<a href="<%= url_for 'help' %>" target="_blank">Hilfe</a><% if ( $backurl ) { %>, <a href="<%== $backurl %>" title="zurück"><%= $backtext || 'zurück' %></a><% } %><script type="text/javascript">
+<a href="<%= url_for 'help' %>" target="_blank">Hilfe</a><script type="text/javascript">
     document.write('<span class="editbuttons">, ');
     document.write('<a href="#" class="buttonalike" id="h1button" title="Überschrift (zeilenweise, \'=\' am Zeilenanfang)"><u><b>Ü</b></u></a>');
     document.write('<a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung (wortweise, \'_\')"><u>u</u></a>');
