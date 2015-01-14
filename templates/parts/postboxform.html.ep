@@ -2,14 +2,19 @@
 % if ( $heading ) {
     <h1>
         <%= $heading %>
-%   if ( $topicediturl or $topicid ) {
+%   if ( $topicediturl or $topicid or $backurl ) {
     <span class="smallfont">( 
 %     if ( $topicediturl ) {
         <a href="<%= $topicediturl %>" 
             title="Die Themenüberschrift ändern">ändern</a><% if ( $topicid ) { %>,<% } %> 
 %     }
+%     if ( $topicid ) {
         <a href="<%= url_for 'ignore_forum_topic_do', topicid => $topicid %>" 
-            title="Das Thema ignorieren">ignorieren</a><% if ( $backurl ) { %>, <a href="<%== $backurl %>" title="zurück"><%= $backtext || 'zurück' %></a><% } %>
+            title="Das Thema ignorieren">ignorieren</a><%= $backurl ? ',' : '' %>
+%     }
+%     if ( $backurl ) { 
+        <a href="<%== $backurl %>" title="zurück"><%= $backtext || 'zurück' %></a>
+%     }
         )</span> 
 %   }
     </h1>
