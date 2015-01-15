@@ -8,6 +8,7 @@ ffcdata.chat.init = function() {
     var to;
     var history_list = new Array();
     var history_pointer = 0;
+    var newchatcountsum = 0;
 
     /************************************************************************
      *** Standard-Request-Funktion                                        ***
@@ -69,8 +70,10 @@ ffcdata.chat.init = function() {
     var set_title = function(newchatcount, newpostcount, newmsgscount) {
         var tp = ffcdata.title;
         if ( document.hasFocus() )
-            newchatcount = 0;
-        var str = tp[0]+newchatcount+tp[1]+(newpostcount+newmsgscount)+tp[2];
+            newchatcountsum = 0;
+        else 
+            newchatcountsum = newchatcountsum + newchatcount;
+        var str = tp[0]+newchatcountsum+tp[1]+(newpostcount+newmsgscount)+tp[2];
         document.getElementsByTagName("title")[0].firstChild.data = str;
         // console.log('title updated');
     };
@@ -80,7 +83,8 @@ ffcdata.chat.init = function() {
      ************************************************************************/
     var update_refreshtime = function(ref) {
         document.getElementById('refreshtime').value = ref;
-        // console.log('refresh time view updated');
+        refresh = ref;
+        // console.log('refresh time view updated: '+ref);
     };
 
     /************************************************************************
@@ -128,6 +132,7 @@ ffcdata.chat.init = function() {
      *** Empfangene Daten verwerten                                       ***
      ************************************************************************/
     var resolve = function(data) {
+        // console.log('resolving fetched data');
         // Titel aktualisieren
         set_title(data[0].length, data[2], data[3]);
 
@@ -148,25 +153,26 @@ ffcdata.chat.init = function() {
         if ( to ) {
             window.clearTimeout(to);
             // console.log('timeout stopped');
-            return 1;
+            return true;
         }
         else {
             // console.log('no timeout set yet');
-            return 0;
+            return false;
         }
     };
     var t_start = function() {
-        to = window.setTimeout(ffcdata.receive, refresh * 1000);
-        // console.log('timeout startet');
+        to = window.setTimeout(receive, refresh * 1000);
+        // console.log('timeout startet: '+refresh);
     };
 
     /************************************************************************
      *** Daten abholen                                                    ***
      ************************************************************************/
     var receive = function(msg) {
-        if ( t_stop() === 0 ) {
+        // console.log('receiving');
+        if ( !t_stop() ) {
             // console.log('timeout allready stopped, receive might be in progress');
-            return 0;
+            return;
         }
         // console.log('fetching data');
         var url = ffcdata.unfocusedurl;
@@ -189,7 +195,6 @@ ffcdata.chat.init = function() {
                 // console.log('set_refresh error');
             }
             else {
-                t_stop();
                 receive();
                 // console.log('set_refresh ok');
             }
@@ -319,7 +324,5 @@ ffcdata.chat.init = function() {
     t_start();
     receive();
     document.getElementById('msg').focus();
-
-    ffcdata.receive = receive;
 };
 
