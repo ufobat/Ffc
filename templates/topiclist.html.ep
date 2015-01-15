@@ -1,5 +1,5 @@
 % layout 'board';
-<div class="headbox">
+<div class="headbox" id="headbox">
 <h1>Allgemeines Forum</h1>
 <p><a href="<%= url_for 'add_forum_topic_form' %>" title="Neues Thema beginnen">Klicke hier</a>, um ein neues Thema zu beginnen.</p>
 </div>

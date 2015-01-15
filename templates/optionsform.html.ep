@@ -1,5 +1,5 @@
 % layout 'board';
-<div class="postbox headbox">
+<div class="postbox headbox" id="headbox">
     <h1>Einstellungen für das Forum</h1>
     <p>Hier können Einstellungen für Forum und Konteninformationen vorgenommen werden.</p>
 </div>

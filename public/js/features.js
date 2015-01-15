@@ -3,7 +3,13 @@ ffcdata.features = {};
 ffcdata.features.init = function(){
     var menu = document.getElementById('menu');
     var menutop = menu.offsetTop;
+    var headbox = document.getElementById('headbox');
+    if ( headbox ) {
+        var headboxtop = headbox.offsetTop;
+        var headboxmargintop = headbox.style["margin-top"];
+    }
     var menumargintop = menu.style["margin-top"];
+    var menuheight = menu.clientHeight;
     var menuclass = menu.className;
     var menubordertopwidth = menu.style["border-top-width"];
     menu.style.width = menu.clientWidth + 'px';
@@ -43,6 +49,7 @@ ffcdata.features.init = function(){
                 menu.style.position = 'inherit';
                 menu.style["border-top-width"] = menubordertopwidth;
                 menu.style["margin-top"] = menumargintop;
+                headbox.style["margin-top"] = headboxmargintop;
                 menu.className = menuclass;
                 return;
             }
@@ -54,6 +61,7 @@ ffcdata.features.init = function(){
                 menu.style.top = 0;
                 menu.style["margin-top"] = 0;
                 menu.className = menuclass + (menuclass ? ' ' : '') + 'shadowed';
+                headbox.style["margin-top"] = '' + headboxmargintop + menumargintop + menuheight + 'px';
             }
         };
     };

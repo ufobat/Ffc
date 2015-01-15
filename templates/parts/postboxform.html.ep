@@ -1,4 +1,4 @@
-<div class="postbox headbox">
+<div class="postbox headbox" id="headbox">
 % if ( $heading ) {
     <h1>
         <%= $heading %>

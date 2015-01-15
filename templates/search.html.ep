@@ -1,5 +1,5 @@
 % layout 'board';
-<div class="postbox headbox">
+<div class="postbox headbox" id="headbox">
     <h1>Suchergebnisse</h1>
 </div>
 % for my $p ( @$posts) {
