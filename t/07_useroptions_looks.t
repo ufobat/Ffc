@@ -185,14 +185,14 @@ sub test_autorefresh {
     # Default prüfen
     login($user1, $pass1);
     $t->get_ok('/')->status_is(200)
-      ->content_like(qr~window\.setInterval\(function\(\){~)
-      ->content_like(qr~\}, 3 \* 60000 \)~);
+      ->content_like(qr~ffcdata.features.init\(\);~)
+      ->content_like(qr~autorefresh:\s+3,~);
     $t->get_ok('/session')->status_is(200)
       ->json_is('/autorefresh', 3);
     login($user2, $pass2);
     $t->get_ok('/')->status_is(200)
-      ->content_like(qr~window\.setInterval\(function\(\){~)
-      ->content_like(qr~\}, 3 \* 60000 \)~);
+      ->content_like(qr~ffcdata.features.init\(\);~)
+      ->content_like(qr~autorefresh:\s+3,~);
     $t->get_ok('/session')->status_is(200)
       ->json_is('/autorefresh', 3);
 
@@ -200,8 +200,8 @@ sub test_autorefresh {
     $t->post_ok('/options/autorefresh')
       ->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200)
-      ->content_like(qr~window\.setInterval\(function\(\)\{~)
-      ->content_like(qr~\}, 3 \* 60000 \)~);
+      ->content_like(qr~ffcdata.features.init\(\);~)
+      ->content_like(qr~autorefresh:\s+3,~);
     error('Automatisches Neuladen der Seite konnte nicht geändert werden');
     $t->get_ok('/session')->status_is(200)
       ->json_is('/autorefresh', 3);
@@ -211,8 +211,8 @@ sub test_autorefresh {
     $t->post_ok('/options/autorefresh', form => { refresh => $new })
       ->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200)
-      ->content_like(qr~window\.setInterval\(function\(\)\{~)
-      ->content_like(qr~\}, 3 \* 60000 \)~);
+      ->content_like(qr~ffcdata.features.init\(\);~)
+      ->content_like(qr~autorefresh:\s+3,~);
     error('Automatisches Neuladen der Seite konnte nicht geändert werden');
     $t->get_ok('/session')->status_is(200)
       ->json_is('/autorefresh', 3);
@@ -222,8 +222,8 @@ sub test_autorefresh {
     $t->post_ok('/options/autorefresh', form => { refresh => $new })
       ->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200)
-      ->content_like(qr~window\.setInterval\(function\(\)\{~)
-      ->content_like(qr~\}, $new \* 60000 \)~);
+      ->content_like(qr~ffcdata.features.init\(\);~)
+      ->content_like(qr~autorefresh:\s+$new,~);
     info('Automatisches Neuladen der Seite auf '.$new.' Minuten eingestellt');
     $t->get_ok('/session')->status_is(200)
       ->json_is('/autorefresh', $new);
@@ -232,19 +232,19 @@ sub test_autorefresh {
     $t->post_ok('/options/autorefresh', form => { refresh => 0 })
       ->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200)
-      ->content_unlike(qr~window\.setInterval\(function\(\)\{~)
-      ->content_unlike(qr~\}, $new \* 60000 \)~);
+      ->content_like(qr~ffcdata.features.init\(\);~)
+      ->content_like(qr~autorefresh:\s+0,~);
     info('Automatisches Neuladen der Seite deaktiviert');
     $t->get_ok('/session')->status_is(200)
       ->json_is('/autorefresh', 0);
 
     # Korrektes Umsetzen
-    $new = 5 + int rand 100;
+    $new = $new + 1 + int rand 100;
     $t->post_ok('/options/autorefresh', form => { refresh => $new })
       ->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200)
-      ->content_like(qr~window\.setInterval\(function\(\)\{~)
-      ->content_like(qr~\}, $new \* 60000 \)~);
+      ->content_like(qr~ffcdata.features.init\(\);~)
+      ->content_like(qr~autorefresh:\s+$new,~);
     info('Automatisches Neuladen der Seite auf '.$new.' Minuten eingestellt');
     $t->get_ok('/session')->status_is(200)
       ->json_is('/autorefresh', $new);
@@ -252,8 +252,8 @@ sub test_autorefresh {
     # Schaun, dass der andere Benutzer nicht betroffen ist
     login($user1, $pass1);
     $t->get_ok('/')->status_is(200)
-      ->content_like(qr~window\.setInterval\(function\(\){~)
-      ->content_like(qr~\}, 3 \* 60000 \)~);
+      ->content_like(qr~ffcdata.features.init\(\);~)
+      ->content_like(qr~autorefresh:\s+3,~);
     $t->get_ok('/session')->status_is(200)
       ->json_is('/autorefresh', 3);
 }

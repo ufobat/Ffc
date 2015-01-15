@@ -2,8 +2,6 @@
     window.onload = function(){
         ffcdata.utils.init();
         ffcdata.editbuttons.init();
-% if ( session()->{autorefresh} ) {
         ffcdata.features.init();
-% }
     };
 </script>
