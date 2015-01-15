@@ -79,6 +79,7 @@ Features
 * Bilder in Anhängen werden automatisch erkannt und als HTML-Bildervorschauen dargestellt
 * Beiträge und Forenüberschriften können durchsucht werden über ein einfaches Suchfeld in der Menüzeile
 * Über CSS werden Popups über die Menüzeile für Privatnachichten und Forenthemen angeboten, hier wird auch die Anzahl neuer Beiträge hinterlegt
+* Ist Javascript aktiv, wird dafür gesorgt, dass die Menüleiste immer sichtbar ist, auch beim Scrollen - dann scrollt die Leiste einfach mit bei Bedarf
 * Die Anzahl neuer Beiträge (Forum + Privatnachrichten) wird in Summe im Titel der HTML-Webseite (üblicherweise damit auch im Fenstertitel des Browserfensters) angezeigt, im Chat wird zusätzlich die Summer neuer Chatnachrichten mit angezeigt, wenn das Chatfenster nicht im Fokus steht
 * Die Startseite für das Forum enthält eine Liste von Überschriften geordnet nach neuesten Beiträgen, ähnlich verhält es sich auch mit der Startseite für Privatnachrichten, wo die Benutzernamen gelistet werden
   * In beiden Startseiten wird jeweils die Anzahl neuer Beiträge zusammen mit einer farblichen Markierung angezeigt
