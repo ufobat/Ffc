@@ -46,7 +46,7 @@ ffcdata.features.init = function(){
                 menu.className = menuclass;
                 return;
             }
-            if ( !inscroll && window.scrollY > menutop ) {
+            if ( !inscroll && window.scrollY > menutop + 1 ) {
                 // console.log('scrolled over menu');
                 inscroll = true;
                 menu.style.position = 'fixed';
