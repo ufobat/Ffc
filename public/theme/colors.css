@@ -185,7 +185,7 @@ input[type="text"].titlestring {
 }
 .emotion:before { content:"*" }
 .emotion:after  { content:"*" }
-.popup, .messagebox > div {
+.popup, .messagebox > div, .shadowed {
     box-shadow: 0 0 2px dimgray;
 }
 .postbox blockquote {

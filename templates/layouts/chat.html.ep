@@ -2,8 +2,8 @@
 <html>
   <head>
     <title>(0) Chat - (0) <%= $title %></title>
-    <%= stylesheet 'theme/chat.css' %>
     <link rel="icon" type="image/ico" href="<%= url_for 'favicon_show' %>" />
+    <%= stylesheet 'theme/chat.css' %>
     <%= include 'layouts/parts/styleinc' %>
     <script type="text/javascript">
       ffcdata = {
@@ -16,6 +16,7 @@
         unfocusedurl: '<%= url_for "chat_receive_unfocused" %>',
       };
     </script>
+    <%= javascript '/js/utils.js' %>
     <%= javascript '/js/chat.js' %>
   </head>
   <body>
@@ -24,7 +25,8 @@
 %= content
 
   <script type="text/javascript">
-    ffcdata.init();
+    ffcdata.utils.init();
+    ffcdata.chat.init();
   </script>
   </body>
 </html>

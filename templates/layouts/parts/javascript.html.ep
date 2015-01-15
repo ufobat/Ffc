@@ -1,33 +1,9 @@
-% if ( session()->{autorefresh} ) {
 <script type="text/javascript">
-    // Browser-Shortcomings ausgleichen
-    if ( !document.hasFocus ) {
-        document.hasFocus = function() {
-            var hfocus = true;
-            window.onfocus = function() { hfocus = true;  };
-            window.onblur  = function() { hfocus = false; };
-            return function() { return hfocus; };
-        }();
-    }
-
-    // Auto-Refresh einsetzen
-    window.setInterval(function(){
-        if ( !document.hasFocus() 
-          && (!document.getElementById('textinput') 
-            || document.getElementById('textinput').value === '') ) {
-            location.reload();
-        }
-    }, <%= session()->{autorefresh} %> * 60000 );
-    
-    // Aktualisierungszeitpunkt nach lokaler Uhrzeit in den Titel schreiben
-    (function(){
-        var mytitle = document.getElementsByTagName("title")[0].firstChild.data;
-        var mytime  = new Date();
-        var myh = mytime.getHours(), mym = mytime.getMinutes();
-        document.getElementsByTagName("title")[0].firstChild.data
-            = mytitle + ', zuletzt aktualisiert ' 
-                      + ( myh < 10 ? '0'+myh : myh ) 
-                      + ':' + ( mym < 10 ? '0'+mym : mym );
-    }());
-</script>
+    window.onload = function(){
+        ffcdata.utils.init();
+        ffcdata.editbuttons.init();
+% if ( session()->{autorefresh} ) {
+        ffcdata.features.init();
 % }
+    };
+</script>

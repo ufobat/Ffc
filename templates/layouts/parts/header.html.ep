@@ -2,10 +2,19 @@
 <html>
   <head>
     <title><% if ( $controller ne 'auth' ) { %>(<%= $newpostcount + $newmsgscount %>) <% } %><%= $title %></title>
+    <link rel="icon" type="image/*" href="<%= url_for 'favicon_show' %>" />
     <%= stylesheet '/theme/colors.css' %>
     <%= stylesheet '/theme/large.css', media => 'all and (min-device-width: 801px)' %>
     <%= stylesheet '/theme/small.css', media => 'all and (max-device-width: 800px)' %>
-    <link rel="icon" type="image/*" href="<%= url_for 'favicon_show' %>" />
+    <script type="text/javascript">
+        ffcdata = {
+            autorefresh: <%= session()->{autorefresh} || 0 %>,
+            user: "<%= session()->{user} || '' %>" || undefined,
+        };
+    </script>
+    <%= javascript '/js/utils.js' %>
+    <%= javascript '/js/features.js' %>
+    <%= javascript '/js/editbuttons.js' %>
 %= include 'layouts/parts/styleinc'
   </head>
   <body>

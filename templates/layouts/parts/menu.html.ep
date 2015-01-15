@@ -1,4 +1,4 @@
-<div class="menu">
+<div class="menu" id="menu">
     <div class="menuentry refreshlink">
         <a href="<%= url_for $pageurl %>"
             title="Diese Seite neu laden"

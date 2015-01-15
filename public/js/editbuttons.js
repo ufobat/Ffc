@@ -1,7 +1,10 @@
-window.onload = function(){
-    if ( window.matchMedia('(max-device-width: 801px)').matches ) return;
+ffcdata.editbuttons = {};
+
+ffcdata.editbuttons.init = function(){
+    if ( ffcdata.utils.is_disabled() ) return;
 
     var tinput = document.getElementById('textinput');
+    if ( !tinput ) return;
 
     // Auswahltext ermitteln
     var selection = function() {
@@ -110,4 +113,13 @@ window.onload = function(){
         document.getElementById('closetextabutton').onclick    = closetextarea;
         tinput.onfocus = opentextarea;
     }
+};
+
+ffcdata.editbuttons.stylebuttons = function(){
+    if ( ffcdata.utils.is_disabled() ) return;
+};
+
+ffcdata.editbuttons.closebutton = function(){
+    if ( ffcdata.utils.is_disabled() ) return;
+    document.write('<p id="closetextap" class="textright nodisplay"><a href="#" class="buttonalike" id="closetextabutton" title="Textfeld wieder zusammen klappen">Textfeld einklappen</a></p>');
 };

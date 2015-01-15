@@ -36,9 +36,6 @@ div, textarea {
     height: 5em;
     min-height: 5em;
 }
-#buttonlist {
-    max-height: 60em;
-}
 #userlist, #msglog {
     height: 20em;
 }
@@ -53,6 +50,8 @@ div, textarea {
     vertical-align: top;
     border-color: transparent;
     margin-top: -0.5em;
+    max-height: 60em;
+    overflow: visible;
 }
 button, #refreshtime {
     background: silver;
