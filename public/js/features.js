@@ -10,7 +10,7 @@ ffcdata.features.init = function(){
 
     // Auto-Refresh einsetzen
     var set_autorefresh = function(){
-        if ( ffcdata.utils.is_disabled ) return;
+        if ( ffcdata.utils.is_disabled() ) return;
         ffcdata.features.autorefresh_interval = window.setInterval(function(){
             if ( !document.hasFocus() 
               && (!document.getElementById('textinput') 
