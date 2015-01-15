@@ -13,7 +13,9 @@ if ( !document.hasFocus ) {
 /************************************************************************
  *** Initialisierung mit allen notwendigen Funktionen                 ***
  ************************************************************************/
-ffcdata.init = function() {
+ffcdata.chat = {};
+
+ffcdata.chat.init = function() {
     var refresh = 60;
     var to;
     var history_list = new Array();
