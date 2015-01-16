@@ -29,17 +29,10 @@
 (
 <a href="<%== $returl %>" title="&Auml;nderung abbrechen">abbrechen</a>,
 <a href="<%= url_for 'help' %>" target="_blank">Hilfe</a><span class="editbuttons">, 
-    <a href="#" class="buttonalike" id="boldbutton" title="Fett markiert (wortweise, '+')"><b>f</b></a>
-    <a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben (wortweise, '~')"><i>k</i></a>
-    <a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung (wortweise, '_')"><u>u</u></a>
-    <a href="#" class="buttonalike" id="linethroughtbutton" title="Durchgestrichen (wortweise, '-')"><strike>d</strike></a> 
-    <a href="#" class="buttonalike" id="h1button" title="Überschrift (zeilenweise, '=' am Zeilenanfang)"><u><b>Ü</b></u></a>
-    <a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste (zeilenweise, '-' am Zeilenanfang)">&middot;</a>
-    <a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, '#' am Zeilenanfang)">&sup1;</a> 
-    <a href="#" class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat (zeilenweise, '|', am Zeilenanfang)">&quot;</a>
-    <a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext (zeilenweise, ' ', am Zeilenanfang)"><code>C</code></a> 
-    <a href="#" class="buttonalike" id="attentionbutton" title="Aufmerksamkeit (wortweise, '!')">!</a>
-    <a href="#" class="buttonalike" id="emotionalbutton" title="Emotional (wortweise, '*')">*</a></span>
+    <a href="#" class="buttonalike" id="boldbutton" title="Fett markiert (wortweise, '+')"><b>f</b></a><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben (wortweise, '~')"><i>k</i></a><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung (wortweise, '_')"><u>u</u></a><a href="#" class="buttonalike" id="linethroughtbutton" title="Durchgestrichen (wortweise, '-')"><strike>d</strike></a> 
+    <a href="#" class="buttonalike" id="h1button" title="Überschrift (zeilenweise, '=' am Zeilenanfang)"><u><b>Ü</b></u></a><a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste (zeilenweise, '-' am Zeilenanfang)">&middot;</a><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, '#' am Zeilenanfang)">&sup1;</a> 
+    <a href="#" class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat (zeilenweise, '|', am Zeilenanfang)">&quot;</a><a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext (zeilenweise, ' ', am Zeilenanfang)"><code>C</code></a> 
+    <a href="#" class="buttonalike" id="attentionbutton" title="Aufmerksamkeit (wortweise, '!')">!</a><a href="#" class="buttonalike" id="emotionalbutton" title="Emotional (wortweise, '*')">*</a></span>
 )
 </p>
 <p>
