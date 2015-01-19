@@ -1,17 +1,14 @@
 ffcdata.features = {};
 
 ffcdata.features.init = function(){
-    var menu = document.getElementById('menu');
     var menutop = menu.offsetTop;
-    var headbox = document.getElementById('headbox');
     if ( headbox ) {
-        var headboxtop = headbox.offsetTop;
-        var headboxmargintop = headbox.style["margin-top"];
+        var headboxmargintop = Number(getComputedStyle(headbox)["margin-top"].replace(/px/,''));
     }
-    var menumargintop = menu.style["margin-top"];
+    var menumargintop = Number(getComputedStyle(menu)["margin-top"].replace(/px/,''));
     var menuheight = menu.clientHeight;
     var menuclass = menu.className;
-    var menubordertopwidth = menu.style["border-top-width"];
+    var menubordertopwidth = getComputedStyle(menu)["border-top-width"].replace(/px/,'');
     menu.style.width = menu.clientWidth + 'px';
 
     // Auto-Refresh einsetzen
@@ -47,9 +44,9 @@ ffcdata.features.init = function(){
                 inscroll = false;
                 menu.style.top = 'inherit';
                 menu.style.position = 'inherit';
-                menu.style["border-top-width"] = menubordertopwidth;
-                menu.style["margin-top"] = menumargintop;
-                headbox.style["margin-top"] = headboxmargintop;
+                menu.style["border-top-width"] = menubordertopwidth + 'px';
+                menu.style["margin-top"] = menumargintop + 'px';
+                headbox.style["margin-top"] = headboxmargintop + 'px';
                 menu.className = menuclass;
                 return;
             }
@@ -61,7 +58,7 @@ ffcdata.features.init = function(){
                 menu.style.top = 0;
                 menu.style["margin-top"] = 0;
                 menu.className = menuclass + (menuclass ? ' ' : '') + 'shadowed';
-                headbox.style["margin-top"] = '' + headboxmargintop + menumargintop + menuheight + 'px';
+                headbox.style["margin-top"] = headboxmargintop + menumargintop + menuheight + 'px';
             }
         };
     };
