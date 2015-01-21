@@ -65,7 +65,7 @@ ffcdata.features.init = function(){
 
     // Weitere Feature-Operationen starten
     set_titletime();
-    if ( false and !ffcdata.utils.is_disabled() ) 
+    if ( !ffcdata.utils.is_disabled() ) 
         menuscroll_init();
     if ( ffcdata.autorefresh > 0 ) 
         set_autorefresh();
