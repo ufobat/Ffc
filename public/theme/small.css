@@ -21,11 +21,14 @@ body > * {
 .menu form {
     white-space: nowrap;
 }
-h1, h2, h3, h4 {
+h2, h3, h4 {
     font-size: 1em;
 }
-h1, h2 {
+h2 {
     border-bottom-width: 4px;
+}
+h1 {
+    display: none;
 }
 input, textarea, select {
     border-width: 4px;
