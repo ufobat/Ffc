@@ -181,6 +181,7 @@ input[type="text"].titlestring {
     display: block;
     margin-top: .75em;
 }
+/* Editbuttons */
 .buttonalike, .buttonalike:active, .buttonalike:focus {
     margin-bottom: .25em;
 }
@@ -190,4 +191,16 @@ input[type="text"].titlestring {
 .helptext .buttonalike {
     font-size: .75em;
 }
+/* Menü oben fixed an den Rand setzen */
+h1 {
+    margin-top: 1em;
+}
+.menu {
+    position: fixed;
+    top: 0;
+    width: 64em;
+    margin-top:0;
+    box-shadow: 0 0 1px dimgray;
+    border-top-width: 0;
+} 
 

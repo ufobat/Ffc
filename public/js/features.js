@@ -1,15 +1,6 @@
 ffcdata.features = {};
 
 ffcdata.features.init = function(){
-    var menutop = menu.offsetTop;
-    if ( headbox ) {
-        var headboxmargintop = Number(getComputedStyle(headbox)["margin-top"].replace(/px/,''));
-    }
-    var menumargintop = Number(getComputedStyle(menu)["margin-top"].replace(/px/,''));
-    var menuheight = menu.clientHeight;
-    var menuclass = menu.className;
-    var menubordertopwidth = getComputedStyle(menu)["border-top-width"].replace(/px/,'');
-    menu.style.width = menu.clientWidth + 'px';
 
     // Auto-Refresh einsetzen
     var set_autorefresh = function(){
@@ -34,39 +25,8 @@ ffcdata.features.init = function(){
                       + ':' + ( mym < 10 ? '0'+mym : mym );
     };
 
-    // Menuscrolling
-    var menuscroll_init = function(){
-        var inscroll = false;
-        window.onscroll = function(){
-            // console.log('scroll');
-            if ( inscroll && window.scrollY <= menutop ) {
-                // console.log('scrolled back to top');
-                inscroll = false;
-                menu.style.top = 'inherit';
-                menu.style.position = 'inherit';
-                menu.style["border-top-width"] = menubordertopwidth + 'px';
-                menu.style["margin-top"] = menumargintop + 'px';
-                headbox.style["margin-top"] = headboxmargintop + 'px';
-                menu.className = menuclass;
-                return;
-            }
-            if ( !inscroll && window.scrollY > menutop + 1 ) {
-                // console.log('scrolled over menu');
-                inscroll = true;
-                menu.style.position = 'fixed';
-                menu.style["border-top-width"] = 0;
-                menu.style.top = 0;
-                menu.style["margin-top"] = 0;
-                menu.className = menuclass + (menuclass ? ' ' : '') + 'shadowed';
-                headbox.style["margin-top"] = headboxmargintop + menumargintop + menuheight + 'px';
-            }
-        };
-    };
-
     // Weitere Feature-Operationen starten
     set_titletime();
-    if ( !ffcdata.utils.is_disabled() ) 
-        menuscroll_init();
     if ( ffcdata.autorefresh > 0 ) 
         set_autorefresh();
 };
