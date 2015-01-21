@@ -2,6 +2,11 @@
     margin: 0;
     padding: 0;
 }
+body {
+    margin: 0 auto 5px auto;
+    max-width: 48em;
+    text-align: left;
+}
 body > * {
     padding: 0 1em 1em 1em;
     margin-top: 3px;
@@ -9,11 +14,11 @@ body > * {
 body > * > * {
     margin: .75em 0;
 }
-h1, h2, h3 {
-    font-size: 1em;
-}
 h1 {
     font-size: 1.25em;
+}
+h2, h3 {
+    font-size: 1em;
 }
 img {
     max-width: 13em;
@@ -142,16 +147,11 @@ li {
     margin: 0;
     padding-top: 1px;
 }
-.postbox {
+h1, .postbox {
     clear: both;
 }
 .postbox textarea, input[type="text"].titlestring {
     width: 100%;
-}
-body {
-    max-width: 48em;
-    margin: 0 auto 5px auto;
-    padding: 0 .5em;
 }
 input[type="text"].titlestring {
     font-size: 1.25em;
@@ -198,9 +198,9 @@ h1 {
 .menu {
     position: fixed;
     top: 0;
-    width: 64em;
     margin-top:0;
-    box-shadow: 0 0 1px dimgray;
+    width: 63.9em;
+    box-shadow: 0 0 2px dimgray;
     border-top-width: 0;
 } 
 
