@@ -110,7 +110,7 @@ ffcdata.editbuttons.init = function(){
 
     tinput.style.resize = 'none';
     if ( !tinput.className.match(/inedit/i) ) {
-        document.getElementById('closetextabutton').onclick    = closetextarea;
+        document.getElementById('closetextabutton').onclick = closetextarea;
         tinput.onfocus = opentextarea;
     }
 };
