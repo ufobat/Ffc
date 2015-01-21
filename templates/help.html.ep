@@ -31,6 +31,23 @@
     </ul>
 </div>
 <div class="postbox helptext">
+    <h2>Editierhilfen (Buttons)</h2>
+    <p>Falls auf einem Desktopsystem Javascript im Browser eingeschalten ist, stehen folgende Buttons zur Verfügung, welche die Formatierungsauszeichnungen automatisch in den Text im Textfeld einfügen.</p>
+    <ul>
+        <li><a href="#" class="buttonalike" id="boldbutton" title="Fett markiert (wortweise, '+')"><span class="bold">f</span></a> markiert das aktuelle Wort oder die markierten Wörter <span class="bold">fett</span></li>
+        <li><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben (wortweise, '~')"><span class="italic">k</span></a> markiert das aktuelle Wort oder die markierten Wörter <span class="italic">kursiv</span></li>
+        <li><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung (wortweise, '_')"><span class="underline">u</u></a> <span class="underline">unterstreicht</span> das aktuelle Wort oder die markierten Wörter</li>
+        <li><a href="#" class="buttonalike" id="linethroughtbutton" title="Durchgestrichen (wortweise, '-')"><span class="linethrough">d</span></a> streicht das aktuelle Wort oder die markierten Wörter <span class="linethrough">durch</span></li>
+        <li><a href="#" class="buttonalike" id="h1button" title="Überschrift (zeilenweise, '=' am Zeilenanfang)"><span class="underline"><span class="bold">Ü</span></span></a> formatiert die aktuelle Zeile oder die markierten Zeilen als Überschrift</li>
+        <li><a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste (zeilenweise, '-' am Zeilenanfang)">&middot;</a> formatiert die aktuelle Zeile oder die markierten Zeilen als unsortierte Listen</li>
+        <li><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, '#' am Zeilenanfang)">&sup1;</a>  formatiert die aktuelle Zeile oder die markierten Zeilen als Aufzählungsliste</li>
+        <li><a href="#" class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat (zeilenweise, '|', am Zeilenanfang)">&quot;</a> formatiert die aktuelle Zeile oder die markierten Zeilen als Zitat</li>
+        <li><a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext (zeilenweise, ' ', am Zeilenanfang)"><code>C</code></a>  formatiert die aktuelle Zeile oder die markierten Zeilen als (Programm-)Quelltext</li>
+        <li><a href="#" class="buttonalike" id="attentionbutton" title="Aufmerksamkeit (wortweise, '!')">!</a> markiert das aktuelle Wort oder die markierten Wörter als <span class="alert">wichtig</span></li>
+        <li><a href="#" class="buttonalike" id="emotionalbutton" title="Emotional (wortweise, '*')">*</a></span> markiert das aktuelle Wort oder die markierten Wörter <span class="emotion">emotional</span></li>
+    </ul>
+</div>
+<div class="postbox helptext">
     <h2>Links</h2>
     <p>Links werden weitestgehend automatisch erkannt und entsprechend als Links markiert, sobald sie im Text auftauchen.</p>
 </div>

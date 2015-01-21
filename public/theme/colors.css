@@ -191,6 +191,9 @@ input[type="text"].titlestring {
 .postbox blockquote {
     border-left: 1px gainsboro solid;
 }
+pre, code {
+    font-family: monospace;
+}
 .postbox pre {
     color: chocolate;
     border-left: 1px palegoldenrod solid;
