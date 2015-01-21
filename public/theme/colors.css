@@ -5,10 +5,10 @@ body {
 }
 body > *, .popup {
     background: white;
-    border: 1px gray solid;
+    border: .1em gray solid;
 }
 h1, h2 {
-    border-bottom: 1px gainsboro solid;
+    border-bottom: .1em gainsboro solid;
 }
 .titlebanner {
     border-bottom-color: gray;
@@ -30,7 +30,7 @@ h3 {
 input, textarea, select {
     background: white;
     color: #006;
-    border: 1px silver solid;
+    border: .1em silver solid;
 }
 input:hover, textarea:hover, select:hover {
     border-color: steelblue;
@@ -42,7 +42,7 @@ textarea {
     resize: vertical;
 }
 a > img {
-    border: 1px steelblue solid;
+    border: .1em steelblue solid;
 }
 a, .linkalike {
     color: steelblue;
@@ -79,7 +79,7 @@ a:focus, .linkalike:focus {
     background: transparent;
 }
 .messagebox > * {
-    border: 1px silver solid;
+    border: .1em silver solid;
 }
 .warning, .warning h1 {
     color: saddlebrown;
@@ -115,13 +115,13 @@ a.coloroption:hover {
 }
 .suboption {
     background: whitesmoke;
-    border: 1px gainsboro solid;
+    border: .1em gainsboro solid;
 }
 .suboption h2 {
     color: black;
 }
 .postbox img {
-    border: 1px gray solid;
+    border: .1em gray solid;
 }
 .postbox .avatar {
     color: gainsboro;
