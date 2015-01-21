@@ -74,7 +74,7 @@ ffcdata.editbuttons.init = function(){
         txt = border[0] + str + txt.replace(/\W+/g, str) + str + border[1];
         tinput.value = tinput.value.slice(0,sel[0]) + txt + tinput.value.slice(sel[1],tinput.value.length - 1);
 
-        position(sel[1] + cnt.length);
+        position(sel[1] + (cnt.length * str.length) + str.length);
     };
 
     // Textfeld-Klappungen
