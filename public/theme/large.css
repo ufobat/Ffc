@@ -3,13 +3,13 @@
     padding: 0;
 }
 body {
-    margin: 0 auto 5px auto;
-    max-width: 48em;
     text-align: left;
+    width: 100%;
 }
 body > * {
     padding: 0 1em 1em 1em;
-    margin-top: 3px;
+    max-width: 48em;
+    margin: 3px auto 5px auto;
 }
 body > * > * {
     margin: .75em 0;
@@ -51,6 +51,13 @@ a, .linkalike {
 .menu {
     text-align: center;
     padding: .1em 0;
+    position: fixed;
+    top: 0;
+    margin-top:0;
+    width: 100%;
+    max-width: none;
+    box-shadow: 0 0 2px dimgray;
+    border-width: 0 0 .1em 0;
 }
 input[type="color"], input[type="url"], input[type="email"], input[type="text"], input[type="password"] {
     width: 16em;
@@ -166,10 +173,12 @@ input[type="text"].titlestring {
     display: none;
 }
 .refreshlink {
-    float: left;
+/*    float: left;*/
+    margin-right: 3em;
 }
 .logoutbutton2 {
-    float: right;
+/*    float: right;*/
+    margin-left: 3em;
 }
 .titlebanner {
     font-size: 2em;
@@ -191,16 +200,7 @@ input[type="text"].titlestring {
 .helptext .buttonalike {
     font-size: .75em;
 }
-/* Menü oben fixed an den Rand setzen */
-h1 {
+.titlebanner {
     margin-top: 1em;
 }
-.menu {
-    position: fixed;
-    top: 0;
-    margin-top:0;
-    width: 63.85em;
-    box-shadow: 0 0 2px dimgray;
-    border-top-width: 0;
-} 
 

@@ -29,7 +29,7 @@ document.write('\
 % if ( $query ) {
     <a href="<%= url_for "/$controller" %>" title="Suchanfrage zurück setzen">x</a>
 % } else {
-    <span style="visibility: hidden"><a href="<%= url_for "/$controller" %>" title="Suchanfrage zurück setzen">X</a></span>
+    <span style="display: none"><a href="<%= url_for "/$controller" %>" title="Suchanfrage zurück setzen">X</a></span>
 % }
 %= text_field query => $query, $query ? (class => 'activesearch') : ()
     <button type="submit" class="linkalike">»Suche</button>
