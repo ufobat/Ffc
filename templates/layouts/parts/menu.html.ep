@@ -24,22 +24,15 @@ document.write('\
 ');
 </script>
     <div class="menuentry">
-% if ( $queryurl ) {
-<form action="<%== $queryurl %>" accept-charset="UTF-8" method="POST">
+<form <%== $queryurl || 'style="visibility: hidden" ' %>action="<%== $queryurl %>" accept-charset="UTF-8" method="POST">
 % if ( $query ) {
     <a href="<%= url_for "/$controller" %>" title="Suchanfrage zurück setzen">x</a>
 % } else {
-    <span style="display: none"><a href="<%= url_for "/$controller" %>" title="Suchanfrage zurück setzen">X</a></span>
+    <span style="visibility: hidden">X</span>
 % }
 %= text_field query => $query, $query ? (class => 'activesearch') : ()
     <button type="submit" class="linkalike">»Suche</button>
 </form>
-% } else {
-        <span style="visibility: hidden">
-            %= text_field query => session()->{query}, session()->{query} ? (class => 'activesearch') : ()
-            <button type="submit" class="linkalike">» Suche</button>
-        </span>
-% }
     </div>
     <div class="menuentry optionslink">
         <a href="<%= url_for 'options_form' %>" title="Verschiedene Einstellungen für diese Plattform den eigenen Wünschen anpassen"><span class="linktext linkoptions<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
