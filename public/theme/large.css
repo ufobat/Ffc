@@ -45,9 +45,6 @@ a, .linkalike {
 .messagebox:hover > *:hover {
     margin-right: .25em;
 }
-.pages {
-    padding: .25em;
-}
 .menu {
     text-align: center;
     padding: .1em 0;
@@ -65,7 +62,7 @@ input[type="color"], input[type="url"], input[type="email"], input[type="text"],
 .menu input[type="text"] {
     width: 5em;
 }
-.smallfont, .userlist p, h2, .attachementtitle, .menu, .pages, .insertformbuttons, .headbox .userinfo {
+.smallfont, .userlist p, h2, .attachementtitle, .menu, .insertformbuttons, .headbox .userinfo, .pages > * {
     font-size: .75em;
 }
 
@@ -172,19 +169,22 @@ input[type="text"].titlestring {
 .pagestretch {
     display: none;
 }
+.pages {
+    padding-top: .1em;
+    padding-bottom: .1em;
+}
 .refreshlink {
-/*    float: left;*/
-    margin-right: 3em;
+    margin-right: 2.5em;
 }
 .logoutbutton2 {
-/*    float: right;*/
-    margin-left: 3em;
+    margin-left: 2.5em;
 }
 .titlebanner {
     font-size: 2em;
     padding: 0;
     text-align: center;
     border: none;
+    margin-top: 1em;
 }
 .userlist .smallfont {
     display: block;
@@ -199,8 +199,5 @@ input[type="text"].titlestring {
 }
 .helptext .buttonalike {
     font-size: .75em;
-}
-.titlebanner {
-    margin-top: 1em;
 }
 
