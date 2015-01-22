@@ -10,39 +10,6 @@ ffcdata.chat.init = function() {
     var history_pointer = 0;
     var newchatcountsum = 0;
 
-    /************************************************************************
-     *** Standard-Request-Funktion                                        ***
-     ************************************************************************/
-    var request = function(methd, url, data, callback) {
-        try {
-            // console.log('starting request');
-            var req = new XMLHttpRequest();
-            req.open(methd, url, true);
-            req.addEventListener("load", function() {
-                if (req.status < 400)
-                    callback(JSON.parse(req.responseText));
-                else
-                    new Error("Request failed: " + req.statusText);
-            });
-
-            if ( methd === 'POST' ) {
-                req.setRequestHeader("Content-type", "multipart/formdata");
-                //req.setRequestHeader("Content-length", data.toString().length);
-                req.setRequestHeader("Connection", "close");
-                req.send(JSON.stringify(data));
-            }
-            else {
-                req.send();
-            }
-
-            req.addEventListener("error", function() {
-                new Error("Network error");
-            });
-        }
-        catch (e) {
-            // console.log('Error on request: ' + e);
-        }
-    };
 
     /************************************************************************
      *** Chat-Text formatieren                                            ***
@@ -179,9 +146,9 @@ ffcdata.chat.init = function() {
         if ( document.hasFocus() )
             url = ffcdata.focusedurl;
         if ( msg )
-            request('POST', url, msg, resolve);
+            ffcdata.utils.request('POST', url, msg, resolve);
         else
-            request('GET', url, null, resolve);
+            ffcdata.utils.request('GET', url, null, resolve);
     };
 
     /************************************************************************
@@ -189,7 +156,7 @@ ffcdata.chat.init = function() {
      ************************************************************************/
     var set_refresh = function(value) {
         var url = ffcdata.refreshseturl.substring(0, ffcdata.refreshseturl.length - 2);
-        request('GET', url + value, null, function(res){ 
+        ffcdata.utils.request('GET', url + value, null, function(res){ 
             if ( res != 'ok' ) {
                 new Error('Set refresh time failed');
                 // console.log('set_refresh error');
@@ -205,7 +172,7 @@ ffcdata.chat.init = function() {
      *** Den Chat verlassen                                               ***
      ************************************************************************/
     window.onbeforeunload = function() {
-        request('GET', ffcdata.leaveurl, null, function(ret) { console.log(ret); });
+        ffcdata.utils.request('GET', ffcdata.leaveurl, null, function(ret) { console.log(ret); });
     };
 
     /************************************************************************

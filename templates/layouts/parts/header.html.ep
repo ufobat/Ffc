@@ -10,6 +10,7 @@
         ffcdata = {
             autorefresh: <%= session()->{autorefresh} || 0 %>,
             user: "<%= session()->{user} || '' %>" || undefined,
+            counturl: "<%= url_for 'countings' %>",
         };
     </script>
     <%= javascript '/js/utils.js' %>
