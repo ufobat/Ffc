@@ -27,6 +27,7 @@ h3 {
 .loginform, .headbox, .popup {
     background: whitesmoke;
 }
+/*
 input, textarea, select {
     background: white;
     color: #006;
@@ -38,6 +39,7 @@ input:hover, textarea:hover, select:hover {
 input:focus, textarea:focus, select:focus {
     border-color: dodgerblue;
 }
+*/
 textarea {
     resize: vertical;
 }
@@ -105,11 +107,11 @@ a:focus, .linkalike:focus {
 .error h1 {
     color: firebrick;
 }
-.menu button {
+/*.menu button {
     border: none;
     background: none;
     display: inline;
-}
+}*/
 a.coloroption:hover {
     border-color: dodgerblue;
 }

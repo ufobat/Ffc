@@ -25,7 +25,7 @@
 % if ( defined $postid ) {
     <input type="hidden" name="postid" value="<%= $postid %>" />
 % }
-%= submit_button 'senden', class => 'linkalike send'
+%= submit_button 'senden', class => 'send'
 (
 <a href="<%== $returl %>" title="&Auml;nderung abbrechen">abbrechen</a>,
 <a href="<%= url_for 'help' %>" target="_blank">Hilfe</a><span class="editbuttons">, 
