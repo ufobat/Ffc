@@ -11,6 +11,7 @@
             autorefresh: <%= session()->{autorefresh} || 0 %>,
             user: "<%= session()->{user} || '' %>" || undefined,
             counturl: "<%= url_for 'countings' %>",
+            lastcount: <%= $newpostcount + $newmsgscount %>,
         };
     </script>
     <%= javascript '/js/utils.js' %>
