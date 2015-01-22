@@ -33,13 +33,13 @@ textarea {
 a > img {
     border: .1em steelblue solid;
 }
-a, .linkalike {
+a {
     color: steelblue;
     text-decoration: underline;
     border: none;
     background: none;
 }
-a:hover, .linkalike:hover {
+a:hover {
     color: dodgerblue;
     text-decoration: none;
     cursor: pointer;
@@ -56,7 +56,7 @@ a:hover > img {
     background: dodgerblue;
     color: white;
 }
-a:focus, .linkalike:focus {
+a:focus {
     color: gainsboro;
 }
 .active:focus, a.active:focus {

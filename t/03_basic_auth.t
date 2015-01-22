@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 133;
+use Test::More tests => 151;
 use Test::Mojo;
 
 my ( $t, $path, $admin, $pass, $dbh ) = Testinit::start_test();
@@ -88,8 +88,8 @@ sub check_notloggedin {
       ->content_like(qr/<input type="text" name="username"/)
       ->content_like(qr/<input type="password" name="password"/)
       ->content_like(qr~<form action="/login" method="POST">~i)
-      ->content_like(
-        qr~<input type="submit" value="anmelden" class="linkalike~);
+      ->content_like(qr~<link rel="icon" type="image/png" href="/theme/img/favicon.png" />~)
+      ->content_like(qr~<input type="submit" value="anmelden" class="linkalike~);
 }
 
 sub check_loggedin {
@@ -97,4 +97,5 @@ sub check_loggedin {
     $t->status_is(200)
       ->content_like(qr/Angemeldet als "$admin"/)
       ->content_unlike(qr~<form action="/login" method="POST">~i)
+      ->content_like(qr~<link rel="icon" type="image/png" href="/favicon/show" />~);
 }

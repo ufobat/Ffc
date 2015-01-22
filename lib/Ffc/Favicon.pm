@@ -17,10 +17,12 @@ sub favicon_show {
     my $c = shift;
     my $filetype = $c->dbh->selectall_arrayref(
         'SELECT "value" FROM "config" WHERE "key"=?', undef, 'favicontype')->[0]->[0];
+    my $contenttype = $c->dbh->selectall_arrayref(
+        'SELECT "value" FROM "config" WHERE "key"=?', undef, 'faviconcontenttype')->[0]->[0];
     my $file = catfile @{$c->datapath}, 'favicon';
     $file = Mojo::Asset::File->new(path => $file);
     my $headers = Mojo::Headers->new();
-    $headers->add( 'Content-Type', 'image/'.$filetype );
+    $headers->add( 'Content-Type', $contenttype );
     $headers->add( 'Content-Disposition', qq~inline;filename=favicon.$filetype~ );
     $headers->add( 'Content-Length' => $file->size );
     $c->res->content->headers($headers);
@@ -30,7 +32,7 @@ sub favicon_show {
 
 sub favicon_upload {
     my $c = shift;
-    my ( $filename, $filetype ) 
+    my ( $filename, $filetype, $contenttype ) 
         = $c->file_upload(
             'faviconfile', 'Favoriten-Icon', 100, 50000, 8, 80, 
             sub { 
@@ -45,6 +47,7 @@ sub favicon_upload {
         unless $filename;
 
     $c->dbh->do('UPDATE config SET value=? WHERE key=?', undef, $filetype, 'favicontype');
+    $c->dbh->do('UPDATE config SET value=? WHERE key=?', undef, $contenttype, 'faviconcontenttype');
     $c->set_info_f('Favoriten-Icon aktualisiert.');
     $c->redirect_to('options_form');
 }

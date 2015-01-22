@@ -33,13 +33,14 @@ sub get_favicon_content {
 }
 
 sub favicon_ok {
-    my ( $content, $ftype ) = @_;
+    my ( $content, $ftype, $ctype ) = @_;
     $content = $deffaviconcontent unless defined $content;
     $ftype = 'png' unless defined $ftype;
+    my $contenttype = $ctype || "image/$ftype";
     ok get_favicon_content() eq $content, 'content on filesystem as expected';
 
     $t->get_ok('/favicon/show')->status_is(200)
-      ->header_is('Content-Type' => "image/$ftype")
+      ->header_is('Content-Type' => $contenttype)
       ->header_is('Content-Disposition' => "inline;filename=favicon.$ftype")
       ->content_is($content);
 
@@ -49,15 +50,15 @@ sub favicon_ok {
 }
 
 sub favicon_upload {
-    my ( $content, $filename, $ftype ) = @_;
+    my ( $content, $filename, $ftype, $ctype ) = @_;
     $filename = 'favicon.png' unless defined $filename;
     $ftype = ($filename =~ m/\.(\w+)\z/xmso ? '' : '') unless defined $ftype;
-    $ftype = lc $ftype;
+    $ctype = "image/$ftype" unless $ctype;
     $t->post_ok('/options/admin/favicon', form => {
             faviconfile => {
                 file => Mojo::Asset::Memory->new->add_chunk($content),
                 filename => $filename,
-                content_type => "image/$ftype",
+                content_type => $ctype,
             }
         }
     )->status_is(302)->content_is('')->header_is(Location => '/options/form');
@@ -98,15 +99,15 @@ favicon_ok();
 
 note 'einige funktionierende dateien testweise hochladen';
 for my $f ( 
-    [r(), 'test1.png','png'], 
-    [r(), 'test2.png','png'], 
-    [r(), 'test3.ico','ico'], 
-    [r(), 'test4.png','png'], 
+    [r(), 'test1.png','png', 'image/png'], 
+    [r(), 'test2.png','png', 'image/png'], 
+    [r(), 'test3.ico','ico', 'image/x-icon'], 
+    [r(), 'test4.png','png', 'image/png'], 
 ) {
     logina();
-    favicon_upload(@$f[0,1]);
+    favicon_upload(@$f[0,1,2,3]);
     info('Favoriten-Icon aktualisiert.');
-    favicon_ok(@$f[0,2]);
+    favicon_ok(@$f[0,2,3]);
     loginu();
-    favicon_ok(@$f[0,2]);
+    favicon_ok(@$f[0,2,3]);
 }

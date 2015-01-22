@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><% if ( $controller ne 'auth' ) { %>(<%= $newpostcount + $newmsgscount %>) <% } %><%= $title %></title>
-    <link rel="icon" type="image/*" href="<%= url_for 'favicon_show' %>" />
+% if ( $controller eq 'auth' ) {
+    <title><%= $title %></title>
+    <link rel="icon" type="image/png" href="<%= url_for '/theme/img/favicon.png' %>" />
+% } else {
+    <title>(<%= $newpostcount + $newmsgscount %>) <%= $title %></title>
+    <link rel="icon" type="<%= configdata()->{faviconcontenttype} %>" href="<%= url_for 'favicon_show' %>" />
+% }
     <%= stylesheet '/theme/colors.css' %>
     <%= stylesheet '/theme/large.css', media => 'all and (min-device-width: 801px)' %>
     <%= stylesheet '/theme/small.css', media => 'all and (max-device-width: 800px)' %>
