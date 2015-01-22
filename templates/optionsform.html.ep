@@ -69,9 +69,7 @@
         <p>
             Passwort:
             <input type="password" name="newpw1" value="" />
-        </p>
-        <p>
-            Passwort wiederholen:
+            wiederholen:
             <input type="password" name="newpw2" value="" />
         </p>
         <p>
@@ -91,9 +89,7 @@
         <p>
             Passwort:
             <input type="password" name="newpw1" value="" />
-        </p>
-        <p>
-            Passwort wiederholen:
+            wiederholen:
             <input type="password" name="newpw2" value="" />
         </p>
         <p>
