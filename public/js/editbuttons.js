@@ -1,3 +1,4 @@
+"use strict";
 ffcdata.editbuttons = {};
 
 ffcdata.editbuttons.init = function(){

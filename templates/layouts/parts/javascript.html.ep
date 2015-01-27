@@ -1,4 +1,5 @@
 <script type="text/javascript">
+    "use strict";
     window.onload = function(){
         ffcdata.utils.init();
         ffcdata.editbuttons.init();

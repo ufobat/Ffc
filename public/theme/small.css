@@ -59,6 +59,7 @@ p {
 }
 .userlist h2, .topiclist h2 {
     margin: .5em 0;
+    padding: .5em 0;
 }
 .userlist p, .topiclist .smallfont {
     text-align: right;

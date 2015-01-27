@@ -1,3 +1,4 @@
+"use strict";
 ffcdata.utils = {
     features_disabled: undefined,
 };

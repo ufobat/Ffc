@@ -1,3 +1,4 @@
+"use strict";
 ffcdata.features = {};
 
 ffcdata.features.init = function(){
