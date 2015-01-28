@@ -128,4 +128,16 @@ option {
     font-size: 1em;
     color: chocolate;
 }
+#msglog a {
+    color: steelblue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+#msglog a:hover {
+    color: dodgerblue;
+    text-decoration: none;
+}
+#msglog a:focus {
+    color: gainsboro;
+}
 

@@ -38,11 +38,11 @@ a {
     text-decoration: underline;
     border: none;
     background: none;
+    cursor: pointer;
 }
 a:hover {
     color: dodgerblue;
     text-decoration: none;
-    cursor: pointer;
 }
 a:hover > img {
     border-color: dodgerblue;
