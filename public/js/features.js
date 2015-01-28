@@ -18,8 +18,8 @@ ffcdata.features.init = function(){
     var set_autorefresh = function(){
         ffcdata.features.autorefresh_interval = window.setInterval(function(){
             if ( document.hasFocus() 
-              && (document.getElementById('textinput')
-                && document.getElementById('textinput').value === '') ) {
+              || (document.getElementById('textinput')
+                && document.getElementById('textinput').value !== '') ) {
                 return;
             }
             ffcdata.utils.request('GET', ffcdata.counturl, null, function(res){ 
