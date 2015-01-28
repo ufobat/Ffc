@@ -78,7 +78,7 @@ h2 .smallfont, .functionlinks {
 .options {
     padding: 0;
 }
-.popup, .messagebox > div {
+.menu, .popup, .messagebox > div {
     box-shadow: none;
 }
 img {

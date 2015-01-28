@@ -172,15 +172,11 @@ input[type="text"].titlestring {
 .popup {
     box-shadow: 0 0 8px dimgray;
 }
-.avatar, .postbox img {
-    box-shadow: 0 0 2px silver;
-}
 .postbox blockquote {
     border-left: 1px gainsboro solid;
 }
 img.smiley, img.icon {
     border: none;
-    box-shadow: none;
 }
 pre, code {
     font-family: monospace;
