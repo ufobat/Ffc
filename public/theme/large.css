@@ -53,7 +53,6 @@ a {
     margin-top: 0;
     width: 100%;
     max-width: none;
-    box-shadow: 0 0 2px dimgray;
     border-width: 0 0 .1em 0;
 }
 input[type="color"], input[type="url"], input[type="email"], input[type="text"], input[type="password"] {
@@ -109,10 +108,6 @@ form {
     overflow: hidden;
     text-align: center;
 }
-img.smiley, img.icon {
-    width: 1em;
-    height: 1em;
-}
 ol.attachements li img {
     vertical-align: top;
     margin-bottom: 0.5em;
@@ -123,6 +118,10 @@ li {
 .userlist .avatar {
     height: 2.75em;
     margin-top: .05em;
+}
+img.smiley, img.icon {
+    width: 1em;
+    height: 1em;
 }
 .userlist h2, .topiclist h2 {
     font-size: 1em;
