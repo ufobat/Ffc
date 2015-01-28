@@ -5,11 +5,12 @@
 body {
     text-align: left;
     width: 100%;
+    margin: 0 0 2em 0;
 }
 body > * {
     padding: 0 1em 1em 1em;
     max-width: 48em;
-    margin: 3px auto 5px auto;
+    margin: 3px auto 0 auto;
 }
 body > * > * {
     margin: .75em 0;
