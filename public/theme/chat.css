@@ -59,11 +59,11 @@ button, #refreshtime {
     height: 1.5em;
     width: 8em;
     margin-top: .5em;
+    cursor: pointer;
 }
 button:hover, #refreshtime:hover {
     border-color: silver;
     background: whitesmoke;
-    cursor: pointer;
 }
 button {
     text-align: center;
