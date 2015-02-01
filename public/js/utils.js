@@ -48,7 +48,7 @@ ffcdata.utils.request = function(methd, url, data, callback) {
         });
     }
     catch (e) {
-        // console.log('Error on request: ' + e);
+        console.log('Error on request: ' + e);
     }
 };
 
