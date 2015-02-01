@@ -1,10 +1,10 @@
 * {
     padding: 0px;
     margin: 0px;
-    font-family: sans-serif;
-    color: black;
 }
 body {
+    font-family: sans-serif;
+    color: black;
     background: gainsboro;
     overflow: hidden;
     width: 50em;
