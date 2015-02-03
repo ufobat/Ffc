@@ -13,6 +13,7 @@
             Ungelesene Nachrichten:
             <% if ( $u->[2] ) { %> <span class="mark"><%= $u->[2] %></span><% } else { %>0<% } %>
         </span>
+    </h2>
 % }
 </div>
 % }
