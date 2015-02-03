@@ -23,7 +23,7 @@ sub check_list {
     $t->get_ok('/pmsgs')->status_is(200);
     for my $u ( [$u1, $u1i, $u1o], [$u2, $u2i, $u2o], [$lu, $lui, 0] ) {
         my ( $u, $ui, $uo ) = @$u;
-        my $s = qr~<a href="/pmsgs/$ui"\s*title="Privatnachrichten mit Benutzer &quot;$u&quot; ansehen">$u</a>~;
+        my $s = qr~<a href="/pmsgs/$ui">$u</a>~;
         my $av = qr~<img class="avatar" src="/avatar/$ui" />~;
         if ( $uo ) { 
             $t->content_like($s);

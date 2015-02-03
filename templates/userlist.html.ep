@@ -8,10 +8,9 @@
 % for my $u ( @$users ) {
     <h2<%== $u->[2] ? ' class="newpost"' : '' %>>
         <img class="avatar" src="<%= url_for 'avatar_show', userid => $u->[0] %>" />
-        <a href="<%= url_for 'show_pmsgs', usertoid => $u->[0] %>"
-           title="Privatnachrichten mit Benutzer &quot;<%= $u->[1] %>&quot; ansehen"><%= $u->[1] %></a>
+        <a href="<%= url_for 'show_pmsgs', usertoid => $u->[0] %>"><%= $u->[1] %></a>
         <span class="smallfont">
-            Ungelesene Nachrichten vom Benutzer:
+            Ungelesene Nachrichten:
             <% if ( $u->[2] ) { %> <span class="mark"><%= $u->[2] %></span><% } else { %>0<% } %>
         </span>
 % }

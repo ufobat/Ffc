@@ -25,26 +25,22 @@ sub check_env {
     $t->get_ok("/pmsgs")->status_is(200)
       ->content_unlike(qr~/pmsgs/2~)
       ->content_like(qr~/pmsgs/3~)
-      ->content_like(qr~title="Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user2\&quot;\s+ansehen">$user2</a>\s*</p>~xmsi);
+      ->content_like(qr~>$user2</a>\s*</p>~xmsi);
     login2();
     $t->get_ok("/pmsgs")->status_is(200)
       ->content_like(qr~/pmsgs/2~)
       ->content_unlike(qr~/pmsgs/3~);
     if ( $newcnt ) {
         $t->content_like(qr~<title>\($newcnt\)\s+Ffc\s+Forum~xmsi);
-        $t->content_like(qr~title="Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>\s*\(<span\s+class="mark">$newcnt</span>\)\s+</p>~xmsi); 
-        $t->content_like(qr~Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>\s*<span\s+class="smallfont">\s*
-#            Zuletzt\s+gesehen:\s+(?:(?:\d\d\.\d\d\.\d\d(?:\d\d),\s*)?(?:\d\d:\d\d)|jetzt),\s+
-#            ungelesene\s+Nachrichten:\s*<span\s+class="mark">$newcnt</span>
-            Ungelesene\s+Nachrichten\s+vom\s+Benutzer:\s*<span\s+class="mark">$newcnt</span>~xmsi);
+        $t->content_like(qr~<a\s+href="/pmsgs/2">$user1</a>\s*\(<span\s+class="mark">$newcnt</span>\)\s+</p>~xmsi); 
+        $t->content_like(qr~<a\s+href="/pmsgs/2">$user1</a>\s*<span\s+class="smallfont">\s*
+            Ungelesene\s+Nachrichten\s*:\s*<span\s+class="mark">$newcnt</span>~xmsi);
     }
     else {
         $t->content_like(qr~<title>\(0\)\s+Ffc\s+Forum~xmsi);
-        $t->content_like(qr~title="Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>~xmsi);
-        $t->content_like(qr~Privatnachrichten\s+mit\s+Benutzer\s+\&quot;$user1\&quot;\s+ansehen">$user1</a>\s*<span\s+class="smallfont">\s*
-#            Zuletzt\s+gesehen:\s+(?:(?:\d\d\.\d\d\.\d\d(?:\d\d),\s*)?(?:\d\d:\d\d)|jetzt),\s+
-#            ungelesene\s+Nachrichten:\s*0
-            Ungelesene\s+Nachrichten\s+vom\s+Benutzer:\s*0~xmsi);
+        $t->content_like(qr~<a\s+href="/pmsgs/2">$user1</a>~xmsi);
+        $t->content_like(qr~<a\s+href="/pmsgs/2">$user1</a>\s*<span\s+class="smallfont">\s*
+            Ungelesene\s+Nachrichten\s*:\s*0~xmsi);
     }
     $t->get_ok("/pmsgs/2")->status_is(200);
     check_pages(\&login2, '/pmsgs/2');
