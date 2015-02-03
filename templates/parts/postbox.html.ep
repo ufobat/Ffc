@@ -7,25 +7,25 @@
 % }
         <%= format_timestamp($post->[6]) %>
 % if ( not $postid ) {
-    <span class="functionlinks">(
+        <span class="functionlinks">(
 % if ( ( $editurl or $delurl or $uplurl ) and $post->[1] == session()->{userid} ) {
 %  if ( $controller ne 'pmsgs' ) {
 %   if ( $editurl ) {
-        <a href="<%= url_for $editurl, postid => $post->[0], @$additional_params %>">bearbeiten</a>,
+            <a href="<%= url_for $editurl, postid => $post->[0], @$additional_params %>">bearbeiten</a>,
 %   }
 %   if ( $delurl ) {
-        <a href="<%= url_for $delurl, postid => $post->[0], @$additional_params %>">entfernen</a>,
+            <a href="<%= url_for $delurl, postid => $post->[0], @$additional_params %>">entfernen</a>,
 %   }
 %  }
 %  if ( $uplurl ) {
-        <a href="<%= url_for $uplurl, postid => $post->[0], @$additional_params %>">anhängen</a>,
+            <a href="<%= url_for $uplurl, postid => $post->[0], @$additional_params %>">anhängen</a>,
 %  }
 % } elsif ( $controller eq 'forum' and $action ne 'upload_form' and $action ne 'delete_check' and $action ne 'search' ) {
-        <a href="<%= url_for 'show_pmsgs', usertoid => $post->[1] %>">Privatnachricht</a>,
+            <a href="<%= url_for 'show_pmsgs', usertoid => $post->[1] %>">Privatnachricht</a>,
 % }
-        <a href="<%= url_for "display_$controller", postid => $post->[0], @$additional_params %>" 
-           target="_blank">verlinken</a>
-    )</span>
+            <a href="<%= url_for "display_$controller", postid => $post->[0], @$additional_params %>" 
+               target="_blank">verlinken</a>
+        )</span>
 % }
     </h2>
 %== $post->[8];
