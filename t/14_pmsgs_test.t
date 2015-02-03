@@ -32,7 +32,7 @@ sub check_env {
       ->content_unlike(qr~/pmsgs/3~);
     if ( $newcnt ) {
         $t->content_like(qr~<title>\($newcnt\)\s+Ffc\s+Forum~xmsi);
-        $t->content_like(qr~<a\s+href="/pmsgs/2">$user1</a>\s*\(<span\s+class="mark">$newcnt</span>\)\s+</p>~xmsi); 
+        $t->content_like(qr~<a\s+href="/pmsgs/2">$user1</a>\s*\(<span\s+class="mark">$newcnt</span>\)\s*</p>~xmsi); 
         $t->content_like(qr~<a\s+href="/pmsgs/2">$user1</a>\s*<span\s+class="smallfont">\s*
             Ungelesene\s+Nachrichten\s*:\s*<span\s+class="mark">$newcnt</span>~xmsi);
     }
