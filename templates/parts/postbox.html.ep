@@ -11,24 +11,19 @@
 % if ( ( $editurl or $delurl or $uplurl ) and $post->[1] == session()->{userid} ) {
 %  if ( $controller ne 'pmsgs' ) {
 %   if ( $editurl ) {
-        <a href="<%= url_for $editurl, postid => $post->[0], @$additional_params %>" 
-           title="Beitrag bearbeiten">bearbeiten</a>,
+        <a href="<%= url_for $editurl, postid => $post->[0], @$additional_params %>">bearbeiten</a>,
 %   }
 %   if ( $delurl ) {
-        <a href="<%= url_for $delurl, postid => $post->[0], @$additional_params %>" 
-           title="Beitrag löschen">entfernen</a>,
+        <a href="<%= url_for $delurl, postid => $post->[0], @$additional_params %>">entfernen</a>,
 %   }
 %  }
 %  if ( $uplurl ) {
-        <a href="<%= url_for $uplurl, postid => $post->[0], @$additional_params %>" 
-           title="Einen Anhang zum Beitrag hinzufügen">anhängen</a>,
+        <a href="<%= url_for $uplurl, postid => $post->[0], @$additional_params %>">anhängen</a>,
 %  }
 % } elsif ( $controller eq 'forum' and $action ne 'upload_form' and $action ne 'delete_check' and $action ne 'search' ) {
-        <a href="<%= url_for 'show_pmsgs', usertoid => $post->[1] %>" 
-           title="Private Nachricht an den Verfasser &quot;<%= $post->[2] %>&quot; schreiben">Privatnachricht</a>,
+        <a href="<%= url_for 'show_pmsgs', usertoid => $post->[1] %>">Privatnachricht</a>,
 % }
         <a href="<%= url_for "display_$controller", postid => $post->[0], @$additional_params %>" 
-           title="Beitrag einzeln anzeigen zum verlinken"
            target="_blank">verlinken</a>
     )</span>
 % }
@@ -45,12 +40,10 @@
 % if ( $action eq 'search' and ( $post->[3] or $post->[5] ) ) {
     <h2>
 %   if ( $post->[3] ) {
-        <a href="<%= url_for show_pmsgs => userid => $post->[3] %>"
-            title="Konversation öffnen">Konversation mit dem Benutzer &quot;<%= $post->[4] %>&quot; anzeigen</a>
+        <a href="<%= url_for show_pmsgs => userid => $post->[3] %>">Konversation mit dem Benutzer &quot;<%= $post->[4] %>&quot; anzeigen</a>
 %   }
 %   if ( $post->[5] ) {
-        <a href="<%= url_for show_forum => topicid => $post->[5] %>"
-            title="Thema öffnen">Thema &quot;<%= $post->[9] %>&quot; anzeigen</a>
+        <a href="<%= url_for show_forum => topicid => $post->[5] %>">Thema &quot;<%= $post->[9] %>&quot; anzeigen</a>
 %   }
     </h2>
 % }
