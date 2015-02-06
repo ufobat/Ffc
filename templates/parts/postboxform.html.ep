@@ -26,7 +26,7 @@
 %= submit_button 'senden', class => 'send'
 (
 <a href="<%== $returl %>">abbrechen</a>,
-<a href="<%= url_for 'help' %>" target="_blank">Hilfe</a><span id="editbuttons" class="editbuttons nodisplay">, 
+<a href="<%= url_for 'help' %>#create" target="_blank">Hilfe</a><span id="editbuttons" class="editbuttons nodisplay">, 
     <a href="#" class="buttonalike" id="boldbutton" title="Fett markiert (wortweise, '+')"><span class="bold">f</span></a><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben (wortweise, '~')"><span class="italic">k</span></a><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung (wortweise, '_')"><span class="underline">u</span></a><a href="#" class="buttonalike" id="linethroughbutton" title="Durchgestrichen (wortweise, '-')"><span class="linethrough">d</span></a> 
     <a href="#" class="buttonalike" id="h1button" title="Überschrift (zeilenweise, '=' am Zeilenanfang)"><span class="underline"><span class="bold">Ü</span></span></a><a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste (zeilenweise, '-' am Zeilenanfang)">&middot;</a><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, '#' am Zeilenanfang)">&sup1;</a> 
     <a href="#" class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat (zeilenweise, '|', am Zeilenanfang)">&quot;</a><a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext (zeilenweise, ' ', am Zeilenanfang)"><code>C</code></a> 

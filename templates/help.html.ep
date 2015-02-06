@@ -1,12 +1,27 @@
 % layout 'login';
 % title 'Hilfe';
 <div class="postbox helptext">
-    <h2>Beiträge erstellen</h2>
+    <h2><a name="content"></a>Inhalt</h2>
+    <ul>
+        <li><a href="#create">Beiträge erstellen</a></li>
+        <li><a href="#formatting">Textformatierungen</a></li>
+        <li><a href="#structuring">Textstrukturierungen</a></li>
+        <li><a href="#buttons">Editierhilfen (Buttons)</a></li>
+        <li><a href="#links">Links</a></li>
+        <li><a href="#images">Bilder</a></li>
+        <li><a href="#attachements">Dateianhänge</a></li>
+        <li><a href="#editing">Beiträge bearbeiten und löschen</a></li>
+        <li><a href="#quotes">Zitate</a></li>
+        <li><a href="#chat">Chat</a></li>
+    </ul>
+</div>
+<div class="postbox helptext">
+    <h2><a name="create" href="#content">^</a> Beiträge erstellen</h2>
     <p>Über das Textfeld im oberen Bereich der Webseite können Beiträge erstellt werden. Diese erscheinen dann im ausgewählten Thema. Bei Privatnachrichten muss vorher ein Konversationsteilnehmer ausgewählt werden.</p>
     <p>Wird zwischenzeitlich ein Beitrag von einem anderen Benutzer in der selben Kategorie oder Konversation erstellt, während man selber einen Beitrag schreibt, erscheint eine Warnung. Dann kann man den Beitrag gegebenenfalls noch einmal überarbeiten, muss ihn aber dann noch einmal explizit speichern.</p>
 </div>
 <div class="postbox helptext">
-    <h2>Textformatierungen</h2>
+    <h2><a name="formatting" href="#content">^</a> Textformatierungen</h2>
     <p>Die folgenden Formatierungsmöglichkeiten für Forenbeiträge, private Nachrichten oder Notizen bestehen. Anstatt von Leerzeichen zwischen Wörtern müssen die entsprechenden Formatierungszeichen verwendet werden. Chatnachrichten können nicht formatiert werden.</p> 
     <p>Ist Javascript aktiviert, so erscheinen über den Eingabefeldern für Beiträge kleine graue Buttons, über die ebenfalls die folgenden Änderungen angewendet werden können. Die Buttons wirken in einer Auswahl von Text.</p>
     <ul>
@@ -16,10 +31,10 @@
         <li><code>~kur~siv~</code>: <span class="italic">Schrägschrift</span></li>
         <li><code>!auf!geregt!</code>: <span class="alert">Spezielle Auszeichnung für wirklich wichtige Dinge</span></li>
         <li><code>*emo*tional*</code>: <span class="emotion">Spezielle Auszeichnung für *emotionale* Anmerkungen</span></li>
-    <ul>
+    </ul>
 </div>
 <div class="postbox helptext">
-    <h2>Textstrukturierungen</h2>
+    <h2><a name="structuring" href="#content">^</a> Textstrukturierungen</h2>
     <p>Folgende Methoden stehen zur Verfügung, um Texte inhaltlich zu strukturieren. Die Formatierungszeichen müssen an den Anfang einer entsprechenden Zeile gesetzt werden.</p>
     <p>Ist Javascript aktiviert, erscheinen über den Eingabefeldern für Beiträge kleine graue Buttons, die ebenfalls die Zeile, in der der Cursor steht oder die Zeilen, die ausgewählt wurden, entsprechend behandeln.</p>
     <ul>
@@ -31,7 +46,7 @@
     </ul>
 </div>
 <div class="postbox helptext">
-    <h2>Editierhilfen (Buttons)</h2>
+    <h2><a name="buttons" href="#content">^</a> Editierhilfen (Buttons)</h2>
     <p>Falls auf einem Desktopsystem Javascript im Browser eingeschalten ist, stehen folgende Buttons zur Verfügung, welche die Formatierungsauszeichnungen automatisch in den Text im Textfeld einfügen.</p>
     <ul>
         <li><a href="#" class="buttonalike" id="boldbutton" title="Fett markiert (wortweise, '+')"><span class="bold">f</span></a> markiert das aktuelle Wort oder die markierten Wörter <span class="bold">fett</span></li>
@@ -48,29 +63,29 @@
     </ul>
 </div>
 <div class="postbox helptext">
-    <h2>Links</h2>
+    <h2><a name="links" href="#content">^</a> Links</h2>
     <p>Links werden weitestgehend automatisch erkannt und entsprechend als Links markiert, sobald sie im Text auftauchen.</p>
 </div>
 <div class="postbox helptext">
-    <h2>Bilder</h2>
+    <h2><a name="images" href="#content">^</a> Bilder</h2>
     <p>Bilder werden weitestgehend automatisch erkannt und entsprechend als Links zur Bildquelle markiert, sobald sie im Text auftauchen.</p>
 </div>
 <div class="postbox helptext">
-    <h2>Dateianhänge</h2>
+    <h2><a name="attachements" href="#content">^</a> Dateianhänge</h2>
     <p>Anhänge können an bestehende Beiträge angefügt werden. Dazu muss zuerst der Beitrag erstellt werden, anschließend kann über den Link "anhängen" eine neue Datei hinzugefügt werden.</p>
     <p>Anhänge werden unterhalb des Beitrages angezeigt. Bilder werden dabei als kleinere Vorschau angezeigt. Anhänge werden mit einem Download-Link hinterlegt, sodass man sie direkt mit einem Klick herunterladen kann.</p>
     <p>Die Sortierung der Anhänge in der Anzeige erfolgt alphabetisch. Damit kann man zum Beispiel durch Nummerierung in den Dateinamen eine bestimmte Sortierung erzwingen. Bei zwei gleich benannten Dateien (sollte eigentlich vermieden werden aus Gründen der Übersicht), wird die zuerst hochgeladene Datei auch zuerst dargestellt.</p>
     <p>Für das Löschen von eigenen Anhängen ist neben dem Anhang ein entsprechender Link ("entfernen") hinterlegt, welcher über eine Bestätigungsseite den Anhang komplett entfernt. Wird ein Beitrag gelöscht, werden sämltiche Anhänge ebenfalls gelöscht.</p>
 </div>
 <div class="postbox helptext">
-    <h2>Beiträge bearbeiten und löschen</h2>
+    <h2><a name="editing" href="#content">^</a> Beiträge bearbeiten und löschen</h2>
     <p>Bei bestimmten Beiträgen gibt es neben den Beiträgen die Möglichkeit, diese Beiträge zu Bearbeiten oder zu löschen.</p>
     <p>Löschen geht über eine Bestätigungsseite und entfernt auch sämtliche Anhänge.</p>
     <p>Bearbeiten zeigt den Beitrag in der Textbox an.</p>
     <p>Private Nachrichten können weder gelöscht noch geändert werden.</p>
 </div>
 <div class="postbox helptext">
-    <h2>Smileys</h2>
+    <h2><a name="smileys" href="#content">^</a> Smileys</h2>
     <p>Smileys können direkt in ihrer Textrepräsentation eingegeben werden und werden nach Möglichkeit automatisch ersetzt.</p>
     <p>Folgende Smileys werden erkannt:</p>
     <ul>
@@ -98,11 +113,11 @@
     </ul>
 </div>
 <div class="postbox helptext">
-    <h2>Zitate</h2>
+    <h2><a name="quotes" href="#content">^</a> Zitate</h2>
     <p><code>"Zitate"</code> werden einfach in doppelte „<span class="quote">Anführungszeichen</span>“ eingeschlossen.</p>
 </div>
 <div class="postbox helptext">
-    <h2>Chat</h2>
+    <h2><a name="chat" href="#content">^</a> Chat</h2>
     <p>Der Instantchat kann über die Menüzeile erreicht werden. Hierzu muss im Webbrowser JavaScript entsprechend eingeschalten sein.</p>
     <p>Im Chat können im unteren Textfeld auf der linken Seite Nachrichten eingegeben werden. Durch drücken der &quot;Enter&quot;-Taste oder durch betätigen des &quot;Senden&quot;-Knopfes wird die Nachricht versendet. Wird die &quot;Enter&quot;-Taste gleichzeitig mit gedrückter &quot;Shift&quot;-Taste betätigt, so erzeugt dies einen Zeilenumbruch in der Textnachricht.</p>
     <p>Die Auswahlbox wählt das Zeitintervall, innerhalb dessen neue Nachrichten im Chat nachgeladen werden. Der Knopf &quot;Laden&quot; holt ebenfalls neue Nachrichten ab.</p>
