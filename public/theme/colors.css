@@ -173,7 +173,7 @@ input[type="text"].titlestring {
     box-shadow: 0 0 .5em dimgray;
 }
 .postbox blockquote {
-    border-left: 1px gainsboro solid;
+    border-left: .1em gainsboro solid;
 }
 img.smiley, img.icon {
     border: none;
@@ -183,7 +183,7 @@ pre, code {
 }
 .postbox pre {
     color: chocolate;
-    border-left: 1px palegoldenrod solid;
+    border-left: .1em palegoldenrod solid;
 }
 .functionlinks {
     font-weight: normal;

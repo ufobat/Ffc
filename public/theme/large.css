@@ -10,7 +10,7 @@ body {
 body > * {
     padding: 0 1em 1em 1em;
     max-width: 48em;
-    margin: 3px auto 0 auto;
+    margin: .25em auto 0 auto;
 }
 body > * > * {
     margin: .75em 0;
@@ -96,8 +96,8 @@ form {
     height: 24em;
 }
 .postbox img {
-    max-width: 256px;
-    max-height: 128px;
+    max-width: 16em;
+    max-height: 12em;
 }
 .postbox .avatar {
     margin: -0.25em 0 .5em 1em;
@@ -147,7 +147,7 @@ img.smiley, img.icon {
 .menuentry { 
     display: inline-block; 
     margin: 0;
-    padding-top: 1px;
+    padding-top: .1em;
 }
 h1, .postbox {
     clear: both;
