@@ -18,7 +18,7 @@ table {
     margin: 0 auto;
 }
 div, textarea, button, select {
-    border: 1px gray solid;
+    border: .1em gray solid;
 }
 div, textarea {
     display: inline-block;

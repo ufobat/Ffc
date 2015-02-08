@@ -3,7 +3,7 @@
     margin: 0;
 }
 body > * {
-    border-width: 0 0 4px 0;
+    border-width: 0 0 .25em 0;
     padding: 1em .5em;
 }
 .menuentry, .menu form {
@@ -25,16 +25,10 @@ h2, h3, h4 {
     font-size: 1em;
 }
 h2 {
-    border-bottom-width: 4px;
+    border-bottom-width: .25em;
 }
 h1 {
     display: none;
-}
-input, textarea, select {
-    border-width: 4px;
-    font-size: 1em;
-    font-family: serif;
-    background: gainsboro;
 }
 .headbox textarea {
     width: 90%;
@@ -45,10 +39,10 @@ input, textarea, select {
     width: 5em;
     height: 5em;
     vertical-align: top;
-    border-width: 4px;
+    border-width: .25em;
 }
 a > img {
-    border-width: 4px;
+    border-width: .25em;
 }
 .smiley {
     width: 3em;
@@ -73,7 +67,7 @@ h2 .smallfont, .functionlinks {
 }
 .messagebox *, .suboption {
     padding: .25em .5em;
-    border-width: 0 0 4px 0;
+    border-width: 0 0 .25em 0;
 }
 .options {
     padding: 0;

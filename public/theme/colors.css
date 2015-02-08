@@ -167,10 +167,10 @@ input[type="text"].titlestring {
 .emotion:before { content:"*" }
 .emotion:after  { content:"*" }
 .menu, .messagebox > div, .shadowed {
-    box-shadow: 0 0 4px dimgray;
+    box-shadow: 0 0 .25em dimgray;
 }
 .popup {
-    box-shadow: 0 0 8px dimgray;
+    box-shadow: 0 0 .5em dimgray;
 }
 .postbox blockquote {
     border-left: 1px gainsboro solid;
