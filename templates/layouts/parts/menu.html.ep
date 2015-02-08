@@ -14,12 +14,9 @@
     <div class="menuentry">
         <a href="<%= url_for 'show_notes', page => 1 %>"><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
     </div>
-<script type="text/javascript">
-document.write('\
-    <div class="menuentry chatlink">\
-        <a href="<%= url_for 'chat_window' %>" target="_blank"><span class="linktext linkchat">Chat</span></a>\
-    </div>\
-');
+    <div id="chatbutton" class="nodisplay">
+        <a href="<%= url_for 'chat_window' %>" target="_blank"><span class="linktext linkchat">Chat</span></a>
+    </div>
 </script>
     <div class="menuentry">
 <form <%== $queryurl || 'style="visibility: hidden" ' %>action="<%== $queryurl %>" accept-charset="UTF-8" method="POST">

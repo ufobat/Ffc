@@ -14,6 +14,11 @@ ffcdata.features.init = function(){
                       + ':' + ( mym < 10 ? '0'+mym : mym );
     };
 
+    // Chatbutton im Menü anzeigen
+    var activate_chatbutton = function(){
+        document.getElementById('chatbutton').className = 'menuentry chatlink';
+    };
+
     // Auto-Refresh einsetzen
     var set_autorefresh = function(){
         ffcdata.features.autorefresh_interval = window.setInterval(function(){
@@ -33,6 +38,7 @@ ffcdata.features.init = function(){
     
     // Weitere Feature-Operationen starten
     set_titletime();
+    activate_chatbutton();
     if ( ffcdata.autorefresh > 0 && !ffcdata.utils.is_disabled() )
         set_autorefresh();
 };
