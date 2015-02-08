@@ -17,9 +17,8 @@
     <div id="chatbutton" class="nodisplay">
         <a href="<%= url_for 'chat_window' %>" target="_blank"><span class="linktext linkchat">Chat</span></a>
     </div>
-</script>
     <div class="menuentry">
-<form <%== $queryurl || 'style="visibility: hidden" ' %>action="<%== $queryurl %>" accept-charset="UTF-8" method="POST">
+<form <%== $queryurl ? '' : 'style="visibility: hidden" ' %>action="<%== $queryurl %>" accept-charset="UTF-8" method="POST">
 % if ( $query ) {
     <a href="<%= url_for "/$controller" %>" title="Suchanfrage zurück setzen">x</a>
 % } else {
