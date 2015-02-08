@@ -9,8 +9,8 @@
     <link rel="icon" type="<%= configdata()->{faviconcontenttype} %>" href="<%= url_for 'favicon_show' %>" />
 % }
     <%= stylesheet '/theme/colors.css' %>
-    <%= stylesheet '/theme/large.css', media => 'all and (min-device-width: 801px)' %>
     <%= stylesheet '/theme/small.css', media => 'all and (max-device-width: 800px)' %>
+    <%= stylesheet '/theme/large.css', media => 'all and (min-device-width: 801px)' %>
     <script type="text/javascript">
         ffcdata = {
             autorefresh: <%= session()->{autorefresh} || 0 %>,
