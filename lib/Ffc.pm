@@ -45,7 +45,7 @@ sub _install_routes_helper {
     # Standardseitenauslieferungen
     $l->any('/')->to(controller => 'forum', action => 'show_startuppage')
       ->name('show');
-    $l->any('/help' => sub { $_[0]->render(template => 'help') } )
+    $l->any('/help' => sub { $_[0]->stash( controller => 'help' )->render(template => 'help') } )
       ->name('help');
     $l->get('/session' => sub { $_[0]->render( json => $_[0]->session() ) } )
       ->name('sessiondata');
