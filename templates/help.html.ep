@@ -4,9 +4,9 @@
     <h2><a name="content"></a>Inhalt</h2>
     <ul>
         <li><a href="#create">Beiträge erstellen</a></li>
+        <li><a href="#buttons">Editierhilfen (Buttons)</a></li>
         <li><a href="#formatting">Textformatierungen</a></li>
         <li><a href="#structuring">Textstrukturierungen</a></li>
-        <li><a href="#buttons">Editierhilfen (Buttons)</a></li>
         <li><a href="#links">Links</a></li>
         <li><a href="#images">Bilder</a></li>
         <li><a href="#attachements">Dateianhänge</a></li>
@@ -20,6 +20,30 @@
     <h2><a name="create" href="#content">^</a> Beiträge erstellen</h2>
     <p>Über das Textfeld im oberen Bereich der Webseite können Beiträge erstellt werden. Diese erscheinen dann im ausgewählten Thema. Bei Privatnachrichten muss vorher ein Konversationsteilnehmer ausgewählt werden.</p>
     <p>Wird zwischenzeitlich ein Beitrag von einem anderen Benutzer in der selben Kategorie oder Konversation erstellt, während man selber einen Beitrag schreibt, erscheint eine Warnung. Dann kann man den Beitrag gegebenenfalls noch einmal überarbeiten, muss ihn aber dann noch einmal explizit speichern.</p>
+</div>
+<div class="postbox helptext">
+    <h2><a name="buttons" href="#content">^</a> Editierhilfen (Buttons)</h2>
+    <p>Falls auf einem Desktopsystem Javascript im Browser eingeschalten ist, stehen folgende Buttons zur Verfügung, welche die Formatierungsauszeichnungen automatisch in den Text im Textfeld einfügen.</p>
+    <p>
+        (Anzeigebeispiel: <a class="buttonalike" id="boldbutton" title="Fett markiert (wortweise, '+')"><span class="bold">f</span></a><a class="buttonalike" id="italicbutton" title="Schräg geschrieben (wortweise, '~')"><span class="italic">k</span></a><a class="buttonalike" id="underlinebutton" title="Unterstreichung (wortweise, '_')"><span class="underline">u</span></a><a class="buttonalike" id="linethroughbutton" title="Durchgestrichen (wortweise, '-')"><span class="linethrough">d</span></a> 
+        <a class="buttonalike" id="h1button" title="Überschrift (zeilenweise, '=' am Zeilenanfang)"><span class="underline"><span class="bold">Ü</span></span></a><a class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste (zeilenweise, '-' am Zeilenanfang)">&middot;</a><a class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, '#' am Zeilenanfang)">&sup1;</a> 
+        <a class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat (zeilenweise, '|', am Zeilenanfang)">&quot;</a><a class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext (zeilenweise, ' ', am Zeilenanfang)"><code>C</code></a> 
+        <a class="buttonalike" id="attentionbutton" title="Aufmerksamkeit (wortweise, '!')">!</a><a class="buttonalike" id="emotionalbutton" title="Emotional (wortweise, '*')">*</a>)
+    </p>
+    <ul>
+        <li><a class="buttonalike" id="boldbutton" title="Fett markiert (wortweise, '+')"><span class="bold">f</span></a> markiert das aktuelle Wort oder die markierten Wörter <span class="bold">fett</span></li>
+        <li><a class="buttonalike" id="italicbutton" title="Schräg geschrieben (wortweise, '~')"><span class="italic">k</span></a> markiert das aktuelle Wort oder die markierten Wörter <span class="italic">kursiv</span></li>
+        <li><a class="buttonalike" id="underlinebutton" title="Unterstreichung (wortweise, '_')"><span class="underline">u</span></a> <span class="underline">unterstreicht</span> das aktuelle Wort oder die markierten Wörter</li>
+        <li><a class="buttonalike" id="linethroughtbutton" title="Durchgestrichen (wortweise, '-')"><span class="linethrough">d</span></a> streicht das aktuelle Wort oder die markierten Wörter <span class="linethrough">durch</span></li>
+        <li><a class="buttonalike" id="h1button" title="Überschrift (zeilenweise, '=' am Zeilenanfang)"><span class="underline"><span class="bold">Ü</span></span></a> formatiert die aktuelle Zeile oder die markierten Zeilen als Überschrift</li>
+        <li><a class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste (zeilenweise, '-' am Zeilenanfang)">&middot;</a> formatiert die aktuelle Zeile oder die markierten Zeilen als unsortierte Listen</li>
+        <li><a class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, '#' am Zeilenanfang)">&sup1;</a>  formatiert die aktuelle Zeile oder die markierten Zeilen als Aufzählungsliste</li>
+        <li><a class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat (zeilenweise, '|', am Zeilenanfang)">&quot;</a> formatiert die aktuelle Zeile oder die markierten Zeilen als Zitat</li>
+        <li><a class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext (zeilenweise, ' ', am Zeilenanfang)"><code>C</code></a>  formatiert die aktuelle Zeile oder die markierten Zeilen als (Programm-)Quelltext</li>
+        <li><a class="buttonalike" id="attentionbutton" title="Aufmerksamkeit (wortweise, '!')">!</a> markiert das aktuelle Wort oder die markierten Wörter als <span class="alert">wichtig</span></li>
+        <li><a class="buttonalike" id="emotionalbutton" title="Emotional (wortweise, '*')">*</a> markiert das aktuelle Wort oder die markierten Wörter <span class="emotion">emotional</span></li>
+    </ul>
+    <p>Ist im Browser Javascript deaktiviert oder funktionieren die Buttons nicht, so kann man die Formatierungen alternativ auch händisch in den Text wie im folgenden beschrieben (<a href="#formatting">Textformatierungen</a>, <a href="#structuring">Textstrukturierungen</a>) einfügen.</p>
 </div>
 <div class="postbox helptext">
     <h2><a name="formatting" href="#content">^</a> Textformatierungen</h2>
@@ -44,29 +68,6 @@
         <li><code>#</code> am Zeilenanfang: Erzeugt eine Aufzählungsliste</li>
         <li><code> </code> (Leerzeichen) am Zeilenanfang: Erzeugt einen vorformattierten Text (für Programmcode zum Beispiel)</li>
         <li><code>|</code> am Zeilenanfang: Erzeugt ein mehrzeiliges Zitat</li>
-    </ul>
-</div>
-<div class="postbox helptext">
-    <h2><a name="buttons" href="#content">^</a> Editierhilfen (Buttons)</h2>
-    <p>Falls auf einem Desktopsystem Javascript im Browser eingeschalten ist, stehen folgende Buttons zur Verfügung, welche die Formatierungsauszeichnungen automatisch in den Text im Textfeld einfügen.</p>
-    <p>
-        (Anzeigebeispiel: <a class="buttonalike" id="boldbutton" title="Fett markiert (wortweise, '+')"><span class="bold">f</span></a><a class="buttonalike" id="italicbutton" title="Schräg geschrieben (wortweise, '~')"><span class="italic">k</span></a><a class="buttonalike" id="underlinebutton" title="Unterstreichung (wortweise, '_')"><span class="underline">u</span></a><a class="buttonalike" id="linethroughbutton" title="Durchgestrichen (wortweise, '-')"><span class="linethrough">d</span></a> 
-        <a class="buttonalike" id="h1button" title="Überschrift (zeilenweise, '=' am Zeilenanfang)"><span class="underline"><span class="bold">Ü</span></span></a><a class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste (zeilenweise, '-' am Zeilenanfang)">&middot;</a><a class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, '#' am Zeilenanfang)">&sup1;</a> 
-        <a class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat (zeilenweise, '|', am Zeilenanfang)">&quot;</a><a class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext (zeilenweise, ' ', am Zeilenanfang)"><code>C</code></a> 
-        <a class="buttonalike" id="attentionbutton" title="Aufmerksamkeit (wortweise, '!')">!</a><a class="buttonalike" id="emotionalbutton" title="Emotional (wortweise, '*')">*</a>)
-    </p>
-    <ul>
-        <li><a class="buttonalike" id="boldbutton" title="Fett markiert (wortweise, '+')"><span class="bold">f</span></a> markiert das aktuelle Wort oder die markierten Wörter <span class="bold">fett</span></li>
-        <li><a class="buttonalike" id="italicbutton" title="Schräg geschrieben (wortweise, '~')"><span class="italic">k</span></a> markiert das aktuelle Wort oder die markierten Wörter <span class="italic">kursiv</span></li>
-        <li><a class="buttonalike" id="underlinebutton" title="Unterstreichung (wortweise, '_')"><span class="underline">u</span></a> <span class="underline">unterstreicht</span> das aktuelle Wort oder die markierten Wörter</li>
-        <li><a class="buttonalike" id="linethroughtbutton" title="Durchgestrichen (wortweise, '-')"><span class="linethrough">d</span></a> streicht das aktuelle Wort oder die markierten Wörter <span class="linethrough">durch</span></li>
-        <li><a class="buttonalike" id="h1button" title="Überschrift (zeilenweise, '=' am Zeilenanfang)"><span class="underline"><span class="bold">Ü</span></span></a> formatiert die aktuelle Zeile oder die markierten Zeilen als Überschrift</li>
-        <li><a class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste (zeilenweise, '-' am Zeilenanfang)">&middot;</a> formatiert die aktuelle Zeile oder die markierten Zeilen als unsortierte Listen</li>
-        <li><a class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, '#' am Zeilenanfang)">&sup1;</a>  formatiert die aktuelle Zeile oder die markierten Zeilen als Aufzählungsliste</li>
-        <li><a class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat (zeilenweise, '|', am Zeilenanfang)">&quot;</a> formatiert die aktuelle Zeile oder die markierten Zeilen als Zitat</li>
-        <li><a class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext (zeilenweise, ' ', am Zeilenanfang)"><code>C</code></a>  formatiert die aktuelle Zeile oder die markierten Zeilen als (Programm-)Quelltext</li>
-        <li><a class="buttonalike" id="attentionbutton" title="Aufmerksamkeit (wortweise, '!')">!</a> markiert das aktuelle Wort oder die markierten Wörter als <span class="alert">wichtig</span></li>
-        <li><a class="buttonalike" id="emotionalbutton" title="Emotional (wortweise, '*')">*</a> markiert das aktuelle Wort oder die markierten Wörter <span class="emotion">emotional</span></li>
     </ul>
 </div>
 <div class="postbox helptext">
