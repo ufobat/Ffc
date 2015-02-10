@@ -85,6 +85,8 @@ INSERT INTO "config" ("key", "value")
 INSERT INTO "config" ("key", "value") 
   VALUES ('topiclimit','21');
 INSERT INTO "config" ("key", "value") 
+  VALUES ('chronsortorder','0');
+INSERT INTO "config" ("key", "value") 
   VALUES ('title','Ffc Forum');
 INSERT INTO "config" ("key", "value") 
   VALUES ('sessiontimeout','432000');

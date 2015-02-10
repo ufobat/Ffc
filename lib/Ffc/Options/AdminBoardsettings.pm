@@ -20,6 +20,10 @@ our @Settings = (
         'Anzahl der auf einer Seite angezeigten Überschriften ändern',
         'Hier kann die Anzahl der auf einer Seite gleichzeitig angezeigten Forenüberschriften beschränkt werden',
         'Die Anzahl gleichzeitig angezeigter Forenüberschriften muss eine Zahl sein' ],
+    [ chronsortorder => 'chronologische Sortierung', qr(\A0?|1\z)xmso, 0, 'checkbox',
+        'chronologische Sortierung der Überschriften',
+        'Hier kann die Sortierung der Überschriften in der Liste angepasst werden, ist das Häckchen gesetzt, werden die aktuellsten Überschriften zeitlich die neuesten zuerst angezeigt, ansonsten werden die aktuellsten Überschriften alphabetisch sortiert angezeigt',
+        'Die Einstellung für die chronologische Sortierung kann entweder 0 oder 1 betragen' ],
     [ sessiontimeout => 'Maximale Benutzersitzungsdauer', qr(\A\d+\z)xmso, 1, 'number',
         'Maximale Länge einer Benutzersitzung bei Untätigkeit ändern',
         'Hier kann die Zeit (in Sekunden) angegeben werden, bis eine Benutzersitzung abgelaufen ist, wenn ein Benutzer den Browser schließt, ohne sich abzumelden',
@@ -38,12 +42,21 @@ our @Settings = (
         'Die URL zur CSS-Datei darf höchstens 256 Zeichen lang sein' ],
 );
 
+{
+    my $str = join '|', map {$_->[0]} @Settings;
+    $Ffc::Optky = qr~$str~xmso;
+}
+
 sub boardsettingsadmin {
     my $c = shift;
     my $optkey = $c->param('optionkey') // '';
     my $optvalue = $c->param('optionvalue') // '';
-
-    my ( $tit, $re, $rechk, $err ) = @{ ( grep {$optkey eq $_->[0]} @Settings )[0] }[1,2,3,7];
+    my @setting = grep {$optkey eq $_->[0]} @Settings;
+    unless ( @setting ) {
+        $c->redirect_to('options_form');
+        return; # theoretisch nicht möglich laut routen
+    }
+    my ( $tit, $re, $rechk, $err ) = @{$setting[0]}[1,2,3,7];
     unless ( $tit ) {
         $c->redirect_to('options_form');
         return; # theoretisch nicht möglich laut routen

@@ -14,6 +14,7 @@ use Ffc::Chat;
 
 our $Digqr = qr/\d+/xmso;
 our $Usrqr = qr(\w{2,32})xmso;
+our $Optky = qr(\w{2,32})xmso;
 
 # This method will run once at server start
 sub startup {

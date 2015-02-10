@@ -53,8 +53,7 @@ sub _generate_topiclist {
     my $topiclimit = $c->configdata->{topiclimit};
     my $uid = $c->session->{userid};
     my $query = $c->session->{topicquery};
-    $c->stash( $stashkey => [ sort { $b->[6] <=> $a->[6] or uc($a->[2]) cmp uc($b->[2]) } @{ 
-            $c->dbh->selectall_arrayref( << 'EOSQL'
+    my $tlist = $c->dbh->selectall_arrayref( << 'EOSQL'
         SELECT t."id", t."userfrom", t."title",
             (SELECT COUNT(p."id") 
                 FROM "posts" p
@@ -78,7 +77,13 @@ EOSQL
         LIMIT ? OFFSET ?
 EOSQL
         ,undef, $uid, $uid, $uid, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit
-    ) } ] );
+    );
+    if ( $c->configdata->{chronsortorder} ) {
+        $c->stash( $stashkey => $tlist );
+    }
+    else {
+        $c->stash( $stashkey => [ sort { $b->[6] <=> $a->[6] or uc($a->[2]) cmp uc($b->[2]) } @$tlist ] );
+    }
 }
 
 sub _generate_userlist {

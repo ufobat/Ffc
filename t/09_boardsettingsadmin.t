@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 839;
+use Test::More tests => 923;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -33,6 +33,9 @@ my @Settings = (
     [ topiclimit => 'Überschriftenanzahl', 'number',
         [10 + int( rand 90),110 + int(rand 90)],['asdf'],
         'Die Anzahl gleichzeitig angezeigter Forenüberschriften muss eine Zahl sein' ],
+    [ chronsortorder => 'chronologische Sortierung', 'checkbox',
+        ['', 1], ['asdfasdf', 12],
+        'Die Einstellung für die chronologische Sortierung kann entweder 0 oder 1 betragen' ],
     [ sessiontimeout => 'Maximale Benutzersitzungsdauer', 'number',
         [10 + int( rand 90),110 + int(rand 90)],['asdf'],
         'Die Zeit der Benutzersitzungsmaximallänge muss eine Zahl in Sekunden sein' ],
@@ -84,7 +87,7 @@ for my $s ( @Settings ) {
       ->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr'active activeoptions">Einstellungen<');
-    if ( $key =~ m/favicon|backgroundcolor|customcss/xmso ) {
+    if ( $key =~ m/favicon|backgroundcolor|customcss|chronsortorder/xmso ) {
         info($info);
     }
     else {
