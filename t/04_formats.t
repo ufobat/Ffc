@@ -167,24 +167,26 @@ Zitat"! ... Haha!';
 }
 
 {
-    note 'test quotes and single "';
+    note 'test inline quotes and " as well as inline code and `';
     my $teststring = q~
 "Hallo Welt" blabla.
-Mein 11" "Notebook" ist toll! oder nicht?
+Mein 11" "Notebook" ist toll! `oder doch` nicht?
 "a"
-Mein "11" Notebook" ist tool! oder doch?
+Mein "11" Notebook" ist tool! `oder doch?
 "Halli
 Galli"
 https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&x=ypsilon
+brmfpg`asdfsadf`fdf  dfsdfasdf
 ~;
 
     my $controlstring = qq~<p>„<span class="quote">Hallo Welt</span>“ blabla.</p>
-<p>Mein 11" „<span class="quote">Notebook</span>“ ist toll! oder nicht?</p>
+<p>Mein 11" „<span class="quote">Notebook</span>“ ist toll! `<span class="code">oder doch</span>` nicht?</p>
 <p>„<span class="quote">a</span>“</p>
-<p>Mein „<span class="quote">11</span>“ Notebook" ist tool! oder doch?</p>
+<p>Mein „<span class="quote">11</span>“ Notebook" ist tool! `oder doch?</p>
 <p>„<span class="quote">Halli</span></p>
 <p><span class="quote">Galli</span>“</p>
-<p><a href="https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&amp;x=ypsilon" title="Externe Webseite: https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&amp;amp;x=ypsilon" target="_blank">https://abcde.f…p;amp;x=ypsilon</a></p>~;
+<p><a href="https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&amp;x=ypsilon" title="Externe Webseite: https://abcde.fghijklmn.opqrst.uvwx.yz/index.pl/?bla=blubb&amp;amp;x=ypsilon" target="_blank">https://abcde.f…p;amp;x=ypsilon</a></p>
+<p>brmfpg`asdfsadf`fdf  dfsdfasdf</p>~;
 
     $t->post_ok('/pre_format', form => { text => $teststring, urlshorten => 30 })->content_is($controlstring);
 }

@@ -49,6 +49,18 @@ ffcdata.editbuttons.init = function(){
         position(lio + txt2.length);
     };
 
+    // Wörter auf einer Zeile inline mit einem Zeichen umrahmen
+    var sourrounder = function(str){
+        // console.log('sourround selection with "' + str + '"');
+        tinput.focus();
+        var sel = wordboundaries(selection());
+        var txt0 = tinput.value.substr(0,sel[0] + 1);
+        var txt1 = tinput.value.substr(sel[0] + 1,sel[1] - sel[0] - 1);
+        var txt2 = tinput.value.substring(sel[1],tinput.value.length);
+        tinput.value =  txt0 + str + txt1  + str + txt2;
+        position(sel[1] + (2 * str.length));
+    };
+
     // Spezielle Escape-Funktionen
     var strngescape = function(str){
         // console.log('escape selection with "' + str + '"');
@@ -101,6 +113,7 @@ ffcdata.editbuttons.init = function(){
     document.getElementById('quotebutton').onclick         = function(){ linestarter('| ') };
     document.getElementById('unorderedlistbutton').onclick = function(){ linestarter('- ') };
     document.getElementById('orderedlistbutton').onclick   = function(){ linestarter('# ') };
+    document.getElementById('codebutton').onclick          = function(){ sourrounder('`')  };
     document.getElementById('prebutton').onclick           = function(){ linestarter(' ')  };
     document.getElementById('underlinebutton').onclick     = function(){ strngescape('_')  };
     document.getElementById('boldbutton').onclick          = function(){ strngescape('+')  };

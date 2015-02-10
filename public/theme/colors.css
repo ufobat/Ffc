@@ -178,11 +178,11 @@ input[type="text"].titlestring {
 img.smiley, img.icon {
     border: none;
 }
-pre, code {
+pre, .code {
     font-family: monospace;
+    color: chocolate;
 }
 .postbox pre {
-    color: chocolate;
     border-left: .1em palegoldenrod solid;
 }
 .functionlinks {

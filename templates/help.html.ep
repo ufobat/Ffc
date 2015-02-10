@@ -27,7 +27,7 @@
     <p>
         (Anzeigebeispiel: <a class="buttonalike" id="boldbutton" title="Fett markiert (wortweise, '+')"><span class="bold">f</span></a><a class="buttonalike" id="italicbutton" title="Schräg geschrieben (wortweise, '~')"><span class="italic">k</span></a><a class="buttonalike" id="underlinebutton" title="Unterstreichung (wortweise, '_')"><span class="underline">u</span></a><a class="buttonalike" id="linethroughbutton" title="Durchgestrichen (wortweise, '-')"><span class="linethrough">d</span></a> 
         <a class="buttonalike" id="h1button" title="Überschrift (zeilenweise, '=' am Zeilenanfang)"><span class="underline"><span class="bold">Ü</span></span></a><a class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste (zeilenweise, '-' am Zeilenanfang)">&middot;</a><a class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, '#' am Zeilenanfang)">&sup1;</a> 
-        <a class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat (zeilenweise, '|', am Zeilenanfang)">&quot;</a><a class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext (zeilenweise, ' ', am Zeilenanfang)"><code>C</code></a> 
+        <a class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat (zeilenweise, '|', am Zeilenanfang)">&quot;</a><a class="buttonalike" id="codebutton" title="Vorformatierter Programm-Quelltext (wortweise, '`')"><code>`</code></a><a class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext (zeilenweise, ' ', am Zeilenanfang)"><code>C</code></a> 
         <a class="buttonalike" id="attentionbutton" title="Aufmerksamkeit (wortweise, '!')">!</a><a class="buttonalike" id="emotionalbutton" title="Emotional (wortweise, '*')">*</a>)
     </p>
     <ul>
@@ -39,6 +39,7 @@
         <li><a class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste (zeilenweise, '-' am Zeilenanfang)">&middot;</a> formatiert die aktuelle Zeile oder die markierten Zeilen als unsortierte Listen</li>
         <li><a class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, '#' am Zeilenanfang)">&sup1;</a>  formatiert die aktuelle Zeile oder die markierten Zeilen als Aufzählungsliste</li>
         <li><a class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat (zeilenweise, '|', am Zeilenanfang)">&quot;</a> formatiert die aktuelle Zeile oder die markierten Zeilen als Zitat</li>
+        <li><a class="buttonalike" id="codebutton" title="Vorformatierter Programm-Quelltext (wortweise, '`')"><code>`</code></a> formatiert markierte Wörter als (Programm-)Quelltext</li>
         <li><a class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext (zeilenweise, ' ', am Zeilenanfang)"><code>C</code></a>  formatiert die aktuelle Zeile oder die markierten Zeilen als (Programm-)Quelltext</li>
         <li><a class="buttonalike" id="attentionbutton" title="Aufmerksamkeit (wortweise, '!')">!</a> markiert das aktuelle Wort oder die markierten Wörter als <span class="alert">wichtig</span></li>
         <li><a class="buttonalike" id="emotionalbutton" title="Emotional (wortweise, '*')">*</a> markiert das aktuelle Wort oder die markierten Wörter <span class="emotion">emotional</span></li>
@@ -68,6 +69,7 @@
         <li><code>#</code> am Zeilenanfang: Erzeugt eine Aufzählungsliste</li>
         <li><code> </code> (Leerzeichen) am Zeilenanfang: Erzeugt einen vorformattierten Text (für Programmcode zum Beispiel)</li>
         <li><code>|</code> am Zeilenanfang: Erzeugt ein mehrzeiliges Zitat</li>
+        <li><code>`</code> um Wörter innerhalb einer Zeile: Erzeugt einen (Programm-)Quelltext-Teil</li>
     </ul>
 </div>
 <div class="postbox helptext">
@@ -117,7 +119,7 @@
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/love.png" %>" /> (Ein kitschiges Herz): <code>&lt;3</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/devilsmile.png" %>" /> (Diabolisches Lächeln): <code>&gt;:) &gt;:-) &gt;=)</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/angry.png" %>" /> (Wütend sein): <code>&gt;:( &gt;:-( &gt;=(</code></li>
-        <li><img class="smiley" src="<%= url_for "/theme/img/smileys/evilgrin.png" %>" /> (Böse Lachen): <code>&gt;:D &gt;:-D &gt;=D</code></a></li>
+        <li><img class="smiley" src="<%= url_for "/theme/img/smileys/evilgrin.png" %>" /> (Böse Lachen): <code>&gt;:D &gt;:-D &gt;=D</code></li>
     </ul>
 </div>
 <div class="postbox helptext">

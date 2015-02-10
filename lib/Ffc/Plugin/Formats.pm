@@ -88,8 +88,12 @@ sub _pre_format_text {
                 $q = 0;
             }
 
-            # normal inline quoting
-            $s =~ s{(\A|\s)"(\S|\S.*?\S)"(\W|\z)}{$1„<span class="quote">$2</span>“$3}gxoms;
+            # normal inline quoting and backticked codesnippets
+            for my $w ( [q{"}, q{"}, 'quote', q{„}, q{“} ],
+                        [q{`}, q{`}, 'code',  q{`}, q{`} ],
+            ) {
+                $s =~ s{(\A|\s)$w->[0](\S|\S.*?\S)$w->[1](\W|\z)}{$1$w->[3]<span class="$w->[2]">$2</span>$w->[4]$3}gxms;
+            }
             
             # normal text
             $h3 = 1 if $s =~ s{\A=\s*([^\n]+)\z}{<h3>$1</h3>}gxoms;
