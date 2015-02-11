@@ -1,11 +1,7 @@
 Ffc
 ===
 
-Schnelle, leichtgewichtige, übersichtliche, schlanke und 
-unkomplizierte Foren- und Nachrichtenplattform für eine 
-überschaubare Anzahl von händisch angelegten angemeldeten 
-Teilnehmern mit klarer und einfacher Datenhaltung und 
-simpler technischer Struktur.  
+Ffc ist als webbasierte private Kommunikationsplattform für kleine Gruppen gedacht.
 
 Hinweis: Informationen zur Installation gibt es weiter unten nach der nächsten Überschrift.
 
@@ -66,6 +62,7 @@ Features
   * Minutenintervall für automatisches Neuladen der Forenwebseite, wenn diese im Hintergrund ist und kein Text eingegeben wurde (kann darüber auch deaktiviert werden, setzt man den Wert auf 0)
 * Das Forum kann auch als eine Art Online-Notizblock für einen einzelnen Benutzer verwendet werden, dann sind die Funktionen der Privatnachrichten und für den Chat deaktiviert
 * Das Forum verwendet die Programmiersprache Perl, das Webframework Mojolicious sowie SQLite als Datenbank, daneben wird HTML5 und CSS3 verwendet
+* Technische Designziele sind die einfach strukturierte Datenhaltung sowie eine schlanke, einfache und schnelle Softwarebasis
 * Die Software enthält eine umfangreiche Testsuite, in der besonderer Wert auf Datensicherheit und Zuverlässigkeit gelegt wird
 
 Installation
