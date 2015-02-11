@@ -7,6 +7,8 @@ unkomplizierte Foren- und Nachrichtenplattform für eine
 Teilnehmern mit klarer und einfacher Datenhaltung und 
 simpler technischer Struktur.  
 
+Hinweis: Informationen zur Installation gibt es weiter unten nach der nächsten Überschrift.
+
 Features
 --------
 
