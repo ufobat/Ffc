@@ -17,7 +17,8 @@
     <%= stylesheet '/theme/large.css', media => 'all and (min-device-width: 801px)' %>
     <script type="text/javascript">
         ffcdata = {
-            autorefresh: <%= @$users ? ( session()->{autorefresh} || 0 ) : 0 %>,
+            singleuser: <%= @$users ? 'false' : 'true' %>,
+            autorefresh: <%= session()->{autorefresh} || 0 %>,
             user: "<%= session()->{user} || '' %>" || undefined,
             counturl: "<%= url_for 'countings' %>",
             lastcount: <%= $newpostcount + $newmsgscount %>,

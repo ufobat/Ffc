@@ -37,9 +37,10 @@ ffcdata.features.init = function(){
     };
     
     // Weitere Feature-Operationen starten
-    set_titletime();
+    if ( !ffcdata.singleuser )
+        set_titletime();
     activate_chatbutton();
-    if ( ffcdata.autorefresh > 0 && !ffcdata.utils.is_disabled() )
+    if ( ffcdata.autorefresh > 0 && !ffcdata.utils.is_disabled() && !ffcdata.singleuser )
         set_autorefresh();
 };
 
