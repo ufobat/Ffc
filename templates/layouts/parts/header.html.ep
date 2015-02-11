@@ -5,7 +5,11 @@
     <title><%= $title %></title>
     <link rel="icon" type="image/png" href="<%= url_for '/theme/img/favicon.png' %>" />
 % } else {
+%   if ( @$users ) {
     <title>(<%= $newpostcount + $newmsgscount %>) <%= $title %></title>
+%   } else {
+    <title><%= $title %></title>
+%   }
     <link rel="icon" type="<%= configdata()->{faviconcontenttype} %>" href="<%= url_for 'favicon_show' %>" />
 % }
     <%= stylesheet '/theme/colors.css' %>
@@ -13,7 +17,7 @@
     <%= stylesheet '/theme/large.css', media => 'all and (min-device-width: 801px)' %>
     <script type="text/javascript">
         ffcdata = {
-            autorefresh: <%= session()->{autorefresh} || 0 %>,
+            autorefresh: <%= @$users ? ( session()->{autorefresh} || 0 ) : 0 %>,
             user: "<%= session()->{user} || '' %>" || undefined,
             counturl: "<%= url_for 'countings' %>",
             lastcount: <%= $newpostcount + $newmsgscount %>,
