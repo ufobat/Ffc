@@ -43,6 +43,7 @@
         <button type="submit">Avatar hochladen</button>
     </form>
 </div>
+% if ( @$users ) {
 <div class="postbox options">
     <a name="set_email"></a>
     <h1>E-Mail-Adresse einstellen</h1>
@@ -56,6 +57,7 @@
         <p><button type="submit">Emailadresse und Benachrichtigungseinstellung speichern</button></p>
     </form>
 </div>
+% }
 % if ( session()->{admin} ) {
 <div class="postbox options useradmin">
     <a name="useradmin"></a>
