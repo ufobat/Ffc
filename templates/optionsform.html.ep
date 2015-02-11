@@ -12,6 +12,7 @@
     </form>
     <p><a href="<%= url_for 'no_bg_color' %>#bgcolor">Standardhintergrundfarbe des Forums</a></p>
 </div>
+% if ( @$users ) {
 <div class="postbox options">
     <h1>Automatisches Neuladen der Forenwebseite</h1>
     <p>(Hier kann die Anzahl der Minuten eingestellt werden, aller wievieler sich die Webseite (der Teil mit dem Forum, für den Chat muss die Auswahlbox im Chatfenster unabhängig hiervon verwendet werden) aktualisiert, wenn sie im Hintergrund ist, stellt man &quot;0&quot; ein, so aktualisiert sich die Seite nie von alleine neu, standardmäßig sind hier 3 Minuten eingestellt)</p>
@@ -20,6 +21,7 @@
         <button type="submit">Zeitraum ändern</button>
     </form>
 </div>
+% }
 <div class="postbox options">
     <a name="set_password"></a>
     <h1>Passwort ändern</h1>
