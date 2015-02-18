@@ -2,16 +2,8 @@
 /************************************************************************
  *** Initialisierung mit allen notwendigen Funktionen                 ***
  ************************************************************************/
-ffcdata.chat = {};
 
 ffcdata.chat.init = function() {
-    var refresh = 60;
-    var to;
-    var history_list = new Array();
-    var history_pointer = 0;
-    var newchatcountsum = 0;
-
-
     /************************************************************************
      *** Chat-Text formatieren                                            ***
      ************************************************************************/
@@ -27,7 +19,7 @@ ffcdata.chat.init = function() {
         else {
             txt = txt.replace(/(([\(|\s])?|^)(https?:\/\/[^\)\s]+?)(\)|,?\s|$)/g, '$1<a href="$3" target="_blank" title="Externe Webadresse! ($3)">$3</a>$4');
             txt = txt.replace(/\n/g, '<br />');
-            txt = txt.replace(ffcdata.userre, '<span class="myself">$1</span>');
+            txt = txt.replace(ffcdata.chat.userre, '<span class="myself">$1</span>');
         }
         return(txt);
     }
@@ -36,12 +28,12 @@ ffcdata.chat.init = function() {
      *** Titelstring der Webseite aendern                                 ***
      ************************************************************************/
     var set_title = function(newchatcount, newpostcount, newmsgscount) {
-        var tp = ffcdata.title;
+        var tp = ffcdata.chat.title;
         if ( document.hasFocus() )
-            newchatcountsum = 0;
+            ffcdata.chat.newchatcountsum = 0;
         else 
-            newchatcountsum = newchatcountsum + newchatcount;
-        var str = tp[0]+newchatcountsum+tp[1]+(newpostcount+newmsgscount)+tp[2];
+            ffcdata.chat.newchatcountsum = ffcdata.chat.newchatcountsum + newchatcount;
+        var str = tp[0]+ffcdata.chat.newchatcountsum+tp[1]+(newpostcount+newmsgscount)+tp[2];
         document.getElementsByTagName("title")[0].firstChild.data = str;
         // console.log('title updated');
     };
@@ -51,7 +43,7 @@ ffcdata.chat.init = function() {
      ************************************************************************/
     var update_refreshtime = function(ref) {
         document.getElementById('refreshtime').value = ref;
-        refresh = ref;
+        ffcdata.chat.refresh = ref;
         // console.log('refresh time view updated: '+ref);
     };
 
@@ -127,8 +119,8 @@ ffcdata.chat.init = function() {
      *** Timeout handeln                                                  ***
      ************************************************************************/
     var t_stop = function() {
-        if ( to ) {
-            window.clearTimeout(to);
+        if ( ffcdata.chat.to ) {
+            window.clearTimeout(ffcdata.chat.to);
             // console.log('timeout stopped');
             return true;
         }
@@ -138,34 +130,38 @@ ffcdata.chat.init = function() {
         }
     };
     var t_start = function() {
-        to = window.setTimeout(receive, refresh * 1000);
+        ffcdata.chat.to = window.setTimeout(receive, ffcdata.chat.refresh * 1000);
         // console.log('timeout startet: '+refresh);
     };
 
     /************************************************************************
      *** Daten abholen                                                    ***
      ************************************************************************/
-    var receive = function(msg) {
+    var receive_do = function(msg, started) {
         // console.log('receiving');
         if ( !t_stop() ) {
             // console.log('timeout allready stopped, receive might be in progress');
             return;
         }
         // console.log('fetching data');
-        var url = ffcdata.unfocusedurl;
+        var url = ffcdata.chat.unfocusedurl;
         if ( document.hasFocus() )
-            url = ffcdata.focusedurl;
+            url = ffcdata.chat.focusedurl;
+        if ( started )
+            url = ffcdata.chat.startedurl;
         if ( msg )
             ffcdata.utils.request('POST', url, msg, resolve);
         else
             ffcdata.utils.request('GET', url, null, resolve);
     };
+    var receive = function(msg) { receive_do(msg, false) };
+    var receive_start = function() { receive_do(false, true); };
 
     /************************************************************************
      *** Refresh-Zeit aendern                                             ***
      ************************************************************************/
     var set_refresh = function(value) {
-        var url = ffcdata.refreshseturl.substring(0, ffcdata.refreshseturl.length - 2);
+        var url = ffcdata.chat.refreshseturl.substring(0, ffcdata.chat.refreshseturl.length - 2);
         ffcdata.utils.request('GET', url + value, null, function(res){ 
             if ( res != 'ok' ) {
                 new Error('Set refresh time failed');
@@ -182,7 +178,7 @@ ffcdata.chat.init = function() {
      *** Den Chat verlassen                                               ***
      ************************************************************************/
     window.onbeforeunload = function() {
-        ffcdata.utils.request('GET', ffcdata.leaveurl, null, function(ret) { console.log(ret); });
+        ffcdata.utils.request('GET', ffcdata.chat.leaveurl, null, function(ret) { console.log(ret); });
     };
 
     /************************************************************************
@@ -254,8 +250,8 @@ ffcdata.chat.init = function() {
             var msg = document.getElementById('msg');
             var msgval = msg.value;
             if ( msgval ) {
-                history_list.push(msgval);
-                history_pointer = history_list.length;
+                ffcdata.chat.history_list.push(msgval);
+                ffcdata.chat.history_pointer = ffcdata.chat.history_list.length;
             }
             sendit();
         }
@@ -270,24 +266,24 @@ ffcdata.chat.init = function() {
             cleanmsg();
         }
 
-        if ( isShift && e.keyCode == 38 && history_pointer > 0 ) { // shift + up arrow, history back
+        if ( isShift && e.keyCode == 38 && ffcdata.chat.history_pointer > 0 ) { // shift + up arrow, history back
             var msg = document.getElementById('msg');
             var msgval = msg.value;
-            if ( msgval.length > 0 && history_list[history_pointer] != msgval ) {
-                history_list[history_pointer] = msgval;
+            if ( msgval.length > 0 && ffcdata.chat.history_list[ffcdata.chat.history_pointer] != msgval ) {
+                ffcdata.chat.history_list[ffcdata.chat.history_pointer] = msgval;
             }
-            history_pointer--;
-            msg.value = history_list[history_pointer];
+            ffcdata.chat.history_pointer--;
+            msg.value = ffcdata.chat.history_list[ffcdata.chat.history_pointer];
         }
-        if ( isShift && e.keyCode == 40 && history_pointer < history_list.length ) { // shift + down arrow, history foreward
+        if ( isShift && e.keyCode == 40 && ffcdata.chat.history_pointer < ffcdata.chat.history_list.length ) { // shift + down arrow, history foreward
             var msg = document.getElementById('msg');
             var msgval = msg.value;
-            if ( msgval.length > 0 && history_list[history_pointer] != msgval ) {
-                history_list[history_pointer] = msgval;
+            if ( msgval.length > 0 && ffcdata.chat.history_list[ffcdata.chat.history_pointer] != msgval ) {
+                ffcdata.chat.history_list[ffcdata.chat.history_pointer] = msgval;
             }
-            history_pointer++;
-            if ( history_pointer < history_list.length ) {
-                msg.value = history_list[history_pointer];
+            ffcdata.chat.history_pointer++;
+            if ( ffcdata.chat.history_pointer < ffcdata.chat.history_list.length ) {
+                msg.value = ffcdata.chat.history_list[ffcdata.chat.history_pointer];
             }
             else {
                 msg.value = '';
@@ -299,7 +295,7 @@ ffcdata.chat.init = function() {
      *** Fertisch                                                         ***
      ************************************************************************/
     t_start();
-    receive();
+    receive_start();
     document.getElementById('msg').focus();
 };
 

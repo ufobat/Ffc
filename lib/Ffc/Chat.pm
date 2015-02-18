@@ -2,6 +2,7 @@ package Ffc::Chat;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 use Mojo::Util 'xml_escape';
+use Mojo::JSON 'encode_json';
 
 sub _noop { $Ffc::Digqr };
 
@@ -13,6 +14,10 @@ sub install_routes {
          ->to(controller => 'chat', action => 'chat_window_open')
          ->name('chat_window');
 
+    # die route liefert die notwendigen Nachrichten beim Start einer Chatsession
+    $r->route('/chat/receive/started')->via(qw(GET))
+         ->to(controller => 'chat', action => 'receive_started')
+         ->name('chat_receive_started');
     # die route ist für nachrichten genauso wie für statusabfragen zuständig
     $r->route('/chat/receive/focused')->via(qw(GET POST))
          ->to(controller => 'chat', action => 'receive_focused')
@@ -43,7 +48,15 @@ sub set_refresh {
     $c->render( json => 'ok' );
 }
 
-sub chat_window_open { $_[0]->render( template => 'chat' ) }
+sub chat_window_open {
+    my $c = $_[0];
+    my @history_list = map {$_->[0]} reverse @{ $c->dbh->selectall_arrayref(
+            'SELECT c."msg" FROM "chat" c WHERE c."userfromid"=? ORDER BY c."id" DESC LIMIT ?',
+            undef, $c->session->{userid}, $c->configdata->{topiclimit}) };
+    $c->stash(history_list => encode_json \@history_list);
+    $c->stash(history_pointer => scalar @history_list);
+    $c->render( template => 'chat' );
+}
 
 sub leave_chat {
     my $c = $_[0];
@@ -53,10 +66,11 @@ sub leave_chat {
     $c->render( text => 'ok' );
 }
 
-sub receive_focused   { _receive($_[0], 1) }
-sub receive_unfocused { _receive($_[0], 0) }
+sub receive_started   { _receive($_[0], 1, 1) }
+sub receive_focused   { _receive($_[0], 1, 0) }
+sub receive_unfocused { _receive($_[0], 0, 0) }
 sub _receive {
-    my ( $c, $active ) = @_;
+    my ( $c, $active, $started ) = @_;
     my $dbh = $c->dbh;
     my $msg = '';
     $msg = $c->req->json if $c->req->method eq 'POST';
@@ -74,13 +88,26 @@ sub _receive {
 SELECT c."id", uf."name", c."msg", datetime(c."posted", 'localtime')
 FROM "chat" c 
 INNER JOIN "users" uf ON uf."id"=c."userfromid"
-WHERE c."id">COALESCE((SELECT u2."lastchatid" FROM "users" u2 WHERE u2."id"=? LIMIT 1),0)
+EOSQL
+    if ( $started ) {
+        $sql .= << 'EOSQL';
 ORDER BY c."id" DESC
 LIMIT ?;
 EOSQL
+    }
+    else {
+        $sql .= << 'EOSQL';
+WHERE c."id">COALESCE((SELECT u2."lastchatid" FROM "users" u2 WHERE u2."id"=? LIMIT 1),0)
+ORDER BY c."id" DESC
+EOSQL
+    }
 
     my $msgs = $dbh->selectall_arrayref( $sql, undef,
-         $c->session->{userid}, $c->configdata->{postlimit} * 10 );
+        ( $started 
+            ? ($c->configdata->{postlimit} * 3) 
+            : ($c->session->{userid})
+        )
+    );
     for my $m ( @$msgs ) {
         $m->[$_] = xml_escape($m->[$_]) for 1, 2;
         $m->[3] = $c->format_timestamp($m->[3], 1);

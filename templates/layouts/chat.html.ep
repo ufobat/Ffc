@@ -6,14 +6,23 @@
     <%= stylesheet 'theme/chat.css' %>
     <%= include 'layouts/parts/styleinc' %>
     <script type="text/javascript">
-      ffcdata = {
-        title: ['(', ') Chat - (', ') <%= $title %>'],
-        user:  '<%= session->{user} %>',
-        userre:  /(<%= session->{user} %>)/i,
-        leaveurl: '<%= url_for "chat_leave" %>',
-        refreshseturl: '<%= url_for "chat_set_refresh", refresh => 33 %>',
-        focusedurl: '<%= url_for "chat_receive_focused" %>',
-        unfocusedurl: '<%= url_for "chat_receive_unfocused" %>',
+      ffcdata = { 
+          user: "<%= session()->{user} || '' %>" || undefined,
+          chat: {
+              title: ['(', ') Chat - (', ') <%= $title %>'],
+              user:  '<%= session->{user} %>',
+              userre:  /(<%= session->{user} %>)/i,
+              leaveurl: '<%= url_for "chat_leave" %>',
+              refreshseturl: '<%= url_for "chat_set_refresh", refresh => 33 %>',
+              focusedurl: '<%= url_for "chat_receive_focused" %>',
+              unfocusedurl: '<%= url_for "chat_receive_unfocused" %>',
+              startedurl: '<%= url_for "chat_receive_started" %>',
+              refresh: 60,
+              to: '',
+              history_list: <%== $history_list %>,
+              history_pointer: <%= $history_pointer %>,
+              newchatcountsum: 0,
+          },
       };
     </script>
     <%= javascript '/js/utils.js' %>
