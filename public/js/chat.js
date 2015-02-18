@@ -82,10 +82,19 @@ ffcdata.chat.init = function() {
         if ( msgs.length > 0 ) {
             var msglog = document.getElementById('msglog');
             var ml = msglog.innerHTML;
+            var userstr = '';
             for ( var i = msgs.length - 1; i >= 0; i-- ) {
-                ml = ml + '<p' + (ffcdata.user === msgs[i][1] ? ' class="ownmsg"' : '') + '>'
-                   + '<span class="timestamp">(' + msgs[i][3] + ')</span> '
-                   + '<span class="username">' + msgs[i][1] + '</span>: ' + textfilter(msgs[i][2]) + '</p>\n';
+                if ( msgs[i][2].match(/^\/me\s+/ ) ) {
+                    msgs[i][2] = msgs[i][2].replace(/^\/me\s+/, '');
+                    userstr = msgs[i][1] + ' ';
+                }
+                else {
+                    userstr = '<span class="username">' + msgs[i][1] + '</span>: ';
+                }
+                ml = ml
+                   +'<p' + (ffcdata.user === msgs[i][1] ? ' class="ownmsg"' : '') 
+                   + '><span class="timestamp">(' + msgs[i][3] + ')</span> '
+                   + userstr + textfilter(msgs[i][2]) + '</p>\n';
             }
             msglog.innerHTML = ml;
 

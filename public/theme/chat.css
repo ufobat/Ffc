@@ -28,6 +28,8 @@ div, textarea {
     width: 30em;
     min-width: 30em;
     max-width: 30em;
+    font-size: 1em;
+    font-family: sans-serif;
 }
 #userlist, #buttonlist {
     width: 15em;
