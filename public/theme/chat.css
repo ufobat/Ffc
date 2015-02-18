@@ -142,7 +142,7 @@ option {
 #msglog a:focus {
     color: gainsboro;
 }
-.lastdaysmsg {
-    border-bottom: .1em silver solid;
+.newdaymsg {
+    border-top: .1em silver solid;
 }
 

@@ -75,9 +75,9 @@ ffcdata.chat.init = function() {
             var msglog = document.getElementById('msglog');
             var ml = msglog.innerHTML;
             var userstr = '';
-            var lastdaysmsg = false;
+            var newdaymsg = false;
             for ( var i = msgs.length - 1; i >= 0; i-- ) {
-                lastdaysmsg = false;
+                newdaymsg = false;
                 if ( i < msgs.length - 1 ) {
                     if ( msgs[i + 1][3].match(/\d\d\.\d\d\.\d\d\d\d/)
                         && (
@@ -86,7 +86,7 @@ ffcdata.chat.init = function() {
                                 !== msgs[i + 1][3].match(/\d\d\.\d\d\.\d\d\d\d/)[0]
                         )
                     ) {
-                        lastdaysmsg = true;
+                        newdaymsg = true;
                     }
                 }
                 if ( msgs[i][2].match(/^\/me\s+/ ) ) {
@@ -97,8 +97,8 @@ ffcdata.chat.init = function() {
                     userstr = '<span class="username">' + msgs[i][1] + '</span>: ';
                 }
                 ml = ml
-                   + ( lastdaysmsg 
-                        ? '<p class="lastdaysmsg' + (ffcdata.user === msgs[i][1] ? ' ownmsg' : '') + '">'
+                   + ( newdaymsg 
+                        ? '<p class="newdaymsg' + (ffcdata.user === msgs[i][1] ? ' ownmsg' : '') + '">'
                         : '<p' + (ffcdata.user === msgs[i][1] ? ' class="ownmsg"' : '') + '>' )
                    + '<span class="timestamp">(' + msgs[i][3] + ')</span> '
                    + userstr + textfilter(msgs[i][2]) + '</p>\n';
