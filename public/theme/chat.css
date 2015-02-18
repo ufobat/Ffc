@@ -142,4 +142,8 @@ option {
 #msglog a:focus {
     color: gainsboro;
 }
+hr {
+    color: silver;
+    border: .1em silver solid;
+}
 

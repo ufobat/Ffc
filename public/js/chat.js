@@ -76,6 +76,17 @@ ffcdata.chat.init = function() {
             var ml = msglog.innerHTML;
             var userstr = '';
             for ( var i = msgs.length - 1; i >= 0; i-- ) {
+                if ( i < msgs.length - 1 ) {
+                    if ( msgs[i + 1][3].match(/\d\d\.\d\d\.\d\d\d\d/)
+                        && (
+                            !msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/) 
+                            || msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/)[0] 
+                                !== msgs[i + 1][3].match(/\d\d\.\d\d\.\d\d\d\d/)[0]
+                        )
+                    ) {
+                        ml = ml + '<hr />';
+                    }
+                }
                 if ( msgs[i][2].match(/^\/me\s+/ ) ) {
                     msgs[i][2] = msgs[i][2].replace(/^\/me\s+/, '');
                     userstr = msgs[i][1] + ' ';
