@@ -98,12 +98,18 @@ ffcdata.chat.init = function() {
                 else {
                     userstr = '<span class="username">' + msgs[i][1] + '</span>: ';
                 }
-                ml = ml
-                   + ( newdaymsg 
-                        ? '<p class="newdaymsg' + (ffcdata.user === msgs[i][1] ? ' ownmsg' : '') + '">'
-                        : '<p' + (ffcdata.user === msgs[i][1] ? ' class="ownmsg"' : '') + '>' )
+                var classstr = [];
+                var sameuser = ffcdata.chat.lastmsguser === msgs[i][1];
+                if ( newdaymsg ) classstr.push('newdaymsg');
+                if ( ffcdata.user === msgs[i][1] ) classstr.push('ownmsg');
+                if ( sameuser && !newdaymsg ) classstr.push('sameuser');
+                   
+                ml = ml + '<p' + ( classstr ? ' class="' + classstr.join(' ') + '"' : '' ) + '>'
                    + '<span class="timestamp">(' + msgs[i][3] + ')</span> '
-                   + userstr + textfilter(msgs[i][2]) + '</p>\n';
+                   + ( !sameuser || newdaymsg ? userstr : '' )
+                   + textfilter(msgs[i][2]) + '</p>\n';
+
+                ffcdata.chat.lastmsguser = msgs[i][1];
             }
             msglog.innerHTML = ml;
             ffcdata.chat.lastmsgtime = msgs[0][3];

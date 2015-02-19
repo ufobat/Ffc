@@ -121,6 +121,9 @@ option {
     text-indent: -1em;
     padding-left: 1em;
 }
+#msglog .sameuser {
+    padding-left: 2em;
+}
 .myself {
     color: red;
     font-weight: bold;
