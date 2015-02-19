@@ -22,6 +22,7 @@
               history_list: <%== $history_list %>,
               history_pointer: <%= $history_pointer %>,
               newchatcountsum: 0,
+              lastmsgtime: '',
           },
       };
     </script>

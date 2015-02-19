@@ -79,7 +79,8 @@ ffcdata.chat.init = function() {
             for ( var i = msgs.length - 1; i >= 0; i-- ) {
                 newdaymsg = false;
                 if ( i < msgs.length - 1 ) {
-                    if ( msgs[i + 1][3].match(/\d\d\.\d\d\.\d\d\d\d/)
+                    if ( 
+                        msgs[i + 1][3].match(/\d\d\.\d\d\.\d\d\d\d/)
                         && (
                             !msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/) 
                             || msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/)[0] 
@@ -88,6 +89,16 @@ ffcdata.chat.init = function() {
                     ) {
                         newdaymsg = true;
                     }
+                }
+                else if ( 
+                    ffcdata.chat.lastmsgtime.match(/\d\d\.\d\d\.\d\d\d\d/)
+                    && (
+                        !msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/) 
+                        || msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/)[0] 
+                            !== ffcdata.chat.lastmsgtime.match(/\d\d\.\d\d\.\d\d\d\d/)[0]
+                    )
+                ) {
+                    newdaymsg = true;
                 }
                 if ( msgs[i][2].match(/^\/me\s+/ ) ) {
                     msgs[i][2] = msgs[i][2].replace(/^\/me\s+/, '');
@@ -104,6 +115,7 @@ ffcdata.chat.init = function() {
                    + userstr + textfilter(msgs[i][2]) + '</p>\n';
             }
             msglog.innerHTML = ml;
+            ffcdata.chat.lastmsgtime = msgs[msgs.length - 1][3];
 
             var scrollHeight = Math.max(msglog.scrollHeight, msglog.clientHeight);
             msglog.scrollTop = scrollHeight - msglog.clientHeight;
