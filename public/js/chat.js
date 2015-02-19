@@ -78,27 +78,18 @@ ffcdata.chat.init = function() {
             var newdaymsg = false;
             for ( var i = msgs.length - 1; i >= 0; i-- ) {
                 newdaymsg = false;
+                var match_n = msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/);
                 if ( i < msgs.length - 1 ) {
-                    if ( 
-                        msgs[i + 1][3].match(/\d\d\.\d\d\.\d\d\d\d/)
-                        && (
-                            !msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/) 
-                            || msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/)[0] 
-                                !== msgs[i + 1][3].match(/\d\d\.\d\d\.\d\d\d\d/)[0]
-                        )
-                    ) {
+                    var match_a = msgs[i + 1][3].match(/\d\d\.\d\d\.\d\d\d\d/);
+                    if ( match_a && ( !match_n || match_n[0] !== match_a[0] ) ) {
                         newdaymsg = true;
                     }
                 }
-                else if ( 
-                    ffcdata.chat.lastmsgtime.match(/\d\d\.\d\d\.\d\d\d\d/)
-                    && (
-                        !msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/) 
-                        || msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/)[0] 
-                            !== ffcdata.chat.lastmsgtime.match(/\d\d\.\d\d\.\d\d\d\d/)[0]
-                    )
-                ) {
-                    newdaymsg = true;
+                else {
+                    var match_l = ffcdata.chat.lastmsgtime.match(/\d\d\.\d\d\.\d\d\d\d/);
+                    if ( match_l && ( !match_n || match_n[0] !== match_l[0] ) ) {
+                        newdaymsg = true;
+                    }
                 }
                 if ( msgs[i][2].match(/^\/me\s+/ ) ) {
                     msgs[i][2] = msgs[i][2].replace(/^\/me\s+/, '');
