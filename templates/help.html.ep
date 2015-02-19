@@ -132,7 +132,7 @@
     <p>Im Chat können im unteren Textfeld auf der linken Seite Nachrichten eingegeben werden. Durch drücken der &quot;Enter&quot;-Taste oder durch betätigen des &quot;Senden&quot;-Knopfes wird die Nachricht versendet. Wird die &quot;Enter&quot;-Taste gleichzeitig mit gedrückter &quot;Shift&quot;-Taste betätigt, so erzeugt dies einen Zeilenumbruch in der Textnachricht.</p>
     <p>Die Auswahlbox wählt das Zeitintervall, innerhalb dessen neue Nachrichten im Chat nachgeladen werden. Der Knopf &quot;Laden&quot; holt ebenfalls neue Nachrichten ab.</p>
     <p>Durch Voranstellen von <code>/code </code> am Beginn der Chatnachricht, wird die Nachricht als vorformatierter Quellcode im Chat angezeigt.</p>
-    <p>Wird <code>/me</code> gefolgt von einem Leerzeichen an den Beginn einer Chatnachricht gesetzt, so wird eine Ausgabe in dritter Person erzeugt. <code>/me chattet gerade</code> ergibt demnach die Nachticht „<span class="quote">Benutzername chattet gerade</span>“.</p>
+    <p>Wird <code>/me</code> gefolgt von einem Leerzeichen an den Beginn einer Chatnachricht gesetzt, so wird eine Ausgabe in dritter Person erzeugt. <code>/me chattet gerade</code> ergibt demnach die Nachricht „<span class="quote">Benutzername chattet gerade</span>“, wobei „<span class="quote">Benutzername</span>“ durch den eigenen Benutzernamen im Forum/Chat ersetzt wird.</p>
     <p>Eigene Chatnachrichten, URL's und der eigene Benutzername werden im Chat hervorgehoben.</p>
 </div>
 
