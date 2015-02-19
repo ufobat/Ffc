@@ -104,7 +104,7 @@ ffcdata.chat.init = function() {
                 if ( ffcdata.user === msgs[i][1] ) classstr.push('ownmsg');
                 if ( sameuser && !newdaymsg ) classstr.push('sameuser');
                    
-                ml = ml + '<p' + ( classstr ? ' class="' + classstr.join(' ') + '"' : '' ) + '>'
+                ml = ml + '<p' + ( classstr.length > 0 ? ' class="' + classstr.join(' ') + '"' : '' ) + '>'
                    + '<span class="timestamp">(' + msgs[i][3] + ')</span> '
                    + ( !sameuser || newdaymsg ? userstr : '' )
                    + textfilter(msgs[i][2]) + '</p>\n';
