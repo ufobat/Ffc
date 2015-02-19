@@ -118,11 +118,11 @@ option {
     font-size: 0.75em;
 }
 #msglog p {
-    text-indent: -1em;
-    padding-left: 1em;
+    text-indent: -1.25em;
+    padding-left: 1.25em;
 }
-#msglog .sameuser {
-    padding-left: 2em;
+#msglog p.sameuser {
+    text-indent: -0.75em;
 }
 .myself {
     color: red;
