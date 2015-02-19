@@ -4,7 +4,7 @@
     <title>(0) Chat - (0) <%= $title %></title>
     <link rel="icon" type="image/ico" href="<%= url_for 'favicon_show' %>" />
     <%= stylesheet 'theme/chat.css' %>
-    <%= include 'layouts/parts/styleinc' %>
+%= include 'layouts/parts/styleinc';
     <script type="text/javascript">
       ffcdata = { 
           user: "<%= session()->{user} || '' %>" || undefined,
