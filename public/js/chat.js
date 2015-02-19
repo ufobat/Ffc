@@ -115,7 +115,7 @@ ffcdata.chat.init = function() {
                    + userstr + textfilter(msgs[i][2]) + '</p>\n';
             }
             msglog.innerHTML = ml;
-            ffcdata.chat.lastmsgtime = msgs[msgs.length - 1][3];
+            ffcdata.chat.lastmsgtime = msgs[0][3];
 
             var scrollHeight = Math.max(msglog.scrollHeight, msglog.clientHeight);
             msglog.scrollTop = scrollHeight - msglog.clientHeight;
