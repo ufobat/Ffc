@@ -76,6 +76,7 @@ ffcdata.chat.init = function() {
             var ml = msglog.innerHTML;
             var userstr = '';
             var newdaymsg = false;
+            var match_l = ffcdata.chat.lastmsgtime.match(/\d\d\.\d\d\.\d\d\d\d/);
             for ( var i = msgs.length - 1; i >= 0; i-- ) {
                 newdaymsg = false;
                 var match_n = msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/);
@@ -86,7 +87,6 @@ ffcdata.chat.init = function() {
                     }
                 }
                 else {
-                    var match_l = ffcdata.chat.lastmsgtime.match(/\d\d\.\d\d\.\d\d\d\d/);
                     if ( match_l && ( !match_n || match_n[0] !== match_l[0] ) ) {
                         newdaymsg = true;
                     }
