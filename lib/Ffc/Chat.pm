@@ -104,7 +104,7 @@ EOSQL
 
     my $msgs = $dbh->selectall_arrayref( $sql, undef,
         ( $started 
-            ? ($c->configdata->{postlimit} * 3) 
+            ? ($c->configdata->{postlimit} * 5) 
             : ($c->session->{userid})
         )
     );
