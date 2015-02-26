@@ -163,7 +163,7 @@ ffcdata.chat.init = function() {
      ************************************************************************/
     var receive_do = function(msg, started) {
         // console.log('receiving');
-        if ( !t_stop() ) {
+        if ( !started && !t_stop() ) {
             // console.log('timeout allready stopped, receive might be in progress');
             return;
         }
@@ -208,7 +208,7 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Chatfenster anwaehlen                                            ***
      ************************************************************************/
-    window.onfocus = function() {
+    var onfocus_fun = function() {
         // console.log('got focused');
         document.getElementById('msg').focus();
         receive();
@@ -318,8 +318,8 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Fertisch                                                         ***
      ************************************************************************/
-    t_start();
     receive_start();
     document.getElementById('msg').focus();
+    window.onfocus = onfocus_fun;
 };
 
