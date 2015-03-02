@@ -75,7 +75,7 @@ Systemvoraussetzungen
 Folgende Software muss zunächst systemseitig zur Verfügung stehen:
 
 * Perl Version 5.014 oder höher
-* Perl-Modul Mojolicious 5:50 oder höher
+* Perl-Modul Mojolicious 6.0 oder höher
 * Perl-Modul DBI Version 1.63 oder höher
 * Perl-Modul DBD::SQLite Version 1.4 oder höher
 * SQLite Version 3.7.3 oder höher

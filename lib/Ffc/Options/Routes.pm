@@ -2,14 +2,14 @@ package Ffc::Options; # Routes
 use strict; use warnings; use utf8;
 
 sub install_routes {
-    my $o = $_[0]->bridge('/options')->name('options_bridge');
+    my $o = $_[0]->under('/options')->name('options_bridge');
 
     # Optionsformular
     $o->get('/form')
       ->to('options#options_form')
       ->name('options_form');
     
-    my $b = $o->bridge('/bgcolor')->name('bgcolor_bridge');
+    my $b = $o->under('/bgcolor')->name('bgcolor_bridge');
     $b->get('/none')
       ->to('options#no_bg_color')
       ->name('no_bg_color');
@@ -24,7 +24,7 @@ sub install_routes {
         for qw(email password autorefresh);
 
     # Administratorenoptionen
-    my $oa = $o->bridge('/admin')
+    my $oa = $o->under('/admin')
                ->to('options#check_admin')
                ->name('adminoptions');
 

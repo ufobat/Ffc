@@ -110,14 +110,14 @@ for my $s ( @Settings ) {
         info($info);
         if ( $key eq 'favicon' ) {
             if ( $i ) {
-                $t->content_like(qr~<link rel="icon" type="image/\*" href="$i" />~);
+                $t->content_like(qr~<link rel="icon" type="image/\*" href="$i">~);
             }
             else {
-                $t->content_like(qr~<link rel="icon" type="image/\*" href="/theme/img/favicon.png" />~);
+                $t->content_like(qr~<link rel="icon" type="image/\*" href="/theme/img/favicon.png">~);
             }
         }
         if ( $key eq 'customcss' and $i ) {
-            $t->content_like(qr~<link href="$i" rel="stylesheet" />~);
+            $t->content_like(qr~<link href="$i" rel="stylesheet">~);
         }
         if ( $key eq 'backgroundcolor' ) {
             if ( $i ) {

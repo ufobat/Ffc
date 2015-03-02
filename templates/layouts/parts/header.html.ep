@@ -3,14 +3,14 @@
   <head>
 % if ( $controller eq 'auth' ) {
     <title><%= $title %></title>
-    <link rel="icon" type="image/png" href="<%= url_for '/theme/img/favicon.png' %>" />
+    <link rel="icon" type="image/png" href="<%= url_for '/theme/img/favicon.png' %>">
 % } else {
 %   if ( @$users ) {
     <title>(<%= $newpostcount + $newmsgscount %>) <%= $title %></title>
 %   } else {
     <title><%= $title %></title>
 %   }
-    <link rel="icon" type="<%= configdata()->{faviconcontenttype} %>" href="<%= url_for 'favicon_show' %>" />
+    <link rel="icon" type="<%= configdata()->{faviconcontenttype} %>" href="<%= url_for 'favicon_show' %>">
 % }
     <%= stylesheet '/theme/colors.css' %>
     <%= stylesheet '/theme/small.css', media => 'all and (max-device-width: 800px)' %>

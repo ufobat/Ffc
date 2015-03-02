@@ -7,7 +7,7 @@ sub install_routes {
     # Anmeldehandling und Anmeldeprüfung
     $r->post('/login')->to('auth#login')->name('login');
     $r->get('/logout')->to('auth#logout')->name('logout');
-    return $r->bridge('/')
+    return $r->under('/')
              ->to('auth#check_login')
              ->name('login_check');
 }

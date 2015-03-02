@@ -5,7 +5,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 use Mojolicious::Types;
 use File::Spec::Functions qw(catfile);
 
-our $Types = Mojolicious::Types->new()->types;
+our $Types = Mojolicious::Types->new()->mapping;
 
 sub register {
     my ( $self, $app ) = @_;

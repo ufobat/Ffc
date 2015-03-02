@@ -8,7 +8,7 @@ use Encode qw( encode decode_utf8 );
 our $DefaultAvatar = catfile 'theme', 'img', 'avatar.png';
 
 sub install_routes {
-    my $p = $_[0]->bridge('/avatar')->name('avatars_bridge');
+    my $p = $_[0]->under('/avatar')->name('avatars_bridge');
     $p->route('/:userid', userid => $Ffc::Digqr)
       ->via('get')
       ->to('avatars#avatar_show')

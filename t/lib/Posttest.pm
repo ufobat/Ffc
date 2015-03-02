@@ -146,7 +146,7 @@ sub del_post {
     $t->get_ok("$Urlpref/delete/$edbid");
     if ( $entries[$eid][2] eq $user ) {
         $t->status_is(200)
-          ->content_like(qr~<form\s+action="$Urlpref/delete/$edbid"\s+accept-charset="UTF-8"\s+method="POST">\s*<p>Möchten Sie den unten gezeigten Beitrag wirklich komplett und unwiederruflich entfernen\?</p>\s*<input\s+class="linkalike\s+send"\s+type="submit"\s+value="Entfernen"\s+/>\s*</form>~);
+          ->content_like(qr~<form\s+action="$Urlpref/delete/$edbid"\s+accept-charset="UTF-8"\s+method="POST">\s*<p>Möchten Sie den unten gezeigten Beitrag wirklich komplett und unwiederruflich entfernen\?</p>\s*<input\s+class="linkalike\s+send"\s+type="submit"\s+value="Entfernen"(?:\s+/)?>\s*</form>~);
     }
     else {
         $t->status_is(302)->content_is('')
@@ -200,7 +200,7 @@ sub del_attachement {
     $t->get_ok("$Urlpref/upload/delete/$edbid/$aid");
     if ( $entries[$eid][2] eq $user ) {
         $t->status_is(200)
-          ->content_like(qr~<form\s+action="$Urlpref/upload/delete/$edbid/$aid"\s+accept-charset="UTF-8"\s+method="POST">\s*<input\s+class="linkalike\s+send"\s+type="submit"\s+value="Entfernen"\s+/>\s*</form>~)
+          ->content_like(qr~<form\s+action="$Urlpref/upload/delete/$edbid/$aid"\s+accept-charset="UTF-8"\s+method="POST">\s*<input\s+class="linkalike\s+send"\s+type="submit"\s+value="Entfernen"(?:\s+/)?>\s*</form>~)
           ->content_like(qr~Möchten Sie den gezeigten Anhang zu unten gezeigtem Beitrag wirklich löschen\?~);
     }
     else {
@@ -229,7 +229,7 @@ sub query_string {
     my $str = $entries[$filter][1];
     $t->post_ok("$Urlpref/query", form => { query => $str })
       ->status_is(200)
-      ->content_like(qr~<input\s+class="activesearch"\s+name="query"\s+type="text"\s+value="$str"\s+\/>~);
+      ->content_like(qr~<input\s+class="activesearch"\s+name="query"\s+type="text"\s+value="$str"(?:\s+\/)?>~);
     for my $i ( 0 .. $#entries ) {
         next if $i == $filter;
         $t->content_unlike(qr~$entries[$i][1]~);
