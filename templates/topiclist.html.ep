@@ -6,7 +6,7 @@
 % if ( @$topics_for_list ) {
 <div class="postbox topiclist">
 % for my $t ( @$topics_for_list ) {
-    <h2<% if ( $t->[3] or $t->[6] ) { %> class="<%== join ' ', ($t->[3] ? 'newpost' : ()), ($t->[6] ? 'pin' : ()), ($t->[3] && $t->[6] ? 'newpinpost' : ()) %>"<% } %>>
+    <h2<%== $t->[7] ? qq~ class="$t->[7]"~ : '' %>>
         <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"><%= $t->[2] %></a>
         <span class="smallfont">(
 % if ( $t->[3] and not $t->[5] ) {

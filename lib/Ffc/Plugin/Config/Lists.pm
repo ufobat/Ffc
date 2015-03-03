@@ -73,16 +73,24 @@ EOSQL
         WHERE UPPER(t."title") LIKE UPPER(?)
 EOSQL
         . << 'EOSQL'
-        ORDER BY COALESCE(l2."pin", 0) DESC, CASE WHEN "entrycount_new" THEN 1 ELSE 0 END DESC, "sorting" DESC
+        ORDER BY COALESCE(l2."ignore", 0) ASC, COALESCE(l2."pin", 0) DESC, CASE WHEN "entrycount_new" THEN 1 ELSE 0 END DESC, "sorting" DESC
         LIMIT ? OFFSET ?
 EOSQL
         ,undef, $uid, $uid, $uid, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit
     );
+    for my $t ( @$tlist ) {
+        $t->[7] = join ' ',
+            ( $t->[3]            ? 'newpost'    : () ),
+            ( $t->[5]            ? 'ignored'    : () ),
+            ( $t->[6]            ? 'pin'        : () ),
+            ( $t->[3] && $t->[6] ? 'newpinpost' : () ),
+        ;
+    }
     if ( $c->configdata->{chronsortorder} ) {
-        $c->stash( $stashkey => $tlist );
+        $c->stash( $stashkey => [ sort { $a->[5] <=> $b->[5] or $b->[6] <=> $a->[6] or $b->[4] <=> $a->[4] } @$tlist ] );
     }
     else {
-        $c->stash( $stashkey => [ sort { $b->[6] <=> $a->[6] or uc($a->[2]) cmp uc($b->[2]) } @$tlist ] );
+        $c->stash( $stashkey => [ sort { $a->[5] <=> $b->[5] or $b->[6] <=> $a->[6] or uc($a->[2]) cmp uc($b->[2]) } @$tlist ] );
     }
 }
 
