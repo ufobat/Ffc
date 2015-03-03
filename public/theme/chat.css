@@ -17,7 +17,7 @@ table {
     border: none;
     margin: 0 auto;
 }
-div, textarea, button, select {
+div, textarea {
     border: .1em gray solid;
 }
 div, textarea {
@@ -31,13 +31,10 @@ div, textarea {
     font-size: 1em;
     font-family: sans-serif;
 }
-#userlist {
+#userlist, #buttonlist {
     width: 15em;
 }
-#buttonlist {
-    width: 25em;
-}
-#msg, #buttonlist {
+#msg {
     height: 5em;
     min-height: 5em;
 }
@@ -47,43 +44,15 @@ div, textarea {
 #msglog {
     background: whitesmoke;
 }
-#buttonlist, #userlist, #msg, #msglog {
+#userlist, #msg, #msglog {
     padding: .25em;
     margin: .25em;
 }
 #buttonlist {
-    vertical-align: top;
     border-color: transparent;
-    margin-top: -0.5em;
     max-height: 60em;
+    padding-left: 1.5em;
     overflow: visible;
-}
-button, #refreshtime {
-    background: silver;
-    border-color: dimgray;
-    height: 1.5em;
-    width: 8em;
-    margin-top: .5em;
-    cursor: pointer;
-}
-button:hover, #refreshtime:hover {
-    border-color: silver;
-    background: whitesmoke;
-}
-button {
-    text-align: center;
-}
-#refreshtime {
-    text-align: left;
-}
-button:active, #refreshtime:active {
-    border-color: black;
-    background: white;
-    cursor: pointer;
-}
-option {
-    background: white;
-    cursor: pointer;
 }
 #msg:hover {
     border-color: dimgray;
