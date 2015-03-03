@@ -90,12 +90,14 @@ EOSQL
 sub _generate_userlist {
     my $c = shift;
     my $uid = $c->session->{userid};
+    #die $c->dumper($c->dbh->selectall_arrayref('SELECT * FROM lastseenmsgs WHERE userid=?', undef, $uid));
     $c->stash( users => $c->dbh->selectall_arrayref( << 'EOSQL'
 SELECT u."id", u."name",
     COALESCE(COUNT(p."id"),0), l."lastid"
 FROM "users" u
 LEFT OUTER JOIN "lastseenmsgs" l ON u."id"=l."userfromid" AND l."userid"=?
-LEFT OUTER JOIN "posts" p ON p."userfrom"=u."id" AND p."userto" IS NOT NULL AND p."userto"=?
+LEFT OUTER JOIN "posts" p ON p."userfrom"=u."id" AND p."userto" IS NOT NULL AND p."userto"=? 
+    AND p."id">COALESCE(l."lastseen",0)
 WHERE u."active"=1 AND u."id"<>? 
 GROUP BY u."id", u."name", l."lastid"
 ORDER BY l."lastid" DESC, UPPER(u."name") ASC

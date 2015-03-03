@@ -59,9 +59,9 @@ EOSQL
         $c->dbh->do( << 'EOSQL'
 UPDATE "lastseenmsgs"
 SET "lastid"=(
-    SELECT COALESCE(MAX("id"),0)
-    FROM "posts"
-    WHERE "userfrom"=? AND "userto"=?
+    SELECT COALESCE(MAX(p."id"),0)
+    FROM "posts" p
+    WHERE p."userfrom"=? AND p."userto"=?
     LIMIT 1)
 WHERE "userfromid"=? AND "userid"=?
 EOSQL
