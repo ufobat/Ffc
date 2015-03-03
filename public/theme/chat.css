@@ -31,8 +31,11 @@ div, textarea {
     font-size: 1em;
     font-family: sans-serif;
 }
-#userlist, #buttonlist {
+#userlist {
     width: 15em;
+}
+#buttonlist {
+    width: 25em;
 }
 #msg, #buttonlist {
     height: 5em;
