@@ -221,5 +221,6 @@ pre, .code {
 }
 .ignored {
     border-color: white;
+    background: whitesmoke;
 }
 
