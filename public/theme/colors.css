@@ -219,11 +219,6 @@ pre, .code {
 .textright {
     text-align: right;
 }
-.menu, .popup {
-    background: #333;
-    border-color: black;
-    color: silver;
-}
 .ignored {
     border-color: white;
 }
