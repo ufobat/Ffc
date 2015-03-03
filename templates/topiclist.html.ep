@@ -24,7 +24,7 @@
 % unless ( $t->[6] ) {
 %   if ( $t->[5] ) {
         <a href="<%= url_for 'unignore_forum_topic_do', topicid => $t->[0] %>"
-           title="Beiträge zum Thema anzeigen, Thema nicht mehr ignorieren">ignoriert</a>
+           title="Beiträge zum Thema anzeigen, Thema nicht mehr ignorieren">beachten</a>
 %   } else {
         <a href="<%= url_for 'ignore_forum_topic_do', topicid => $t->[0] %>"
            title="Thema ignorieren und keine neuen Beiträge anzeigen">ignorieren</a>
