@@ -53,27 +53,23 @@ sub _generate_topiclist {
     my $topiclimit = $c->configdata->{topiclimit};
     my $uid = $c->session->{userid};
     my $query = $c->session->{topicquery};
-    my $tlist = $c->dbh->selectall_arrayref( << 'EOSQL'
+    my $tlist = $c->dbh->selectall_arrayref(<< 'EOSQL'
         SELECT t."id", t."userfrom", t."title",
-            (SELECT COUNT(p."id") 
-                FROM "posts" p
-                LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=p."topicid"
-                WHERE p."userto" IS NULL AND p."userfrom"<>? AND p."topicid"=t."id" AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",-1)
-            ) AS "entrycount_new",
-            t."lastid",
-            COALESCE(l2."ignore",0),
-            COALESCE(l2."pin",0)
+            COUNT(p."id"), t."lastid",
+            COALESCE(l."ignore",0), COALESCE(l."pin",0)
         FROM "topics" t
-        LEFT OUTER JOIN "lastseenforum" l2 ON l2."userid"=? AND l2."topicid"=t."id"
+        LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=t."id"
+        LEFT OUTER JOIN "posts" p ON p."userfrom"<>? AND p."topicid"=t."id" AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",-1)
 EOSQL
         . ( $query ? << 'EOSQL' : '' )
         WHERE UPPER(t."title") LIKE UPPER(?)
 EOSQL
         . << 'EOSQL'
-        ORDER BY COALESCE(l2."pin", 0) DESC, CASE WHEN "entrycount_new" THEN 1 ELSE 0 END DESC, t."lastid" DESC
+        GROUP BY t."id", t."userfrom", t."title", l."ignore", l."pin", t."lastid"
+        ORDER BY COALESCE(l."pin", 0) DESC, CASE WHEN "entrycount_new" THEN 1 ELSE 0 END DESC, t."lastid" DESC
         LIMIT ? OFFSET ?
 EOSQL
-        ,undef, $uid, $uid, $uid, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit
+        ,undef, $uid, $uid, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit
     );
     for my $t ( @$tlist ) {
         $t->[7] = join ' ',
