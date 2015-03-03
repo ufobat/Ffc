@@ -12,19 +12,23 @@
 % if ( $t->[3] and not $t->[5] ) {
             Neu: <span class="mark"><%= $t->[3] %></span>,
 % }
-% if ( $t->[6] ) {
+% unless ( $t->[5] ) {
+%   if ( $t->[6] ) {
         <a href="<%= url_for 'unpin_forum_topic_do', topicid => $t->[0] %>"
            title="Thema normal in der Liste einsortieren">einsortieren</a>,
-% } else {
+%   } else {
         <a href="<%= url_for 'pin_forum_topic_do', topicid => $t->[0] %>"
            title="Thema immer oben in der Liste mit anzeigen">anheften</a>,
+%   }
 % }
-% if ( $t->[5] ) {
+% unless ( $t->[6] ) {
+%   if ( $t->[5] ) {
         <a href="<%= url_for 'unignore_forum_topic_do', topicid => $t->[0] %>"
            title="Beiträge zum Thema anzeigen, Thema nicht mehr ignorieren">ignoriert</a>
-% } else {
+%   } else {
         <a href="<%= url_for 'ignore_forum_topic_do', topicid => $t->[0] %>"
            title="Thema ignorieren und keine neuen Beiträge anzeigen">ignorieren</a>
+%   }
 % }
         )</span>
     </h2>
