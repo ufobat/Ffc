@@ -167,10 +167,10 @@ input[type="text"].titlestring {
 .emotion:before { content:"*" }
 .emotion:after  { content:"*" }
 .menu, .messagebox > div, .shadowed {
-    box-shadow: 0 0 .25em black;
+    box-shadow: 0 0 .25em dimgrey;
 }
 .popup {
-    box-shadow: 0 0 .5em black;
+    box-shadow: 0 0 .25em dimgrey;
 }
 .postbox blockquote {
     border-left: .1em gainsboro solid;
@@ -223,13 +223,6 @@ pre, .code {
     background: #333;
     border-color: black;
     color: silver;
-}
-.menu a {
-    color: lightsteelblue;
-}
-.menu .active {
-    color: black;
-    background: lightsteelblue;
 }
 .ignored {
     border-color: white;
