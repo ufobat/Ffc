@@ -40,6 +40,18 @@ VALUES
 EOSQL
         $c->session->{userid}, $userto, $topicid, $text, $c->pre_format($text)
     );
+    $c->dbh->do( << 'EOSQL', undef, $topicid, $topicid );
+UPDATE "topics" 
+SET "lastid"=(
+    SELECT COALESCE(MAX("id"),0) 
+    FROM "posts" 
+    WHERE "topicid" IS NOT NULL 
+      AND "topicid"=?
+      AND "userto" IS NULL
+    LIMIT 1
+  )
+WHERE "id"=?
+EOSQL
 
     $c->set_info_f('Ein neuer Beitrag wurde erstellt');
     _redirect_to_show($c);

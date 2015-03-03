@@ -60,10 +60,7 @@ sub _generate_topiclist {
                 LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=p."topicid"
                 WHERE p."userto" IS NULL AND p."userfrom"<>? AND p."topicid"=t."id" AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",-1)
             ) AS "entrycount_new",
-            (SELECT MAX(p2."id")
-                FROM "posts" p2
-                WHERE p2."userto" IS NULL AND p2."topicid"=t."id"
-            ) AS "sorting",
+            t."lastid",
             COALESCE(l2."ignore",0),
             COALESCE(l2."pin",0)
         FROM "topics" t
@@ -73,7 +70,7 @@ EOSQL
         WHERE UPPER(t."title") LIKE UPPER(?)
 EOSQL
         . << 'EOSQL'
-        ORDER BY COALESCE(l2."pin", 0) DESC, CASE WHEN "entrycount_new" THEN 1 ELSE 0 END DESC, "sorting" DESC
+        ORDER BY COALESCE(l2."pin", 0) DESC, CASE WHEN "entrycount_new" THEN 1 ELSE 0 END DESC, t."lastid" DESC
         LIMIT ? OFFSET ?
 EOSQL
         ,undef, $uid, $uid, $uid, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit

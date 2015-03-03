@@ -22,7 +22,8 @@ CREATE TABLE "users" (
 CREATE TABLE "topics" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
   "userfrom" int(11) NOT NULL,
-  "title" varchar(256) NOT NULL
+  "title" varchar(256) NOT NULL,
+  "lastid" integer NOT NULL DEFAULT 0
 );
 
 CREATE TABLE "posts" (
