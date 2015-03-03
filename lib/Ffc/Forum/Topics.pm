@@ -15,7 +15,6 @@ sub show_topiclist {
     $c->counting;
     my $page = $c->param('page') // 1;
     $c->session->{query} = '';
-    $c->stash(newposttopics => [grep {$_->[3] and not $_->[5]} @{$c->stash('topics')}]);
     if ( $page == 1 ) {
         $c->stash(topics_for_list => $c->stash('topics'));
     }

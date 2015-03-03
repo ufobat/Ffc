@@ -2,14 +2,6 @@
 <div class="headbox" id="headbox">
 <h1>Allgemeines Forum</h1>
 <p><a href="<%= url_for 'add_forum_topic_form' %>" title="Neues Thema beginnen">Klicke hier</a>, um ein neues Thema zu beginnen.</p>
-% if ( $newpostcount ) {
-<p>
-    Neue Beiträge:
-%   for my $i ( 0 .. $#$newposttopics ) {
-    <a href="<%= url_for 'show_forum', topicid => $newposttopics->[$i]->[0] %>"><%= substr $newposttopics->[$i]->[2], 0, configdata()->{urlshorten} %>...</a></span><%= $i < $#$newposttopics ? ',' : '' %>
-%   }
-</p>
-% }
 </div>
 % if ( @$topics_for_list ) {
 <div class="postbox topiclist">

@@ -50,6 +50,7 @@ CREATE TABLE "lastseenmsgs" (
   "userid" integer NOT NULL,
   "userfromid" integer NOT NULL,
   "lastseen" integer NOT NULL DEFAULT '0',
+  "lastid" integer NOT NULL DEFAULT '0',
   PRIMARY KEY ("userid", "userfromid")
 );
 

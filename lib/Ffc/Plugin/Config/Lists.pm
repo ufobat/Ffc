@@ -90,22 +90,17 @@ EOSQL
 sub _generate_userlist {
     my $c = shift;
     my $uid = $c->session->{userid};
-    $c->stash( users => $c->dbh->selectall_arrayref(
-        'SELECT u."id", u."name",
-            (SELECT COUNT(p."id") 
-                FROM "posts" p
-                LEFT OUTER JOIN "lastseenmsgs" l ON l."userid"=? AND l."userfromid"=u."id"
-                WHERE p."userfrom"=u."id" AND p."userto"=? AND p."id">COALESCE(l."lastseen",-1)
-            ) AS "msgcount_newtome",
-            (SELECT MAX(p2."id")
-                FROM "posts" p2
-                WHERE p2."userfrom"=? AND p2."userto"=u."id"
-            ) AS "sorting" -- , u."lastseen"
-        FROM "users" u
-        WHERE u."active"=1 AND u."id"<>? 
-        GROUP BY u."id"
-        ORDER BY "msgcount_newtome" DESC, "sorting" DESC, UPPER(u."name") ASC',
-        undef, $uid, $uid, $uid, $uid
+    $c->stash( users => $c->dbh->selectall_arrayref( << 'EOSQL'
+SELECT u."id", u."name",
+    COALESCE(COUNT(p."id"),0), l."lastid"
+FROM "users" u
+LEFT OUTER JOIN "lastseenmsgs" l ON u."id"=l."userfromid" AND l."userid"=?
+LEFT OUTER JOIN "posts" p ON p."userfrom"=u."id" AND p."userto" IS NOT NULL AND p."userto"=?
+WHERE u."active"=1 AND u."id"<>? 
+GROUP BY u."id", u."name", l."lastid"
+ORDER BY l."lastid" DESC, UPPER(u."name") ASC
+EOSQL
+        , undef, $uid, $uid, $uid
     ) );
 }
 

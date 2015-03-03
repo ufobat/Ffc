@@ -11,11 +11,11 @@ sub _add_post {
         return $c->show;
     }
     my $controller = $c->stash('controller');
-    if ( $controller ne 'pmsgs' and $controller ne 'notes' and ( $userto or $topicid ) ) {
+    if ( $controller eq 'forum' and $topicid ) {
         my $sql = 'SELECT'
             . ' CASE WHEN MAX(COALESCE(p.id,-1))>MAX(COALESCE(l.lastseen,-1)) THEN 1 ELSE 0 END'
             . ' FROM users u LEFT OUTER JOIN posts p ON p.userfrom<>? AND p.'
-            . ( $userto ? 'userto=?' : 'topicid=?' )
+              . ( $userto ? 'userto=?' : 'topicid=?' )
             . ' LEFT OUTER JOIN lastseen' 
             . ( $controller eq 'pmsgs' 
                 ? 'msgs l ON l.userid=u.id AND l.userfromid=?' 
@@ -40,7 +40,8 @@ VALUES
 EOSQL
         $c->session->{userid}, $userto, $topicid, $text, $c->pre_format($text)
     );
-    $c->dbh->do( << 'EOSQL', undef, $topicid, $topicid );
+    if ( $controller eq 'forum' and $topicid ) {
+        $c->dbh->do( << 'EOSQL', undef, $topicid, $topicid );
 UPDATE "topics" 
 SET "lastid"=(
     SELECT COALESCE(MAX("id"),0) 
@@ -52,6 +53,20 @@ SET "lastid"=(
   )
 WHERE "id"=?
 EOSQL
+    }
+    if ( $controller eq 'pmsgs' and $userto ) {
+        my $userid = $c->session->{userid};
+        $c->dbh->do( << 'EOSQL'
+UPDATE "lastseenmsgs"
+SET "lastid"=(
+    SELECT COALESCE(MAX("id"),0)
+    FROM "posts"
+    WHERE "userfrom"=? AND "userto"=?
+    LIMIT 1)
+WHERE "userfromid"=? AND "userid"=?
+EOSQL
+            , undef, $userid, $userto, $userid, $userto );
+    }
 
     $c->set_info_f('Ein neuer Beitrag wurde erstellt');
     _redirect_to_show($c);
