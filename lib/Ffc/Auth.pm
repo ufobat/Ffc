@@ -18,7 +18,7 @@ sub check_login {
         my $s = $c->session();
         my $r = $c->dbh()->selectall_arrayref(
             'SELECT u.admin, u.bgcolor, u.id, u.autorefresh
-            FROM users u WHERE UPPER(u.name)=UPPER(?) AND active=1',
+            FROM users u WHERE u.active=1 AND u.name=?',
             undef, $s->{user});
 
         if ( $r and @$r and $r->[0]->[2] == $s->{userid} ) {
