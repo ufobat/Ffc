@@ -38,10 +38,10 @@ srand;
         $c->prepare;
         $c->render(text => $c->pre_format($c->param('text')));
     };
-    any '/post_format' => sub {
+    any '/username_format' => sub {
         my $c = shift;
         $c->prepare;
-        $c->render(text => $c->post_format($c->param('text')));
+        $c->render(text => $c->username_format($c->param('text')));
     };
 }
 
@@ -312,7 +312,7 @@ Hallo
 <span class="username">$controluser</span>
 
 <a href="http://www.$testuser.de">http://www.$testuser.de</a>~;
-    $t->post_ok('/post_format', form => { text => $teststring, user => $testuser, urlshorten => 999999 })
+    $t->post_ok('/username_format', form => { text => $teststring, user => $testuser, urlshorten => 999999 })
       ->content_is($controlstring);
 }
 

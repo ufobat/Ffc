@@ -34,7 +34,7 @@ our %Goodies    = qw( _ underline - linethrough + bold ~ italic ! alert * emotio
 sub register {
     my ( $self, $app ) = @_;
     $app->helper( pre_format       => \&_pre_format_text  );
-    $app->helper( post_format      => \&_post_format_text );
+    $app->helper( username_format  => \&_username_format_text );
     $app->helper( format_timestamp => \&_format_timestamp );
 }
 
@@ -53,12 +53,11 @@ sub _format_timestamp {
     return $t;
 }
 
-sub _post_format_text {
+sub _username_format_text {
     my ( $c, $s ) = @_;
     my $u = my $xu = $c->session()->{user} // '';
-    return $s unless $u;
     _xml_escape($xu);
-    $s =~ s{(?<!\S)(\@)?$u}{_make_username_mark($xu, $1)}xgmsie;
+    $s =~ s{(\s|\A)(\@?)$u}{_make_username_mark($xu, $1, $2)}xgmsie;
     return $s;
 }
 
@@ -193,9 +192,9 @@ sub _xml_escape {
 }
 
 sub _make_username_mark {
-    $_[1]
-        ? qq(<span class="username"><span class="alert">$_[1]</span>$_[0]</span>)
-        : qq(<span class="username">$_[0]</span>);
+    $_[2]
+        ? qq($_[1]<span class="username"><span class="alert">$_[2]</span>$_[0]</span>)
+        : qq($_[1]<span class="username">$_[0]</span>);
 
 }
 
