@@ -25,9 +25,9 @@ div, textarea {
     overflow: auto;
 }
 #msglog, #msg {
-    width: 30em;
-    min-width: 30em;
-    max-width: 30em;
+    width: 40em;
+    min-width: 40em;
+    max-width: 40em;
     font-size: 1em;
     font-family: sans-serif;
 }
@@ -39,7 +39,7 @@ div, textarea {
     min-height: 5em;
 }
 #userlist, #msglog {
-    height: 20em;
+    height: 25em;
 }
 #msglog {
     background: whitesmoke;
