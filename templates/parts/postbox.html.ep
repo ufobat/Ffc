@@ -3,7 +3,7 @@
     <h2 class="title">
 % if ( $controller ne 'notes' ) {
         <img class="avatar" src="<%= url_for 'avatar_show', userid => $post->[1] // session->{userid} %>" alt="" />
-        <%== $post->[2] ? username_format($post->[2]) . ',' : '' %>
+        <span class="username"><%= $post->[2] %></span>,
 % }
         <%= format_timestamp($post->[6]) %>
 % if ( not $postid ) {
