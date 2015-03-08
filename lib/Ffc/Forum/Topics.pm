@@ -244,5 +244,22 @@ sub _handle_val_topic_do {
     $c->redirect_to('show_forum_topiclist');
 }
 
+sub sort_order_chronological { 
+    $_[0]->_set_sort_order_cron_do(1, 'Themen werden chronologisch sortiert.');
+}
+sub sort_order_alphabetical  {
+    $_[0]->_set_sort_order_cron_do(0, 'Themen werden alphabetisch sortiert.');
+}
+sub _set_sort_order_cron_do {
+    my ( $c, $v, $t ) = @_;
+    $c->dbh->do(
+        'UPDATE "users" SET "chronsortorder"=? WHERE "id"=?'
+        , undef, $v, $c->session->{userid}
+    );
+    $c->session->{chronsortorder} = $v;
+    $c->set_info_f($t);
+    $c->redirect_to('show_forum_topiclist');
+}
+
 1;
 

@@ -1,7 +1,14 @@
 % layout 'board';
 <div class="headbox" id="headbox">
 <h1>Allgemeines Forum</h1>
-<p><a href="<%= url_for 'add_forum_topic_form' %>" title="Neues Thema beginnen">Klicke hier</a>, um ein neues Thema zu beginnen.</p>
+<p>
+    <a href="<%= url_for 'add_forum_topic_form' %>" title="Neues Thema beginnen">Klicke hier</a>, um ein neues Thema zu beginnen.
+% if ( session->{chronsortorder} ) {
+    Die Themenliste ist chronologisch sortiert, soll die Themenliste <a href="<%= url_for 'topic_sort_alphabetical' %>">alpabetisch</a> sortiert werden?
+% } else {
+    Die Themenliste ist alphabetisch sortiert, soll die Themenliste <a href="<%= url_for 'topic_sort_chronological' %>">chronologisch</a> sortiert werden?
+% }
+</p>
 </div>
 % if ( @$topics_for_list ) {
 <div class="postbox topiclist">

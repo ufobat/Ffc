@@ -34,6 +34,14 @@ sub install_routes {
       ->to(controller => 'forum', action => 'unpin_topic_do')
       ->name('unpin_forum_topic_do');
 
+    # Themenlistensortierung anpassen
+    $l->route('/topic/sort/chronological')
+      ->to(controller => 'forum', action => 'sort_order_chronological')
+      ->name('topic_sort_chronological');
+    $l->route('/topic/sort/alphabetical')
+      ->to(controller => 'forum', action => 'sort_order_alphabetical')
+      ->name('topic_sort_alphabetical');
+
     # Überschriften ändern
     $l->route('/topic/:topicid/edit', topicid => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'edit_topic_form')

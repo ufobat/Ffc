@@ -6,6 +6,7 @@ CREATE TABLE "users" (
   "active" tinyint(1) NOT NULL DEFAULT '0',
   "email" varchar(1024) NOT NULL DEFAULT '',
   "newsmail" tinyint(1) NOT NULL DEFAULT '1',
+  "chronsortorder" tinyint(1) NOT NULL DEFAULT '0',
   "avatar" varchar(128) NOT NULL DEFAULT '',
   "avatartype" varchar(16) NOT NULL DEFAULT '',
   "admin" tinyint(1) NOT NULL DEFAULT '0',

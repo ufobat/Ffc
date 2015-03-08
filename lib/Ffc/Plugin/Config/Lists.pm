@@ -79,7 +79,7 @@ EOSQL
             ( $t->[3] && $t->[6] ? 'newpinpost' : () ),
         ;
     }
-    if ( $c->configdata->{chronsortorder} ) {
+    if ( $c->session->{chronsortorder} ) {
         $c->stash( $stashkey => [ sort { $a->[5] <=> $b->[5] or $b->[6] <=> $a->[6] or $b->[4] <=> $a->[4] } @$tlist ] );
     }
     else {
