@@ -2,7 +2,7 @@
 % if ( $heading ) {
     <h1>
         <%= $heading %>
-%   if ( $topicediturl or $topicid or $backurl ) {
+%   if ( $topicediturl or $backurl ) {
     <span class="smallfont">( 
 %     if ( $topicediturl ) {
         <a href="<%= $topicediturl %>">ändern</a><% if ( $backurl ) { %>,<% } %> 
