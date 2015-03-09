@@ -10,7 +10,7 @@ sub _newpostcount {
         INNER JOIN "topics" t on t."id"=p."topicid"
         LEFT OUTER JOIN "lastseenforum" l ON l."topicid"=p."topicid" AND l."userid"=?
         WHERE p."userto" IS NULL AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",-1)',
-        undef, $uid, $uid
+        undef, $uid
     )->[0]->[0];
 }
 
