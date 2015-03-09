@@ -33,6 +33,7 @@
         <p><button type="submit">Passwort ändern</button></p>
     </form>
 </div>
+% if ( @$users ) {
 <div class="postbox options">
     <a name="avatarupload"></a>
     <h1>Benutzeravatar verwalten</h1>
@@ -43,7 +44,6 @@
         <button type="submit">Avatar hochladen</button>
     </form>
 </div>
-% if ( @$users ) {
 <div class="postbox options">
     <a name="set_email"></a>
     <h1>E-Mail-Adresse einstellen</h1>
