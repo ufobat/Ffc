@@ -5,10 +5,7 @@
 %   if ( $topicediturl or $topicid or $backurl ) {
     <span class="smallfont">( 
 %     if ( $topicediturl ) {
-        <a href="<%= $topicediturl %>">ändern</a><% if ( $topicid ) { %>,<% } %> 
-%     }
-%     if ( $topicid ) {
-        <a href="<%= url_for 'ignore_forum_topic_do', topicid => $topicid %>">ignorieren</a><%= $backurl ? ',' : '' %>
+        <a href="<%= $topicediturl %>">ändern</a><% if ( $backurl ) { %>,<% } %> 
 %     }
 %     if ( $backurl ) { 
         <a href="<%== $backurl %>"><%= $backtext || 'zurück' %></a>
