@@ -17,11 +17,11 @@ sub check_login {
     if ( $c->login_ok ) {
         my $s = $c->session();
         my $r = $c->dbh()->selectall_arrayref(
-            'SELECT u.admin, u.bgcolor, u.id, u.autorefresh, u.chronsortorder
-            FROM users u WHERE u.active=1 AND u.name=?',
-            undef, $s->{user});
+            'SELECT u.admin, u.bgcolor, u.name, u.autorefresh, u.chronsortorder
+            FROM users u WHERE u.active=1 AND u.id=?',
+            undef, $s->{userid});
 
-        if ( $r and @$r and $r->[0]->[2] == $s->{userid} ) {
+        if ( $r and @$r and $r->[0]->[2] eq $s->{user} ) {
             $s->{admin}           = $r->[0]->[0];
             $s->{backgroundcolor} = $r->[0]->[1];
             $s->{autorefresh}     = $r->[0]->[3];
