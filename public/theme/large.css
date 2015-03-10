@@ -62,9 +62,9 @@ input[type="color"], input[type="url"], input[type="email"], input[type="text"],
 .menu input[type="text"] {
     width: 5em;
 }
-/*.smallfont, .userlist p, h2, .attachementtitle, .menu, .insertformbuttons, .headbox .userinfo, .pages > * {
+.smallfont, .userlist p, h2, .attachementtitle, .menu, .insertformbuttons, .headbox .userinfo, .pages > * {
     font-size: .75em;
-}*/
+}
 
 .messagebox {
     font-size: 1.25em;
