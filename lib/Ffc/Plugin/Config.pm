@@ -76,14 +76,11 @@ sub register {
     $app->helper( newmsgscount       => \&_newmsgscount );
     $app->helper( generate_topiclist => \&_generate_topiclist );
     $app->helper( generate_userlist  => \&_generate_userlist );
-    $app->helper( image_upload       => \&_image_upload );
 
     $app->hook( before_render => sub { 
-        my $c = $_[0];
-        my $s = $c->session;
         $c->stash(
-            backgroundcolor => ( $s->{backgroundcolor} || $config->{backgroundcolor} ),
-            title           => ( $config->{title}      || $Defaults{title}           ),
+            backgroundcolor => ( $_[0]->session->{backgroundcolor} || $config->{backgroundcolor} ),
+            title => ( $config->{title} || $Defaults{title} ),
         );
     });
 
