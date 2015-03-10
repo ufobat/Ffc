@@ -78,7 +78,7 @@ sub register {
     $app->helper( generate_userlist  => \&_generate_userlist );
 
     $app->hook( before_render => sub { 
-        $c->stash(
+        $_[0]->stash(
             backgroundcolor => ( $_[0]->session->{backgroundcolor} || $config->{backgroundcolor} ),
             title => ( $config->{title} || $Defaults{title} ),
         );
