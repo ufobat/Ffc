@@ -9,11 +9,12 @@ use File::Temp qw~tempfile tempdir~;
 use File::Spec::Functions qw(catfile catdir splitdir);
 
 use Test::Mojo;
-use Test::More tests => 304;
+use Test::More tests => 429;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
-Testinit::test_add_users( $t, $admin, $apass, $user1, $pass1 );
+my ( $user2, $pass2 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
+Testinit::test_add_users( $t, $admin, $apass, $user1, $pass1, $user2, $pass2 );
 Testinit::test_login($t, $user1, $pass1);
 
 my @topics = map { $_ x 2 } 'a' .. 'z';
@@ -68,6 +69,18 @@ check_topiclimit($topiclimit);
 $topiclimit = 5;
 set_topiclimit_ok($topiclimit);
 check_topiclimit($topiclimit);
+Testinit::test_logout($t);
+Testinit::test_login($t, $user1, $pass1);
+check_topiclimit($topiclimit);
+
+$topiclimit = 21;
+Testinit::test_logout($t);
+Testinit::test_login($t, $user2, $pass2);
+check_topiclimit($topiclimit);
+$topiclimit = 3;
+set_topiclimit_ok($topiclimit);
+check_topiclimit($topiclimit);
+$topiclimit = 5;
 Testinit::test_logout($t);
 Testinit::test_login($t, $user1, $pass1);
 check_topiclimit($topiclimit);
