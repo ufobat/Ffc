@@ -67,7 +67,7 @@ EOSQL
 EOSQL
         . << 'EOSQL'
         GROUP BY t."id", t."userfrom", t."title", l."ignore", l."pin", t."lastid"
-        ORDER BY COALESCE(l."pin", 0) DESC, CASE WHEN "entrycount_new" THEN 1 ELSE 0 END DESC, t."lastid" DESC
+        ORDER BY COALESCE(l."pin", 0) DESC, t."lastid" DESC
         LIMIT ? OFFSET ?
 EOSQL
         ,undef, $uid, $uid, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit
