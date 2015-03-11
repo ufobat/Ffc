@@ -37,9 +37,6 @@ sub bg_color {
         $c->set_error_f('Die Hintergrundfarbe für die Webseite muss in hexadezimaler Schreibweise mit führender Raute oder als Webfarbenname angegeben werden');
         $c->set_warning_f($bgcolor);
     }
-    elsif ( $c->configdata()->{fixbackgroundcolor} ) {
-        $c->set_error_f('Ändern der Hintergrundfarbe vom Forenadministrator deaktiviert');
-    }
     else {
         my $s = $c->session();
         $c->dbh()->do(

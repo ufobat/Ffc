@@ -21,6 +21,8 @@ CREATE TABLE "users" (
   "chatrefreshsecs" integer NOT NULL DEFAULT 60,
   UNIQUE ("name")
 );
+CREATE INDEX "user_active_ix" ON "users"("active");
+CREATE INDEX "user_inchat_ix" ON "users"("inchat");
 
 CREATE TABLE "topics" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
@@ -39,6 +41,9 @@ CREATE TABLE "posts" (
   "textdata" text NOT NULL,
   "cache" text
 );
+
+CREATE INDEX "posts_userto_ix" ON "posts"("userto");
+CREATE INDEX "posts_topicid_ix" ON "posts"("topicid");
 
 CREATE TABLE "lastseenforum" (
   "userid" integer NOT NULL,
@@ -65,6 +70,8 @@ CREATE TABLE "attachements" (
   "isimage" tinyint(1) NOT NULL DEFAULT '0',
   "inline" tinyint(1) NOT NULL DEFAULT '0'
 );
+
+CREATE INDEX "attachements_postid_ix" ON "attachements"("postid");
 
 CREATE TABLE "chat" (
    "id" integer PRIMARY KEY AUTOINCREMENT,
@@ -93,8 +100,6 @@ INSERT INTO "config" ("key", "value")
   VALUES ('urlshorten','30');
 INSERT INTO "config" ("key", "value") 
   VALUES ('backgroundcolor','');
-INSERT INTO "config" ("key", "value") 
-  VALUES ('fixbackgroundcolor','0');
 INSERT INTO "config" ("key", "value") 
   VALUES ('favicontype','png');
 INSERT INTO "config" ("key", "value") 
