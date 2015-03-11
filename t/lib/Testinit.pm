@@ -23,6 +23,8 @@ our @Chars = ('a' .. 'z', 'A' .. 'C', 'E' .. 'O', 'Q' .. 'X', 'Y', 'Z'); # 'D' u
     sub test_randstring { sprintf "%s%04d%s", $ts->(), $scnt++, $ts->() }
 }
 
+our @Users; our %Users;
+
 sub start_test {
     my $testpath = File::Temp::tempdir( CLEANUP => 1 );
     note "using test data dir '$testpath'";
@@ -33,6 +35,7 @@ sub start_test {
     note "user '$user':'$pw' (salt $salt, secret $csecret) created";
     my $t = Test::Mojo->new('Ffc');
     note "CONFIG:\n" . Dumper($t->app->configdata);
+    @Users = ( $user ); $Users{$user} = 1;
     return $t, $testpath, $user, $pw, test_dbh($testpath), $salt, $csecret;
 }
 
@@ -55,7 +58,7 @@ sub test_login {
       ->status_is(200)
       ->content_like(qr/Angemeldet als "$u"/);
 
-    note "logged in as '$u'";
+    note "logged in as '$u'" . ( exists $Users{$u} ? " (id=$Users{$u})" : '' );
 
     return $t;
 }
@@ -96,6 +99,8 @@ sub test_add_users {
         my $user = shift;
         my $pass = shift;
         last unless $user and $pass;
+        push @Users, $user;
+        $Users{$user} = @Users;
         $t->post_ok('/options/admin/useradd', form => {username => $user, newpw1 => $pass, newpw2 => $pass, active => 1})
           ->status_is(302)->header_is(Location => '/options/form')->content_is('');
         $t->get_ok('/options/form')->status_is(200)
@@ -120,4 +125,6 @@ sub test_get_userid {
     my $user = shift;
     $dbh->selectall_arrayref('SELECT id FROM users WHERE UPPER(name)=UPPER(?)', undef, $user)->[0]->[0];
 }
+
+1;
 
