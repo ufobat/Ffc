@@ -9,7 +9,7 @@ sub _newpostcount {
         FROM "posts" p
         INNER JOIN "topics" t on t."id"=p."topicid"
         LEFT OUTER JOIN "lastseenforum" l ON l."topicid"=p."topicid" AND l."userid"=?
-        WHERE p."userto" IS NULL AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",-1)',
+        WHERE p."userto" IS NULL AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",0)',
         undef, $uid
     )->[0]->[0];
 }
@@ -21,7 +21,7 @@ sub _newmsgscount {
         FROM "posts" p
         INNER JOIN "users" u ON u."id"<>? AND u."id"=p."userfrom" AND u."active"=1
         LEFT OUTER JOIN "lastseenmsgs" l ON l."userfromid"=u."id" AND l."userid"=?
-        WHERE p."userto"=? AND p."id">COALESCE(l."lastseen",-1)',
+        WHERE p."userto"=? AND p."id">COALESCE(l."lastseen",0)',
         undef, $uid, $uid, $uid
     )->[0]->[0];
 }
@@ -60,7 +60,7 @@ sub _generate_topiclist {
             COALESCE(l."ignore",0), COALESCE(l."pin",0)
         FROM "topics" t
         LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=t."id"
-        LEFT OUTER JOIN "posts" p ON p."userfrom"<>? AND p."topicid"=t."id" AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",-1)
+        LEFT OUTER JOIN "posts" p ON p."userfrom"<>? AND p."topicid"=t."id" AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",0)
 EOSQL
         . ( $query ? << 'EOSQL' : '' )
         WHERE UPPER(t."title") LIKE UPPER(?)

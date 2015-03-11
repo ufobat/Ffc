@@ -97,7 +97,8 @@ EOSQL
     }
     else {
         $sql .= << 'EOSQL';
-WHERE c."id">COALESCE((SELECT u2."lastchatid" FROM "users" u2 WHERE u2."id"=? LIMIT 1),0)
+LEFT OUTER JOIN "users" u2 ON u2."id"=?
+WHERE c."id">COALESCE(u2."lastchatid",0)
 ORDER BY c."id" DESC
 EOSQL
     }
