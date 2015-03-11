@@ -2,7 +2,6 @@ CREATE TABLE "users" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
   "name" varchar(64) NOT NULL,
   "password" varchar(512) NOT NULL,
-  "lastseen"  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "active" tinyint(1) NOT NULL DEFAULT '0',
   "email" varchar(1024) NOT NULL DEFAULT '',
   "newsmail" tinyint(1) NOT NULL DEFAULT '1',
