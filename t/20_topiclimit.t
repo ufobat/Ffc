@@ -25,7 +25,7 @@ for my $c ( @topics ) {
 sub check_topiclimit {
     my $topiclimit = shift;
     $t->get_ok('/forum')->status_is(200)
-      ->content_like(qr~\(derzeit $topiclimit\)~);
+      ->content_like(qr~Themen \($topiclimit\)~);
     for my $i ( $#topics - $topiclimit + 1 .. $#topics ) {
         my $id = $i + 1;
         $t->content_like(qr~<a href="/topic/$id">$topics[$i]</a>~);
@@ -54,7 +54,7 @@ sub set_topiclimit_error {
         'Die Anzahl der auf einer Seite in der Liste angezeigten Überschriften muss eine ganze Zahl kleiner 128 sein.');
 }
 
-my $topiclimit = 21;
+my $topiclimit = 21; # Default
 check_topiclimit($topiclimit);
 $topiclimit = 2;
 set_topiclimit_ok($topiclimit);

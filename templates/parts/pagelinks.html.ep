@@ -20,20 +20,20 @@
     /
 % }
 % if ( $action eq 'show' ) {
-    <span>Angezeigte Beiträge (derzeit <%= session->{postlimit} %>):</span>
+    <span>Anzahl angezeigter Beiträge (<%= session->{postlimit} %>):</span>
 %   for my $i ( 5, 7, 10, 15, 20, 30 ) {
 %     if ( $i == session->{postlimit} ) {
-    <span><%= $i %><%= $i < 30 ? ',' : '' %></span>
+    <span class="limitsetting postlimit"><%= $i %></span>
 %     } else {
     <a href="<%= url_for "set_${controller}_postlimit", postlimit => $i %>" 
         title="<%= $i %> Beiträge auf einer Seite in der Liste anzeigen"><%= $i %></a><%= $i < 30 ? ',' : '' %>
 %     }
 %   }
 % } else {
-    <span>Angezeigte Themen (derzeit <%= session->{topiclimit} %>):</span>
+    <span>Anzahl angezeigter Themen (<%= session->{topiclimit} %>):</span>
 %   for my $i ( 5, 10, 15, 20, 30, 50 ) {
 %     if ( $i == session->{topiclimit} ) {
-    <span><%= $i %><%= $i < 50 ? ',' : '' %></span>
+    <span class="limitsetting topiclimit"><%= $i %></span>
 %     } else {
     <a href="<%= url_for 'topic_set_topiclimit', topiclimit => $i %>" 
         title="<%= $i %> Überschriften auf einer Seite in der Liste anzeigen"><%= $i %></a><%= $i < 50 ? ',' : '' %>
