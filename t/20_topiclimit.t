@@ -9,7 +9,7 @@ use File::Temp qw~tempfile tempdir~;
 use File::Spec::Functions qw(catfile catdir splitdir);
 
 use Test::Mojo;
-use Test::More tests => 420;
+use Test::More tests => 646;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
@@ -17,23 +17,54 @@ my ( $user2, $pass2 ) = ( Testinit::test_randstring(), Testinit::test_randstring
 Testinit::test_add_users( $t, $admin, $apass, $user1, $pass1, $user2, $pass2 );
 Testinit::test_login($t, $user1, $pass1);
 
-my @topics = map { $_ x 2 } 'a' .. 'z';
+my @topics = map { $_ x 2 } 'a' .. 'v';
 for my $c ( @topics ) {
     $t->post_ok('/topic/new', form => {titlestring => $c, textdata => $c x 2});
 }
 
+sub check_topics {
+    my ( $start, $end, $topiclimit ) = @_;
+    for my $i ( 0 .. $#topics ) {
+        my $id = $i + 1;
+        if ( $i >= $start and $i <= $end ) {
+            $t->content_like(qr~<h2(?: class="newpost")?>\s*<a href="/topic/$id">$topics[$i]</a>~);
+        }
+        else {
+            $t->content_unlike(qr~<h2(?: class="newpost")?>\s*<a href="/topic/$id">$topics[$i]</a>~);
+        }
+    }
+    note 'check popup topics';
+    my $topicpopup = join '\\s*', 
+        '<div class="topicpopup popup">',
+        map( {; 
+            my $id = $_ + 1; my $text = $topics[$_];
+            qq~<p><a href="/topic/$id">$text</a>...~
+                . qq~(?: \\(<span class="mark">1</span>\\))?~
+                . qq~</p>~ 
+        } $#topics - $topiclimit + 1 .. $#topics ),
+        '</div>';
+    $t->content_like(qr~$topicpopup~);
+}
 sub check_topiclimit {
     my $topiclimit = shift;
+
     $t->get_ok('/forum')->status_is(200)
       ->content_like(qr~Themen \($topiclimit\)~);
-    for my $i ( $#topics - $topiclimit + 1 .. $#topics ) {
-        my $id = $i + 1;
-        $t->content_like(qr~<a href="/topic/$id">$topics[$i]</a>~);
-    }
-    for my $i ( 0 .. $#topics - $topiclimit ) {
-        my $id = $i + 1;
-        $t->content_unlike(qr~<a href="/topic/$id">$topics[$i]</a>~);
-    }
+    my $start = $#topics - $topiclimit + 1;
+    $start = 0 if $start < 0;
+    my $end   = $#topics;
+    $end = 0 if $end < 0;
+    note "page=1, topiclimit=$topiclimit, indizes: start=$start, end=$end";
+    check_topics( $start, $end, $topiclimit );
+
+    $t->get_ok('/forum/2')->status_is(200)
+      ->content_like(qr~Themen \($topiclimit\)~);
+    $start = $#topics - $topiclimit - $topiclimit + 1;
+    $start = 0 if $start < 0;
+    $end   = $#topics - $topiclimit;
+    $end = 0 if $end < 0;
+    note "page=2, topiclimit=$topiclimit, indizes: start=$start, end=$end";
+    check_topics( $start, $end, $topiclimit );
 }
 
 sub set_topiclimit_ok {
