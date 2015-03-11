@@ -9,7 +9,7 @@ use File::Temp qw~tempfile tempdir~;
 use File::Spec::Functions qw(catfile catdir splitdir);
 
 use Test::Mojo;
-use Test::More tests => 1487;
+use Test::More tests => 2040;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
@@ -20,34 +20,41 @@ sub login1 { Testinit::test_login($t, $user1, $pass1) }
 sub login2 { Testinit::test_login($t, $user2, $pass2) }
 
 sub setup_user {
-    my ( $loginsub, $userfrom, $pmsgs_login ) = @_;
+    my ( $loginsub, $userfrom, $pmsgs_login, $with_forum ) = @_;
     $loginsub->();
-    my $post_forum = [ map { ["$user1 forum '$_$_$_'", $postid++] } 'a' .. 'o' ];
+    my $post_forum = [];
+    my $post_pmsgs = [];
+    
+    $t->get_ok('/topic/1')->status_is(200); # reset wegen neuer Beiträge
+
+    if ( $with_forum ) {
+        $post_forum = [ map { ["$user1 forum '$_$_$_'", $postid++] } 'a' .. 'o' ];
+        $t->post_ok('/topic/new', 
+            form => {
+                titlestring => "user $userfrom topic", 
+                textdata => $post_forum->[0]->[0]
+            })
+          ->status_is(302)->content_is('');
+
+        $t->post_ok("/topic/1/new", 
+            form => { textdata => $_->[0] })
+          ->status_is(302)->content_is('')
+                for @{$post_forum}[1 .. $#$post_forum];
+
+        $pmsgs_login->();
+        $post_pmsgs = [ map { ["$user2 pmsgs '$_$_$_'", $postid++] } 'a' .. 'o' ]; # Sortierung wichtig!
+        $t->post_ok("/pmsgs/$userfrom/new", 
+            form => { textdata => $_->[0] })
+          ->status_is(302)->content_is('')
+                for @$post_pmsgs;
+    }
+
+    $loginsub->();
     my $post_notes = [ map { ["$user1 notiz '$_$_$_'", $postid++] } 'a' .. 'o' ];
-    my $post_pmsgs = [ map { ["$user2 pmsgs '$_$_$_'", $postid++] } 'a' .. 'o' ]; # Sortierung wichtig!
-
-    $t->post_ok('/topic/new', 
-        form => {
-            titlestring => "user $userfrom topic", 
-            textdata => $post_forum->[0]->[0]
-        })
-      ->status_is(302)->content_is('');
-
-    $t->post_ok("/topic/1/new", 
-        form => { textdata => $_->[0] })
-      ->status_is(302)->content_is('')
-            for @{$post_forum}[1 .. $#$post_forum];
-
     $t->post_ok("/notes/new", 
         form => { textdata => $_->[0] })
       ->status_is(302)->content_is('')
             for @$post_notes;
-
-    $pmsgs_login->();
-    $t->post_ok("/pmsgs/$userfrom/new", 
-        form => { textdata => $_->[0] })
-      ->status_is(302)->content_is('')
-            for @$post_pmsgs;
 
     return $post_forum, $post_pmsgs, $post_notes;
 }
@@ -123,24 +130,33 @@ sub check_error_in_setting {
 }
 
 sub check_ok_in_setting {
-    my ( $posts, $location ) = @_;
+    my ( $posts1, $posts2, $location1, $location2 ) = @_;
+    $location2 = $location1 unless $location2;
+    login1();
     my $postlimit = 3;
-    set_postlimit_ok($postlimit, $location);
-    check_postlimit($posts, $postlimit, $location);
+    set_postlimit_ok($postlimit, $location1);
+    check_postlimit($posts1, $postlimit, $location1);
     $postlimit = 4;
-    set_postlimit_ok($postlimit, $location);
-    check_postlimit($posts, $postlimit, $location);
+    set_postlimit_ok($postlimit, $location1);
+    check_postlimit($posts1, $postlimit, $location1);
+    login2(); # implizites Logout
+    check_postlimit($posts2, 14, $location2);
     login1(); # implizites Logout
-    check_postlimit($posts, $postlimit, $location);
+    check_postlimit($posts1, $postlimit, $location1);
+    login1(); # implizites Logout
+    check_postlimit($posts1, $postlimit, $location1);
 }
 
-my ( $posts_forum_1, $posts_pmsgs_1, $posts_notes_1 ) = setup_user( \&login1, 2, \&login2 );
+my ( $posts_forum_1, $posts_pmsgs_1, $posts_notes_1 ) = setup_user( \&login1, 2, \&login2, 1 );
+my ( $posts_forum_2, $posts_pmsgs_2, $posts_notes_2 ) = setup_user( \&login2, 3, \&login1 );
+$posts_forum_2 = $posts_forum_1;
+$posts_pmsgs_2 = $posts_pmsgs_1;
 
 login1();
 check_error_in_setting( $posts_forum_1, 14, '/topic/1' );
 check_error_in_setting( $posts_pmsgs_1, 14, '/pmsgs/3' );
 check_error_in_setting( $posts_notes_1, 14, '/notes'   );
-check_ok_in_setting(    $posts_forum_1, '/topic/1'     );
-check_ok_in_setting(    $posts_pmsgs_1, '/pmsgs/3'     );
-check_ok_in_setting(    $posts_notes_1, '/notes'       );
+check_ok_in_setting(    $posts_forum_1, $posts_forum_2, '/topic/1' );
+check_ok_in_setting(    $posts_pmsgs_1, $posts_pmsgs_2, '/pmsgs/3', '/pmsgs/2' );
+check_ok_in_setting(    $posts_notes_1, $posts_notes_2, '/notes'   );
 
