@@ -30,12 +30,10 @@ sub error   { Testinit::test_error(   $t, @_ ) }
 sub warning { Testinit::test_warning( $t, @_ ) }
 
 sub set_postlimit {
-    logina();
-    $t->post_ok('/options/admin/boardsettings/postlimit',
-        form => { optionvalue => $Postlimit })
-      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
-    $t->get_ok('/options/form')->status_is(200);
-    info('Beitragsanzahl geändert');
+    $t->get_ok("$Urlpref/limit/$Postlimit")
+      ->status_is(302)->content_is('')->header_is(Location => $Urlpref);
+    $t->get_ok($Urlpref)->status_is(200);
+    info("Anzahl der auf einer Seite der Liste angezeigten Beiträge auf $Postlimit geändert.");
 }
 
 sub ck { $Check_env->($t, shift() // \@entries, \@delents, \@delatts, @_) }
@@ -43,10 +41,15 @@ sub ck { $Check_env->($t, shift() // \@entries, \@delents, \@delatts, @_) }
 sub run_tests {
     my ( $from, $to, $do_attachements, $do_edit, $do_delete );
     ( $from, $to, $Urlpref, $Check_env, $do_attachements, $do_edit, $do_delete ) = @_;
+    logina();
     set_postlimit($t);
 
     ck();
 
+    login1();
+    set_postlimit($t);
+    login2();
+    set_postlimit($t);
     login1();
     #diag 'test new entries';
     $t->post_ok("$Urlpref/new", form => {})->status_is(200);

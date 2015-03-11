@@ -57,6 +57,8 @@ sub upload_form {
     $c->upload_post_form();
 }
 
+sub set_postlimit { $_[0]->set_post_postlimit() }
+
 sub upload_do { $_[0]->upload_post_do() }
 
 sub download {  $_[0]->download_post() }

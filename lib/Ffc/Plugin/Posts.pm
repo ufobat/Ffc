@@ -34,6 +34,7 @@ sub register {
     $app->helper( get_single_value         => \&_get_single_value         );
     $app->helper( get_show_sql             => \&_get_show_sql             );
     $app->helper( get_attachements         => \&_get_attachements         );
+    $app->helper( set_post_postlimit       => \&_set_post_postlimit       );
     return $self;
 }
 

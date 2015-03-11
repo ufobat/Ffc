@@ -13,7 +13,6 @@ our %Defaults = (
     cookiename      => 'Ffc_Forum',
     urlshorten      => 30,
     sessiontimeout  => 259200,
-    postlimit       => 7,
     backgroundcolor => '',
     starttopic      => 0,
 );

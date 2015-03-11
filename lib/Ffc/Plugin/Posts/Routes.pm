@@ -29,6 +29,10 @@ sub install_routes_posts {
       ->to(controller => $cname, action => 'search')
       ->name("search_${cname}_posts_page");
     
+    $l->route("/$start/limit/:postlimit", postlimit => $Ffc::Digqr)
+      ->via('get')->to(controller => $cname, action => 'set_postlimit')
+      ->name("set_${cname}_postlimit");
+
     # Die folgende Route fügt einen neuen Beitrag hinzu.
     $l->route("$start/new", @startps)->via('post')
       ->to(controller => $cname, action => 'add')->name("add_${cname}");

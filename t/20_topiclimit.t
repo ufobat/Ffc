@@ -9,7 +9,7 @@ use File::Temp qw~tempfile tempdir~;
 use File::Spec::Functions qw(catfile catdir splitdir);
 
 use Test::Mojo;
-use Test::More tests => 429;
+use Test::More tests => 420;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
@@ -69,19 +69,16 @@ check_topiclimit($topiclimit);
 $topiclimit = 5;
 set_topiclimit_ok($topiclimit);
 check_topiclimit($topiclimit);
-Testinit::test_logout($t);
 Testinit::test_login($t, $user1, $pass1);
 check_topiclimit($topiclimit);
 
 $topiclimit = 21;
-Testinit::test_logout($t);
 Testinit::test_login($t, $user2, $pass2);
 check_topiclimit($topiclimit);
 $topiclimit = 3;
 set_topiclimit_ok($topiclimit);
 check_topiclimit($topiclimit);
 $topiclimit = 5;
-Testinit::test_logout($t);
 Testinit::test_login($t, $user1, $pass1);
 check_topiclimit($topiclimit);
 

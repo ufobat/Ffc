@@ -111,5 +111,19 @@ sub _show_posts {
     }
 }
 
+sub _set_post_postlimit {
+    my $c = $_[0];
+    my $postlimit = $c->param('postlimit');
+    unless ( $postlimit =~ $Ffc::Digqr and $postlimit > 0 and $postlimit < 128 ) {
+        $c->set_error_f('Die Anzahl der auf einer Seite in der Liste angezeigten Beiträge muss eine ganze Zahl kleiner 128 sein.');
+        return _redirect_to_show($c);
+    }
+    $c->session->{postlimit} = $postlimit;
+    $c->dbh->do('UPDATE "users" SET "postlimit"=? WHERE "id"=?',
+        undef, $postlimit, $c->session->{userid});
+    $c->set_info_f("Anzahl der auf einer Seite der Liste angezeigten Beiträge auf $postlimit geändert.");
+    return _redirect_to_show($c);
+}
+
 1;
 
