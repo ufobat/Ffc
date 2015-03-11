@@ -31,6 +31,8 @@ Features
 * Themen können vom Benutzer ignoriert werden, dann werden die nicht mehr hervor gehoben, wenn neue Beiträge von anderen Benutzern erstellt werden in dem Thema
 * Themen können von den Benutzern auch "angeheftet" werden, dann erscheinen sie immer mit ganz oben in der Themenliste
 * Für die Themenlisten kann eingestellt werden, ob aktuelle Themen auf einer Themenseite und im Menü chronologisch nach dem aktuellsten Beitrag oder alphabetisch sortiert anzeigt werden
+* Anzahl der gleichzeitig angezeigten Überschriften auf der Startseite und damit auch im Foren-Menü-Popup ändern
+* Anzahl der gleichzeitig auf einer Seite angezeigten Beiträge ändern
 * Foren-, Nachrichten- und Notizbeiträge enthalten primär lediglich den Text ohne Titel
 * Diese Beiträge (Forum, Privatnachrichten, Notizen) haben alle intern die selbe technische Struktur
 * Allen Beiträgen (Forum, Privatnachrichten, Notizen) können Dateien via Upload angehängt werden durch den Beitragsersteller
@@ -51,8 +53,6 @@ Features
   * Benutzerverwaltung mit Passwortangange, aktivieren und deaktiveren von Benutzern sowie Adminstratorenstatus setzen
   * Default-Webseitenhintergrundfarbe
   * Favoritenicon und Webseitentitel
-  * Anzahl der gleichzeitig angezeigten Überschriften auf der Startseite und damit auch im Foren-Menü-Popup sowie Anzahl der Beiträge auf einer Seite und Anzahl der Nachrichten in der Historie eigener Chatnachrichten
-  * Anzahl der gleichzeitig auf einer Seite angezeigten Beiträge sowie der fünffachen Anzahl der Chatnachrichtenhistorie beim öffnen des Chats
   * Anzahl der Buchstaben die von einer URL oder von einem Thema im Foren-Menü-Popup dargestellt werden (URL-Shortener), die vollständige URL wird über ein Tooltip dargestellt
   * Es kann außerdem eine URL zu einer eigenen CSS-Stylesheet-Datei angegeben werden, welche dann nach allen anderen Stylesheetvorgaben eingebunden wird in die Webseite und über die im Bedarfsfall sämtliche Anzeigeeinstellungen für die Webseite überschrieben oder verändert werden können
 * Foreneinstellungen, die von Benutzern vorgenommen werden können:
