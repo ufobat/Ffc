@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 839;
+use Test::More tests => 687;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -27,12 +27,6 @@ my @Settings = (
     [ cookiename => 'Cookie-Name', 'text',
         [rstr(), rstr(), scalar('a' x 256)], ['a', scalar('a' x 257)],
         'Der Name für Cookies muss zwischen zwei und 256 Zeichen lang sein' ],
-    [ postlimit => 'Beitragsanzahl', 'number',
-        [10 + int( rand 90),110 + int(rand 90)],['asdf'],
-        'Die Anzahl gleichzeitig angezeigter Beiträge muss eine Zahl sein' ],
-    [ topiclimit => 'Überschriftenanzahl', 'number',
-        [10 + int( rand 90),110 + int(rand 90)],['asdf'],
-        'Die Anzahl gleichzeitig angezeigter Forenüberschriften muss eine Zahl sein' ],
     [ sessiontimeout => 'Maximale Benutzersitzungsdauer', 'number',
         [10 + int( rand 90),110 + int(rand 90)],['asdf'],
         'Die Zeit der Benutzersitzungsmaximallänge muss eine Zahl in Sekunden sein' ],

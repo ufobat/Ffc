@@ -17,15 +17,14 @@ sub check_login {
     if ( $c->login_ok ) {
         my $s = $c->session();
         my $r = $c->dbh()->selectall_arrayref(
-            'SELECT u.admin, u.bgcolor, u.name, u.autorefresh, u.chronsortorder
+            'SELECT u.admin, u.bgcolor, u.name, u.autorefresh, 
+                u.chronsortorder, u.topiclimit, u.postlimit
             FROM users u WHERE u.active=1 AND u.id=?',
             undef, $s->{userid});
 
         if ( $r and @$r and $r->[0]->[2] eq $s->{user} ) {
-            $s->{admin}           = $r->[0]->[0];
-            $s->{backgroundcolor} = $r->[0]->[1];
-            $s->{autorefresh}     = $r->[0]->[3];
-            $s->{chronsortorder}   = $r->[0]->[4];
+            @$s{qw(admin backgroundcolor autorefresh chronsortorder topiclimit postlimit)}
+                = @{$r->[0]}[0, 1, 3, 4, 5, 6];
             return 1;
         }
         else {
@@ -48,17 +47,13 @@ sub login {
         return $c->render(template => 'loginform');
     }
     my $r = $c->dbh()->selectall_arrayref(
-        'SELECT u.admin, u.bgcolor, u.name, u.id, u.autorefresh, u.chronsortorder
+        'SELECT u.admin, u.bgcolor, u.name, u.id, u.autorefresh, 
+            u.chronsortorder, u.topiclimit, u.postlimit
         FROM users u WHERE UPPER(u.name)=UPPER(?) AND u.password=? AND active=1',
         undef, $u, $c->hash_password($p));
     if ( $r and @$r ) {
-        my $s = $c->session();
-        $s->{admin}           = $r->[0]->[0];
-        $s->{backgroundcolor} = $r->[0]->[1];
-        $s->{user}            = $r->[0]->[2];
-        $s->{userid}          = $r->[0]->[3];
-        $s->{autorefresh}     = $r->[0]->[4];
-        $s->{cronsortorder}   = $r->[0]->[5];
+        @{$c->session}{qw(admin backgroundcolor user userid autorefresh chronsortorder topiclimit postlimit)}
+            = @{$r->[0]}[0, 1, 2, 3, 4, 5, 6, 7];
         return $c->redirect_to('show');
     }
     $c->set_error('Fehler bei der Anmeldung');
@@ -74,6 +69,8 @@ sub logout {
     delete $s->{admin};
     delete $s->{autorefresh};
     delete $s->{chronsortorder};
+    delete $s->{topiclimit};
+    delete $s->{postlimit};
     $c->set_info('Abmelden erfolgreich');
     $c->render(template => 'loginform');
 }

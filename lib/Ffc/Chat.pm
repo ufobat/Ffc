@@ -103,10 +103,7 @@ EOSQL
     }
 
     my $msgs = $dbh->selectall_arrayref( $sql, undef,
-        ( $started 
-            ? ($c->configdata->{postlimit} * 5) 
-            : ($c->session->{userid})
-        )
+        ( $started ? 50 : $c->session->{userid} )
     );
     for my $m ( @$msgs ) {
         $m->[$_] = xml_escape($m->[$_]) for 1, 2;

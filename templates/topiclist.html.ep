@@ -8,6 +8,15 @@
 % } else {
     Die Themenliste ist alphabetisch sortiert, Themenliste <a href="<%= url_for 'topic_sort_chronological' %>">chronologisch sortieren</a>.
 % }
+    Anzahl der auf einer Seite in der Liste angezeigten Überschriften (derzeit <%= session->{topiclimit} %>) einstellen:
+% for my $i ( 5, 10, 15, 20, 30, 50 ) {
+%  if ( $i == session->{topiclimit} ) {
+    <%= $i %><%= $i < 50 ? ',' : '' %>
+%  } else {
+    <a href="<%= url_for 'topic_set_topiclimit', topiclimit => $i %>" 
+        title="<%= $i %> Überschriften auf einer Seite in der Liste anzeigen"><%= $i %></a><%= $i < 50 ? ',' : '' %>
+%  }
+% }
 </p>
 </div>
 % if ( @$topics_for_list ) {

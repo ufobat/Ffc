@@ -42,6 +42,11 @@ sub install_routes {
       ->to(controller => 'forum', action => 'sort_order_alphabetical')
       ->name('topic_sort_alphabetical');
 
+    # Anzahl angezeigter Überschriften anpassen
+    $l->route('/topic/limit/:topiclimit', topiclimit => $Ffc::Digqr)->via('get')
+      ->to(controller => 'forum', action => 'set_topiclimit')
+      ->name('topic_set_topiclimit');
+
     # Überschriften ändern
     $l->route('/topic/:topicid/edit', topicid => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'edit_topic_form')

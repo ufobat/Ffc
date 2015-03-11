@@ -50,9 +50,10 @@ sub _generate_topiclist {
     else {
         $stashkey = 'topics';
     }
-    my $topiclimit = $c->configdata->{topiclimit};
-    my $uid = $c->session->{userid};
-    my $query = $c->session->{topicquery};
+    my $session = $c->session;
+    my $topiclimit = $session->{topiclimit};
+    my $uid = $session->{userid};
+    my $query = $session->{topicquery};
     my $tlist = $c->dbh->selectall_arrayref(<< 'EOSQL'
         SELECT t."id", t."userfrom", t."title",
             COUNT(p."id"), t."lastid",
@@ -79,7 +80,7 @@ EOSQL
             ( $t->[3] && $t->[6] ? 'newpinpost' : () ),
         ;
     }
-    if ( $c->session->{chronsortorder} ) {
+    if ( $session->{chronsortorder} ) {
         $c->stash( $stashkey => [ sort { $a->[5] <=> $b->[5] or $b->[6] <=> $a->[6] or $b->[4] <=> $a->[4] } @$tlist ] );
     }
     else {

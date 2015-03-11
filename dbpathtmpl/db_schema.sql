@@ -7,6 +7,8 @@ CREATE TABLE "users" (
   "email" varchar(1024) NOT NULL DEFAULT '',
   "newsmail" tinyint(1) NOT NULL DEFAULT '1',
   "chronsortorder" tinyint(1) NOT NULL DEFAULT '0',
+  "topiclimit" smallint NOT NULL DEFAULT 21,
+  "postlimit" smallint NOT NULL DEFAULT 14,
   "avatar" varchar(128) NOT NULL DEFAULT '',
   "avatartype" varchar(16) NOT NULL DEFAULT '',
   "admin" tinyint(1) NOT NULL DEFAULT '0',
@@ -83,12 +85,6 @@ INSERT INTO "config" ("key", "value")
   VALUES ('cookiesecret','');
 INSERT INTO "config" ("key", "value") 
   VALUES ('cryptsalt','');
-INSERT INTO "config" ("key", "value") 
-  VALUES ('postlimit','14');
-INSERT INTO "config" ("key", "value") 
-  VALUES ('topiclimit','21');
-INSERT INTO "config" ("key", "value") 
-  VALUES ('chronsortorder','0');
 INSERT INTO "config" ("key", "value") 
   VALUES ('title','Ffc Forum');
 INSERT INTO "config" ("key", "value") 

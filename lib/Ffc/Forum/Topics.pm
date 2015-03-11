@@ -261,5 +261,20 @@ sub _set_sort_order_cron_do {
     $c->redirect_to('show_forum_topiclist');
 }
 
+sub set_topiclimit {
+    my $c = $_[0];
+    my $topiclimit = $c->param('topiclimit');
+    unless ( $topiclimit =~ $Ffc::Digqr and $topiclimit > 0 and $topiclimit < 128 ) {
+        $c->set_error_f('Die Anzahl der auf einer Seite in der Liste angezeigten Überschriften muss eine ganze Zahl kleiner 128 sein.');
+        $c->redirect_to('show_forum_topiclist');
+        return;
+    }
+    $c->session->{topiclimit} = $topiclimit;
+    $c->dbh->do('UPDATE "users" SET "topiclimit"=? WHERE "id"=?',
+        undef, $topiclimit, $c->session->{userid});
+    $c->set_info_f("Anzahl der auf einer Seite der Liste angezeigten Überschriften auf $topiclimit geändert.");
+    $c->redirect_to('show_forum_topiclist');
+}
+
 1;
 
