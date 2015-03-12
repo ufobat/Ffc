@@ -16,9 +16,10 @@ sub install_routes {
 sub favicon_show {
     my $c = shift;
     my $filetype = $c->dbh->selectall_arrayref(
-        'SELECT "value" FROM "config" WHERE "key"=?', undef, 'favicontype')->[0]->[0];
-    my $contenttype = $c->dbh->selectall_arrayref(
-        'SELECT "value" FROM "config" WHERE "key"=?', undef, 'faviconcontenttype')->[0]->[0];
+        'SELECT "value" FROM "config" WHERE "key"=? or "key"=? ORDER BY "key" DESC',
+        undef, 'favicontype', 'faviconcontenttype');
+    my $contenttype = $filetype->[1]->[0];
+    $filetype = $filetype->[0]->[0];
     my $file = catfile @{$c->datapath}, 'favicon';
     $file = Mojo::Asset::File->new(path => $file);
     my $headers = Mojo::Headers->new();
