@@ -17,9 +17,9 @@ sub check_login {
     if ( $c->login_ok ) {
         my $s = $c->session();
         my $r = $c->dbh()->selectall_arrayref(
-            'SELECT u.admin, u.bgcolor, u.name, u.autorefresh, 
-                u.chronsortorder, u.topiclimit, u.postlimit
-            FROM users u WHERE u.active=1 AND u.id=?',
+            'SELECT "admin", "bgcolor", "name", "autorefresh", 
+                "chronsortorder", "topiclimit", "postlimit"
+            FROM "users" WHERE "active"=1 AND "id"=?',
             undef, $s->{userid});
 
         if ( $r and @$r and $r->[0]->[2] eq $s->{user} ) {
