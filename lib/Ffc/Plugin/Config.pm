@@ -43,9 +43,12 @@ sub register {
         $config->{starttopic} = $Defaults{starttopic};
     }
 
-    $app->helper(datapath     => sub { $datapath  });
-    $app->helper(dbh          => sub { $self->dbh });
-    $app->helper(configdata   => sub { $config    });
+    $app->helper(datapath   => sub { $datapath  });
+    $app->helper(configdata => sub { $config    });
+
+    $app->helper(dbh                    => sub { $self->dbh               });
+    $app->helper(dbh_selectall_arrayref => sub { &_dbh_selectall_arrayref });
+    $app->helper(dbh_do                 => sub { &_dbh_do                 });
 
     $app->defaults({
         page     => 1,
@@ -101,8 +104,8 @@ sub _config {
 }
 
 sub dbh {
+    return $_[0]->{dbh} if $_[0]->{dbh};
     my $self = $_[0];
-    return $self->{dbh} if $self->{dbh};
     $self->{dbfile} = catdir @{ $self->_datapath() }, 'database.sqlite3';
     $self->{dbh} = DBI->connect("DBI:SQLite:database=$self->{dbfile}", 
         '', '', { AutoCommit => 1, RaiseError => 1 })
@@ -113,6 +116,28 @@ sub dbh {
 
 sub reset {
     @{$_[0]}{qw(datapath dbh dbfile)} = (undef,undef,undef);
+}
+
+{
+my %sths;
+sub _dbh_selectall_arrayref {
+    my $c = shift; my $sql = shift;
+    my $sth = exists $sths{$sql}
+        ? $sths{$sql}
+        : $sths{$sql} = $c->dbh->prepare($sql)
+            || die $sths{$sql}->errstr;
+    $sth->execute( @_ ) or die $sth->errstr;
+    return $sth->fetchall_arrayref || die $sth->errstr;
+}
+sub _dbh_do {
+    my $c = shift; my $sql = shift;
+    my $sth = exists $sths{$sql}
+        ? $sths{$sql}
+        : $sths{$sql} = $c->dbh->prepare($sql)
+            || die $sths{$sql}->errstr;
+    $sth->execute( @_ ) or die $sth->errstr;
+    $sth->finish;
+}
 }
 
 1;
