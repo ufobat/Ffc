@@ -9,7 +9,7 @@ use File::Temp qw~tempfile tempdir~;
 use File::Spec::Functions qw(catfile catdir splitdir);
 
 use Test::Mojo;
-use Test::More tests => 646;
+use Test::More tests => 625;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
@@ -17,7 +17,7 @@ my ( $user2, $pass2 ) = ( Testinit::test_randstring(), Testinit::test_randstring
 Testinit::test_add_users( $t, $admin, $apass, $user1, $pass1, $user2, $pass2 );
 Testinit::test_login($t, $user1, $pass1);
 
-my @topics = map { $_ x 2 } 'a' .. 'v';
+my @topics = map { $_ x 2 } 'a' .. 'u';
 for my $c ( @topics ) {
     $t->post_ok('/topic/new', form => {titlestring => $c, textdata => $c x 2});
 }
@@ -49,7 +49,7 @@ sub check_topiclimit {
     my $topiclimit = shift;
 
     $t->get_ok('/forum')->status_is(200)
-      ->content_like(qr~Themen \($topiclimit\)~);
+      ->content_like(qr~<span class="limitsetting topiclimit">$topiclimit</span>~);
     my $start = $#topics - $topiclimit + 1;
     $start = 0 if $start < 0;
     my $end   = $#topics;
@@ -58,7 +58,7 @@ sub check_topiclimit {
     check_topics( $start, $end, $topiclimit );
 
     $t->get_ok('/forum/2')->status_is(200)
-      ->content_like(qr~Themen \($topiclimit\)~);
+      ->content_like(qr~<span class="limitsetting topiclimit">$topiclimit</span>~);
     $start = $#topics - $topiclimit - $topiclimit + 1;
     $start = 0 if $start < 0;
     $end   = $#topics - $topiclimit;
@@ -85,9 +85,9 @@ sub set_topiclimit_error {
         'Die Anzahl der auf einer Seite in der Liste angezeigten Überschriften muss eine ganze Zahl kleiner 128 sein.');
 }
 
-my $topiclimit = 21; # Default
+my $topiclimit = 20; # Default
 check_topiclimit($topiclimit);
-$topiclimit = 2;
+$topiclimit = 5;
 set_topiclimit_ok($topiclimit);
 check_topiclimit($topiclimit);
 set_topiclimit_error(0);
@@ -103,10 +103,10 @@ check_topiclimit($topiclimit);
 Testinit::test_login($t, $user1, $pass1);
 check_topiclimit($topiclimit);
 
-$topiclimit = 21;
+$topiclimit = 20;
 Testinit::test_login($t, $user2, $pass2);
 check_topiclimit($topiclimit);
-$topiclimit = 3;
+$topiclimit = 10;
 set_topiclimit_ok($topiclimit);
 check_topiclimit($topiclimit);
 $topiclimit = 5;

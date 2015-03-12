@@ -20,8 +20,8 @@
     /
 % }
 % if ( $action eq 'show' ) {
-    <span>Anzahl angezeigter Beiträge (<%= session->{postlimit} %>):</span>
-%   for my $i ( 5, 7, 10, 15, 20, 30 ) {
+    <span>Anzahl angezeigter Beiträge:</span>
+%   for my $i ( 3, 5, 7, 10, 15, 20, 30 ) {
 %     if ( $i == session->{postlimit} ) {
     <span class="limitsetting postlimit"><%= $i %></span>
 %     } else {
@@ -30,7 +30,7 @@
 %     }
 %   }
 % } else {
-    <span>Anzahl angezeigter Themen (<%= session->{topiclimit} %>):</span>
+    <span>Anzahl angezeigter Themen:</span>
 %   for my $i ( 5, 10, 15, 20, 30, 50 ) {
 %     if ( $i == session->{topiclimit} ) {
     <span class="limitsetting topiclimit"><%= $i %></span>
