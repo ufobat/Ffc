@@ -48,29 +48,29 @@ sub show {
         heading  => 
             'Private Nachrichten mit "' . $c->_get_username . '"',
     );
-    my ( $dbh, $uid, $utoid ) = ( $c->dbh, $c->session->{userid}, $c->param('usertoid') );
-    my $lastseen = $dbh->selectall_arrayref(
+    my ( $uid, $utoid ) = ( $c->session->{userid}, $c->param('usertoid') );
+    my $lastseen = $c->dbh_selectall_arrayref(
         'SELECT "lastseen"
         FROM "lastseenmsgs"
         WHERE "userid"=? AND "userfromid"=?',
-        undef, $uid, $utoid
+        $uid, $utoid
     );
-    my $newlastseen = $dbh->selectall_arrayref(
+    my $newlastseen = $c->dbh_selectall_arrayref(
         'SELECT "id" FROM "posts" WHERE "userto"=? AND "userfrom"=? ORDER BY "id" DESC LIMIT 1',
-        undef, $uid, $utoid);
+        $uid, $utoid);
     $newlastseen = @$newlastseen ? $newlastseen->[0]->[0] : -1;
 
     if ( @$lastseen ) {
         $c->stash( lastseen => $lastseen->[0]->[0] );
-        $dbh->do(
+        $c->dbh_do(
             'UPDATE "lastseenmsgs" SET "lastseen"=? WHERE "userid"=? AND "userfromid"=?',
-            undef, $newlastseen, $uid, $utoid );
+            $newlastseen, $uid, $utoid );
     }
     else {
         $c->stash( lastseen => -1 );
-        $dbh->do(
+        $c->dbh_do(
             'INSERT INTO "lastseenmsgs" ("userid", "userfromid", "lastseen") VALUES (?,?,?)',
-            undef, $uid, $utoid, $newlastseen );
+            $uid, $utoid, $newlastseen );
     }
     $c->counting;
     $c->show_posts();

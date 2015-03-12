@@ -15,9 +15,9 @@ sub install_routes {
 
 sub favicon_show {
     my $c = shift;
-    my $filetype = $c->dbh->selectall_arrayref(
+    my $filetype = $c->dbh_selectall_arrayref(
         'SELECT "value" FROM "config" WHERE "key"=? or "key"=? ORDER BY "key" DESC',
-        undef, 'favicontype', 'faviconcontenttype');
+        'favicontype', 'faviconcontenttype');
     my $contenttype = $filetype->[1]->[0];
     $filetype = $filetype->[0]->[0];
     my $file = catfile @{$c->datapath}, 'favicon';
@@ -47,8 +47,8 @@ sub favicon_upload {
     return $c->redirect_to('options_form')
         unless $filename;
 
-    $c->dbh->do('UPDATE config SET value=? WHERE key=?', undef, $filetype, 'favicontype');
-    $c->dbh->do('UPDATE config SET value=? WHERE key=?', undef, $contenttype, 'faviconcontenttype');
+    $c->dbh_do('UPDATE config SET value=? WHERE key=?', $filetype, 'favicontype');
+    $c->dbh_do('UPDATE config SET value=? WHERE key=?', $contenttype, 'faviconcontenttype');
     $c->set_info_f('Favoriten-Icon aktualisiert.');
     $c->redirect_to('options_form');
 }

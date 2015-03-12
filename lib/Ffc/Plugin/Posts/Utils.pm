@@ -55,7 +55,7 @@ sub _get_single_post {
         .qq~LEFT OUTER JOIN "users" ut ON p."userto"=ut."id"\n~
         .qq~WHERE p."id"=?~;
     $sql .= qq~ AND $wheres~ if $wheres;
-    my $post = $c->dbh->selectall_arrayref( $sql, undef, $postid, @wherep );
+    my $post = $c->dbh_selectall_arrayref( $sql, $postid, @wherep );
     #use Data::Dumper; warn Dumper $sql, [$postid, @wherep], $post;
     my $textdata = $c->param('textdata') // '';
     if ( $post and @$post ) {
@@ -88,7 +88,7 @@ sub _get_attachements {
     $sql .= " AND $wheres" if $wheres;
     $sql .= qq~\nORDER BY a."filename", a."id"~;
     return $c->stash( attachements =>
-        $c->dbh->selectall_arrayref( $sql, undef, $c->session->{userid}, @wherep ) );
+        $c->dbh_selectall_arrayref( $sql, $c->session->{userid}, @wherep ) );
 }
 
 1;

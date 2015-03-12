@@ -25,9 +25,9 @@ sub useradmin {
         return $c->redirect_to('options_form');
     }
 
-    my $exists = $c->dbh->selectall_arrayref(
+    my $exists = $c->dbh_selectall_arrayref(
         'SELECT COUNT(id) FROM users WHERE UPPER(name) = UPPER(?)'
-        , undef, $username)->[0]->[0];
+        , $username)->[0]->[0];
 
     if ( $exists and not $overok ) {
         $c->set_error_f('Benutzer existiert bereits, das Überschreiben-Häkchen ist allerdings nicht gesetzt');
@@ -43,13 +43,13 @@ sub useradmin {
         my $sql = 'UPDATE users SET active=?, admin=?';
         $sql .= ', password=?' if @pw;
         $sql .= ' WHERE UPPER(name)=UPPER(?)';
-        $c->dbh->do($sql, undef, $isactive, $isadmin, @pw, $username);
+        $c->dbh_do($sql, $isactive, $isadmin, @pw, $username);
         $c->set_info_f(qq~Benutzer "$username" geändert~);
     }
     else {
-        $c->dbh->do(
+        $c->dbh_do(
             'INSERT INTO users (name, password, active, admin) VALUES (?,?,?,?)'
-            , undef, $username, @pw, $isactive, $isadmin);
+            , $username, @pw, $isactive, $isadmin);
         $c->set_info_f(qq~Benutzer "$username" angelegt~);
     }
 

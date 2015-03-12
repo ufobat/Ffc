@@ -16,11 +16,11 @@ sub check_login {
     my $c = shift;
     if ( $c->login_ok ) {
         my $s = $c->session();
-        my $r = $c->dbh()->selectall_arrayref(
+        my $r = $c->dbh_selectall_arrayref(
             'SELECT "admin", "bgcolor", "name", "autorefresh", 
                 "chronsortorder", "topiclimit", "postlimit"
             FROM "users" WHERE "active"=1 AND "id"=?',
-            undef, $s->{userid});
+            $s->{userid});
 
         if ( $r and @$r and $r->[0]->[2] eq $s->{user} ) {
             @$s{qw(admin backgroundcolor autorefresh chronsortorder topiclimit postlimit)}
@@ -46,11 +46,11 @@ sub login {
         $c->set_error('Bitte melden Sie sich an');
         return $c->render(template => 'loginform');
     }
-    my $r = $c->dbh()->selectall_arrayref(
+    my $r = $c->dbh_selectall_arrayref(
         'SELECT u.admin, u.bgcolor, u.name, u.id, u.autorefresh, 
             u.chronsortorder, u.topiclimit, u.postlimit
         FROM users u WHERE UPPER(u.name)=UPPER(?) AND u.password=? AND active=1',
-        undef, $u, $c->hash_password($p));
+        $u, $c->hash_password($p));
     if ( $r and @$r ) {
         @{$c->session}{qw(admin backgroundcolor user userid autorefresh chronsortorder topiclimit postlimit)}
             = @{$r->[0]}[0, 1, 2, 3, 4, 5, 6, 7];

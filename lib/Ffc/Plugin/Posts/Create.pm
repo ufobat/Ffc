@@ -21,8 +21,8 @@ sub _add_post {
                 ? 'msgs l ON l.userid=u.id AND l.userfromid=?' 
                 : 'forum l ON l.userid=u.id AND l.topicid=?' )
             . ' WHERE u.id=? GROUP BY u.id';
-        my $r = $c->dbh->selectall_arrayref( 
-            $sql, undef, $c->session->{userid},
+        my $r = $c->dbh_selectall_arrayref( 
+            $sql, $c->session->{userid},
             ( $userto ? ($userto, $userto) : ($topicid, $topicid) ),
             $c->session->{userid},
         );
@@ -32,7 +32,7 @@ sub _add_post {
             return $c->show;
         }
     }
-    $c->dbh->do( << 'EOSQL', undef,
+    $c->dbh_do( << 'EOSQL', 
 INSERT INTO "posts"
     ("userfrom", "userto", "topicid", "textdata", "cache")
 VALUES 
@@ -41,7 +41,7 @@ EOSQL
         $c->session->{userid}, $userto, $topicid, $text, $c->pre_format($text)
     );
     if ( $controller eq 'forum' and $topicid ) {
-        $c->dbh->do( << 'EOSQL', undef, $topicid, $topicid );
+        $c->dbh_do( << 'EOSQL', $topicid, $topicid );
 UPDATE "topics" 
 SET "lastid"=(
     SELECT COALESCE(MAX("id"),0) 
@@ -56,7 +56,7 @@ EOSQL
     }
     if ( $controller eq 'pmsgs' and $userto ) {
         my $userid = $c->session->{userid};
-        $c->dbh->do( << 'EOSQL'
+        $c->dbh_do( << 'EOSQL'
 UPDATE "lastseenmsgs"
 SET "lastid"=(
     SELECT COALESCE(MAX(p."id"),0)
@@ -65,7 +65,7 @@ SET "lastid"=(
     LIMIT 1)
 WHERE "userfromid"=? AND "userid"=?
 EOSQL
-            , undef, $userid, $userto, $userid, $userto );
+            , $userid, $userto, $userid, $userto );
     }
 
     $c->set_info_f('Ein neuer Beitrag wurde erstellt');
@@ -101,7 +101,7 @@ sub _edit_post_do {
     my $sql = qq~ SELECT COUNT("id")\nFROM "posts"\n~
             . qq~ WHERE "id"=?~;
     $sql .= qq~ AND $wheres~ if $wheres;
-    unless ( $c->dbh->selectall_arrayref( $sql, undef, $postid, @wherep )->[0]->[0] ) {
+    unless ( $c->dbh_selectall_arrayref( $sql, $postid, @wherep )->[0]->[0] ) {
         $c->set_error_f('Kein passender Beitrag zum ändern gefunden');
         return _redirect_to_show($c);
     }
@@ -110,7 +110,7 @@ sub _edit_post_do {
             . qq~SET "textdata"=?, "cache"=?, "altered"=current_timestamp\n~
             . qq~WHERE "id"=?~;
     $sql .= qq~ AND $wheres~ if $wheres;
-    $c->dbh->do( $sql, undef, $text, $c->pre_format($text), $postid, @wherep );
+    $c->dbh_do( $sql, $text, $c->pre_format($text), $postid, @wherep );
     $c->set_info_f('Der Beitrag wurde geändert');
     _redirect_to_show($c);
 }

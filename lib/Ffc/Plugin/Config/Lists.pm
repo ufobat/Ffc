@@ -4,25 +4,25 @@ use strict; use warnings; use utf8;
 
 sub _newpostcount {
     my $uid = $_[0]->session->{userid};
-    return $_[0]->dbh->selectall_arrayref(
+    return $_[0]->dbh_selectall_arrayref(
         'SELECT COUNT(p."id")
         FROM "posts" p
         INNER JOIN "topics" t on t."id"=p."topicid"
         LEFT OUTER JOIN "lastseenforum" l ON l."topicid"=p."topicid" AND l."userid"=?
         WHERE p."userto" IS NULL AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",0)',
-        undef, $uid
+        $uid
     )->[0]->[0];
 }
 
 sub _newmsgscount {
     my $uid = $_[0]->session->{userid};
-    return $_[0]->dbh->selectall_arrayref(
+    return $_[0]->dbh_selectall_arrayref(
         'SELECT COUNT(p."id")
         FROM "posts" p
         INNER JOIN "users" u ON u."id"<>? AND u."id"=p."userfrom" AND u."active"=1
         LEFT OUTER JOIN "lastseenmsgs" l ON l."userfromid"=u."id" AND l."userid"=?
         WHERE p."userto"=? AND p."id">COALESCE(l."lastseen",0)',
-        undef, $uid, $uid, $uid
+        $uid, $uid, $uid
     )->[0]->[0];
 }
 
@@ -31,9 +31,9 @@ sub _counting {
     $c->stash(
         newpostcount => _newpostcount($c),
         newmsgscount => _newmsgscount($c),
-        notecount => $c->dbh->selectall_arrayref(
+        notecount => $c->dbh_selectall_arrayref(
                 'SELECT COUNT("id") FROM "posts" WHERE "userfrom"=? AND "userfrom"="userto"',
-                undef, $c->session->{userid}
+                $c->session->{userid}
             )->[0]->[0],
     );
     $c->generate_topiclist();
@@ -54,7 +54,7 @@ sub _generate_topiclist {
     my $topiclimit = $session->{topiclimit};
     my $uid = $session->{userid};
     my $query = $session->{topicquery};
-    my $tlist = $c->dbh->selectall_arrayref(<< 'EOSQL'
+    my $tlist = $c->dbh_selectall_arrayref(<< 'EOSQL'
         SELECT t."id", t."userfrom", t."title",
             COUNT(p."id"), t."lastid",
             COALESCE(l."ignore",0), COALESCE(l."pin",0)
@@ -70,7 +70,7 @@ EOSQL
         ORDER BY COALESCE(l."pin", 0) DESC, t."lastid" DESC
         LIMIT ? OFFSET ?
 EOSQL
-        ,undef, $uid, $uid, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit
+        , $uid, $uid, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit
     );
     for my $t ( @$tlist ) {
         $t->[7] = join ' ',
@@ -91,8 +91,7 @@ EOSQL
 sub _generate_userlist {
     my $c = shift;
     my $uid = $c->session->{userid};
-    #die $c->dumper($c->dbh->selectall_arrayref('SELECT * FROM lastseenmsgs WHERE userid=?', undef, $uid));
-    $c->stash( users => $c->dbh->selectall_arrayref( << 'EOSQL'
+    $c->stash( users => $c->dbh_selectall_arrayref( << 'EOSQL'
 SELECT u."id", u."name",
     COALESCE(COUNT(p."id"),0), l."lastid"
 FROM "users" u
@@ -103,7 +102,7 @@ WHERE u."active"=1 AND u."id"<>?
 GROUP BY u."id", u."name", l."lastid"
 ORDER BY l."lastid" DESC, UPPER(u."name") ASC
 EOSQL
-        , undef, $uid, $uid, $uid
+        , $uid, $uid, $uid
     ) );
 }
 

@@ -44,9 +44,9 @@ sub add_topic_form {
 
 sub _get_topicid_for_title {
     my $c = shift;
-    my $r = $c->dbh->selectall_arrayref(
+    my $r = $c->dbh_selectall_arrayref(
         'SELECT "id" FROM "topics" WHERE "title"=?',
-        undef, shift() // $c->param('titlestring')
+        shift() // $c->param('titlestring')
     );
     return unless @$r;
     return $r->[0]->[0];
@@ -85,14 +85,13 @@ sub add_topic_do {
     else {
         $c->set_error('');
     }
-    my $dbh = $c->dbh;
-    $dbh->do(
+    $c->dbh_do(
         'INSERT INTO "topics" ("userfrom", "title") VALUES (?,?)',
-        undef, $uid, $titlestring
+        $uid, $titlestring
     );
-    my $r = $dbh->selectall_arrayref(
+    my $r = $c->dbh_selectall_arrayref(
         'SELECT "id" FROM "topics" WHERE "userfrom"=? ORDER BY "id" DESC LIMIT 1',
-        undef, $uid 
+        $uid 
     );
     unless ( @$r ) {
         $c->set_error('Das Thema konnte irgendwie nicht angelegt werden. Bitte versuchen Sie es erneut.');
@@ -104,9 +103,9 @@ sub add_topic_do {
 
 sub _get_title_from_topicid {
     my $c = shift;
-    my $r = $c->dbh->selectall_arrayref(
+    my $r = $c->dbh_selectall_arrayref(
         'SELECT "title", "userfrom" FROM "topics" WHERE "id"=?',
-        undef, shift() // $c->param('topicid')
+        shift() // $c->param('topicid')
     );
     unless ( @$r ) {
         $c->set_error('Konnte das gewünschte Thema nicht finden.');
@@ -130,9 +129,9 @@ sub _check_topic_edit {
     my $c = shift;
     return 1 if $c->session->{admin};
     my $topicid = shift() // $c->param('topicid');
-    my $r = $c->dbh->selectall_arrayref(
+    my $r = $c->dbh_selectall_arrayref(
         'SELECT "userfrom" FROM "topics" WHERE "id"=?',
-        undef, $topicid
+        $topicid
     );
     unless ( @$r and $r->[0]->[0] == $c->session->{userid} ) {
         $c->set_error_f('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde und Sie auch kein Administrator sind.');
@@ -163,9 +162,9 @@ sub edit_topic_do {
         );
         return $c->render(template => 'topicmoveform');
     }
-    $c->dbh->do(
+    $c->dbh_do(
         'UPDATE "topics" SET "title"=? WHERE "id"=?',
-        undef, $titlestring, $topicid
+        $titlestring, $topicid
     );
     $c->set_info_f('Die Überschrift des Themas wurde geändert.');
     $c->redirect_to('show_forum', topicid => $topicid);
@@ -176,29 +175,28 @@ sub move_topic_do {
     my $topicid = $c->param('topicid');
     my $topicidto = $c->param('topicidto');
     my $uid = $c->session->{userid};
-    my $dbh = $c->dbh;
 
     return $c->redirect_to('show_forum_topiclist') unless $c->_check_topic_edit($topicid);
 
-    $dbh->do(
+    $c->dbh_do(
         'UPDATE "posts" SET "topicid"=? WHERE "topicid"=?',
-        undef, $topicidto, $topicid
+        $topicidto, $topicid
     );
-    my $r = $c->dbh->selectall_arrayref(
+    my $r = $c->dbh_selectall_arrayref(
         'SELECT COUNT("id") FROM "posts" WHERE "topicid"=?',
-        undef, $topicid
+        $topicid
     );
     if ( $r->[0]->[0] ) {
         $c->set_error_f('Die Beiträge konnten nicht verschoben werden.');
         return $c->redirect_to('show_forum_topiclist');
     }
-    $dbh->do(
+    $c->dbh_do(
         'DELETE FROM "topics" WHERE "id"=?',
-        undef, $topicid
+        $topicid
     );
-    $dbh->do(
+    $c->dbh_do(
         'DELETE FROM "lastseenforum" WHERE "topicid"=?',
-        undef, $topicid
+        $topicid
     );
     $c->set_info_f('Die Beiträge wurden in ein anderes Thema verschoben.');
     $c->redirect_to('show_forum', topicid => $topicidto);
@@ -223,21 +221,21 @@ sub _handle_pin_topic_do {
 sub _handle_val_topic_do {
     my ( $c, $name, $val, $dotxt, $undotxt ) = @_;
     my $topicid = $c->param('topicid');
-    my $lastseen = $c->dbh->selectall_arrayref(
+    my $lastseen = $c->dbh_selectall_arrayref(
         'SELECT "lastseen"
         FROM "lastseenforum"
         WHERE "userid"=? AND "topicid"=?',
-        undef, $c->session->{userid}, $topicid
+        $c->session->{userid}, $topicid
     );
     if ( @$lastseen ) {
-        $c->dbh->do(
+        $c->dbh_do(
             qq~UPDATE "lastseenforum" SET "$name"=? WHERE "userid"=? AND "topicid"=?~,
-            undef, $val, $c->session->{userid}, $topicid );
+            $val, $c->session->{userid}, $topicid );
     }
     else {
-        $c->dbh->do(
+        $c->dbh_do(
             qq~INSERT INTO "lastseenforum" ("userid", "topicid", "$name") VALUES (?,?,?)~,
-            undef, $c->session->{userid}, $topicid, $val);
+            $c->session->{userid}, $topicid, $val);
     }
     if ( $val ) { $c->set_info_f( $dotxt   ) }
     else        { $c->set_info_f( $undotxt ) }
@@ -252,9 +250,9 @@ sub sort_order_alphabetical  {
 }
 sub _set_sort_order_cron_do {
     my ( $c, $v, $t ) = @_;
-    $c->dbh->do(
+    $c->dbh_do(
         'UPDATE "users" SET "chronsortorder"=? WHERE "id"=?'
-        , undef, $v, $c->session->{userid}
+        , $v, $c->session->{userid}
     );
     $c->session->{chronsortorder} = $v;
     $c->set_info_f($t);
@@ -270,8 +268,8 @@ sub set_topiclimit {
         return;
     }
     $c->session->{topiclimit} = $topiclimit;
-    $c->dbh->do('UPDATE "users" SET "topiclimit"=? WHERE "id"=?',
-        undef, $topiclimit, $c->session->{userid});
+    $c->dbh_do('UPDATE "users" SET "topiclimit"=? WHERE "id"=?',
+        $topiclimit, $c->session->{userid});
     $c->set_info_f("Anzahl der auf einer Seite der Liste angezeigten Überschriften auf $topiclimit geändert.");
     $c->redirect_to('show_forum_topiclist');
 }

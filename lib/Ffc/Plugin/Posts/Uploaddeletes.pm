@@ -53,7 +53,7 @@ sub _delete_upload_post_do {
         $c->set_error_f('Der angegebene Anhang konnte nicht aus dem Dateisystem gelöscht werden');
         return _redirect_to_show($c);
     }
-    $c->dbh->do('DELETE FROM "attachements" WHERE "id"=?', undef, $fileid);
+    $c->dbh_do('DELETE FROM "attachements" WHERE "id"=?', $fileid);
     $c->set_info_f('Anhang entfernt');
     _redirect_to_show($c);
 }

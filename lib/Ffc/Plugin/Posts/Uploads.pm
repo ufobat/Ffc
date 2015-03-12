@@ -28,7 +28,7 @@ sub _upload_post_do {
     {
         my $sql = q~SELECT "id" FROM "posts" WHERE "id"=?~;
         $sql   .= qq~ AND $wheres~ if $wheres;
-        my $post = $c->dbh->selectall_arrayref( $sql, undef, $postid, @wherep );
+        my $post = $c->dbh_selectall_arrayref( $sql, $postid, @wherep );
         unless ( @$post ) {
             $c->set_error_f('Zum angegebene Beitrag kann kein Anhang hochgeladen werden.');
             return _redirect_to_show($c);
@@ -37,11 +37,11 @@ sub _upload_post_do {
     my $fileid;
     my $filepathsub = sub { 
         my ($c, $filename, $filetype, $content_type) = @_;
-        $c->dbh->do('INSERT INTO "attachements" ("filename", "content_type", "isimage", "inline", "postid") VALUES (?,?,?,?,?)',
-            undef, $filename, $content_type, ($c->is_image($content_type)?1:0), ($c->is_inline($content_type)?1:0), $postid);
-        $fileid = $c->dbh->selectall_arrayref(
+        $c->dbh_do('INSERT INTO "attachements" ("filename", "content_type", "isimage", "inline", "postid") VALUES (?,?,?,?,?)',
+            $filename, $content_type, ($c->is_image($content_type)?1:0), ($c->is_inline($content_type)?1:0), $postid);
+        $fileid = $c->dbh_selectall_arrayref(
             'SELECT "id" FROM "attachements" WHERE "postid"=? ORDER BY "id" DESC LIMIT 1',
-            undef, $postid);
+            $postid);
         if ( @$fileid ) {
             $fileid = $fileid->[0]->[0];
         }
@@ -54,7 +54,7 @@ sub _upload_post_do {
     my ( $filename )
         = $c->file_upload( 'attachement', 'Dateianhang', 1, 100000000, 2, 200, $filepathsub);
     unless ( $filename ) {
-        $c->dbh->do('DELETE FROM "attachements" WHERE "id"=?', undef, $fileid) if defined $fileid;
+        $c->dbh_do('DELETE FROM "attachements" WHERE "id"=?', $fileid) if defined $fileid;
         return _redirect_to_show($c);
     }
 
@@ -76,7 +76,7 @@ sub _download_post {
             . qq~INNER JOIN "posts" p ON a."postid"=p."id"\n~
             . qq~WHERE a."id"=?~;
     $sql .= " AND $wheres" if $wheres;
-    my $filename = $c->dbh->selectall_arrayref( $sql, undef, $fileid, @wherep );
+    my $filename = $c->dbh_selectall_arrayref( $sql, $fileid, @wherep );
     unless ( @$filename ) {
         $c->set_error('Konnte die gewünschte Datei in der Datenbank nicht finden.');
         return $c->rendered(404);

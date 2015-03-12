@@ -12,8 +12,8 @@ sub set_autorefresh {
         return $c->redirect_to('options_form');
     }
     $c->session->{autorefresh} = $ar;
-    $c->dbh->do('UPDATE "users" SET "autorefresh"=? WHERE "id"=?',
-        undef, $ar, $c->session->{userid});
+    $c->dbh_do('UPDATE "users" SET "autorefresh"=? WHERE "id"=?',
+        $ar, $c->session->{userid});
     $c->set_info_f( 'Automatisches Neuladen der Seite '. (
         $ar ? 'auf '.$ar.' Minuten eingestellt' : 'deaktiviert' ) );
     $c->redirect_to('options_form');
@@ -23,9 +23,9 @@ sub no_bg_color {
     my $c = shift;
     my $s = $c->session();
     delete $s->{backgroundcolor};
-    $c->dbh()->do(
+    $c->dbh_do(
         'UPDATE users SET bgcolor=? WHERE UPPER(name)=UPPER(?)',
-        undef, '', $s->{user});
+        '', $s->{user});
     $c->set_info_f('Hintergrundfarbe zurück gesetzt');
     $c->redirect_to('options_form');
 }
@@ -39,9 +39,9 @@ sub bg_color {
     }
     else {
         my $s = $c->session();
-        $c->dbh()->do(
+        $c->dbh_do(
             'UPDATE users SET bgcolor=? WHERE UPPER(name)=UPPER(?)',
-            undef, $bgcolor, $s->{user});
+            $bgcolor, $s->{user});
         $s->{backgroundcolor} = $bgcolor;
         if ( $bgcolor ) {
             $c->set_info_f('Hintergrundfarbe angepasst');
@@ -69,9 +69,9 @@ sub set_email {
         $c->set_error_f('Email-Adresse sieht komisch aus');
         return $c->redirect_to('options_form');
     }
-    $c->dbh->do(
+    $c->dbh_do(
         'UPDATE users SET email=?, newsmail=? WHERE UPPER(name)=UPPER(?)'
-        , undef, $email, $newsmail, $c->session->{user});
+        , $email, $newsmail, $c->session->{user});
     $c->set_info_f('Email-Adresse geändert');
     $c->redirect_to('options_form');
 }
@@ -98,13 +98,13 @@ sub set_password {
     my $u = $c->session->{user};
     my $p = $c->hash_password($npw1);
 
-    $c->dbh->do(
+    $c->dbh_do(
         'UPDATE users SET password=? WHERE UPPER(name)=UPPER(?) AND password=?'
-        , undef, $p, $u, $c->hash_password($opw));
+        , $p, $u, $c->hash_password($opw));
 
-    my $i = $c->dbh->selectall_arrayref(
+    my $i = $c->dbh_selectall_arrayref(
         'SELECT COUNT(id) FROM users WHERE UPPER(name)=UPPER(?) AND password=?'
-        , undef, $u, $p)->[0]->[0];
+        , $u, $p)->[0]->[0];
 
     if ( $i ) {
         $c->set_info_f('Passwortwechsel erfolgreich');

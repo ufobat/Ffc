@@ -42,7 +42,7 @@ sub set_refresh {
     my $c = $_[0];
     my $refresh = $c->param('refresh');
     if ( $refresh ) {
-        $c->dbh->do('UPDATE "users" SET "chatrefreshsecs"=? WHERE "id"=?', undef,
+        $c->dbh_do('UPDATE "users" SET "chatrefreshsecs"=? WHERE "id"=?',
             $refresh, $c->session->{userid} );
     }
     $c->render( json => 'ok' );
@@ -50,9 +50,9 @@ sub set_refresh {
 
 sub chat_window_open {
     my $c = $_[0];
-    my @history_list = map {$_->[0]} reverse @{ $c->dbh->selectall_arrayref(
+    my @history_list = map {$_->[0]} reverse @{ $c->dbh_selectall_arrayref(
             'SELECT c."msg" FROM "chat" c WHERE c."userfromid"=? ORDER BY c."id" DESC LIMIT ?',
-            undef, $c->session->{userid}, 10) };
+            $c->session->{userid}, 10) };
     $c->stash(history_list => encode_json \@history_list);
     $c->stash(history_pointer => scalar @history_list);
     $c->render( template => 'chat' );
@@ -61,7 +61,7 @@ sub chat_window_open {
 sub leave_chat {
     my $c = $_[0];
     # vermerk in der datenbank: benutzer hat chat verlassen,
-    $c->dbh->do('UPDATE "users" SET "inchat"=0 WHERE "id"=?', undef, $c->session->{userid} );
+    $c->dbh_do('UPDATE "users" SET "inchat"=0 WHERE "id"=?', $c->session->{userid} );
     # kann bei document.on("close"... im javascript verwendet werden
     $c->render( text => 'ok' );
 }
@@ -71,15 +71,14 @@ sub receive_focused   { _receive($_[0], 1, 0) }
 sub receive_unfocused { _receive($_[0], 0, 0) }
 sub _receive {
     my ( $c, $active, $started ) = @_;
-    my $dbh = $c->dbh;
     my $msg = '';
     $msg = $c->req->json if $c->req->method eq 'POST';
     if ( $msg ) { # neue nachricht erhalten
         $msg =~ s/\A\s+//xmso;
         $msg =~ s/\s+\z//xmso;
         if ( $msg ) {
-            $dbh->do('INSERT INTO "chat" ("userfromid", "msg") VALUES (?,?)',
-                undef, $c->session->{userid}, $msg);
+            $c->dbh_do('INSERT INTO "chat" ("userfromid", "msg") VALUES (?,?)',
+                $c->session->{userid}, $msg);
         }
     } # ende neue nachricht erhalten
 
@@ -103,7 +102,7 @@ ORDER BY c."id" DESC
 EOSQL
     }
 
-    my $msgs = $dbh->selectall_arrayref( $sql, undef,
+    my $msgs = $c->dbh_selectall_arrayref( $sql,
         ( $started ? 50 : $c->session->{userid} )
     );
     for my $m ( @$msgs ) {
@@ -117,7 +116,7 @@ EOSQL
     $sql .= qq~    "inchat"=1,\n    "lastseenchat"=CURRENT_TIMESTAMP~;
     $sql .= qq~,\n    "lastseenchatactive"=CURRENT_TIMESTAMP~ if $active;
     $sql .= qq~\nWHERE "id"=?~;
-    $dbh->do( $sql, undef, ( @$msgs ? $msgs->[0]->[0] : () ), $c->session->{userid} );
+    $c->dbh_do( $sql, ( @$msgs ? $msgs->[0]->[0] : () ), $c->session->{userid} );
 
     # benutzerliste ermitteln, die im chat sind
     $sql = << 'EOSQL';
@@ -133,7 +132,7 @@ WHERE
 ORDER BY UPPER("name"), "id"
 EOSQL
 
-    my $users = $dbh->selectall_arrayref( $sql );
+    my $users = $c->dbh_selectall_arrayref( $sql );
     for my $u ( @$users ) {
         $u->[1] = $c->format_timestamp( $u->[1] || 0 );
         $u->[0] = xml_escape($u->[0]);

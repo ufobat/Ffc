@@ -50,7 +50,7 @@ sub test_config {
       ->json_hasnt('/cryptsalt');
 
     my $config = { map {@$_} @{ 
-        $Config->dbh()->selectall_arrayref(
+        $Config->dbh->selectall_arrayref(
             'SELECT "key", "value" FROM "config"'
         )
     } };

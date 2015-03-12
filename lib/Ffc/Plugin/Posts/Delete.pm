@@ -26,7 +26,7 @@ sub _delete_post_do {
     {
         my $sql = q~SELECT "id" FROM "posts" WHERE "id"=?~;
         $sql   .= qq~ AND $wheres~ if $wheres;
-        my $post = $c->dbh->selectall_arrayref( $sql, undef, $postid, @wherep );
+        my $post = $c->dbh_selectall_arrayref( $sql, $postid, @wherep );
         unless ( @$post ) {
             $c->set_error_f('Konnte keinen passenden Beitrag zum Löschen finden');
             return _redirect_to_show($c);
@@ -35,7 +35,7 @@ sub _delete_post_do {
     my $atts = 0;
     {
         my $sql = q~SELECT "id" FROM "attachements" WHERE "postid"=?~;
-        my $r = $c->dbh->selectall_arrayref( $sql, undef, $postid );
+        my $r = $c->dbh_selectall_arrayref( $sql, $postid );
         $atts = @$r;
         my $delerr = 0;
         for my $r ( @$r ) {
@@ -47,12 +47,12 @@ sub _delete_post_do {
     }
     if ( $atts ) {
         my $sql = q~DELETE FROM "attachements" WHERE "postid"=?~;
-        $c->dbh->do( $sql, undef, $postid );
+        $c->dbh_do( $sql, $postid );
     }
     {
         my $sql = q~DELETE FROM "posts" WHERE "id"=?~;
         $sql   .= qq~ AND $wheres~ if $wheres;
-        $c->dbh->do( $sql, undef, $postid, @wherep );
+        $c->dbh_do( $sql, $postid, @wherep );
     }
     $c->set_info_f('Der Beitrag wurde komplett entfernt');
     _redirect_to_show($c);

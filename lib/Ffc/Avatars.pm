@@ -23,9 +23,9 @@ sub avatar_show {
     my $c = shift;
     my $u = $c->param('userid');
     my ( $filename, $filetype );
-    my $file = $c->dbh->selectall_arrayref(
+    my $file = $c->dbh_selectall_arrayref(
         'SELECT avatar, avatartype FROM users WHERE id=?'
-        , undef, $u);
+        , $u);
     if ( @$file and ($filename = $file->[0]->[0]) ) {
         $filetype = $file->[0]->[1] || ( $filename =~ m/\.(png|jpe?g|bmp|gif)\z/xmiso ? lc($1) : '*' );
         $file = catfile @{$c->datapath}, 'avatars', $filename;
@@ -65,15 +65,15 @@ sub avatar_upload {
     return $c->redirect_to('options_form')
         unless $filename;
 
-    my $old = $c->dbh->selectall_arrayref(
+    my $old = $c->dbh_selectall_arrayref(
         'SELECT avatar FROM users WHERE UPPER(name)=UPPER(?)'
-        , undef, $u);
+        , $u);
     if ( $old and 'ARRAY' eq ref($old) and $old->[0]->[0] and $old->[0]->[0] ne $filename ) {
         $old = catfile(@{$c->datapath}, 'avatars', $old->[0]->[0] );
         unlink $old if -e $old;
     }
-    $c->dbh->do('UPDATE users SET avatar=?, avatartype=? WHERE UPPER(name)=UPPER(?)'
-        , undef, $filename, $filetype, $u);
+    $c->dbh_do('UPDATE users SET avatar=?, avatartype=? WHERE UPPER(name)=UPPER(?)'
+        , $filename, $filetype, $u);
     $c->set_info_f('Avatarbild aktualisiert.');
     $c->redirect_to('options_form');
 }

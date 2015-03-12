@@ -92,8 +92,8 @@ sub _show_posts {
     }
     $c->stash(queryurl => $queryurl) if $queryurl;
     my $sql = $c->get_show_sql($wheres, undef, $postid);
-    my $posts = $c->dbh->selectall_arrayref(
-        $sql, undef, @wherep, ( $query ? "\%$query\%" : () ), ($postid || ()),  _pagination($c)
+    my $posts = $c->dbh_selectall_arrayref(
+        $sql, @wherep, ( $query ? "\%$query\%" : () ), ($postid || ()),  _pagination($c)
     );
     $c->stash(posts => $posts);
 
@@ -119,8 +119,8 @@ sub _set_post_postlimit {
         return _redirect_to_show($c);
     }
     $c->session->{postlimit} = $postlimit;
-    $c->dbh->do('UPDATE "users" SET "postlimit"=? WHERE "id"=?',
-        undef, $postlimit, $c->session->{userid});
+    $c->dbh_do('UPDATE "users" SET "postlimit"=? WHERE "id"=?',
+        $postlimit, $c->session->{userid});
     $c->set_info_f("Anzahl der auf einer Seite der Liste angezeigten Beiträge auf $postlimit geändert.");
     return _redirect_to_show($c);
 }

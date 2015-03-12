@@ -21,21 +21,21 @@ sub options_form {
     my $c = shift;
     $c->stash(fontsizes => \%Ffc::Plugin::Config::FontSizeMap);
     $c->counting;
-    my $r = $c->dbh->selectall_arrayref(
+    my $r = $c->dbh_selectall_arrayref(
         'SELECT email, admin, newsmail FROM users WHERE UPPER(name)=UPPER(?)'
-        , undef, $c->session->{user});
+        , $c->session->{user});
     my ( $email, $admin, $newsmail ) = ( ( $r and ref($r) eq 'ARRAY' ) ? (@{$r->[0]}) : ('', 0) );
     $c->stash(
         email    => $email,
         newsmail => $newsmail,
     );
     if ( $admin ) {
-        my $userlist = $c->dbh->selectall_arrayref(
+        my $userlist = $c->dbh_selectall_arrayref(
                 'SELECT u.id, u.name, u.active, u.admin, u.email FROM users u WHERE UPPER(u.name) != UPPER(?) ORDER BY UPPER(u.name) ASC'
-                , undef, $c->session->{user});
-        my $themes = $c->dbh->selectall_arrayref(
+                , $c->session->{user});
+        my $themes = $c->dbh_selectall_arrayref(
                 'SELECT "id", SUBSTR("title", 0, ?) FROM "topics" ORDER BY UPPER("title")'
-                 , undef, $c->configdata->{urlshorten});
+                 , $c->configdata->{urlshorten});
         $c->stash(
             useremails    => join( '; ', map { $_->[4] || () } @$userlist ),
             userlist      => $userlist,

@@ -97,7 +97,7 @@ sub search { $_[0]->search_posts(); }
 
 sub show {
     my $c = shift;
-    my ( $dbh, $uid, $topicid ) = ( $c->dbh, $c->session->{userid}, $c->param('topicid') );
+    my ( $uid, $topicid ) = ( $c->session->{userid}, $c->param('topicid') );
     my ( $heading, $userfrom ) = $c->_get_title_from_topicid;
     return unless $heading;
     $c->stash(
@@ -109,27 +109,27 @@ sub show {
     );
     $c->stash( topicediturl => $c->url_for('edit_forum_topic_form', topicid => $topicid) )
         if $uid eq $userfrom or $c->session->{admin};
-    my $lastseen = $c->dbh->selectall_arrayref(
+    my $lastseen = $c->dbh_selectall_arrayref(
         'SELECT "lastseen"
         FROM "lastseenforum"
         WHERE "userid"=? AND "topicid"=?',
-        undef, $uid, $topicid
+        $uid, $topicid
     );
-    my $newlastseen = $c->dbh->selectall_arrayref(
+    my $newlastseen = $c->dbh_selectall_arrayref(
         'SELECT "id" FROM "posts" WHERE "userto" IS NULL AND "topicid"=? ORDER BY "id" DESC LIMIT 1',
-        undef, $topicid);
+        $topicid);
     $newlastseen = @$newlastseen ? $newlastseen->[0]->[0] : -1;
     if ( @$lastseen ) {
         $c->stash( lastseen => $lastseen->[0]->[0] );
-        $dbh->do(
+        $c->dbh_do(
             'UPDATE "lastseenforum" SET "lastseen"=? WHERE "userid"=? AND "topicid"=?',
-            undef, $newlastseen, $uid, $topicid );
+            $newlastseen, $uid, $topicid );
     }
     else {
         $c->stash( lastseen => -1 );
-        $dbh->do(
+        $c->dbh_do(
             'INSERT INTO "lastseenforum" ("userid", "topicid", "lastseen") VALUES (?,?,?)',
-            undef, $uid, $topicid, $newlastseen );
+            $uid, $topicid, $newlastseen );
     }
     $c->counting;
     $c->show_posts();

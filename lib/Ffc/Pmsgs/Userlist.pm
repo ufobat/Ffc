@@ -11,8 +11,8 @@ sub show_userlist {
 
 sub _get_username {
     my $c = shift;
-    my $name = $c->dbh->selectall_arrayref(
-        'SELECT "name" FROM "users" WHERE "id"=?', undef, $c->param('usertoid'));
+    my $name = $c->dbh_selectall_arrayref(
+        'SELECT "name" FROM "users" WHERE "id"=?', $c->param('usertoid'));
     unless ( @$name ) {
         $c->set_error(
             'Benutzername für Benutzerid "'.($c->param('usertoid') // '<NULL>').'" konnte nicht ermittelt werden');

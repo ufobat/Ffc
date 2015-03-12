@@ -50,8 +50,8 @@ sub boardsettingsadmin {
         return; # theoretisch nicht möglich laut routen
     }
     if ( ( $rechk and $optvalue =~ $re ) or ( not $rechk and ( $optvalue eq '1' or not $optvalue ) ) ) {
-        $c->dbh->do('UPDATE "config" SET "value"=? WHERE "key"=?',
-            undef, $optvalue, $optkey);
+        $c->dbh_do('UPDATE "config" SET "value"=? WHERE "key"=?',
+            $optvalue, $optkey);
         $c->configdata->{$optkey} = $optvalue;
         $c->set_info_f("$tit geändert");
     }
@@ -67,8 +67,8 @@ sub set_starttopic {
     my $tid = $c->param('topicid');
     $tid = 0 unless $tid;
     if ( $tid =~ $Ffc::Digqr ) {
-        $c->dbh->do(q~UPDATE "config" SET "value"=? WHERE "key"='starttopic'~,
-            undef, $tid);
+        $c->dbh_do(q~UPDATE "config" SET "value"=? WHERE "key"='starttopic'~,
+            $tid);
         $c->configdata->{starttopic} = $tid;
         $c->set_info_f("Startseitenthema geändert");
     }
