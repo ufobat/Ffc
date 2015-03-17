@@ -46,13 +46,13 @@ sub register {
     $app->helper(datapath   => sub { $datapath  });
     $app->helper(configdata => sub { $config    });
 
-    $app->helper(dbh                    => sub { $self->dbh               });
-    $app->helper(dbh_selectall_arrayref => sub { &_dbh_selectall_arrayref });
-    $app->helper(dbh_do                 => sub { &_dbh_do                 });
+    $app->helper(dbh                    => sub { dbh($self) }        );
+    $app->helper(dbh_selectall_arrayref => \&_dbh_selectall_arrayref );
+    $app->helper(dbh_do                 => \&_dbh_do                 );
 
     $app->defaults({
-        page     => 1,
-        lastseen => -1,
+        page       => 1,
+        lastseen   => -1,
         map( {; $_ => undef }
             qw(postid topicid) ),
         map( {; $_ => [] }
@@ -66,9 +66,9 @@ sub register {
 
     for my $w ( qw(info error warning ) ) {
         $app->helper( "set_$w" => 
-            sub { shift()->stash($w => join ' ', @_) } );
+            sub { $_[0]->stash($w => join ' ', @_[1 .. $#_]) } );
         $app->helper( "set_${w}_f" => 
-            sub { shift()->flash($w => join ' ', @_) } );
+            sub { $_[0]->flash($w => join ' ', @_[1 .. $#_]) } );
     }
 
     $app->helper( hash_password  => 

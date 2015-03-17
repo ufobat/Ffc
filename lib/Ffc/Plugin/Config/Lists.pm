@@ -3,41 +3,38 @@ use 5.010;
 use strict; use warnings; use utf8;
 
 sub _newpostcount {
-    my $uid = $_[0]->session->{userid};
     return $_[0]->dbh_selectall_arrayref(
         'SELECT COUNT(p."id")
         FROM "posts" p
         INNER JOIN "topics" t on t."id"=p."topicid"
         LEFT OUTER JOIN "lastseenforum" l ON l."topicid"=p."topicid" AND l."userid"=?
         WHERE p."userto" IS NULL AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",0)',
-        $uid
+        $_[0]->session->{userid}
     )->[0]->[0];
 }
 
 sub _newmsgscount {
-    my $uid = $_[0]->session->{userid};
     return $_[0]->dbh_selectall_arrayref(
         'SELECT COUNT(p."id")
         FROM "posts" p
         INNER JOIN "users" u ON u."id"<>? AND u."id"=p."userfrom" AND u."active"=1
         LEFT OUTER JOIN "lastseenmsgs" l ON l."userfromid"=u."id" AND l."userid"=?
         WHERE p."userto"=? AND p."id">COALESCE(l."lastseen",0)',
-        $uid, $uid, $uid
+        ( $_[0]->session->{userid} ) x 3
     )->[0]->[0];
 }
 
 sub _counting { 
-    my $c = $_[0];
-    $c->stash(
-        newpostcount => _newpostcount($c),
-        newmsgscount => _newmsgscount($c),
-        notecount => $c->dbh_selectall_arrayref(
+    $_[0]->stash(
+        newpostcount => _newpostcount($_[0]),
+        newmsgscount => _newmsgscount($_[0]),
+        notecount => $_[0]->dbh_selectall_arrayref(
                 'SELECT COUNT("id") FROM "posts" WHERE "userfrom"=? AND "userfrom"="userto"',
-                $c->session->{userid}
+                $_[0]->session->{userid}
             )->[0]->[0],
     );
-    $c->generate_topiclist();
-    $c->generate_userlist();
+    $_[0]->generate_topiclist();
+    $_[0]->generate_userlist();
 }
 
 sub _generate_topiclist {
@@ -89,9 +86,7 @@ EOSQL
 }
 
 sub _generate_userlist {
-    my $c = shift;
-    my $uid = $c->session->{userid};
-    $c->stash( users => $c->dbh_selectall_arrayref( << 'EOSQL'
+    $_[0]->stash( users => $_[0]->dbh_selectall_arrayref( << 'EOSQL'
 SELECT u."id", u."name",
     COALESCE(COUNT(p."id"),0), l."lastid"
 FROM "users" u
@@ -102,7 +97,7 @@ WHERE u."active"=1 AND u."id"<>?
 GROUP BY u."id", u."name", l."lastid"
 ORDER BY l."lastid" DESC, UPPER(u."name") ASC
 EOSQL
-        , $uid, $uid, $uid
+        , ( $_[0]->session->{userid} ) x 3
     ) );
 }
 
