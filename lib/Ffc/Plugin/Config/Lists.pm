@@ -35,6 +35,7 @@ sub _counting {
     );
     $_[0]->generate_topiclist();
     $_[0]->generate_userlist();
+    $_[0]->res->headers( 'Cache-Control' => 'public, max-age=0, no-cache' );
 }
 
 sub _generate_topiclist {
