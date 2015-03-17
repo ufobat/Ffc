@@ -47,8 +47,10 @@
 </div>
 <div class="postbox helptext">
     <h2><a name="formatting" href="#content">^</a> Textformatierungen</h2>
-    <p>Die folgenden Formatierungsmöglichkeiten für Forenbeiträge, private Nachrichten oder Notizen bestehen. Anstatt von Leerzeichen zwischen Wörtern müssen die entsprechenden Formatierungszeichen verwendet werden. Chatnachrichten können nicht formatiert werden.</p> 
+    <p>Die folgenden Formatierungsmöglichkeiten für Forenbeiträge, private Nachrichten oder Notizen können von Hand in den Text eingefügt werden.</p>
+    <p>Chatnachrichten können nicht formatiert werden.</p> 
     <p>Ist Javascript aktiviert, so erscheinen über den Eingabefeldern für Beiträge kleine graue Buttons, über die ebenfalls die folgenden Änderungen angewendet werden können. Die Buttons wirken in einer Auswahl von Text.</p>
+    <p>Anstatt von Leerzeichen zwischen Wörtern müssen im folgenden die entsprechenden Formatierungszeichen verwendet werden.</p>
     <ul>
         <li><code>_un_ter_</code>: <span class="underline">Unterstreichungen</span></li>
         <li><code>+fe+tt+</code>: <span class="bold">Fettschrift</span></li>
@@ -56,6 +58,9 @@
         <li><code>~kur~siv~</code>: <span class="italic">Schrägschrift</span></li>
         <li><code>!auf!geregt!</code>: <span class="alert">Spezielle Auszeichnung für wirklich wichtige Dinge</span></li>
         <li><code>*emo*tional*</code>: <span class="emotion">Spezielle Auszeichnung für *emotionale* Anmerkungen</span></li>
+    </ul>
+    <p>Im folgenden müssen die Wortgruppen oder Sätze mit den entsprechenden Markierungszeichen umklammert werden.</p>
+    <ul>
         <li><code>"Ein Zitat"</code>: „<span class="quote">Eine kleines Zitat</span>“</li>
         <li><code>`code part`</code>: <span class="code">Quelltext-Bestandteil</span></li>
     </ul>
