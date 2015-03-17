@@ -12,7 +12,6 @@
         <li><a href="#attachements">Dateianhänge</a></li>
         <li><a href="#editing">Beiträge bearbeiten und löschen</a></li>
         <li><a href="#smileys">Smileys</a></li>
-        <li><a href="#quotes">Zitate</a></li>
         <li><a href="#chat">Chat</a></li>
     </ul>
 </div>
@@ -57,6 +56,8 @@
         <li><code>~kur~siv~</code>: <span class="italic">Schrägschrift</span></li>
         <li><code>!auf!geregt!</code>: <span class="alert">Spezielle Auszeichnung für wirklich wichtige Dinge</span></li>
         <li><code>*emo*tional*</code>: <span class="emotion">Spezielle Auszeichnung für *emotionale* Anmerkungen</span></li>
+        <li><code>"Ein Zitat"</code>: „<span class="quote">Eine kleines Zitat</span>“</li>
+        <li><code>`code part`</code>: <span class="code">Quelltext-Bestandteil</span></li>
     </ul>
 </div>
 <div class="postbox helptext">
@@ -69,7 +70,6 @@
         <li><code>#</code> am Zeilenanfang: Erzeugt eine Aufzählungsliste</li>
         <li><code> </code> (Leerzeichen) am Zeilenanfang: Erzeugt einen vorformattierten Text (für Programmcode zum Beispiel)</li>
         <li><code>|</code> am Zeilenanfang: Erzeugt ein mehrzeiliges Zitat</li>
-        <li><code>`</code> um Wörter innerhalb einer Zeile: Erzeugt einen (Programm-)Quelltext-Teil</li>
     </ul>
 </div>
 <div class="postbox helptext">
@@ -121,10 +121,6 @@
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/angry.png" %>" /> (Wütend sein): <code>&gt;:( &gt;:-( &gt;=(</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/evilgrin.png" %>" /> (Böse Lachen): <code>&gt;:D &gt;:-D &gt;=D</code></li>
     </ul>
-</div>
-<div class="postbox helptext">
-    <h2><a name="quotes" href="#content">^</a> Zitate</h2>
-    <p><code>"Zitate"</code> werden einfach in doppelte „<span class="quote">Anführungszeichen</span>“ eingeschlossen.</p>
 </div>
 <div class="postbox helptext">
     <h2><a name="chat" href="#content">^</a> Chat</h2>
