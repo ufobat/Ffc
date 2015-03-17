@@ -55,6 +55,7 @@ sub chat_window_open {
             $c->session->{userid}, 10) };
     $c->stash(history_list => encode_json \@history_list);
     $c->stash(history_pointer => scalar @history_list);
+    $c->res->headers( 'Cache-Control' => 'public, max-age=0, no-cache' );
     $c->render( template => 'chat' );
 }
 
@@ -148,6 +149,7 @@ EOSQL
 #        # countings: 
 #    "newpostcount", "newmsgscount"
 # ]
+    $c->res->headers( 'Cache-Control' => 'public, max-age=0, no-cache' );
     $c->render( json => [$msgs, $users, $c->newpostcount, $c->newmsgscount] );
 }
 
