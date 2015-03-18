@@ -4,7 +4,7 @@ use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Plugin';
 
 use DBI;
-use File::Spec::Functions qw(splitdir catdir);
+use File::Spec::Functions qw(splitdir catdir catfile);
 use Digest::SHA 'sha512_base64';
 use Ffc::Plugin::Config::Lists;
 

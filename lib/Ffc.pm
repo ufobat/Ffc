@@ -3,7 +3,7 @@ use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious';
 use File::Spec::Functions qw(catdir);
 
-use Ffc::Favicon;
+use Ffc::Customstyle;
 use Ffc::Options;
 use Ffc::Auth;
 use Ffc::Avatars;
@@ -29,7 +29,7 @@ sub startup {
 
 sub _install_routes {
     my $r = $_[0]->routes;
-    Ffc::Favicon::install_routes($r);
+    Ffc::Customstyle::install_routes($r);
 
     my $l = Ffc::Auth::install_routes($r);
     Ffc::Avatars::install_routes($l);

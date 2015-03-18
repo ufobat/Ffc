@@ -1,4 +1,4 @@
-package Ffc::Favicon;
+package Ffc::Customstyle;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 use File::Spec::Functions qw(catfile);
@@ -7,20 +7,23 @@ use Encode qw( encode decode_utf8 );
 
 sub install_routes {
     # Obacht! Alle Routen hier drin funktionieren ohne Anmeldung, also keinen Scheiß hier bauen!
-    $_[0]->route('/favicon/show')
-      ->via('get')
-      ->to('favicon#favicon_show')
-      ->name('favicon_show');
+    for ( qw(favicon customcss) ) {
+        $_[0]->route("/$_/show")
+          ->via('get')
+          ->to("customstyle#${_}_show")
+          ->name("${_}_show")
+    }
 }
 
 sub favicon_show {
     my $c = shift;
-    my $filetype = $c->dbh_selectall_arrayref(
-        'SELECT "value" FROM "config" WHERE "key"=? or "key"=? ORDER BY "key" DESC',
-        'favicontype', 'faviconcontenttype');
-    my $contenttype = $filetype->[1]->[0];
-    $filetype = $filetype->[0]->[0];
-    my $file = catfile @{$c->datapath}, 'favicon';
+    my $config = $c->configdata;
+    my $contenttype = $config->{faviconcontenttype};
+    my $filetype = $config->{favicontype};
+    my $file = $config->{favicon};
+    unless ( $file ) {
+        return $c->render_static('/theme/img/favicon.png');
+    }
     $file = Mojo::Asset::File->new(path => $file);
     my $headers = Mojo::Headers->new();
     $headers->add( 'Content-Type', $contenttype );
@@ -46,9 +49,15 @@ sub favicon_upload {
         );
     return $c->redirect_to('options_form')
         unless $filename;
+    my $favicon = catfile @{$c->datapath}, 'favicon';
 
     $c->dbh_do('UPDATE config SET value=? WHERE key=?', $filetype, 'favicontype');
     $c->dbh_do('UPDATE config SET value=? WHERE key=?', $contenttype, 'faviconcontenttype');
+    $c->dbh_do('UPDATE config SET value=? WHERE key=?', $favicon, 'favicon');
+    my $config = $c->configdata;
+    $config->{favicontype} = $filetype;
+    $config->{faviconcontenttype} = $contenttype;
+    $config->{favicon} = $favicon;
     $c->set_info_f('Favoriten-Icon aktualisiert.');
     $c->redirect_to('options_form');
 }

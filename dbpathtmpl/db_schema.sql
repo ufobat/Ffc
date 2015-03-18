@@ -100,6 +100,8 @@ INSERT INTO "config" ("key", "value")
 INSERT INTO "config" ("key", "value") 
   VALUES ('backgroundcolor','');
 INSERT INTO "config" ("key", "value") 
+  VALUES ('favicon','');
+INSERT INTO "config" ("key", "value") 
   VALUES ('favicontype','png');
 INSERT INTO "config" ("key", "value") 
   VALUES ('faviconcontenttype','image/png');
