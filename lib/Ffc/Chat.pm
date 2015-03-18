@@ -53,6 +53,7 @@ sub chat_window_open {
     my @history_list = map {$_->[0]} reverse @{ $c->dbh_selectall_arrayref(
             'SELECT c."msg" FROM "chat" c WHERE c."userfromid"=? ORDER BY c."id" DESC LIMIT ?',
             $c->session->{userid}, 10) };
+    $c->stash(title_array => encode_json $c->configdata->{title});
     $c->stash(history_list => encode_json \@history_list);
     $c->stash(history_pointer => scalar @history_list);
     $c->res->headers( 'Cache-Control' => 'public, max-age=0, no-cache' );

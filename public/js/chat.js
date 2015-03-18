@@ -33,7 +33,7 @@ ffcdata.chat.init = function() {
             ffcdata.chat.newchatcountsum = 0;
         else 
             ffcdata.chat.newchatcountsum = ffcdata.chat.newchatcountsum + newchatcount;
-        var str = tp[0]+ffcdata.chat.newchatcountsum+tp[1]+(newpostcount+newmsgscount)+tp[2];
+        var str = tp[0]+ffcdata.chat.newchatcountsum+tp[1]+(newpostcount+newmsgscount)+tp[2]+tp[3];
         document.getElementsByTagName("title")[0].firstChild.data = str;
         // console.log('title updated');
     };
