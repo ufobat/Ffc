@@ -50,7 +50,7 @@ sub _generate_topiclist {
     }
     my $session = $c->session;
     my $topiclimit = $session->{topiclimit};
-    my $query = uc $session->{topicquery};
+    my $query = uc( $session->{topicquery} // '');
     my $tlist = $c->dbh_selectall_arrayref(<< 'EOSQL'
         SELECT t."id", t."userfrom", t."title",
             COUNT(p."id"), t."lastid",
