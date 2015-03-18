@@ -40,7 +40,6 @@ sub options_form {
             useremails    => join( '; ', map { $_->[4] || () } @$userlist ),
             userlist      => $userlist,
             configoptions => \@Ffc::Options::Settings,
-            configdata    => $c->configdata,
             themes        => $themes,
         );
     }
@@ -49,7 +48,6 @@ sub options_form {
             useremails    => '',
             userlist      => [],
             configoptions => [],
-            configdata    => {},
             themes        => [],
         );
     }

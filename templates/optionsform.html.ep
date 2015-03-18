@@ -151,7 +151,7 @@
         <select name="topicid">
             <option value="">Themenliste (Standard)</option>
 % for my $th ( @$themes ) {
-            <option value="<%= $th->[0] %>"<%== configdata()->{starttopic} == $th->[0] ? ' selected="selected"' : '' %>><%= $th->[1] %></option>
+            <option value="<%= $th->[0] %>"<%== $configdata->{starttopic} == $th->[0] ? ' selected="selected"' : '' %>><%= $th->[1] %></option>
 % }
         </select>
         <button type="submit">Speichern</button>

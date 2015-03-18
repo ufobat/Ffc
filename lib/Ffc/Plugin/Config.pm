@@ -57,6 +57,7 @@ sub register {
 
     $app->defaults({
     #    title      => $config->{title},
+        configdata => $config,
         page       => 1,
         lastseen   => -1,
         map( {; $_ => undef }

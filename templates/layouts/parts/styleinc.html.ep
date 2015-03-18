@@ -1,6 +1,6 @@
 % if ( session->{backgroundcolor} ) {
     <style type="text/css">body { background-color: <%= session->{backgroundcolor} %> }</style>
 % }
-% if ( configdata()->{customcss} ) {
-    <%= stylesheet configdata()->{customcss} %>
+% if ( $configdata->{customcss} ) {
+    <%= stylesheet $configdata->{customcss} %>
 % }

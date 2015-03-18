@@ -1,6 +1,6 @@
 % layout 'chat';
    <table>
-    <tr><td colspan="2"><h1 class="titlebanner"><%= $title %> - Chat</h1></td></tr>
+    <tr><td colspan="2"><h1 class="titlebanner"><%= $configdata->{title} %> - Chat</h1></td></tr>
     <tr>
      <td><div id="msglog"></div></td>
      <td><div id="userlist"></div></td>
