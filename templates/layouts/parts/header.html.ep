@@ -2,13 +2,13 @@
 <html>
   <head>
 % if ( $controller eq 'auth' ) {
-    <title><%= $title %></title>
+    <title><%= configdata()->{title} %></title>
     <link rel="icon" type="image/png" href="<%= url_for '/theme/img/favicon.png' %>">
 % } else {
 %   if ( @$users ) {
-    <title>(<%= $newpostcount + $newmsgscount %>) <%= $title %></title>
+    <title>(<%= $newpostcount + $newmsgscount %>) <%= configdata()->{title} %></title>
 %   } else {
-    <title><%= $title %></title>
+    <title><%= configdata()->{title} %></title>
 %   }
     <link rel="icon" type="<%= configdata()->{faviconcontenttype} %>" href="<%= url_for 'favicon_show' %>">
 % }

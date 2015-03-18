@@ -56,7 +56,7 @@ sub register {
     }
 
     $app->defaults({
-        title      => $config->{title},
+    #    title      => $config->{title},
         page       => 1,
         lastseen   => -1,
         map( {; $_ => undef }
@@ -98,7 +98,7 @@ sub _datapath {
 
 sub _config {
     return { map { @$_ } 
-        @{ $_[0]->{dbh}->selectall_arrayref(
+        @{ $_[0]->dbh_selectall_arrayref(
             'SELECT "key", "value" FROM "config"') } };
 }
 
