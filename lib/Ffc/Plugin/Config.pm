@@ -36,11 +36,10 @@ sub register {
     $app->sessions->default_expiration(
         $config->{sessiontimeout} || $Defaults{sessiontimeout});
 
-    unless ( $config->{urlshorten} and $config->{urlshorten} =~ m/\A\d+\z/xmso ) {
-        $config->{urlshorten} = $Defaults{urlshorten};
-    }
-    unless ( $config->{starttopic} and $config->{starttopic} =~ m/\A\d+\z/xmso ) {
-        $config->{starttopic} = $Defaults{starttopic};
+    for ( qw(urlshorten starttopic) ) {
+        unless ( $config->{$_} and $config->{$_} =~ m/\A\d+\z/xmso ) {
+            $config->{$_} = $Defaults{$_};
+        }
     }
 
     $app->helper(datapath   => sub { $datapath  });
@@ -56,7 +55,6 @@ sub register {
     }
 
     $app->defaults({
-    #    title      => $config->{title},
         configdata => $config,
         page       => 1,
         lastseen   => -1,
