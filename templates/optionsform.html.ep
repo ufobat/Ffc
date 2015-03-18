@@ -144,16 +144,6 @@
     </form>
 </div>
 <div class="suboption boardsetting_form">
-    <a name="customcssuploadform"></a>
-    <h2>Upload eines eigenen Stylesheets</h2>
-    <p>(Hier kann eine eigene CSS-Stylesheet-Datei hochgeladen werden, welche bestehende CSS-Eigenschaften überschreibt. Das originale Icon findest du <a href="<%= url_for '/theme/img/favicon.png' %>" title="Standard-Favoriten-Icon">hier</a>.)</p>
-    <p><a href="<%= url_for 'favicon_show' %>"><img src="<%= url_for 'favicon_show' %>" alt="Derzeitiges Favoriten-Icon" /></a> (derzeitiges Favoriten-Icon)</p>
-    <form action="<%= url_for 'favicon_upload' %>#faviconuploadform" enctype="multipart/form-data" method="POST">
-        <input name="faviconfile" type="file" accept="image/*" />
-        <button type="submit">Favoriten-Icon hochladen</button>
-    </form>
-</div>
-<div class="suboption boardsetting_form">
     <a name="adminstartuppage"></a>
     <h2>Optionales Thema für die Startseite festlegen:</h2>
     <p>(Hier kann wahlweise ein Thema eingestellt werden, welches auf der Startseite anstatt der Liste aller Themen angezeigt wird)</p>
