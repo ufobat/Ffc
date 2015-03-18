@@ -1,12 +1,12 @@
 % layout 'board';
 <div class="postbox postboxform">
-<h1><%= $heading %></h1>
-<form action="<%== $dourl %>" accept-charset="UTF-8" enctype="multipart/form-data" method="POST">
-    <p>Wählen sie hier eine Datei aus, um sie an den unten angezeigten Beitrag durch Hochladen anzuhängen.</p>
-    <%= file_field attachement => (accept => '*') %>
-    %= submit_button 'Hochladen', class => 'linkalike send'
-</form>
-<a href="<%== $returl %>" title="Den Vorgang abbrechen">Abbrechen</a>
+    <h1><%= $heading %></h1>
+    <form action="<%== $dourl %>" accept-charset="UTF-8" enctype="multipart/form-data" method="POST">
+        <p>Wählen sie hier eine Datei aus, um sie an den unten angezeigten Beitrag durch Hochladen anzuhängen.</p>
+        <%= file_field attachement => (accept => '*') %>
+        %= submit_button 'Hochladen', class => 'linkalike send'
+    </form>
+    <a href="<%== $returl %>" title="Den Vorgang abbrechen">Abbrechen</a>
 </div>
 %= include 'parts/postbox'
 

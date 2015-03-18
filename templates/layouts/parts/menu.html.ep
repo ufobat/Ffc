@@ -22,15 +22,15 @@
     </div>
 % }
     <div class="menuentry">
-<form <%== $queryurl ? '' : 'style="visibility: hidden" ' %>action="<%== $queryurl %>" accept-charset="UTF-8" method="POST">
+        <form <%== $queryurl ? '' : 'style="visibility: hidden" ' %>action="<%== $queryurl %>" accept-charset="UTF-8" method="POST">
 % if ( $query ) {
-    <a href="<%= url_for "/$controller" %>" title="Suchanfrage zurück setzen">x</a>
+            <a href="<%= url_for "/$controller" %>" title="Suchanfrage zurück setzen">x</a>
 % } else {
-    <span style="visibility: hidden">X</span>
+            <span style="visibility: hidden">X</span>
 % }
-%= text_field query => $query, $query ? (class => 'activesearch') : ()
-    <button type="submit">»Suche</button>
-</form>
+            %= text_field query => $query, $query ? (class => 'activesearch') : ()
+            <button type="submit">»Suche</button>
+        </form>
     </div>
     <div class="menuentry optionslink">
         <a href="<%= url_for 'options_form' %>"><span class="linktext linkoptions<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Einstellungen</span></a>

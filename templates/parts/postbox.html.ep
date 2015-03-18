@@ -23,8 +23,7 @@
 % } elsif ( $controller eq 'forum' and $action ne 'upload_form' and $action ne 'delete_check' and $action ne 'search' ) {
             <a href="<%= url_for 'show_pmsgs', usertoid => $post->[1] %>">Privatnachricht</a>,
 % }
-            <a href="<%= url_for "display_$controller", postid => $post->[0], @$additional_params %>" 
-               target="_blank">verlinken</a>
+            <a href="<%= url_for "display_$controller", postid => $post->[0], @$additional_params %>" target="_blank">verlinken</a>
         )</span>
 % }
     </h2>

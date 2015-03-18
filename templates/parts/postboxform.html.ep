@@ -3,40 +3,36 @@
     <h1>
         <%= $heading %>
 %   if ( $topicediturl or $backurl ) {
-    <span class="smallfont">( 
+        <span class="smallfont">( 
 %     if ( $topicediturl ) {
-        <a href="<%= $topicediturl %>">ändern</a><% if ( $backurl ) { %>,<% } %> 
+            <a href="<%= $topicediturl %>">ändern</a><% if ( $backurl ) { %>,<% } %> 
 %     }
 %     if ( $backurl ) { 
-        <a href="<%== $backurl %>"><%= $backtext || 'zurück' %></a>
+            <a href="<%== $backurl %>"><%= $backtext || 'zurück' %></a>
 %     }
         )</span> 
 %   }
     </h1>
 % }
 <% if ( $description ) { %><p><%= $description %></p><% } %>
-<form action="<%== $dourl %>" accept-charset="UTF-8" method="POST">
-<p class="insertformbuttons">
+    <form action="<%== $dourl %>" accept-charset="UTF-8" method="POST">
+        <p class="insertformbuttons">
 % if ( defined $postid ) {
-    <input type="hidden" name="postid" value="<%= $postid %>" />
+            <input type="hidden" name="postid" value="<%= $postid %>" />
 % }
-%= submit_button 'senden', class => 'send'
-(
-<a href="<%== $returl %>">abbrechen</a>,
-<a href="<%= url_for 'help' %>" target="_blank">Hilfe</a><span id="editbuttons" class="editbuttons nodisplay">, 
-    <a href="#" class="buttonalike" id="boldbutton" title="Fett markiert (wortweise, '+')"><span class="bold">f</span></a><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben (wortweise, '~')"><span class="italic">k</span></a><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung (wortweise, '_')"><span class="underline">u</span></a><a href="#" class="buttonalike" id="linethroughbutton" title="Durchgestrichen (wortweise, '-')"><span class="linethrough">d</span></a> 
-    <a href="#" class="buttonalike" id="h1button" title="Überschrift (zeilenweise, '=' am Zeilenanfang)"><span class="underline"><span class="bold">Ü</span></span></a><a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste (zeilenweise, '-' am Zeilenanfang)">&middot;</a><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, '#' am Zeilenanfang)">&sup1;</a> 
-    <a href="#" class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat (zeilenweise, '|', am Zeilenanfang)">&quot;</a><a class="buttonalike" id="codebutton" title="Vorformatierter Programm-Quelltext (wortweise, '`')"><code>`</code></a><a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext (zeilenweise, ' ', am Zeilenanfang)"><code>C</code></a> 
-    <a href="#" class="buttonalike" id="attentionbutton" title="Aufmerksamkeit (wortweise, '!')">!</a><a href="#" class="buttonalike" id="emotionalbutton" title="Emotional (wortweise, '*')">*</a></span>
+            %= submit_button 'senden', class => 'send'
+            (
+            <a href="<%== $returl %>">abbrechen</a>,
+            <a href="<%= url_for 'help' %>" target="_blank">Hilfe</a><span id="editbuttons" class="editbuttons nodisplay">, 
+            <a href="#" class="buttonalike" id="boldbutton" title="Fett markiert (wortweise, '+')"><span class="bold">f</span></a><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben (wortweise, '~')"><span class="italic">k</span></a><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung (wortweise, '_')"><span class="underline">u</span></a><a href="#" class="buttonalike" id="linethroughbutton" title="Durchgestrichen (wortweise, '-')"><span class="linethrough">d</span></a> 
+            <a href="#" class="buttonalike" id="h1button" title="Überschrift (zeilenweise, '=' am Zeilenanfang)"><span class="underline"><span class="bold">Ü</span></span></a><a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste (zeilenweise, '-' am Zeilenanfang)">&middot;</a><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, '#' am Zeilenanfang)">&sup1;</a> 
+            <a href="#" class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat (zeilenweise, '|', am Zeilenanfang)">&quot;</a><a class="buttonalike" id="codebutton" title="Vorformatierter Programm-Quelltext (wortweise, '`')"><code>`</code></a><a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext (zeilenweise, ' ', am Zeilenanfang)"><code>C</code></a> 
+            <a href="#" class="buttonalike" id="attentionbutton" title="Aufmerksamkeit (wortweise, '!')">!</a><a href="#" class="buttonalike" id="emotionalbutton" title="Emotional (wortweise, '*')">*</a></span>
 )
-</p>
-<p>
-    <textarea 
-        name="textdata" 
-        id="textinput" 
-        class="edit<%= $textdata ? ' inedit' : '' %>"
-    ><%== $textdata // '' %></textarea>
-</p>
-<p id="closetextap" class="textright nodisplay"><a href="#" class="buttonalike" id="closetextabutton" title="Textfeld wieder zusammen klappen">Textfeld einklappen</a></p>
-</form>
+        </p>
+        <p>
+            <textarea name="textdata" id="textinput" class="edit<%= $textdata ? ' inedit' : '' %>" ><%== $textdata // '' %></textarea>
+        </p>
+        <p id="closetextap" class="textright nodisplay"><a href="#" class="buttonalike" id="closetextabutton" title="Textfeld wieder zusammen klappen">Textfeld einklappen</a></p>
+    </form>
 </div>
