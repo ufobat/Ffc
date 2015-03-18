@@ -50,7 +50,13 @@ sub register {
     $app->helper(dbh_selectall_arrayref => \&_dbh_selectall_arrayref );
     $app->helper(dbh_do                 => \&_dbh_do                 );
 
+    for ( qw(title backgroundcolor) ) {
+        $config->{$_} = $Defaults{$_}
+            unless $config->{$_};
+    }
+
     $app->defaults({
+        title      => $config->{title},
         page       => 1,
         lastseen   => -1,
         map( {; $_ => undef }
@@ -78,13 +84,6 @@ sub register {
     $app->helper( newmsgscount       => \&_newmsgscount );
     $app->helper( generate_topiclist => \&_generate_topiclist );
     $app->helper( generate_userlist  => \&_generate_userlist );
-
-    $app->hook( before_render => sub { 
-        $_[0]->stash(
-            backgroundcolor => ( $_[0]->session->{backgroundcolor} || $config->{backgroundcolor} ),
-            title => ( $config->{title} || $Defaults{title} ),
-        );
-    });
 
     return $self;
 }
