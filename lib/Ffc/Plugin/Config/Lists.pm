@@ -50,28 +50,28 @@ sub _generate_topiclist {
     }
     my $session = $c->session;
     my $topiclimit = $session->{topiclimit};
-    my $uid = $session->{userid};
-    my $query = $session->{topicquery};
+    my $query = uc $session->{topicquery};
     my $tlist = $c->dbh_selectall_arrayref(<< 'EOSQL'
         SELECT t."id", t."userfrom", t."title",
             COUNT(p."id"), t."lastid",
-            COALESCE(l."ignore",0), COALESCE(l."pin",0)
+            COALESCE(l."ignore",0), COALESCE(l."pin",0),
+            UPPER(t."title") as "uctitle"
         FROM "topics" t
         LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=t."id"
         LEFT OUTER JOIN "posts" p ON p."userfrom"<>? AND p."topicid"=t."id" AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",0)
 EOSQL
         . ( $query ? << 'EOSQL' : '' )
-        WHERE UPPER(t."title") LIKE UPPER(?)
+        WHERE "uctitle" LIKE ?
 EOSQL
         . << 'EOSQL'
         GROUP BY t."id", t."userfrom", t."title", l."ignore", l."pin", t."lastid"
         ORDER BY COALESCE(l."pin", 0) DESC, t."lastid" DESC
         LIMIT ? OFFSET ?
 EOSQL
-        , $uid, $uid, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit
+        , ( $session->{userid} ) x 2, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit
     );
     for my $t ( @$tlist ) {
-        $t->[7] = join ' ',
+        $t->[8] = join ' ',
             ( $t->[3]            ? 'newpost'    : () ),
             ( $t->[5]            ? 'ignored'    : () ),
             ( $t->[6]            ? 'pin'        : () ),
@@ -82,7 +82,7 @@ EOSQL
         $c->stash( $stashkey => [ sort { $a->[5] <=> $b->[5] or $b->[6] <=> $a->[6] or $b->[4] <=> $a->[4] } @$tlist ] );
     }
     else {
-        $c->stash( $stashkey => [ sort { $a->[5] <=> $b->[5] or $b->[6] <=> $a->[6] or uc($a->[2]) cmp uc($b->[2]) } @$tlist ] );
+        $c->stash( $stashkey => [ sort { $a->[5] <=> $b->[5] or $b->[6] <=> $a->[6] or $a->[7] cmp $b->[7] } @$tlist ] );
     }
 }
 
