@@ -7,7 +7,7 @@ use Encode qw( encode decode_utf8 );
 
 sub install_routes {
     # Obacht! Alle Routen hier drin funktionieren ohne Anmeldung, also keinen Scheiß hier bauen!
-    for ( qw(favicon customcss) ) {
+    for ( qw(favicon) ) {
         $_[0]->route("/$_/show")
           ->via('get')
           ->to("customstyle#${_}_show")
@@ -22,7 +22,7 @@ sub favicon_show {
     my $filetype = $config->{favicontype};
     my $file = $config->{favicon};
     unless ( $file ) {
-        return $c->render_static('/theme/img/favicon.png');
+        $file = $config->{favicon} = catfile @{$c->datapath}, 'favicon';
     }
     $file = Mojo::Asset::File->new(path => $file);
     my $headers = Mojo::Headers->new();
@@ -49,8 +49,9 @@ sub favicon_upload {
         );
     return $c->redirect_to('options_form')
         unless $filename;
-    my $favicon = catfile @{$c->datapath}, 'favicon';
 
+
+    my $favicon = catfile @{$c->datapath}, 'favicon';
     $c->dbh_do('UPDATE config SET value=? WHERE key=?', $filetype, 'favicontype');
     $c->dbh_do('UPDATE config SET value=? WHERE key=?', $contenttype, 'faviconcontenttype');
     $c->dbh_do('UPDATE config SET value=? WHERE key=?', $favicon, 'favicon');

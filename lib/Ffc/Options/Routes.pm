@@ -48,7 +48,7 @@ sub install_routes {
 
     # Favoritenicon
     $oa->post('/favicon')
-       ->to('favicon#favicon_upload')
+       ->to('customstyle#favicon_upload')
        ->name('favicon_upload');
 }
 
