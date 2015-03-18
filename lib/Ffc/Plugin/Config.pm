@@ -98,7 +98,7 @@ sub _datapath {
 
 sub _config {
     return { map { @$_ } 
-        @{ $_[0]->dbh_selectall_arrayref(
+        @{ $_[0]->{dbh}->selectall_arrayref(
             'SELECT "key", "value" FROM "config"') } };
 }
 
