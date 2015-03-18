@@ -7,12 +7,10 @@ use Encode qw( encode decode_utf8 );
 
 sub install_routes {
     # Obacht! Alle Routen hier drin funktionieren ohne Anmeldung, also keinen Scheiß hier bauen!
-    for ( qw(favicon) ) {
-        $_[0]->route("/$_/show")
-          ->via('get')
-          ->to("customstyle#${_}_show")
-          ->name("${_}_show")
-    }
+    $_[0]->route("/favicon/show")
+      ->via('get')
+      ->to(controller => 'customstyle', action => 'favicon_show')
+      ->name("favicon_show")
 }
 
 sub favicon_show {
