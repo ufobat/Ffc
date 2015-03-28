@@ -15,7 +15,7 @@ use File::Temp;
 use File::Spec::Functions qw(catfile);
 use Digest::SHA 'sha512_base64';
 
-use Test::More tests => 174;
+use Test::More tests => 198;
 
 my $script = $Testinit::Script;
 note "testing init script '$script'";
@@ -41,7 +41,7 @@ sub check_pw {
 }
 
 sub check_config {
-    my ($testpath, $salt, $csecret) = @_;
+    my ($testpath, $salt, $csecret, $cookie) = @_;
     my %zuo = map {@$_} @{ DBI->connect(
         "DBI:SQLite:database=$testpath/database.sqlite3"
         ,'','',{AutoCommit => 1, RaiseError => 1})
@@ -51,6 +51,7 @@ sub check_config {
     };
     is $zuo{cryptsalt}, $salt, "auto config param cryptsalt set ok to $salt";
     is $zuo{cookiesecret}, $csecret, "auto config param cookiesecret set ok to $csecret";
+    is $zuo{cookiename}, $cookie, "config for cookie name $cookie set ok";
 }
 
 sub check_paths {
@@ -88,8 +89,23 @@ sub test_path {
     my $user    = '';
     my $pw      = '';
     my $salt    = 0;
+    my $cookie  = Testinit::test_randstring();
 
-    my $out1 = qx($script 2>&1);
+    my $out0 = qx($script 2>&1);
+    note 'test error without cookie name and without -d';
+    like $out0,
+        qr'error: please provide a cookie name as last parameter',
+        'error message for invalid cookie name ok';
+    check_paths($testpath, 1);
+    $out0 = '';
+    $out0 = qx($script -d 2>&1);
+    note 'test error without cookie name but with -d';
+    like $out0, 
+        qr'error: please provide a cookie name as last parameter',
+        'error message for invalid cookie name ok';
+    check_paths($testpath, 1);
+
+    my $out1 = qx($script -d $cookie 2>&1);
     note 'test error without path env variable';
     like $out1,
         qr'error: please provide a "FFC_DATA_PATH" environment variable',
@@ -97,7 +113,8 @@ sub test_path {
     check_paths($testpath, 1);
 
     note 'test with new empty path';
-    my $out2 = qx(FFC_DATA_PATH=$testpath $script 2>&1);
+    $cookie  = Testinit::test_randstring();
+    my $out2 = qx(FFC_DATA_PATH=$testpath $script -d $cookie 2>&1);
 
     like $out2, $_, 'first run content ok' for (
         qr~ok: using '\d+' as data path owner and '\d+' as data path group~,
@@ -106,9 +123,8 @@ sub test_path {
         qr~ok: using '$testpath/database\.sqlite3' as database store~,
         qr~ok: check user and group priviledges of the data path!~,
         qr~ok: initial cookiesecret, salt, admin user and password:~,
-        qr~ok: cookiesecret set to random '.{32}'~,
-        qr~ok: cryptsalt set to random '\d+'~,
     );
+
     ( $csecret, $salt, $user, $pw ) = (split /\n+/, $out2 )[-4,-3,-2,-1];
     chomp $user; chomp $salt; chomp $pw; chomp $csecret;
     is $user, 'admin', 'admin user received';
@@ -120,10 +136,10 @@ sub test_path {
     note "password supplied is '$pw'";
     check_pw($testpath, $user, $salt, $pw);
     check_paths($testpath);
-    check_config($testpath, $salt, $csecret);
+    check_config($testpath, $salt, $csecret, $cookie);
 
     note 'test with allready existing path';
-    my $out3 = qx(FFC_DATA_PATH=$testpath $script 2>&1);
+    my $out3 = qx(FFC_DATA_PATH=$testpath $script -d $cookie 2>&1);
     like $out3, $_, 'second run content existing ok' for (
         qr~ok: using '\d+' as data path owner and '\d+' as data path group~,
         qr~ok: using '$testpath/avatars' as avatar store~,
@@ -136,9 +152,12 @@ sub test_path {
         qr~ok: check user and group priviledges of the data path!~,
         qr~ok: database allready existed, no admin user created~,
     );
+    unlike $out3, qr($_), "second run content ok"
+        for qw(cookiesecret salt cookiename);
+
     check_pw($testpath, $user, $salt, $pw);
     check_paths($testpath);
-    check_config($testpath, $salt, $csecret);
+    check_config($testpath, $salt, $csecret, $cookie);
 
     note 'test with allready existing path but without database';
     {
@@ -149,8 +168,9 @@ sub test_path {
         }->dbh()->disconnect() or die;
         unlink "$testpath/database.sqlite3";
     }
-    my $out4 = qx(FFC_DATA_PATH=$testpath $script 2>&1);
-    like $out4, $_, 'second run content without database' for (
+    $cookie  = Testinit::test_randstring();
+    my $out4 = qx(FFC_DATA_PATH=$testpath $script -d $cookie 2>&1);
+    like $out4, $_, 'third run content without database' for (
         qr~ok: using '\d+' as data path owner and '\d+' as data path group~,
         qr~ok: using '$testpath/avatars' as avatar store~,
         qr~ok: path '$testpath/avatars' as avatar allready exists~,
@@ -160,9 +180,8 @@ sub test_path {
         qr~ok: using '$testpath/favicon' as favicon store~,
         qr~ok: check user and group priviledges of the data path!~,
         qr~ok: initial cookiesecret, salt, admin user and password:~,
-        qr~ok: cookiesecret set to random '.{32}'~,
-        qr~ok: cryptsalt set to random '\d+'~,
     );
+
     ( $csecret, $salt, $user, $pw ) = (split /\n+/, $out4 )[-4,-3,-2,-1];
     chomp $user; chomp $salt; chomp $pw; chomp $csecret;
     is $user, 'admin', 'admin user received';
@@ -174,5 +193,5 @@ sub test_path {
     note "password supplied is '$pw'";
     check_pw($testpath, $user, $salt, $pw);
     check_paths($testpath);
-    check_config($testpath, $salt, $csecret);
+    check_config($testpath, $salt, $csecret, $cookie);
 }

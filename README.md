@@ -97,7 +97,7 @@ $ mkdir "Forenpfad"; chmod 750 "Forenpfad"; chown "Webserveruser:Webservergruppe
 Verzeichnis für das Forum vorbereiten (dieses Kommando liefert am Ende die Daten für den ersten Administratorenaccount, also Benutzername "admin" und zugehöriges zufälliges Passwort):
 
 ```
-$ FFC_DATA_PATH="Forenpfad" "script/init.pl"
+$ FFC_DATA_PATH="Forenpfad" "script/init.pl" "Cookie-Name"
 ```
 
 Den Webserver so konfigurieren, dass er mit der entsprechenden Pfadvariable `FFC_DATA_PATH="Forenpfad"` das Script `script/ffc` aufrufen kann. Im Apache kann das wie folgt aussehen:
@@ -125,6 +125,10 @@ Innerhalb des Arbeitsverzeichnisses werden im Betrieb Dateien in Unterverzeichni
 Die Software verwendet die Umgebungsvariable **`FFC_DATA_PATH`**, um festzustellen, mit welcher Instanz sie gerade läuft und entsprechend welches Arbeitsverzeichnis sie verwenden muss. Diese Umgebungsvariable **`FFC_DATA_PATH`** muss beim Aufruf des Initialisierungsscriptes sowie beim Lauf der Software im Web auf den Pfad zum Arbeitsverzeichnis gesetzt werden. Ist die Variable nicht gesetzt, kommen entsprechende Fehlermeldungen.
 
 Das Initialisierungsscript liegt unter `script/init.pl` und muss einmal vor Inbetriebnahme der Software aufgerufen werden mit der entsprechenden Umgebungsvariable **`FFC_DATA_PATH`**. Dabei wird im entsprechenden Arbeitsverzeichnis die Datenbank mit einer Standardkonfiguration sowie die Unterordnerstruktur angelegt.
+
+Dem Initialisierungsscript muss als letzten Parameter ein eindeutiger Name für die Cookies übergeben werden. Das ist notwendig, falls mehrere Instanzen der Software unter einer Domain eingerichtet werden sollen.
+
+Dem Initialisierungsscript kann zusätzlich mit `-d` vor dem letzten Parameter zusätzliche Information (Cookie-Secret, Crypt-Salt) entlockt werden bei Bedarf (Test-Suite).
 
 Außerdem wird ein erster Administratoren-Account mit Zufallspasswort angelegt. Die Zugangsdaten werden auf der Kommandozeile beim Aufruf von `script/init.pl` ausgegeben und sollten notiert werden, da die weiterführende Konfiguration über diesen Account von statten geht.
 

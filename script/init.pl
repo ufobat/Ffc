@@ -11,8 +11,18 @@ use lib catdir(splitdir(File::Basename::dirname(__FILE__)), '..', 'lib');
 srand;
 
 my $uname = 'admin'; # name of initial first user
+my $debug = 0;
+my $cookie;
 
-my $debug = $ARGV[0] ? 1 : 0;
+if ( @ARGV ) {
+    $cookie = $ARGV[-1] if $ARGV[-1] ne '-d';
+    if ( 1 < @ARGV and grep { $_ eq '-d' } @ARGV ) {
+        $debug = 1;
+    }
+}
+
+die 'error: please provide a cookie name as last parameter (not "-d")'
+    unless $cookie;
 die 'error: please provide a "FFC_DATA_PATH" environment variable'
     unless $ENV{FFC_DATA_PATH};
 die 'error: "FFC_DATA_PATH" environment variable needs to be a directory'
@@ -100,6 +110,7 @@ sub generate_random_security {
         $csecret = $config->{cookiesecret} = generate_random(28);
         alter_configfile($Config, cookiesecret => $csecret);
     }
+    alter_configfile($Config, 'cookiename', $cookie);
     my $pw = generate_random(4);
     $Config->dbh()->do(
         'INSERT INTO users (name, password, admin, active) VALUES (?,?,?,1)',
@@ -121,10 +132,10 @@ sub alter_configfile {
     my $config = shift;
     my $key = shift;
     my $value = shift;
+    my $say = shift;
     $config->dbh()->do(
         'UPDATE "config" SET "value"=? WHERE "key"=?',
         undef, $value, $key);
-    say "ok: $key set to random '$value'";
 }
 
 sub generate_random {

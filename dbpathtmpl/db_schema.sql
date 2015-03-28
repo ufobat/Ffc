@@ -86,7 +86,7 @@ CREATE TABLE "config" (
 );
 
 INSERT INTO "config" ("key", "value") 
-  VALUES ('cookiename','Ffc_Forum');
+  VALUES ('cookiename','');
 INSERT INTO "config" ("key", "value") 
   VALUES ('cookiesecret','');
 INSERT INTO "config" ("key", "value") 

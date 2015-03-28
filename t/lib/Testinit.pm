@@ -15,7 +15,7 @@ use lib
 
 our $Script 
     = catfile( splitdir(File::Basename::dirname(__FILE__)),
-        '..', '..', 'script', 'init.pl' ) . ' debug';
+        '..', '..', 'script', 'init.pl' );
 our @Chars = ('a' .. 'z', 'A' .. 'C', 'E' .. 'O', 'Q' .. 'X', 'Y', 'Z'); # 'D' und so wird in Smilies verwendet, das geht für Tests blöd, Smilies werden extra getestet
 {
     my $scnt = 1;
@@ -23,6 +23,7 @@ our @Chars = ('a' .. 'z', 'A' .. 'C', 'E' .. 'O', 'Q' .. 'X', 'Y', 'Z'); # 'D' u
     sub test_randstring { sprintf "%s%04d%s", $ts->(), $scnt++, $ts->() }
 }
 
+our $CookieName = test_randstring();
 our @Users; our %Users;
 
 sub start_test {
@@ -30,7 +31,7 @@ sub start_test {
     note "using test data dir '$testpath'";
     $ENV{FFC_DATA_PATH} = $testpath;
     my ( $csecret, $salt, $user, $pw ) 
-        = (split /\n+/, qx($Script 2>&1) )[-4,-3,-2,-1];
+        = (split /\n+/, qx($Script '-d' '$CookieName' 2>&1) )[-4,-3,-2,-1];
     chomp $user; chomp $salt; chomp $pw; chomp $csecret;
     note "user '$user':'$pw' (salt $salt, secret $csecret) created";
     my $t = Test::Mojo->new('Ffc');
