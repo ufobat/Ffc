@@ -13,9 +13,9 @@ use lib catdir(splitdir(File::Basename::dirname(__FILE__)), '..', 'lib');
 my $host   = 'localhost';
 my $sender = 'admin@'.hostname();
 
-my $config = do {
+{
     use Mojolicious::Lite;
-    my $config = plugin 'Ffc::Plugin::Config';
+    plugin 'Ffc::Plugin::Config';
     get '/:userid' => [userid => qr/\d+/xmso] => sub { 
         my $c = shift;
         $c->session->{userid} = $c->param('userid');
@@ -25,22 +25,22 @@ my $config = do {
                 qw(newmsgs newpost),
         );
     };
-    $config;
-};
-
-my $t = Test::Mojo->new;
-
-my $users = $config->dbh->selectall_arrayref( << 'EOSQL' );
+    get '/title' => sub {
+        $_[0]->render(text => $_[0]->configdata->{title});
+    };
+    get '/userids' => sub {
+        $_[0]->render(json => $_[0]->dbh_selectall_arrayref( << 'EOSQL' ));
     SELECT "name", "email", "id" 
     FROM "users" 
-    WHERE "email" IS NOT NULL AND "email"<>'' AND "newsmail"=1 
+    WHERE "email" IS NOT NULL AND "email"<>'' AND "newsmail"=1 AND "active"=1
     ORDER BY UPPER("name"), "id"
 EOSQL
+    };
+};
 
-my $title = $config->dbh->selectall_arrayref(
-    'SELECT "value" FROM "config" WHERE "key"=?',
-    undef, 'title');
-$title = @$title ? $title->[0]->[0] : 'Forum';
+my $t     = Test::Mojo->new;
+my $title = $t->get_ok('/title')->tx->res->text   || 'Forum';
+my $users = $t->get_ok('/userids')->tx->res->json || [];
 
 for my $u ( @$users ) {
     my $count_pmsgs = 0;
@@ -84,4 +84,4 @@ for my $u ( @$users ) {
     say "Information über $count_forum Beiträge  und $count_pmsgs Nachrichten  an $u->[0] ($u->[1], $u->[2]) verschickt.";
 }
 
-done_testing( scalar @$users );
+done_testing( 2 + @$users );
