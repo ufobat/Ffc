@@ -113,8 +113,8 @@ sub generate_random_security {
     alter_configfile($Config, 'cookiename', $cookie);
     my $pw = generate_random(4);
     $Config->dbh()->do(
-        'INSERT INTO users (name, password, admin, active) VALUES (?,?,?,1)',
-        undef, $uname, sha512_base64($pw, $salt), 1);
+        'INSERT INTO users (name, password, admin, active) VALUES (?,?,?,?)',
+        undef, $uname, sha512_base64($pw, $salt), 1, 1);
 
     if ( $debug ) {
         say 'ok: initial cookiesecret, salt, admin user and password:';
