@@ -10,7 +10,6 @@ use Ffc::Plugin::Config::Lists;
 
 our %Defaults = (
     title           => 'Ffc Forum',
-    cookiename      => 'Ffc_Forum',
     urlshorten      => 30,
     sessiontimeout  => 259200,
     backgroundcolor => '',
