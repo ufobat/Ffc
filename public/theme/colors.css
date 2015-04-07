@@ -114,6 +114,9 @@ a.coloroption:hover {
 .pin {
     border-color: gold;
 }
+.menu .pin {
+    background-color: lemonchiffon;
+}
 ul.topiclist {
     list-style: none;
 }
@@ -222,5 +225,8 @@ pre, .code {
 .ignored {
     border-color: white;
     background: whitesmoke;
+}
+.menu .ignored {
+    background: gainsboro;
 }
 
