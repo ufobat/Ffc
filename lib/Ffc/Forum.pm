@@ -95,6 +95,15 @@ sub additional_params {
 
 sub search { $_[0]->search_posts(); }
 
+sub show_startuppage {
+    if ( $_[0]->configdata->{starttopic} ) {
+        $_[0]->redirect_to('show_forum', topicid => $_[0]->configdata->{starttopic});
+    }
+    else {
+        $_[0]->show_topiclist;
+    }
+}
+
 sub show {
     my $c = shift;
     my ( $uid, $topicid ) = ( $c->session->{userid}, $c->param('topicid') );
