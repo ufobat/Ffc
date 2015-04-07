@@ -20,7 +20,7 @@
     /
 % }
 % if ( $action eq 'show' ) {
-    <span>Anzahl angezeigter Beiträge:</span>
+    <span>Angezeigte Beiträge:</span>
 %   for my $i ( 3, 5, 7, 10, 15, 20, 30 ) {
 %     if ( $i == session->{postlimit} ) {
     <span class="limitsetting postlimit"><%= $i %></span>
@@ -30,7 +30,7 @@
 %     }
 %   }
 % } else {
-    <span>Anzahl angezeigter Themen:</span>
+    <span>Angezeigte Themen:</span>
 %   for my $i ( 5, 10, 15, 20, 30, 50 ) {
 %     if ( $i == session->{topiclimit} ) {
     <span class="limitsetting topiclimit"><%= $i %></span>
@@ -41,9 +41,9 @@
 %   }
     /
 %   if ( session->{chronsortorder} ) {
-    <a href="<%= url_for 'topic_sort_alphabetical' %>">alphabetisch sortieren</a>
+    <a href="<%= url_for 'topic_sort_alphabetical' %>">alphabetisch</a>
 %   } else {
-    <a href="<%= url_for 'topic_sort_chronological' %>">chronologisch sortieren</a>
+    <a href="<%= url_for 'topic_sort_chronological' %>">chronologisch</a>
 %   }
 % }
 </div>

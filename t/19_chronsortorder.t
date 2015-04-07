@@ -22,15 +22,15 @@ $t->post_ok('/topic/new', form => {titlestring => 'bb', textdata => 'bbb'})->sta
 sub set_sort_chron {
     $t->get_ok('/topic/sort/chronological')->status_is(302);
     $t->get_ok('/forum')->status_is(200)
-      ->content_like(qr~/topic/sort/alphabetical">alphabetisch sortieren</a>~)
-      ->content_unlike(qr~/topic/sort/chronological">chronologisch sortieren</a>~);
+      ->content_like(qr~/topic/sort/alphabetical">alphabetisch</a>~)
+      ->content_unlike(qr~/topic/sort/chronological">chronologisch</a>~);
     Testinit::test_info($t, 'Themen werden chronologisch sortiert.');
 }
 sub set_sort_alpha {
     $t->get_ok('/topic/sort/alphabetical')->status_is(302);
     $t->get_ok('/forum')->status_is(200)
-      ->content_like(qr~/topic/sort/chronological">chronologisch sortieren</a>~)
-      ->content_unlike(qr~/topic/sort/alphabetical">alphabetisch sortieren</a>~);
+      ->content_like(qr~/topic/sort/chronological">chronologisch</a>~)
+      ->content_unlike(qr~/topic/sort/alphabetical">alphabetisch</a>~);
     Testinit::test_info($t, 'Themen werden alphabetisch sortiert.');
 }
 
