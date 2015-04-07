@@ -60,44 +60,45 @@ $t->get_ok('/topic/3/ignore')->status_is(302);
 $t->get_ok('/topic/4/pin')->status_is(302);
 $t->get_ok('/forum')->status_is(200)
   ->content_like(qr~
-    <p><a\s+href="/topic/4">dd</a>\.\.\.</p>\s*
-    <p><a\s+href="/topic/2">bb</a>\.\.\.</p>\s+
+    <p\s+class="pin"><a\s+href="/topic/4">dd</a>\.\.\.</p>\s*
+    <p\s+class="pin"><a\s+href="/topic/2">bb</a>\.\.\.</p>\s+
     <p><a\s+href="/topic/6">ff</a>\.\.\.</p>\s+
     <p><a\s+href="/topic/5">ee</a>\.\.\.</p>\s*
-    <p><a\s+href="/topic/3">cc</a>\.\.\.</p>\s*
-    <p><a\s+href="/topic/1">aa</a>\.\.\.</p>~x);
+    <p\s+class="ignored"><a\s+href="/topic/3">cc</a>\.\.\.</p>\s*
+    <p\s+class="ignored"><a\s+href="/topic/1">aa</a>\.\.\.</p>~x);
 
 
 note 'bei alphabetischer sortierung müssen angeheftete posts immer oben sein, ignorierte immer unten';
 set_sort_alpha();
 $t->get_ok('/forum')->status_is(200)
   ->content_like(qr~
-    <p><a\s+href="/topic/2">bb</a>\.\.\.</p>\s*
-    <p><a\s+href="/topic/4">dd</a>\.\.\.</p>\s+
+    <p\s+class="pin"><a\s+href="/topic/2">bb</a>\.\.\.</p>\s*
+    <p\s+class="pin"><a\s+href="/topic/4">dd</a>\.\.\.</p>\s+
     <p><a\s+href="/topic/5">ee</a>\.\.\.</p>\s+
     <p><a\s+href="/topic/6">ff</a>\.\.\.</p>\s*
-    <p><a\s+href="/topic/1">aa</a>\.\.\.</p>\s*
-    <p><a\s+href="/topic/3">cc</a>\.\.\.</p>~x);
+    <p\s+class="ignored"><a\s+href="/topic/1">aa</a>\.\.\.</p>\s*
+    <p\s+class="ignored"><a\s+href="/topic/3">cc</a>\.\.\.</p>~x);
 
 note 'chronsortorder soll logout überleben';
 Testinit::test_logout($t);
 Testinit::test_login($t, $user1, $pass1);
 $t->get_ok('/forum')->status_is(200)
   ->content_like(qr~
-    <p><a\s+href="/topic/2">bb</a>\.\.\.</p>\s*
-    <p><a\s+href="/topic/4">dd</a>\.\.\.</p>\s+
+    <p\s+class="pin"><a\s+href="/topic/2">bb</a>\.\.\.</p>\s*
+    <p\s+class="pin"><a\s+href="/topic/4">dd</a>\.\.\.</p>\s+
     <p><a\s+href="/topic/5">ee</a>\.\.\.</p>\s+
     <p><a\s+href="/topic/6">ff</a>\.\.\.</p>\s*
-    <p><a\s+href="/topic/1">aa</a>\.\.\.</p>\s*
-    <p><a\s+href="/topic/3">cc</a>\.\.\.</p>~x);
+    <p\s+class="ignored"><a\s+href="/topic/1">aa</a>\.\.\.</p>\s*
+    <p\s+class="ignored"><a\s+href="/topic/3">cc</a>\.\.\.</p>~x);
 set_sort_chron();
 Testinit::test_logout($t);
 Testinit::test_login($t, $user1, $pass1);
 $t->get_ok('/forum')->status_is(200)
   ->content_like(qr~
-    <p><a\s+href="/topic/4">dd</a>\.\.\.</p>\s*
-    <p><a\s+href="/topic/2">bb</a>\.\.\.</p>\s+
+    <p\s+class="pin"><a\s+href="/topic/4">dd</a>\.\.\.</p>\s*
+    <p\s+class="pin"><a\s+href="/topic/2">bb</a>\.\.\.</p>\s+
     <p><a\s+href="/topic/6">ff</a>\.\.\.</p>\s+
     <p><a\s+href="/topic/5">ee</a>\.\.\.</p>\s*
-    <p><a\s+href="/topic/3">cc</a>\.\.\.</p>\s*
-    <p><a\s+href="/topic/1">aa</a>\.\.\.</p>~x);
+    <p\s+class="ignored"><a\s+href="/topic/3">cc</a>\.\.\.</p>\s*
+    <p\s+class="ignored"><a\s+href="/topic/1">aa</a>\.\.\.</p>~x);
+
