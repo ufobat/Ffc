@@ -3,11 +3,6 @@
     <h1>Allgemeines Forum</h1>
     <p>
         <a href="<%= url_for 'add_forum_topic_form' %>" title="Neues Thema beginnen">Klicke hier</a>, um ein neues Thema zu beginnen.
-% if ( session->{chronsortorder} ) {
-        Die Themenliste ist chronologisch sortiert, Themenliste <a href="<%= url_for 'topic_sort_alphabetical' %>">alpabetisch sortieren</a>.
-% } else {
-        Die Themenliste ist alphabetisch sortiert, Themenliste <a href="<%= url_for 'topic_sort_chronological' %>">chronologisch sortieren</a>.
-% }
     </p>
 </div>
 % if ( @$topics_for_list ) {

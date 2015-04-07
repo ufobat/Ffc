@@ -39,5 +39,11 @@
         title="<%= $i %> Überschriften auf einer Seite in der Liste anzeigen"><%= $i %></a><%= $i < 50 ? ',' : '' %>
 %     }
 %   }
+    /
+%   if ( session->{chronsortorder} ) {
+    <a href="<%= url_for 'topic_sort_alphabetical' %>">alphabetisch sortieren</a>
+%   } else {
+    <a href="<%= url_for 'topic_sort_chronological' %>">chronologisch sortieren</a>
+%   }
 % }
 </div>
