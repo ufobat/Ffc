@@ -126,7 +126,7 @@ ul.topiclist {
 .newpost, .newpost .avatar {
     border-color: palevioletred;
 }
-h2.newpost, .newpost h1, .newpost .title, input.activesearch {
+.menu .newpost, h2.newpost, .newpost h1, .newpost .title, input.activesearch {
     background: lemonchiffon;
     border-color: palevioletred;
 }
