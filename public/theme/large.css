@@ -62,7 +62,7 @@ input[type="color"], input[type="url"], input[type="email"], input[type="text"],
 .menu input[type="text"] {
     width: 5em;
 }
-.smallfont, .userlist p, h2, .attachementtitle, .menu, .insertformbuttons, .headbox .userinfo, .pages > * {
+.helptext .buttonalike, .smallfont, .userlist p, h2, .attachementtitle, .menu, .insertformbuttons, .headbox .userinfo, .pages > * {
     font-size: .75em;
 }
 
@@ -197,7 +197,3 @@ input[type="text"].titlestring {
 #closetextap {
     margin-top: .25em;
 }
-.helptext .buttonalike {
-    font-size: .75em;
-}
-
