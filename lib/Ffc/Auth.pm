@@ -18,7 +18,7 @@ sub check_login {
         my $s = $c->session();
         my $r = $c->dbh_selectall_arrayref(
             'SELECT "admin", "bgcolor", "name", "autorefresh", 
-                "chronsortorder", "topiclimit", "postlimit"
+                "chronsortorder", COALESCE("topiclimit",20), COALESCE("postlimit",10)
             FROM "users" WHERE "active"=1 AND "id"=?',
             $s->{userid});
 

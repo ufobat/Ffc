@@ -49,7 +49,7 @@ sub _generate_topiclist {
         $stashkey = 'topics';
     }
     my $session = $c->session;
-    my $topiclimit = $session->{topiclimit};
+    my $topiclimit = $session->{topiclimit} || 20;
     my $query = uc( $session->{topicquery} // '');
     my $tlist = $c->dbh_selectall_arrayref(<< 'EOSQL'
         SELECT t."id", t."userfrom", t."title",
