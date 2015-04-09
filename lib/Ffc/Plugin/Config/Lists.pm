@@ -65,7 +65,7 @@ EOSQL
 EOSQL
         . << 'EOSQL'
         GROUP BY t."id", t."userfrom", t."title", l."ignore", l."pin", t."lastid"
-        ORDER BY COALESCE(l."pin", 0) DESC, t."lastid" DESC
+        ORDER BY COALESCE(l."pin", 0) DESC, COALESCE(l."ignore",0) ASC, t."lastid" DESC
         LIMIT ? OFFSET ?
 EOSQL
         , ( $session->{userid} ) x 2, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit

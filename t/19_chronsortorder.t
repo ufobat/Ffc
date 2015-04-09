@@ -9,7 +9,7 @@ use File::Temp qw~tempfile tempdir~;
 use File::Spec::Functions qw(catfile catdir splitdir);
 
 use Test::Mojo;
-use Test::More tests => 128;
+use Test::More tests => 162;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
@@ -101,4 +101,57 @@ $t->get_ok('/forum')->status_is(200)
     <p><a\s+href="/topic/5">ee</a>\.\.\.</p>\s*
     <p\s+class="ignored"><a\s+href="/topic/3">cc</a>\.\.\.</p>\s*
     <p\s+class="ignored"><a\s+href="/topic/1">aa</a>\.\.\.</p>~x);
+
+note 'test that ignored topics are out of scope';
+$t->post_ok('/topic/new', form => {titlestring => 'gg', textdata => 'ggg'})->status_is(302);
+$t->get_ok('/forum')->status_is(200)
+  ->content_like(qr~
+    <p\s+class="pin"><a\s+href="/topic/4">dd</a>\.\.\.</p>\s*
+    <p\s+class="pin"><a\s+href="/topic/2">bb</a>\.\.\.</p>\s+
+    <p><a\s+href="/topic/7">gg</a>\.\.\.</p>\s+
+    <p><a\s+href="/topic/6">ff</a>\.\.\.</p>\s+
+    <p><a\s+href="/topic/5">ee</a>\.\.\.</p>\s*
+    <p\s+class="ignored"><a\s+href="/topic/3">cc</a>\.\.\.</p>\s*
+    <p\s+class="ignored"><a\s+href="/topic/1">aa</a>\.\.\.</p>~x);
+$t->get_ok('/topic/7/ignore')->status_is(302);
+$t->get_ok('/forum')->status_is(200)
+  ->content_like(qr~
+    <p\s+class="pin"><a\s+href="/topic/4">dd</a>\.\.\.</p>\s*
+    <p\s+class="pin"><a\s+href="/topic/2">bb</a>\.\.\.</p>\s+
+    <p><a\s+href="/topic/6">ff</a>\.\.\.</p>\s+
+    <p><a\s+href="/topic/5">ee</a>\.\.\.</p>\s*
+    <p\s+class="ignored"><a\s+href="/topic/7">gg</a>\.\.\.</p>\s+
+    <p\s+class="ignored"><a\s+href="/topic/3">cc</a>\.\.\.</p>\s*
+    <p\s+class="ignored"><a\s+href="/topic/1">aa</a>\.\.\.</p>~x);
+$t->get_ok('/topic/limit/6')->status_is(302);
+$t->get_ok('/forum')->status_is(200)
+  ->content_like(qr~
+    <p\s+class="pin"><a\s+href="/topic/4">dd</a>\.\.\.</p>\s*
+    <p\s+class="pin"><a\s+href="/topic/2">bb</a>\.\.\.</p>\s+
+    <p><a\s+href="/topic/6">ff</a>\.\.\.</p>\s+
+    <p><a\s+href="/topic/5">ee</a>\.\.\.</p>\s*
+    <p\s+class="ignored"><a\s+href="/topic/7">gg</a>\.\.\.</p>\s+
+    <p\s+class="ignored"><a\s+href="/topic/3">cc</a>\.\.\.</p>~x);
+$t->content_unlike(qr~<p\s+class="ignored"><a\s+href="/topic/1">aa</a>\.\.\.</p>~x);
+set_sort_alpha();
+$t->get_ok('/topic/limit/7')->status_is(302);
+$t->get_ok('/forum')->status_is(200)
+  ->content_like(qr~
+    <p\s+class="pin"><a\s+href="/topic/2">bb</a>\.\.\.</p>\s*
+    <p\s+class="pin"><a\s+href="/topic/4">dd</a>\.\.\.</p>\s+
+    <p><a\s+href="/topic/5">ee</a>\.\.\.</p>\s+
+    <p><a\s+href="/topic/6">ff</a>\.\.\.</p>\s*
+    <p\s+class="ignored"><a\s+href="/topic/1">aa</a>\.\.\.</p>\s*
+    <p\s+class="ignored"><a\s+href="/topic/3">cc</a>\.\.\.</p>\s*
+    <p\s+class="ignored"><a\s+href="/topic/7">gg</a>\.\.\.</p>~x);
+$t->get_ok('/topic/limit/6')->status_is(302);
+$t->get_ok('/forum')->status_is(200)
+  ->content_like(qr~
+    <p\s+class="pin"><a\s+href="/topic/2">bb</a>\.\.\.</p>\s*
+    <p\s+class="pin"><a\s+href="/topic/4">dd</a>\.\.\.</p>\s+
+    <p><a\s+href="/topic/5">ee</a>\.\.\.</p>\s+
+    <p><a\s+href="/topic/6">ff</a>\.\.\.</p>\s*
+    <p\s+class="ignored"><a\s+href="/topic/3">cc</a>\.\.\.</p>\s*
+    <p\s+class="ignored"><a\s+href="/topic/7">gg</a>\.\.\.</p>~x);
+$t->content_unlike(qr~<p\s+class="ignored"><a\s+href="/topic/1">aa</a>\.\.\.</p>~x);
 
