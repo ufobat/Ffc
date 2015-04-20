@@ -139,7 +139,7 @@ Unter der so eingerichteten URL sollte, wenn alles passt, anschließend das ents
 Copyright und Lizenz
 ====================
 
-Copyright (C) 2012-2014 by Markus Pinkert
+Copyright (C) 2012-2015 by Markus Pinkert
 
 This application is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
 
