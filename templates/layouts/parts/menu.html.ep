@@ -9,7 +9,7 @@
     </div>
 % if ( @$users ) {
     <div class="menuentry">
-        <a href="<%= url_for 'show_pmsgs_userlist' %>"><span class="linktext linkpmsgs<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>">Nachrichten<% if ( $newmsgscount ) { %> (<span class="mark"><%= $newmsgscount %></span>)<% } %></span></a>
+        <a href="<%= url_for 'show_pmsgs_userlist' %>"><span class="linktext linkpmsgs<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>"><% if ( $newmsgscount ) { %><span class="mark">Nachrichten (<%= $newmsgscount %>) </span><% } else { %>Nachrichten<% } %></span></a>
 %= include('layouts/parts/users');
     </div>
 % }
