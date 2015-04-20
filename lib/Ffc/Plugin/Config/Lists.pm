@@ -14,7 +14,7 @@ sub _newpostcount {
 }
 
 sub _newmsgscount {
-    return $_[0]->dbh_selectall_arrayref(
+    my $cnt = $_[0]->dbh_selectall_arrayref(
         'SELECT COUNT(p."id")
         FROM "posts" p
         INNER JOIN "users" u ON u."id"<>? AND u."id"=p."userfrom" AND u."active"=1
@@ -22,6 +22,11 @@ sub _newmsgscount {
         WHERE p."userto"=? AND p."id">COALESCE(l."lastseen",0)',
         ( $_[0]->session->{userid} ) x 3
     )->[0]->[0];
+    $_[0]->set_info( 'Du hast '
+            . ( $cnt == 1 ? 'eine neue Privatnachricht' : "$cnt neue Privatnachrichten" )
+            . ' empfangen.'
+        ) if $cnt;
+    return $cnt;
 }
 
 sub _counting { 
