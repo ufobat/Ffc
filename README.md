@@ -1,7 +1,7 @@
 Ffc
 ===
 
-Ffc ist eine webbasierte private Kommunikationsplattform für kleine Gruppen.
+Ffc ist eine webbasierte private und ressourcenschonende Kommunikationsplattform für kleine Gruppen.
 
 Hinweis: Informationen zur Installation gibt es weiter unten nach der nächsten Überschrift.
 
