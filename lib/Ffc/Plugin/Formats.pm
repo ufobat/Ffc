@@ -26,9 +26,11 @@ our @Smilies = (
     [ evilgrin   => ['>:D', '>=D',  '>:-D',                       ] ],
     [ nope       => [':/',  ':-/',  '=/',   ':\\', ':-\\', '=\\', ] ],
     [ facepalm   => ['m(',                                        ] ],
+#    [ yeah       => ['\o/', '\O/',  '\0/',                        ] ],
+    [ shock      => [':$',  ':-$',  '=$',                         ] ],
 );
 our %Smiley     = map {my ($n,$l)=($_->[0],$_->[1]); map {$_=>$n} @$l} @Smilies;
-our $SmileyRe   = join '|', map {s{([\^\<\-\.\:\\\/\(\)\=\|\,])}{\\$1}gxoms; $_} keys %Smiley;
+our $SmileyRe   = join '|', map {s{([\^\<\-\.\:\\\/\(\)\=\|\,\$])}{\\$1}gxoms; $_} keys %Smiley;
 our %Goodies    = qw( _ underline - linethrough + bold ~ italic ! alert * emotion);
 
 sub register {

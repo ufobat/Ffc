@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 100;
+use Test::More tests => 102;
 
 srand;
 
@@ -359,6 +359,7 @@ devilsmile: >:) >:-) >=),
 evilgrin: >:D >:-D >=D,
 angry: >:( >:-( >=(
 facepalm: m(
+shock: :\$ :-\$ =\$
 EOSTRING
 }
 
@@ -397,5 +398,6 @@ sub controlstring_withimages {
 <p>evilgrin: <img class="smiley" src="/theme/img/smileys/evilgrin.png" alt="&gt;:D" title="&gt;:D" /> <img class="smiley" src="/theme/img/smileys/evilgrin.png" alt="&gt;:-D" title="&gt;:-D" /> <img class="smiley" src="/theme/img/smileys/evilgrin.png" alt="&gt;=D" title="&gt;=D" />,</p>
 <p>angry: <img class="smiley" src="/theme/img/smileys/angry.png" alt="&gt;:(" title="&gt;:(" /> <img class="smiley" src="/theme/img/smileys/angry.png" alt="&gt;:-(" title="&gt;:-(" /> <img class="smiley" src="/theme/img/smileys/angry.png" alt="&gt;=(" title="&gt;=(" /></p>
 <p>facepalm: <img class="smiley" src="/theme/img/smileys/facepalm.png" alt="m(" title="m(" /></p>
+<p>shock: <img class="smiley" src="/theme/img/smileys/shock.png" alt=":\$" title=":\$" /> <img class="smiley" src="/theme/img/smileys/shock.png" alt=":-\$" title=":-\$" /> <img class="smiley" src="/theme/img/smileys/shock.png" alt="=\$" title="=\$" /></p>
 EOSTRING
 }

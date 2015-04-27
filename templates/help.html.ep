@@ -117,7 +117,8 @@
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/unsure.png" %>" /> (Unsicherheit zur Schau tragen): <code>:| :-| =|</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/yes.png" %>" /> (Zustimmen): <code>(y) (Y)</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/no.png" %>" /> (Ablehnen): <code>(n) (N)</code></li>
-        <li><img class="smiley" src="<%= url_for "/theme/img/smileys/down.png" %>" /> (Genervt zu Boden schauen): <code>-.-</code></li>
+        <li><img class="smiley" src="<%= url_for "/theme/img/smileys/down.png" %>" /> (Enttäuscht zu Boden schauen): <code>-.-</code></li>
+        <li><img class="smiley" src="<%= url_for "/theme/img/smileys/shock.png" %>" /> (Schockiert und angewiedert): <code>:$ :-$ =$</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/nope.png" %>" /> (Zweifeln): <code>:/ :-/ :\ :-\ =/ =\</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/sunny.png" %>" /> (Die Sonne aus dem Heck scheinen lassen): <code>B-) 8) 8-)</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/cats.png" %>" /> (Die beliebten Katzenaugen): <code>^^</code></li>
