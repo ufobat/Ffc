@@ -35,6 +35,8 @@ sub register {
     $app->helper( get_show_sql             => \&_get_show_sql             );
     $app->helper( get_attachements         => \&_get_attachements         );
     $app->helper( set_post_postlimit       => \&_set_post_postlimit       );
+    $app->helper( inc_post_highscore       => \&_inc_highscore            );
+    $app->helper( dec_post_highscore       => \&_dec_highscore            );
     return $self;
 }
 

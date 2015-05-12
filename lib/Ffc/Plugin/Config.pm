@@ -14,6 +14,7 @@ our %Defaults = (
     sessiontimeout  => 259200,
     backgroundcolor => '',
     starttopic      => 0,
+    maxscore        => 10,
 );
 
 sub register {

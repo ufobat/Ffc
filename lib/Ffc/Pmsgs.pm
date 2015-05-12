@@ -104,5 +104,8 @@ sub delete_upload_check {
 
 sub delete_upload_do { $_[0]->delete_upload_post_do() }
 
+sub inc_highscore { $_[0]->show_posts() }
+sub dec_highscore { $_[0]->show_posts() }
+
 1;
 

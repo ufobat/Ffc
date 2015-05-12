@@ -91,5 +91,27 @@ sub _get_attachements {
         $c->dbh_selectall_arrayref( $sql, $c->session->{userid}, @wherep ) );
 }
 
+sub _update_highscore {
+    my ( $c, $up ) = @_;
+    my $score = $c->dbh_selectall_arrayref('SELECT "score", "userfrom" FROM "posts" WHERE "id"=?', $c->param('postid'));
+    return _redirect_to_show($c)
+        if $score->[0]->[1] eq $c->session->{userid};
+    $score = $score->[0]->[0] || 0;
+    my $maxscore = $c->configdata->{maxscore};
+    if ( $up ) {
+        $score++;
+        $score = $maxscore if $score > $maxscore;
+    }
+    else {
+        $score--;
+        $score = -$maxscore if $score < -$maxscore;
+    }
+    $c->dbh_do('UPDATE "posts" SET "score"=? WHERE "id"=?', $score, $c->param('postid'));
+    $c->set_info_f( 'Bewertung ' . ( $up ? 'erhöht' : 'veringert' ) );
+    _redirect_to_show($c);
+}
+sub _inc_highscore { _update_highscore( $_[0], 1 ) }
+sub _dec_highscore { _update_highscore( $_[0], 0 ) }
+
 1;
 

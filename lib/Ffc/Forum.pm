@@ -110,11 +110,11 @@ sub show {
     my ( $heading, $userfrom ) = $c->_get_title_from_topicid;
     return unless $heading;
     $c->stash(
-        topicid  => $topicid,
-        backurl  => $c->url_for('show_forum_topiclist'),
-        backtext => 'zur Themenliste',
-        msgurl   => 'show_pmsgs',
-        heading  => $heading,
+        topicid      => $topicid,
+        backurl      => $c->url_for('show_forum_topiclist'),
+        backtext     => 'zur Themenliste',
+        msgurl       => 'show_pmsgs',
+        heading      => $heading,
     );
     $c->stash( topicediturl => $c->url_for('edit_forum_topic_form', topicid => $topicid) )
         if $uid eq $userfrom or $c->session->{admin};
@@ -191,6 +191,9 @@ sub delete_upload_check {
 }
 
 sub delete_upload_do { $_[0]->delete_upload_post_do() }
+
+sub inc_highscore { $_[0]->inc_post_highscore() }
+sub dec_highscore { $_[0]->dec_post_highscore() }
 
 1;
 

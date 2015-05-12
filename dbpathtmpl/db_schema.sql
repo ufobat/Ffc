@@ -37,6 +37,7 @@ CREATE TABLE "posts" (
   "topicid" int(11),
   "posted" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "altered" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "score" integer NOT NULL DEFAULT 0,
   "textdata" text NOT NULL,
   "cache" text
 );
@@ -109,4 +110,6 @@ INSERT INTO "config" ("key", "value")
   VALUES ('customcss','');
 INSERT INTO "config" ("key", "value") 
   VALUES ('starttopic','0');
+INSERT INTO "config" ("key", "value") 
+  VALUES ('maxscore','10');
 

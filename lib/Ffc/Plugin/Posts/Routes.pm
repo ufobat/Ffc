@@ -78,6 +78,12 @@ sub install_routes_posts {
     # ob er das auch tatsächlich machen will.
     $l->route("$start/upload/delete/:postid/:fileid", @startps, postid => $Ffc::Digqr, fileid => $Ffc::Digqr)->via('get')
       ->to(controller => $cname, action => 'delete_upload_check')->name("delete_upload_${cname}_check");
+
+    # Folgende Routen kümmern sich um die Beitragsbewertung
+    $l->route("/$start/score/increase/:postid", @startps, postid => $Ffc::Digqr)->via('get')
+      ->to(controller => $cname, action => 'inc_highscore')->name("inc_${cname}_highscore");
+    $l->route("/$start/score/decrease/:postid", @startps, postid => $Ffc::Digqr)->via('get')
+      ->to(controller => $cname, action => 'dec_highscore')->name("dec_${cname}_highscore");
 }
 
 1;

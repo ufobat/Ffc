@@ -229,4 +229,13 @@ pre, .code {
 .menu .ignored {
     background: gainsboro;
 }
+.score {
+    color: black;
+}
+.goodpost {
+    background: #ccffcc;
+}
+.badpost {
+    background: #ffcccc;
+}
 

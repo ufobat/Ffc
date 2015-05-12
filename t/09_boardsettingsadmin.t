@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 687;
+use Test::More tests => 771;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -39,6 +39,9 @@ my @Settings = (
     [ customcss => 'Eigene CSS-Stylesheet-Datei', 'text',
         [rstr(), rstr(), '', scalar('a' x 256)], [scalar('a' x 257)],
         'Die URL zur CSS-Datei darf höchstens 256 Zeichen lang sein' ],
+    [ maxscore => 'Bewertungslimit', 'number',
+        [10 + int( rand 90),110 + int(rand 90)],['asdf', ''],
+        'Die maximale Bewertung muss eine Ganzzahl sein' ],
 );
 
 note qq~checking that admins have input fields available for boardsettings~;

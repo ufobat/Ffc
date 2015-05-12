@@ -23,7 +23,15 @@
 % } elsif ( $controller eq 'forum' and $action ne 'upload_form' and $action ne 'delete_check' and $action ne 'search' ) {
             <a href="<%= url_for 'show_pmsgs', usertoid => $post->[1] %>">Privatnachricht</a>,
 % }
-            <a href="<%= url_for "display_$controller", postid => $post->[0], @$additional_params %>" target="_blank">verlinken</a>
+            <a href="<%= url_for "display_$controller", postid => $post->[0], @$additional_params %>" target="_blank">verlinken</a><% if ( $controller eq 'forum' ) { %>,
+%   if ( $post->[1] != session->{userid} ) {
+            <a href="<%= url_for "inc_${controller}_highscore", postid => $post->[0], @$additional_params %>" title="Bewertung erhöhen">+</a>
+%   }
+            <span class="score<%= $post->[10] > 0 ? ' goodpost' : '' %><%= $post->[10] < 0 ? ' badpost' : '' %>"><%= $post->[10] > 0 ? "+$post->[10]" : $post->[10] %></span>
+%   if ( $post->[1] != session->{userid} ) {
+            <a href="<%= url_for "dec_${controller}_highscore", postid => $post->[0], @$additional_params %>" title="Bewertung herabsetzen">-</a>
+%   }
+% }
         )</span>
 % }
     </h2>
