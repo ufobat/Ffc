@@ -24,6 +24,7 @@
             <a href="<%= url_for 'show_pmsgs', usertoid => $post->[1] %>">Privatnachricht</a>,
 % }
             <a href="<%= url_for "display_$controller", postid => $post->[0], @$additional_params %>" target="_blank">verlinken</a><% if ( $controller eq 'forum' ) { %>,
+            Bewertung:
 %   if ( $post->[1] != session->{userid} ) {
             <a href="<%= url_for "inc_${controller}_highscore", postid => $post->[0], @$additional_params %>" title="Bewertung erhöhen">+</a>
 %   }
