@@ -11,24 +11,24 @@
 % if ( ( $editurl or $delurl or $uplurl ) and $post->[1] == session()->{userid} ) {
 %  if ( $controller ne 'pmsgs' ) {
 %   if ( $editurl ) {
-            <a href="<%= url_for $editurl, postid => $post->[0], @$additional_params %>">bearbeiten</a>,
+            <a href="<%= url_for $editurl, postid => $post->[0], @$additional_params %>" title="Beitrag bearbeiten">Edit.</a>,
 %   }
 %   if ( $delurl ) {
-            <a href="<%= url_for $delurl, postid => $post->[0], @$additional_params %>">entfernen</a>,
+            <a href="<%= url_for $delurl, postid => $post->[0], @$additional_params %>" title="Beitrag löschen">Entf.</a>,
 %   }
 %  }
 %  if ( $uplurl ) {
-            <a href="<%= url_for $uplurl, postid => $post->[0], @$additional_params %>">anhängen</a>,
+            <a href="<%= url_for $uplurl, postid => $post->[0], @$additional_params %>" title="Datei an den Beitrag anhängen">Datei</a>,
 %  }
 % } elsif ( $controller eq 'forum' and $action ne 'upload_form' and $action ne 'delete_check' and $action ne 'search' ) {
-            <a href="<%= url_for 'show_pmsgs', usertoid => $post->[1] %>">Privatnachricht</a>,
+            <a href="<%= url_for 'show_pmsgs', usertoid => $post->[1] %>" title="Private Nachricht an den Beitragsautoren schreiben">Nachricht</a>,
 % }
-            <a href="<%= url_for "display_$controller", postid => $post->[0], @$additional_params %>" target="_blank">verlinken</a><% if ( $controller eq 'forum' ) { %>,
-            Bewertung:
+            <a href="<%= url_for "display_$controller", postid => $post->[0], @$additional_params %>" target="_blank" title="Direkter Link zum Beitrag">Link</a><% if ( $controller eq 'forum' ) { %>,
+            Score:
 %   if ( $post->[1] != session->{userid} ) {
             <a href="<%= url_for "inc_${controller}_highscore", postid => $post->[0], @$additional_params %>" title="Bewertung erhöhen">+</a>
 %   }
-            <span class="score<%= $post->[10] > 0 ? ' goodpost' : '' %><%= $post->[10] < 0 ? ' badpost' : '' %>"><%= $post->[10] > 0 ? "+$post->[10]" : $post->[10] %></span>
+            <span title="Bewertungswert des Beitrages" class="score<%= $post->[10] > 0 ? ' goodpost' : '' %><%= $post->[10] < 0 ? ' badpost' : '' %>"><%= $post->[10] > 0 ? "+$post->[10]" : $post->[10] %></span>
 %   if ( $post->[1] != session->{userid} ) {
             <a href="<%= url_for "dec_${controller}_highscore", postid => $post->[0], @$additional_params %>" title="Bewertung herabsetzen">-</a>
 %   }

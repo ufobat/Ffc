@@ -46,13 +46,13 @@ sub check_score {
     $t->get_ok('/topic/1')->status_is(200);
     my $score = $scores[$id][0];
     if ( $score > 0 ){
-        $score = qr~<span\s+class="score\s+goodpost">\+$score</span>~xmsi;
+        $score = qr~<span\s+title="Bewertungswert\s+des\s+Beitrages"\s+class="score\s+goodpost">\+$score</span>~xmsi;
     }
     elsif ( $score < 0 ) {
-        $score = qr~<span\s+class="score\s+badpost">$score</span>~xmsi;
+        $score = qr~<span\s+title="Bewertungswert\s+des\s+Beitrages"\s+class="score\s+badpost">$score</span>~xmsi;
     }
     else {
-        $score = qr~<span\s+class="score">0</span>~xmsi;
+        $score = qr~<span\s+title="Bewertungswert\s+des\s+Beitrages"\s+class="score">0</span>~xmsi;
     }
     if ( $show ) {
         $show = qr~<a\s+href="/topic/1/score/increase/$id"\s+title="Bewertung\s+erhöhen">\+</a>\s*$score\s*<a\s+href="/topic/1/score/decrease/$id"\s+title="Bewertung\s+herabsetzen">\-</a>~xmsi;
