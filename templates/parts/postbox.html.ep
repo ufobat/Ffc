@@ -11,10 +11,10 @@
 % if ( ( $editurl or $delurl or $uplurl ) and $post->[1] == session()->{userid} ) {
 %  if ( $controller ne 'pmsgs' ) {
 %   if ( $editurl ) {
-            <a href="<%= url_for $editurl, postid => $post->[0], @$additional_params %>" title="Beitrag bearbeiten">Edit.</a>,
+            <a href="<%= url_for $editurl, postid => $post->[0], @$additional_params %>" title="Beitrag bearbeiten">bearb.</a>,
 %   }
 %   if ( $delurl ) {
-            <a href="<%= url_for $delurl, postid => $post->[0], @$additional_params %>" title="Beitrag löschen">Entf.</a>,
+            <a href="<%= url_for $delurl, postid => $post->[0], @$additional_params %>" title="Beitrag löschen">entf.</a>,
 %   }
 %  }
 %  if ( $uplurl ) {
