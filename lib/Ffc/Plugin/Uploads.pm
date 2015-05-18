@@ -21,7 +21,7 @@ sub _is_inline {
 }
 
 sub _is_image {
-    return 1 if $_[1] =~ m/\Aimage/xmsio;
+    return 1 if $_[1] =~ m~\Aimage|\*/(?:jpe?g|bmp|gif|png)\z~xmsio;
     return;
 }
 
