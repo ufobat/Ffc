@@ -33,6 +33,6 @@
         <p>
             <textarea name="textdata" id="textinput" class="edit<%= $textdata ? ' inedit' : '' %>" ><%== $textdata // '' %></textarea>
         </p>
-        <p id="closetextap" class="textright nodisplay"><a href="#" class="buttonalike" id="closetextabutton" title="Textfeld wieder zusammen klappen">Textfeld einklappen</a></p>
+        <p id="closetextap" class="textright nodisplay"><button id="closetextabutton" title="Textfeld wieder zusammen klappen" type="button">Textfeld einklappen</button></p>
     </form>
 </div>
