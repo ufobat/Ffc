@@ -16,7 +16,7 @@ sub register {
 }
 
 sub _is_inline {
-    return 1 if $_[1] =~ m/\A(?:image|video|audio)/xmsio;
+    return 1 if $_[1] =~ m~\A(?:image|video|audio)|\*/(?:jpe?g|bmp|gif|png|mkv|avi|divx|ogg|ogv|mp3|flac|wav)\z~xmsio;
     return;
 }
 
