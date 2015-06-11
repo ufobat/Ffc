@@ -71,14 +71,13 @@ sub _pre_format_text {
     _xml_escape($s);
     my $o = '';
     my ( $ul, $ol, $q, $pre, $bq ) = ( 0, 0, 0, 0, 0 );
-    for my $s ( split /(?:\r?\n\r?)+/, $s ) {
-        # normal text
-        next if $s =~ m/\A\s*\z/xmso;
+    for my $s ( split /(?:\r?\n\r?)/, $s ) {
         
         my $mqs = 0;
         my $h3 = 0;
 
         unless ( $pre ) { # normal text gets formatted
+            next if $s =~ m/\A\s*\z/xmso;
 
             # multiline quote
             if ( !$q and $s =~ s~\A([^"]*)"([^"\s][^"]*)\z~$1„<span class="quote">$2~gxmso ) {
@@ -145,7 +144,7 @@ sub _pre_format_text {
         } # end of normal text (no pre)
         
         # preformatted text
-        if ( $s =~ m/\A\s(.+?)\s*\z/xmso ) {
+        if ( $s =~ m/\A\s(.*)\z/xmso ) {
             unless ( $pre ) {
                 $pre = 1;
                 $o .= "<pre>\n";
