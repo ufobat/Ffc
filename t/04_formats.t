@@ -245,7 +245,8 @@ Hahaha
 | zitat
 oder nicht?
 
-  was?
+ #!/usr/bin/env perl
+ use 5.020;
 
 ~;
     my $controlstring = qq~<ul>
@@ -281,7 +282,8 @@ Hallo
 </blockquote>
 <p>oder nicht?</p>
 <pre>
- was?
+#!/usr/bin/env perl
+use 5.020;
 </pre>~;
     $t->post_ok('/pre_format', form => { text => $teststring, urlshorten => 30 })->content_is($controlstring);
 

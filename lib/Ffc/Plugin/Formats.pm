@@ -103,7 +103,7 @@ sub _pre_format_text {
             $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxeos;
 
             # unordered lists
-            if ( $s =~ m/\A\s*-\s*(.+)\z/xmso ) {
+            if ( $s =~ m/\A-\s*(.+)\z/xmso ) {
                 unless ( $ul ) {
                     $ul = 1;
                     $o .= "<ul>\n";
@@ -116,7 +116,7 @@ sub _pre_format_text {
             }
 
             # ordered lists
-            if ( $s =~ m/\A\s*\#\s*(.+)\z/xmso ) {
+            if ( $s =~ m/\A\#\s*(.+)\z/xmso ) {
                 unless ( $ol ) {
                     $ol = 1;
                     $o .= "<ol>\n";
