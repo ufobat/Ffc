@@ -36,7 +36,7 @@ sub favicon_upload {
     my $c = shift;
     my ( $filename, $filetype, $contenttype ) 
         = $c->file_upload(
-            'faviconfile', 'Favoriten-Icon', 100, 50000, 8, 80, 
+            'faviconfile', 'Favoriten-Icon', 100, 0.25, 8, 80, 
             sub { 
                 unless ( $_[0]->is_image($_[3]) ) {
                     $_[0]->set_error_f('Datei ist keine Bilddatei, muss PNG, JPG, BMP, ICO oder GIF sein.');

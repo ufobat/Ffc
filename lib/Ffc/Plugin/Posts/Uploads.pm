@@ -52,7 +52,7 @@ sub _upload_post_do {
         return [ 'uploads', $fileid ];
     };
     my ( $filename )
-        = $c->file_upload( 'attachement', 'Dateianhang', 1, 100000000, 2, 200, $filepathsub);
+        = $c->file_upload( 'attachement', 'Dateianhang', 1, $c->configdata->{maxuploadsize}, 2, 200, $filepathsub);
     unless ( $filename ) {
         $c->dbh_do('DELETE FROM "attachements" WHERE "id"=?', $fileid) if defined $fileid;
         return _redirect_to_show($c);

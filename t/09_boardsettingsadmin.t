@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 771;
+use Test::More tests => 855;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -42,6 +42,9 @@ my @Settings = (
     [ maxscore => 'Bewertungslimit', 'number',
         [10 + int( rand 90),110 + int(rand 90)],['asdf', ''],
         'Die maximale Bewertung muss eine Ganzzahl sein' ],
+    [ maxuploadsize => 'Maximale Dateigröße in Megabyte', 'number',
+        [10 + int( rand 90),110 + int(rand 90)],['asdf', ''],
+        'Die Dateigröße wird in Megabyte angegeben und muss eine Zahl sein' ],
 );
 
 note qq~checking that admins have input fields available for boardsettings~;

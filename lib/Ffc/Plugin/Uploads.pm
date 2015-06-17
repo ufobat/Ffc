@@ -42,8 +42,8 @@ sub _file_upload {
         $c->set_error_f("Datei ist zu klein, sollte mindestens ${min_s}B groß sein.");
         return;
     }
-    if ( $file->size > $max_s ) {
-        $c->set_error_f("Datei ist zu groß, darf maximal ${max_s}B groß sein.");
+    if ( $file->size > $max_s * 1024 * 1024 ) {
+        $c->set_error_f("Datei ist zu groß, darf maximal ${max_s}MB groß sein.");
         return;
     }
 

@@ -112,4 +112,6 @@ INSERT INTO "config" ("key", "value")
   VALUES ('starttopic','0');
 INSERT INTO "config" ("key", "value") 
   VALUES ('maxscore','10');
+INSERT INTO "config" ("key", "value") 
+  VALUES ('maxuploadsize','3');
 

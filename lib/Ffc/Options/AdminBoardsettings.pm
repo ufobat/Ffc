@@ -32,6 +32,10 @@ our @Settings = (
         'Link zu einer CSS-Datei für eigene Stylesheet-Angaben ändern',
         'Dieser Link wird verwendet, um, falls da was angegeben ist, zusätzlich zum Foren-Stylesheet eine weitere Datei einzubinden, in der man mit eigenen CSS-Angaben das Aussehen des Forums noch sehr viel detaillierter anpassen kann',
         'Die URL zur CSS-Datei darf höchstens 256 Zeichen lang sein' ],
+    [ maxuploadsize => 'Maximale Dateigröße in Megabyte', qr(\A\d+\z)xmso, 1, 'number',
+        'Maximale Größe von hochzuladenden Dateien ändern',
+        'Die maximale Größe, die eine Datei haben kann, die hochgeladen werden soll',
+        'Die Dateigröße wird in Megabyte angegeben und muss eine Zahl sein' ],
 );
 
 {

@@ -53,7 +53,7 @@ sub avatar_upload {
     
     my ( $filename, $filetype ) 
         = $c->file_upload(
-            'avatarfile', 'Avatarbild', 100, 150000, 8, 80, 
+            'avatarfile', 'Avatarbild', 100, 1, 8, 80, 
             sub { 
                 unless ( $_[0]->is_image($_[3]) ) {
                     $_[0]->set_error_f('Datei ist keine Bilddatei, muss PNG, JPG, BMP, ICO oder GIF sein.');
