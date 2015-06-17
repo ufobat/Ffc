@@ -83,8 +83,8 @@ favicon_ok();
 
 note 'favicondatei zu groß';
 logina();
-favicon_upload(('a' x (150 * 1000 + 1)),'');
-error('Datei ist zu groß, darf maximal 50000B groß sein.');
+favicon_upload(('a' x (0.25 * 1024 * 1024 + 1)),'');
+error('Datei ist zu groß, darf maximal 0.25MB groß sein.');
 favicon_ok();
 loginu();
 favicon_ok();

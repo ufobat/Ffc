@@ -120,14 +120,14 @@ sub file_db_ok {
     $fn = (splitdir $fn )[-1];
     $t->post_ok('/avatar/upload', form => {
             avatarfile => {
-                file => Mojo::Asset::Memory->new->add_chunk('a' x (150 * 1000 + 1)),
+                file => Mojo::Asset::Memory->new->add_chunk('a' x (1024 * 1024 + 1)),
                 filename => $fn,
                 content_type => 'image/png',
             }
         }
     )->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200);
-    error('Datei ist zu groß, darf maximal 150000B groß sein.');
+    error('Datei ist zu groß, darf maximal 1MB groß sein.');
     is file_db_ok($fn, $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
     ok !@dirlist, 'no files in storage directory';
