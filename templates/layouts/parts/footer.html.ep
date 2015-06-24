@@ -1,4 +1,3 @@
-<div class="pagestretch"><% for ( 0 .. 50 ) { %><p>x</p><% } %></div>
   </body>
 </html>
 

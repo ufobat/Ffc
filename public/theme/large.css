@@ -164,9 +164,6 @@ input[type="text"].titlestring {
 .menuentry:hover .popup {
     display: block;
 }
-.pagestretch {
-    display: none;
-}
 .pages {
     padding-top: .1em;
     padding-bottom: .1em;

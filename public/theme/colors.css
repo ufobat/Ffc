@@ -191,11 +191,6 @@ pre, .code {
 .functionlinks {
     font-weight: normal;
 }
-.pagestretch {
-    color: transparent;
-    border: none;
-    background: none;
-}
 .pages, .menu {
     background: #f0f0f0;
 }
