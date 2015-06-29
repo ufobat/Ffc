@@ -54,10 +54,10 @@ for my $u ( @$users ) {
         }
     }
     if ( $count_pmsgs or $count_forum ) {
-        say "Neuigkeiten ($count_pmsgs, $count_forum) für $u->[0] ($u->[1], $u->[2]).";
+        say "Neuigkeiten ($count_pmsgs, $count_forum) fuer $u->[0] ($u->[1], $u->[2]).";
     }
     else {
-        say "Nichts neues für $u->[0] ($u->[1], $u->[2]).";
+        say "Nichts neues fuer $u->[0] ($u->[1], $u->[2]).";
         next;
     }
     my $smtp = Net::SMTP->new($host) or die "Could not start to mail: $!";
@@ -79,10 +79,10 @@ for my $u ( @$users ) {
         $smtp->datasend("es warten $count_pmsgs neue private Nachrichten\n");
     }
     $smtp->datasend("bei $title auf dich.\n\n");
-    $smtp->datasend("Viel Spaß beim lesen.\n\n");
+    $smtp->datasend("Viel Spass beim lesen.\n\n");
     $smtp->dataend();
     $smtp->quit or say "Could not send mail: $!";
-    say "Information über $count_forum Beiträge  und $count_pmsgs Nachrichten  an $u->[0] ($u->[1], $u->[2]) verschickt.";
+    say "Information über $count_forum Beitraege  und $count_pmsgs Nachrichten  an $u->[0] ($u->[1], $u->[2]) verschickt.";
 }
 
 done_testing( 2 + @$users );
