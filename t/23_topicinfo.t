@@ -31,13 +31,13 @@ $t->post_ok('/topic/new', form => {titlestring => $Topics[0], textdata => $Artic
 $t->header_like( Location => qr{\A/topic/1}xms );
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~)
-  ->content_like(qr~<p class="smallfont">Neuester Beitrag: $user1, $timeqr</p>~);
+  ->content_like(qr~$user1, $timeqr~);
 ch_nfo('Ein neuer Beitrag wurde erstellt');
 
 login2();
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~<a href="/topic/1">$Topics[0]</a>\s*<span class="smallfont">\(\s*Neu: <span class="mark">1</span>~)
-  ->content_like(qr~<p class="smallfont">Neuester Beitrag: $user1, $timeqr</p>~);
+  ->content_like(qr~<span class="smallfont">\(\s*Neu: <span class="mark">1</span>,\s*$user1, $timeqr,\s*~)
+  ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~);
 $t->get_ok('/topic/1')->status_is(200)->content_like(qr~$Articles[0][0]~);
 $t->post_ok('/topic/1/new', form => {textdata => $Articles[0][0]})
   ->status_is(302)->header_like(Location => qr~/topic/1~);
@@ -45,12 +45,12 @@ $t->get_ok('/topic/1')->status_is(200)->content_like(qr~$Articles[0][0]~);
 ch_nfo('Ein neuer Beitrag wurde erstellt');
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~)
-  ->content_like(qr~<p class="smallfont">Neuester Beitrag: $user2, $timeqr</p>~);
+  ->content_like(qr~$user2, $timeqr,~);
 
 login1();
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~<a href="/topic/1">$Topics[0]</a>\s*<span class="smallfont">\(\s*Neu: <span class="mark">1</span>~)
-  ->content_like(qr~<p class="smallfont">Neuester Beitrag: $user2, $timeqr</p>~);
+  ->content_like(qr~<span class="smallfont">\(\s*Neu: <span class="mark">1</span>,\s*$user2, $timeqr,\s*~)
+  ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~);
 $t->get_ok('/topic/1')->status_is(200)->content_like(qr~$Articles[0][0]~);
 $t->post_ok('/topic/1/new', form => {textdata => $Articles[0][0]})
   ->status_is(302)->header_like(Location => qr~/topic/1~);
@@ -66,10 +66,10 @@ $t->get_ok('/topic/1')->status_is(200)->content_like(qr~$Articles[0][0]~);
 ch_nfo('Ein neuer Beitrag wurde erstellt');
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~)
-  ->content_like(qr~<p class="smallfont">Neuester Beitrag: $user1, $timeqr</p>~);
+  ->content_like(qr~$user1, $timeqr,~);
 
 login2();
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~<a href="/topic/1">$Topics[0]</a>\s*<span class="smallfont">\(\s*Neu: <span class="mark">3</span>~)
-  ->content_like(qr~<p class="smallfont">Neuester Beitrag: $user1, $timeqr</p>~);
+  ->content_like(qr~<span class="smallfont">\(\s*Neu: <span class="mark">3</span>,\s*$user1, $timeqr,\s*~)
+  ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~);
 

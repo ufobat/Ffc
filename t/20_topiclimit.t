@@ -27,10 +27,10 @@ sub check_topics {
     for my $i ( 0 .. $#topics ) {
         my $id = $i + 1;
         if ( $i >= $start and $i <= $end ) {
-            $t->content_like(qr~<h2(?: class="newpost")?>\s*<a href="/topic/$id">$topics[$i]</a>~);
+            $t->content_like(qr~<a href="/topic/$id">$topics[$i]</a>\s*</h2>~);
         }
         else {
-            $t->content_unlike(qr~<h2(?: class="newpost")?>\s*<a href="/topic/$id">$topics[$i]</a>~);
+            $t->content_unlike(qr~<a href="/topic/$id">$topics[$i]</a>\s*</h2>~);
         }
     }
     note 'check popup topics';

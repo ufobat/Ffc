@@ -128,7 +128,7 @@ img.smiley, img.icon {
     font-size: 1em;
     clear: both;
 }
-.topiclist h2 .smallfont {
+.topiclist .smallfont {
     float: right;
 }
 .popup {

@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 my $t = require Posttest;
 
 use Test::Mojo;
-use Test::More tests => 2145;
+use Test::More tests => 2230;
 
 my $cname = 'forum';
 
@@ -126,15 +126,20 @@ sub check_env {
 sub check_for_topic_count {
     my ( $t, $top, $i, $new ) = @_;
     if ( $new ) {
-        $t->content_like(qr~$top->[0]\s*</a>\s*\.\.\.\s*\(<span\s+class="mark">$new</span>\)\s*</p>~xms);
-        $t->content_like(qr~$top->[0]</a>\s*
+        $t->content_like(qr~$top->[0]\s*</a>\s*\.\.\.\s*\(<span\s+class="mark">$new</span>\)\s*</p>~xms)
+          ->content_like(qr~href="/topic/$i">$top->[0]</a>\s*</h2>~)
+          ->content_like(qr~
                 <span\s+class="smallfont">\(\s*Neu:\s+<span\s+class="mark">$new</span>,
+                \s*\w+,\s*[.\d:]+,\s*
                 \s+<a\s+href="/topic/$i/(?:un)?(?:ignore|pin)"~xms);
     }
     else {
         $t->content_like(qr~$top->[0]\s*</a>\s*\.\.\.\s*</p>~xms)
-          ->content_like(qr~$top->[0]</a>\s*
-                <span\s+class="smallfont">\(\s*<a\s+href="/topic/$i/(?:un)?(?:ignore|pin)"~xms);
+          ->content_like(qr~href="/topic/$i">$top->[0]</a>\s*</h2>~)
+          ->content_like(qr~
+                <span\s+class="smallfont">\(\s*
+                \s*\w+,\s*[.\d:]+,\s*
+                <a\s+href="/topic/$i/(?:un)?(?:ignore|pin)"~xms);
     }
 }
 

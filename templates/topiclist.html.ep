@@ -9,10 +9,12 @@
 <div class="postbox topiclist">
 % for my $t ( @$topics_for_list ) {
     <h2<%== $t->[10] ? qq~ class="$t->[10]"~ : '' %>>
-        <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"><%= $t->[2] %></a>
         <span class="smallfont">(
 % if ( $t->[3] and not $t->[5] ) {
             Neu: <span class="mark"><%= $t->[3] %></span>,
+% }
+% if ( $t->[8] or $t->[9] ) {
+            <%= $t->[8] %>, <%= $t->[9] %>,
 % }
 % unless ( $t->[5] ) {
 %   if ( $t->[6] ) {
@@ -33,10 +35,8 @@
 %   }
 % }
         )</span>
+        <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"><%= $t->[2] %></a>
     </h2>
-%   if ( $t->[8] or $t->[9] ) {
-    <p class="smallfont">Neuester Beitrag: <%= $t->[8] %>, <%= $t->[9] %></p>
-%   }
 % }
 </div>
 % }
