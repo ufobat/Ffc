@@ -60,23 +60,27 @@ sub _generate_topiclist {
         SELECT t."id", t."userfrom", t."title",
             COUNT(p."id"), t."lastid",
             COALESCE(l."ignore",0), COALESCE(l."pin",0),
-            UPPER(t."title") as "uctitle"
+            UPPER(t."title") as "uctitle",
+            u."name", p2."posted"
         FROM "topics" t
         LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=t."id"
         LEFT OUTER JOIN "posts" p ON p."userfrom"<>? AND p."topicid"=t."id" AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",0)
+        LEFT OUTER JOIN "posts" p2 ON p2."id"=t."lastid"
+        LEFT OUTER JOIN "users" u ON p2."userfrom"=u."id"
 EOSQL
         . ( $query ? << 'EOSQL' : '' )
         WHERE "uctitle" LIKE ?
 EOSQL
         . << 'EOSQL'
-        GROUP BY t."id", t."userfrom", t."title", l."ignore", l."pin", t."lastid"
+        GROUP BY t."id", t."userfrom", t."title", l."ignore", l."pin", t."lastid", p2."posted", u."name"
         ORDER BY COALESCE(l."pin", 0) DESC, COALESCE(l."ignore",0) ASC, t."lastid" DESC
         LIMIT ? OFFSET ?
 EOSQL
         , ( $session->{userid} ) x 2, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit
     );
     for my $t ( @$tlist ) {
-        $t->[8] = join ' ',
+        $t->[9] = $c->format_timestamp($t->[9]);
+        $t->[10] = join ' ',
             ( $t->[3]            ? 'newpost'    : () ),
             ( $t->[5]            ? 'ignored'    : () ),
             ( $t->[6]            ? 'pin'        : () ),
