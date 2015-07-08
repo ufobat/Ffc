@@ -55,8 +55,17 @@ p {
     margin: .5em 0;
     padding: .5em 0;
 }
-.userlist p, .topiclist .smallfont {
+.userlist p, .topiclist h2 .smallfont {
     text-align: right;
+}
+.topiclist > h2 {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    background: whitesmoke;
+}
+.topiclist > p {
+    background: whitesmoke;
+    margin-top: 0;
 }
 h2 .smallfont, .functionlinks {
     display: block;
