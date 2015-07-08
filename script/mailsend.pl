@@ -67,16 +67,21 @@ for my $u ( @$users ) {
     $smtp->datasend("Subject: Neue Nachrichten in $title\n");
     $smtp->datasend("To: $u->[1]\n");
     $smtp->datasend("\n");
-    $smtp->datasend("Hallo $u->[0],\n\n");
-    if ( $count_pmsgs and $count_forum ) {
-        $smtp->datasend("es warten $count_forum neue Forennachrichten\n");
-        $smtp->datasend("und $count_pmsgs neue private Nachrichten\n");
-    }
-    elsif ( not $count_pmsgs ) {
-        $smtp->datasend("es warten $count_forum neue Forennachrichten\n");
+    $smtp->datasend("Hallo $u->[0],\n\nes ");
+    if ( $count_forum ) {
+        $count_forum == 1
+          ? $smtp->datasend("es wartet eine neue Forennachricht\n")
+          : $smtp->datasend("es warten $count_forum neue Forennachrichten\n");
+        if ( $count_pmsgs ) {
+            $count_pmsgs == 1
+              ? $smtp->datasend("und eine neue private Nachricht\n")
+              : $smtp->datasend("und $count_pmsgs neue private Nachrichten\n");
+        }
     }
     else {
-        $smtp->datasend("es warten $count_pmsgs neue private Nachrichten\n");
+        $count_pmsgs == 1
+          ? $smtp->datasend("es wartet eine neue private Nachricht\n")
+          : $smtp->datasend("es warten $count_pmsgs neue private Nachrichten\n");
     }
     $smtp->datasend("bei $title auf dich.\n\n");
     $smtp->datasend("Viel Spass beim lesen.\n\n");
