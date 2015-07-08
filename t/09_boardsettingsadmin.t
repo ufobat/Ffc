@@ -118,10 +118,10 @@ for my $s ( @Settings ) {
         }
         if ( $key eq 'backgroundcolor' ) {
             if ( $i ) {
-                $t->content_like(qr~<style type="text/css">body { background-color: $i }</style>~);
+                $t->content_like(qr~<style type="text/css">body \{ background-color: $i \}</style>~);
             }
             else {
-                $t->content_unlike(qr~<style type="text/css">body { background-color: $i }</style>~);
+                $t->content_unlike(qr~<style type="text/css">body \{ background-color: $i \}</style>~);
             }
         }
         $t->get_ok('/config')
