@@ -3,7 +3,7 @@ use strict; use warnings; use utf8;
 
 our @Settings = (
 #   [ optkey => realname, valid-regex, regexcheck, inputtype
-#               optionsheading, optionsexplaination, errormessage ],
+#               optionsheading, optionsexplaination, errormessage, optsub ],
     [ title => 'Webseitentitel', qr(\A.{2,256}\z)xmso, 1, 'text',
         'Webseitentitel ändern',
         'Diese Überschrift wird üblicherweise in der Titelleiste des Browserfensters und dergleichen dargestellt',
@@ -11,11 +11,13 @@ our @Settings = (
     [ cookiename => 'Cookie-Name', qr(\A.{2,256}\z)xmso, 1, 'text',
         'Name für Cookies ändern',
         'Hier kann der Name für Cookies geändert werden, über den die Anmeldungen verwaltet werden. Der Name sollte geändert werden, falls mehrere Foren parallel betrieben werden',
-        'Der Name für Cookies muss zwischen zwei und 256 Zeichen lang sein' ],
+        'Der Name für Cookies muss zwischen zwei und 256 Zeichen lang sein',
+        sub { $_[0]->app->sessions->cookie_name($_[2] || $Ffc::Plugin::Config::Defaults{cookiename}) }, ],
     [ sessiontimeout => 'Maximale Benutzersitzungsdauer', qr(\A\d+\z)xmso, 1, 'number',
         'Maximale Länge einer Benutzersitzung bei Untätigkeit ändern',
         'Hier kann die Zeit (in Sekunden) angegeben werden, bis eine Benutzersitzung abgelaufen ist, wenn ein Benutzer den Browser schließt, ohne sich abzumelden',
-        'Die Zeit der Benutzersitzungsmaximallänge muss eine Zahl in Sekunden sein' ],
+        'Die Zeit der Benutzersitzungsmaximallänge muss eine Zahl in Sekunden sein',
+        sub { $_[0]->app->sessions->default_expiration($_[2] || $Ffc::Plugin::Config::Defaults{sessiontimeout}) }, ],
     [ maxscore => 'Bewertungslimit', qr(\A\d+\z)xmso, 1, 'number',
         'Maximal mögliche Berwertung in positive und negative Richtung',
         'Hierüber kann eingestellt werden, wie weit Bewertungen von Beiträgen gehen dürfen in positive sowie umgekehrt in negative Richtung',
@@ -52,7 +54,7 @@ sub boardsettingsadmin {
         $c->redirect_to('options_form');
         return; # theoretisch nicht möglich laut routen
     }
-    my ( $tit, $re, $rechk, $err ) = @{$setting[0]}[1,2,3,7];
+    my ( $tit, $re, $rechk, $err, $sub ) = @{$setting[0]}[1,2,3,7,8];
     unless ( $tit ) {
         $c->redirect_to('options_form');
         return; # theoretisch nicht möglich laut routen
@@ -61,6 +63,9 @@ sub boardsettingsadmin {
         $c->dbh_do('UPDATE "config" SET "value"=? WHERE "key"=?',
             $optvalue, $optkey);
         $c->configdata->{$optkey} = $optvalue;
+        if ( $sub ) {
+            $sub->($c, $optkey, $optvalue);
+        }
         $c->set_info_f("$tit geändert");
     }
     else {

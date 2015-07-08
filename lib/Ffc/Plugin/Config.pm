@@ -15,6 +15,7 @@ our %Defaults = (
     backgroundcolor => '',
     starttopic      => 0,
     maxscore        => 10,
+    cookiename      => 'ffc_cookie',
 );
 
 sub register {
