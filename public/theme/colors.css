@@ -134,6 +134,9 @@ h2.newpinpost {
     background: lightyellow;
     border-color: orange;
 }
+.topiclist p.smallfont {
+    background: whitesmoke;
+}
 .mark {
     font-weight: bolder;
 }
