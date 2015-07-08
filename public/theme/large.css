@@ -187,6 +187,9 @@ input[type="text"].titlestring {
     display: block;
     margin-top: .75em;
 }
+.topiclist p.smallfont {
+    margin-left: 2em;
+}
 /* Editbuttons */
 .buttonalike, .buttonalike:active, .buttonalike:focus {
     margin-bottom: .25em;
