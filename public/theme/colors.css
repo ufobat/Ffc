@@ -23,6 +23,7 @@ h2 {
 }
 .topiclist h2:hover, .userlist h2:hover {
     background: whitesmoke;
+    border-color: whitesmoke;
 }
 h3 {
     text-decoration: underline;
