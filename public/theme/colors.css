@@ -21,7 +21,7 @@ h1, h2, h3 {
 h2 {
     color: gray;
 }
-h2:hover {
+.topiclist h2:hover {
     background: whitesmoke;
 }
 h3 {
