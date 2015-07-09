@@ -10,7 +10,7 @@ body {
     width: 50em;
     height: 30em;
     margin: 0 auto;
-    padding: .5em auto;
+    padding: .5em;
 }
 table {
     border-collapse: collapse;
