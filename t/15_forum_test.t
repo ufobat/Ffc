@@ -130,7 +130,7 @@ sub check_for_topic_count {
           ->content_like(qr~href="/topic/$i">$top->[0]</a>\s*</h2>~)
           ->content_like(qr~
                 <span\s+class="smallfont">\(\s*Neu:\s+<span\s+class="mark">$new</span>,
-                \s*\w+,\s*[.\d:]+,\s*
+                \s*\w+,\s*(?:[.\d:]+|jetzt),\s*
                 \s+<a\s+href="/topic/$i/(?:un)?(?:ignore|pin)"~xms);
     }
     else {
@@ -138,7 +138,7 @@ sub check_for_topic_count {
           ->content_like(qr~href="/topic/$i">$top->[0]</a>\s*</h2>~)
           ->content_like(qr~
                 <span\s+class="smallfont">\(\s*
-                \s*\w+,\s*[.\d:]+,\s*
+                \s*\w+,\s*(?:[.\d:]+|jetzt),\s*
                 <a\s+href="/topic/$i/(?:un)?(?:ignore|pin)"~xms);
     }
 }
