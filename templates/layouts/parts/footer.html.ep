@@ -1,3 +1,4 @@
+   <div class="pagestretch"><p><%== join '</p><p>', ('&nbsp;') x 64 %></p></div>
   </body>
 </html>
 

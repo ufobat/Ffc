@@ -90,4 +90,7 @@ img {
 .editbuttons, #closetextap {
     display: none;
 }
-
+.pagestretch {
+    background: transparent;
+    border: none;
+}
