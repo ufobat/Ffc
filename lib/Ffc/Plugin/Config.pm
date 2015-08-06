@@ -147,7 +147,7 @@ sub _data_return {
         $c->render_json($data);
     }
     else {
-        $self->render(template => $template);
+        $c->render(template => $template);
     }
 }
 
