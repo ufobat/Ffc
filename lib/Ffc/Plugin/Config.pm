@@ -43,8 +43,9 @@ sub register {
         }
     }
 
-    $app->helper(datapath   => sub { $datapath  });
-    $app->helper(configdata => sub { $config    });
+    $app->helper(datapath    => sub { $datapath  });
+    $app->helper(configdata  => sub { $config    });
+    $app->helper(data_return => \&_data_return    );
 
     $app->helper(dbh                    => sub { dbh($self) }        );
     $app->helper(dbh_selectall_arrayref => \&_dbh_selectall_arrayref );
@@ -137,6 +138,17 @@ sub _dbh_do {
     $sth->execute( @_ ) or die $sth->errstr;
     $sth->finish;
 }
+}
+
+sub _data_return {
+    my ( $c, $template, $data ) = @_;
+    my $h = $c->req->headers->header('X-Requested-With');
+    if ( $h and $h eq 'XMLHttpRequest' ) {
+        $c->render_json($data);
+    }
+    else {
+        $self->render(template => $template);
+    }
 }
 
 1;
