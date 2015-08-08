@@ -27,7 +27,7 @@ But there are lots of features missing, there are lots of flaws in the overall s
 
 First of all the software lacks multilingualism. This one was missing right at the start of the design phase, so this is my fault. Regarding the design phase: The structure of the code is far from perfect and needs some serious revamping.The code itself is - even in it's third iteration - ugly as hell. Finally, it is necessary to set up AJAX components for the board and message functions (besides the already existing components for the chat). This should pave the way to expand to further target systems like mobile apps.
 
-The project is up and stable for several years now. The ideas have proven to be valuable for a specific audience, and I do see an urgent need for private and personal communication aside from the big players. I hope I can get some help on that vision. Thanks in advance
+The project is up and stable for several years now. The ideas have proven to be valuable for a specific audience, and I do see an urgent need for private and personal communication aside from the big players. I hope I can get some help on that vision. Thanks in advance.
 
 Copyright und Lizenz
 ====================
