@@ -389,7 +389,8 @@ sub check_pages {
                 next if $i < 0;
                 my $e = $entries[$i];
                 next unless $e;
-                $t->content_like(qr/$e->[1]/);
+                $t->content_like(qr/$e->[1]/)
+                  ->content_like(qr~$Urlpref/display/$e->[0]~);
                 check_attachements($e->[4]);
                 $t->get_ok( $plink )->status_is(200);
                 check_delattachements();
