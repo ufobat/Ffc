@@ -11,6 +11,7 @@ use Ffc::Forum;
 use Ffc::Pmsgs;
 use Ffc::Notes;
 use Ffc::Chat;
+use Ffc::Quickview;
 
 our $Digqr = qr/\d+/xmso;
 our $Usrqr = qr(\w{2,32})xmso;
@@ -38,6 +39,7 @@ sub _install_routes {
     Ffc::Pmsgs::install_routes($l);
     Ffc::Notes::install_routes($l);
     Ffc::Chat::install_routes($l);
+    Ffc::Quickview::installroutes($l);
     _install_routes_helper($l);
 }
 
