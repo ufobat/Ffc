@@ -13,7 +13,7 @@ my ( $user, $pass ) = qw(test test1234);
 sub admin_login { Testinit::test_login(  $t, $admin, $apass             ) }
 sub user_login  { Testinit::test_login(  $t, $user,  $pass              ) }
 sub logout      { Testinit::test_logout( $t                             ) }
-sub error_login { Testinit::test_error(  $t, 'Fehler bei der Anmeldung' ) }
+sub error_login { $t->content_like(        qr'Fehler bei der Anmeldung' ) }
 sub error       { Testinit::test_error(  $t, @_                         ) }
 sub info        { Testinit::test_info(   $t, @_                         ) }
 sub trandstr    { Testinit::test_randstring(                            ) }
