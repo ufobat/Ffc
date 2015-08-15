@@ -1,6 +1,10 @@
-%= include 'layouts/parts/header';
-%= include 'layouts/parts/titlebanner';
-%= include 'parts/messageboxes'
-%= content
-%= include 'layouts/parts/footer';
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Anmeldung</title>
+  </head>
+  <body>
+    <!-- Angemeldet als "<%= session()->{user} || '<noone>' %>" !-->
+<%= content %>  </body>
+</html>
 

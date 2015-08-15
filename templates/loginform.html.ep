@@ -1,14 +1,17 @@
 % layout 'login';
-<div class="postbox headbox" id="headbox">
-    <h1>Anmeldebereich</h1>
-    <p>Melden Sie sich hier mit dem Benutzernamen und Passwort an, welches Sie von einem Administrator des Forums erhalten haben.</p>
-</div>
-<div class="postbox loginform">
-    <h2 class="title">Anmeldung</h2>
-%= form_for login => begin
+    <h1>Anmeldung</h1>
+% if ( $error or flash('error') ) {
+    <p><%= $error %> <%= flash('error') %></p>
+% }
+% if ( $warning or flash('warning') ) {
+    <p><%= $warning %> <%= flash('warning') %></p>
+% }
+% if ( $info or flash('info') ) {
+    <p><%= $info %> <%= flash('info') %></p>
+% }
+    <form action="<%= url_for 'login' %>" method="POST">
     <p>Benutzer: <input type="text" name="username" class="loginfield" /></p>
     <p>Passwort: <input type="password" name="password" class="loginfield" /></p>
     <p><input type="submit" value="anmelden" class="linkalike" /></p>
-% end 
-</div>
+    </form>
 
