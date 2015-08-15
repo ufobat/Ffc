@@ -33,6 +33,7 @@ h3 {
 }
 textarea {
     resize: vertical;
+    padding: .1em;
 }
 a > img {
     border: .1em steelblue solid;
