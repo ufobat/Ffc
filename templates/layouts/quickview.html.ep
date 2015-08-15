@@ -10,7 +10,7 @@
         var mytime  = new Date();
         var myh = mytime.getHours(), mym = mytime.getMinutes();
         document.getElementsByTagName("title")[0].firstChild.data
-          += ', zuletzt aktualisiert ' 
+          += ', ' 
           + ( myh < 10 ? '0'+myh : myh ) 
           + ':' + ( mym < 10 ? '0'+mym : mym );
         window.setInterval(function(){
