@@ -1,5 +1,0 @@
-%= include 'layouts/parts/header';
-%= include 'layouts/parts/titlebanner';
-%= include 'parts/messageboxes'
-%= content
-%= include 'layouts/parts/footer';

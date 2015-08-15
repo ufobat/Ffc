@@ -12,4 +12,17 @@
     <p>Keine neuen Beiträge</p>
 % }
     <p><a href="<%= url_for 'show' %>">Forum öffnen</a></p>
+    <script type="text/javascript">
+      "use strict";
+      window.onload = function(){
+        var mytime  = new Date();
+        var myh = mytime.getHours(), mym = mytime.getMinutes();
+        document.getElementsByTagName("title")[0].firstChild.data
+          += ', ' + myh + ':' + ( mym < 10 ? '0'+mym : mym );
+        window.setInterval(
+          function(){ location.reload(); },
+          <%= session()->{autorefresh} || 3 %> * 60000
+        )
+      };
+    </script>
 
