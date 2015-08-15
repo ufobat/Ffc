@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 151;
+use Test::More tests => 133;
 use Test::Mojo;
 
 my ( $t, $path, $admin, $pass, $dbh ) = Testinit::start_test();
@@ -29,13 +29,13 @@ $t->content_like(qr~Bitte melden Sie sich an~);
 note 'failed login with wrong password';
 $t->post_ok('/login', form => { username => $admin, password => "#$pass#" });
 check_notloggedin();
-Testinit::test_error($t,'Fehler bei der Anmeldung');
+$t->content_like(qr'Fehler bei der Anmeldung');
 $t->get_ok('/');
 check_notloggedin();
 note 'failed login with noneexisting username';
 $t->post_ok('/login', form => { username => "#$admin#", password => $pass });
 check_notloggedin();
-Testinit::test_error($t,'Fehler bei der Anmeldung');
+$t->content_like(qr'Fehler bei der Anmeldung');
 $t->get_ok('/');
 check_notloggedin();
 note 'working login';
@@ -49,13 +49,13 @@ $t->get_ok('/logout');
 check_notloggedin();
 note 'again failed login with wrong password';
 $t->post_ok('/login', form => { username => $admin, password => "#$pass#" });
-Testinit::test_error($t,'Fehler bei der Anmeldung');
+$t->content_like(qr'Fehler bei der Anmeldung');
 check_notloggedin();
 
 note 'failed login with inactive user';
 $dbh->do('UPDATE users SET active=0 WHERE UPPER(name)=UPPER(?)', undef, $admin);
 $t->post_ok('/login', form => { username => $admin, password => $pass });
-Testinit::test_error($t,'Fehler bei der Anmeldung');
+$t->content_like(qr'Fehler bei der Anmeldung');
 check_notloggedin();
 note 'working login with active user';
 $dbh->do('UPDATE users SET active=1 WHERE UPPER(name)=UPPER(?)', undef, $admin);
@@ -69,7 +69,7 @@ $dbh->do('UPDATE users SET active=0 WHERE UPPER(name)=UPPER(?)', undef, $admin);
 $t->get_ok('/');
 check_notloggedin();
 $t->post_ok('/login', form => { username => $admin, password => $pass });
-Testinit::test_error($t,'Fehler bei der Anmeldung');
+$t->content_like(qr'Fehler bei der Anmeldung');
 check_notloggedin();
 note 'test reenabling user';
 $dbh->do('UPDATE users SET active=1 WHERE UPPER(name)=UPPER(?)', undef, $admin);
@@ -88,7 +88,6 @@ sub check_notloggedin {
       ->content_like(qr/<input type="text" name="username"/)
       ->content_like(qr/<input type="password" name="password"/)
       ->content_like(qr~<form action="/login" method="POST">~i)
-      ->content_like(qr~<link rel="icon" type="image/png" href="/theme/img/favicon.png"(?: /)?>~)
       ->content_like(qr~<input type="submit" value="anmelden" class="linkalike~);
 }
 
@@ -97,5 +96,4 @@ sub check_loggedin {
     $t->status_is(200)
       ->content_like(qr/Angemeldet als "$admin"/)
       ->content_unlike(qr~<form action="/login" method="POST">~i)
-      ->content_like(qr~<link rel="icon" type="image/png" href="/favicon/show"(?: /)?>~);
 }

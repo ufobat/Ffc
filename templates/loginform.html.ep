@@ -1,5 +1,9 @@
 % layout 'quickview';
+    <!-- Angemeldet als "<%= session()->{user} || '<noone>' %>" !-->
     <h1 class="title">Anmeldung</h1>
+% if ( $error or flash('error') ) {
+    <p><%= $error %></p>
+% }
     <form action="<%= url_for 'login' %>" method="POST">
       <p>Benutzer: <input type="text" name="username" class="loginfield" /></p>
       <p>Passwort: <input type="password" name="password" class="loginfield" /></p>
