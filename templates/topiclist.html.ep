@@ -16,6 +16,10 @@
 % if ( $t->[8] or $t->[9] ) {
             <%= $t->[8] %>, <%= $t->[9] %>,
 % }
+% if ( $t->[3] ) {
+            <a href="<%= url_for 'topic_mark_seen', topicid => $t->[0] %>"
+                title="Thema als gelesen markieren">gelesen</a>,
+% }
 % unless ( $t->[5] ) {
 %   if ( $t->[6] ) {
             <a href="<%= url_for 'unpin_forum_topic_do', topicid => $t->[0] %>"

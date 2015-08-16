@@ -21,6 +21,7 @@ Features
 * Wird eine Themenüberschrift in ein bereits existierendes Thema geändert, dann werden die Beiträge in dieses andere Thema verschoben
 * Themen können vom Benutzer ignoriert werden, dann werden die nicht mehr hervor gehoben, wenn neue Beiträge von anderen Benutzern erstellt werden in dem Thema
 * Themen können von den Benutzern auch "angeheftet" werden, dann erscheinen sie immer mit ganz oben in der Themenliste
+* Themen mit neuen Beiträgen können aus der Themenliste über einen Link als "gelesen" markiert werden, was bedeutet, dass der Benutzer "gesehen" hat, dass neue Beiträge da sind, auf diese aber nicht näher eingehen wollte
 * Für die Themenlisten kann eingestellt werden, ob aktuelle Themen auf einer Themenseite und im Menü chronologisch nach dem aktuellsten Beitrag oder alphabetisch sortiert anzeigt werden
 * Anzahl der gleichzeitig angezeigten Überschriften auf der Startseite und damit auch im Foren-Menü-Popup ändern
 * Anzahl der gleichzeitig auf einer Seite angezeigten Beiträge ändern

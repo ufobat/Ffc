@@ -47,6 +47,11 @@ sub install_routes {
       ->to(controller => 'forum', action => 'set_topiclimit')
       ->name('topic_set_topiclimit');
 
+    # Überschrift als gelesen (eigentlich gesehen) markieren
+    $l->route('/topic/:topicid/seen', topicid => $Ffc::Digqr)->via('get')
+      ->to(controller => 'forum', action => 'mark_seen')
+      ->name('topic_mark_seen');
+
     # Überschriften ändern
     $l->route('/topic/:topicid/edit', topicid => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'edit_topic_form')
@@ -104,20 +109,8 @@ sub show_startuppage {
     }
 }
 
-sub show {
-    my $c = shift;
-    my ( $uid, $topicid ) = ( $c->session->{userid}, $c->param('topicid') );
-    my ( $heading, $userfrom ) = $c->_get_title_from_topicid;
-    return unless $heading;
-    $c->stash(
-        topicid      => $topicid,
-        backurl      => $c->url_for('show_forum_topiclist'),
-        backtext     => 'zur Themenliste',
-        msgurl       => 'show_pmsgs',
-        heading      => $heading,
-    );
-    $c->stash( topicediturl => $c->url_for('edit_forum_topic_form', topicid => $topicid) )
-        if $uid eq $userfrom or $c->session->{admin};
+sub _set_lastseen {
+    my ( $c, $uid, $topicid ) = @_;
     my $lastseen = $c->dbh_selectall_arrayref(
         'SELECT "lastseen"
         FROM "lastseenforum"
@@ -140,6 +133,23 @@ sub show {
             'INSERT INTO "lastseenforum" ("userid", "topicid", "lastseen") VALUES (?,?,?)',
             $uid, $topicid, $newlastseen );
     }
+}
+
+sub show {
+    my $c = shift;
+    my ( $uid, $topicid ) = ( $c->session->{userid}, $c->param('topicid') );
+    my ( $heading, $userfrom ) = $c->_get_title_from_topicid;
+    return unless $heading;
+    $c->stash(
+        topicid      => $topicid,
+        backurl      => $c->url_for('show_forum_topiclist'),
+        backtext     => 'zur Themenliste',
+        msgurl       => 'show_pmsgs',
+        heading      => $heading,
+    );
+    $c->stash( topicediturl => $c->url_for('edit_forum_topic_form', topicid => $topicid) )
+        if $uid eq $userfrom or $c->session->{admin};
+    _set_lastseen( $c, $uid, $topicid );
     $c->counting;
     $c->show_posts();
 }
