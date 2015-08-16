@@ -50,6 +50,7 @@ sub test_login {
     my ( $t, $u, $p ) = @_;
 
     test_logout($t);
+    note "try to login in as '$u'" . ( exists $Users{$u} ? " (id=$Users{$u})" : '' );
     #diag "login as user '$u'";
 
     $t->post_ok('/login', form => { username => $u, password => $p })

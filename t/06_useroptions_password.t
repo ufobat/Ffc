@@ -68,7 +68,7 @@ info('Passwortwechsel erfolgreich');
 check_optionsform();
 Testinit::test_logout($t);
 $t->post_ok('/login', form => { username => $user, password => $pass })
-  ->status_is(200);
+  ->status_is(403);
 error('Fehler bei der Anmeldung');
 $pass = $newpass;
 login();

@@ -119,7 +119,7 @@ is @{get_users()}, 2, 'user count ok';
 
 logout();
 $t->post_ok('/login', form => { username => $user, password => $pass })
-  ->status_is(200);
+  ->status_is(403);
 error_login();
 
 dump_user();
@@ -164,7 +164,7 @@ error(q~Benutzer existiert bereits, das Überschreiben-Häkchen ist allerdings n
 is @{get_users()}, 2, 'user count ok';
 logout();
 $t->post_ok('/login', form => { username => $user, password => $newpass })
-  ->status_is(200);
+  ->status_is(403);
 error_login();
 user_login();
 
@@ -179,7 +179,7 @@ info(qq~Benutzer \&quot;$user\&quot; geändert~);
 is @{get_users()}, 2, 'user count ok';
 logout();
 $t->post_ok('/login', form => { username => $user, password => $oldpass })
-  ->status_is(200);
+  ->status_is(403);
 error_login();
 user_login();
 
@@ -197,7 +197,7 @@ info(qq~Benutzer \&quot;$user\&quot; geändert~);
 is get_user($user)->{active}, 0, 'user now inactive';
 logout();
 $t->post_ok('/login', form => { username => $user, password => $pass })
-  ->status_is(200);
+  ->status_is(403);
 error_login();
 
 note 'reenable user';

@@ -46,7 +46,7 @@ sub login {
     my $p = $c->param('password') // '';
     if ( !$u or !$p ) {
         $c->set_error('Bitte melden Sie sich an');
-        return $c->render(template => 'loginform');
+        return $c->render(template => 'loginform', status => 403);
     }
     my $r = $c->dbh_selectall_arrayref(
         'SELECT u.admin, u.bgcolor, u.name, u.id, u.autorefresh, 
@@ -59,7 +59,7 @@ sub login {
         return $c->redirect_to('show');
     }
     $c->set_error('Fehler bei der Anmeldung');
-    $c->render(template => 'loginform');
+    $c->render(template => 'loginform', status => 403);
 }
 
 sub logout {

@@ -17,24 +17,24 @@ $t->get_ok('/logout');
 check_notloggedin();
 note 'failed login without data';
 $t->post_ok('/login', form => { });
-check_notloggedin();
+check_notloggedin(1);
 note 'failed login without password';
 $t->post_ok('/login', form => { username => $admin });
-check_notloggedin();
+check_notloggedin(1);
 $t->content_like(qr~Bitte melden Sie sich an~);
 note 'failed login without username';
 $t->post_ok('/login', form => { password => $pass });
-check_notloggedin();
+check_notloggedin(1);
 $t->content_like(qr~Bitte melden Sie sich an~);
 note 'failed login with wrong password';
 $t->post_ok('/login', form => { username => $admin, password => "#$pass#" });
-check_notloggedin();
+check_notloggedin(1);
 $t->content_like(qr'Fehler bei der Anmeldung');
 $t->get_ok('/');
 check_notloggedin();
 note 'failed login with noneexisting username';
 $t->post_ok('/login', form => { username => "#$admin#", password => $pass });
-check_notloggedin();
+check_notloggedin(1);
 $t->content_like(qr'Fehler bei der Anmeldung');
 $t->get_ok('/');
 check_notloggedin();
@@ -50,13 +50,13 @@ check_notloggedin();
 note 'again failed login with wrong password';
 $t->post_ok('/login', form => { username => $admin, password => "#$pass#" });
 $t->content_like(qr'Fehler bei der Anmeldung');
-check_notloggedin();
+check_notloggedin(1);
 
 note 'failed login with inactive user';
 $dbh->do('UPDATE users SET active=0 WHERE UPPER(name)=UPPER(?)', undef, $admin);
 $t->post_ok('/login', form => { username => $admin, password => $pass });
 $t->content_like(qr'Fehler bei der Anmeldung');
-check_notloggedin();
+check_notloggedin(1);
 note 'working login with active user';
 $dbh->do('UPDATE users SET active=1 WHERE UPPER(name)=UPPER(?)', undef, $admin);
 $t->post_ok('/login', form => { username => $admin, password => $pass })
@@ -70,7 +70,7 @@ $t->get_ok('/');
 check_notloggedin();
 $t->post_ok('/login', form => { username => $admin, password => $pass });
 $t->content_like(qr'Fehler bei der Anmeldung');
-check_notloggedin();
+check_notloggedin(1);
 note 'test reenabling user';
 $dbh->do('UPDATE users SET active=1 WHERE UPPER(name)=UPPER(?)', undef, $admin);
 $t->get_ok('/');
@@ -82,8 +82,9 @@ $t->get_ok('/');
 check_loggedin();
 
 sub check_notloggedin {
+    my $error = shift;
     note 'check that i am not logged in';
-    $t->status_is(200)
+    $t->status_is($error ? 403 : 200)
       ->content_like(qr/Angemeldet als "\&lt;noone\&gt;"/)
       ->content_like(qr/<input type="text" name="username"/)
       ->content_like(qr/<input type="password" name="password"/)
