@@ -35,7 +35,7 @@ login2();
 $t->get_ok('/quick')->status_is(200)
   ->content_like(qr~<title>\(0\)\sFfc\sForum</title>~)
   ->content_like(qr~<p>Keine neuen Beiträge</p>~)
-  ->content_like(qr~<p><a href="/">Forum öffnen</a></p>~)
+  ->content_like(qr~<p><a href="/" target="_blank">Forum öffnen</a></p>~)
   ->content_unlike(qr/<link/)->content_unlike(qr/<style/);
 
 ###############################################################################
@@ -82,10 +82,10 @@ note q~Test der Quick-Seite mit neuen Beitraegen~;
 login2();
 $t->get_ok('/quick')->status_is(200)
   ->content_like(qr~<title>\(6\)\sFfc\sForum</title>~)
-  ->content_like(qr~<p><a href="/">Forum öffnen</a></p>~)
-  ->content_like(qr~<p><a\shref="/pmsgs/2">$user1</a>\s\(2\)</p>~)
-  ->content_like(qr~<p><a\shref="/topic/1">$Topics[0]</a>\s\(3\)</p>~)
-  ->content_like(qr~<p><a\shref="/topic/2">$Topics[1]</a>\s\(1\)</p>~);
+  ->content_like(qr~<p><a href="/" target="_blank">Forum öffnen</a></p>~)
+  ->content_like(qr~<p><a\shref="/pmsgs/2" target="_blank">$user1</a>\s\(2\)</p>~)
+  ->content_like(qr~<p><a\shref="/topic/1" target="_blank">$Topics[0]</a>\s\(3\)</p>~)
+  ->content_like(qr~<p><a\shref="/topic/2" target="_blank">$Topics[1]</a>\s\(1\)</p>~);
 
 ###############################################################################
 note q~Einige Beitraege ansehen~;
@@ -106,10 +106,10 @@ note q~Test der Quick-Seite, wenn einige Beitraege angesehen wurden~;
 login2();
 $t->get_ok('/quick')->status_is(200)
   ->content_like(qr~<title>\(3\)\sFfc\sForum</title>~)
-  ->content_like(qr~<p><a href="/">Forum öffnen</a></p>~)
-  ->content_like(qr~<p><a\shref="/pmsgs/2">$user1</a>\s\(2\)</p>~)
-  ->content_like(qr~<p><a\shref="/topic/2">$Topics[1]</a>\s\(1\)</p>~)
-  ->content_unlike(qr~<p><a\shref="/topic/1">$Topics[0]</a>~);
+  ->content_like(qr~<p><a href="/" target="_blank">Forum öffnen</a></p>~)
+  ->content_like(qr~<p><a\shref="/pmsgs/2" target="_blank">$user1</a>\s\(2\)</p>~)
+  ->content_like(qr~<p><a\shref="/topic/2" target="_blank">$Topics[1]</a>\s\(1\)</p>~)
+  ->content_unlike(qr~<p><a\shref="/topic/1" target="_blank">$Topics[0]</a>~);
 
 ###############################################################################
 note q~Alle Beitraege ansehen~;
@@ -132,6 +132,6 @@ login2();
 $t->get_ok('/quick')->status_is(200)
   ->content_like(qr~<title>\(0\)\sFfc\sForum</title>~)
   ->content_like(qr~<p>Keine neuen Beiträge</p>~)
-  ->content_like(qr~<p><a href="/">Forum öffnen</a></p>~)
+  ->content_like(qr~<p><a href="/" target="_blank">Forum öffnen</a></p>~)
   ->content_unlike(qr/<link/)->content_unlike(qr/<style/);
 

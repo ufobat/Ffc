@@ -2,16 +2,16 @@
 % my $i = 0;
 % for my $u ( @$users ) {
 %   next unless $u->[2]; $i++;
-    <p><a href="<%= url_for 'show_pmsgs', usertoid => $u->[0] %>"><%= $u->[1] %></a> (<%= $u->[2] %>)</p>
+    <p><a href="<%= url_for 'show_pmsgs', usertoid => $u->[0] %>" target="_blank"><%= $u->[1] %></a> (<%= $u->[2] %>)</p>
 % }
 % for my $t ( @$topics ) {
 %   next unless $t->[3] and not $t->[5]; $i++;
-    <p><a href="<%= url_for 'show_forum', topicid  => $t->[0] %>"><%= $t->[2] %></a> (<%= $t->[3] %>)</p>
+    <p><a href="<%= url_for 'show_forum', topicid  => $t->[0] %>" target="_blank"><%= $t->[2] %></a> (<%= $t->[3] %>)</p>
 % }
 % unless ( $i ) {
     <p>Keine neuen Beiträge</p>
 % }
-    <p><a href="<%= url_for 'show' %>">Forum öffnen</a></p>
+    <p><a href="<%= url_for 'show' %>" target="_blank">Forum öffnen</a></p>
     <script type="text/javascript">
       "use strict";
       window.onload = function(){
