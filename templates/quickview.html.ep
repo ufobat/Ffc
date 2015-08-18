@@ -23,7 +23,6 @@
           function(){ location.reload(); },
           <%= session()->{autorefresh} || 3 %> * 60000
         )
-        window.onfocus = function(){ location.reload(); };
       };
     </script>
 
