@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>(<%= $newpostcount + $newmsgscount %>) <%= $configdata->{title} %></title>
-  </head>
+  <head><title>(<%= $newpostcount + $newmsgscount %>) <%= $configdata->{title} %></title></head>
   <body>
-    <!-- Angemeldet als "<%= session()->{user} || '<noone>' %>" !-->
-<%= content %>    </body>
+<%= content %>  </body>
 </html>
 
