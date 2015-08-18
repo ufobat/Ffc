@@ -19,10 +19,13 @@
         var myh = mytime.getHours(), mym = mytime.getMinutes();
         document.getElementsByTagName("title")[0].firstChild.data
           += ', ' + myh + ':' + ( mym < 10 ? '0'+mym : mym );
-        window.setInterval(
-          function(){ location.reload(); },
-          <%= session()->{autorefresh} || 3 %> * 60000
-        )
+        window.onfocus = function() {
+            window.setInterval(
+              function(){ location.reload(); },
+              <%= session()->{autorefresh} || 3 %> * 60000
+            );
+            window.onfocus = function() { location.reload(); };
+        };
       };
     </script>
 
