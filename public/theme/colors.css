@@ -234,4 +234,8 @@ pre, .code {
 .badpost {
     background: #ffcccc;
 }
+li {
+    margin-left: 1em;
+    list-style-image: disc;
+}
 

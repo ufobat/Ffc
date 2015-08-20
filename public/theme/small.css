@@ -6,6 +6,9 @@ body > * {
     border-width: 0 0 .25em 0;
     padding: 1em .5em;
 }
+body > * > * {
+    margin: .5em 0;
+}
 .menuentry, .menu form {
     display: inline;
 }
