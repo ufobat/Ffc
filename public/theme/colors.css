@@ -236,6 +236,6 @@ pre, .code {
 }
 li {
     margin-left: 1em;
-    list-style-image: disc;
+    list-style-type: disc;
 }
 
