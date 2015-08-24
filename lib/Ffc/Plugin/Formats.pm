@@ -99,7 +99,7 @@ sub _pre_format_text {
             # normal text
             $h3 = 1 if $s =~ s{\A=\s*([^\n]+)\z}{<h3>$1</h3>}gxoms;
 
-            $s =~ s{(?<!\w)([\_\-\+\~\!\*])([\_\-\+\~\!\w\*]+)\g1(?!\w)}{_make_goody($1,$2)}gxmoes;
+            $s =~ s{(?<![\_\-\+\~\!\*\w\/])([\_\-\+\~\!\*])([\_\-\+\~\!\w\*]+)\g1(?!\w)}{_make_goody($1,$2)}gxmoes;
             $s =~ s{((?:[\(\s]|\A)?)(https?://[^\)\s]+?)(\)|,?\s|\z)}{_make_link($1,$2,$3,$c)}gxmeios;
             $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxeos;
 

@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 104;
+use Test::More tests => 106;
 
 srand;
 
@@ -380,6 +380,7 @@ angry: >:( >:-( >=(
 facepalm: m(
 shock: :\$ :-\$ =\$
 ironie: </ironie> </irony>
+http://www.testurl.de/test/-test--test-test,1234,1234.html
 EOSTRING
 }
 
@@ -420,5 +421,6 @@ sub controlstring_withimages {
 <p>facepalm: <img class="smiley" src="/theme/img/smileys/facepalm.png" alt="m(" title="m(" /></p>
 <p>shock: <img class="smiley" src="/theme/img/smileys/shock.png" alt=":\$" title=":\$" /> <img class="smiley" src="/theme/img/smileys/shock.png" alt=":-\$" title=":-\$" /> <img class="smiley" src="/theme/img/smileys/shock.png" alt="=\$" title="=\$" /></p>
 <p>ironie: <img class="smiley" src="/theme/img/smileys/ironie.png" alt="&lt;/ironie&gt;" title="&lt;/ironie&gt;" /> <img class="smiley" src="/theme/img/smileys/ironie.png" alt="&lt;/irony&gt;" title="&lt;/irony&gt;" /></p>
+<p><a href="http://www.testurl.de/test/-test--test-test,1234,1234.html" title="Externe Webseite: http://www.testurl.de/test/-test--test-test,1234,1234.html" target="_blank">http://www.testurl.de/test/-test--test-test,1234,1234.html</a></p>
 EOSTRING
 }
