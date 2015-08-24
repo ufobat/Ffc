@@ -126,6 +126,7 @@
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/devilsmile.png" %>" /> (Diabolisches Lächeln): <code>&gt;:) &gt;:-) &gt;=)</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/angry.png" %>" /> (Wütend sein): <code>&gt;:( &gt;:-( &gt;=(</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/evilgrin.png" %>" /> (Böse Lachen): <code>&gt;:D &gt;:-D &gt;=D</code></li>
+        <li><img class="smiley" src="<%= url_for "/theme/img/smileys/ironie.png" %>" /> (There is a sign for that): <code>&lt;/ironie&gt; &lt;/irony&gt;</code></li>
     </ul>
 </div>
 <div class="postbox helptext">
