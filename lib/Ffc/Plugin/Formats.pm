@@ -28,10 +28,10 @@ our @Smilies = (
     [ facepalm   => ['m(',                                        ] ],
 #    [ yeah       => ['\o/', '\O/',  '\0/',                        ] ],
     [ shock      => [':$',  ':-$',  '=$',                         ] ],
-    [ ironie     => ['&lt;/ironie&gt;', '&lt;/irony&gt;',         ] ],
+    [ ironie     => ['</ironie>', '</irony>',                     ] ],
 );
 our %Smiley     = map {my ($n,$l)=($_->[0],$_->[1]); map {$_=>$n} @$l} @Smilies;
-our $SmileyRe   = join '|', map {s{([\&\^\>\<\-\.\:\\\/\(\)\=\|\,\$])}{\\$1}gxoms; $_} keys %Smiley;
+our $SmileyRe   = join '|', map {s{([\;\&\^\>\<\-\.\:\\\/\(\)\=\|\,\$])}{\\$1}gxoms; $_} keys %Smiley;
 our %Goodies    = qw( _ underline - linethrough + bold ~ italic ! alert * emotion);
 
 sub register {
@@ -189,8 +189,8 @@ sub _pre_format_text {
 
 sub _xml_escape {
     $_[0] =~ s/\&/\&amp;/gxmo;
-    $_[0] =~ s/\<(?=[^3])/\&lt;/gxom;
-    $_[0] =~ s/\>(?=[^\:\=])/\&gt;/goxm;
+    $_[0] =~ s/\<(?!3|\/ironie\>|\/irony\>)/\&lt;/gxom;
+    $_[0] =~ s/(?<!ronie|irony)\>(?!\:|\=)/\&gt;/goxm;
 }
 
 sub _make_username_mark {
@@ -240,7 +240,6 @@ sub _make_smiley {
     $y =~ s/\&/&lt;/xmsgo;
     $y =~ s/\>/&gt;/xmsgo;
     $y =~ s/\</&lt;/xmsgo;
-#    $ext = 'svg' if $Smiley{$x} eq 'smile';
     return qq~$s<img class="smiley" src="~
         . $c->url_for("/theme/img/smileys/$Smiley{$x}.png")
         . qq~" alt="$y" title="$y" />~;

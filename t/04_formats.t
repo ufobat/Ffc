@@ -419,6 +419,6 @@ sub controlstring_withimages {
 <p>angry: <img class="smiley" src="/theme/img/smileys/angry.png" alt="&gt;:(" title="&gt;:(" /> <img class="smiley" src="/theme/img/smileys/angry.png" alt="&gt;:-(" title="&gt;:-(" /> <img class="smiley" src="/theme/img/smileys/angry.png" alt="&gt;=(" title="&gt;=(" /></p>
 <p>facepalm: <img class="smiley" src="/theme/img/smileys/facepalm.png" alt="m(" title="m(" /></p>
 <p>shock: <img class="smiley" src="/theme/img/smileys/shock.png" alt=":\$" title=":\$" /> <img class="smiley" src="/theme/img/smileys/shock.png" alt=":-\$" title=":-\$" /> <img class="smiley" src="/theme/img/smileys/shock.png" alt="=\$" title="=\$" /></p>
-<p>ironie: <img class="smiley" src="/theme/img/smileys/ironie.png" alt="&lt;lt;/ironie&lt;gt;" title="&lt;lt;/ironie&lt;gt;" /> <img class="smiley" src="/theme/img/smileys/ironie.png" alt="&lt;lt;/irony&lt;gt;" title="&lt;lt;/irony&lt;gt;" /></p>
+<p>ironie: <img class="smiley" src="/theme/img/smileys/ironie.png" alt="&lt;/ironie&gt;" title="&lt;/ironie&gt;" /> <img class="smiley" src="/theme/img/smileys/ironie.png" alt="&lt;/irony&gt;" title="&lt;/irony&gt;" /></p>
 EOSTRING
 }
