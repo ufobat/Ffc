@@ -1,0 +1,13 @@
+% layout 'display';
+% my $lasttopicid = -1;
+% for my $p ( @$posts ) {
+%   if ( $lasttopicid != $p->[5] ) {
+%     $lasttopicid = $p->[5];
+        <div class="postbox headbox"><h1>
+            <a href="<%= url_for 'show_forum', topicid => $p->[5] %>"
+           title="Beiträge zum Thema anzeigen"><%= $p->[9] %></a>
+        </h1></div>
+%   }
+%= include 'parts/postbox', post => $p
+% }
+

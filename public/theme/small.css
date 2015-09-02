@@ -96,3 +96,10 @@ img {
     background: transparent;
     border: none;
 }
+.othersmenulinktext, .otherspopup {
+    display: none;
+}
+.otherspopup, .otherspopup p {
+    display: inline;
+    border: none;
+}

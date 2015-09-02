@@ -31,8 +31,8 @@ sub _query_posts {
 }
 
 sub _get_show_sql {
-    my ( $c, $wheres, $noorder, $postid ) = @_;
-    my $query  = $c->session->{query};
+    my ( $c, $wheres, $noorder, $postid, $groupbys, $nolimit, $noquery, $orderbys, $reverseorder ) = @_;
+    my $query  = $noquery ? '' : $c->session->{query};
 
     my $sql = qq~SELECT\n~
         .qq~p."id", uf."id", uf."name", ut."id", ut."name", p."topicid", ~
@@ -59,7 +59,13 @@ sub _get_show_sql {
         $sql .= qq~p."id"=?\n~;
     }
 
-    $sql .= 'ORDER BY p."id" DESC LIMIT ? OFFSET ?' unless $noorder;
+    $sql .= "GROUP BY $groupbys\n" if $groupbys;
+    unless ( $noorder ) {
+        $sql .= 'ORDER BY';
+        $sql .= " $orderbys," if $orderbys;
+        $sql .= ' p."id" ' . ( $reverseorder ? 'ASC' : 'DESC' ) . "\n";
+    }
+    $sql .= "LIMIT ? OFFSET ?\n" unless $nolimit;
     return $sql;
 }
 

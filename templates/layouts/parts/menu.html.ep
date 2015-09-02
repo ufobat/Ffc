@@ -32,11 +32,18 @@
             <button type="submit">»Suche</button>
         </form>
     </div>
-    <div class="menuentry optionslink">
-        <a href="<%= url_for 'options_form' %>"><span class="linktext linkoptions<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
-    </div>
-
-    <div class="menuentry logoutbutton2">
-        <a href="<%= url_for 'logout' %>"><span class="linkalike linklogout">abmelden</span></a>
+    <div class="otherspopuplink menuentry">
+        <span class="othersmenulinktext">Menü</span>
+        <div class="otherspopup popup">
+            <p class="printviewlink">
+                <a href="<%= url_for 'printpreview' %>" target="_blank"><span class="linktext linkprintview">Druckansicht</span></a>
+            </p>
+            <p class="optionslink">
+                <a href="<%= url_for 'options_form' %>"><span class="linktext linkoptions<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
+            </p>
+            <p class="logoutbutton2">
+                <a href="<%= url_for 'logout' %>"><span class="linkalike linklogout">abmelden</span></a>
+            </p>
+        </div>
     </div>
 </div>

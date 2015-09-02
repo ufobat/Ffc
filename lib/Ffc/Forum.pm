@@ -3,6 +3,7 @@ use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 
 use Ffc::Forum::Topics;
+use Ffc::Forum::Printpreview;
 
 sub install_routes { 
     my $l = shift;
@@ -68,6 +69,13 @@ sub install_routes {
     $l->route('/forum/:page', page => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'show_topiclist')
       ->name('show_forum_topiclist_page');
+
+    # Druckvorschau
+    $l->route('/forum/printpreview')->via('get')
+      ->to(controller => 'forum', action => 'printpreview')
+      ->name('printpreview');
+    
+    # Standardrouten für die Beitragsbehandlung
     Ffc::Plugin::Posts::install_routes_posts($l, 'forum', '/topic/:topicid', topicid => $Ffc::Digqr);
 }
 

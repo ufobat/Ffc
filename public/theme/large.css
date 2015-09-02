@@ -171,10 +171,6 @@ input[type="text"].titlestring {
     margin-right: 1.5em;
     margin-left: 0;
 }
-.logoutbutton2 {
-    margin-left: 1.5em;
-    margin-right: 0;
-}
 .titlebanner {
     font-size: 2em;
     padding: 0;
@@ -198,4 +194,8 @@ input[type="text"].titlestring {
 }
 .pagestretch {
     display: none;
+}
+.othersmenulinktext {
+    cursor: pointer;
+    text-decoration: underline;
 }
