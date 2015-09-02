@@ -1,4 +1,5 @@
 % layout 'display';
+%= include 'layouts/parts/titlebanner';
         <div class="pages">Vorschauzeitraum:
 % for my $d ( 3, 7, 14, 31, 62, 93 ) {
             <a href="<%= url_for 'set_printpreview_period', days => $d %>"
