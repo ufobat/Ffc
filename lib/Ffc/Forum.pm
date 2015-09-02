@@ -74,6 +74,9 @@ sub install_routes {
     $l->route('/forum/printpreview')->via('get')
       ->to(controller => 'forum', action => 'printpreview')
       ->name('printpreview');
+    $l->route('/forum/set_ppv_period/:days', days => $Ffc::Digqr)->via('get')
+      ->to(controller => 'forum', action => 'set_period')
+      ->name('set_printpreview_period');
     
     # Standardrouten für die Beitragsbehandlung
     Ffc::Plugin::Posts::install_routes_posts($l, 'forum', '/topic/:topicid', topicid => $Ffc::Digqr);

@@ -1,4 +1,11 @@
 % layout 'display';
+        <div class="pages">Vorschauzeitraum:
+% for my $d ( 3, 7, 14, 31, 62, 93 ) {
+            <a href="<%= url_for 'set_printpreview_period', days => $d %>"
+                title="Zeitraum der Druck&uuml;bersicht auf <%= $d %> Tage einstellen">
+                    <%= $d %> Tage</a><%= $d < 93 ? ',' : '' %>
+% }
+        </div>
 % my $lasttopicid = -1;
 % for my $p ( @$posts ) {
 %   if ( $lasttopicid != $p->[5] ) {

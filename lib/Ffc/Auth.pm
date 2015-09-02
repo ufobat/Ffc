@@ -18,12 +18,12 @@ sub check_login {
         my $s = $c->session();
         my $r = $c->dbh_selectall_arrayref(
             'SELECT "admin", "bgcolor", "name", "autorefresh", 
-                "chronsortorder", COALESCE("topiclimit",20), COALESCE("postlimit",10)
+                "chronsortorder", COALESCE("topiclimit",20), COALESCE("postlimit",10), COALESCE("printpreviewdays", 7)
             FROM "users" WHERE "active"=1 AND "id"=?',
             $s->{userid});
 
         if ( $r and @$r and $r->[0]->[2] eq $s->{user} ) {
-            @$s{qw(admin backgroundcolor autorefresh chronsortorder topiclimit postlimit)}
+            @$s{qw(admin backgroundcolor autorefresh chronsortorder topiclimit postlimit printpreviewdays)}
                 = @{$r->[0]}[0, 1, 3, 4, 5, 6];
             $s->{backgroundcolor} = $c->configdata->{backgroundcolor}
                 unless $s->{backgroundcolor};
@@ -73,6 +73,7 @@ sub logout {
     delete $s->{chronsortorder};
     delete $s->{topiclimit};
     delete $s->{postlimit};
+    delete $s->{printpreviewdays};
     $c->set_info('Abmelden erfolgreich');
     $c->render(template => 'loginform');
 }
