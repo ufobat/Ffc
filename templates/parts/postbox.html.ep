@@ -26,11 +26,11 @@
             <a href="<%= url_for "display_$controller", postid => $post->[0], ( ( $post->[5] || $post->[3] ) ? (topicid => $post->[5], usertoid => $post->[3]) : () ), @$additional_params %>" target="_blank" title="Direkter Link zum Beitrag">Link</a><% if ( $controller eq 'forum' and @$users ) { %>,
             Bewertung:
 %   if ( $post->[1] != session->{userid} ) {
-            <a href="<%= url_for "inc_${controller}_highscore", postid => $post->[0], ($action eq 'search' && $post->[5] ? (topicid => $post->[5]) : () ), @$additional_params %>" title="Bewertung erhöhen">+</a>
+            <a href="<%= url_for "inc_${controller}_highscore", postid => $post->[0], ( $post->[5] ? (topicid => $post->[5]) : () ), @$additional_params %>" title="Bewertung erhöhen">+</a>
 %   }
             <span title="Bewertungswert des Beitrages" class="score<%= $post->[10] > 0 ? ' goodpost' : '' %><%= $post->[10] < 0 ? ' badpost' : '' %>"><%= $post->[10] > 0 ? "+$post->[10]" : $post->[10] %></span>
 %   if ( $post->[1] != session->{userid} ) {
-            <a href="<%= url_for "dec_${controller}_highscore", postid => $post->[0], ($action eq 'search' && $post->[5] ? (topicid => $post->[5]) : () ), @$additional_params %>" title="Bewertung herabsetzen">-</a>
+            <a href="<%= url_for "dec_${controller}_highscore", postid => $post->[0], ( $post->[5] ? (topicid => $post->[5]) : () ), @$additional_params %>" title="Bewertung herabsetzen">-</a>
 %   }
 % }
         )</span>

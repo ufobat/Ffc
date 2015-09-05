@@ -2,9 +2,13 @@
 %= include 'layouts/parts/titlebanner';
         <div class="pages">Vorschauzeitraum:
 % for my $d ( 3, 7, 14, 31, 62, 93 ) {
+%   if ( $printpreviewdays == $d ) {
+            <span><%= $d %> Tage</span><%= $d < 93 ? ',' : '' %>
+%   } else {
             <a href="<%= url_for 'set_printpreview_period', days => $d %>"
                 title="Zeitraum der Druck&uuml;bersicht auf <%= $d %> Tage einstellen">
                     <%= $d %> Tage</a><%= $d < 93 ? ',' : '' %>
+%   }
 % }
         </div>
 % my $lasttopicid = -1;
@@ -19,5 +23,10 @@
         </h1></div>
 %   }
 %= include 'parts/postbox', post => $p, lastseen => $lastseen
+% }
+% unless ( @$posts ) {
+        <div class="postbox">
+            <p>Keine Beiträge im anzuzeigenden Zeitraum.</p>
+        </div>
 % }
 

@@ -3,7 +3,8 @@ use strict; use warnings; use utf8;
 
 sub printpreview {
     my ( $c ) = @_;
-    my $days = '-' . ( $c->session->{printpreviewdays} // 7 ) . ' days';
+    my $d = $c->session->{printpreviewdays};
+    my $days = '-' . ( $d // 7 ) . ' days';
     my $sql .= << "EOSQL"; 
 SELECT
     p."id", uf."id", uf."name", null, null, p."topicid", 
@@ -16,9 +17,11 @@ LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=p."topicid"
 WHERE 0=COALESCE(l."ignore",0)
 ORDER BY COALESCE(l."pin", 0) DESC, t."lastid" DESC, t."id" DESC
 EOSQL
-    $c->stash( set_lastseen => sub { $c->set_lastseen(@_) } );
-    $c->stash( posts => $c->dbh_selectall_arrayref($sql, $c->session->{userid}) );
-    $c->stash( users => [1]);
+    $c->stash( set_lastseen     => sub { $c->set_lastseen(@_[1,2]) } );
+    $c->stash( posts            => $c->dbh_selectall_arrayref($sql, $c->session->{userid}) );
+    $c->stash( printpreviewdays => $d );
+    $c->stash( users            => [1]);
+
     $c->render(template => 'printpreview');
 }
 
