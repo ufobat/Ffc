@@ -16,7 +16,7 @@ LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=p."topicid"
 WHERE 0=COALESCE(l."ignore",0)
 ORDER BY COALESCE(l."pin", 0) DESC, t."lastid" DESC, t."id" DESC
 EOSQL
-    $c->app->helper( set_lastseen => \&set_lastseen );
+    $c->stash( set_lastseen => sub { $c->set_lastseen(@_) } );
     $c->stash( posts => $c->dbh_selectall_arrayref($sql, $c->session->{userid}) );
     $c->stash( users => [1]);
     $c->render(template => 'printpreview');
