@@ -24,7 +24,7 @@ sub check_login {
 
         if ( $r and @$r and $r->[0]->[2] eq $s->{user} ) {
             @$s{qw(admin backgroundcolor autorefresh chronsortorder topiclimit postlimit printpreviewdays)}
-                = @{$r->[0]}[0, 1, 3, 4, 5, 6];
+                = @{$r->[0]}[0, 1, 3, 4, 5, 6, 7];
             $s->{backgroundcolor} = $c->configdata->{backgroundcolor}
                 unless $s->{backgroundcolor};
             return 1;

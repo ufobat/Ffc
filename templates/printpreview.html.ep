@@ -16,6 +16,6 @@
            title="Beiträge zum Thema anzeigen"><%= $p->[9] %></a>
         </h1></div>
 %   }
-%= include 'parts/postbox', post => $p
+%= include 'parts/postbox', post => $p, lastseen => $p->[11]
 % }
 

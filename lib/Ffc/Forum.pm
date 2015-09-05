@@ -120,7 +120,7 @@ sub show_startuppage {
     }
 }
 
-sub _set_lastseen {
+sub set_lastseen {
     my ( $c, $uid, $topicid ) = @_;
     my $lastseen = $c->dbh_selectall_arrayref(
         'SELECT "lastseen"
@@ -160,7 +160,7 @@ sub show {
     );
     $c->stash( topicediturl => $c->url_for('edit_forum_topic_form', topicid => $topicid) )
         if $uid eq $userfrom or $c->session->{admin};
-    _set_lastseen( $c, $uid, $topicid );
+    $c->set_lastseen( $uid, $topicid );
     $c->counting;
     $c->show_posts();
 }

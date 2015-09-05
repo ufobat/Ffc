@@ -41,6 +41,7 @@
             <p class="optionslink">
                 <a href="<%= url_for 'options_form' %>"><span class="linktext linkoptions<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
             </p>
+            <p class="othersmenutext">Angemeldet als <%= session->{user} %></p>
             <p class="logoutbutton2">
                 <a href="<%= url_for 'logout' %>"><span class="linkalike linklogout">abmelden</span></a>
             </p>
