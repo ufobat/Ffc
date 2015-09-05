@@ -19,7 +19,7 @@
 %     $set_lastseen->($controller, session->{userid}, $p->[5]);
         <div class="postbox headbox"><h1>
             <a href="<%= url_for 'show_forum', topicid => $p->[5] %>"
-           title="Beiträge zum Thema anzeigen"><%= $p->[9] %></a>
+           title="Beiträge zum Thema anzeigen" target="_blank"><%= $p->[9] %></a>
         </h1></div>
 %   }
 %= include 'parts/postbox', post => $p, lastseen => $lastseen
