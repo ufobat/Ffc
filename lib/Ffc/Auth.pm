@@ -36,6 +36,7 @@ sub check_login {
             return;
         }
     }
+    $c->session->{lasturl} = $c->req->url->to_string;
     $c->render(template => 'loginform');
     return;
 }
@@ -56,6 +57,11 @@ sub login {
     if ( $r and @$r ) {
         @{$c->session}{qw(admin backgroundcolor user userid autorefresh chronsortorder topiclimit postlimit)}
             = @{$r->[0]}[0, 1, 2, 3, 4, 5, 6, 7];
+        if ( my $lasturl = $c->session->{lasturl} ) {
+            undef $c->session->{lasturl};
+            $c->redirect_to($lasturl);
+            return;
+        }
         return $c->redirect_to('show');
     }
     $c->set_error('Fehler bei der Anmeldung');
