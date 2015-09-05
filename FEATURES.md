@@ -9,6 +9,7 @@ Features
   * Mehrzeilige Chatnachrichten möglich
   * Hervorhebungen für URLs, Quelltext (mit spezieller Notation '/code') sowie den eigenen Benutzernamen in Chatnachrichten möglich
   * Chatnachrichten werden immer nur nach festgelegtem und einfach änderbaren Intervallen abgeholt
+* Bei Anmeldefehlern (nicht angemeldet) wird man nach neuerlich erfolgter Anmeldung direkt zur gewünschten Seite umgeleitet (z.B. Abgemeldet eine URL aus dem Forum in die Adressleiste des Browsers eingeben)
 * Beiträge werden in einem prominenten Feld gleich oben auf einer entsprechenden Webseite eingegeben, dieses Textfeld klappt sich via CSS oder JavaScript automatisch auf, wenn man in das kleine Feld hinein klickt oder beim Bearbeiten eines Beitrages
 * Die Webseite kann sich über Javascript automatisch innerhalb eines vom Benutzer festgelegten Zeitintervalles (Default 3 Minuten) neu laden, sobald sie im Hintergrund ist und kein Text im Beitragstextfeld eingegeben wurde
 * Das Forum kann mit einem einzigen Kommando eingerichtet werden, wobei ein initialer Administratoraccount sofort mit angelegt wird für die weiterführende Konfiguration
@@ -49,6 +50,7 @@ Features
   * Es kann außerdem eine URL zu einer eigenen CSS-Stylesheet-Datei angegeben werden, welche dann nach allen anderen Stylesheetvorgaben eingebunden wird in die Webseite und über die im Bedarfsfall sämtliche Anzeigeeinstellungen für die Webseite überschrieben oder verändert werden können
 * Es ist über einen Link möglich, eine kurze schnörkellose Auflistung von Themen mit neuen Beiträgen oder Benutzern, von denen neue Privatnachrichten gekommen sind, mit entsprechenden Links dahinter anzeigen zu lassen
   * Alternativ kann diese Liste (komplett mit alle Benutzern und aktuellen Themen der ersten Seite) auch über JSON geliefert werden
+* Weiterhin gibt es eine Druckansicht, in der die Beiträge chronologisch von oben nach unten für alle Themen mit ungelesenen Beträgen ohne Menü direkt zum Drucken und chronologisch durchlesen angezeigt werden
 * Foreneinstellungen, die von Benutzern vorgenommen werden können:
   * Passwortwechsel
   * Email-Adresse angeben (diese kann vom Administrator lediglich ausserhalb des Forums verwendet werden)
