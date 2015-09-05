@@ -266,7 +266,7 @@ sub set_topiclimit {
 }
 
 sub mark_seen {
-    _set_lastseen( $_[0], $_[0]->session->{userid}, $_[0]->param('topicid') );
+    $_[0]->set_lastseen( $_[0]->session->{userid}, $_[0]->param('topicid') );
     $_[0]->redirect_to('show_forum_topiclist');
 }
 
