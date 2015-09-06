@@ -167,9 +167,10 @@ input[type="text"].titlestring {
 .quote, .postbox blockquote {
     color: dimgrey;
 }
-.emotion {
+em, .emotion {
     color: dimgrey;
     font-variant: small-caps;
+    font-style: normal;
 }
 .emotion:before { content:"*" }
 .emotion:after  { content:"*" }

@@ -106,6 +106,7 @@ sub format_things_test {
 :)
 haha hallo welt! oder so.
 http://bedivere.de <3
+<b>fett</b> <u><i>kursiv</i> understrichen</u>
 test </ironie>
 <h3>test <strike>notest</strike></h3>
 EOTXT

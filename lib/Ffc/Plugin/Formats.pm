@@ -84,14 +84,14 @@ sub _pre_format_text_part {
     return '' if $str =~ m/\A\s*\z/xmso;
     $str =~ s~(?:\r?\n\r?)+~\n~gxmsio;
     my $o = '';
-    my $i = 0;
     my $start = 0;
     unless ( $dis_html ) {
         while ( $str =~ m~<($HTMLRe)>(.+?)</\g1>~gxmsi ) {
-            my ( $tag, $inner, $end ) = ( $1, $2, $-[0] );
+            my ( $tag, $inner, $end, $newstart ) = ( $1, $2, $-[0], $+[0] );
 
-            $o .= _pre_format_text_part(
-                $c, substr($str, $start, $end), $dis_p, $dis_html);
+            my $pre = substr($str, $start, $end - $start);
+            _xml_escape($pre);
+            $o .= $pre;
 
             if ( exists $HTMLHandle{$tag} ) {
                 $dis_p    ||= $HTMLHandle{$tag}[0];
@@ -102,13 +102,19 @@ sub _pre_format_text_part {
                .  _pre_format_text_part($c, $inner, $dis_p, $dis_html)
                .  "</$tag>";
 
-            $start = $end;
-            $i++;
+            $start = $newstart;
         }
     }
-    unless ( $i ) {
-        $o = $str;
-        _xml_escape($o);
+    if ( $start < length $str ) {
+        my $left;
+        if ( $o ) {
+            $left = substr( $str, $start, length($str) - $start );
+        }
+        else {
+            $left = $str;
+        }
+        _xml_escape($left);
+        $o .= $left;
     }
     unless ( $dis_p ) {
         if ( $o =~ s~\n+~</p>\n<p>~gxmsio ) {
@@ -121,9 +127,22 @@ sub _pre_format_text_part {
 sub _pre_format_text {
     my ( $c, $str ) = @_;
     my $o = _pre_format_text_part($c, $str);
-    $o =~ s{\b(https?://.+?)(?=\)|,|\s|\z|<)}{_make_link($1,$c)}gxmeios;
-    $o =~ s{(p>|\s|\A)($SmileyRe)(</\w|\s|\z)}{_make_smiley($1,$2,$3,$c)}gmxeos;
+    $o =~ s~\b(?<url>https?://.+?)(?=\)|\s|\z|<)|(?<smile>$SmileyRe)~_make_sth($+{url}, $+{smile},$c)~gxmeios;
+    #$o =~ s{($SmileyRe)}{_make_smiley($1,$2,$3,$c)}gmxeos;
     return $o;
+}
+
+sub _make_sth {
+    my ( $url, $smile, $c ) = @_;
+    if ( $url ) {
+        return _make_link( $url, $c );
+    }
+    elsif ( $smile ) {
+        return _make_smiley( $smile, $c );
+    }
+    else {
+        return '';
+    }
 }
 
 sub _xml_escape {
@@ -160,11 +179,11 @@ sub _stripped_url {
 }
 
 sub _make_smiley {
-    my ( $start, $str, $end, $c ) = @_;
+    my ( $str, $c ) = @_;
     my $orig = $str;
-    return qq~$start<img class="smiley" src="~
+    return qq~<img class="smiley" src="~
         . $c->url_for("/theme/img/smileys/$Smiley{$orig}.png")
-        . qq~" alt="$str" title="$str" />$end~;
+        . qq~" alt="$str" title="$str" />~;
 }
 
 1;
