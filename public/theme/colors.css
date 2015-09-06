@@ -235,12 +235,14 @@ pre, .code {
 .badpost {
     background: #ffcccc;
 }
-li {
-    margin-left: 1em;
+.postbox ul {
     list-style-type: disc;
 }
 .invisible {
     border-color: transparent;
     background-color: transparent;
+}
+.postbox > ol {
+    list-style-type: decimal;
 }
 
