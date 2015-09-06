@@ -30,9 +30,23 @@ our @Smilies = (
     [ shock      => [':$',  ':-$',  '=$',                         ] ],
     [ ironie     => ['</ironie>', '</irony>',                     ] ],
 );
-our %Smiley     = map {my ($n,$l)=($_->[0],$_->[1]); map {$_=>$n} @$l} @Smilies;
-our $SmileyRe   = join '|', map {s{([\;\&\^\>\<\-\.\:\\\/\(\)\=\|\,\$])}{\\$1}gxoms; $_} keys %Smiley;
-our %Goodies    = qw( _ underline - linethrough + bold ~ italic ! alert * emotion);
+our %Smiley     = map {my ($n,$l)=($_->[0],$_->[1]); map {
+    s~<~&lt;~gxmos; s~>~&gt;~gxmso; 
+    $_=>$n
+} @$l} @Smilies;
+our $SmileyRe   = join '|', map {
+    s{([\;\&\^\>\<\-\.\:\\\/\(\)\=\|\,\$])}{\\$1}gxoms;
+    $_
+} keys %Smiley;
+our $HTMLRe = qr~ul|ol|pre|code|b|u|i|strike|h3|quote|li|em~;
+our %HTMLHandle = (
+#   tag => [ disable-p, disable-html ],
+    ul   => [ 1, 0 ],
+    ol   => [ 1, 0 ],
+    pre  => [ 1, 1 ],
+    code => [ 1, 1 ],
+    h1   => [ 1, 0 ],
+);
 
 sub register {
     my ( $self, $app ) = @_;
@@ -64,133 +78,58 @@ sub _username_format_text {
     return $s;
 }
 
-sub _pre_format_text {
-    my ( $c, $s ) = @_;
-    return '' if !$s or $s =~ m/\A\s*\z/xmso;
-    $s =~ s/\A\s+(?:\r?\n\r?)+//gxmso;
-    $s =~ s/\s+\z//gxmso;
-    _xml_escape($s);
+sub _pre_format_text_part {
+#   controller, string, disable-p, disable-html
+    my ( $c, $str, $dis_p, $dis_html ) = @_;
+    return '' if $str =~ m/\A\s*\z/xmso;
+    $str =~ s~(?:\r?\n\r?)+~\n~gxmsio;
     my $o = '';
-    my ( $ul, $ol, $q, $pre, $bq ) = ( 0, 0, 0, 0, 0 );
-    for my $s ( split /(?:\r?\n\r?)/, $s ) {
-        
-        my $mqs = 0;
-        my $h3 = 0;
+    my $i = 0;
+    my $start = 0;
+    unless ( $dis_html ) {
+        while ( $str =~ m~<($HTMLRe)>(.+?)</\g1>~gxmsi ) {
+            my ( $tag, $inner, $end ) = ( $1, $2, $-[0] );
 
-        unless ( $pre ) { # normal text gets formatted
-            next if $s =~ m/\A\s*\z/xmso;
+            $o .= _pre_format_text_part(
+                $c, substr($str, $start, $end), $dis_p, $dis_html);
 
-            # multiline quote
-            if ( !$q and $s =~ s~\A([^"]*)"([^"\s][^"]*)\z~$1„<span class="quote">$2~gxmso ) {
-                $q = 1;
-                $mqs = 1;
-            }
-            elsif ( !$mqs and $q and $s =~ s~(\A[^"]*[^"\s])"([^"]*)~<span class="quote">$1</span>“$2~gxmso ) {
-                $q = 0;
+            if ( exists $HTMLHandle{$tag} ) {
+                $dis_p    ||= $HTMLHandle{$tag}[0];
+                $dis_html ||= $HTMLHandle{$tag}[1];
             }
 
-            # normal inline quoting and backticked codesnippets
-            for my $w ( [q{"}, q{"}, 'quote', q{„}, q{“} ],
-                        [q{`}, q{`}, 'code',  q{`}, q{`} ],
-            ) {
-                $s =~ s{(\A|\s)$w->[0](\S|\S.*?\S)$w->[1](\W|\z)}{$1$w->[3]<span class="$w->[2]">$2</span>$w->[4]$3}gxms;
-            }
-            
-            # normal text
-            $h3 = 1 if $s =~ s{\A=\s*([^\n]+)\z}{<h3>$1</h3>}gxoms;
+            $o .= "<$tag>" 
+               .  _pre_format_text_part($c, $inner, $dis_p, $dis_html)
+               .  "</$tag>";
 
-            $s =~ s{(?<![\_\-\+\~\!\*\w\/])([\_\-\+\~\!\*])([\_\-\+\~\!\w\*]+)\g1(?!\w)}{_make_goody($1,$2)}gxmoes;
-            $s =~ s{((?:[\(\s]|\A)?)(https?://[^\)\s]+?)(\)|,?\s|\z)}{_make_link($1,$2,$3,$c)}gxmeios;
-            $s =~ s/(\(|\s|\A)($SmileyRe)/_make_smiley($1,$2,$c)/gmxeos;
-
-            # unordered lists
-            if ( $s =~ m/\A-\s*(.+)\z/xmso ) {
-                unless ( $ul ) {
-                    $ul = 1;
-                    $o .= "<ul>\n";
-                }
-                $o .= "<li>$1</li>";
-            }
-            elsif ( $ul ) {
-                $o .= "</ul>\n";
-                $ul = 0;
-            }
-
-            # ordered lists
-            if ( $s =~ m/\A\#\s*(.+)\z/xmso ) {
-                unless ( $ol ) {
-                    $ol = 1;
-                    $o .= "<ol>\n";
-                }
-                $o .= "<li>$1</li>";
-            }
-            elsif ( $ol ) {
-                $o .= "</ol>\n";
-                $ol = 0;
-            }
-
-            # blockquotes
-            if ( $s =~ m/\A\s*\|\s*(.+)\z/xmso ) {
-                unless ( $bq ) {
-                    $bq = 1;
-                    $o .= "<blockquote>\n";
-                }
-                $o .= "<p>$1";
-            }
-            elsif ( $bq ) {
-                $o .= "</blockquote>\n";
-                $bq = 0;
-            }
-
-        } # end of normal text (no pre)
-        
-        # preformatted text
-        if ( $s =~ m/\A\s(.*)\z/xmso ) {
-            unless ( $pre ) {
-                $pre = 1;
-                $o .= "<pre>\n";
-            }
-            $o .= $1;
+            $start = $end;
+            $i++;
         }
-        elsif ( $pre ) {
-            $o .= "</pre>\n";
-            $pre = 0;
-        }
-        
-        # normal text
-        unless ( $ul or $ol or $bq or $h3 or $pre ) {
-            $o .= '<p>';
-        }
-        # multiline quoting beginnen
-        if ( $q and not $mqs ) {
-            $o .= qq~<span class="quote">~;
-        }
-        # normal text
-        unless ( $ul or $ol or $bq or $pre ) {
-            $o .= $s;
-        }
-        # multiline quoting abschliessen
-        if ( $q ) {
-            $o .= qq~</span>~;
-        }
-        # normal text
-        unless ( $ul or $ol or $h3 or $pre ) {
-            $o .= '</p>';
-        }
-        $o .= "\n";
     }
-    $o .= '</ul>' if $ul;
-    $o .= '</ol>' if $ol;
-    $o .= '</pre>' if $pre;
-    $o .= '</blockquote>' if $bq;
-    chomp $o;
+    unless ( $i ) {
+        $o = $str;
+        _xml_escape($o);
+    }
+    unless ( $dis_p ) {
+        if ( $o =~ s~\n+~</p>\n<p>~gxmsio ) {
+            $o = "<p>$o</p>";
+        }
+    }
+    return $o;
+}
+
+sub _pre_format_text {
+    my ( $c, $str ) = @_;
+    my $o = _pre_format_text_part($c, $str);
+    $o =~ s{\b(https?://.+?)(?=\)|,|\s|\z|<)}{_make_link($1,$c)}gxmeios;
+    $o =~ s{(p>|\s|\A)($SmileyRe)(</\w|\s|\z)}{_make_smiley($1,$2,$3,$c)}gmxeos;
     return $o;
 }
 
 sub _xml_escape {
     $_[0] =~ s/\&/\&amp;/gxmo;
-    $_[0] =~ s/\<(?!3|\/ironie\>|\/irony\>)/\&lt;/gxom;
-    $_[0] =~ s/(?<!ronie|irony)\>(?!\:|\=)/\&gt;/goxm;
+    $_[0] =~ s/\</\&lt;/gxom;
+    $_[0] =~ s/\>/\&gt;/goxm;
 }
 
 sub _make_username_mark {
@@ -200,27 +139,14 @@ sub _make_username_mark {
 
 }
 
-sub _make_goody {
-    my ( $marker, $string ) = @_;
-    my $rem = "\\$marker";
-    $string =~ s/$rem/ /gms;
-    $string .= ' !!!' if $marker eq '!';
-    if ( exists $Goodies{$marker} ) {
-        return qq~<span class="$Goodies{$marker}">$string</span>~;
-    }
-    else {
-        return "$marker$string$marker";
-    }
-}
-
 sub _make_link {
-    my ( $start, $url, $end, $c ) = @_;
+    my ( $url, $c ) = @_;
     $url =~ s/"/\%22/xmso;
     my $url_xmlencode = $url;
     _xml_escape($url_xmlencode);
-        my $url_show = $url_xmlencode;
+    my $url_show = $url_xmlencode;
     _stripped_url($c, $url_xmlencode);
-    return qq~$start<a href="$url" title="Externe Webseite: $url_show" target="_blank">$url_xmlencode</a>$end~;
+    return qq~<a href="$url" title="Externe Webseite: $url_show" target="_blank">$url_xmlencode</a>~;
 }
 
 sub _stripped_url {
@@ -234,15 +160,11 @@ sub _stripped_url {
 }
 
 sub _make_smiley {
-    my $s = shift // '';
-    my $y = my $x = shift // return '';
-    my $c = shift;
-    $y =~ s/\&/&lt;/xmsgo;
-    $y =~ s/\>/&gt;/xmsgo;
-    $y =~ s/\</&lt;/xmsgo;
-    return qq~$s<img class="smiley" src="~
-        . $c->url_for("/theme/img/smileys/$Smiley{$x}.png")
-        . qq~" alt="$y" title="$y" />~;
+    my ( $start, $str, $end, $c ) = @_;
+    my $orig = $str;
+    return qq~$start<img class="smiley" src="~
+        . $c->url_for("/theme/img/smileys/$Smiley{$orig}.png")
+        . qq~" alt="$str" title="$str" />$end~;
 }
 
 1;
