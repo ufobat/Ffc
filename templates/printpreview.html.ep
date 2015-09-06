@@ -21,9 +21,11 @@
 %     if ( $lasttopicid != -1 ) {
         <div class="pages">
             <a name="goto_end_<%= $lasttopicid %>"></a>
+%       if ( $unread ) {
             <a href="<%= url_for 'topic_ppv_mark_seen', topicid => $lasttopicid %>"
                 title="Thema als gelesen markieren">
                     Thema als gelesen markieren</a>,
+%       }
             <a href="<%= url_for 'show_forum', topicid => $lasttopicid %>"
                 title="Thema als gelesen markieren">
                     Thema zum mitdiskutieren anzeigen</a>,
@@ -39,18 +41,16 @@
                 title="Beiträge zum Thema anzeigen"><%= $p->[9] %></a>
         </h1></div>
 %   }
-%   if ( !$unread and $p->[0] > $p->[11] ) {
-%     $unread = 1;
-        <a name="goto_unread_<%= $lasttopicid %>" />
-%   }
 %= include 'parts/postbox', post => $p, lastseen => $lastseen
 % }
 % if ( @$posts ) {
         <div class="pages">
             <a name="goto_end_<%= $lasttopicid %>"></a>
+%   if ( $unread ) {
             <a href="<%= url_for 'topic_ppv_mark_seen', topicid => $lasttopicid %>"
                 title="Thema als gelesen markieren">
                     Thema als gelesen markieren</a>,
+%   }
             <a href="<%= url_for 'show_forum', topicid => $lasttopicid %>"
                 title="Thema als gelesen markieren">
                     Thema zum mitdiskutieren anzeigen</a>,
