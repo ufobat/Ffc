@@ -48,6 +48,9 @@ sub check_topiclist_unseen {
         <span\sclass="smallfont">\(
         \s+Neu:\s<span\sclass="mark">$acnt</span>,
         \s+$user1,\s+$timeqr,
+        \s+<span\sclass="menuentry">
+        \s+<span\sclass="othersmenulinktext">Optionen</span>
+        \s+<div\sclass="otherspopup\spopup\stopiclistpopup">
         \s+<a\shref="/forum/printpreview/$id\#goto_unread_$id"
         \s+title="Thema\sin\sder\sDruckvorschau\sanzeigen">Leseansicht</a>,
         \s+<a\shref="/topic/$id/seen"

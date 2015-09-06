@@ -131,6 +131,9 @@ sub check_for_topic_count {
           ->content_like(qr~
                 <span\s+class="smallfont">\(\s*Neu:\s+<span\s+class="mark">$new</span>,
                 \s*\w+,\s*(?:[.\d:]+|jetzt),
+                \s+<span\sclass="menuentry">
+                \s+<span\sclass="othersmenulinktext">Optionen</span>
+                \s+<div\sclass="otherspopup\spopup\stopiclistpopup">
                 \s+<a\shref="/forum/printpreview/$i\#goto_unread_$i"
                 \s+title="Thema\sin\sder\sDruckvorschau\sanzeigen">Leseansicht</a>,
                 \s+<a\shref="/topic/$i/seen"\s+title="Thema\sals\sgelesen\smarkieren">gelesen</a>,
@@ -142,6 +145,9 @@ sub check_for_topic_count {
           ->content_like(qr~
                 <span\s+class="smallfont">\(
                 \s*\w+,\s*(?:[.\d:]+|jetzt),
+                \s+<span\sclass="menuentry">
+                \s+<span\sclass="othersmenulinktext">Optionen</span>
+                \s+<div\sclass="otherspopup\spopup\stopiclistpopup">
                 \s+<a\shref="/forum/printpreview/$i\#goto_unread_$i"
                 \s+title="Thema\sin\sder\sDruckvorschau\sanzeigen">Leseansicht</a>,
                 \s+<a\s+href="/topic/$i/(?:un)?(?:ignore|pin)"~xms);

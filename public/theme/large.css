@@ -199,3 +199,6 @@ input[type="text"].titlestring {
     cursor: pointer;
     text-decoration: underline;
 }
+.topiclistpopup {
+    margin-left: -5em;
+}
