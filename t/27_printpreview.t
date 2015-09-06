@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 334;
+use Test::More tests => 361;
 
 ###############################################################################
 note q~Testsystem vorbereiten~;
@@ -63,7 +63,14 @@ sub add_article {
 }
 
 sub check_topic_in_ppv {
-    $t->get_ok('/forum/printpreview')->status_is(200);
+    my $topicid = shift;
+    if ( $topicid ) {
+        $t->get_ok("/forum/printpreview/$topicid");
+    }
+    else {
+        $t->get_ok('/forum/printpreview');
+    }
+    $t->status_is(200);
     for my $i ( 0 .. $#Topics ) {
         my $id = $i + 1;
         my ( $top, $arts, $lastseen, $ignore ) = @{$Topics[$i]};
@@ -219,6 +226,7 @@ note q~Druckvorschauperiode ist standardmaeßig auf 7 Tage gesetzt~;
 
 $t->content_like(qr~14 Tage</a>,~);
 $t->content_like(qr~7 Tage</span>,~);
+$t->content_like(qr~31 Tage</a>,~);
 
 ###############################################################################
 note q~Einige Beitraege kuenstlich auf 8 Tage altern~;
@@ -257,6 +265,7 @@ note q~Druckvorschauperiode ist auch wirklich auf 14 Tage gesetzt~;
 
 $t->content_like(qr~7 Tage</a>,~);
 $t->content_like(qr~14 Tage</span>,~);
+$t->content_like(qr~31 Tage</a>,~);
 
 ###############################################################################
 note q~Einige Beitraege kuenstlich auf 16 Tage altern~;
@@ -275,10 +284,10 @@ note q~Druckvorschauseite ohne die neu ueberalterten Beitraege anzeigen~;
 check_topic_in_ppv();
 
 ###############################################################################
-note q~Druckvorschauseiten-Periode auf 32 Tage verlaengern, damit mit allen Themen getestet werden kan~;
+note q~Druckvorschauseiten-Periode auf 31 Tage verlaengern, damit mit allen Themen getestet werden kan~;
 ###############################################################################
 
-$t->get_ok('/forum/set_ppv_period/32')->status_is(302)
+$t->get_ok('/forum/set_ppv_period/31')->status_is(302)
   ->header_is(Location => '/forum/printpreview');
 $_->[1] = 0 for @oldies;
 
@@ -287,6 +296,17 @@ note q~Alle wieder da~;
 ###############################################################################
 
 check_topic_in_ppv();
+$t->content_like(qr~7 Tage</a>,~);
+$t->content_like(qr~14 Tage</a>,~);
+$t->content_like(qr~31 Tage</span>,~);
+
+###############################################################################
+note q~Nur ein einzelnes Thema anzeigen~;
+###############################################################################
+
+$Topics[2][3] = 1;
+check_topic_in_ppv(2);
+$Topics[2][3] = 0;
 
 ###############################################################################
 note q~Ein Thema als gelesen markieren~;
