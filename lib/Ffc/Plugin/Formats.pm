@@ -143,15 +143,9 @@ sub _pre_format_text {
 
 sub _make_sth {
     my ( $url, $smile, $c ) = @_;
-    if ( $url ) {
-        return _make_link( $url, $c );
-    }
-    elsif ( $smile ) {
-        return _make_smiley( $smile, $c );
-    }
-    else {
-        return '';
-    }
+    if    ( $url   ) { return _make_link(   $url,   $c ) }
+    elsif ( $smile ) { return _make_smiley( $smile, $c ) }
+    else             { return ''                         }
 }
 
 sub _xml_escape {
