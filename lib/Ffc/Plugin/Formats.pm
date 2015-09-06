@@ -31,7 +31,7 @@ our @Smilies = (
     [ ironie     => ['</ironie>', '</irony>',                     ] ],
 );
 our %Smiley     = map {my ($n,$l)=($_->[0],$_->[1]); map {
-    s~<~&lt;~gxmos; s~>~&gt;~gxmso; 
+    #s~<~&lt;~gxmos; s~>~&gt;~gxmso; 
     $_=>$n
 } @$l} @Smilies;
 our $SmileyRe   = join '|', map {
@@ -40,13 +40,19 @@ our $SmileyRe   = join '|', map {
 } keys %Smiley;
 our $HTMLRe = qr~ul|ol|pre|code|b|u|i|strike|h3|quote|li|em~;
 our %HTMLHandle = (
-#   tag => [ disable-p, disable-html ],
-    ul   => [ 1, 0 ],
-    ol   => [ 1, 0 ],
-    pre  => [ 1, 1 ],
-    code => [ 1, 1 ],
-    h1   => [ 1, 0 ],
+#   tag => [ disable-p, disable-html, set_n ],
+    ul   => [ 1, 0, 1 ],
+    ol   => [ 1, 0, 1 ],
+    li   => [ 0, 0, 1 ],
+    pre  => [ 1, 1, 1 ],
+    code => [ 1, 1, 0 ],
+    h3   => [ 1, 0, 1 ],
 );
+
+our $SmileyHandleRe = qr~(?<smileymatch>$SmileyRe)~xms;
+our $URLHandleRe = qr~(?<urlmatch>(?<url>https?://.+?)(?=\)|\s|\z|<))~xms;
+our $HTMLHandleRe = qr~(?<htmlmatch><(?<tag>$HTMLRe)>(?<inner>.+?)</\g{tag}>)~xmsi;
+our $BigMatch = qr~(?<completematch>$HTMLHandleRe|$URLHandleRe|$SmileyHandleRe)~xms;
 
 sub register {
     my ( $self, $app ) = @_;
@@ -80,72 +86,77 @@ sub _username_format_text {
 
 sub _pre_format_text_part {
 #   controller, string, disable-p, disable-html
-    my ( $c, $str, $dis_p, $dis_html ) = @_;
+    my ( $c, $str, $lvl, $dis_p, $dis_html, $set_n ) = @_;
     return '' if $str =~ m/\A\s*\z/xmso;
+    $lvl ||= 0;
+    $lvl++;
     $str =~ s~(?:\r?\n\r?)+~\n~gxmsio;
     my $o = '';
     my $start = 0;
-    unless ( $dis_html ) {
-        while ( $str =~ m~<($HTMLRe)>(.+?)</\g1>~gxmsi ) {
-            my ( $tag, $inner, $end, $newstart ) = ( $1, $2, $-[0], $+[0] );
+    if ( $dis_html ) {
+        _xml_escape($str);
+        return $str;
+    }
+    else {
+        while ( $str =~ m~$BigMatch~gxms ) {
+            #use Data::Dumper; warn Dumper \%+, $lvl;
+            my ( $end, $newstart ) = ( $-[0], $+[0] );
+            my %m = ( %+ );
 
-            my ( $dis_p, $dis_html ) = ( $dis_p, $dis_html );
-            if ( exists $HTMLHandle{$tag} ) {
-                $dis_p    ||= $HTMLHandle{$tag}[0];
-                $dis_html ||= $HTMLHandle{$tag}[1];
-            }
+            if ( $start < $end ) 
+                { $o .= _format_plain_text( substr($str, $start, $end - $start), $dis_p ) }
 
-            if ( $start < $end and not $dis_p ) {
-                my $pre = substr($str, $start, $end - $start);
-                _xml_escape($pre);
-                if ( $pre =~ s~\n+~</p>\n<p>~gxmsio ) {
-                    $pre = "<p>$pre</p>";
-                }
-                $o .= $pre;
-            }
-
-            $o .= "<$tag>" 
-               .  _pre_format_text_part($c, $inner, $dis_p, $dis_html)
-               .  "</$tag>";
+            if    ( $m{htmlmatch}   )
+                { $o .= _make_tag(    $c, $m{tag}, $m{inner}, $lvl, $dis_p, $dis_html, $set_n ) }
+            elsif ( $m{urlmatch}    ) 
+                { $o .= _make_link(   $c, $m{url}                                     ) }
+            elsif ( $m{smileymatch} )
+                { $o .= _make_smiley( $c, $m{smileymatch}                             ) }
 
             $start = $newstart;
         }
     }
-    if ( $start < length $str ) {
-        my $left;
-        if ( $o ) {
-            $left = substr( $str, $start, length($str) - $start );
-        }
-        else {
-            $left = $str;
-        }
-        if ( $left  ) {
-            _xml_escape($left);
-            unless ( $dis_p ) {
-                if ( $left =~ s~\n+~</p>\n<p>~gxmsio ) {
-                    $left = "<p>$left</p>";
-                }
-            }
-        }
-        $o .= $left;
-    }
+    if ( $start < length( $str ) - 1 ) 
+        { $o .= _format_plain_text(substr($str, $start, length($str) - $start), $dis_p ) }
+
     return $o;
+}
+
+sub _format_plain_text {
+    my $str = shift;
+    my $dis_p = shift;
+    _xml_escape( $str );
+    unless ( $dis_p )
+        { $str =~ s~\n+~</p>\n<p>~gsmxo }
+    return $str;
 }
 
 sub _pre_format_text {
     my ( $c, $str ) = @_;
     my $o = _pre_format_text_part($c, $str);
-    $o =~ s~<p>\s*</p>~~gxmso;
-    $o =~ s~\b(?<url>https?://.+?)(?=\)|\s|\z|<)|(?<smile>$SmileyRe)~_make_sth($+{url}, $+{smile},$c)~gxmeios;
-    #$o =~ s{($SmileyRe)}{_make_smiley($1,$2,$3,$c)}gmxeos;
+    $o = "<p>$o</p>";
+    $o =~ s~<p>\s*</p>~~gsmxo;
+    $o =~ s~\n\n+~\n~gsmxo;
+    $o =~ s~</(pre|h3|ul|ol)>\s*</p>~</$1>~gsmx;
+    $o =~ s~<p>\s*<(pre|h3|ul|ol)>~<$1>~gsmx;
     return $o;
 }
 
-sub _make_sth {
-    my ( $url, $smile, $c ) = @_;
-    if    ( $url   ) { return _make_link(   $url,   $c ) }
-    elsif ( $smile ) { return _make_smiley( $smile, $c ) }
-    else             { return ''                         }
+sub _make_tag {
+    my ( $c, $tag, $inner, $lvl, $dis_p, $dis_html, $set_n ) = @_;
+
+    if ( exists $HTMLHandle{$tag} ) {
+        $dis_p    ||= $HTMLHandle{$tag}[0];
+        $dis_html ||= $HTMLHandle{$tag}[1];
+        $set_n    ||= $HTMLHandle{$tag}[2];
+    }
+
+    return 
+         ( $set_n ? "\n" : '' )
+       . "<$tag>" 
+       .  _pre_format_text_part($c, $inner, $lvl, $dis_p, $dis_html)
+       .  "</$tag>"
+       . ( $set_n ? "\n" : '' );
 }
 
 sub _xml_escape {
@@ -162,7 +173,7 @@ sub _make_username_mark {
 }
 
 sub _make_link {
-    my ( $url, $c ) = @_;
+    my ( $c, $url ) = @_;
     $url =~ s/"/\%22/xmso;
     my $url_xmlencode = $url;
     _xml_escape($url_xmlencode);
@@ -182,7 +193,7 @@ sub _stripped_url {
 }
 
 sub _make_smiley {
-    my ( $str, $c ) = @_;
+    my ( $c, $str ) = @_;
     my $orig = $str;
     return qq~<img class="smiley" src="~
         . $c->url_for("/theme/img/smileys/$Smiley{$orig}.png")

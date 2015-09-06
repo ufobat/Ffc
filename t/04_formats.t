@@ -105,10 +105,17 @@ sub format_things_test {
     $t->post_ok('/pre_format', form => {text => << 'EOTXT'})
 :)
 haha hallo welt! oder so.
+<h3>weil</h3>
 http://bedivere.de <3
 <b>fett</b> <u><i>kursiv</i> understrichen</u>
 test </ironie>
+<pre>
+    tes5
+        sdtsd
+         asdf <h3>blubb</h3>
+</pre>
 <h3>test <strike>notest</strike></h3>
+Gasdfkjasdlf
 EOTXT
       ->status_is(200)
       ->content_is('');
