@@ -89,13 +89,19 @@ sub _pre_format_text_part {
         while ( $str =~ m~<($HTMLRe)>(.+?)</\g1>~gxmsi ) {
             my ( $tag, $inner, $end, $newstart ) = ( $1, $2, $-[0], $+[0] );
 
-            my $pre = substr($str, $start, $end - $start);
-            _xml_escape($pre);
-            $o .= $pre;
-
+            my ( $dis_p, $dis_html ) = ( $dis_p, $dis_html );
             if ( exists $HTMLHandle{$tag} ) {
                 $dis_p    ||= $HTMLHandle{$tag}[0];
                 $dis_html ||= $HTMLHandle{$tag}[1];
+            }
+
+            if ( $start < $end and not $dis_p ) {
+                my $pre = substr($str, $start, $end - $start);
+                _xml_escape($pre);
+                if ( $pre =~ s~\n+~</p>\n<p>~gxmsio ) {
+                    $pre = "<p>$pre</p>";
+                }
+                $o .= $pre;
             }
 
             $o .= "<$tag>" 
@@ -113,13 +119,15 @@ sub _pre_format_text_part {
         else {
             $left = $str;
         }
-        _xml_escape($left);
-        $o .= $left;
-    }
-    unless ( $dis_p ) {
-        if ( $o =~ s~\n+~</p>\n<p>~gxmsio ) {
-            $o = "<p>$o</p>";
+        if ( $left  ) {
+            _xml_escape($left);
+            unless ( $dis_p ) {
+                if ( $left =~ s~\n+~</p>\n<p>~gxmsio ) {
+                    $left = "<p>$left</p>";
+                }
+            }
         }
+        $o .= $left;
     }
     return $o;
 }
@@ -127,6 +135,7 @@ sub _pre_format_text_part {
 sub _pre_format_text {
     my ( $c, $str ) = @_;
     my $o = _pre_format_text_part($c, $str);
+    $o =~ s~<p>\s*</p>~~gxmso;
     $o =~ s~\b(?<url>https?://.+?)(?=\)|\s|\z|<)|(?<smile>$SmileyRe)~_make_sth($+{url}, $+{smile},$c)~gxmeios;
     #$o =~ s{($SmileyRe)}{_make_smiley($1,$2,$3,$c)}gmxeos;
     return $o;
