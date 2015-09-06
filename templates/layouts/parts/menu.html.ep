@@ -35,9 +35,6 @@
     <div class="otherspopuplink menuentry">
         <span class="othersmenulinktext">Menü</span>
         <div class="otherspopup popup">
-            <p class="printviewlink">
-                <a href="<%= url_for 'printpreview' %>" target="_blank"><span class="linktext linkprintview">Druckansicht</span></a>
-            </p>
             <p class="optionslink">
                 <a href="<%= url_for 'options_form' %>"><span class="linktext linkoptions<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
             </p>

@@ -16,6 +16,8 @@
 % if ( $t->[8] or $t->[9] ) {
             <%= $t->[8] %>, <%= $t->[9] %>,
 % }
+            <a href="<%= url_for 'printpreview_topic', topicid => $t->[0] %>#goto_unread_<%= $t->[0] %>"
+                title="Thema in der Druckvorschau anzeigen">Leseansicht</a>,
 % if ( $t->[3] ) {
             <a href="<%= url_for 'topic_mark_seen', topicid => $t->[0] %>"
                 title="Thema als gelesen markieren">gelesen</a>,

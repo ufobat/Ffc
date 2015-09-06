@@ -238,4 +238,8 @@ li {
     margin-left: 1em;
     list-style-type: disc;
 }
+.invisible {
+    border-color: transparent;
+    background-color: transparent;
+}
 

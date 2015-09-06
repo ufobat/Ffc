@@ -130,17 +130,21 @@ sub check_for_topic_count {
           ->content_like(qr~href="/topic/$i">$top->[0]</a>\s*</h2>~)
           ->content_like(qr~
                 <span\s+class="smallfont">\(\s*Neu:\s+<span\s+class="mark">$new</span>,
-                \s*\w+,\s*(?:[.\d:]+|jetzt),\s*
-                <a\shref="/topic/$i/seen"\s+title="Thema\sals\sgelesen\smarkieren">gelesen</a>,
+                \s*\w+,\s*(?:[.\d:]+|jetzt),
+                \s+<a\shref="/forum/printpreview/$i\#goto_unread_$i"
+                \s+title="Thema\sin\sder\sDruckvorschau\sanzeigen">Leseansicht</a>,
+                \s+<a\shref="/topic/$i/seen"\s+title="Thema\sals\sgelesen\smarkieren">gelesen</a>,
                 \s+<a\s+href="/topic/$i/(?:un)?(?:ignore|pin)"~xms);
     }
     else {
         $t->content_like(qr~$top->[0]\s*</a>\s*\.\.\.\s*</p>~xms)
           ->content_like(qr~href="/topic/$i">$top->[0]</a>\s*</h2>~)
           ->content_like(qr~
-                <span\s+class="smallfont">\(\s*
-                \s*\w+,\s*(?:[.\d:]+|jetzt),\s*
-                <a\s+href="/topic/$i/(?:un)?(?:ignore|pin)"~xms);
+                <span\s+class="smallfont">\(
+                \s*\w+,\s*(?:[.\d:]+|jetzt),
+                \s+<a\shref="/forum/printpreview/$i\#goto_unread_$i"
+                \s+title="Thema\sin\sder\sDruckvorschau\sanzeigen">Leseansicht</a>,
+                \s+<a\s+href="/topic/$i/(?:un)?(?:ignore|pin)"~xms);
     }
 }
 

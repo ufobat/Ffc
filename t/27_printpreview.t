@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 261;
+use Test::More tests => 334;
 
 ###############################################################################
 note q~Testsystem vorbereiten~;
@@ -47,23 +47,11 @@ sub check_topiclist_unseen {
     $t->content_like(qr~
         <span\sclass="smallfont">\(
         \s+Neu:\s<span\sclass="mark">$acnt</span>,
-        \s+$user1,\s+$timeqr,\s+<a\shref="/topic/$id/seen"
-        \s+title="Thema\sals\sgelesen\smarkieren">gelesen</a>,
-        \s+<a\shref="/topic/$id/pin"
-    ~xms);
-}
-
-sub check_topiclist_seen {
-    my $i = shift;
-    my $id   = $i + 1;
-    my $top  = $Topics[$i][0];
-    my $arts = $Topics[$i][1];
-    my $acnt = @$arts;
-    note("Thema Nr. $id sollte als gelesene markiert sein");
-    $t->content_like(qr~$top~);
-    $t->content_like(qr~
-        <span\sclass="smallfont">\(
         \s+$user1,\s+$timeqr,
+        \s+<a\shref="/forum/printpreview/$id\#goto_unread_$id"
+        \s+title="Thema\sin\sder\sDruckvorschau\sanzeigen">Leseansicht</a>,
+        \s+<a\shref="/topic/$id/seen"
+        \s+title="Thema\sals\sgelesen\smarkieren">gelesen</a>,
         \s+<a\shref="/topic/$id/pin"
     ~xms);
 }
@@ -82,7 +70,7 @@ sub check_topic_in_ppv {
         my $acnt = @$arts;
         if ( $ignore ) {
             note("Thema Nr. $id wird ignoriert, nichts davon soll angezeigt werden");
-            $t->content_unlike(qr~$top~);
+            $t->content_unlike(qr~$top</a></h1>~);
             $t->content_unlike(qr~$_->[0]~) for @$arts;
             next;
         }
@@ -134,7 +122,6 @@ sub check_topic_in_ppv {
 </div>~);
             }
         }
-        $Topics[$i][2] = $arts->[-1]->[2];
     }
 }
 
@@ -283,6 +270,50 @@ for my $art ( @oldies ) {
 
 ###############################################################################
 note q~Druckvorschauseite ohne die neu ueberalterten Beitraege anzeigen~;
+###############################################################################
+
+check_topic_in_ppv();
+
+###############################################################################
+note q~Druckvorschauseiten-Periode auf 32 Tage verlaengern, damit mit allen Themen getestet werden kan~;
+###############################################################################
+
+$t->get_ok('/forum/set_ppv_period/32')->status_is(302)
+  ->header_is(Location => '/forum/printpreview');
+$_->[1] = 0 for @oldies;
+
+###############################################################################
+note q~Alle wieder da~;
+###############################################################################
+
+check_topic_in_ppv();
+
+###############################################################################
+note q~Ein Thema als gelesen markieren~;
+###############################################################################
+
+$t->get_ok('/topic/2/printpreview/seen')->status_is(302)
+  ->header_is(Location => '/forum/printpreview');
+# Markierung in den Testdaten ändern
+$Topics[1][2] = $Topics[1][1][-1][2];
+
+###############################################################################
+note q~Lesemarkierung pruefen~;
+###############################################################################
+
+check_topic_in_ppv();
+
+###############################################################################
+note q~Ein Thema ignorieren~;
+###############################################################################
+
+$t->get_ok('/topic/2/printpreview/ignore')->status_is(302)
+  ->header_is(Location => '/forum/printpreview');
+# Markierung in den Testdaten ändern
+$Topics[1][3] = 1;
+
+###############################################################################
+note q~Ignoration pruefen~;
 ###############################################################################
 
 check_topic_in_ppv();

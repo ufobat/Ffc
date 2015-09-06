@@ -193,12 +193,12 @@ sub move_topic_do {
     $c->redirect_to('show_forum', topicid => $topicidto);
 }
 
-sub   ignore_topic_do { $_[0]->_handle_ignore_topic_do(1) }
-sub unignore_topic_do { $_[0]->_handle_ignore_topic_do(0) }
+sub   ignore_topic_do { $_[0]->_handle_ignore_topic_do(1, $_[1]) }
+sub unignore_topic_do { $_[0]->_handle_ignore_topic_do(0, $_[1]) }
 sub _handle_ignore_topic_do {
     $_[0]->_handle_val_topic_do('ignore', $_[1],
         'Zum gewählten Thema werden keine neuen Beiträge mehr angezählt.',
-        'Das gewählte Thema wird jetzt nicht mehr ignoriert.');
+        'Das gewählte Thema wird jetzt nicht mehr ignoriert.', $_[2]);
 }
 
 sub   pin_topic_do { $_[0]->_handle_pin_topic_do(1) }
@@ -210,7 +210,7 @@ sub _handle_pin_topic_do {
 }
 
 sub _handle_val_topic_do {
-    my ( $c, $name, $val, $dotxt, $undotxt ) = @_;
+    my ( $c, $name, $val, $dotxt, $undotxt, $redirect ) = @_;
     my $topicid = $c->param('topicid');
     my $lastseen = $c->dbh_selectall_arrayref(
         'SELECT "lastseen"
@@ -230,7 +230,7 @@ sub _handle_val_topic_do {
     }
     if ( $val ) { $c->set_info_f( $dotxt   ) }
     else        { $c->set_info_f( $undotxt ) }
-    $c->redirect_to('show_forum_topiclist');
+    $c->redirect_to($redirect ? ( $redirect, topicid => $topicid ) : 'show_forum_topiclist');
 }
 
 sub sort_order_chronological { 
@@ -266,8 +266,9 @@ sub set_topiclimit {
 }
 
 sub mark_seen {
-    $_[0]->set_lastseen( $_[0]->session->{userid}, $_[0]->param('topicid') );
-    $_[0]->redirect_to('show_forum_topiclist');
+    my $topicid = $_[0]->param('topicid');
+    $_[0]->set_lastseen( $_[0]->session->{userid}, $topicid );
+    $_[0]->redirect_to($_[1] ? ( $_[1], topicid => $topicid ) : 'show_forum_topiclist');
 }
 
 1;

@@ -43,7 +43,10 @@ sub check_unseen {
     $t->content_like(qr~
         <span\sclass="smallfont">\(
         \s+Neu:\s<span\sclass="mark">$acnt</span>,
-        \s+$user1,\s+$timeqr,\s+<a\shref="/topic/$id/seen"
+        \s+$user1,\s+$timeqr,
+        \s+<a\shref="/forum/printpreview/$id\#goto_unread_$id"
+        \s+title="Thema\sin\sder\sDruckvorschau\sanzeigen">Leseansicht</a>,
+        \s+<a\shref="/topic/$id/seen"
         \s+title="Thema\sals\sgelesen\smarkieren">gelesen</a>,
         \s+<a\shref="/topic/$id/pin"
     ~xms);
@@ -59,6 +62,8 @@ sub check_seen {
     $t->content_like(qr~
         <span\sclass="smallfont">\(
         \s+$user1,\s+$timeqr,
+        \s+<a\shref="/forum/printpreview/$id\#goto_unread_$id"
+        \s+title="Thema\sin\sder\sDruckvorschau\sanzeigen">Leseansicht</a>,
         \s+<a\shref="/topic/$id/pin"
     ~xms);
 }
