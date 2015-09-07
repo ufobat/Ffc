@@ -4,6 +4,7 @@ ffcdata.editbuttons = {};
 ffcdata.editbuttons.init = function(){
     if ( ffcdata.utils.is_disabled() ) return;
 
+    // Textfeld als Element bekannt machen
     var tinput = document.getElementById('textinput');
     if ( !tinput ) return;
 
@@ -16,17 +17,35 @@ ffcdata.editbuttons.init = function(){
     };
 
     // Wörter auf einer Zeile inline mit einem Zeichen umrahmen
-    var tagthat = function(str){
+    var tagthat = function(str, br_o = false, br_i = false){
         // console.log('sourround selection with "' + str + '"');
         tinput.focus();
+
+        // Textbestandteile der Markierung oder Cursorposition ermitteln
         var sel = selection();
-        if ( sel[0] === sel[1] )
-            return '';
         var txt0 = tinput.value.substr(0,sel[0]);
-        var txt1 = tinput.value.substr(sel[0],sel[1] - sel[0] - 1);
-        var txt2 = tinput.value.substring(sel[1],tinput.value.length);
-        tinput.value =  txt0 + "<" + str + ">" + txt1 + "</" + str + ">" + txt2;
-        var pos = 2 * str.length + 4;
+        var txt1 = tinput.value.substr(sel[0],sel[1] - sel[0]);
+        var txt2 = tinput.value.substr(sel[1],tinput.value.length);
+
+        // Neuen Textinhalt zusammenstellen
+        var brstr_o = br_o ? '\n' : '';
+        var brstr_i = br_i ? '\n' : '';
+        tinput.value 
+            = txt0 
+                + brstr_o + "<" + str + ">" 
+                    + brstr_i + txt1 + brstr_i 
+                + "</" + str + ">" + brstr_o
+            + txt2;
+
+        // Textcursor an eine passende Stelle setzen
+        var pos = sel[1] + str.length + 2;
+        if ( br_o ) pos += 1;
+        if ( br_i ) pos += 1;
+        if ( sel[0] !== sel[1] ) {
+            pos += str.length + 3;
+            if ( br_o ) pos += 1;
+            if ( br_i ) pos += 1;
+        }
         tinput.selectionStart = pos;
         tinput.selectionEnd   = pos;
     };
@@ -34,11 +53,7 @@ ffcdata.editbuttons.init = function(){
     // Textfeld-Klappungen
     var tinputclass = tinput.className;
     var tap = document.getElementById('closetextap');
-    var closetextarea = function(){ 
-        // console.log('closetext');
-        tinput.className = tinputclass;
-        tap.className = 'textright nodisplay';
-    };
+    // Textfeld öffnen
     var opentextarea = function(){
         // console.log('opentext');
         if ( tap.className !== 'textright nodisplay' ) return;
@@ -48,27 +63,35 @@ ffcdata.editbuttons.init = function(){
             tinput.className = tinputclass + ' inedit';
         tap.className = 'textright displayblock';
     };
+    // Textfeld schließen
+    var closetextarea = function(){ 
+        // console.log('closetext');
+        tinput.className = tinputclass;
+        tap.className = 'textright nodisplay';
+    };
 
-    // Buttonereignisse registrieren
-    document.getElementById('h1button').onclick            = function(){ tagthat( 'h3'    ) };
-    document.getElementById('quotebutton').onclick         = function(){ tagthat( 'quote' ) };
-    document.getElementById('unorderedlistbutton').onclick = function(){ tagthat( 'ul'    ) };
-    document.getElementById('orderedlistbutton').onclick   = function(){ tagthat( 'ol'    ) };
-    document.getElementById('listitembutton').onclick      = function(){ tagthat( 'li'    ) };
-    document.getElementById('codebutton').onclick          = function(){ tagthat( 'code'  ) };
-    document.getElementById('prebutton').onclick           = function(){ tagthat( 'pre'   ) };
-    document.getElementById('underlinebutton').onclick     = function(){ tagthat( 'u'     ) };
-    document.getElementById('boldbutton').onclick          = function(){ tagthat( 'b'     ) };
-    document.getElementById('linethroughbutton').onclick   = function(){ tagthat( 'strike') };
-    document.getElementById('italicbutton').onclick        = function(){ tagthat( 'i'     ) };
-    document.getElementById('emotionalbutton').onclick     = function(){ tagthat( 'em'    ) };
+    // Formatierungsbuttonereignisse registrieren
+    document.getElementById('h1button'           ).onclick=function(){tagthat('h3', true     )};
+    document.getElementById('quotebutton'        ).onclick=function(){tagthat('quote'        )};
+    document.getElementById('unorderedlistbutton').onclick=function(){tagthat('ul', true,true)};
+    document.getElementById('orderedlistbutton'  ).onclick=function(){tagthat('ol', true,true)};
+    document.getElementById('listitembutton'     ).onclick=function(){tagthat('li'           )};
+    document.getElementById('codebutton'         ).onclick=function(){tagthat('code'         )};
+    document.getElementById('prebutton'          ).onclick=function(){tagthat('pre',true,true)};
+    document.getElementById('underlinebutton'    ).onclick=function(){tagthat('u'            )};
+    document.getElementById('boldbutton'         ).onclick=function(){tagthat('b'            )};
+    document.getElementById('linethroughbutton'  ).onclick=function(){tagthat('strike'       )};
+    document.getElementById('italicbutton'       ).onclick=function(){tagthat('i'            )};
+    document.getElementById('emotionalbutton'    ).onclick=function(){tagthat('em'           )};
 
+    // Textfeld-Klappung einrichten
     tinput.style.resize = 'none';
     if ( !tinput.className.match(/inedit/i) ) {
         document.getElementById('closetextabutton').onclick = closetextarea;
         tinput.onfocus = opentextarea;
     }
 
+    // Formatierungsbuttons anzeigen
     document.getElementById('editbuttons').className = 'editbuttons';
 };
 

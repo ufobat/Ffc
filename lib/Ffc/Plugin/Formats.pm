@@ -52,7 +52,7 @@ our %HTMLHandle = (
 
 our $SmileyHandleRe = qr~(?<smileymatch>$SmileyRe)~xms;
 our $URLHandleRe = qr~(?<urlmatch>(?<url>https?://.+?)(?=\)|\s|\z|<))~xms;
-our $HTMLHandleRe = qr~(?<htmlmatch><(?<tag>$HTMLRe)>(?<inner>.+?)</\g{tag}>)~xmsi;
+our $HTMLHandleRe = qr~(?<htmlmatch><(?<tag>$HTMLRe)>(?<inner>.*?)</\g{tag}>)~xmsi;
 our $BigMatch = qr~(?<completematch>$HTMLHandleRe|$URLHandleRe|$SmileyHandleRe)~xms;
 
 sub register {
@@ -126,8 +126,10 @@ sub _format_plain_text {
 sub _pre_format_text {
     my ( $c, $str ) = @_;
     my $o = _pre_format_text_part($c, $str);
+    return '' if $o =~ m/\A\s*\z/xmso;
     $o = "<p>$o</p>";
     $o =~ s~<p>\s*</p>~~gsmxo;
+    return '' if $o =~ m/\A\s*\z/xmso;
     $o =~ s~\n\n+~\n~gsmxo;
     $o =~ s~</(pre|h3|ul|ol)>\s*</p>~</$1>~gsmx;
     $o =~ s~<p>\s*<(pre|h3|ul|ol)>~<$1>~gsmx;
@@ -142,12 +144,11 @@ sub _make_tag {
         $dis_html ||= $HTMLHandle{$tag}[1];
         $set_n    ||= $HTMLHandle{$tag}[2];
     }
-
+    my $in = _pre_format_text_part($c, $inner, $lvl, $dis_p, $dis_html);
+    return '' if $in =~ m/\A\s*\z/xmso;
     return 
          ( $set_n ? "\n" : '' )
-       . "<$tag>" 
-       .  _pre_format_text_part($c, $inner, $lvl, $dis_p, $dis_html)
-       .  "</$tag>"
+       . "<$tag>" . $in .  "</$tag>"
        . ( $set_n ? "\n" : '' );
 }
 

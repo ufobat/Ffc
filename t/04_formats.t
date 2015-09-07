@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 32;
+use Test::More tests => 41;
 
 srand;
 
@@ -37,11 +37,6 @@ srand;
         my $c = shift;
         $c->prepare;
         $c->render(text => $c->pre_format($c->param('text')));
-    };
-    any '/username_format' => sub {
-        my $c = shift;
-        $c->prepare;
-        $c->render(text => $c->username_format($c->param('text')));
     };
 }
 
@@ -112,10 +107,16 @@ sub format_things_test {
     note q~Testing the formatting functions~;
 
     for my $test ( @$tests ) {
+        note qq~issuing test no. $test->[2]~;
         my $res = _escape_str2re($test->[1]);
         $t->post_ok('/pre_format', form => {text => $test->[0]})
-          ->status_is(200)
-          ->content_like(qr~$res~);
+          ->status_is(200);
+        if ( $res ) {
+            $t->content_like(qr~$res~);
+        }
+        else {
+            $t->content_is($res);
+        }
     }
 }
 
@@ -130,6 +131,7 @@ EOTXT
 <p><u>test1</u>, <b>test2</b>, <strike>test3</strike>, <i>test4</i>, <em>test6</em></p>
 <p><u>test_1</u>, <b>test-2</b>, <strike>test <img class="smiley" src="/theme/img/smileys/love.png" alt="<3" title="<3" /> 3</strike>, <i>test <img class="smiley" src="/theme/img/smileys/smile.png" alt=":)" title=":)" /> 4</i>, <em>test 6</em></p>
 EOHTML
+        1
     ],
     [
         << 'EOTXT',
@@ -150,6 +152,7 @@ EOTXT
 <p>smile: <img class="smiley" src="/theme/img/smileys/smile.png" alt=":)" title=":)" /> <img class="smiley" src="/theme/img/smileys/smile.png" alt=":-)" title=":-)" /> <img class="smiley" src="/theme/img/smileys/smile.png" alt="=)" title="=)" />,</p>
 <p>sad: <img class="smiley" src="/theme/img/smileys/sad.png" alt=":(" title=":(" /> <img class="smiley" src="/theme/img/smileys/sad.png" alt=":-(" title=":-(" /> <img class="smiley" src="/theme/img/smileys/sad.png" alt="=(" title="=(" />,</p>
 EOHTML
+        2
     ],
     [
         << 'EOTXT',
@@ -184,6 +187,7 @@ test
 </ol>
 <p>&lt;/pre&gt;</p>
 EOHTML
+        3
     ],
     [
         << 'EOTXT',
@@ -214,6 +218,7 @@ EOTXT
 <p>cats: <img class="smiley" src="/theme/img/smileys/cats.png" alt="^^" title="^^" />,</p>
 <p>love: <img class="smiley" src="/theme/img/smileys/love.png" alt="<3" title="<3" />,</p>
 EOHTML
+        4
     ],
     [
         << 'EOTXT',
@@ -238,6 +243,7 @@ EOTXT
 <p>attention: <img class="smiley" src="/theme/img/smileys/attention.png" alt="!!!" title="!!!" /></p>
 <p><a href="http://www.testurl.de/test/-test--test-test,1234,1234.html" title="Externe Webseite: http://www.testurl.de/test/-test--test-test,1234,1234.html" target="_blank">http://www.test…,1234,1234.html</a></p>
 EOHTML
+        5
     ],
     [
         << 'EOTXT',
@@ -263,6 +269,25 @@ EOTXT
 </ul>
 <p>&lt;li&gt;</p>
 EOHTML
+        6
+    ],
+    [
+        '<u></u>',
+        '',
+        7
+    ],
+    [
+        '<u></u><b></b>',
+        '',
+        8
+    ],
+    [
+        << 'EOTXT',
+<u></u><b></b>
+<h3></h3>
+EOTXT
+        '',
+        9
     ],
 );
 

@@ -5,9 +5,15 @@ use strict; use warnings; use utf8;
 sub _add_post {
     my ( $c, $userto, $topicid ) = @_;
     my $text = $c->param('textdata');
-    if ( !defined($text) or (2 > length $text) ) {
+    if ( !defined($text) or (2 >= length $text) ) {
         $c->stash(textdata => $text);
         $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen)');
+        return $c->show;
+    }
+    my $cache = $c->pre_format($text);
+    if ( !defined($cache) or (2 >= length $cache) ) {
+        $c->stash(textdata => $text);
+        $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen ohne Auszeichnungen)');
         return $c->show;
     }
     my $controller = $c->stash('controller');
@@ -38,7 +44,7 @@ INSERT INTO "posts"
 VALUES 
     (?,?,?,?,?)
 EOSQL
-        $c->session->{userid}, $userto, $topicid, $text, $c->pre_format($text)
+        $c->session->{userid}, $userto, $topicid, $text, $cache
     );
     if ( $controller eq 'forum' and $topicid ) {
         $c->dbh_do( << 'EOSQL', $topicid, $topicid );
@@ -93,8 +99,15 @@ sub _edit_post_do {
         $c->stash(textdata => $text);
         return _redirect_to_show($c);
     }
-    if ( !defined($text) or (2 > length $text) ) {
+    if ( !defined($text) or (2 >= length $text) ) {
+        $c->stash(textdata => $text);
         $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen)');
+        return $c->edit_form;
+    }
+    my $cache = $c->pre_format($text);
+    if ( !defined($cache) or (2 >= length $cache) ) {
+        $c->stash(textdata => $text);
+        $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen ohne Auszeichnungen)');
         return $c->edit_form;
     }
 
@@ -110,7 +123,7 @@ sub _edit_post_do {
             . qq~SET "textdata"=?, "cache"=?, "altered"=current_timestamp\n~
             . qq~WHERE "id"=?~;
     $sql .= qq~ AND $wheres~ if $wheres;
-    $c->dbh_do( $sql, $text, $c->pre_format($text), $postid, @wherep );
+    $c->dbh_do( $sql, $text, $cache, $postid, @wherep );
     $c->set_info_f('Der Beitrag wurde geändert');
     _redirect_to_show($c);
 }
