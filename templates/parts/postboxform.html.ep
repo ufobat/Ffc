@@ -24,14 +24,15 @@
             (
             <a href="<%== $returl %>">abbrechen</a>,
             <a href="<%= url_for 'help' %>" target="_blank">Hilfe</a><span id="editbuttons" class="editbuttons nodisplay">, 
-            <a href="#" class="buttonalike" id="boldbutton" title="Fett markiert (wortweise, '+')"><span class="bold">f</span></a><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben (wortweise, '~')"><span class="italic">k</span></a><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung (wortweise, '_')"><span class="underline">u</span></a><a href="#" class="buttonalike" id="linethroughbutton" title="Durchgestrichen (wortweise, '-')"><span class="linethrough">d</span></a> 
-            <a href="#" class="buttonalike" id="h1button" title="Überschrift (zeilenweise, '=' am Zeilenanfang)"><span class="underline"><span class="bold">Ü</span></span></a><a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste (zeilenweise, '-' am Zeilenanfang)">&middot;</a><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste (zeilenweise, '#' am Zeilenanfang)">&sup1;</a> 
-            <a href="#" class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat (zeilenweise, '|', am Zeilenanfang)">&quot;</a><a class="buttonalike" id="codebutton" title="Vorformatierter Programm-Quelltext (wortweise, '`')"><code>`</code></a><a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext (zeilenweise, ' ', am Zeilenanfang)"><code>C</code></a> 
-            <a href="#" class="buttonalike" id="attentionbutton" title="Aufmerksamkeit (wortweise, '!')">!</a><a href="#" class="buttonalike" id="emotionalbutton" title="Emotional (wortweise, '*')">*</a></span>
+            <a href="#" class="buttonalike" id="boldbutton" title="Fett markiert"><span class="bold">f</span></a><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben"><span class="italic">k</span></a><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung"><span class="underline">u</span></a><a href="#" class="buttonalike" id="linethroughbutton" title="Durchgestrichen"><span class="linethrough">d</span></a><a href="#" class="buttonalike" id="emotionalbutton" title="Emotional"><em>*</em></a></span>
+            <a href="#" class="buttonalike" id="h1button" title="Überschrift"><span class="underline"><span class="bold">Ü</span></span></a>
+            <a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste">&middot;</a><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste">&sup1;</a><a href="#" class="buttonalike" id="listitembutton" title="Listenelement">…</a>
+            <a href="#" class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat">&quot;</a><a class="buttonalike" id="codebutton" title="Vorformatierter Programm-Quelltext"><code>`</code></a><a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext"><code>C</code></a> 
 )
         </p>
         <p>
-            <textarea name="textdata" id="textinput" class="edit<%= $textdata ? ' inedit' : '' %>" ><%== $textdata // '' %></textarea>
+            <textarea name="textdata" id="textinput" class="edit<%= $textdata ? ' inedit' : '' %>"><%== $textdata // '' %></textarea>
+            <iframe id="textinputiframe" class="nodisplay"></iframe>
         </p>
         <p id="closetextap" class="textright nodisplay"><button id="closetextabutton" title="Textfeld wieder zusammen klappen" type="button">Textfeld einklappen</button></p>
     </form>

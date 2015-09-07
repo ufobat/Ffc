@@ -188,6 +188,7 @@ input[type="text"].titlestring {
 /* Editbuttons */
 .buttonalike, .buttonalike:active, .buttonalike:focus {
     margin-bottom: .25em;
+    box-shadow: 0 0 .1em dimgray;
 }
 #closetextap {
     margin-top: .25em;

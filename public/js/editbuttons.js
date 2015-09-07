@@ -4,8 +4,16 @@ ffcdata.editbuttons = {};
 ffcdata.editbuttons.init = function(){
     if ( ffcdata.utils.is_disabled() ) return;
 
-    var tinput = document.getElementById('textinput');
+    var tinput = document.getElementById('textinputiframe');
     if ( !tinput ) return;
+
+    var switch2iframe = function() {
+        var textarea = document.getElementById('textinput');
+        var taclassName = textarea.className;
+        textarea.className = 'nodisplay';
+        tinput.className = taclassName;
+        tinput.contentDocument.designMode = "on";
+    };
 
     // Auswahltext ermitteln
     var selection = function() {
@@ -18,76 +26,26 @@ ffcdata.editbuttons.init = function(){
         tinput.selectionStart = pos;
         tinput.selectionEnd   = pos;
     }
-    var linestartpos = function(sel) {
-        var lio = tinput.value.substr(0,sel[0]).lastIndexOf("\n");
-        if ( lio == -1 ) lio = 0;
-        return lio;
-    };
-    var wordboundaries = function(sel){
-        var start = tinput.value.substr(0,sel[0]).match(/ /);
-        if ( !start ) start = 0;
-        else          start = tinput.value.substr(0,sel[0]).lastIndexOf(" ");
-
-        var end = sel[1];
-        if ( !end || sel[0] === sel[1] ) end = end - 1;
-        end = tinput.value.substr(sel[1], tinput.value.length).search(/\W/);
-        if ( end === -1 ) end = tinput.value.length;
-
-        return [start, end + sel[1]];
-    };
-
-    // Zeilen insgesamt markieren
-    var linestarter = function(str){
-        // console.log('mark linestart with "' + str + '"');
-        tinput.focus();
-        var sel = selection();
-        var lio = linestartpos(sel);
-        var txt = tinput.value.substr(lio, sel[1]);
-        var txt2 = txt.replace(/\n/g, "\n"+str);
-        if ( lio == 0 ) txt2 = str + txt2;
-        tinput.value = tinput.value.substr(0,lio) + txt2 + tinput.value.substr(lio + txt.length, tinput.value.length);
-        position(lio + txt2.length);
-    };
 
     // Wörter auf einer Zeile inline mit einem Zeichen umrahmen
-    var sourrounder = function(str){
+    var tagthat = function(str){
         // console.log('sourround selection with "' + str + '"');
         tinput.focus();
-        var sel = wordboundaries(selection());
-        var txt0 = tinput.value.substr(0,sel[0] + 1);
-        var txt1 = tinput.value.substr(sel[0] + 1,sel[1] - sel[0] - 1);
+        var sel = selection();
+        if ( sel[0] === sel[1] )
+            return '';
+        var txt0 = tinput.value.substr(0,sel[0]);
+        var txt1 = tinput.value.substr(sel[0],sel[1] - sel[0] - 1);
         var txt2 = tinput.value.substring(sel[1],tinput.value.length);
-        tinput.value =  txt0 + str + txt1  + str + txt2;
-        position(sel[1] + (2 * str.length));
+        tinput.value =  txt0 + "<" + str + ">" + txt1 + "</" + str + ">" + txt2;
+        position(sel[1] + (2 * str.length + 4));
     };
 
-    // Spezielle Escape-Funktionen
-    var strngescape = function(str){
-        // console.log('escape selection with "' + str + '"');
-        tinput.focus();
-
-        var sel = wordboundaries(selection());
-        var txt = tinput.value.substr(sel[0], sel[1] - sel[0]);
-        if ( !txt ) return;
-
-        var border = ['', ''];
-        var mtch = txt.match(/^\W+/);
-        if ( mtch && mtch.length > 0 ) {
-            border[0] = mtch[0];
-            txt = txt.substr(border[0].length, txt.length - border[0].length);
-        }
-        mtch = txt.match(/\W+$/);
-        if ( mtch && mtch.length > 0 ) {
-            border[1] = mtch[0];
-            txt = txt.substr(0, txt.length - border[1].length - 1);
-        }
-
-        var cnt = txt.match(/\W+/g);
-        if ( !cnt ) cnt = [];
-        txt = border[0] + str + txt.replace(/\W+/g, str) + str + border[1];
-        tinput.value = tinput.value.slice(0,sel[0]) + txt + tinput.value.slice(sel[1],tinput.value.length - 1);
-
-        position(sel[1] + (cnt.length * str.length) + str.length);
+    tagthat = function(str, value){
+        if ( ! value )
+            value = null;
+        if ( ! tinput.contentDocument.execCommand(str, false, value) )
+            console.log("Could not add command '"+str+"'");
     };
 
     // Textfeld-Klappungen
@@ -109,18 +67,18 @@ ffcdata.editbuttons.init = function(){
     };
 
     // Buttonereignisse registrieren
-    document.getElementById('h1button').onclick            = function(){ linestarter('= ') };
-    document.getElementById('quotebutton').onclick         = function(){ linestarter('| ') };
-    document.getElementById('unorderedlistbutton').onclick = function(){ linestarter('- ') };
-    document.getElementById('orderedlistbutton').onclick   = function(){ linestarter('# ') };
-    document.getElementById('codebutton').onclick          = function(){ sourrounder('`')  };
-    document.getElementById('prebutton').onclick           = function(){ linestarter(' ')  };
-    document.getElementById('underlinebutton').onclick     = function(){ strngescape('_')  };
-    document.getElementById('boldbutton').onclick          = function(){ strngescape('+')  };
-    document.getElementById('linethroughbutton').onclick   = function(){ strngescape('-')  };
-    document.getElementById('italicbutton').onclick        = function(){ strngescape('~')  };
-    document.getElementById('attentionbutton').onclick     = function(){ strngescape('!')  };
-    document.getElementById('emotionalbutton').onclick     = function(){ strngescape('*')  };
+    document.getElementById('h1button').onclick            = function(){ tagthat( 'h3'    ) };
+    document.getElementById('quotebutton').onclick         = function(){ tagthat( 'quote' ) };
+    document.getElementById('unorderedlistbutton').onclick = function(){ tagthat( 'ul'    ) };
+    document.getElementById('orderedlistbutton').onclick   = function(){ tagthat( 'ol'    ) };
+    document.getElementById('listitembutton').onclick      = function(){ tagthat( 'li'    ) };
+    document.getElementById('codebutton').onclick          = function(){ tagthat( 'code'  ) };
+    document.getElementById('prebutton').onclick           = function(){ tagthat( 'pre'   ) };
+    document.getElementById('underlinebutton').onclick     = function(){ tagthat( 'u'     ) };
+    document.getElementById('boldbutton').onclick          = function(){ tagthat( 'b'     ) };
+    document.getElementById('linethroughbutton').onclick   = function(){ tagthat( 'strike') };
+    document.getElementById('italicbutton').onclick        = function(){ tagthat( 'i'     ) };
+    document.getElementById('emotionalbutton').onclick     = function(){ tagthat( 'em'    ) };
 
     tinput.style.resize = 'none';
     if ( !tinput.className.match(/inedit/i) ) {
@@ -129,5 +87,6 @@ ffcdata.editbuttons.init = function(){
     }
 
     document.getElementById('editbuttons').className = 'editbuttons';
+    switch2iframe();
 };
 
