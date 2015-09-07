@@ -28,7 +28,7 @@
             <a href="#" class="buttonalike" id="h1button" title="Überschrift"><span class="underline"><span class="bold">Ü</span></span></a>
             <a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste">&middot;</a><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste">&sup1;</a><a href="#" class="buttonalike" id="listitembutton" title="Listenelement">…</a>
             <a href="#" class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat">&quot;</a><a class="buttonalike" id="codebutton" title="Vorformatierter Programm-Quelltext"><code>`</code></a><a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext"><code>C</code></a> 
-)
+            )
         </p>
         <p>
             <textarea name="textdata" id="textinput" class="edit<%= $textdata ? ' inedit' : '' %>"><%== $textdata // '' %></textarea>
