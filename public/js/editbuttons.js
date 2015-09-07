@@ -17,7 +17,7 @@ ffcdata.editbuttons.init = function(){
     };
 
     // Wörter auf einer Zeile inline mit einem Zeichen umrahmen
-    var tagthat = function(str, br_o = false, br_i = false){
+    var tagthat = function(str, br_o, br_i){
         // console.log('sourround selection with "' + str + '"');
         tinput.focus();
 
@@ -71,18 +71,18 @@ ffcdata.editbuttons.init = function(){
     };
 
     // Formatierungsbuttonereignisse registrieren
-    document.getElementById('h1button'           ).onclick=function(){tagthat('h3', true     )};
-    document.getElementById('quotebutton'        ).onclick=function(){tagthat('quote'        )};
-    document.getElementById('unorderedlistbutton').onclick=function(){tagthat('ul', true,true)};
-    document.getElementById('orderedlistbutton'  ).onclick=function(){tagthat('ol', true,true)};
-    document.getElementById('listitembutton'     ).onclick=function(){tagthat('li'           )};
-    document.getElementById('codebutton'         ).onclick=function(){tagthat('code'         )};
-    document.getElementById('prebutton'          ).onclick=function(){tagthat('pre',true,true)};
-    document.getElementById('underlinebutton'    ).onclick=function(){tagthat('u'            )};
-    document.getElementById('boldbutton'         ).onclick=function(){tagthat('b'            )};
-    document.getElementById('linethroughbutton'  ).onclick=function(){tagthat('strike'       )};
-    document.getElementById('italicbutton'       ).onclick=function(){tagthat('i'            )};
-    document.getElementById('emotionalbutton'    ).onclick=function(){tagthat('em'           )};
+    document.getElementById('h1button'           ).onclick=function(){tagthat('h3',    true, false)};
+    document.getElementById('quotebutton'        ).onclick=function(){tagthat('quote', false,false)};
+    document.getElementById('unorderedlistbutton').onclick=function(){tagthat('ul',    true, true )};
+    document.getElementById('orderedlistbutton'  ).onclick=function(){tagthat('ol',    true, true )};
+    document.getElementById('listitembutton'     ).onclick=function(){tagthat('li',    false,false)};
+    document.getElementById('codebutton'         ).onclick=function(){tagthat('code',  false,false)};
+    document.getElementById('prebutton'          ).onclick=function(){tagthat('pre',   true, true )};
+    document.getElementById('underlinebutton'    ).onclick=function(){tagthat('u',     false,false)};
+    document.getElementById('boldbutton'         ).onclick=function(){tagthat('b',     false,false)};
+    document.getElementById('linethroughbutton'  ).onclick=function(){tagthat('strike',false,false)};
+    document.getElementById('italicbutton'       ).onclick=function(){tagthat('i',     false,false)};
+    document.getElementById('emotionalbutton'    ).onclick=function(){tagthat('em',    false,false)};
 
     // Textfeld-Klappung einrichten
     tinput.style.resize = 'none';
