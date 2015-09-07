@@ -58,7 +58,6 @@ our $BigMatch = qr~(?<completematch>$HTMLHandleRe|$URLHandleRe|$SmileyHandleRe)~
 sub register {
     my ( $self, $app ) = @_;
     $app->helper( pre_format       => \&_pre_format_text  );
-    $app->helper( username_format  => \&_username_format_text );
     $app->helper( format_timestamp => \&_format_timestamp );
 }
 
@@ -75,14 +74,6 @@ sub _format_timestamp {
         return substr $t, 12, 5 if $t =~ m/\A$time/xmos;
     }
     return $t;
-}
-
-sub _username_format_text {
-    my ( $c, $s ) = @_;
-    my $u = my $xu = $c->session()->{user} // '';
-    _xml_escape($xu);
-    $s =~ s{(\s|\A)(\@?)$u}{_make_username_mark($xu, $1, $2)}xgmsie;
-    return $s;
 }
 
 sub _pre_format_text_part {
