@@ -121,6 +121,7 @@
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/shock.png" %>" /> (Schockiert und angewiedert): <code>:$ :-$ =$</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/nope.png" %>" /> (Zweifeln): <code>:/ :-/ :\ :-\ =/ =\</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/sunny.png" %>" /> (Die Sonne aus dem Heck scheinen lassen): <code>B-) 8) 8-)</code></li>
+        <li><img class="smiley" src="<%= url_for "/theme/img/smileys/yeah.png" %>" /> (Und alle so Hurra): <code>\o/ \O/ \0/</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/cats.png" %>" /> (Die beliebten Katzenaugen): <code>^^</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/love.png" %>" /> (Ein kitschiges Herz): <code>&lt;3</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/devilsmile.png" %>" /> (Diabolisches Lächeln): <code>&gt;:) &gt;:-) &gt;=)</code></li>
