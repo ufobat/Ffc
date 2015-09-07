@@ -32,7 +32,6 @@
         </p>
         <p>
             <textarea name="textdata" id="textinput" class="edit<%= $textdata ? ' inedit' : '' %>"><%== $textdata // '' %></textarea>
-            <iframe id="textinputiframe" class="nodisplay"></iframe>
         </p>
         <p id="closetextap" class="textright nodisplay"><button id="closetextabutton" title="Textfeld wieder zusammen klappen" type="button">Textfeld einklappen</button></p>
     </form>

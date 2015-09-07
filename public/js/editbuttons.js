@@ -4,16 +4,8 @@ ffcdata.editbuttons = {};
 ffcdata.editbuttons.init = function(){
     if ( ffcdata.utils.is_disabled() ) return;
 
-    var tinput = document.getElementById('textinputiframe');
+    var tinput = document.getElementById('textinput');
     if ( !tinput ) return;
-
-    var switch2iframe = function() {
-        var textarea = document.getElementById('textinput');
-        var taclassName = textarea.className;
-        textarea.className = 'nodisplay';
-        tinput.className = taclassName;
-        tinput.contentDocument.designMode = "on";
-    };
 
     // Auswahltext ermitteln
     var selection = function() {
@@ -22,10 +14,6 @@ ffcdata.editbuttons.init = function(){
         if ( beg > end ) return [end, beg];
         else             return [beg, end];
     };
-    var position = function(pos) {
-        tinput.selectionStart = pos;
-        tinput.selectionEnd   = pos;
-    }
 
     // Wörter auf einer Zeile inline mit einem Zeichen umrahmen
     var tagthat = function(str){
@@ -38,14 +26,9 @@ ffcdata.editbuttons.init = function(){
         var txt1 = tinput.value.substr(sel[0],sel[1] - sel[0] - 1);
         var txt2 = tinput.value.substring(sel[1],tinput.value.length);
         tinput.value =  txt0 + "<" + str + ">" + txt1 + "</" + str + ">" + txt2;
-        position(sel[1] + (2 * str.length + 4));
-    };
-
-    tagthat = function(str, value){
-        if ( ! value )
-            value = null;
-        if ( ! tinput.contentDocument.execCommand(str, false, value) )
-            console.log("Could not add command '"+str+"'");
+        var pos = 2 * str.length + 4;
+        tinput.selectionStart = pos;
+        tinput.selectionEnd   = pos;
     };
 
     // Textfeld-Klappungen
@@ -87,6 +70,5 @@ ffcdata.editbuttons.init = function(){
     }
 
     document.getElementById('editbuttons').className = 'editbuttons';
-    switch2iframe();
 };
 
