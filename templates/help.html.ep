@@ -39,7 +39,7 @@
             <li><a href="#" class="buttonalike" id="h1button" title="Überschrift"><span class="underline"><span class="bold">Ü</span></span></a>: Überschrift einfügen</li>
             <li><a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste">&middot;</a>: Liste einfügen</li>
             <li><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste">&sup1;</a>: Aufzählungsliste</li>
-            <li><a href="#" class="buttonalike" id="listitembutton" title="Listenelement">…</a>: Listenelement auszeichnen</li>
+            <li><a href="#" class="buttonalike" id="listitembutton" title="Listenelement">…</a>: Listenelement auszeichnen (muss zwischen <a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste">&middot;</a> oder <a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste">&sup1;</a> stehen)</li>
             <li><a href="#" class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat">&quot;</a>: Zitat einfügen</li>
             <li><a class="buttonalike" id="codebutton" title="Vorformatierter Programm-Quelltext"><code>`</code></a>: Quellcodeelement</li>
             <li><a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext"><code>C</code></a>: Quellcodeabschnitt</li>
@@ -73,7 +73,7 @@
         <li><code>&lt;h3&gt;&lt;/h3&gt;</code>: Erzeugt eine Zwischenüberschrift</li>
         <li><code>&lt;ul&gt;Listeninhalt&lt;/ul&gt;</code>: Erzeugt eine Liste</li>
         <li><code>&lt;ol&gt;Listeninhalt&lt;/ol&gt;</code>: Erzeugt eine Aufzählungsliste</li>
-        <li><code>&lt;li&gt;Listentext&lt;/li&gt;</code>: Erzeugt ein Listenelement</li>
+        <li><code>&lt;li&gt;Listentext&lt;/li&gt;</code>: Erzeugt ein Listenelement (muss zwischen <code>&lt;ul&gt;&lt;/ul&gt;</code> oder <code>&lt;ol&gt;&lt;/ol&gt;</code> direkt in der Mitte zwischen den <code>&gt;&lt;</code> stehen)</li>
         <li><code>&lt;pre&gt;Vorformatiert/Quelltext&lt;/pre&gt;</code>: Erzeugt einen vorformattierten Text (für Programmcode zum Beispiel)</li>
     </ul>
 </div>
