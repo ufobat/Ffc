@@ -8,7 +8,6 @@
 %   }
             </ul>
         </div>
-        <div class="invisible">&nbsp;</div>
 % }
         <div class="pages">Vorschauzeitraum:
 % for my $d ( 3, 7, 14, 31, 62, 93 ) {
