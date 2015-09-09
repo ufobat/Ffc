@@ -253,7 +253,5 @@ pre, .code, code {
 }
 .hovering > p {
     border-top: .1em gainsboro solid;
-    padding-top: .5em;
-    margin-bottom: 0;
 }
 
