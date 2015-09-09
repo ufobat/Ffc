@@ -100,7 +100,7 @@ ffcdata.editbuttons.init = function(){
     var get_preview = function(){
         // console.log('get preview');
         if ( tinput.value === '' )
-            return;
+            show_preview('');
         ffcdata.utils.request('POST', ffcdata.textpreviewurl, tinput.value, show_preview);
     };
     // Textvorschaufenster schließen
