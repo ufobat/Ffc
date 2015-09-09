@@ -10,7 +10,7 @@ sub printpreview {
 SELECT
     p."id", uf."id", uf."name", null, null, p."topicid", 
     datetime(p."posted",'localtime'), datetime(p."altered",'localtime'),
-    p."cache", t."title", p."score", COALESCE(l."lastseen", -1)
+    p."cache", t."title", p."score", COALESCE(l."lastseen", -1), t."lastid"
 FROM "topics" t
 INNER JOIN "posts" p ON p."topicid"=t."id" AND date(p."posted", 'localtime') >= date('now', 'localtime', '$days')
 INNER JOIN "users" uf ON p."userfrom"=uf."id"
@@ -21,8 +21,13 @@ EOSQL
     $sql .= << "EOSQL"; 
 ORDER BY COALESCE(l."pin", 0) DESC, t."lastid" DESC, t."id" DESC
 EOSQL
-    $c->stash( posts => $c->dbh_selectall_arrayref(
-        $sql, $c->session->{userid}, ($topicid || ())) );
+    my $posts = $c->dbh_selectall_arrayref( $sql, $c->session->{userid}, ($topicid || ()));
+    my $i = 0;
+    my %tlh = map {; $i++; "goto_start_$_->[5]" => [$_->[9], $_->[11], $_->[12], $i] } @$posts;
+    my @topiclist = sort {$a->[4] <=> $b->[4]}  map {; [$_, @{$tlh{$_}}] } keys %tlh;
+    
+    $c->stash( posts => $posts );
+    $c->stash( tplist => \@topiclist );
     $c->stash( printpreviewdays => $d );
     $c->counting;
 

@@ -1,4 +1,15 @@
 % layout 'board';
+% if ( @$posts and not $topicid ) {
+        <div class="postbox headbox" id="tableofcontent">
+            <h2>Inhaltsverzeichnis</h2>
+            <ul>
+%   for my $t ( @$tplist ) {
+                <li><a href="#<%= $t->[0] %>"><%= $t->[1] %></a><% if ( $t->[2] < $t->[3] ) { %> (<span class="mark">ungelesene Beiträge</span>)<% } %></li>
+%   }
+            </ul>
+        </div>
+        <div class="invisible">&nbsp;</div>
+% }
         <div class="pages">Vorschauzeitraum:
 % for my $d ( 3, 7, 14, 31, 62, 93 ) {
 %   if ( $printpreviewdays == $d ) {
@@ -26,6 +37,11 @@
                 title="Thema als gelesen markieren">
                     Thema als gelesen markieren</a>,
 %       }
+%       unless ( $topicid ) {
+            <a href="#tableofcontent"
+                title="Zurück zum Inhaltsverzeichnis">
+                    Inhaltsverzeichnis</a>,
+%       }
             <a href="<%= url_for 'show_forum', topicid => $lasttopicid %>"
                 title="Thema als gelesen markieren">
                     Thema zum mitdiskutieren anzeigen</a>,
@@ -35,8 +51,7 @@
         <div class="invisible">&nbsp;</div>
 %     }
 %     $lasttopicid = $p->[5]; $unread = 0;
-        <div class="postbox headbox"><h1>
-            <a name="goto_start_<%= $lasttopicid %>"></a>
+        <div class="postbox headbox" id="goto_start_<%= $lasttopicid %>"><h1>
             <a href="<%= url_for 'show_forum', topicid => $p->[5] %>"
                 title="Beiträge zum Thema anzeigen"><%= $p->[9] %></a>
         </h1></div>
@@ -44,15 +59,19 @@
 %= include 'parts/postbox', post => $p, lastseen => $lastseen
 % }
 % if ( @$posts ) {
-        <div class="pages">
-            <a name="goto_end_<%= $lasttopicid %>"></a>
+        <div class="pages" id="goto_end_<%= $lasttopicid %>">
 %   if ( $unread ) {
             <a href="<%= url_for 'topic_ppv_mark_seen', topicid => $lasttopicid %>"
                 title="Thema als gelesen markieren">
                     Thema als gelesen markieren</a>,
 %   }
+%   unless ( $topicid ) {
+            <a href="#tableofcontent"
+                title="Zurück zum Inhaltsverzeichnis">
+                    Inhaltsverzeichnis</a>,
+%   }
             <a href="<%= url_for 'show_forum', topicid => $lasttopicid %>"
-                title="Thema als gelesen markieren">
+                title="Thema zum mitdiskutieren anzeigen">
                     Thema zum mitdiskutieren anzeigen</a>,
             <a href="<%= url_for 'ignore_ppv_forum_topic_do', topicid => $lasttopicid %>"
                title="Thema ignorieren und keine neuen Beiträge anzeigen">Thema ignorieren</a>

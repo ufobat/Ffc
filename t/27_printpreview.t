@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 361;
+use Test::More tests => 386;
 
 ###############################################################################
 note q~Testsystem vorbereiten~;
@@ -69,9 +69,11 @@ sub check_topic_in_ppv {
     my $topicid = shift;
     if ( $topicid ) {
         $t->get_ok("/forum/printpreview/$topicid");
+        $t->content_unlike(qr'Inhaltsverzeichnis');
     }
     else {
         $t->get_ok('/forum/printpreview');
+        $t->content_like(qr'Inhaltsverzeichnis');
     }
     $t->status_is(200);
     for my $i ( 0 .. $#Topics ) {
@@ -84,6 +86,7 @@ sub check_topic_in_ppv {
             $t->content_unlike(qr~$_->[0]~) for @$arts;
             next;
         }
+        my $ungelesene = 0;
         note("Thema Nr. $id mit $acnt Beitraegen pruefen");
         for my $art ( @$arts ) {
             my $artid = $art->[2];
@@ -113,6 +116,7 @@ sub check_topic_in_ppv {
             }
             else {
                 note("Beitrag Nr. $artid ist noch ungelesen");
+                $ungelesene = 1;
                 $t->content_like(qr~
 <div class="postbox newpost">
     <h2 class="title">
@@ -130,6 +134,19 @@ sub check_topic_in_ppv {
     </h2>
 <p>$art->[0]</p>
 </div>~);
+            }
+        }
+        if ( $topicid ) {
+            note qq~Inhaltsverzeichnis darf nicht da sein und auch Topic Nr. $id pruefen~;
+            $t->content_unlike(qr~<li><a href="#goto_start_$id">$top</a>~);
+        }
+        else {
+            note qq~Inhaltsverzeichnis auf Topic Nr. $id pruefen~;
+            if ( $ungelesene ) {
+                $t->content_unlike(qr~<li><a href="#goto_start_$id">$top</a></li>~);
+            }
+            else {
+                $t->content_unlike(qr~<li><a href="#goto_start_$id">$top</a> \(<span class="mark">ungelesene Beiträge</span>\)</li>~);
             }
         }
     }
