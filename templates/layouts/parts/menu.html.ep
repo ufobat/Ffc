@@ -36,6 +36,9 @@
         <span class="othersmenulinktext">Menü</span>
         <div class="otherspopup popup">
             <p class="optionslink">
+                <a href="<%= url_for 'quickview_html' %>" target="_blank" title="Schnelle einfache Übersicht über neue Beiträge">Schnellansicht</a> 
+            </p>
+            <p class="optionslink">
                 <a href="<%= url_for 'options_form' %>"><span class="linktext linkoptions<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
             </p>
             <p class="othersmenutext">Angemeldet als <%= session->{user} %></p>
