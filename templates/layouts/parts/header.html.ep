@@ -22,6 +22,7 @@
             user: "<%= session()->{user} || '' %>" || undefined,
             counturl: "<%= url_for 'countings' %>",
             lastcount: <%= $newpostcount + $newmsgscount %>,
+            textpreviewurl: "<%= url_for 'textpreview' %>",
         };
     </script>
     <%= javascript '/js/utils.js' %>

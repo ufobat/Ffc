@@ -3,7 +3,7 @@ body {
     background: gainsboro;
     font-family: sans-serif;
 }
-body > *, .popup {
+body > *, .popup, .hovering {
     background: white;
     border: .1em gray solid;
 }
@@ -244,5 +244,16 @@ pre, .code {
 }
 .postbox > ol {
     list-style-type: decimal;
+}
+.textpreviewarea {
+}
+.hovering {
+    box-shadow: 0 0 1em dimgrey;
+    background: white;
+}
+.hovering > p {
+    border-top: .1em gainsboro solid;
+    padding-top: .5em;
+    margin-bottom: 0;
 }
 

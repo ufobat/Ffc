@@ -32,6 +32,9 @@ ffcdata.utils.request = function(methd, url, data, callback) {
             else
                 new Error("Request failed: " + req.statusText);
         });
+        req.addEventListener("error", function() {
+            new Error("Network error");
+        });
 
         if ( methd === 'POST' ) {
             req.setRequestHeader("Content-type", "multipart/formdata");
@@ -42,10 +45,6 @@ ffcdata.utils.request = function(methd, url, data, callback) {
         else {
             req.send();
         }
-
-        req.addEventListener("error", function() {
-            new Error("Network error");
-        });
     }
     catch (e) {
         console.log('Error on request: ' + e);

@@ -57,19 +57,19 @@ ffcdata.editbuttons.init = function(){
     var opentextarea = function(){
         // console.log('opentext');
         if ( tap.className !== 'nodisplay' ) return;
-        if ( !tinputclass )
+        if ( ! tinputclass )
             tinput.className = 'inedit';
         else
             tinput.className = tinputclass + ' inedit';
         tap.className = 'textright';
-        //console.log('open');
+        // console.log('open');
     };
     // Textfeld schließen
     var closetextarea = function(){ 
         // console.log('closetext');
         tinput.className = tinputclass;
         tap.className = 'nodisplay';
-        //console.log('close');
+        // console.log('close');
     };
 
     var show_formatbuttons = function(){
@@ -88,6 +88,27 @@ ffcdata.editbuttons.init = function(){
         document.getElementById('emotionalbutton'    ).onclick=function(){tagthat('em',    false,false)};
     };
 
+    // Textvorschau anzeigen
+    var previewwindow = document.getElementById('textpreviewbox');
+    var previewtextarea = document.getElementById('textpreviewarea');
+    var show_preview = function(str) {
+        // console.log('display preview');
+        previewtextarea.innerHTML = str;
+        previewwindow.className = 'hovering';
+    };
+    // Textvorschau vom Server anfordern
+    var get_preview = function(){
+        // console.log('get preview');
+        if ( tinput.value === '' )
+            return;
+        ffcdata.utils.request('POST', ffcdata.textpreviewurl, tinput.value, show_preview);
+    };
+    // Textvorschaufenster schließen
+    var close_preview = function(){
+        // console.log('close preview');
+        previewwindow.className = 'nodisplay';
+    };
+
     var showbuttons = function(){
         // Textfeld-Klappung einrichten
         tinput.style.resize = 'none';
@@ -101,9 +122,14 @@ ffcdata.editbuttons.init = function(){
             tinput.onfocus = opentextarea;
         }
 
-
         // Formatierungsbuttons anzeigen
         document.getElementById('editbuttons').className = 'editbuttons';
+        // Formatierungsbuttons aktivieren
+        show_formatbuttons();
+
+        // Vorschau-Button aktivieren
+        document.getElementById('textpreviewtabutton').onclick = get_preview;
+        document.getElementById('closetextpreviewareabutton').onclick = close_preview;
     };
 
     showbuttons();

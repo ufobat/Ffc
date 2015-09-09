@@ -56,7 +56,7 @@ sub _install_routes_helper {
       ->name('configdata');
     $l->get('/counts' => sub { $_[0]->render( text => $_[0]->newpostcount() + $_[0]->newmsgscount() ) } )
       ->name('countings');
-    $l->get('/textpreview' => sub { $_[0]->render( text => $_[0]->pre_format($_[0]->param('textdata')) ) } )
+    $l->post('/textpreview' => sub { $_[0]->render( json => $_[0]->pre_format($_[0]->req->json || '') ) } )
       ->name('textpreview');
 }
 
