@@ -61,7 +61,7 @@ ffcdata.editbuttons.init = function(){
             tinput.className = 'inedit';
         else
             tinput.className = tinputclass + ' inedit';
-        tap.className = 'textright';
+        tap.className = 'textright subtabuttonp';
         // console.log('open');
     };
     // Textfeld schließen
@@ -90,9 +90,13 @@ ffcdata.editbuttons.init = function(){
 
     // Textvorschau anzeigen
     var previewwindow = document.getElementById('textpreviewbox');
+    var headboxbox = document.getElementById('headbox');
     var previewtextarea = document.getElementById('textpreviewarea');
     var show_preview = function(str) {
         // console.log('display preview');
+        previewwindow.style.width = headboxbox.clientWidth + 'px';
+        previewwindow.style.top = headboxbox.offsetTop + 'px'; 
+        previewwindow.style.left = headboxbox.offsetLeft + 'px'; 
         previewtextarea.innerHTML = str;
         previewwindow.className = 'hovering';
     };

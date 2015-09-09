@@ -203,20 +203,25 @@ input[type="text"].titlestring {
 .topiclistpopup {
     margin-left: -5em;
 }
+.headbox .subtabuttonp {
+    padding-top: .5em;
+}
 .hovering {
-    margin-left: -0.75em;
-    margin-top: .25em;
     position: absolute;
-    width: 47.25em;
-    height: 27.5em;
+    margin-top: 0;
+    height: 32em
+}
+.hovering > h2 {
     padding-top: 1em;
-    padding-bottom: 2em;
 }
 .hovering > div {
-    height: 24.5em;
+    margin-bottom: .25em;
+    margin-top: 1em;
+    height: 26.5em;
     overflow: auto;
 }
 .hovering > p {
     padding-top: .5em;
-    margin-bottom: 0;
+    padding-bottom: .5em;
 }
+
