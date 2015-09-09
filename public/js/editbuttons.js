@@ -52,46 +52,60 @@ ffcdata.editbuttons.init = function(){
 
     // Textfeld-Klappungen
     var tinputclass = tinput.className;
-    var tap = document.getElementById('closetextap');
+    var tap = document.getElementById('subtabuttonp');
     // Textfeld öffnen
     var opentextarea = function(){
         // console.log('opentext');
-        if ( tap.className !== 'textright nodisplay' ) return;
+        if ( tap.className !== 'nodisplay' ) return;
         if ( !tinputclass )
             tinput.className = 'inedit';
         else
             tinput.className = tinputclass + ' inedit';
-        tap.className = 'textright displayblock';
+        tap.className = 'textright';
+        //console.log('open');
     };
     // Textfeld schließen
     var closetextarea = function(){ 
         // console.log('closetext');
         tinput.className = tinputclass;
-        tap.className = 'textright nodisplay';
+        tap.className = 'nodisplay';
+        //console.log('close');
     };
 
-    // Formatierungsbuttonereignisse registrieren
-    document.getElementById('h1button'           ).onclick=function(){tagthat('h3',    true, false)};
-    document.getElementById('quotebutton'        ).onclick=function(){tagthat('quote', false,false)};
-    document.getElementById('unorderedlistbutton').onclick=function(){tagthat('ul',    true, true )};
-    document.getElementById('orderedlistbutton'  ).onclick=function(){tagthat('ol',    true, true )};
-    document.getElementById('listitembutton'     ).onclick=function(){tagthat('li',    false,false)};
-    document.getElementById('codebutton'         ).onclick=function(){tagthat('code',  false,false)};
-    document.getElementById('prebutton'          ).onclick=function(){tagthat('pre',   true, true )};
-    document.getElementById('underlinebutton'    ).onclick=function(){tagthat('u',     false,false)};
-    document.getElementById('boldbutton'         ).onclick=function(){tagthat('b',     false,false)};
-    document.getElementById('linethroughbutton'  ).onclick=function(){tagthat('strike',false,false)};
-    document.getElementById('italicbutton'       ).onclick=function(){tagthat('i',     false,false)};
-    document.getElementById('emotionalbutton'    ).onclick=function(){tagthat('em',    false,false)};
+    var show_formatbuttons = function(){
+        // Formatierungsbuttonereignisse registrieren
+        document.getElementById('h1button'           ).onclick=function(){tagthat('h3',    true, false)};
+        document.getElementById('quotebutton'        ).onclick=function(){tagthat('quote', false,false)};
+        document.getElementById('unorderedlistbutton').onclick=function(){tagthat('ul',    true, true )};
+        document.getElementById('orderedlistbutton'  ).onclick=function(){tagthat('ol',    true, true )};
+        document.getElementById('listitembutton'     ).onclick=function(){tagthat('li',    false,false)};
+        document.getElementById('codebutton'         ).onclick=function(){tagthat('code',  false,false)};
+        document.getElementById('prebutton'          ).onclick=function(){tagthat('pre',   true, true )};
+        document.getElementById('underlinebutton'    ).onclick=function(){tagthat('u',     false,false)};
+        document.getElementById('boldbutton'         ).onclick=function(){tagthat('b',     false,false)};
+        document.getElementById('linethroughbutton'  ).onclick=function(){tagthat('strike',false,false)};
+        document.getElementById('italicbutton'       ).onclick=function(){tagthat('i',     false,false)};
+        document.getElementById('emotionalbutton'    ).onclick=function(){tagthat('em',    false,false)};
+    };
 
-    // Textfeld-Klappung einrichten
-    tinput.style.resize = 'none';
-    if ( !tinput.className.match(/inedit/i) ) {
-        document.getElementById('closetextabutton').onclick = closetextarea;
-        tinput.onfocus = opentextarea;
-    }
+    var showbuttons = function(){
+        // Textfeld-Klappung einrichten
+        tinput.style.resize = 'none';
+        if ( tinput.className.match(/inedit/i) ) {
+            opentextarea();
+        }
+        else {
+            var closeb = document.getElementById('closetextabutton');
+            closeb.onclick = closetextarea;
+            closeb.className = '';
+            tinput.onfocus = opentextarea;
+        }
 
-    // Formatierungsbuttons anzeigen
-    document.getElementById('editbuttons').className = 'editbuttons';
+
+        // Formatierungsbuttons anzeigen
+        document.getElementById('editbuttons').className = 'editbuttons';
+    };
+
+    showbuttons();
 };
 
