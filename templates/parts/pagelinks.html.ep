@@ -46,8 +46,4 @@
     <a href="<%= url_for 'topic_sort_chronological' %>">chronologisch</a>
 %   }
 % }
-% if ( $controller eq 'forum' ) {
-    /
-    <a href="<%= url_for 'printpreview' %>">Leseansicht</a>
-% }
 </div>

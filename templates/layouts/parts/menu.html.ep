@@ -35,8 +35,17 @@
     <div class="otherspopuplink menuentry">
         <span class="othersmenulinktext">Menü</span>
         <div class="otherspopup popup">
+% if ( $controller eq 'forum' ) {
             <p class="optionslink">
-                <a href="<%= url_for 'quickview_html' %>" target="_blank" title="Schnelle einfache Übersicht über neue Beiträge">Schnellansicht</a> 
+%   if ( $topicid ) {
+                <a href="<%= url_for 'printpreview_topic', topicid => $topicid %>">Leseansicht</a>
+%   } else {
+                <a href="<%= url_for 'printpreview' %>">Leseansicht</a>
+%   }
+            </p>
+% }
+            <p class="optionslink">
+                <a href="<%= url_for 'quickview_html' %>" target="_blank" title="Schnelle einfache Übersicht über neue Beiträge">Statusfenster</a> 
             </p>
             <p class="optionslink">
                 <a href="<%= url_for 'options_form' %>"><span class="linktext linkoptions<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
