@@ -183,7 +183,7 @@ em, .emotion {
 img.smiley, img.icon {
     border: none;
 }
-pre, .code {
+pre, .code, code {
     font-family: monospace;
     color: chocolate;
 }
