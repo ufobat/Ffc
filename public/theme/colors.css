@@ -164,16 +164,16 @@ input[type="text"].titlestring {
 .italic {
     font-style: italic;
 }
-.quote, .postbox blockquote {
+quote, .quote, .postbox blockquote {
     color: dimgrey;
 }
+quote:before, .quote:before, .postbox blockquote:before { content: "„"}
+quote:after, .quote:after, .postbox blockquote:after { content: "”"}
 em, .emotion {
     color: dimgrey;
     font-variant: small-caps;
     font-style: normal;
 }
-.emotion:before { content:"*" }
-.emotion:after  { content:"*" }
 .popup, .menu, .messagebox > div, .shadowed {
     box-shadow: 0 0 .25em dimgrey;
 }
