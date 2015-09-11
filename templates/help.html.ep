@@ -28,7 +28,7 @@
             <a href="#" class="buttonalike" id="boldbutton" title="Fett markiert"><b>f</b></a><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben"><i>k</i></a><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung"><u>u</u></a><a href="#" class="buttonalike" id="linethroughbutton" title="Durchgestrichen"><strike>d</strike></a><a href="#" class="buttonalike" id="emotionalbutton" title="Emotional"><em>*</em></a>
             <a href="#" class="buttonalike" id="h1button" title="Überschrift"><span class="underline"><span class="bold">Ü</span></span></a>
             <a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste">&middot;</a><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste">&sup1;</a><a href="#" class="buttonalike" id="listitembutton" title="Listenelement">…</a>
-            <a href="#" class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat">&quot;</a><a class="buttonalike" id="codebutton" title="Vorformatierter Programm-Quelltext"><code>`</code></a><a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext"><code>C</code></a> 
+            <a href="#" class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat">&quot;</a><a class="buttonalike" id="codebutton" title="Vorformatierter Programm-Quelltext"><code>C</code></a> 
         )
     </p>
     <ul>
@@ -42,8 +42,7 @@
             <li><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste">&sup1;</a>: Aufzählungsliste</li>
             <li><a href="#" class="buttonalike" id="listitembutton" title="Listenelement">…</a>: Listenelement auszeichnen (muss zwischen <a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste">&middot;</a> oder <a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste">&sup1;</a> stehen)</li>
             <li><a href="#" class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat">&quot;</a>: Zitat einfügen</li>
-            <li><a class="buttonalike" id="codebutton" title="Vorformatierter Programm-Quelltext"><code>`</code></a>: Quellcodeelement</li>
-            <li><a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext"><code>C</code></a>: Quellcodeabschnitt</li>
+            <li><a class="buttonalike" id="codebutton" title="Vorformatierter Programm-Quelltext"><code>C</code></a>: Quellcodeelement</li>
     </ul>
     <p>Ist im Browser Javascript deaktiviert oder funktionieren die Buttons nicht, so kann man die Formatierungen alternativ auch händisch in den Text wie im folgenden beschrieben (<a href="#formatting">Textformatierungen</a>, <a href="#structuring">Textstrukturierungen</a>) einfügen.</p>
 </div>
@@ -63,7 +62,7 @@
     <p>Im folgenden müssen die Wortgruppen oder Sätze mit den entsprechenden Markierungszeichen umklammert werden.</p>
     <ul>
         <li><code>&lt;quote&gt;Ein Zitat&lt;/quote&gt;</code>: Eine kleines Zitat</li>
-        <li><code>&lt;code&gt;code part&lt;/code&gt;</code>: Quelltext-Bestandteil</li>
+        <li><code>&lt;code&gt;code part&lt;/code&gt;</code>: Quelltext einfügen</li>
     </ul>
 </div>
 <div class="postbox helptext">
@@ -75,7 +74,6 @@
         <li><code>&lt;ul&gt;Listeninhalt&lt;/ul&gt;</code>: Erzeugt eine Liste</li>
         <li><code>&lt;ol&gt;Listeninhalt&lt;/ol&gt;</code>: Erzeugt eine Aufzählungsliste</li>
         <li><code>&lt;li&gt;Listentext&lt;/li&gt;</code>: Erzeugt ein Listenelement (muss zwischen <code>&lt;ul&gt;&lt;/ul&gt;</code> oder <code>&lt;ol&gt;&lt;/ol&gt;</code> direkt in der Mitte zwischen den <code>&gt;&lt;</code> stehen)</li>
-        <li><code>&lt;pre&gt;Vorformatiert/Quelltext&lt;/pre&gt;</code>: Erzeugt einen vorformattierten Text (für Programmcode zum Beispiel)</li>
     </ul>
 </div>
 <div class="postbox helptext">

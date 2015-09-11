@@ -39,8 +39,7 @@ ffcdata.editbuttons.init = function(){
     };
 
     // Wörter auf einer Zeile inline mit einem Zeichen umrahmen
-    var tagthat = function(itag, btag, iobr){
-        // console.log('sourround selection with "' + str + '"');
+    var tagthat = function(itag, btag, iobr, doutp){
         tinput.focus();
 
         // Textbestandteile der Markierung oder Cursorposition ermitteln
@@ -50,21 +49,50 @@ ffcdata.editbuttons.init = function(){
         var txt2 = tinput.value.substr(sel[1],tinput.value.length);
 
         // Gestaltung des Quelltextes ermitteln
-        var block = ( ( btag && itag && txt1.match(/\n/) ) || ( btag && !itag ) ) 
-            ? false : true;
-        var tag   = block ? btag : itag;
-        var s_br_o = '';
-        var e_br_o = '';
-        var s_br_i = '';
-        var e_br_i = '';
-        if ( block ) {
-            if ( txt0.length > 0 && !txt0.match(/\n\s*$/) ) s_br_o = '\n';
-            if ( txt2.length > 0 && !txt2.match(/^\s*\n/) ) e_br_o = '\n';
-            if ( !itag && txt1.length > 0 ) {
-                if ( !txt1.match(/^\s*\n/) ) s_br_i = '\n';
-                if ( !txt1.match(/\n\s*$/) ) e_br_i = '\n';
+        
+        // Immer ein Block mit innerem und äußererem Zeilenumbruch
+        var block = ( btag && !itag ) ? true : false;
+        // Gibt nur den Inline-Tag
+        var inline_tag_only = ( itag && !btag ) ? true : false;
+        // Tags immer inline einfügen
+        var inline = ( inline_tag_only && !iobr ) ? true : false;
+        // Text inklusive Tags auf einer separaten Zeile
+        var single_line = ( inline_tag_only && iobr ) ? true : false;
+        // Inline oder Block möglich, je nach dem, ob im selektieren Text ein Zeilenumbruch steht
+        var inline_to_block = ( btag && itag && txt1.match(/.\n./) ) ? true : false;
+        // Es wird Blockformatierung verwendet
+        var doblock = ( block || inline_to_block ) ? true : false;
+        // Aussen werden immer zwei Zeilenumbrüche gemacht
+        var dout = ( doutp && doblock ) ? true : false;
+
+        // Zu benutzenden Tag ermitteln
+        var tag = ( doblock ) ? btag : itag;
+
+        // Auszählen der Zeilenumbrüche außerhalb der Markierung
+        var countalln = function(str1,str2,min){
+            var countn = function(str,front){
+                if ( str.length === 0 ) return 0;
+                var match1 = front ? str.match(/^[\n\s]+/) : str.match(/[\n\s]+$/);
+                var match2 = match1 ? match1[0].match(/\n/g) : "";
+                return match2.length;
+            };
+            var num = countn(str1,false) + countn(str2,true);
+            if ( num === min ) return '';
+            if ( num < min ) num = min - num;
+            var str = '';
+            for ( var i = 1; i <= num; i++){
+                str += "\n";
             }
-        }
+            return str;
+        };
+
+        // Zeilenumbrüche außerhalb der Tags ermitteln
+        var s_br_o = countalln(txt0,txt1,(dout ? 2 : 1));
+        var e_br_o = countalln(txt1,txt2,(dout ? 2 : 1));
+       
+        // Zeilenumbrüche innerhalb der Tags ermitteln
+        var s_br_i = '', e_br_i = '';
+        if ( doblock ) { s_br_i = "\n"; e_br_i = "\n"; }
 
         // Neuen Textinhalt zusammenstellen
         tinput.value 
@@ -78,7 +106,7 @@ ffcdata.editbuttons.init = function(){
         var pos = sel[1] + tag.length + 2;
         if ( s_br_o ) pos++;
         if ( s_br_i ) pos++;
-        if ( sel[0] !== sel[1] ) {
+        if ( txt1.length > 0 ) {
             pos += tag.length + 3;
             if ( e_br_i ) pos++;
             if ( e_br_o ) pos++;
@@ -87,32 +115,30 @@ ffcdata.editbuttons.init = function(){
         tinput.selectionEnd   = pos;
     };
 
+    // Formatierungsbuttons definieren
+    var buttons = [
+        // ButtonId, Optional: InlineTag, Optional: BlockTag, InlineOuterBreak, DoubleOuterBreak
+        ['h1button',            'h3',     false,        true,  true ],
+        ['quotebutton',         'quote',  'blockquote', false, true ],
+        ['unorderedlistbutton', false,    'ul',         false, true ],
+        ['orderedlistbutton',   false,    'ol',         false, true ],
+        ['listitembutton',      'li',     false,        true,  false],
+        ['codebutton',          'code',   'pre',        false, true ],
+        ['underlinebutton',     'u',      false,        false, false],
+        ['boldbutton',          'b',      false,        false, false],
+        ['linethroughbutton',   'strike', false,        false, false],
+        ['italicbutton',        'i',      false,        false, false],
+        ['emotionalbutton',     'em',     false,        false, false],
+    ];
+    // Formatierungsbuttonereignisse registrieren
     var show_formatbuttons = function(){
-        // Formatierungsbuttons registrieren
-        var buttons = [
-            // ButtonId, Optional: InlineTag, Optional: BlockTag, InlineOuterBreak,
-            ['h1button',            'h3',     false,        true ],
-            ['quotebutton',         'quote',  'blockquote', false],
-            ['unorderedlistbutton', false,    'ul',         false],
-            ['orderedlistbutton',   false,    'ol',         false],
-            ['listitembutton',      'li',     false,        true ],
-            ['codebutton',          'code',   'pre',        false],
-            ['underlinebutton',     'u',      false,        false],
-            ['boldbutton',          'b',      false,        false],
-            ['linethroughbutton',   'strike', false,        false],
-            ['italicbutton',        'i',      false,        false],
-            ['emotionalbutton',     'em',     false,        false],
-        ];
-        // Formatierungsbuttonereignisse registrieren
-        for (var i=0; i<buttons.length; i++) {
-            var button = document.getElementById(buttons[i][0]);
-            var a1 = buttons[i][1];
-            var a2 = buttons[i][2];
-            var a3 = buttons[i][3];
-            if ( button )
-                button.onclick = function(){tagthat(a1,a2,a3)};
-            else
-                console.log('buttonid "'+buttons[0]+'" not found');
+        var register_one_button = function(b){
+            document.getElementById(b[0]).onclick = function(){
+                tagthat(b[1],b[2],b[3],b[4]);
+            };
+        };
+        for (var j=0; j<buttons.length; j++){
+            register_one_button(buttons[j]);
         }
     };
 
