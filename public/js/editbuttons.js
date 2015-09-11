@@ -16,40 +16,6 @@ ffcdata.editbuttons.init = function(){
         else             return [beg, end];
     };
 
-    // Wörter auf einer Zeile inline mit einem Zeichen umrahmen
-    var tagthat = function(str, br_o, br_i){
-        // console.log('sourround selection with "' + str + '"');
-        tinput.focus();
-
-        // Textbestandteile der Markierung oder Cursorposition ermitteln
-        var sel = selection();
-        var txt0 = tinput.value.substr(0,sel[0]);
-        var txt1 = tinput.value.substr(sel[0],sel[1] - sel[0]);
-        var txt2 = tinput.value.substr(sel[1],tinput.value.length);
-
-        // Neuen Textinhalt zusammenstellen
-        var brstr_o = br_o ? '\n' : '';
-        var brstr_i = br_i ? '\n' : '';
-        tinput.value 
-            = txt0 
-                + brstr_o + "<" + str + ">" 
-                    + brstr_i + txt1 + brstr_i 
-                + "</" + str + ">" + brstr_o
-            + txt2;
-
-        // Textcursor an eine passende Stelle setzen
-        var pos = sel[1] + str.length + 2;
-        if ( br_o ) pos += 1;
-        if ( br_i ) pos += 1;
-        if ( sel[0] !== sel[1] ) {
-            pos += str.length + 3;
-            if ( br_o ) pos += 1;
-            if ( br_i ) pos += 1;
-        }
-        tinput.selectionStart = pos;
-        tinput.selectionEnd   = pos;
-    };
-
     // Textfeld-Klappungen
     var tinputclass = tinput.className;
     var tap = document.getElementById('subtabuttonp');
@@ -72,20 +38,82 @@ ffcdata.editbuttons.init = function(){
         // console.log('close');
     };
 
+    // Wörter auf einer Zeile inline mit einem Zeichen umrahmen
+    var tagthat = function(itag, btag, iobr){
+        // console.log('sourround selection with "' + str + '"');
+        tinput.focus();
+
+        // Textbestandteile der Markierung oder Cursorposition ermitteln
+        var sel = selection();
+        var txt0 = tinput.value.substr(0,sel[0]);
+        var txt1 = tinput.value.substr(sel[0],sel[1] - sel[0]);
+        var txt2 = tinput.value.substr(sel[1],tinput.value.length);
+
+        // Gestaltung des Quelltextes ermitteln
+        var block = ( ( btag && itag && txt1.match(/\n/) ) || ( btag && !itag ) ) 
+            ? false : true;
+        var tag   = block ? btag : itag;
+        var s_br_o = '';
+        var e_br_o = '';
+        var s_br_i = '';
+        var e_br_i = '';
+        if ( block ) {
+            if ( txt0.length > 0 && !txt0.match(/\n\s*$/) ) s_br_o = '\n';
+            if ( txt2.length > 0 && !txt2.match(/^\s*\n/) ) e_br_o = '\n';
+            if ( !itag && txt1.length > 0 ) {
+                if ( !txt1.match(/^\s*\n/) ) s_br_i = '\n';
+                if ( !txt1.match(/\n\s*$/) ) e_br_i = '\n';
+            }
+        }
+
+        // Neuen Textinhalt zusammenstellen
+        tinput.value 
+            = txt0 
+                + s_br_o + "<" + tag + ">" 
+                    + s_br_i + txt1 + e_br_i
+                + "</" + tag + ">" + e_br_o
+            + txt2;
+
+        // Textcursor an eine passende Stelle setzen
+        var pos = sel[1] + tag.length + 2;
+        if ( s_br_o ) pos++;
+        if ( s_br_i ) pos++;
+        if ( sel[0] !== sel[1] ) {
+            pos += tag.length + 3;
+            if ( e_br_i ) pos++;
+            if ( e_br_o ) pos++;
+        }
+        tinput.selectionStart = pos;
+        tinput.selectionEnd   = pos;
+    };
+
     var show_formatbuttons = function(){
+        // Formatierungsbuttons registrieren
+        var buttons = [
+            // ButtonId, Optional: InlineTag, Optional: BlockTag, InlineOuterBreak,
+            ['h1button',            'h3',     false,        true ],
+            ['quotebutton',         'quote',  'blockquote', false],
+            ['unorderedlistbutton', false,    'ul',         false],
+            ['orderedlistbutton',   false,    'ol',         false],
+            ['listitembutton',      'li',     false,        true ],
+            ['codebutton',          'code',   'pre',        false],
+            ['underlinebutton',     'u',      false,        false],
+            ['boldbutton',          'b',      false,        false],
+            ['linethroughbutton',   'strike', false,        false],
+            ['italicbutton',        'i',      false,        false],
+            ['emotionalbutton',     'em',     false,        false],
+        ];
         // Formatierungsbuttonereignisse registrieren
-        document.getElementById('h1button'           ).onclick=function(){tagthat('h3',    true, false)};
-        document.getElementById('quotebutton'        ).onclick=function(){tagthat('quote', false,false)};
-        document.getElementById('unorderedlistbutton').onclick=function(){tagthat('ul',    true, true )};
-        document.getElementById('orderedlistbutton'  ).onclick=function(){tagthat('ol',    true, true )};
-        document.getElementById('listitembutton'     ).onclick=function(){tagthat('li',    false,false)};
-        document.getElementById('codebutton'         ).onclick=function(){tagthat('code',  false,false)};
-        document.getElementById('prebutton'          ).onclick=function(){tagthat('pre',   true, true )};
-        document.getElementById('underlinebutton'    ).onclick=function(){tagthat('u',     false,false)};
-        document.getElementById('boldbutton'         ).onclick=function(){tagthat('b',     false,false)};
-        document.getElementById('linethroughbutton'  ).onclick=function(){tagthat('strike',false,false)};
-        document.getElementById('italicbutton'       ).onclick=function(){tagthat('i',     false,false)};
-        document.getElementById('emotionalbutton'    ).onclick=function(){tagthat('em',    false,false)};
+        for (var i=0; i<buttons.length; i++) {
+            var button = document.getElementById(buttons[i][0]);
+            var a1 = buttons[i][1];
+            var a2 = buttons[i][2];
+            var a3 = buttons[i][3];
+            if ( button )
+                button.onclick = function(){tagthat(a1,a2,a3)};
+            else
+                console.log('buttonid "'+buttons[0]+'" not found');
+        }
     };
 
     // Textvorschau anzeigen
