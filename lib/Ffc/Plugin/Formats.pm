@@ -108,7 +108,7 @@ sub _pre_format_text_part {
             $start = $newstart;
         }
     }
-    if ( $start < length( $str ) - 1 ) 
+    if ( $start < length( $str ) ) 
         { $o .= _format_plain_text(substr($str, $start, length($str) - $start), $dis_p ) }
 
     return $o;
@@ -133,6 +133,7 @@ sub _pre_format_text {
     $o =~ s~\n\n+~\n~gsmxo;
     $o =~ s~</(pre|h3|ul|ol)>\s*</p>~</$1>~gsmx;
     $o =~ s~<p>\s*<(pre|h3|ul|ol)>~<$1>~gsmx;
+    chomp $o;
     return $o;
 }
 
