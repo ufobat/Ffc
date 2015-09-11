@@ -1,0 +1,24 @@
+        <p class="insertformbuttons">
+% if ( $headbuttons ) {
+%   if ( defined $postid ) {
+            <input type="hidden" name="postid" value="<%= $postid %>" />
+%   }
+            %= submit_button 'Speichern', class => 'send'
+            (
+            <a href="<%== $returl %>">abbrechen</a>,
+% }
+            <a href="<%= url_for 'help' %>" target="_blank">Hilfe</a><span id="editbuttons" class="editbuttons nodisplay">,
+            <a href="#" class="buttonalike" id="boldbutton" title="Fett markiert"><b>f</b></a><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben"><i>k</i></a><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung"><u>u</u></a><a href="#" class="buttonalike" id="linethroughbutton" title="Durchgestrichen"><strike>d</strike></a><a href="#" class="buttonalike" id="emotionalbutton" title="Emotional"><em>*</em></a>
+            <a href="#" class="buttonalike" id="h1button" title="Überschrift"><span class="underline"><span class="bold">Ü</span></span></a>
+            <a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste">&middot;</a><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste">&sup1;</a><a href="#" class="buttonalike" id="listitembutton" title="Listenelement">…</a>
+            <a href="#" class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat">&quot;</a><a class="buttonalike" id="codebutton" title="Vorformatierter Programm-Quelltext"><code>`</code></a><a href="#" class="buttonalike" id="prebutton" title="Vorformatierter Programm-Quelltext"><code>C</code></a></span>
+            )
+        </p>
+        <p>
+            <textarea name="textdata" id="textinput" class="edit<%= $textdata ? ' inedit' : '' %>"><%== $textdata // '' %></textarea>
+        </p>
+        <p id="subtabuttonp" class="nodisplay">
+            <button id="textpreviewtabutton" title="Vorschau anzeigen für den eingegebenen Text" type="button">Vorschau</button>
+            <button id="closetextabutton" title="Textfeld wieder zusammen klappen" type="button" class="nodisplay">Textfeld einklappen</button>
+        </p>
+

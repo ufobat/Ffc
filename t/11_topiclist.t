@@ -49,7 +49,7 @@ $t->content_like(qr~<input type="text" class="titlestring" name="titlestring" va
 $t->post_ok('/topic/new', form => {titlestring => $Topics[0], textdata => 'a'})->status_is(200);
 ch_err('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\)');
 $t->content_like(qr~<input type="text" class="titlestring" name="titlestring" value="$Topics[0]" />~);
-$t->content_like(qr~<textarea name="textdata" id="textinput" class="edit inedit" >a</textarea>~);
+$t->content_like(qr~<textarea name="textdata" id="textinput" class="edit inedit">a</textarea>~);
 
 $t->post_ok('/topic/new', form => {textdata => $Articles[0][0]})->status_is(200);
 ch_err('Die Übschrift ist zu kurz und muss mindestens zwei Zeichen enthalten.');
@@ -57,12 +57,12 @@ ch_err('Die Übschrift ist zu kurz und muss mindestens zwei Zeichen enthalten.')
 $t->post_ok('/topic/new', form => {titlestring => 'a', textdata => $Articles[0][0]})->status_is(200);
 ch_err('Die Übschrift ist zu kurz und muss mindestens zwei Zeichen enthalten.');
 $t->content_like(qr~<input type="text" class="titlestring" name="titlestring" value="a" />~);
-$t->content_like(qr~<textarea name="textdata" id="textinput" class="edit inedit" >$Articles[0][0]</textarea>~);
+$t->content_like(qr~<textarea name="textdata" id="textinput" class="edit inedit">$Articles[0][0]</textarea>~);
 
 $t->post_ok('/topic/new', form => {titlestring => $tit, textdata => $Articles[0][0]})->status_is(200);
 ch_err('Die Überschrift ist zu lang und darf höchstens 256 Zeichen enthalten.');
 $t->content_like(qr~<input type="text" class="titlestring" name="titlestring" value="$tit" />~);
-$t->content_like(qr~<textarea name="textdata" id="textinput" class="edit inedit" >$Articles[0][0]</textarea>~);
+$t->content_like(qr~<textarea name="textdata" id="textinput" class="edit inedit">$Articles[0][0]</textarea>~);
 
 $t->post_ok('/topic/new', form => {titlestring => $Topics[0], textdata => $Articles[0][0]})->status_is(302);
 $t->header_like( Location => qr{\A/topic/1}xms );

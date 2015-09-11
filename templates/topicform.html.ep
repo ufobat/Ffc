@@ -20,7 +20,8 @@
 % }
         <p><input type="text" class="titlestring" name="titlestring" value="<%= $titlestring %>" /></p>
 % unless ( $topicid ) {
-        <p style="margin-top: .5em"><textarea name="textdata" id="textinput" class="edit inedit" ><%== $textdata // '' %></textarea></p>
+        <p>&nbsp;</p>
+%= include 'parts/postboxtextarea', headbuttons => 0;
 % }
     </form>
 </div>
