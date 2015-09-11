@@ -28,10 +28,10 @@
 % unless ( $t->[5] ) {
 %   if ( $t->[6] ) {
                     <a href="<%= url_for 'unpin_forum_topic_do', topicid => $t->[0] %>"
-                        title="Thema normal in der Liste einsortieren">einsortieren</a>
+                        title="Thema normal in der Liste einsortieren">nicht mehr oben anheften</a>
 %   } else {
                     <a href="<%= url_for 'pin_forum_topic_do', topicid => $t->[0] %>"
-                        title="Thema immer oben in der Liste mit anzeigen">anheften</a>,
+                        title="Thema immer oben in der Liste mit anzeigen">oben anheften</a>,
 %   }
 % }
 % unless ( $t->[6] ) {
