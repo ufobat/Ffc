@@ -39,7 +39,7 @@ ffcdata.editbuttons.init = function(){
     };
 
     // Wörter auf einer Zeile inline mit einem Zeichen umrahmen
-    var tagthat = function(itag, btag, iobr, dout){
+    var tagthat = function(ntag, btag, obb, dout){
         tinput.focus();
 
         // Textbestandteile der Markierung oder Cursorposition ermitteln
@@ -49,43 +49,54 @@ ffcdata.editbuttons.init = function(){
         var txt2 = tinput.value.substr(sel[1],tinput.value.length);
 
         // Gestaltung des Quelltextes ermitteln
-        var block_tag_only  = ( btag && !itag ) ? true : false; // ++
-        var inline_tag_only = ( itag && !btag ) ? true : false; // ++++
-        var inline_only     = ( inline_tag_only && !iobr ) ? true : false; // ++
-        var inline_to_block = ( !inline_tag_only && txt1.match(/.\n./) ) ? true : false; // ++
-        var doblock         = ( block_tag_only || inline_to_block ) ? true : false; // ++
 
-        // Zu benutzenden Tag ermitteln
-        var tag = ( doblock ) ? btag : itag;
+        var b_only  = ( btag && !ntag ) ? true : false; // Nur Block-Tag übergeben
+        var n_only  = ( ntag && !btag ) ? true : false; // Nur Inline-Tag übergeben
+        var n_and_b = ( ntag &&  btag ) ? true : false; // Block- und Inline-Tag beide übergeben
+
+        var n_to_b  = ( n_and_b && txt1.match(/.\n./) ) ? true : false; // Block-Tag statt Inline-Tag wenn beide vorhande bei Zeilenumbrüchen im Textabschnitt
+        var big_b   = ( b_only  || n_to_b             ) ? true : false; // Ein "großer" Block nur bei exklusivem Block oder Inline-Zu-Block-Umwandung wegen Zeilenumbruch im Textabschnitt und wenn beide Tags verfügbar sind
+
+        var ibr =   big_b;                                       // Inner-Br nur bei exklusivem Block oder Inline-Tag-Umwandlung nach Zeilenumbruch
+        var obr = ( big_b || ( obb && n_only ) ) ? true : false; // Outer-Br nur bei exklusiven Block, Inline-Tag-Umwandung nach Zeilenumbruch oder explizit angefordertem Outer-Br
+
+        // Verwendeten Tag ermitteln
+        var tag = ntag;
+        if ( b_only || n_to_b ) tag = btag; // Block-Tag statt Inner-Tag verwenden, wenn Block-Tag exklusiv angegeben oder wenn wegen Zeilenumbüchen im Textabschnitt ein Inner- zu einem Outer-Tag umgewandelt wurde, wenn beide vorhanden sind
+
+        console.log('----------------------------------------------');
+        console.log('ntag: '+ntag+', btag: '+btag+', obr: '+obr+', dout: '+dout);
+        console.log('Outer-Br: '+obr+', Inner-Br: '+ibr+', Tag: '+tag+', Dbl-Outer-Br: '+dout);
 
         // Auszählen der Zeilenumbrüche außerhalb der Markierung
-        var countalln = function(str1,str2,min){
-            if ( inline_only ) return '';
+        var get_outer_n = function(str1,str2,min){
+            if ( !obr ) return '';
             var countn = function(str,front){
-                if ( str.length === 0 ) return 0;
+                if ( str.length === 0 ) return min;
                 var match1 = front ? str.match(/^[\n\s]+/) : str.match(/[\n\s]+$/);
                 var match2 = match1 ? match1[0].match(/\n/g) : "";
                 return match2.length;
             };
             var num = countn(str1,false) + countn(str2,true);
+            console.log('num1: '+num);
             if ( num < min ) num = min - num;
             else return '';
+            console.log('num2: '+num);
             var str = '';
             for ( var i = 1; i <= num; i++){
                 str += "\n";
             }
+            console.log('str: '+JSON.stringify(str));
             return str;
         };
 
         // Zeilenumbrüche außerhalb der Tags ermitteln
-        var s_br_o = countalln(txt0,txt1,(dout ? 2 : 1));
-        console.log('s_br_o: ' + JSON.stringify(s_br_o));
-        var e_br_o = countalln(txt1,txt2,(dout ? 2 : 1));
-        console.log('e_br_o: ' + JSON.stringify(e_br_o));
+        var s_br_o = get_outer_n(txt0,txt1,(dout ? 2 : 1));
+        var e_br_o = get_outer_n(txt1,txt2,(dout ? 2 : 1));
 
         // Zeilenumbrüche innerhalb der Tags ermitteln
         var s_br_i = '', e_br_i = '';
-        if ( block_tag_only ) { s_br_i = "\n"; e_br_i = "\n"; }
+        if ( ibr ) { s_br_i = "\n"; e_br_i = "\n"; }
 
         // Neuen Textinhalt zusammenstellen
         tinput.value
@@ -110,13 +121,13 @@ ffcdata.editbuttons.init = function(){
 
     // Formatierungsbuttons definieren
     var buttons = [
-        // ButtonId, Optional: InlineTag, Optional: BlockTag, InlineOuterBreak, DoubleOuterBreak
+        // ButtonId, Tag, BlockTag, OuterBlockBreaks, DoubleOuterBreak
         ['h1button',            'h3',     false,        true,  true ],
-        ['quotebutton',         'quote',  'blockquote', false, true ],
-        ['unorderedlistbutton', false,    'ul',         false, true ],
-        ['orderedlistbutton',   false,    'ol',         false, true ],
+        ['quotebutton',         'quote',  'blockquote', true,  true ],
+        ['unorderedlistbutton', false,    'ul',         true,  true ],
+        ['orderedlistbutton',   false,    'ol',         true,  true ],
         ['listitembutton',      'li',     false,        true,  false],
-        ['codebutton',          'code',   'pre',        false, true ],
+        ['codebutton',          'code',   'pre',        true,  true ],
         ['underlinebutton',     'u',      false,        false, false],
         ['boldbutton',          'b',      false,        false, false],
         ['linethroughbutton',   'strike', false,        false, false],
