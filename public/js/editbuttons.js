@@ -54,8 +54,8 @@ ffcdata.editbuttons.init = function(){
         var n_only  = ( ntag && !btag ) ? true : false; // Nur Inline-Tag übergeben
         var n_and_b = ( ntag &&  btag ) ? true : false; // Block- und Inline-Tag beide übergeben
 
-        var n_to_b  = ( n_and_b && txt1.match(/.\n./) ) ? true : false; // Block-Tag statt Inline-Tag wenn beide vorhande bei Zeilenumbrüchen im Textabschnitt
-        var big_b   = ( b_only  || n_to_b             ) ? true : false; // Ein "großer" Block nur bei exklusivem Block oder Inline-Zu-Block-Umwandung wegen Zeilenumbruch im Textabschnitt und wenn beide Tags verfügbar sind
+        var n_to_b  = ( n_and_b && txt1.match(/\n/) ) ? true : false; // Block-Tag statt Inline-Tag wenn beide vorhande bei Zeilenumbrüchen im Textabschnitt
+        var big_b   = ( b_only  || n_to_b ) ? true : false; // Ein "großer" Block nur bei exklusivem Block oder Inline-Zu-Block-Umwandung wegen Zeilenumbruch im Textabschnitt und wenn beide Tags verfügbar sind
 
         var ibr =   big_b;                                       // Inner-Br nur bei exklusivem Block oder Inline-Tag-Umwandlung nach Zeilenumbruch
         var obr = ( big_b || ( obb && n_only ) ) ? true : false; // Outer-Br nur bei exklusiven Block, Inline-Tag-Umwandung nach Zeilenumbruch oder explizit angefordertem Outer-Br
