@@ -183,7 +183,7 @@ ffcdata.editbuttons.init = function(){
 
         // Vorschau-Button aktivieren
         document.getElementById('textpreviewtabutton').onclick = get_preview;
-        document.getElementById('closetextabutton').onclick = close_preview;
+        document.getElementById('closetextpreviewareabutton').onclick = close_preview;
     };
 
     showbuttons();
