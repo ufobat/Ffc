@@ -52,7 +52,6 @@ ffcdata.editbuttons.init = function(){
         var block_tag_only  = ( btag && !itag ) ? true : false; // ++
         var inline_tag_only = ( itag && !btag ) ? true : false; // ++++
         var inline_only     = ( inline_tag_only && !iobr ) ? true : false; // ++
-        var single_line     = ( inline_tag_only && iobr ) ? true : false; // +
         var inline_to_block = ( !inline_tag_only && txt1.match(/.\n./) ) ? true : false; // ++
         var doblock         = ( block_tag_only || inline_to_block ) ? true : false; // ++
 
