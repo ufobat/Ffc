@@ -62,7 +62,9 @@
     <p>Im folgenden müssen die Wortgruppen oder Sätze mit den entsprechenden Markierungszeichen umklammert werden.</p>
     <ul>
         <li><code>&lt;quote&gt;Ein Zitat&lt;/quote&gt;</code>: Eine kleines Zitat</li>
+        <li><code>&lt;blockquote&gt;Ein mehrzeiliges Zitat&lt;/blockquote&gt;</code>: Eine mehrzeiliges Zitat</li>
         <li><code>&lt;code&gt;code part&lt;/code&gt;</code>: Quelltext einfügen</li>
+        <li><code>&lt;pre&gt;code part&lt;/pre&gt;</code>: mehrzeiligen Quelltext einfügen</li>
     </ul>
 </div>
 <div class="postbox helptext">
