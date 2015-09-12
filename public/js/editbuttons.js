@@ -49,28 +49,17 @@ ffcdata.editbuttons.init = function(){
         var txt2 = tinput.value.substr(sel[1],tinput.value.length);
 
         // Gestaltung des Quelltextes ermitteln
-
-        var b_only  = ( btag && !ntag ) ? true : false; // Nur Block-Tag übergeben
-        var n_only  = ( ntag && !btag ) ? true : false; // Nur Inline-Tag übergeben
-        var n_and_b = ( ntag &&  btag ) ? true : false; // Block- und Inline-Tag beide übergeben
-
-        var n_to_b  = ( n_and_b && txt1.match(/\n/) ) ? true : false; // Block-Tag statt Inline-Tag wenn beide vorhande bei Zeilenumbrüchen im Textabschnitt
-        var big_b   = ( b_only  || n_to_b ) ? true : false; // Ein "großer" Block nur bei exklusivem Block oder Inline-Zu-Block-Umwandung wegen Zeilenumbruch im Textabschnitt und wenn beide Tags verfügbar sind
-
-        var ibr =   big_b;                                       // Inner-Br nur bei exklusivem Block oder Inline-Tag-Umwandlung nach Zeilenumbruch
-        var obr = ( big_b || ( obb && n_only ) ) ? true : false; // Outer-Br nur bei exklusiven Block, Inline-Tag-Umwandung nach Zeilenumbruch oder explizit angefordertem Outer-Br
+        var big_b = ( ( btag && !ntag ) || ( ( ntag && btag ) && txt1.match(/\n/) ) )
+            ? true : false; // Ein "großer" Block nur bei exklusivem Block oder Inline-Zu-Block-Umwandung wegen Zeilenumbruch im Textabschnitt und wenn beide Tags verfügbar sind
 
         // Verwendeten Tag ermitteln
         var tag = ntag;
         if ( big_b ) tag = btag; // Block-Tag statt Inner-Tag verwenden, wenn Block-Tag exklusiv angegeben oder wenn wegen Zeilenumbüchen im Textabschnitt ein Inner- zu einem Outer-Tag umgewandelt wurde, wenn beide vorhanden sind
 
-        //console.log('----------------------------------------------');
-        //console.log('ntag: '+ntag+', btag: '+btag+', obr: '+obr+', dout: '+dout);
-        //console.log('Outer-Br: '+obr+', Inner-Br: '+ibr+', Tag: '+tag+', Dbl-Outer-Br: '+dout);
-
         // Auszählen der Zeilenumbrüche außerhalb der Markierung
         var get_outer_n = function(str1,str2,min){
-            if ( !obr ) return ''; // Ohne Outer-Breaks brauch ich hier nix machen
+            if ( !( big_b || ( obb && ( ntag && !btag ) ) ) )
+                return ''; // Ohne Outer-Breaks brauch ich hier nix machen
             // Zeilenumbrüche am Rande der Markierung, also zwischen den gegebenen Strings, zählen
             var countn = function(str,front){
                 if ( str.length === 0 ) return min; // Leere Strings zählen im Folgenden als eine genug große Anzahl
@@ -99,7 +88,7 @@ ffcdata.editbuttons.init = function(){
 
         // Zeilenumbrüche innerhalb der Tags ermitteln
         var s_br_i = '', e_br_i = '';
-        if ( ibr ) { s_br_i = "\n"; e_br_i = "\n"; }
+        if ( big_b ) { s_br_i = "\n"; e_br_i = "\n"; }
 
         // Neuen Textinhalt zusammenstellen
         tinput.value
