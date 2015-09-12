@@ -49,7 +49,7 @@ ffcdata.editbuttons.init = function(){
         var txt2 = tinput.value.substr(sel[1],tinput.value.length);
 
         // Gestaltung des Quelltextes ermitteln
-        var big_b = ( ( btag && !ntag ) || ( ( ntag && btag ) && txt1.match(/\n/) ) )
+        var big_b = ( ( btag && !ntag ) || ( ntag && btag && txt1.match(/\n/) ) )
             ? true : false; // Ein "großer" Block nur bei exklusivem Block oder Inline-Zu-Block-Umwandung wegen Zeilenumbruch im Textabschnitt und wenn beide Tags verfügbar sind
 
         // Verwendeten Tag ermitteln
@@ -58,7 +58,7 @@ ffcdata.editbuttons.init = function(){
 
         // Auszählen der Zeilenumbrüche außerhalb der Markierung
         var get_outer_n = function(str1,str2,min){
-            if ( !( big_b || ( obb && ( ntag && !btag ) ) ) )
+            if ( !( big_b || ( obb && ntag && !btag ) ) )
                 return ''; // Ohne Outer-Breaks brauch ich hier nix machen
             // Zeilenumbrüche am Rande der Markierung, also zwischen den gegebenen Strings, zählen
             var countn = function(str,front){
