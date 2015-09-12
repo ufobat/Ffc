@@ -49,30 +49,12 @@ ffcdata.editbuttons.init = function(){
         var txt2 = tinput.value.substr(sel[1],tinput.value.length);
 
         // Gestaltung des Quelltextes ermitteln
-        console.clear();
-        console.log('Gestaltungsoptionen');
-        console.log('--------------------------------------------');
-        console.log('itag: ' + itag + ', btag: ' + btag + ', iobr: ' + iobr + ', dout: ' + dout);
-        // Immer ein Block mit innerem und äußererem Zeilenumbruch
-        var block_tag_only = ( btag && !itag ) ? true : false;
-        console.log('Nur Block-Tag übergeben: ' + block_tag_only);
-        // Gibt nur den Inline-Tag
-        var inline_tag_only = ( itag && !btag ) ? true : false;
-        console.log('Nur Inline-Tag übergeben: ' + inline_tag_only);
-        // Tags immer inline einfügen
-        var inline_only = ( inline_tag_only && !iobr ) ? true : false;
-        console.log('Ausschließlich Inline-Tag verwenden: ' + inline_only);
-        // Text inklusive Tags auf einer separaten Zeile
-        var single_line = ( inline_tag_only && iobr ) ? true : false;
-        console.log('Separate Zeile für Inline-Tag: ' + single_line);
-        // Inline oder Block möglich, je nach dem, ob im selektieren Text ein Zeilenumbruch steht
-        var inline_to_block = ( !inline_tag_only && txt1.match(/.\n./) ) ? true : false;
-        console.log('Inline-Tag als Block formatieren: ' + inline_to_block);
-        // Es wird Blockformatierung verwendet
-        var doblock = ( block_tag_only || inline_to_block ) ? true : false;
-        console.log('Block-Formatierung verwenden: ' + doblock);
-        // Aussen werden immer zwei Zeilenumbrüche gemacht
-        console.log('Zwei Leerzeilen vor und nach dem Tag: ' + dout);
+        var block_tag_only  = ( btag && !itag ) ? true : false; // ++
+        var inline_tag_only = ( itag && !btag ) ? true : false; // ++++
+        var inline_only     = ( inline_tag_only && !iobr ) ? true : false; // ++
+        var single_line     = ( inline_tag_only && iobr ) ? true : false; // +
+        var inline_to_block = ( !inline_tag_only && txt1.match(/.\n./) ) ? true : false; // ++
+        var doblock         = ( block_tag_only || inline_to_block ) ? true : false; // ++
 
         // Zu benutzenden Tag ermitteln
         var tag = ( doblock ) ? btag : itag;
@@ -87,14 +69,12 @@ ffcdata.editbuttons.init = function(){
                 return match2.length;
             };
             var num = countn(str1,false) + countn(str2,true);
-            console.log('min: ' + min + ', num: ' + num + ', dout: ' + dout);
             if ( num < min ) num = min - num;
             else return '';
             var str = '';
             for ( var i = 1; i <= num; i++){
                 str += "\n";
             }
-            console.log('num: ' + num + ', str: ' + JSON.stringify(str));
             return str;
         };
 
