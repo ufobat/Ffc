@@ -31,7 +31,7 @@ ffcdata.editbuttons.init = function(){
         // console.log('open');
     };
     // Textfeld schließen
-    var closetextarea = function(){ 
+    var closetextarea = function(){
         // console.log('closetext');
         tinput.className = tinputclass;
         tap.className = 'nodisplay';
@@ -39,7 +39,7 @@ ffcdata.editbuttons.init = function(){
     };
 
     // Wörter auf einer Zeile inline mit einem Zeichen umrahmen
-    var tagthat = function(itag, btag, iobr, doutp){
+    var tagthat = function(itag, btag, iobr, dout){
         tinput.focus();
 
         // Textbestandteile der Markierung oder Cursorposition ermitteln
@@ -49,21 +49,30 @@ ffcdata.editbuttons.init = function(){
         var txt2 = tinput.value.substr(sel[1],tinput.value.length);
 
         // Gestaltung des Quelltextes ermitteln
-        
+        console.clear();
+        console.log('Gestaltungsoptionen');
+        console.log('--------------------------------------------');
+        console.log('itag: ' + itag + ', btag: ' + btag + ', iobr: ' + iobr + ', dout: ' + dout);
         // Immer ein Block mit innerem und äußererem Zeilenumbruch
         var block = ( btag && !itag ) ? true : false;
+        console.log('Nur Block-Tag übergeben: ' + block);
         // Gibt nur den Inline-Tag
         var inline_tag_only = ( itag && !btag ) ? true : false;
+        console.log('Nur Inline-Tag übergeben: ' + inline_tag_only);
         // Tags immer inline einfügen
         var inline = ( inline_tag_only && !iobr ) ? true : false;
+        console.log('Ausschließlich Inline-Tag verwenden: ' + inline);
         // Text inklusive Tags auf einer separaten Zeile
         var single_line = ( inline_tag_only && iobr ) ? true : false;
+        console.log('Separate Zeile für Inline-Tag: ' + single_line);
         // Inline oder Block möglich, je nach dem, ob im selektieren Text ein Zeilenumbruch steht
-        var inline_to_block = ( btag && itag && txt1.match(/.\n./) ) ? true : false;
+        var inline_to_block = ( !inline_tag_only && txt1.match(/.\n./) ) ? true : false;
+        console.log('Inline-Tag als Block formatieren: ' + inline_to_block);
         // Es wird Blockformatierung verwendet
         var doblock = ( block || inline_to_block ) ? true : false;
+        console.log('Block-Formatierung verwenden: ' + doblock);
         // Aussen werden immer zwei Zeilenumbrüche gemacht
-        var dout = ( doutp && doblock ) ? true : false;
+        console.log('Zwei Leerzeilen vor und nach dem Tag: ' + dout);
 
         // Zu benutzenden Tag ermitteln
         var tag = ( doblock ) ? btag : itag;
@@ -77,27 +86,31 @@ ffcdata.editbuttons.init = function(){
                 return match2.length;
             };
             var num = countn(str1,false) + countn(str2,true);
-            if ( num === min ) return '';
+            console.log('min: ' + min + ', num: ' + num + ', dout: ' + dout);
             if ( num < min ) num = min - num;
+            else return '';
             var str = '';
             for ( var i = 1; i <= num; i++){
                 str += "\n";
             }
+            console.log('num: ' + num + ', str: ' + JSON.stringify(str));
             return str;
         };
 
         // Zeilenumbrüche außerhalb der Tags ermitteln
         var s_br_o = countalln(txt0,txt1,(dout ? 2 : 1));
+        console.log('s_br_o: ' + JSON.stringify(s_br_o));
         var e_br_o = countalln(txt1,txt2,(dout ? 2 : 1));
-       
+        console.log('e_br_o: ' + JSON.stringify(e_br_o));
+
         // Zeilenumbrüche innerhalb der Tags ermitteln
         var s_br_i = '', e_br_i = '';
-        if ( doblock ) { s_br_i = "\n"; e_br_i = "\n"; }
+        if ( block ) { s_br_i = "\n"; e_br_i = "\n"; }
 
         // Neuen Textinhalt zusammenstellen
-        tinput.value 
-            = txt0 
-                + s_br_o + "<" + tag + ">" 
+        tinput.value
+            = txt0
+                + s_br_o + "<" + tag + ">"
                     + s_br_i + txt1 + e_br_i
                 + "</" + tag + ">" + e_br_o
             + txt2;
@@ -149,8 +162,8 @@ ffcdata.editbuttons.init = function(){
     var show_preview = function(str) {
         // console.log('display preview');
         previewwindow.style.width = headboxbox.clientWidth + 'px';
-        previewwindow.style.top = headboxbox.offsetTop + 'px'; 
-        previewwindow.style.left = headboxbox.offsetLeft + 'px'; 
+        previewwindow.style.top = headboxbox.offsetTop + 'px';
+        previewwindow.style.left = headboxbox.offsetLeft + 'px';
         previewtextarea.innerHTML = str;
         previewwindow.className = 'hovering';
     };
@@ -187,7 +200,7 @@ ffcdata.editbuttons.init = function(){
 
         // Vorschau-Button aktivieren
         document.getElementById('textpreviewtabutton').onclick = get_preview;
-        document.getElementById('closetextpreviewareabutton').onclick = close_preview;
+        document.getElementById('closetextabutton').onclick = close_preview;
     };
 
     showbuttons();

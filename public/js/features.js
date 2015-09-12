@@ -9,33 +9,35 @@ ffcdata.features.init = function(){
         var mytime  = new Date();
         var myh = mytime.getHours(), mym = mytime.getMinutes();
         document.getElementsByTagName("title")[0].firstChild.data
-            = mytitle + ', zuletzt aktualisiert ' 
-                      + ( myh < 10 ? '0'+myh : myh ) 
+            = mytitle + ', zuletzt aktualisiert '
+                      + ( myh < 10 ? '0'+myh : myh )
                       + ':' + ( mym < 10 ? '0'+mym : mym );
     };
 
     // Chatbutton im Menü anzeigen
     var activate_chatbutton = function(){
-        document.getElementById('chatbutton').className = 'menuentry chatlink';
+        var chatb = document.getElementById('chatbutton');
+        if ( chatb )
+            chatb.className = 'menuentry chatlink';
     };
 
     // Auto-Refresh einsetzen
     var set_autorefresh = function(){
         ffcdata.features.autorefresh_interval = window.setInterval(function(){
-            if ( document.hasFocus() 
+            if ( document.hasFocus()
               || (document.getElementById('textinput')
                 && document.getElementById('textinput').value !== '') ) {
                 return;
             }
-            ffcdata.utils.request('GET', ffcdata.counturl, null, function(res){ 
-                if ( res > 0 && res > ffcdata.lastcount ) 
+            ffcdata.utils.request('GET', ffcdata.counturl, null, function(res){
+                if ( res > 0 && res > ffcdata.lastcount )
                     location.reload();
-                else 
+                else
                     set_titletime();
             });
         }, ffcdata.autorefresh * 60000 );
     };
-    
+
     // Weitere Feature-Operationen starten
     if ( !ffcdata.singleuser )
         set_titletime();
