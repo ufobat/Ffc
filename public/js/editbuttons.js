@@ -54,14 +54,14 @@ ffcdata.editbuttons.init = function(){
         console.log('--------------------------------------------');
         console.log('itag: ' + itag + ', btag: ' + btag + ', iobr: ' + iobr + ', dout: ' + dout);
         // Immer ein Block mit innerem und äußererem Zeilenumbruch
-        var block = ( btag && !itag ) ? true : false;
-        console.log('Nur Block-Tag übergeben: ' + block);
+        var block_tag_only = ( btag && !itag ) ? true : false;
+        console.log('Nur Block-Tag übergeben: ' + block_tag_only);
         // Gibt nur den Inline-Tag
         var inline_tag_only = ( itag && !btag ) ? true : false;
         console.log('Nur Inline-Tag übergeben: ' + inline_tag_only);
         // Tags immer inline einfügen
-        var inline = ( inline_tag_only && !iobr ) ? true : false;
-        console.log('Ausschließlich Inline-Tag verwenden: ' + inline);
+        var inline_only = ( inline_tag_only && !iobr ) ? true : false;
+        console.log('Ausschließlich Inline-Tag verwenden: ' + inline_only);
         // Text inklusive Tags auf einer separaten Zeile
         var single_line = ( inline_tag_only && iobr ) ? true : false;
         console.log('Separate Zeile für Inline-Tag: ' + single_line);
@@ -69,7 +69,7 @@ ffcdata.editbuttons.init = function(){
         var inline_to_block = ( !inline_tag_only && txt1.match(/.\n./) ) ? true : false;
         console.log('Inline-Tag als Block formatieren: ' + inline_to_block);
         // Es wird Blockformatierung verwendet
-        var doblock = ( block || inline_to_block ) ? true : false;
+        var doblock = ( block_tag_only || inline_to_block ) ? true : false;
         console.log('Block-Formatierung verwenden: ' + doblock);
         // Aussen werden immer zwei Zeilenumbrüche gemacht
         console.log('Zwei Leerzeilen vor und nach dem Tag: ' + dout);
@@ -79,6 +79,7 @@ ffcdata.editbuttons.init = function(){
 
         // Auszählen der Zeilenumbrüche außerhalb der Markierung
         var countalln = function(str1,str2,min){
+            if ( inline_only ) return '';
             var countn = function(str,front){
                 if ( str.length === 0 ) return 0;
                 var match1 = front ? str.match(/^[\n\s]+/) : str.match(/[\n\s]+$/);
@@ -105,7 +106,7 @@ ffcdata.editbuttons.init = function(){
 
         // Zeilenumbrüche innerhalb der Tags ermitteln
         var s_br_i = '', e_br_i = '';
-        if ( block ) { s_br_i = "\n"; e_br_i = "\n"; }
+        if ( block_tag_only ) { s_br_i = "\n"; e_br_i = "\n"; }
 
         // Neuen Textinhalt zusammenstellen
         tinput.value
