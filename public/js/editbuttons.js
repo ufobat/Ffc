@@ -62,31 +62,34 @@ ffcdata.editbuttons.init = function(){
 
         // Verwendeten Tag ermitteln
         var tag = ntag;
-        if ( b_only || n_to_b ) tag = btag; // Block-Tag statt Inner-Tag verwenden, wenn Block-Tag exklusiv angegeben oder wenn wegen Zeilenumbüchen im Textabschnitt ein Inner- zu einem Outer-Tag umgewandelt wurde, wenn beide vorhanden sind
+        if ( big_b ) tag = btag; // Block-Tag statt Inner-Tag verwenden, wenn Block-Tag exklusiv angegeben oder wenn wegen Zeilenumbüchen im Textabschnitt ein Inner- zu einem Outer-Tag umgewandelt wurde, wenn beide vorhanden sind
 
-        console.log('----------------------------------------------');
-        console.log('ntag: '+ntag+', btag: '+btag+', obr: '+obr+', dout: '+dout);
-        console.log('Outer-Br: '+obr+', Inner-Br: '+ibr+', Tag: '+tag+', Dbl-Outer-Br: '+dout);
+        //console.log('----------------------------------------------');
+        //console.log('ntag: '+ntag+', btag: '+btag+', obr: '+obr+', dout: '+dout);
+        //console.log('Outer-Br: '+obr+', Inner-Br: '+ibr+', Tag: '+tag+', Dbl-Outer-Br: '+dout);
 
         // Auszählen der Zeilenumbrüche außerhalb der Markierung
         var get_outer_n = function(str1,str2,min){
-            if ( !obr ) return '';
+            if ( !obr ) return ''; // Ohne Outer-Breaks brauch ich hier nix machen
+            // Zeilenumbrüche am Rande der Markierung, also zwischen den gegebenen Strings, zählen
             var countn = function(str,front){
-                if ( str.length === 0 ) return min;
+                if ( str.length === 0 ) return min; // Leere Strings zählen im Folgenden als eine genug große Anzahl
                 var match1 = front ? str.match(/^[\n\s]+/) : str.match(/[\n\s]+$/);
                 var match2 = match1 ? match1[0].match(/\n/g) : "";
                 return match2.length;
             };
+
+            // Anzahl der Zeilenumbrüche im gegebenen Bereich ausrechnen
             var num = countn(str1,false) + countn(str2,true);
-            console.log('num1: '+num);
+            // Prüfen, wie viele Zeilenumbrüche noch fehlen, oder ob es gar schon genug sind
             if ( num < min ) num = min - num;
             else return '';
-            console.log('num2: '+num);
+
+            // Einen String mit der entsprechenden Anzahl notwendiger Zeilenumbrüche füllen und zurück geben
             var str = '';
             for ( var i = 1; i <= num; i++){
                 str += "\n";
             }
-            console.log('str: '+JSON.stringify(str));
             return str;
         };
 
