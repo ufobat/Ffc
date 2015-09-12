@@ -224,4 +224,7 @@ input[type="text"].titlestring {
     padding-top: .5em;
     padding-bottom: .5em;
 }
+textarea:focus {
+    box-shadow: 0 0 .25em silver;
+}
 
