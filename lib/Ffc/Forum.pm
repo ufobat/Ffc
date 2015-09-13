@@ -86,6 +86,14 @@ sub install_routes {
     $l->route('/forum/set_ppv_period/:days', days => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'set_period')
       ->name('set_printpreview_period');
+
+    # Diese Route ist der Startpunkt, um im Forum Beiträge in andere Themen zu verschieben
+    # Diese Route liefert eine Liste von Themen, in die ein Beitrag verschoben werden kann
+    $l->route('/topic/:topicid/move/:postid', topicid => $Ffc::Digqr, postid => $Ffc::Digqr)->via('get')
+      ->to(controller => 'forum', action => 'move_topiclist')->name('move_forum_topiclist');
+    # Diese Route verschiebt einen Beitrag in ein anderes Thema
+    $l->route('/topic/:topicid/move/:postid', topicid => $Ffc::Digqr, postid => $Ffc::Digqr)->via('post')
+      ->to(controller => 'forum', action => 'move_topiclist_do')->name('move_forum_topiclist_do');
     
     # Standardrouten für die Beitragsbehandlung
     Ffc::Plugin::Posts::install_routes_posts($l, 'forum', '/topic/:topicid', topicid => $Ffc::Digqr);
@@ -165,6 +173,7 @@ sub show {
         backurl      => $c->url_for('show_forum_topiclist'),
         backtext     => 'zur Themenliste',
         msgurl       => 'show_pmsgs',
+        moveurl      => 'move_forum_topiclist',
         heading      => $heading,
     );
     $c->stash( topicediturl => $c->url_for('edit_forum_topic_form', topicid => $topicid) )

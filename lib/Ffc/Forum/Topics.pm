@@ -271,5 +271,14 @@ sub mark_seen {
     $_[0]->redirect_to($_[1] ? ( $_[1], topicid => $topicid ) : 'show_forum_topiclist');
 }
 
+sub move_forum_topiclist {
+    my $c = shift;
+}
+
+sub move_forum_topiclist_do {
+    my $c = shift;
+}
+
+
 1;
 

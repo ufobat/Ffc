@@ -84,7 +84,7 @@ sub _show_posts {
             delurl  => "delete_${cname}_check",        # Formular, um den Löschvorgang einzuleiten
             uplurl  => "upload_${cname}_form",         # Formular für Dateiuploads
             delupl  => "delete_upload_${cname}_check", # Formular zum entfernen von Anhängen
-            pageurl => "show_${cname}_page",
+            pageurl => "show_${cname}_page",           # URL für die Seitenweiterschaltung
         );
         _setup_stash($c);
     }

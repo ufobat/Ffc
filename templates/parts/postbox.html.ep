@@ -13,6 +13,9 @@
 %   if ( $editurl ) {
             <a href="<%= url_for $editurl, postid => $post->[0], @$additional_params %>" title="Beitrag bearbeiten">bearb.</a>,
 %   }
+%   if ( $moveurl ) {
+            <a href="<%= url_for $moveurl, postid => $post->[0], @$additional_params %>" title="Beitrag verschieben">versch.</a>,
+%   }
 %   if ( $delurl ) {
             <a href="<%= url_for $delurl, postid => $post->[0], @$additional_params %>" title="Beitrag löschen">entf.</a>,
 %   }
