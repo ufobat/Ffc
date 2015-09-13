@@ -83,6 +83,9 @@ sub test_info {
     my ( $t, $info ) = @_;
     $t->content_like(
         qr~<div\s+class="info">\s*<h1>Hinweis</h1>\s*<p>\s*$info\s*</p>\s*</div>~);
+    unless ( $t->success ) {
+       diag(Dumper([caller(1)])); 
+    }
 }
 
 sub test_warning {
@@ -90,6 +93,9 @@ sub test_warning {
     use Carp;
     $t->content_like(
         qr~<div\s+class="warning">\s*<h1>Warnung</h1>\s*<p>\s*$warning\s*</p>\s*</div>~);
+    unless ( $t->success ) {
+       diag(Dumper([caller(1)])); 
+    }
 }
 
 sub test_add_user { &test_add_users } # Alias

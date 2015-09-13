@@ -277,8 +277,8 @@ sub moveto_topiclist_select {
     $c->stash(dourl  => 'move_forum_topiclist_do');
     $c->stash(returl => $c->url_for('show_forum_topiclist'));
     unless ( $c->get_single_post() ) {
-        $c->set_error_f('Konnte keinen passenden Beitrag zum Löschen finden');
-        return _redirect_to_show($c);
+        $c->set_warning_f(', unpassender Beitrag zum verschieben');
+        return $c->redirect_to('show_forum', topicid => $c->param('topicid'));
     }
     $c->render(template => 'move_post_topiclist');
 }
@@ -289,44 +289,39 @@ sub moveto_topiclist_do {
     my $oldtopicid = $c->param('topicid');
     my $newtopicid = $c->param('newtopicid');
     unless ( defined($oldtopicid) and $oldtopicid ) {
-        $c->set_warning_f('Themen-Index wurde nicht übergeben.');
+        $c->set_warning_f('Themen-Index wurde nicht übergeben');
         return $c->redirect_to('show');
     }
     unless ( defined($postid) and $postid ) {
-        $c->set_warning_f('Beitrags-Index wurde nicht übergeben.');
+        $c->set_warning_f('Beitrags-Index wurde nicht übergeben');
         return $c->redirect_to('show_forum', topicid => $oldtopicid);
     }
     unless ( defined($newtopicid) and $newtopicid ) {
-        $c->set_warning_f('Neues Thema wurde nicht ausgewählt.');
+        $c->set_warning_f('Neues Thema wurde nicht ausgewählt');
         return $c->redirect_to('show_forum', topicid => $oldtopicid);
     }
     my $userid = $c->session->{userid};
-    {
-        my $sql = << 'EOSQL';
+    my $sql = << 'EOSQL';
 SELECT "id" FROM "posts"
 WHERE "id"=?  AND "topicid"=?  AND "userfrom"=?  AND "userto" IS NULL
 EOSQL
-        my $post = $c->dbh_selectall_arrayref( $sql, $postid, $oldtopicid, $userid );
-        unless ( @$post ) {
-            $c->set_error_f('Konnte keinen passenden Beitrag zum Verschieben finden');
-            return _redirect_to_show($c);
-        }
+    my $post = $c->dbh_selectall_arrayref( $sql, $postid, $oldtopicid, $userid );
+    unless ( @$post ) {
+        $c->set_error_f('Konnte keinen passenden Beitrag zum Verschieben finden');
+        return $c->redirect_to('show_forum', topicid => $oldtopicid);
     }
-    {
-        my $sql = q~SELECT "id" FROM "topics" WHERE "id"=?~;
-        my $topic = $c->dbh_selectall_arrayref( $sql, $newtopicid );
-        unless ( @$topic ) {
-            $c->set_error_f('Konnte das neue Thema zum Verschieben nicht finden');
-            return _redirect_to_show($c);
-        }
+    $sql = q~SELECT "id" FROM "topics" WHERE "id"=?~;
+    my $topic = $c->dbh_selectall_arrayref( $sql, $newtopicid );
+    unless ( @$topic ) {
+        $c->set_error_f('Konnte das neue Thema zum Verschieben nicht finden');
+        return $c->redirect_to('show_forum', topicid => $oldtopicid);
     }
-    {
-        my $sql = << 'EOSQL';
+    $sql = << 'EOSQL';
 UPDATE "posts" SET "topicid"=?
 WHERE "id"=?  AND "topicid"=?  AND "userfrom"=?  AND "userto" IS NULL
 EOSQL
-        $c->dbh_selectall_arrayref( $sql, $newtopicid, $postid, $oldtopicid, $userid );
-    }
+    $c->dbh_selectall_arrayref( $sql, $newtopicid, $postid, $oldtopicid, $userid );
+    $c->set_info_f('Beitrag wurde in das andere Thema verschoben');
     $c->redirect_to('show_forum', topicid => $newtopicid);
 }
 
