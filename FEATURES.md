@@ -29,7 +29,8 @@ Features
 * Foren-, Nachrichten- und Notizbeiträge enthalten primär lediglich den Text ohne Titel
 * Diese Beiträge (Forum, Privatnachrichten, Notizen) haben alle intern die selbe technische Struktur
 * Allen Beiträgen (Forum, Privatnachrichten, Notizen) können Dateien via Upload angehängt werden durch den Beitragsersteller
-* Autoren können ihre Beiträge im Forum oder in den Notzen jederzeit löschen, nicht jedoch in den Privatnachrichten
+* Autoren können ihre Beiträge im Forum oder in den Notizen jederzeit löschen, nicht jedoch in den Privatnachrichten
+* Autoren können ihre Beiträge im Forum jederzeit in ein anderes Thema verschieben
 * Uploads können jederzeit vom hochladenden Benutzer gelöscht werden
 * Alle Beiträge können mit einer Art Markup versehen werden
   * Bei aktivem JavaScript im Browser bietet die Software die Möglichkeit, dieses Markup mit Hilfe von Formatierungsbuttons über dem Texteingabefeld einzutragen

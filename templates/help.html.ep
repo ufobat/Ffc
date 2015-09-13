@@ -10,7 +10,7 @@
         <li><a href="#links">Links</a></li>
         <li><a href="#images">Bilder</a></li>
         <li><a href="#attachements">Dateianhänge</a></li>
-        <li><a href="#editing">Beiträge bearbeiten und löschen</a></li>
+        <li><a href="#editing">Beiträge bearbeiten, verschieben und löschen</a></li>
         <li><a href="#smileys">Smileys</a></li>
         <li><a href="#chat">Chat</a></li>
     </ul>
@@ -94,11 +94,12 @@
     <p>Für das Löschen von eigenen Anhängen ist neben dem Anhang ein entsprechender Link ("entfernen") hinterlegt, welcher über eine Bestätigungsseite den Anhang komplett entfernt. Wird ein Beitrag gelöscht, werden sämltiche Anhänge ebenfalls gelöscht.</p>
 </div>
 <div class="postbox helptext">
-    <h2><a name="editing" href="#content">^</a> Beiträge bearbeiten und löschen</h2>
-    <p>Bei bestimmten Beiträgen gibt es neben den Beiträgen die Möglichkeit, diese Beiträge zu Bearbeiten oder zu löschen.</p>
+    <h2><a name="editing" href="#content">^</a> Beiträge bearbeiten, verschieben und löschen</h2>
+    <p>Bei bestimmten Beiträgen gibt es neben den Beiträgen die Möglichkeit, diese Beiträge zu bearbeiten, zu verschieben oder zu löschen.</p>
     <p>Löschen geht über eine Bestätigungsseite und entfernt auch sämtliche Anhänge.</p>
-    <p>Bearbeiten zeigt den Beitrag in der Textbox an.</p>
+    <p>Bearbeiten zeigt den Beitrag in der Textbox an, in der er geändert und hinterher gespeichert werden kann.</p>
     <p>Private Nachrichten können weder gelöscht noch geändert werden.</p>
+    <p>Eigene Beiträge im Forum können in ein anderes Thema von der ersten Seite der Themenliste verschoben werden. Dazu wird eine Seite geöffnet, in welcher man über eine Auswahlbox das entsprechende Thema aussuchen kann. Bestätigen verschiebt den Beitrag und zeigt das Thema an, in das der Beitrag verschoben wurde.</p>
 </div>
 <div class="postbox helptext">
     <h2><a name="smileys" href="#content">^</a> Smileys</h2>
