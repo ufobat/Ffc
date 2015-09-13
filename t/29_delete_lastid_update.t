@@ -87,7 +87,7 @@ sub check_topics {
         }
         my $lasttopicid = select_lastid_for_topic($id);
         ok $lasttopicid == $Topics[$i][2], qq~Aktuellste Topicid passt bei Thema Nr. $id~;
-        note(qq~Thema Nr. $id wurder ueberprueft~);
+        note(qq~Thema Nr. $id wurde ueberprueft~);
     }
 }
 
