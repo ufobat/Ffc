@@ -90,10 +90,10 @@ sub install_routes {
     # Diese Route ist der Startpunkt, um im Forum Beiträge in andere Themen zu verschieben
     # Diese Route liefert eine Liste von Themen, in die ein Beitrag verschoben werden kann
     $l->route('/topic/:topicid/move/:postid', topicid => $Ffc::Digqr, postid => $Ffc::Digqr)->via('get')
-      ->to(controller => 'forum', action => 'move_topiclist')->name('move_forum_topiclist');
+      ->to(controller => 'forum', action => 'moveto_topiclist_select')->name('move_forum_topiclist');
     # Diese Route verschiebt einen Beitrag in ein anderes Thema
     $l->route('/topic/:topicid/move/:postid', topicid => $Ffc::Digqr, postid => $Ffc::Digqr)->via('post')
-      ->to(controller => 'forum', action => 'move_topiclist_do')->name('move_forum_topiclist_do');
+      ->to(controller => 'forum', action => 'moveto_topiclist_do')->name('move_forum_topiclist_do');
     
     # Standardrouten für die Beitragsbehandlung
     Ffc::Plugin::Posts::install_routes_posts($l, 'forum', '/topic/:topicid', topicid => $Ffc::Digqr);
@@ -103,7 +103,7 @@ sub where_select {
     my $topicid = $_[0]->param('topicid');
     if ( $topicid ) {
         my $action = $_[0]->stash('action');
-        if ( $action =~ m~\A(?:delete|edit|upload)~xmsio ) {
+        if ( $action =~ m~\A(?:delete|edit|upload|move)~xmsio ) {
             return 
                 'p."userto" IS NULL AND p."topicid"=? AND p."userfrom"=?',
                 $topicid, $_[0]->session->{userid};

@@ -37,6 +37,7 @@ sub register {
     $app->helper( set_post_postlimit       => \&_set_post_postlimit       );
     $app->helper( inc_post_highscore       => \&_inc_highscore            );
     $app->helper( dec_post_highscore       => \&_dec_highscore            );
+    $app->helper( get_single_post          => \&_get_single_post          );
     return $self;
 }
 

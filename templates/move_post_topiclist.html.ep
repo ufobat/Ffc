@@ -1,0 +1,20 @@
+% layout 'board';
+<div class="postbox postboxform">
+    <h1><%= $heading %></h1>
+    <form action="<%== url_for $dourl, topicid => $topicid, postid => $postid %>" accept-charset="UTF-8" method="POST">
+        <p>Wählen Sie, in welches Thema sie den unten stehenden Beitrag verschieben möchten:</p>
+        <p>
+            <select name="newtopicid">
+                <option value="" selected="selected"></option>
+% for my $t ( @$topics ) {
+%   next if $topicid == $t->[0];
+                <option value="<%= $t->[0]%>"><%= $t->[2] %></option>
+% }
+            </select>
+        </p>
+        <p><%= submit_button 'Verschieben', class => 'linkalike send' %></p>
+    </form>
+    <p><a href="<%== $returl %>" title="Den Vorgang abbrechen">Abbrechen</a></p>
+</div>
+%= include 'parts/postbox'
+
