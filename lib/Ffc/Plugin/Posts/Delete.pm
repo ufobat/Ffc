@@ -21,21 +21,21 @@ sub _delete_post_do {
     my $postid = $c->param('postid');
     my $userid = $c->session->{userid};
     my $controller = $c->stash('controller');
-    my ( $topicid, $userto );
+    my $topicid;
     unless ( $postid and $postid =~ $Ffc::Digqr ) {
         $c->set_error_f('Konnte den Beitrag nicht ändern, da die Beitragsnummer irgendwie verloren ging');
         return _redirect_to_show($c);
     }
     {
-        my $sql = q~SELECT "id", "topicid", "userto" FROM "posts" WHERE "id"=?~;
+        my $sql = q~SELECT "id", "topicid" FROM "posts" WHERE "id"=?~;
         $sql   .= qq~ AND $wheres~ if $wheres;
         my $post = $c->dbh_selectall_arrayref( $sql, $postid, @wherep );
         unless ( @$post ) {
             $c->set_error_f('Konnte keinen passenden Beitrag zum Löschen finden');
             return _redirect_to_show($c);
         }
-        ( $topicid, $userto ) = @{$post->[0]}[1,2];
-        if ( ( $controller eq 'forum' and not defined $topicid ) or ( $controller eq 'pmsgs' and not defined $userto ) ) {
+        $topicid = $post->[0]->[1];
+        if ( ( $controller eq 'forum' and not defined $topicid ) or ( $controller eq 'pmsgs' ) ) {
             $c->set_error_f('Konnte keinen passenden Beitrag zum Löschen finden');
             return _redirect_to_show($c);
         }
@@ -63,7 +63,6 @@ sub _delete_post_do {
         $c->dbh_do( $sql, $postid, @wherep );
 
         _update_topic_lastid($c, $topicid) if $controller eq 'forum';
-        _update_pmsgs_lastid($c, $userid, $userto) if $controller eq 'pmsgs';
     }
     $c->set_info_f('Der Beitrag wurde komplett entfernt');
     _redirect_to_show($c);
