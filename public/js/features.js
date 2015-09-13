@@ -24,17 +24,19 @@ ffcdata.features.init = function(){
     // Auto-Refresh einsetzen
     var set_autorefresh = function(){
         ffcdata.features.autorefresh_interval = window.setInterval(function(){
-            if ( document.hasFocus()
-              || (document.getElementById('textinput')
-                && document.getElementById('textinput').value !== '') ) {
+            if ( !document.hasFocus()
+              && (!document.getElementById('textinput')
+                || document.getElementById('textinput').value === '') ) {
+                ffcdata.utils.request('GET', ffcdata.counturl, null, function(res){
+                    if ( res > 0 && res > ffcdata.lastcount )
+                        location.reload();
+                    else
+                        set_titletime();
+                });
+            }
+            else {
                 return;
             }
-            ffcdata.utils.request('GET', ffcdata.counturl, null, function(res){
-                if ( res > 0 && res > ffcdata.lastcount )
-                    location.reload();
-                else
-                    set_titletime();
-            });
         }, ffcdata.autorefresh * 60000 );
     };
 
