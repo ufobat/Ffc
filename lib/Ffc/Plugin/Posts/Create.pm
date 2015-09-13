@@ -5,6 +5,7 @@ use strict; use warnings; use utf8;
 sub _add_post {
     my ( $c, $userto, $topicid ) = @_;
     my $text = $c->param('textdata');
+    my $userid = $c->session->{userid};
     if ( !defined($text) or (2 >= length $text) ) {
         $c->stash(textdata => $text);
         $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen)');
@@ -28,9 +29,9 @@ sub _add_post {
                 : 'forum l ON l.userid=u.id AND l.topicid=?' )
             . ' WHERE u.id=? GROUP BY u.id';
         my $r = $c->dbh_selectall_arrayref( 
-            $sql, $c->session->{userid},
+            $sql, $userid,
             ( $userto ? ($userto, $userto) : ($topicid, $topicid) ),
-            $c->session->{userid},
+            $userid,
         );
         if ( @$r and $r->[0]->[0] ) {
             $c->stash(textdata => $text);
@@ -44,34 +45,13 @@ INSERT INTO "posts"
 VALUES 
     (?,?,?,?,?)
 EOSQL
-        $c->session->{userid}, $userto, $topicid, $text, $cache
+        $userid, $userto, $topicid, $text, $cache
     );
     if ( $controller eq 'forum' and $topicid ) {
-        $c->dbh_do( << 'EOSQL', $topicid, $topicid );
-UPDATE "topics" 
-SET "lastid"=(
-    SELECT COALESCE(MAX("id"),0) 
-    FROM "posts" 
-    WHERE "topicid" IS NOT NULL 
-      AND "topicid"=?
-      AND "userto" IS NULL
-    LIMIT 1
-  )
-WHERE "id"=?
-EOSQL
+        _update_topic_lastid($c, $topicid);
     }
     if ( $controller eq 'pmsgs' and $userto ) {
-        my $userid = $c->session->{userid};
-        $c->dbh_do( << 'EOSQL'
-UPDATE "lastseenmsgs"
-SET "lastid"=(
-    SELECT COALESCE(MAX(p."id"),0)
-    FROM "posts" p
-    WHERE p."userfrom"=? AND p."userto"=?
-    LIMIT 1)
-WHERE "userfromid"=? AND "userid"=?
-EOSQL
-            , $userid, $userto, $userid, $userto );
+        _update_pmsgs_lastid( $c, $userid, $userto );
     }
 
     $c->set_info_f('Ein neuer Beitrag wurde erstellt');

@@ -113,5 +113,36 @@ sub _update_highscore {
 sub _inc_highscore { _update_highscore( $_[0], 1 ) }
 sub _dec_highscore { _update_highscore( $_[0], 0 ) }
 
+sub _update_topic_lastid {
+    my ( $c, $topicid ) = @_;
+    $c->dbh_do( << 'EOSQL', $topicid, $topicid );
+UPDATE "topics" 
+SET "lastid"=(
+    SELECT COALESCE(MAX(p."id"),0) 
+    FROM "posts" p 
+    WHERE p."topicid" IS NOT NULL 
+      AND p."topicid"=?
+      AND p."userto" IS NULL
+    LIMIT 1
+  )
+WHERE "id"=?
+EOSQL
+}
+
+sub _update_pmsgs_lastid {
+    my ( $c, $userid, $userto ) = @_;
+    $c->dbh_do( << 'EOSQL', $userid, $userto, $userid, $userto );
+UPDATE "lastseenmsgs"
+SET "lastid"=(
+    SELECT COALESCE(MAX(p."id"),0)
+    FROM "posts" p
+    WHERE p."userfrom"=? AND p."userto"=?
+    LIMIT 1)
+WHERE "userfromid"=? AND "userid"=?
+EOSQL
+        
+
+}
+
 1;
 
