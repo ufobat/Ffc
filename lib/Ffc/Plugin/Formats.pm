@@ -47,7 +47,7 @@ our %HTMLHandle = (
     li         => [ 1, 0, 0, 1 ],
     pre        => [ 1, 1, 1, 1 ],
     code       => [ 1, 1, 0, 0 ],
-    blockquote => [ 1, 0, 1, 1 ],
+    blockquote => [ 0, 0, 1, 1 ],
     h3         => [ 1, 0, 1, 1 ],
 );
 
@@ -134,11 +134,13 @@ sub _pre_format_text {
     my $o = _pre_format_text_part($c, $str);
     return '' if $o =~ m/\A\s*\z/xmso;
     $o = "<p>$o</p>";
-    $o =~ s~<p>\s*</p>~~gsmxo;
+    $o =~ s~<p>\s*</p>~~gsimxo;
     return '' if $o =~ m/\A\s*\z/xmso;
     $o =~ s~\n\n+~\n~gsmxo;
-    $o =~ s~</(blockquote|pre|h3|ul|ol)>\s*</p>~</$1>~gsmx;
-    $o =~ s~<p>\s*<(blockquote|pre|h3|ul|ol)>~<$1>~gsmx;
+    $o =~ s~</(blockquote|pre|h3|ul|ol)>\s*</p>~</$1>~gismx;
+    $o =~ s~<blockquote>\s*</p>~<blockquote>~gsmiox;
+    $o =~ s~<p>\s*<(blockquote|pre|h3|ul|ol)>~<$1>~gsimx;
+    $o =~ s~<p>\s*</blockquote>~</blockquote>~gsiomx;
     chomp $o;
     return $o;
 }

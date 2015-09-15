@@ -318,8 +318,8 @@ EOTXT
         << 'EOHTML',
 <p>blupp blupp</p>
 <blockquote>
-Bla Bla
-Fasel Fasel
+<p>Bla Bla</p>
+<p>Fasel Fasel</p>
 </blockquote>
 <p>fapp blapp</p>
 EOHTML
