@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 44;
+use Test::More tests => 47;
 
 srand;
 
@@ -301,6 +301,21 @@ EOTXT
 <p><b>update:</b> jetzt muss ich doch nochmal eine naive Frage stellen, ich tue das aber im entsprechenden Thread (<a href="https://local.host/forum.pl/topic/1," title="Externe Webseite: https://local.host/forum.pl/topic/1," target="_blank">https://local.h…rum.pl/topic/1,</a> Beitrag: <a href="https://local.host/forum.pl/topic/16/display/1" title="Externe Webseite: https://local.host/forum.pl/topic/16/display/1" target="_blank">https://local.h…ic/16/display/1</a>)</p>
 EOHTML
         10
+    ],
+    [
+        << 'EOTXT',
+<blockquote>
+Bla Bla
+Fasel Fasel
+</blockquote>
+EOTXT
+        << 'EOHTML',
+<blockquote>
+Bla Bla
+Fasel Fasel
+</blockquote>
+EOHTML
+        11
     ],
 );
 

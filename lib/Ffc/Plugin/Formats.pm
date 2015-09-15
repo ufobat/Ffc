@@ -39,15 +39,16 @@ our $SmileyRe   = join '|', map {
     s{([\;\&\^\>\<\-\.\:\\\/\(\)\=\|\,\$])}{\\$1}gxoms;
     $_
 } keys %Smiley;
-our $HTMLRe = qr~ul|ol|pre|code|b|u|i|strike|h3|quote|li|em~;
+our $HTMLRe = qr~ul|ol|pre|code|b|u|i|strike|h3|blockquote|quote|li|em~;
 our %HTMLHandle = (
-#   tag => [ disable-p, disable-html, set_n ],
-    ul   => [ 1, 0, 1 ],
-    ol   => [ 1, 0, 1 ],
-    li   => [ 0, 0, 1 ],
-    pre  => [ 1, 1, 1 ],
-    code => [ 1, 1, 0 ],
-    h3   => [ 1, 0, 1 ],
+#   tag        => [ disable-p, disable-html, set_n ],
+    ul         => [ 1, 0, 1 ],
+    ol         => [ 1, 0, 1 ],
+    li         => [ 0, 0, 1 ],
+    pre        => [ 1, 1, 1 ],
+    code       => [ 1, 1, 0 ],
+    blockquote => [ 1, 0, 1 ],
+    h3         => [ 1, 0, 1 ],
 );
 
 our $SmileyHandleRe = qr~(?<smileymatch>$SmileyRe)~xms;
@@ -131,8 +132,8 @@ sub _pre_format_text {
     $o =~ s~<p>\s*</p>~~gsmxo;
     return '' if $o =~ m/\A\s*\z/xmso;
     $o =~ s~\n\n+~\n~gsmxo;
-    $o =~ s~</(pre|h3|ul|ol)>\s*</p>~</$1>~gsmx;
-    $o =~ s~<p>\s*<(pre|h3|ul|ol)>~<$1>~gsmx;
+    $o =~ s~</(blockquote|pre|h3|ul|ol)>\s*</p>~</$1>~gsmx;
+    $o =~ s~<p>\s*<(blockquote|pre|h3|ul|ol)>~<$1>~gsmx;
     chomp $o;
     return $o;
 }
