@@ -58,8 +58,14 @@ sub _install_routes_helper {
       ->name('countings');
     $l->post('/textpreview' => sub { $_[0]->render( json => $_[0]->pre_format($_[0]->req->json || '') ) } )
       ->name('textpreview');
-    $l->get('/menu' => sub { $_[0]->counting->stash(pageurl => $_[0]->req->json || '')->render('layouts/parts/menu') } )
-      ->name('menu');
+    $l->post('/menu' => sub { 
+            my $j = $_[0]->req->json;
+            $_[0]->counting
+                 ->stash(pageurl    => $j ? $j->{pageurl}    : '')
+                 ->stash(queryurl   => $j ? $j->{queryurl}   : '')
+                 ->stash(controller => $j ? $j->{controller} : '')
+                 ->render('layouts/parts/menu');
+    } )->name('menu');
 }
 
 1;

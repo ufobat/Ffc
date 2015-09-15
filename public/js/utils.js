@@ -21,14 +21,18 @@ ffcdata.utils.is_disabled = function(){
 /************************************************************************
  *** Standard-Request-Funktion                                        ***
  ************************************************************************/
-ffcdata.utils.request = function(methd, url, data, callback) {
+ffcdata.utils.request = function(methd, url, data, callback, nojson) {
     try {
         // console.log('starting request');
         var req = new XMLHttpRequest();
         req.open(methd, url, true);
         req.addEventListener("load", function() {
-            if (req.status < 400)
-                callback(JSON.parse(req.responseText));
+            if (req.status < 400) {
+                if ( nojson !== undefined && nojson )
+                    callback(req.responseText);
+                else
+                    callback(JSON.parse(req.responseText));
+            }
             else
                 new Error("Request failed: " + req.statusText);
         });

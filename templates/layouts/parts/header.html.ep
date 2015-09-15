@@ -23,6 +23,9 @@
             counturl: "<%= url_for 'countings' %>",
             lastcount: <%= $newpostcount + $newmsgscount %>,
             textpreviewurl: "<%= url_for 'textpreview' %>",
+            menufetchurl: "<%= url_for 'menu' %>",
+            queryurl: "<%= $queryurl %>",
+            controller: "<%= $controller %>",
         };
     </script>
     <%= javascript '/js/utils.js' %>

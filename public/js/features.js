@@ -40,11 +40,44 @@ ffcdata.features.init = function(){
         }, ffcdata.autorefresh * 60000 );
     };
 
+    // Menü-Refresh einsetzen
+    var exchange_menu = function(data){
+        console.log('exchange menu');
+        var menu = document.getElementById('menu');
+        if ( !menu ) return false;
+        menu.outerHTML = data;
+        activate_chatbutton();
+        return true;
+    };
+    // Request für ein neues Menü
+    ffcdata.features.update_menu = function(){
+        ffcdata.utils.request('GET', ffcdata.counturl, null, function(res){
+            console.log('processing menu request');
+            if ( res > 0 && res > ffcdata.lastcount ) {
+                ffcdata.utils.request('POST', ffcdata.menufetchurl, 
+                    {pageurl: ffcdata.pageurl, queryurl: ffcdata.queryurl, controller: ffcdata.controller}, 
+                    function(res){
+                        console.log('update');
+                        updated = exchange_menu(res);
+                    }, true
+                );
+            }
+            set_titletime();
+        });
+    };
+    var set_menurefresh = function() {
+        ffcdata.features.autorefresh_interval = window.setInterval(function(){
+            console.log('starting interval handling');
+        }, ffcdata.autorefresh * 60000 );
+    };
+
     // Weitere Feature-Operationen starten
     if ( !ffcdata.singleuser )
         set_titletime();
     activate_chatbutton();
-    if ( ffcdata.autorefresh > 0 && !ffcdata.utils.is_disabled() && !ffcdata.singleuser )
-        set_autorefresh();
+    if ( ffcdata.autorefresh > 0 && !ffcdata.utils.is_disabled() && !ffcdata.singleuser ) {
+        if ( ffcdata.completerefresh ) set_autorefresh();
+        else                           set_menurefresh();
+    }
 };
 

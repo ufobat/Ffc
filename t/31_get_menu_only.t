@@ -14,7 +14,7 @@ note q~Testsystem vorbereiten~;
 ###############################################################################
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 Testinit::test_login($t, $admin, $apass);
-$t->get_ok('/menu', json => '/bla/blubb')->status_is(200)
+$t->post_ok('/menu', json => {pageurl => '/bla/blubb', queryurl => '/blu/plum', controller => 'notes'})->status_is(200)
   ->content_is(<< 'EOMENU');
 <div class="menu" id="menu">
     <div class="menuentry refreshlink">
@@ -26,10 +26,10 @@ $t->get_ok('/menu', json => '/bla/blubb')->status_is(200)
 
     </div>
     <div class="menuentry">
-        <a href="/notes"><span class="linktext linknotes">Notizen</span></a>
+        <a href="/notes"><span class="linktext linknotes active activenotes">Notizen</span></a>
     </div>
     <div class="menuentry">
-        <form style="visibility: hidden" action="" accept-charset="UTF-8" method="POST">
+        <form action="/blu/plum" accept-charset="UTF-8" method="POST">
             <span style="visibility: hidden">X</span>
             <input name="query" type="text" value="">
             <button type="submit">&raquo;Suche</button>

@@ -1,4 +1,7 @@
 % layout 'board';
+<script type="text/javascript">
+    ffcdata.completerefresh = true;
+</script>
 <div class="headbox" id="headbox">
     <h1>Allgemeines Forum</h1>
     <p>
