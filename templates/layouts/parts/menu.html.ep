@@ -29,11 +29,11 @@
             <span style="visibility: hidden">X</span>
 % }
             %= text_field query => $query, $query ? (class => 'activesearch') : ()
-            <button type="submit">»Suche</button>
+            <button type="submit">&raquo;Suche</button>
         </form>
     </div>
     <div class="otherspopuplink menuentry">
-        <span class="othersmenulinktext">Menü</span>
+        <span class="othersmenulinktext">Men&uuml;</span>
         <div class="otherspopup popup">
 % if ( $controller eq 'forum' ) {
             <p class="optionslink">
@@ -45,7 +45,7 @@
             </p>
 % }
             <p class="optionslink">
-                <a href="<%= url_for 'quickview_html' %>" target="_blank" title="Schnelle einfache Übersicht über neue Beiträge">Statusfenster</a> 
+                <a href="<%= url_for 'quickview_html' %>" target="_blank" title="Schnelle einfache &Uuml;bersicht &uuml;ber neue Beitr&auml;ge">Statusfenster</a>
             </p>
             <p class="optionslink">
                 <a href="<%= url_for 'options_form' %>"><span class="linktext linkoptions<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Einstellungen</span></a>

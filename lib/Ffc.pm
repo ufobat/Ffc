@@ -39,7 +39,7 @@ sub _install_routes {
     Ffc::Pmsgs::install_routes($l);
     Ffc::Notes::install_routes($l);
     Ffc::Chat::install_routes($l);
-    Ffc::Quickview::installroutes($l);
+    Ffc::Quickview::install_routes($l);
     _install_routes_helper($l);
 }
 
@@ -58,6 +58,8 @@ sub _install_routes_helper {
       ->name('countings');
     $l->post('/textpreview' => sub { $_[0]->render( json => $_[0]->pre_format($_[0]->req->json || '') ) } )
       ->name('textpreview');
+    $l->get('/menu' => sub { $_[0]->counting->stash(pageurl => $_[0]->req->json || '')->render('layouts/parts/menu') } )
+      ->name('menu');
 }
 
 1;

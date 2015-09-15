@@ -2,7 +2,7 @@ package Ffc::Quickview;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 
-sub installroutes {
+sub install_routes {
     $_[0]->get('/quick')
          ->to(controller => 'quickview', action => 'display_html')
          ->name('quickview_html');
