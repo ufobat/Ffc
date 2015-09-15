@@ -41,14 +41,14 @@ our $SmileyRe   = join '|', map {
 } keys %Smiley;
 our $HTMLRe = qr~ul|ol|pre|code|b|u|i|strike|h3|blockquote|quote|li|em~;
 our %HTMLHandle = (
-#   tag        => [ disable-p, disable-html, set_n ],
-    ul         => [ 1, 0, 1 ],
-    ol         => [ 1, 0, 1 ],
-    li         => [ 0, 0, 1 ],
-    pre        => [ 1, 1, 1 ],
-    code       => [ 1, 1, 0 ],
-    blockquote => [ 1, 0, 1 ],
-    h3         => [ 1, 0, 1 ],
+#   tag        => [ disable-p, disable-html, set_n, disable-outer-p ],
+    ul         => [ 1, 0, 1, 1 ],
+    ol         => [ 1, 0, 1, 1 ],
+    li         => [ 1, 0, 0, 1 ],
+    pre        => [ 1, 1, 1, 1 ],
+    code       => [ 1, 1, 0, 0 ],
+    blockquote => [ 1, 0, 1, 1 ],
+    h3         => [ 1, 0, 1, 1 ],
 );
 
 our $SmileyHandleRe = qr~(?<smileymatch>$SmileyRe)~xms;
@@ -79,7 +79,7 @@ sub _format_timestamp {
 
 sub _pre_format_text_part {
 #   controller, string, disable-p, disable-html
-    my ( $c, $str, $lvl, $dis_p, $dis_html, $set_n ) = @_;
+    my ( $c, $str, $lvl, $dis_p, $dis_html, $set_n, $dis_outer_p ) = @_;
     return '' if $str =~ m/\A\s*\z/xmso;
     $lvl ||= 0;
     $lvl++;
@@ -97,10 +97,10 @@ sub _pre_format_text_part {
             my %m = ( %+ );
 
             if ( $start < $end ) 
-                { $o .= _format_plain_text( substr($str, $start, $end - $start), $dis_p ) }
+                { $o .= _format_plain_text( substr($str, $start, $end - $start), $dis_p, $dis_outer_p ) }
 
             if    ( $m{htmlmatch}   )
-                { $o .= _make_tag(    $c, $m{tag}, $m{inner}, $lvl, $dis_p, $dis_html, $set_n ) }
+                { $o .= _make_tag(    $c, $m{tag}, $m{inner}, $lvl, $dis_p, $dis_html, $set_n, $dis_outer_p ) }
             elsif ( $m{urlmatch}    ) 
                 { $o .= _make_link(   $c, $m{url}                                     ) }
             elsif ( $m{smileymatch} )
@@ -118,9 +118,14 @@ sub _pre_format_text_part {
 sub _format_plain_text {
     my $str = shift;
     my $dis_p = shift;
+    my $dis_outer_p = shift;
     _xml_escape( $str );
     unless ( $dis_p )
         { $str =~ s~\n+~</p>\n<p>~gsmxo }
+    if ( $dis_outer_p ) {
+        $str =~ s~\A\s*<p>~~gsmxo;
+        $str =~ s~</p>\s*\z~~gsmxo;
+    }
     return $str;
 }
 
@@ -139,14 +144,15 @@ sub _pre_format_text {
 }
 
 sub _make_tag {
-    my ( $c, $tag, $inner, $lvl, $dis_p, $dis_html, $set_n ) = @_;
+    my ( $c, $tag, $inner, $lvl, $dis_p, $dis_html, $set_n, $dis_outer_p ) = @_;
 
     if ( exists $HTMLHandle{$tag} ) {
-        $dis_p    ||= $HTMLHandle{$tag}[0];
-        $dis_html ||= $HTMLHandle{$tag}[1];
-        $set_n    ||= $HTMLHandle{$tag}[2];
+        $dis_p       ||= $HTMLHandle{$tag}[0];
+        $dis_html    ||= $HTMLHandle{$tag}[1];
+        $set_n       ||= $HTMLHandle{$tag}[2];
+        $dis_outer_p ||= $HTMLHandle{$tag}[3];
     }
-    my $in = _pre_format_text_part($c, $inner, $lvl, $dis_p, $dis_html);
+    my $in = _pre_format_text_part($c, $inner, $lvl, $dis_p, $dis_html, undef, $dis_outer_p);
     return '' if $in =~ m/\A\s*\z/xmso;
     return 
          ( $set_n ? "\n" : '' )

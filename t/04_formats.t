@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 47;
+use Test::More tests => 56;
 
 srand;
 
@@ -252,6 +252,8 @@ EOHTML
 <pre>
 <ul>
     <li>asdf <3 <u>bla</u></li>
+    <li>asdf asdf asdf
+asdfasdf asdf</li>
 </ul>
 <li>
 EOTXT
@@ -262,8 +264,9 @@ EOTXT
 <p>&lt;/pre&gt;</p>
 <p>&lt;pre&gt;</p>
 <ul>
-    
-<li>asdf <img class="smiley" src="/theme/img/smileys/love.png" alt="<3" title="<3" /> <u>bla</u></li>
+    <li>asdf <img class="smiley" src="/theme/img/smileys/love.png" alt="<3" title="<3" /> <u>bla</u></li>
+    <li>asdf asdf asdf
+asdfasdf asdf</li>
 </ul>
 <p>&lt;li&gt;</p>
 EOHTML
@@ -304,18 +307,71 @@ EOHTML
     ],
     [
         << 'EOTXT',
+blupp blupp
 <blockquote>
 Bla Bla
 Fasel Fasel
 </blockquote>
+
+fapp blapp
 EOTXT
         << 'EOHTML',
+<p>blupp blupp</p>
 <blockquote>
 Bla Bla
 Fasel Fasel
 </blockquote>
+<p>fapp blapp</p>
 EOHTML
         11
+    ],
+    [
+        << 'EOTXT',
+blupp blupp
+<pre>
+Bla Bla
+Fasel Fasel
+</pre>
+
+fapp blapp
+EOTXT
+        << 'EOHTML',
+<p>blupp blupp</p>
+<pre>
+Bla Bla
+Fasel Fasel
+</pre>
+<p>fapp blapp</p>
+EOHTML
+        12
+    ],
+    [
+        << 'EOTXT',
+<ol>
+    <li>asdf <3 asdfasd</li>
+    <li>fsdfa :D <i>x</i></li>
+    <li>fsdfa :D dfasdf</li>
+    <li>fsdfa <i>dfasdf</i></li>
+</ol>
+EOTXT
+        << 'EOHTML',
+<ol>
+    <li>asdf <img class="smiley" src="/theme/img/smileys/love.png" alt="<3" title="<3" /> asdfasd</li>
+    <li>fsdfa <img class="smiley" src="/theme/img/smileys/laughting.png" alt=":D" title=":D" /> <i>x</i></li>
+    <li>fsdfa <img class="smiley" src="/theme/img/smileys/laughting.png" alt=":D" title=":D" /> dfasdf</li>
+    <li>fsdfa <i>dfasdf</i></li>
+</ol>
+EOHTML
+        13
+    ],
+    [
+        << 'EOTXT',
+asdf asdf <u>asdfasfd</u>
+EOTXT
+        << 'EOHTML',
+<p>asdf asdf <u>asdfasfd</u></p>
+EOHTML
+        13
     ],
 );
 
