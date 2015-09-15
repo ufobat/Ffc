@@ -176,8 +176,8 @@ input[type="text"].titlestring {
 quote, .quote, .postbox blockquote {
     color: dimgrey;
 }
-quote:before, .quote:before, .postbox blockquote:before { content: "„"}
-quote:after, .quote:after, .postbox blockquote:after { content: "”"}
+quote:before, .quote:before { content: "„"}
+quote:after,  .quote:after  { content: "”"}
 em, .emotion {
     color: dimgrey;
     font-variant: small-caps;
@@ -186,8 +186,8 @@ em, .emotion {
 .popup, .menu, .messagebox > div, .shadowed {
     box-shadow: 0 0 .25em dimgrey;
 }
-.postbox blockquote {
-    border-left: .1em gainsboro solid;
+blockquote {
+    border-left: .5em gainsboro solid;
 }
 img.smiley, img.icon {
     border: none;
@@ -196,8 +196,8 @@ pre, .code, code {
     font-family: monospace;
     color: chocolate;
 }
-.postbox pre {
-    border-left: .1em palegoldenrod solid;
+pre {
+    border-left: .5em palegoldenrod solid;
 }
 .functionlinks {
     font-weight: normal;
