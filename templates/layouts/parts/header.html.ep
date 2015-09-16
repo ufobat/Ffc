@@ -26,6 +26,7 @@
             menufetchurl: "<%= url_for 'menu' %>",
             queryurl: "<%= $queryurl %>",
             controller: "<%= $controller %>",
+            title: ['(', ") <%= $configdata->{title} %>"],
         };
     </script>
     <%= javascript '/js/utils.js' %>

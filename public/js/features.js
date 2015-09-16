@@ -4,6 +4,13 @@ ffcdata.features = {};
 ffcdata.features.init = function(){
     var mytitle = document.getElementsByTagName("title")[0].firstChild.data;
 
+    // Titel aktualisieren
+    var set_title = function(cnt){
+        document.getElementsByTagName("title")[0].firstChild.data
+            = ffcdata.title[0] + cnt + ffcdata.title[1];
+        set_titletime();
+    };
+
     // Aktualisierungszeitpunkt nach lokaler Uhrzeit in den Titel schreiben
     var set_titletime = function(){
         var mytime  = new Date();
@@ -56,7 +63,7 @@ ffcdata.features.init = function(){
                         }, true
                     );
                 }
-                set_titletime();
+                set_title();
             });
         }, ffcdata.autorefresh * 60000 );
     };
