@@ -26,7 +26,7 @@
         <div class="invisible">&nbsp;</div>
 % my $lasttopicid = -1; my $unread = 0;
 % for my $p ( @$posts ) {
-%   my $lastseen = $p->[11];
+%   my $lastseen = $p->[12];
 %   if ( $lasttopicid != $p->[5] ) {
 %     if ( $lasttopicid != -1 ) {
         <div class="pages">
