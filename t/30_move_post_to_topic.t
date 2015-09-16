@@ -132,6 +132,11 @@ sub move_post {
         $t->get_ok("/topic/$o_t_id")->status_is(200);
         $t->content_unlike(qr~<p>$art</p>~);
         $article->[2] = $n_t_id;
+        my $title = $Topics[$o_t_id - 1][0];
+        my $oldid = $article->[1];
+        set_lastid($article);
+        my $tstring = qq~<p><a href="/topic/$n_t_id/display/$oldid" target="_blank" title="Der Beitrag wurde in ein anderes Thema verschoben, folgen sie dem Beitrag hier">Beitrag verschoben nach "'.$title.'"</a></p>~;
+        push @Articles, [$tstring, $oldid, $o_t_id];
     }
     check_topics();
 }
