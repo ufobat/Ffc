@@ -53,7 +53,34 @@ EOSQL
     if ( $controller eq 'pmsgs' and $userto ) {
         _update_pmsgs_lastid( $c, $userid, $userto );
     }
+    my $sql = << 'EOSQL',
+SELECT "id" FROM "posts"
+WHERE "userfrom"=?
+EOSQL
+    my @params = ( $userid );
+    if ( $controller eq 'forum' ) {
+        $sql .= ' AND "topicid"=? AND "userto" IS NULL';
+        push @params, $topicid;
+    }
+    elsif ( $controller eq 'pmsgs' ) {
+        $sql .= ' AND "userto"=? AND "userto" IS NULL';
+        push @params, $userto;
+    }
+    elsif ( $controller eq 'notes' ) {
+        $sql .= ' AND "userto"="userfrom" AND "topicid" IS NULL';
+    }
+    $sql .= << 'EOSQL';
 
+ORDER BY "id" DESC
+LIMIT 1;
+EOSQL
+    my $r = $c->dbh_selectall_arrayref($sql, @params);
+    unless ( @$r and $r->[0]->[0] ) {
+        $c->set_error('Konnte den neuen Beitrag nicht finden in der Datenbank, irgend etwas ging schief');
+        return $c->show;
+    }
+
+    $c->param(postid => $r->[0]->[0]);
     $c->set_info_f('Ein neuer Beitrag wurde erstellt');
     _redirect_to_show($c);
 }

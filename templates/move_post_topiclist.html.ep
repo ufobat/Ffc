@@ -12,6 +12,8 @@
 % }
             </select>
         </p>
+        <p>Oder ein neues Thema anlegen:</p>
+        <p><input type="text" class="titlestring" name="titlestring" value="" /></p>
         <p><%= submit_button 'Verschieben', class => 'linkalike send' %></p>
     </form>
     <p><a href="<%== $returl %>" title="Den Vorgang abbrechen">Abbrechen</a></p>
