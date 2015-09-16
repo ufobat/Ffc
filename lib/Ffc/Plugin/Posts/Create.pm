@@ -63,7 +63,7 @@ EOSQL
         push @params, $topicid;
     }
     elsif ( $controller eq 'pmsgs' ) {
-        $sql .= ' AND "userto"=? AND "userto" IS NULL';
+        $sql .= ' AND "userto"=? AND "topicid" IS NULL';
         push @params, $userto;
     }
     elsif ( $controller eq 'notes' ) {
@@ -119,7 +119,7 @@ sub _edit_post_do {
     }
 
     my $sql = qq~ SELECT COUNT("id")\nFROM "posts"\n~
-            . qq~ WHERE "id"=?~;
+            . qq~ WHERE "id"=? AND "blocked"=0~;
     $sql .= qq~ AND $wheres~ if $wheres;
     unless ( $c->dbh_selectall_arrayref( $sql, $postid, @wherep )->[0]->[0] ) {
         $c->set_error_f('Kein passender Beitrag zum ändern gefunden');
@@ -128,7 +128,7 @@ sub _edit_post_do {
 
     $sql = qq~UPDATE "posts"\n~
             . qq~SET "textdata"=?, "cache"=?, "altered"=current_timestamp\n~
-            . qq~WHERE "id"=?~;
+            . qq~WHERE "id"=? AND "blocked"=0~;
     $sql .= qq~ AND $wheres~ if $wheres;
     $c->dbh_do( $sql, $text, $cache, $postid, @wherep );
     $c->set_info_f('Der Beitrag wurde geändert');

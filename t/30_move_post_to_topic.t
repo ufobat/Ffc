@@ -37,6 +37,10 @@ my @Articles = (
 );
 
 login1();
+$t->get_ok("/topic/1/limit/100")->status_is(302)->content_is('');
+login2();
+$t->get_ok("/topic/1/limit/100")->status_is(302)->content_is('');
+login1();
 
 for my $top ( @Topics ) {
     my ( $top, $id ) = @$top;

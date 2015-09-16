@@ -37,7 +37,7 @@ sub _get_show_sql {
     my $sql = qq~SELECT\n~
         .qq~p."id", uf."id", uf."name", ut."id", ut."name", p."topicid", ~
         .qq~datetime(p."posted",'localtime'), datetime(p."altered",'localtime'), p."cache", ~
-        .qq~t."title", p."score"\n~
+        .qq~t."title", p."score", p."blocked"\n~
         .qq~FROM "posts" p\n~
         .qq~INNER JOIN "users" uf ON p."userfrom"=uf."id"\n~
         .qq~LEFT OUTER JOIN "users" ut ON p."userto"=ut."id"\n~

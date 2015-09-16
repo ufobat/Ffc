@@ -12,6 +12,7 @@ my ( $t1, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = ( 'x'.Testinit::test_randstring(), Testinit::test_randstring() );
 Testinit::test_add_users( $t1, $admin, $apass, $user, $pass );
 my $t2 = Test::Mojo->new('Ffc');
+my $sleepval = 5;
 my $id = 0;
 
 # log users into chat
@@ -68,7 +69,7 @@ sub check_receive_messages {
     my $lcsa1 = get_lastchatseenactive(2);
     my $str = Testinit::test_randstring();
     $t1->post_ok($url, json => $str)->status_is(200);
-    sleep 5;
+    sleep $sleepval;
     $t2->get_ok($url)->status_is(200)
        ->json_is('/0/0/0' => ++$id)->json_is('/0/0/1' => $admin)->json_is('/0/0/2' => $str)
        ->json_is('/2' => $fcnt)->json_is('/3' => $pcnt);
@@ -79,7 +80,7 @@ sub check_receive_messages {
 
     $str = Testinit::test_randstring();
     $t1->post_ok($url, json => $str)->status_is(200);
-    sleep 5;
+    sleep $sleepval;
     my $str2 = Testinit::test_randstring();
     $t2->post_ok($url, json => $str2)->status_is(200)
        ->json_is('/0/1/0' => ++$id)->json_is('/0/1/1' => $admin)->json_is('/0/1/2' => $str)
@@ -151,7 +152,7 @@ bothusers($t1);
 
 # schauen, ob das automatische ablaufen auch funktioniert
 $t1->get_ok('/chat/refresh/1')->status_is(200)->content_is('"ok"');
-sleep 5;
+sleep $sleepval;
 $t2->get_ok('/chat/receive/focused')->status_is(200)
    ->json_has('/0')->json_hasnt('/0/0')
    ->json_is('/1/0/0' => $user)->json_is('/1/0/2' => 60)

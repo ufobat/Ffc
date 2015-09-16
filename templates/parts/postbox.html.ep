@@ -8,7 +8,7 @@
         <%= format_timestamp($post->[6]) %>
 % if ( not $postid ) {
         <span class="functionlinks">(
-% if ( ( $editurl or $delurl or $uplurl ) and $post->[1] == session()->{userid} ) {
+% if ( ( $editurl or $delurl or $uplurl ) and $post->[1] == session()->{userid} and not $post->[11] ) {
 %  if ( $controller ne 'pmsgs' ) {
 %   if ( $editurl ) {
             <a href="<%= url_for $editurl, postid => $post->[0], @$additional_params %>" title="Beitrag bearbeiten">bearb.</a>,
@@ -23,10 +23,10 @@
 %  if ( $uplurl ) {
             <a href="<%= url_for $uplurl, postid => $post->[0], @$additional_params %>" title="Datei an den Beitrag anhängen">Datei</a>,
 %  }
-% } elsif ( $controller eq 'forum' and $action ne 'upload_form' and $action ne 'delete_check' and $action ne 'search' ) {
+% } elsif ( $controller eq 'forum' and $action ne 'upload_form' and $action ne 'delete_check' and $action ne 'search' and not $post->[11] ) {
             <a href="<%= url_for 'show_pmsgs', usertoid => $post->[1] %>" title="Private Nachricht an den Beitragsautoren schreiben">Nachricht</a>,
 % }
-            <a href="<%= url_for "display_$controller", postid => $post->[0], ( ( $post->[5] || $post->[3] ) ? (topicid => $post->[5], usertoid => $post->[3]) : () ), @$additional_params %>" target="_blank" title="Direkter Link zum Beitrag">Link</a><% if ( $controller eq 'forum' and @$users ) { %>,
+            <a href="<%= url_for "display_$controller", postid => $post->[0], ( ( $post->[5] || $post->[3] ) ? (topicid => $post->[5], usertoid => $post->[3]) : () ), @$additional_params %>" target="_blank" title="Direkter Link zum Beitrag">Link</a><% if ( $controller eq 'forum' and @$users and not $post->[11] ) { %>,
             Bewertung:
 %   if ( $post->[1] != session->{userid} ) {
             <a href="<%= url_for "inc_${controller}_highscore", postid => $post->[0], ( $post->[5] ? (topicid => $post->[5]) : () ), @$additional_params %>" title="Bewertung erhöhen">+</a>

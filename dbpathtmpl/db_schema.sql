@@ -40,7 +40,8 @@ CREATE TABLE "posts" (
   "altered" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "score" integer NOT NULL DEFAULT 0,
   "textdata" text NOT NULL,
-  "cache" text
+  "cache" text,
+  "blocked" tinyint(1) NOT NULL DEFAULT 0
 );
 
 CREATE INDEX "posts_userto_ix" ON "posts"("userto");

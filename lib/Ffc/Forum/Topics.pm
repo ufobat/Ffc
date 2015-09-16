@@ -336,13 +336,15 @@ EOSQL
     $c->param(topicid => $newtopicid);
     $c->param(textdata => $post->[0]->[1]);
     $c->add;
+    my $newpostid = $c->param('postid');
 
-    my $textdata = '<a href="'.$c->url_for('display_forum', topicid => $newtopicid, postid => $c->param('postid')).'" target="_blank" title="Der Beitrag wurde in ein anderes Thema verschoben, folgen sie dem Beitrag hier">Beitrag verschoben</a>';
+    my $textdata = '<a href="'.$c->url_for('display_forum', topicid => $newtopicid, postid => $newpostid).'" target="_blank" title="Der Beitrag wurde in ein anderes Thema verschoben, folgen sie dem Beitrag hier">Beitrag verschoben</a>';
     $sql = << 'EOSQL';
-UPDATE "posts" SET "textdata"=?, "cache"=?
+UPDATE "posts" SET "textdata"=?, "cache"=?, "blocked"=1
 WHERE "id"=?  AND "topicid"=?  AND "userfrom"=?  AND "userto" IS NULL
 EOSQL
     $c->dbh_selectall_arrayref( $sql, $textdata, "<p>$textdata</p>", $postid, $oldtopicid, $userid );
+    $c->dbh_selectall_arrayref('UPDATE "attachements" SET "postid"=? WHERE "postid"=?', $newpostid, $postid);
     $c->set_info_f('Beitrag wurde in das andere Thema verschoben');
     return $newtopicid;
 }

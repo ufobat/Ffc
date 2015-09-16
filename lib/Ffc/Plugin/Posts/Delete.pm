@@ -27,7 +27,7 @@ sub _delete_post_do {
         return _redirect_to_show($c);
     }
     {
-        my $sql = q~SELECT "id", "topicid" FROM "posts" WHERE "id"=?~;
+        my $sql = q~SELECT "id", "topicid" FROM "posts" WHERE "id"=? AND "blocked"=0~;
         $sql   .= qq~ AND $wheres~ if $wheres;
         my $post = $c->dbh_selectall_arrayref( $sql, $postid, @wherep );
         unless ( @$post ) {
@@ -58,7 +58,7 @@ sub _delete_post_do {
         $c->dbh_do( $sql, $postid );
     }
     {
-        my $sql = q~DELETE FROM "posts" WHERE "id"=?~;
+        my $sql = q~DELETE FROM "posts" WHERE "id"=? AND "blocked"=0~;
         $sql   .= qq~ AND $wheres~ if $wheres;
         $c->dbh_do( $sql, $postid, @wherep );
 
