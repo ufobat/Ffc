@@ -131,6 +131,7 @@
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/evilgrin.png" %>" /> (Böse Lachen): <code>&gt;:D &gt;:-D &gt;=D</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/ironie.png" %>" /> (Is there a sign for that?): <code>&lt;/ironie&gt; &lt;/irony&gt;</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/attention.png" %>" /> (Das hier ist unheimlich wichtig!): <code>!!!</code></li>
+        <li><img class="smiley" src="<%= url_for "/theme/img/smileys/joke.png" %>" /> (Das ist nicht ernst gemeint): <code>!joke</code></li>
     </ul>
 </div>
 <div class="postbox helptext">
