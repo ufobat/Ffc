@@ -1,7 +1,7 @@
 % layout 'login';
 % title 'Hilfe';
-<div class="postbox helptext">
-    <h2><a name="content"></a>Inhalt</h2>
+<div class="postbox headbox">
+    <h1><a name="content"></a>Hilfe</h1>
     <ul>
         <li><a href="#create">Beiträge erstellen</a></li>
         <li><a href="#buttons">Editierhilfen (Buttons)</a></li>
