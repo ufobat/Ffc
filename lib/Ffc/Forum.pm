@@ -185,7 +185,7 @@ sub show {
 
 sub query { $_[0]->query_posts }
 
-sub add { $_[0]->add_post( undef, $_[0]->param('topicid') ) }
+sub add { my $c = shift; $c->add_post( undef, $c->param('topicid'), @_ ) }
 
 sub edit_form {
     my $c = shift;

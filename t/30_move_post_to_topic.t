@@ -31,6 +31,7 @@ my @Topics = (
     [ asdf => 1 ],
     [ fgjd => 2 ],
 );
+# Textdata, Article-Id, Topic-Id
 my @Articles = (
     map( {;[$_, 0, 1]} qw(qwe rtz uio oiu tre) ),
     map( {;[$_, 0, 2]} qw(yxc vbn jkl cft hgf) ),
@@ -41,30 +42,6 @@ $t->get_ok("/topic/1/limit/100")->status_is(302)->content_is('');
 login2();
 $t->get_ok("/topic/1/limit/100")->status_is(302)->content_is('');
 login1();
-
-for my $top ( @Topics ) {
-    my ( $top, $id ) = @$top;
-    note("Thema Nr. $id mit Beitraegen anlegen");
-    my $allready = 0;
-    for my $art ( @Articles ) {
-        note(qq~Artikel fuer Thema Nr. $id anlegen~);
-        next unless $art->[2] == $id;
-        if ( $allready ) {
-            $t->post_ok("/topic/$id/new", form => {textdata => $art->[0]})
-              ->status_is(302)->header_like(Location => qr~/topic/$id~)->content_is('');
-        }
-        else {
-            note(qq~Thema Nr. $id inklusive erstem Artikel selber erstmal anlegen~);
-            $t->post_ok('/topic/new', form => {titlestring => $top, textdata => $art->[0]})
-              ->status_is(302)->header_like( Location => qr{\A/topic/$id}xms )->content_is('');
-            $allready = 1;
-        }
-        set_lastid($art);
-        note(qq~Artikel Nr. $art->[1] wurde zu Thema Nr. $id hinzugefuegt~);
-    }
-}
-
-check_topics();
 
 ##################################################
 note('Helferroutinen');
@@ -79,10 +56,36 @@ note('Helferroutinen');
     sub get_lastid { $lastaid }
 }
 
-sub check_topics {
-    note(qq~Themen werden geprueft~);
+sub create_topics {
     for my $top ( @Topics ) {
         my ( $top, $id ) = @$top;
+        note("Thema Nr. $id mit Beitraegen anlegen");
+        my $allready = 0;
+        for my $art ( @Articles ) {
+            note(qq~Artikel fuer Thema Nr. $id anlegen~);
+            next unless $art->[2] == $id;
+            if ( $allready ) {
+                $t->post_ok("/topic/$id/new", form => {textdata => $art->[0]})
+                  ->status_is(302)->header_like(Location => qr~/topic/$id~)->content_is('');
+            }
+            else {
+                note(qq~Thema Nr. $id inklusive erstem Artikel selber erstmal anlegen~);
+                $t->post_ok('/topic/new', form => {titlestring => $top, textdata => $art->[0]})
+                  ->status_is(302)->header_like( Location => qr{\A/topic/$id}xms )->content_is('');
+                $allready = 1;
+            }
+            set_lastid($art);
+            note(qq~Artikel Nr. $art->[1] wurde zu Thema Nr. $id hinzugefuegt~);
+        }
+    }
+
+    check_topics();
+}
+
+sub check_topics {
+    note(qq~Themen werden geprueft~);
+    for my $tops ( @Topics ) {
+        my ( $top, $id ) = @$tops;
         note(qq~Pruefe das Thema Nr. $id~);
         $t->get_ok("/topic/$id")->status_is(200)
           ->content_like(qr~<h1>\s*$top~xmsi);
@@ -90,6 +93,9 @@ sub check_topics {
         for my $art ( @Articles ) {
             if ( $art->[2] == $id ) { $t->content_like  (qr~<p>$art->[0]</p>~) }
             else                    { $t->content_unlike(qr~<p>$art->[0]</p>~) }
+            unless ( $t->success ) {
+                diag(Dumper $art, $tops);
+            }
         }
         note(qq~Thema Nr. $id wurde ueberprueft~);
     }
@@ -99,6 +105,7 @@ sub move_post {
     my ( $article, $n_t_id, $warning, $error, $wrongarticle ) = @_;
     my ( $art, $a_id, $o_t_id ) = @$article;
     $t->post_ok("/topic/$o_t_id/move/$a_id", form => {newtopicid => $n_t_id})->status_is(302);
+    $t->content_is('');
     if ( $error or $warning ) {
         if ( $error ) {
             $t->header_is( Location => "/topic/$o_t_id" );
@@ -132,10 +139,10 @@ sub move_post {
         $t->get_ok("/topic/$o_t_id")->status_is(200);
         $t->content_unlike(qr~<p>$art</p>~);
         $article->[2] = $n_t_id;
-        my $title = $Topics[$o_t_id - 1][0];
+        my $title = $Topics[$n_t_id - 1][0];
         my $oldid = $article->[1];
-        set_lastid($article);
-        my $tstring = qq~<p><a href="/topic/$n_t_id/display/$oldid" target="_blank" title="Der Beitrag wurde in ein anderes Thema verschoben, folgen sie dem Beitrag hier">Beitrag verschoben nach "'.$title.'"</a></p>~;
+        my $newid = set_lastid($article);
+        my $tstring = qq~<a href="/topic/$n_t_id/display/$newid" target="_blank" title="Der Beitrag wurde in ein anderes Thema verschoben, folgen sie dem Beitrag hier">Beitrag verschoben nach "$title"</a>~;
         push @Articles, [$tstring, $oldid, $o_t_id];
     }
     check_topics();
@@ -143,6 +150,7 @@ sub move_post {
 
 ##################################################
 note('Testreihe starten');
+create_topics();
 
 note('Falscher Benutzer');
 login2();

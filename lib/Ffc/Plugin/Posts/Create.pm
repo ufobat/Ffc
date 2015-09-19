@@ -3,7 +3,7 @@ use 5.010;
 use strict; use warnings; use utf8;
 
 sub _add_post {
-    my ( $c, $userto, $topicid ) = @_;
+    my ( $c, $userto, $topicid, $noinfo, $noredirect ) = @_;
     my $text = $c->param('textdata');
     my $userid = $c->session->{userid};
     if ( !defined($text) or (2 >= length $text) ) {
@@ -81,8 +81,8 @@ EOSQL
     }
 
     $c->param(postid => $r->[0]->[0]);
-    $c->set_info_f('Ein neuer Beitrag wurde erstellt');
-    _redirect_to_show($c);
+    $c->set_info_f('Ein neuer Beitrag wurde erstellt') unless $noinfo;
+    _redirect_to_show($c) unless $noredirect;
 }
 
 sub _edit_post_form {

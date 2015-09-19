@@ -330,14 +330,14 @@ EOSQL
     my $topic = $c->dbh_selectall_arrayref( $sql, $newtopicid );
     unless ( @$topic ) {
         $c->set_error_f('Konnte das neue Thema zum Verschieben nicht finden');
-        return:
+        return;
     }
     my $ttitle = $topic->[0]->[1];
 
     # Beitrag an der anderen Stelle hinzu fügen
     $c->param(topicid => $newtopicid);
     $c->param(textdata => $post->[0]->[1]);
-    $c->add;
+    $c->add(1,1);
     my $newpostid = $c->param('postid');
 
     my $textdata = '<p><a href="'.$c->url_for('display_forum', topicid => $newtopicid, postid => $newpostid).'" target="_blank" title="Der Beitrag wurde in ein anderes Thema verschoben, folgen sie dem Beitrag hier">Beitrag verschoben nach "'.$ttitle.'"</a></p>';
@@ -347,7 +347,6 @@ WHERE "id"=?  AND "topicid"=?  AND "userfrom"=?  AND "userto" IS NULL
 EOSQL
     $c->dbh_selectall_arrayref( $sql, $textdata, $postid, $oldtopicid, $userid );
     $c->dbh_selectall_arrayref('UPDATE "attachements" SET "postid"=? WHERE "postid"=?', $newpostid, $postid);
-    $c->set_info_f('Beitrag wurde in das andere Thema verschoben');
     return $newtopicid;
 }
 
@@ -385,7 +384,8 @@ sub moveto_topiclist_do {
         $c->redirect_to('show_forum', topicid => $oldtopicid);
         return;
     }
-    $c->redirect_to('show_forum', topicid => $newtopicid);
+    $c->set_info_f('Beitrag wurde in das andere Thema verschoben');
+    return $c->redirect_to('show_forum', topicid => $newtopicid);
 }
 
 1;
