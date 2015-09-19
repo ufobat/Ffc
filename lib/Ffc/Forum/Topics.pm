@@ -376,6 +376,7 @@ sub moveto_topiclist_do {
     }
     elsif ( $titlestring ) {
         unless ( $newtopicid = $c->_moveto_new_topic() ) {
+            $c->set_error_f('Neues Thema konnte nicht angelegt werden');
             return $c->redirect_to('show_forum', topicid => $oldtopicid);
         }
     }

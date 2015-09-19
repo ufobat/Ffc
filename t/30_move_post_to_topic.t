@@ -36,6 +36,11 @@ my @Articles = (
     map( {;[$_, 0, 1]} qw(qwe rtz uio oiu tre) ),
     map( {;[$_, 0, 2]} qw(yxc vbn jkl cft hgf) ),
 );
+# Filename, Content, Article-Id
+my @Attachements = (
+    ['aaa123.txt', 'aaa321aaa', 3],
+    ['bbb567.txt', 'bbb765bbb', 7],
+);
 
 login1();
 $t->get_ok("/topic/1/limit/100")->status_is(302)->content_is('');
@@ -76,6 +81,22 @@ sub create_topics {
             }
             set_lastid($art);
             note(qq~Artikel Nr. $art->[1] wurde zu Thema Nr. $id hinzugefuegt~);
+            for my $att ( @Attachements ) {
+                next unless $att->[2] == $art->[1];
+                note("Anhang an Artikel Nr. $art->[1] anhaengen");
+                $t->post_ok("/topic/$id/upload/$art->[1]", 
+                    form => { 
+                        postid => $art->[1],
+                        attachement => {
+                            file => Mojo::Asset::Memory->new->add_chunk($att->[1]),
+                            filename => $att->[0],
+                            'Content-Type' => 'plain/text',
+                        },
+                    }
+                );
+                $t->status_is(302)->content_is('')
+                  ->header_like(location => qr~/topic/$id~);
+            }
         }
     }
 
@@ -91,10 +112,15 @@ sub check_topics {
           ->content_like(qr~<h1>\s*$top~xmsi);
         note("Beitraege von Thema Nr. $id pruefen");
         for my $art ( @Articles ) {
+            note("Artikel Nr. $art->[1] pruefen");
             if ( $art->[2] == $id ) { $t->content_like  (qr~<p>$art->[0]</p>~) }
             else                    { $t->content_unlike(qr~<p>$art->[0]</p>~) }
             unless ( $t->success ) {
                 diag(Dumper $art, $tops);
+            }
+            for my $att ( @Attachements ) {
+                next unless $art->[2] == $id and $att->[2] == $art->[1];
+                note("Anhang von Artikel Nr. $art->[1] pruefen");
             }
         }
         note(qq~Thema Nr. $id wurde ueberprueft~);
@@ -102,16 +128,21 @@ sub check_topics {
 }
 
 sub move_post {
-    my ( $article, $n_t_id, $warning, $error, $wrongarticle ) = @_;
+    my ( $article, $n_t_id, $newtopictitle, $warning, $error, $wrongarticle ) = @_;
     my ( $art, $a_id, $o_t_id ) = @$article;
-    $t->post_ok("/topic/$o_t_id/move/$a_id", form => {newtopicid => $n_t_id})->status_is(302);
-    $t->content_is('');
+    if ( $n_t_id ) {
+        $t->post_ok("/topic/$o_t_id/move/$a_id", form => {newtopicid => $n_t_id});
+    }
+    else {
+        $t->post_ok("/topic/$o_t_id/move/$a_id", form => {titlestring => $newtopictitle});
+    }
+    $t->status_is(302)->content_is('');
     if ( $error or $warning ) {
         if ( $error ) {
             $t->header_is( Location => "/topic/$o_t_id" );
             $t->get_ok("/topic/$o_t_id")->status_is(200);
             error($error);
-            unless ( $wrongarticle ) {
+            unless ( $wrongarticle or $newtopictitle ) {
                 $t->content_like(qr~<p>$art</p>~);
                 $t->get_ok("/topic/$n_t_id")->status_is(200);
                 $t->content_unlike(qr~<p>$art</p>~);
@@ -126,12 +157,16 @@ sub move_post {
                 $t->get_ok("/topic/$n_t_id")->status_is(200);
                 $t->content_unlike(qr~<p>$art</p>~);
             }
-            else {
+            elsif ( $n_t_id ) {
                 $t->get_ok("/topic/$n_t_id")->status_is(404);
             }
         }
     }
     else {
+        if ( $newtopictitle ) {
+            $n_t_id = @Topics + 1;
+            push @Topics, [$newtopictitle, $n_t_id];
+        }
         $t->header_is( Location => "/topic/$n_t_id" );
         $t->get_ok("/topic/$n_t_id")->status_is(200);
         info('Beitrag wurde in das andere Thema verschoben');
@@ -144,6 +179,11 @@ sub move_post {
         my $newid = set_lastid($article);
         my $tstring = qq~<a href="/topic/$n_t_id/display/$newid" target="_blank" title="Der Beitrag wurde in ein anderes Thema verschoben, folgen sie dem Beitrag hier">Beitrag verschoben nach "$title"</a>~;
         push @Articles, [$tstring, $oldid, $o_t_id];
+        for my $att ( @Attachements ) {
+            next unless $att->[2] == $oldid;
+            $att->[2] = $newid;
+            note("Es wurde ein Anhang verschoben");
+        }
     }
     check_topics();
 }
@@ -154,16 +194,33 @@ create_topics();
 
 note('Falscher Benutzer');
 login2();
-move_post($Articles[0], 2, undef, 'Konnte keinen passenden Beitrag zum Verschieben finden', 1);
+move_post($Articles[0], 2, undef, undef, 'Konnte keinen passenden Beitrag zum Verschieben finden', 1);
 note('Falsche Eingaben');
 login1();
-move_post($Articles[0],'', 'Neues Thema wurde nicht ausgewählt');
-move_post($Articles[0],3,  undef, 'Konnte das neue Thema zum Verschieben nicht finden');
-move_post(['qwe', 1, 2], 2, undef, 'Konnte keinen passenden Beitrag zum Verschieben finden', 1);
-move_post(['qwe', 1, 3], 2,  undef, 'Konnte das gewünschte Thema nicht finden.  Konnte keinen passenden Beitrag zum Verschieben finden', 1);
-move_post(['qwerqwer', 20, 1], 2, undef, 'Konnte keinen passenden Beitrag zum Verschieben finden', 1);
+move_post($Articles[0],'', undef, 'Neues Thema wurde nicht ausgewählt');
+move_post($Articles[0], 3, undef, undef, 'Konnte das neue Thema zum Verschieben nicht finden');
+move_post(['qwe', 1, 2], 2, undef, undef, 'Konnte keinen passenden Beitrag zum Verschieben finden', 1);
+move_post(['qwe', 1, 3], 2, undef, undef, 'Konnte das gewünschte Thema nicht finden.  Konnte keinen passenden Beitrag zum Verschieben finden', 1);
+move_post(['qwerqwer', 20, 1], 2, undef, undef, 'Konnte keinen passenden Beitrag zum Verschieben finden', 1);
 
 note('Jetzt sollte es funktionieren');
 move_post($Articles[0], 2);
+note('Und Rueckwaerts verschieben sollte ebenfalls funktionieren');
 move_post($Articles[0], 1);
+
+note('Und mit nem neuen Thema aber leerem Thementitel geht es nicht');
+move_post($Articles[0], undef, '', 'Neues Thema wurde nicht ausgewählt');
+note('Und mit nem neuen Thema aber ungenuegendem Thementitel geht es auch nicht');
+move_post($Articles[0], undef, 'a', undef, 'Die Übschrift ist zu kurz und muss mindestens zwei Zeichen enthalten. Neues Thema konnte nicht angelegt werden');
+note('Und jetzt funktioniert das Verschieben in ein neues Thema');
+move_post($Articles[0], undef, 'dofm' );
+
+note('Und jetzt das ganze mit Anhang');
+note('Fehler mit Anhang');
+move_post($Articles[2],'', undef, 'Neues Thema wurde nicht ausgewählt');
+move_post($Articles[2], 4, undef, undef, 'Konnte das neue Thema zum Verschieben nicht finden');
+move_post($Articles[2], undef, 'a', undef, 'Die Übschrift ist zu kurz und muss mindestens zwei Zeichen enthalten. Neues Thema konnte nicht angelegt werden');
+note('Funzt mit Anhang');
+move_post($Articles[2], 3);
+move_post($Articles[6], undef, 'mfod' );
 
