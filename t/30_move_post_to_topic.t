@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 390;
+use Test::More tests => 883;
 
 use Data::Dumper;
 
