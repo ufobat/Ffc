@@ -9,7 +9,7 @@ use File::Temp qw~tempfile tempdir~;
 use File::Spec::Functions qw(catfile catdir splitdir);
 
 use Test::Mojo;
-use Test::More tests => 329;
+use Test::More tests => 332;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test1 test1234);
@@ -33,16 +33,25 @@ sub get_favicon_content {
 }
 
 sub favicon_ok {
-    my ( $content, $ftype, $ctype ) = @_;
+    my ( $content, $ftype, $ctype, $notloggedin ) = @_;
     $content = $deffaviconcontent unless defined $content;
     $ftype = 'png' unless defined $ftype;
     my $contenttype = $ctype || "image/$ftype";
     ok get_favicon_content() eq $content, 'content on filesystem as expected';
 
-    $t->get_ok('/favicon/show')->status_is(200)
-      ->header_is('Content-Type' => $contenttype)
-      ->header_is('Content-Disposition' => "inline;filename=favicon.$ftype")
-      ->content_is($content);
+    $t->get_ok('/favicon/show')->status_is(200);
+    if ( $notloggedin ) {
+        $t->content_like(qr~Anmeldung~)
+          ->content_like(qr~<link rel="icon" type="image/png" href="/theme/img/favicon.png">~);
+        $t->get_ok('/theme/img/favicon.png')->status_is(200)
+          ->header_is('Content-Type' => 'image/png')
+          ->content_is($deffaviconcontent);
+    }
+    else {
+        $t->header_is('Content-Type' => $contenttype)
+          ->header_is('Content-Disposition' => "inline;filename=favicon.$ftype")
+          ->content_is($content);
+    }
 
     ok $ftype eq $dbh->selectall_arrayref(
         'SELECT "value" FROM "config" WHERE "key"=?', undef, 'favicontype'
@@ -66,7 +75,7 @@ sub favicon_upload {
 }
 
 note 'kein admin, kein favicon-upload';
-favicon_ok();
+favicon_ok(undef,undef,undef,1);
 loginu();
 favicon_upload('','');
 error('Nur Administratoren dürfen das');

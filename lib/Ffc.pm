@@ -29,10 +29,8 @@ sub startup {
 }
 
 sub _install_routes {
-    my $r = $_[0]->routes;
-    Ffc::Customstyle::install_routes($r);
-
-    my $l = Ffc::Auth::install_routes($r);
+    my $l = Ffc::Auth::install_routes($_[0]->routes);
+    Ffc::Customstyle::install_routes($l);
     Ffc::Avatars::install_routes($l);
     Ffc::Options::install_routes($l);
     Ffc::Forum::install_routes($l);
