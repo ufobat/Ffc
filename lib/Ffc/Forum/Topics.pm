@@ -368,8 +368,8 @@ sub moveto_topiclist_do {
     my $postid = $c->param('postid');
     my $oldtopicid = $c->param('topicid');
     my $newtopicid = $c->param('newtopicid');
-    my $titlestring = $c->param('titlestring');
-    if ( $newtopicid ) {
+    my $titlestring = $c->param('titlestring') // '';
+    if ( $newtopicid and $newtopicid =~ $Ffc::Digqr ) {
         unless ( $c->_moveto_old_topic() ) {
             return $c->redirect_to('show_forum', topicid => $oldtopicid);
         }
@@ -386,7 +386,12 @@ sub moveto_topiclist_do {
         return;
     }
     $c->set_info_f('Beitrag wurde in das andere Thema verschoben');
-    return $c->redirect_to('show_forum', topicid => $newtopicid);
+    if ( $newtopicid ) {
+        return $c->redirect_to('show_forum', topicid => $newtopicid);
+    }
+    else {
+        return $c->redirect_to('show_forum_topiclist');
+    }
 }
 
 1;

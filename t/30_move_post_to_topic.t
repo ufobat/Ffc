@@ -130,7 +130,7 @@ sub check_topics {
 sub move_post {
     my ( $article, $n_t_id, $newtopictitle, $warning, $error, $wrongarticle ) = @_;
     my ( $art, $a_id, $o_t_id ) = @$article;
-    if ( $n_t_id ) {
+    if ( defined $n_t_id ) {
         $t->post_ok("/topic/$o_t_id/move/$a_id", form => {newtopicid => $n_t_id});
     }
     else {
