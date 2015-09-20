@@ -9,7 +9,7 @@
 % if ( not $postid ) {
         <span class="functionlinks">(
             <span class="menuentry">
-                <span class="othersmenulinktext">Aktionen</span><%= $controller eq 'forum' ? ',' : '' %>
+                <span class="othersmenulinktext">Aktionen<%= $controller eq 'forum' ? ',' : '' %></span>
                 <div class="otherspopup popup postpopup">
 % if ( ( $editurl or $delurl or $uplurl ) and $post->[1] == session()->{userid} and not $post->[11] ) {
 %  if ( $controller ne 'pmsgs' ) {

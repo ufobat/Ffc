@@ -104,7 +104,7 @@ sub check_topic_in_ppv {
         $timeqr
         <span class="functionlinks">\(
             <span class="menuentry">
-                <span class="othersmenulinktext">Aktionen</span>,
+                <span class="othersmenulinktext">Aktionen,</span>
                 <div class="otherspopup popup postpopup">
                     <p><a href="/pmsgs/2" title="Private Nachricht an den Beitragsautoren schreiben">private Nachricht</a></p>
                     <p><a href="/topic/$id/display/$artid" target="_blank" title="Direkter Link zum Beitrag">verlinken</a></p>
@@ -130,7 +130,7 @@ sub check_topic_in_ppv {
         $timeqr
         <span class="functionlinks">\(
             <span class="menuentry">
-                <span class="othersmenulinktext">Aktionen</span>,
+                <span class="othersmenulinktext">Aktionen,</span>
                 <div class="otherspopup popup postpopup">
                     <p><a href="/pmsgs/2" title="Private Nachricht an den Beitragsautoren schreiben">private Nachricht</a></p>
                     <p><a href="/topic/$id/display/$artid" target="_blank" title="Direkter Link zum Beitrag">verlinken</a></p>
