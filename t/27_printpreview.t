@@ -103,8 +103,13 @@ sub check_topic_in_ppv {
         <span class="username">$user1</span>,
         $timeqr
         <span class="functionlinks">\(
-            <a href="/pmsgs/2" title="Private Nachricht an den Beitragsautoren schreiben">Nachricht</a>,
-            <a href="/topic/$id/display/$artid" target="_blank" title="Direkter Link zum Beitrag">Link</a>,
+            <span class="menuentry">
+                <span class="othersmenulinktext">Aktionen</span>,
+                <div class="otherspopup popup postpopup">
+                    <p><a href="/pmsgs/2" title="Private Nachricht an den Beitragsautoren schreiben">private Nachricht</a></p>
+                    <p><a href="/topic/$id/display/$artid" target="_blank" title="Direkter Link zum Beitrag">verlinken</a></p>
+                </div>
+            </span>
             Bewertung:
             <a href="/topic/$id/score/increase/$artid" title="Bewertung erhöhen">\+</a>
             <span title="Bewertungswert des Beitrages" class="score">0</span>
@@ -124,8 +129,13 @@ sub check_topic_in_ppv {
         <span class="username">$user1</span>,
         $timeqr
         <span class="functionlinks">\(
-            <a href="/pmsgs/2" title="Private Nachricht an den Beitragsautoren schreiben">Nachricht</a>,
-            <a href="/topic/$id/display/$artid" target="_blank" title="Direkter Link zum Beitrag">Link</a>,
+            <span class="menuentry">
+                <span class="othersmenulinktext">Aktionen</span>,
+                <div class="otherspopup popup postpopup">
+                    <p><a href="/pmsgs/2" title="Private Nachricht an den Beitragsautoren schreiben">private Nachricht</a></p>
+                    <p><a href="/topic/$id/display/$artid" target="_blank" title="Direkter Link zum Beitrag">verlinken</a></p>
+                </div>
+            </span>
             Bewertung:
             <a href="/topic/$id/score/increase/$artid" title="Bewertung erhöhen">\+</a>
             <span title="Bewertungswert des Beitrages" class="score">0</span>

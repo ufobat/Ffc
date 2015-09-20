@@ -107,7 +107,7 @@ sub check_env {
     $t->get_ok('/topic/1')->status_is(200)
       ->content_like(qr~<title>\($newcntsum\)\s+Ffc\s+Forum~)
       ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span></a>~xms)
-      ->content_like(qr~/pmsgs/2"\s+title="Private\s+Nachricht\s+an\s+den\s+Beitragsautoren\s+schreiben">Nachricht</a>~xms);
+      ->content_like(qr~/pmsgs/2"\s+title="Private\s+Nachricht\s+an\s+den\s+Beitragsautoren\s+schreiben">private\s+Nachricht</a>~xms);
     $entries->[-1]->[5] = 0;
 
     check_pages(\&login2, '/topic/1');

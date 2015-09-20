@@ -199,6 +199,9 @@ input[type="text"].titlestring {
 .topiclistpopup {
     margin-left: -15em;
 }
+.topiclistpopup > * {
+    padding: .5em 0;
+}
 .headbox .subtabuttonp {
     padding-top: .5em;
 }
