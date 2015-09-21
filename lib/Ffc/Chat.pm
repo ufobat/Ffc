@@ -77,6 +77,9 @@ sub _receive {
     $msg = $c->req->json if $c->req->method eq 'POST';
     if ( $msg ) { # neue nachricht erhalten
         $msg = $c->pre_format($msg);
+        $msg =~ s~\A\s*<p>~~xms;
+        $msg =~ s~</p>\s*\z~~xms;
+        $msg =~ s~</p>\s*<p>~<br />~xms;
         $c->dbh_do('INSERT INTO "chat" ("userfromid", "msg") VALUES (?,?)',
             $c->session->{userid}, $msg);
     } # ende neue nachricht erhalten

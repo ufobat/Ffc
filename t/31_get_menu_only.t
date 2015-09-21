@@ -44,6 +44,7 @@ $t->post_ok('/menu', json => {pageurl => '/bla/blubb', queryurl => '/blu/plum', 
             <p class="optionslink">
                 <a href="/options/form"><span class="linktext linkoptions">Einstellungen</span></a>
             </p>
+            <p><a href="/help" target="_blank">Hilfe</a><span id="editbuttons" class="editbuttons nodisplay"></p>
             <p class="othersmenutext">Angemeldet als admin</p>
             <p class="logoutbutton2">
                 <a href="/logout"><span class="linkalike linklogout">abmelden</span></a>

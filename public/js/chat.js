@@ -28,7 +28,11 @@ ffcdata.chat.init = function() {
             txt = txt.replace(ffcdata.chat.userre, '<span class="myself">$1</span>');
         }
         return(txt);
-    }
+    };
+    var usernamefilter = function(txt) {
+        txt = txt.replace(ffcdata.chat.userre, '$1<span class="myself">$2</span>$3');
+        return(txt);
+    };
 
     /************************************************************************
      *** Titelstring der Webseite aendern                                 ***
@@ -112,7 +116,7 @@ ffcdata.chat.init = function() {
                 ml = ml + '<p' + ( classstr.length > 0 ? ' class="' + classstr.join(' ') + '"' : '' ) + '>'
                    + '<span class="timestamp">(' + msgs[i][3] + ')</span> '
                    + ( !sameuser || newdaymsg ? userstr : '' )
-                   + msgs[i][2] + '</p>\n';
+                   + usernamefilter(msgs[i][2]) + '</p>\n';
 
                 ffcdata.chat.lastmsguser = msgs[i][1];
             }

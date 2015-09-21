@@ -13,7 +13,7 @@
           user: "<%= session()->{user} || '' %>" || undefined,
           chat: {
               title: ['(', ') Chat - (', ') ', <%== $title_array %>],
-              userre:  /(<%= session->{user} %>)/i,
+              userre:  /(\s|^)(<%= session->{user} %>)(\s|$)/i,
               leaveurl: '<%= url_for "chat_leave" %>',
               refreshseturl: '<%= url_for "chat_set_refresh", refresh => 33 %>',
               focusedurl: '<%= url_for "chat_receive_focused" %>',
