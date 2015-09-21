@@ -165,7 +165,9 @@ ffcdata.editbuttons.init = function(){
 
     var showbuttons = function(){
         // Textfeld-Klappung einrichten
-        tinput.style.resize = 'none';
+        if ( !ffcdata.chat ) {
+            tinput.style.resize = 'none';
+        }
         if ( tinput.className.match(/inedit/i) ) {
             opentextarea();
         }
