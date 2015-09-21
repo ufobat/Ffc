@@ -3,6 +3,9 @@
   <head>
     <title>Chat</title>
     <link rel="icon" type="image/ico" href="<%= url_for 'favicon_show' %>" />
+    <%= stylesheet '/theme/colors.css' %>
+    <%= stylesheet '/theme/small.css', media => 'all and (max-device-width: 800px)' %>
+    <%= stylesheet '/theme/large.css', media => 'all and (min-device-width: 801px)' %>
     <%= stylesheet 'theme/chat.css' %>
 %= include 'layouts/parts/styleinc';
     <script type="text/javascript">
@@ -24,9 +27,11 @@
               lastmsgtime: '',
               lastmsguser: '',
           },
+          textpreviewurl: "<%= url_for 'textpreview' %>",
       };
     </script>
     <%= javascript '/js/utils.js' %>
+    <%= javascript '/js/editbuttons.js' %>
     <%= javascript '/js/chat.js' %>
   </head>
   <body>
@@ -36,6 +41,7 @@
 
   <script type="text/javascript">
     ffcdata.utils.init();
+    ffcdata.editbuttons.init();
     ffcdata.chat.init();
   </script>
   </body>

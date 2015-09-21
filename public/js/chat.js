@@ -4,7 +4,7 @@
  ************************************************************************/
 
 ffcdata.chat.init = function() {
-    var msgfield = document.getElementById('msg');
+    var msgfield = document.getElementById('textinput');
     var titlenode = document.getElementsByTagName("title")[0].firstChild
     var refreshtimefield = document.getElementById('refreshtime');
     var msglog = document.getElementById('msglog');
@@ -112,7 +112,7 @@ ffcdata.chat.init = function() {
                 ml = ml + '<p' + ( classstr.length > 0 ? ' class="' + classstr.join(' ') + '"' : '' ) + '>'
                    + '<span class="timestamp">(' + msgs[i][3] + ')</span> '
                    + ( !sameuser || newdaymsg ? userstr : '' )
-                   + textfilter(msgs[i][2]) + '</p>\n';
+                   + msgs[i][2] + '</p>\n';
 
                 ffcdata.chat.lastmsguser = msgs[i][1];
             }

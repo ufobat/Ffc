@@ -6,7 +6,12 @@
      <td><div id="userlist"></div></td>
     </tr>
     <tr>
-     <td><textarea id="msg" name="msg"></textarea>
+     <td>
+      <p class="editbuttons">
+%= include 'parts/editbuttons';
+      </p>
+      <textarea id="textinput" name="msg"></textarea>
+     </td>
      <td>
       <div id="buttonlist">
        <button name="send" id="send">Senden</button>

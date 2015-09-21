@@ -171,19 +171,27 @@ ffcdata.editbuttons.init = function(){
         }
         else {
             var closeb = document.getElementById('closetextabutton');
-            closeb.onclick = closetextarea;
-            closeb.className = '';
-            tinput.onfocus = opentextarea;
+            if ( closeb ) {
+                closeb.onclick = closetextarea;
+                closeb.className = '';
+                tinput.onfocus = opentextarea;
+            }
         }
 
         // Formatierungsbuttons anzeigen
-        document.getElementById('editbuttons').className = 'editbuttons';
+        var editbuttons = document.getElementById('editbuttons');
+        if ( editbuttons )
+            editbuttons.className = 'editbuttons';
         // Formatierungsbuttons aktivieren
         show_formatbuttons();
 
         // Vorschau-Button aktivieren
-        document.getElementById('textpreviewtabutton').onclick = get_preview;
-        document.getElementById('closetextpreviewareabutton').onclick = close_preview;
+        var previewbutton = document.getElementById('textpreviewtabutton');
+        if ( previewbutton )
+            previewbutton.onclick = get_preview;
+        var closepreviewbutton = document.getElementById('closetextpreviewareabutton');
+        if ( closepreviewbutton )
+            closepreviewbutton.onclick = close_preview;
     };
 
     showbuttons();

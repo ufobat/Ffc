@@ -12,6 +12,9 @@ body {
     margin: 0 auto;
     padding: .5em;
 }
+body > * {
+    background: transparent;
+}
 table {
     border-collapse: collapse;
     border: none;
@@ -24,7 +27,7 @@ div, textarea {
     display: inline-block;
     overflow: auto;
 }
-#msglog, #msg {
+#msglog, #textinput {
     width: 40em;
     min-width: 40em;
     max-width: 40em;
@@ -34,7 +37,7 @@ div, textarea {
 #userlist, #buttonlist {
     width: 15em;
 }
-#msg {
+#textinput {
     height: 5em;
     min-height: 5em;
 }
@@ -44,7 +47,7 @@ div, textarea {
 #msglog {
     background: whitesmoke;
 }
-#userlist, #msg, #msglog {
+#userlist, #textinput, #msglog {
     padding: .25em;
     margin: .25em;
 }
@@ -54,10 +57,10 @@ div, textarea {
     padding-left: 1.5em;
     overflow: visible;
 }
-#msg:hover {
+#textinput:hover {
     border-color: dimgray;
 }
-#msg:focus {
+#textinput:focus {
     border-color: black;
 }
 #userlist .timestamp {
@@ -122,5 +125,15 @@ div, textarea {
 }
 .newdaymsg {
     border-top: .1em silver solid;
+}
+.editbuttons {
+    text-align: right;
+    margin-right: 3em;
+}
+.editbuttons a {
+    background: whitesmoke;
+    box-shadow: none;
+    border: 1px solid silver;
+    margin-left: 1px;
 }
 

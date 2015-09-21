@@ -76,12 +76,9 @@ sub _receive {
     my $msg = '';
     $msg = $c->req->json if $c->req->method eq 'POST';
     if ( $msg ) { # neue nachricht erhalten
-        $msg =~ s/\A\s+//xmso;
-        $msg =~ s/\s+\z//xmso;
-        if ( $msg ) {
-            $c->dbh_do('INSERT INTO "chat" ("userfromid", "msg") VALUES (?,?)',
-                $c->session->{userid}, $msg);
-        }
+        $msg = $c->pre_format($msg);
+        $c->dbh_do('INSERT INTO "chat" ("userfromid", "msg") VALUES (?,?)',
+            $c->session->{userid}, $msg);
     } # ende neue nachricht erhalten
 
     # rückgabe erzeugen
@@ -108,7 +105,7 @@ EOSQL
         ( $started ? 50 : $c->session->{userid} )
     );
     for my $m ( @$msgs ) {
-        $m->[$_] = xml_escape($m->[$_]) for 1, 2;
+        $m->[1] = xml_escape($m->[1]);
         $m->[3] = $c->format_timestamp($m->[3], 1);
     }
 
