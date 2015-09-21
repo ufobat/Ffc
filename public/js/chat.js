@@ -13,22 +13,6 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Chat-Text formatieren                                            ***
      ************************************************************************/
-    var textfilter = function(txt) {
-        txt = txt.replace(/\\/g, '\\\\');
-        txt = txt.replace(/</g, '&lt;');
-        txt = txt.replace(/>/g, '&gt;');
-        txt = txt.replace(/"/g, '&quot;');
-        if ( txt.match(/^\/code\s+/) ) {
-            txt = txt.replace(/^\/code\s+/, '');
-            txt = '<pre>' + txt + '</pre>';
-        }
-        else {
-            txt = txt.replace(/(([\(|\s])?|^)(https?:\/\/[^\)\s]+?)(\)|,?\s|$)/g, '$1<a href="$3" target="_blank" title="Externe Webadresse! ($3)">$3</a>$4');
-            txt = txt.replace(/\n/g, '<br />');
-            txt = txt.replace(ffcdata.chat.userre, '<span class="myself">$1</span>');
-        }
-        return(txt);
-    };
     var usernamefilter = function(txt) {
         txt = txt.replace(ffcdata.chat.userre, '$1<span class="myself">$2</span>$3');
         return(txt);

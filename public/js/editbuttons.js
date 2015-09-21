@@ -180,10 +180,11 @@ ffcdata.editbuttons.init = function(){
 
         // Formatierungsbuttons anzeigen
         var editbuttons = document.getElementById('editbuttons');
-        if ( editbuttons )
+        if ( editbuttons ) {
             editbuttons.className = 'editbuttons';
-        // Formatierungsbuttons aktivieren
-        show_formatbuttons();
+            // Formatierungsbuttons aktivieren
+            show_formatbuttons();
+        }
 
         // Vorschau-Button aktivieren
         var previewbutton = document.getElementById('textpreviewtabutton');
@@ -193,7 +194,6 @@ ffcdata.editbuttons.init = function(){
         if ( closepreviewbutton )
             closepreviewbutton.onclick = close_preview;
     };
-
     showbuttons();
 };
 

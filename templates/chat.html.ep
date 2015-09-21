@@ -7,7 +7,7 @@
     </tr>
     <tr>
      <td>
-      <p class="editbuttons">
+      <p id="editbuttons" class="editbuttons">
 %= include 'parts/editbuttons';
       </p>
       <textarea id="textinput" name="msg"></textarea>

@@ -9,7 +9,7 @@
 % }
             <a href="<%= url_for 'help' %>" target="_blank">Hilfe</a><span id="editbuttons" class="editbuttons nodisplay">,
 %= include 'parts/editbuttons';
-</span>
+            </span>
             )
         </p>
         <p>
