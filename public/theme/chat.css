@@ -142,6 +142,7 @@ div, textarea {
     height: 12.5em;
     max-width: 39em;
     width: 39em;
+    overflow: hidden;
 }
 .hovering > div {
     height: 8em;
