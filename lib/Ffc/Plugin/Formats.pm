@@ -79,8 +79,8 @@ sub _format_timestamp {
 }
 
 sub _pre_format_text_part {
-#   controller, string, disable-p, disable-html
-    my ( $c, $str, $lvl, $dis_p, $dis_html, $set_n, $dis_outer_p ) = @_;
+#   controller, string, disable-p, disable-html, insert in newlines, disable outer p, no smileys
+    my ( $c, $str, $lvl, $dis_p, $dis_html, $set_n, $dis_outer_p, $nosmil ) = @_;
     return '' if $str =~ m/\A\s*\z/xmso;
     $lvl ||= 0;
     $lvl++;
@@ -103,9 +103,9 @@ sub _pre_format_text_part {
             if    ( $m{htmlmatch}   )
                 { $o .= _make_tag(    $c, $m{tag}, $m{inner}, $lvl, $dis_p, $dis_html, $set_n, $dis_outer_p ) }
             elsif ( $m{urlmatch}    ) 
-                { $o .= _make_link(   $c, $m{url}                                     ) }
+                { $o .= _make_link(   $c, $m{url} ) }
             elsif ( $m{smileymatch} )
-                { $o .= _make_smiley( $c, $m{smileymatch}                             ) }
+                { $o .= _make_smiley( $c, $m{smileymatch}, $nosmil ) }
 
             $start = $newstart;
         }
@@ -131,8 +131,8 @@ sub _format_plain_text {
 }
 
 sub _pre_format_text {
-    my ( $c, $str ) = @_;
-    my $o = _pre_format_text_part($c, $str);
+    my ( $c, $str, $nosmil ) = @_;
+    my $o = _pre_format_text_part($c, $str, (undef) x 5, $nosmil );
     return '' if $o =~ m/\A\s*\z/xmso;
     $o = "<p>$o</p>";
     $o =~ s~<p>\s*</p>~~gsimxo;
@@ -197,7 +197,8 @@ sub _stripped_url {
 }
 
 sub _make_smiley {
-    my ( $c, $str ) = @_;
+    my ( $c, $str, $nosmil ) = @_;
+    return $str if $nosmil;
     my $orig = $str;
     return qq~<img class="smiley" src="~
         . $c->url_for("/theme/img/smileys/$Smiley{$orig}.png")

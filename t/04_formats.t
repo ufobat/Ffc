@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 56;
+use Test::More tests => 62;
 
 srand;
 
@@ -37,6 +37,11 @@ srand;
         my $c = shift;
         $c->prepare;
         $c->render(text => $c->pre_format($c->param('text')));
+    };
+    any '/pre_format_nosmiley' => sub {
+        my $c = shift;
+        $c->prepare;
+        $c->render(text => $c->pre_format($c->param('text'), 1));
     };
 }
 
@@ -104,6 +109,7 @@ sub _escape_str2re {
 
 sub format_things_test {
     my $tests = shift;
+    my $nosmil = shift;
     note q~Testing the formatting functions~;
 
     for my $test ( @$tests ) {
@@ -112,7 +118,8 @@ sub format_things_test {
         chomp $txt;
         my $html = $test->[1];
         chomp $html;
-        $t->post_ok('/pre_format', form => {text => $test->[0]})
+        my $url = $nosmil ? '/pre_format_nosmiley' : '/pre_format';
+        $t->post_ok($url, form => {text => $test->[0]})
           ->status_is(200);
         $t->content_is($html);
     }
@@ -375,6 +382,26 @@ EOHTML
     ],
 );
 
+my @Tests_NoSmil = (
+    [
+        << 'EOTXT',
+asdf asdf <u>asdfasfd</u>
+EOTXT
+        << 'EOHTML',
+<p>asdf asdf <u>asdfasfd</u></p>
+EOHTML
+        1
+    ],
+    [
+        << 'EOTXT',
+asdf :D asdf <u>asdfasfd</u>
+EOTXT
+        << 'EOHTML',
+<p>asdf :D asdf <u>asdfasfd</u></p>
+EOHTML
+        2
+    ],
+);
 ###############################################################################
 ###############################################################################
 note q~run some tests~;
@@ -383,4 +410,5 @@ note q~run some tests~;
 
 format_timestamp_test();
 format_things_test(\@Tests);
+format_things_test(\@Tests_NoSmil, 1);
 

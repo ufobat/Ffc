@@ -76,7 +76,7 @@ sub _receive {
     my $msg = '';
     $msg = $c->req->json if $c->req->method eq 'POST';
     if ( $msg ) { # neue nachricht erhalten
-        $msg = $c->pre_format($msg);
+        $msg = $c->pre_format($msg, 1);
         $msg =~ s~\A\s*<p>~~xmso;
         $msg =~ s~</p>\s*\z~~xmso;
         $msg =~ s~</p>\s*<p>~<br />~xmso;
