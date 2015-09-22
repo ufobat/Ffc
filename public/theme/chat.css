@@ -58,10 +58,10 @@ div, textarea {
     overflow: visible;
 }
 #textinput:hover {
-    border-color: dimgray;
+    border-color: dodgerblue;
 }
 #textinput:focus {
-    border-color: black;
+    border-color: blue;
 }
 #userlist .timestamp {
     color: gray;
@@ -135,5 +135,27 @@ div, textarea {
     box-shadow: none;
     border: 1px solid silver;
     margin-left: 1px;
+}
+.hovering {
+    margin-top: 25em;
+    max-height: 12.5em;
+    height: 12.5em;
+    max-width: 39em;
+    width: 39em;
+}
+.hovering > div {
+    height: 8em;
+    border: none;
+    margin-top: 0;
+    margin-bottom: 0;
+    width: 39em;
+}
+.hovering > h2 {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+.hovering > p {
+    margin-top: 0;
+    margin-bottom: 0;
 }
 

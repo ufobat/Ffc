@@ -1,5 +1,10 @@
 % layout 'chat';
-   <table>
+   <div class="nodisplay" id="textpreviewbox">
+    <h2>Textvorschau:</h2>
+    <div id="textpreviewarea" class="textpreviewarea postbox"></div>
+    <p class="textright"><button id="closetextpreviewareabutton" title="Vorschau schließen" type="button">Vorschau schließen</button></p>
+   </div>
+   <table id="headbox">
     <tr><td colspan="2"><h1 class="titlebanner"><%= $configdata->{title} %> - Chat</h1></td></tr>
     <tr>
      <td><div id="msglog"></div></td>
@@ -8,6 +13,7 @@
     <tr>
      <td>
       <p id="editbuttons" class="editbuttons">
+       <button id="textpreviewtabutton" title="Vorschau anzeigen für den eingegebenen Text" type="button">Vorschau</button>
 %= include 'parts/editbuttons';
       </p>
       <textarea id="textinput" name="msg"></textarea>
