@@ -178,7 +178,7 @@ quote, .quote, .postbox blockquote {
     color: dimgrey;
 }
 quote:before, .quote:before { content: "„"}
-quote:after,  .quote:after  { content: "”"}
+quote:after,  .quote:after  { content: "“"}
 em:before { content: "*"}
 em:after  { content: "*"}
 em, .emotion {
