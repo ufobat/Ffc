@@ -25,7 +25,7 @@
     <p>Falls auf einem Desktopsystem Javascript im Browser eingeschalten ist, stehen folgende Buttons zur Verfügung, welche die Formatierungsauszeichnungen automatisch in den Text im Textfeld einfügen.</p>
     <p>
         (Anzeigebeispiel:
-            <a href="#" class="buttonalike" id="boldbutton" title="Fett markiert"><b>f</b></a><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben"><i>k</i></a><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung"><u>u</u></a><a href="#" class="buttonalike" id="linethroughbutton" title="Durchgestrichen"><strike>d</strike></a><a href="#" class="buttonalike" id="emotionalbutton" title="Emotional"><em>*</em></a>
+            <a href="#" class="buttonalike" id="boldbutton" title="Fett markiert"><b>f</b></a><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben"><i>k</i></a><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung"><u>u</u></a><a href="#" class="buttonalike" id="linethroughbutton" title="Durchgestrichen"><strike>d</strike></a><a href="#" class="buttonalike" id="emotionalbutton" title="Emotional"><span class="emotion">*</span></a>
             <a href="#" class="buttonalike" id="h1button" title="Überschrift"><span class="underline"><span class="bold">Ü</span></span></a>
             <a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste">&middot;</a><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste">&sup1;</a><a href="#" class="buttonalike" id="listitembutton" title="Listenelement">…</a>
             <a href="#" class="buttonalike" id="quotebutton" title="Mehrzeiliges Zitat">&quot;</a><a class="buttonalike" id="codebutton" title="Vorformatierter Programm-Quelltext"><code>C</code></a> 
@@ -36,7 +36,7 @@
             <li><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben"><i>k</i></a>: Kursiv schreiben</li>
             <li><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung"><u>u</u></a>: Unterstreichen</li>
             <li><a href="#" class="buttonalike" id="linethroughbutton" title="Durchgestrichen"><strike>d</strike></a>: Durchstreichen</li>
-            <li><a href="#" class="buttonalike" id="emotionalbutton" title="Emotional"><em>*</em></a></span>: Emotionale Markierung</li>
+            <li><a href="#" class="buttonalike" id="emotionalbutton" title="Emotional"><span class="emotion">*</span></a></span>: Emotionale Markierung</li>
             <li><a href="#" class="buttonalike" id="h1button" title="Überschrift"><span class="underline bold">Ü</span></a>: Überschrift einfügen</li>
             <li><a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste">&middot;</a>: Liste einfügen</li>
             <li><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste">&sup1;</a>: Aufzählungsliste</li>
