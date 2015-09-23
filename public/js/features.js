@@ -1,16 +1,20 @@
 "use strict";
+/************************************************************************
+ * Start der Initialiserung von Features
+ ************************************************************************/
 ffcdata.features = {};
-
 ffcdata.features.init = function(){
-    var mytitle = document.getElementsByTagName("title")[0].firstChild.data;
 
+    /************************************************************************
+     * Webseitentitel anpassen
+     ************************************************************************/
+    var mytitle = document.getElementsByTagName("title")[0].firstChild.data;
     // Titel aktualisieren
     var set_title = function(cnt){
         document.getElementsByTagName("title")[0].firstChild.data
             = ffcdata.title[0] + cnt + ffcdata.title[1];
         set_titletime();
     };
-
     // Aktualisierungszeitpunkt nach lokaler Uhrzeit in den Titel schreiben
     var set_titletime = function(){
         var mytime  = new Date();
@@ -21,14 +25,18 @@ ffcdata.features.init = function(){
                       + ':' + ( mym < 10 ? '0'+mym : mym );
     };
 
-    // Chatbutton im Menü anzeigen
+    /************************************************************************
+     * Chat-Button bei Bedarf im Menü aktivieren
+     ************************************************************************/
     var activate_chatbutton = function(){
         var chatb = document.getElementById('chatbutton');
         if ( chatb )
             chatb.className = 'menuentry chatlink';
     };
 
-    // Auto-Refresh einsetzen
+    /************************************************************************
+     * Auto-Refresh der gesamten Seite bei Bedarf aktivieren
+     ************************************************************************/
     var set_autorefresh = function(){
         ffcdata.features.autorefresh_interval = window.setInterval(function(){
             if ( !document.hasFocus()
@@ -47,7 +55,9 @@ ffcdata.features.init = function(){
         }, ffcdata.autorefresh * 60000 );
     };
 
-    // Menü-Refresh bei Bedarf durchführen
+    /************************************************************************
+     * Auto-Refresh nur für das Menü und den Titel bei Bedarf aktivieren
+     ************************************************************************/
     var set_menurefresh = function(){
         ffcdata.features.autorefresh_interval = window.setInterval(function(){
             ffcdata.utils.request('GET', ffcdata.counturl, null, function(res){
@@ -68,7 +78,9 @@ ffcdata.features.init = function(){
         }, ffcdata.autorefresh * 60000 );
     };
 
-    // Weitere Feature-Operationen starten
+    /************************************************************************
+     * Features initial aktiveren
+     ************************************************************************/
     if ( !ffcdata.singleuser )
         set_titletime();
     activate_chatbutton();

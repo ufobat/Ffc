@@ -1,14 +1,21 @@
 "use strict";
-ffcdata.editbuttons = {};
 
+/************************************************************************
+ * Initialisierung der Edit-Buttons und zugehöriger Funktionen
+ ************************************************************************/
+ffcdata.editbuttons = {};
 ffcdata.editbuttons.init = function(){
     if ( ffcdata.utils.is_disabled() ) return;
 
-    // Textfeld als Element bekannt machen
+    /************************************************************************
+     * Textfeld als Element für spätere Verwendung ermitteln
+     ************************************************************************/
     var tinput = document.getElementById('textinput');
     if ( !tinput ) return;
 
-    // Auswahltext ermitteln
+    /************************************************************************
+     * Auswahl im Textfeld ermitteln und als Array zurück liefern
+     ************************************************************************/
     var selection = function() {
         var beg = tinput.selectionStart || 0;
         var end = tinput.selectionEnd   || 0;
@@ -16,7 +23,9 @@ ffcdata.editbuttons.init = function(){
         else             return [beg, end];
     };
 
-    // Textfeld-Klappungen
+    /************************************************************************
+     * Die Klappfunktion des Textfeldes an CSS (Focus) vorbei implementieren
+     ************************************************************************/
     var tinputclass = tinput.className;
     var tap = document.getElementById('subtabuttonp');
     // Textfeld öffnen
@@ -38,7 +47,9 @@ ffcdata.editbuttons.init = function(){
         // console.log('close');
     };
 
-    // Wörter auf einer Zeile inline mit einem Zeichen umrahmen
+    /************************************************************************
+     * Tags in der Textarea passend setzen bei Editbutton-Benutzung
+     ************************************************************************/
     var tagthat = function(ntag, btag, obb, dout){
         tinput.focus();
 
@@ -111,7 +122,9 @@ ffcdata.editbuttons.init = function(){
         tinput.selectionEnd   = pos;
     };
 
-    // Formatierungsbuttons definieren
+    /************************************************************************
+     * Definition der Aktionsweise der verschiedenen Formatierungsbuttons
+     ************************************************************************/
     var buttons = [
         // ButtonId, Tag, BlockTag, OuterBlockBreaks, DoubleOuterBreak
         ['h1button',            'h3',     false,        true,  true ],
@@ -126,7 +139,9 @@ ffcdata.editbuttons.init = function(){
         ['italicbutton',        'i',      false,        false, false],
         ['emotionalbutton',     'em',     false,        false, false],
     ];
-    // Formatierungsbuttonereignisse registrieren
+    /************************************************************************
+     * Fomatierungs-Buttonereignisse passend zur Definition registrieren
+     ************************************************************************/
     var show_formatbuttons = function(){
         var register_one_button = function(b){
             document.getElementById(b[0]).onclick = function(){
@@ -138,7 +153,9 @@ ffcdata.editbuttons.init = function(){
         }
     };
 
-    // Textvorschau anzeigen
+    /************************************************************************
+     * Textvorschaubox implementieren
+     ************************************************************************/
     var previewwindow = document.getElementById('textpreviewbox');
     var headboxbox = document.getElementById('headbox');
     var previewtextarea = document.getElementById('textpreviewarea');
@@ -163,6 +180,9 @@ ffcdata.editbuttons.init = function(){
         previewwindow.className = 'nodisplay';
     };
 
+    /************************************************************************
+     * Initiale Funktion um Buttons und Textvorschau zu ermöglichen
+     ************************************************************************/
     var showbuttons = function(){
         // Textfeld-Klappung einrichten
         if ( !ffcdata.chat ) {
@@ -196,6 +216,10 @@ ffcdata.editbuttons.init = function(){
         if ( closepreviewbutton )
             closepreviewbutton.onclick = close_preview;
     };
+
+    /************************************************************************
+     * Start der eigentlichen Initialisierung
+     ************************************************************************/
     showbuttons();
 };
 
