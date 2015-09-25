@@ -3,8 +3,6 @@ CREATE TABLE "users" (
   "name" varchar(64) NOT NULL,
   "password" varchar(512) NOT NULL,
   "active" tinyint(1) NOT NULL DEFAULT '0',
-  "email" varchar(1024) NOT NULL DEFAULT '',
-  "newsmail" tinyint(1) NOT NULL DEFAULT '1',
   "chronsortorder" tinyint(1) NOT NULL DEFAULT '0',
   "topiclimit" smallint NOT NULL DEFAULT 20,
   "postlimit" smallint NOT NULL DEFAULT 10,
@@ -14,6 +12,8 @@ CREATE TABLE "users" (
   "admin" tinyint(1) NOT NULL DEFAULT '0',
   "bgcolor" varchar(24) NOT NULL DEFAULT '',
   "autorefresh" integer NOT NULL DEFAULT 3,
+  "lastseen" timestamp,
+  "hidelastseen" tinyint(1) NOT NULL DEFAULT 1,
   "inchat" tinyint(1) NOT NULL DEFAULT '0',
   "lastchatid" integer NOT NULL DEFAULT '0',
   "lastseenchat" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -24,12 +24,25 @@ CREATE TABLE "users" (
 CREATE INDEX "user_active_ix" ON "users"("active");
 CREATE INDEX "user_inchat_ix" ON "users"("inchat");
 
+CREATE TABLE "userinfo" (
+  "userid" integer NOT NULL,
+  "email" varchar(1024) NOT NULL DEFAULT '',
+  "newsmail" tinyint(1) NOT NULL DEFAULT 1,
+  "hideemail" tinyint(1) NOT NULL DEFAULT 1,
+  "phone" varchar(50),
+  "birthdate" varchar(10),
+  "infos" varchar(1024),
+  UNIQUE("userid")
+);
+CREATE INDEX "userinfo_userid_ix" ON "userinfo"("userid");
+
 CREATE TABLE "topics" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
   "userfrom" int(11) NOT NULL,
   "title" varchar(256) NOT NULL,
   "lastid" integer NOT NULL DEFAULT 0
 );
+CREATE INDEX "topics_id" ON "topics"("id");
 
 CREATE TABLE "posts" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
@@ -55,6 +68,10 @@ CREATE TABLE "lastseenforum" (
   "pin" tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY ("userid", "topicid")
 );
+CREATE INDEX "lsf_user_id" ON "lastseenforum"("userid");
+CREATE INDEX "lsf_topics_id" ON "lastseenforum"("topicid");
+CREATE INDEX "lsf_ignore_id" ON "lastseenforum"("ignore");
+CREATE INDEX "lsf_pin_id" ON "lastseenforum"("pin");
 
 CREATE TABLE "lastseenmsgs" (
   "userid" integer NOT NULL,
@@ -63,6 +80,9 @@ CREATE TABLE "lastseenmsgs" (
   "lastid" integer NOT NULL DEFAULT '0',
   PRIMARY KEY ("userid", "userfromid")
 );
+CREATE INDEX "lsm_user_id" ON "lastseenmsgs"("userid");
+CREATE INDEX "lsm_userfrom_id" ON "lastseenmsgs"("userfromid");
+CREATE INDEX "lsm_lastid_id" ON "lastseenmsgs"("lastid");
 
 CREATE TABLE "attachements" (
   "id" integer PRIMARY KEY AUTOINCREMENT,

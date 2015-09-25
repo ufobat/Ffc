@@ -31,9 +31,10 @@ my $sender = 'admin@'.hostname();
     };
     get '/userids' => sub {
         $_[0]->render(json => $_[0]->dbh_selectall_arrayref( << 'EOSQL' ));
-    SELECT "name", "email", "id" 
-    FROM "users" 
-    WHERE "email" IS NOT NULL AND "email"<>'' AND "newsmail"=1 AND "active"=1
+    SELECT u."name", i."email", u."id" 
+    FROM "users" u
+    INNER JOIN "userinfo" i ON u."id"=i."userid"
+    WHERE i."email" IS NOT NULL AND i."email"<>'' AND i."newsmail"=1 AND u."active"=1
     ORDER BY UPPER("name"), "id"
 EOSQL
     };

@@ -18,15 +18,17 @@ sub check_login {
         my $s = $c->session();
         my $r = $c->dbh_selectall_arrayref(
             'SELECT "admin", "bgcolor", "name", "autorefresh", 
-                "chronsortorder", COALESCE("topiclimit",20), COALESCE("postlimit",10), COALESCE("printpreviewdays", 7)
+                "chronsortorder", COALESCE("topiclimit",20), COALESCE("postlimit",10), COALESCE("printpreviewdays", 7), "hidelastseen"
             FROM "users" WHERE "active"=1 AND "id"=?',
             $s->{userid});
 
         if ( $r and @$r and $r->[0]->[2] eq $s->{user} ) {
-            @$s{qw(admin backgroundcolor autorefresh chronsortorder topiclimit postlimit printpreviewdays)}
-                = @{$r->[0]}[0, 1, 3, 4, 5, 6, 7];
+            @$s{qw(admin backgroundcolor autorefresh chronsortorder topiclimit postlimit printpreviewdays hidelastseen)}
+                = @{$r->[0]}[0, 1, 3, 4, 5, 6, 7, 8];
             $s->{backgroundcolor} = $c->configdata->{backgroundcolor}
                 unless $s->{backgroundcolor};
+            $c->dbh_do('UPDATE "users" SET "lastseen"=CURRENT_TIMESTAMP WHERE "userid"=?', $s->{userid})
+                unless $r->[8];
             return 1;
         }
         else {
