@@ -19,22 +19,16 @@ CREATE TABLE "users" (
   "lastseenchat" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "lastseenchatactive" timestamp NOT NULL DEFAULT CURRENT_TIMESAMP,
   "chatrefreshsecs" integer NOT NULL DEFAULT 60,
-  UNIQUE ("name")
-);
-CREATE INDEX "user_active_ix" ON "users"("active");
-CREATE INDEX "user_inchat_ix" ON "users"("inchat");
-
-CREATE TABLE "userinfo" (
-  "userid" integer NOT NULL,
   "email" varchar(1024) NOT NULL DEFAULT '',
   "newsmail" tinyint(1) NOT NULL DEFAULT 1,
   "hideemail" tinyint(1) NOT NULL DEFAULT 1,
   "phone" varchar(50),
   "birthdate" varchar(10),
   "infos" varchar(1024),
-  UNIQUE("userid")
+  UNIQUE ("name")
 );
-CREATE INDEX "userinfo_userid_ix" ON "userinfo"("userid");
+CREATE INDEX "user_active_ix" ON "users"("active");
+CREATE INDEX "user_inchat_ix" ON "users"("inchat");
 
 CREATE TABLE "topics" (
   "id" integer PRIMARY KEY AUTOINCREMENT,
