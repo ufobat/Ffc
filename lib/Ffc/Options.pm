@@ -22,13 +22,19 @@ sub options_form {
     $c->stash(fontsizes => \%Ffc::Plugin::Config::FontSizeMap);
     $c->counting;
     my $r = $c->dbh_selectall_arrayref(
-        'SELECT email, admin, newsmail FROM users WHERE UPPER(name)=UPPER(?)'
-        , $c->session->{user});
-    my ( $email, $admin, $newsmail ) = ( ( $r and ref($r) eq 'ARRAY' ) ? (@{$r->[0]}) : ('', 0) );
+        'SELECT admin, email, newsmail, hideemail, phone, birthdate, infos, hidelastseen FROM users WHERE id=?'
+        , $c->session->{userid});
+    $r = 'ARRAY' eq ref $r ? $r->[0] : [];
     $c->stash(
-        email    => $email,
-        newsmail => $newsmail,
+        email        => $r->[1],
+        newsmail     => $r->[2],
+        hideemail    => $r->[3],
+        phone        => $r->[4],
+        birthdate    => $r->[5],
+        infos        => $r->[6],
+        hidelastseen => $r->[7],
     );
+    my $admin = $r->[0];
     if ( $admin ) {
         my $userlist = $c->dbh_selectall_arrayref(
                 'SELECT u.id, u.name, u.active, u.admin, u.email FROM users u WHERE UPPER(u.name) != UPPER(?) ORDER BY UPPER(u.name) ASC'

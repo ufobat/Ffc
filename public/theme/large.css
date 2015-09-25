@@ -56,7 +56,7 @@ a {
     max-width: none;
     border-width: 0 0 .1em 0;
 }
-input[type="color"], input[type="url"], input[type="email"], input[type="text"], input[type="password"] {
+input[type="color"], input[type="url"], input[type="email"], input[type="text"], input[type="password"], textarea.infos {
     width: 16em;
 }
 .menu input[type="text"] {
@@ -83,12 +83,12 @@ form {
 .suboption {
     margin-left: .75em;
 }
-.postbox textarea {
+.postbox #textinput {
     max-height: 54em;
     min-height: 2em;
     height: 2em;
 }
-.postbox textarea:focus, .postbox textarea.inedit {
+.postbox #textinput:focus, .postbox #textinput.inedit {
     height: 24em;
 }
 .postbox img {
@@ -147,7 +147,7 @@ img.smiley, img.icon {
 h1, .postbox {
     clear: both;
 }
-.postbox textarea, input[type="text"].titlestring {
+.postbox #textinput, input[type="text"].titlestring {
     width: 100%;
 }
 input[type="text"].titlestring {
@@ -223,7 +223,14 @@ input[type="text"].titlestring {
     padding-top: .5em;
     padding-bottom: .5em;
 }
-textarea:focus {
+#textinput:focus {
     box-shadow: 0 0 .25em silver;
+}
+textarea.infos {
+    height: 7em;
+}
+.infooptions th {
+    text-align: right;
+    vertical-align: top;
 }
 
