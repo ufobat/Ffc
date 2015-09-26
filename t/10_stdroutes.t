@@ -78,7 +78,7 @@ note 'test /config with custom settings';
 Testinit::test_login($t, $admin, $apass);
 for my $key ( keys %settings ) {
     $t->post_ok("/options/admin/boardsettings/$key", form => { optionvalue => $settings{$key} } )
-      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+      ->status_is(302)->content_is('')->header_is(Location => '/options/admin/form');
     $t->get_ok('/options/form')->status_is(200);
 }
 test_config();

@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 855;
+use Test::More tests => 887;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -49,10 +49,10 @@ my @Settings = (
 
 note qq~checking that admins have input fields available for boardsettings~;
 admin();
-$t->get_ok('/options/form')
+$t->get_ok('/options/admin/form')
   ->status_is(200)
   ->content_like(qr~<input type="(?:text|number|checkbox)" name="optionvalue" value="[^"]*"(?: checked="checked")? />~)
-  ->content_like(qr'active activeoptions">Einstellungen<');
+  ->content_like(qr'active activeoptions">Administration<');
 
 for my $s ( @Settings ) {
     my ( $key, $title, $itype, $goodv, $badv, $error ) = @$s;
@@ -60,20 +60,21 @@ for my $s ( @Settings ) {
 
     note qq~checking that no normal user can reach option "$key"~;
     user();
-    $t->get_ok('/options/form')
-      ->status_is(200)
+    $t->get_ok('/options/admin/form')->status_is(302)
+      ->content_is('')->header_is(Location => '/options/form');
+    $t->get_ok('/options/form')->status_is(200)
       ->content_unlike(qr~<form action="/options/admin/boardsettings/$key#boardsettingsadmin" method="POST">~)
       ->content_unlike(qr~<input type="$itype" name="optionvalue" value="[^"]*" (?:checked="checked")? />~)
-      ->content_like(qr'active activeoptions">Einstellungen<');
+      ->content_unlike(qr'active activeoptions">Administration<');
     $t->post_ok("/options/admin/boardsettings/$key")
       ->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200)
-      ->content_like(qr'active activeoptions">Einstellungen<');
+      ->content_unlike(qr'active activeoptions">Administration<');
     error('Nur Administratoren dürfen das');
     
     note qq~checking that admin users can reach option "$key"~;
     admin();
-    $t->get_ok('/options/form')
+    $t->get_ok('/options/admin/form')
       ->status_is(200)
       ->content_like(qr~<form action="/options/admin/boardsettings/$key#boardsettingsadmin" method="POST">~);
 
@@ -81,9 +82,9 @@ for my $s ( @Settings ) {
     my $url = "/options/admin/boardsettings/$key";
     my $info = "$title geändert";
     $t->post_ok($url)
-      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
-    $t->get_ok('/options/form')->status_is(200)
-      ->content_like(qr'active activeoptions">Einstellungen<');
+      ->status_is(302)->content_is('')->header_is(Location => '/options/admin/form');
+    $t->get_ok('/options/admin/form')->status_is(200)
+      ->content_like(qr'active activeoptions">Administration<');
     if ( $key =~ m/favicon|backgroundcolor|customcss|chronsortorder/xmso ) {
         info($info);
     }
@@ -93,17 +94,17 @@ for my $s ( @Settings ) {
     for my $i ( @$badv ) {
         note qq~testing with bad value "$i"~;
         $t->post_ok($url, form => { optionvalue => $i } )
-          ->status_is(302)->content_is('')->header_is(Location => '/options/form');
-        $t->get_ok('/options/form')->status_is(200)
-          ->content_like(qr'active activeoptions">Einstellungen<');
+          ->status_is(302)->content_is('')->header_is(Location => '/options/admin/form');
+        $t->get_ok('/options/admin/form')->status_is(200)
+          ->content_like(qr'active activeoptions">Administration<');
         error($error);
     }
     for my $i ( @$goodv ) {
         note qq~testing with good value "$i"~;
         $t->post_ok($url, form => { optionvalue => $i } )
-          ->status_is(302)->content_is('')->header_is(Location => '/options/form');
-        $t->get_ok('/options/form')->status_is(200)
-          ->content_like(qr'active activeoptions">Einstellungen<');
+          ->status_is(302)->content_is('')->header_is(Location => '/options/admin/form');
+        $t->get_ok('/options/admin/form')->status_is(200)
+          ->content_like(qr'active activeoptions">Administration<');
         info($info);
         if ( $key eq 'favicon' ) {
             if ( $i ) {
@@ -133,9 +134,9 @@ for my $s ( @Settings ) {
     }
     if ( $key =~ m/favicon|backgroundcolor|customcss/xmso ) {
         $t->post_ok($url, form => { optionvalue => '' } )
-          ->status_is(302)->content_is('')->header_is(Location => '/options/form');
-        $t->get_ok('/options/form')->status_is(200)
-          ->content_like(qr'active activeoptions">Einstellungen<');
+          ->status_is(302)->content_is('')->header_is(Location => '/options/admin/form');
+        $t->get_ok('/options/admin/form')->status_is(200)
+          ->content_like(qr'active activeoptions">Administration<');
         info($info);
         $t->get_ok('/config')
           ->status_is(200)

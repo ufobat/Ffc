@@ -51,12 +51,12 @@ sub boardsettingsadmin {
     my $optvalue = $c->param('optionvalue') // '';
     my @setting = grep {$optkey eq $_->[0]} @Settings;
     unless ( @setting ) {
-        $c->redirect_to('options_form');
+        $c->redirect_to('admin_options_form');
         return; # theoretisch nicht möglich laut routen
     }
     my ( $tit, $re, $rechk, $err, $sub ) = @{$setting[0]}[1,2,3,7,8];
     unless ( $tit ) {
-        $c->redirect_to('options_form');
+        $c->redirect_to('admin_options_form');
         return; # theoretisch nicht möglich laut routen
     }
     if ( ( $rechk and $optvalue =~ $re ) or ( not $rechk and ( $optvalue eq '1' or not $optvalue ) ) ) {
@@ -72,7 +72,7 @@ sub boardsettingsadmin {
         $c->set_error_f($err);
     }
 
-    $c->redirect_to('options_form');
+    $c->redirect_to('admin_options_form');
 }
 
 sub set_starttopic {
@@ -88,7 +88,7 @@ sub set_starttopic {
     else {
         $c->set_error_f('Fehler beim Setzen der Startseite');
     }
-    $c->redirect_to('options_form');
+    $c->redirect_to('admin_options_form');
 }
 
 1;

@@ -14,15 +14,15 @@ sub useradmin {
 
     unless ( $username ) {
         $c->set_error_f('Benutzername nicht angegeben');
-        return $c->redirect_to('options_form');
+        return $c->redirect_to('admin_options_form');
     }
     if ( $username !~ m/\A$Ffc::Usrqr\z/xmso) {
         $c->set_error_f('Benutzername passt nicht (muss zwischen 2 und 32 Buchstaben haben)');
-        return $c->redirect_to('options_form');
+        return $c->redirect_to('admin_options_form');
     }
     if ( $newpw1 and $newpw2 and $newpw1 ne $newpw2 ) {
         $c->set_error_f('Passworte stimmen nicht überein');
-        return $c->redirect_to('options_form');
+        return $c->redirect_to('admin_options_form');
     }
 
     my $exists = $c->dbh_selectall_arrayref(
@@ -31,11 +31,11 @@ sub useradmin {
 
     if ( $exists and not $overok ) {
         $c->set_error_f('Benutzer existiert bereits, das Überschreiben-Häkchen ist allerdings nicht gesetzt');
-        return $c->redirect_to('options_form');
+        return $c->redirect_to('admin_options_form');
     }
     unless ( $exists or ( $newpw1 and $newpw2 ) ) {
         $c->set_error_f('Neuen Benutzern muss ein Passwort gesetzt werden');
-        return $c->redirect_to('options_form');
+        return $c->redirect_to('admin_options_form');
     }
 
     my @pw = ( $newpw1 ? $c->hash_password($newpw1) : () );
@@ -53,7 +53,7 @@ sub useradmin {
         $c->set_info_f(qq~Benutzer "$username" angelegt~);
     }
 
-    $c->redirect_to('options_form');
+    $c->redirect_to('admin_options_form');
 }
 
 1;

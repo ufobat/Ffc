@@ -48,8 +48,13 @@
                 <a href="<%= url_for 'quickview_html' %>" target="_blank" title="Schnelle einfache &Uuml;bersicht &uuml;ber neue Beitr&auml;ge">Statusfenster</a>
             </p>
             <p class="optionslink">
-                <a href="<%= url_for 'options_form' %>"><span class="linktext linkoptions<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
+                <a href="<%= url_for 'options_form' %>"><span class="linktext linkoptions<%= $action eq 'options_form' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
             </p>
+% if ( session()->{admin} ) {
+            <p class="optionslink">
+                <a href="<%= url_for 'admin_options_form' %>"><span class="linktext linkoptions<%= $action eq 'admin_options_form' ? ' active activeoptions' : '' %>">Administration</span></a>
+            </p>
+% }
             <p><a href="<%= url_for 'help' %>" target="_blank">Hilfe</a></p>
             <p class="othersmenutext">Angemeldet als <%= session->{user} %></p>
             <p class="logoutbutton2">

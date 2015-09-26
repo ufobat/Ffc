@@ -45,7 +45,7 @@ sub favicon_upload {
                 return [ 'favicon' ];
             }
         );
-    return $c->redirect_to('options_form')
+    return $c->redirect_to('admin_options_form')
         unless $filename;
 
 
@@ -58,7 +58,7 @@ sub favicon_upload {
     $config->{faviconcontenttype} = $contenttype;
     $config->{favicon} = $favicon;
     $c->set_info_f('Favoriten-Icon aktualisiert.');
-    $c->redirect_to('options_form');
+    $c->redirect_to('admin_options_form');
 }
 
 1;

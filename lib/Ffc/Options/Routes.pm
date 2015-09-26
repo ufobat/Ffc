@@ -28,6 +28,11 @@ sub install_routes {
                ->to('options#check_admin')
                ->name('adminoptions');
 
+    # Optionsformular
+    $oa->get('/form')
+      ->to('options#admin_options_form')
+      ->name('admin_options_form');
+
     # Benutzeradministration
     $oa->post('/useradd')
        ->to('options#useradmin')

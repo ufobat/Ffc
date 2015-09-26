@@ -9,7 +9,7 @@ use File::Temp qw~tempfile tempdir~;
 use File::Spec::Functions qw(catfile catdir splitdir);
 
 use Test::Mojo;
-use Test::More tests => 332;
+use Test::More tests => 333;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test1 test1234);
@@ -59,7 +59,7 @@ sub favicon_ok {
 }
 
 sub favicon_upload {
-    my ( $content, $filename, $ftype, $ctype ) = @_;
+    my ( $content, $filename, $ftype, $ctype, $noadmin ) = @_;
     $filename = 'favicon.png' unless defined $filename;
     $ftype = ($filename =~ m/\.(\w+)\z/xmso ? '' : '') unless defined $ftype;
     $ctype = "image/$ftype" unless $ctype;
@@ -70,14 +70,22 @@ sub favicon_upload {
                 content_type => $ctype,
             }
         }
-    )->status_is(302)->content_is('')->header_is(Location => '/options/form');
-    $t->get_ok('/options/form')->status_is(200);
+    );
+    if ( $noadmin ) {
+        $t->status_is(302)->content_is('')->header_is(Location => '/options/form');
+        $t->get_ok('/options/form')->status_is(200);
+        error('Nur Administratoren dürfen das');
+    }
+    else {
+        $t->status_is(302)->content_is('')->header_is(Location => '/options/admin/form');
+        $t->get_ok('/options/admin/form')->status_is(200);
+    }
 }
 
 note 'kein admin, kein favicon-upload';
 favicon_ok(undef,undef,undef,1);
 loginu();
-favicon_upload('','');
+favicon_upload('','',undef,undef,1);
 error('Nur Administratoren dürfen das');
 favicon_ok();
 

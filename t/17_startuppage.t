@@ -38,22 +38,22 @@ $t->get_ok('/')->status_is(200)
   ->content_like(qr'Allgemeines Forum');
 
 admin();
-$t->get_ok('/options/form')->status_is(200)
+$t->get_ok('/options/admin/form')->status_is(200)
   ->content_like(qr~<select\s+name="topicid">\s*<option\s+value="">~xmso);
 $t->content_like(qr~<option\s+value="$_->[0]">$_->[1]</option>~xmso)
     for @Topics;
 
 $t->post_ok('/options/admin/set_starttopic', form => { topicid => 'asdf' })
-  ->status_is(302)->content_is('')->header_is(Location => '/options/form');
-$t->get_ok('/options/form')->status_is(200);
+  ->status_is(302)->content_is('')->header_is(Location => '/options/admin/form');
+$t->get_ok('/options/admin/form')->status_is(200);
 error('Fehler beim Setzen der Startseite');
 
 $t->get_ok('/config')->status_is(200)
   ->json_is('/starttopic' => 0);
 
 $t->post_ok('/options/admin/set_starttopic', form => { topicid => 2 })
-  ->status_is(302)->content_is('')->header_is(Location => '/options/form');
-$t->get_ok('/options/form')->status_is(200)
+  ->status_is(302)->content_is('')->header_is(Location => '/options/admin/form');
+$t->get_ok('/options/admin/form')->status_is(200)
   ->content_like(qr~<select\s+name="topicid">\s*<option\s+value="">~xmso)
   ->content_like(qr~<option\s+value="1">$Topics[0][1]</option>~xmso)
   ->content_like(qr~<option\s+value="2"\s+selected="selected">$Topics[1][1]</option>~xmso)
@@ -66,8 +66,8 @@ $t->get_ok('/')->status_is(302)
   ->header_like( Location => qr{\A/topic/2}xms );
 
 $t->post_ok('/options/admin/set_starttopic', form => { topicid => '' })
-  ->status_is(302)->content_is('')->header_is(Location => '/options/form');
-$t->get_ok('/options/form')->status_is(200)
+  ->status_is(302)->content_is('')->header_is(Location => '/options/admin/form');
+$t->get_ok('/options/admin/form')->status_is(200)
   ->content_like(qr~<select\s+name="topicid">\s*<option\s+value="">~xmso);
 $t->content_like(qr~<option\s+value="$_->[0]">$_->[1]</option>~xmso)
     for @Topics;
