@@ -68,6 +68,11 @@ sub favicon_upload {
                 file => Mojo::Asset::Memory->new->add_chunk($content),
                 filename => $filename,
                 content_type => $ctype,
+            },
+            faviconfile => {
+                file => Mojo::Asset::Memory->new->add_chunk($content),
+                filename => $filename,
+                content_type => $ctype,
             }
         }
     );
