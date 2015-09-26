@@ -19,7 +19,6 @@ sub _upload_post_do {
     my $c = shift;
     my ( $wheres, @wherep ) = $c->where_modify;
 
-    my $file = $c->param('attachement');
     my $postid = $c->param('postid');
     unless ( $postid and $postid =~ $Ffc::Digqr ) {
         $c->set_error_f('Konnte keinen Anhang zu dem Beitrag hochladen, da die Beitragsnummer irgendwie verloren ging');
@@ -34,6 +33,14 @@ sub _upload_post_do {
             return _redirect_to_show($c);
         }
     }
+
+    _update_single_file($c, $postid, 'attachement');
+    $c->set_info_f('Datei an den Beitrag angehängt');
+    _redirect_to_show($c);
+};
+
+sub _upload_singe_file {
+    my ( $c, $postid, $param ) = @_;
     my $fileid;
     my $filepathsub = sub { 
         my ($c, $filename, $filetype, $content_type) = @_;
@@ -47,20 +54,13 @@ sub _upload_post_do {
         }
         else {
             $c->set_error_f('Beim Dateiupload ist etwas schief gegangen, ich finde die Datei nicht mehr in der Datenbank');
+            $c->dbh_do('DELETE FROM "attachements" WHERE "id"=?', $fileid) if defined $fileid;
             return;
         }
         return [ 'uploads', $fileid ];
     };
-    my ( $filename )
-        = $c->file_upload( 'attachement', 'Dateianhang', 1, $c->configdata->{maxuploadsize}, 2, 200, $filepathsub);
-    unless ( $filename ) {
-        $c->dbh_do('DELETE FROM "attachements" WHERE "id"=?', $fileid) if defined $fileid;
-        return _redirect_to_show($c);
-    }
-
-    $c->set_info_f('Datei an den Beitrag angehängt');
-    _redirect_to_show($c);
-};
+    $c->file_upload( $param, undef, 'Dateianhang', 1, $c->configdata->{maxuploadsize}, 2, 200, $filepathsub);
+}
 
 sub _download_post {
     my $c = shift;

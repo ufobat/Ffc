@@ -26,10 +26,16 @@ sub _is_image {
 }
 
 sub _file_upload {
-    my ( $c, $param, $name, $min_s, $max_s, $min_l, $max_l, $filenamesub ) = @_;
+    my $i = 0;
+    for my $file ( @{$_[0]->every_param($_[1])} ) {
+        return unless _single_file_upload($file, @_);
+        $i++;
+        last if $_[0] and $i >= $_[2];
+    }
+}
 
-    my $file = $c->param($param);
-
+sub _single_file_upload {
+    my ( $file, $c, $param, $fnum, $name, $min_s, $max_s, $min_l, $max_l, $filenamesub ) = @_;
     unless ( $file ) {
         $c->set_error_f("Kein $name angegeben.");
         return;
