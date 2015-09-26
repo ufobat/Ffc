@@ -233,7 +233,15 @@ textarea.infos {
     text-align: right;
     vertical-align: top;
 }
-.userlist th, .userlist td {
-    max-width: 20em;
+.userlist th {
+    width: 2em;
+    width: 5%;
+}
+.userlist td {
+    /*max-width: 10em;*/
+    width: 40%;
+}
+.userlist table {
+    width: 100%;
 }
 
