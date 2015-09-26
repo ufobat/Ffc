@@ -14,8 +14,8 @@
         <a href="<%= url_for 'show_pmsgs', usertoid => $u->[0] %>"><%= $u->[1] %></a>
         <span class="smallfont">
             Ungelesene Nachrichten:
-            <% if ( $u->[2] ) { %> <span class="mark"><%= $u->[2] %></span><% } else { %>0<% } %>
-            <% if ( $u->[5] ) { %>, zuletzt online <%= format_timestamp($u->[5]) %><% } %>
+            <% if ( $u->[2] ) { %> <span class="mark"><%= $u->[2] %></span><% } else { %>0<% } %><% if ( $u->[5] ) { %>,
+            zuletzt online: <%= format_timestamp($u->[5]) %><% } %>
         </span>
     </h2>
 %   if ( $u->[4] or $u->[6] or $u->[7] or $u->[8] ) {
