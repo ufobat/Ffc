@@ -289,5 +289,7 @@ pre {
 }
 .userlist th {
     border-width: 0 0 .1em .1em;
+    font-weight: normal;
+    color: dimgray;
 }
 
