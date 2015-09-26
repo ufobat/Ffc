@@ -21,7 +21,7 @@ sub install_routes {
     $o->post("/$_")
       ->to("options#set_$_")
       ->name("set_$_")
-        for qw(email password autorefresh);
+        for qw(email password autorefresh infos hidelastseen);
 
     # Administratorenoptionen
     my $oa = $o->under('/admin')

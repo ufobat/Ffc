@@ -267,4 +267,28 @@ pre {
 .hovering > p {
     border-top: .1em gainsboro solid;
 }
+.userlist table {
+    border-bottom: .1em gainsboro solid;
+    border-collapse: collapse;
+}
+.userlist table pre {
+    color: black;
+    font-family: sans-serif;
+    border: none;
+    padding: 0;
+    font-size: 1em;
+}
+.userlist td, .userlist th {
+    padding: .5em;
+    border-color: gainsboro;
+    border-style: solid;
+    vertical-align: top;
+}
+.userlist td {
+    border-width: 0 0 .1em 0;
+}
+.userlist th {
+    text-align: right;
+    border-width: 0 0 .1em .1em;
+}
 

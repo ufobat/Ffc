@@ -29,9 +29,9 @@ sub options_form {
         email        => $r->[1],
         newsmail     => $r->[2],
         hideemail    => $r->[3],
-        phone        => $r->[4],
-        birthdate    => $r->[5],
-        infos        => $r->[6],
+        phone        => $c->stash('phone') // $r->[4],
+        birthdate    => $c->stash('birthdate') // $r->[5],
+        infos        => $c->stash('infos') // $r->[6],
         hidelastseen => $r->[7],
     );
     my $admin = $r->[0];

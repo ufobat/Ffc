@@ -59,11 +59,15 @@
     <a name="email"></a>
     <h1>E-Mail-Adresse einstellen</h1>
     <p>(Mit der Emailadresse kann der Administrator des Forums ggf. Nachrichten außerhalb des Forums verschicken. Außerdem können, falls das so eingerichtet wurde, Informationsemails über neue Beiträge und Nachrichten per Email verschickt werden.)</p>
-    <form action="<%= url_for 'email' %>#set_email" method="POST">
+    <form action="<%= url_for 'set_email' %>#email" method="POST">
         <p><input name="email" type="email" value="<%= $email %>" /></p>
         <p>
             <input type="checkbox" name="newsmail"<%== $newsmail ? ' checked="checked"' : '' %> />
             Benachrichtigungen per Email erhalten
+        </p>
+        <p>
+            <input type="checkbox" name="hideemail"<%== $hideemail ? ' checked="checked"' : '' %> />
+            Email in der Benutzerliste verstecken
         </p>
         <p><button type="submit">Emailadresse und Benachrichtigungseinstellung speichern</button></p>
     </form>
@@ -72,12 +76,14 @@
     <a name="infos"></a>
     <h1>Benutzerinformationen ändern</h1>
     <p>(Im folgenden können einige zusätzliche Informationen angegeben werden, die für alle Benutzer sichtbar sind.)</p>
-    <table class="infooptions">
-        <tr><th>Telefonnummer:</th><td><input type="text" name="phone" value="<%= $phone %>" /></td></tr>
-        <tr><th>Geburtsdatum:</th><td><input type="text" name="birthdate" value="<%= $birthdate %>" /></td></tr>
-        <tr><th>Adresse:</th><td><textarea name="infos" class="infos"><%= $infos %></textarea></td></tr>
-        <tr><td>&nbsp;</td><td><button type="submit">Daten speichern</button></td></tr>
-    </table>
+    <form action="<%= url_for 'set_infos' %>#infos" method="POST">
+        <table class="infooptions">
+            <tr><th>Telefonnummer:</th><td><input type="text" name="phone" value="<%= $phone %>" /></td></tr>
+            <tr><th>Geburtsdatum:</th><td><input type="text" name="birthdate" value="<%= $birthdate %>" /></td></tr>
+            <tr><th>Adresse:</th><td><textarea name="infos" class="infos"><%= $infos %></textarea></td></tr>
+            <tr><td>&nbsp;</td><td><button type="submit">Daten speichern</button></td></tr>
+        </table>
+    </form>
 </div>
 % }
 % if ( session()->{admin} ) {

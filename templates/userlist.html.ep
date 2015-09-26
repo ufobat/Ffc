@@ -15,8 +15,23 @@
         <span class="smallfont">
             Ungelesene Nachrichten:
             <% if ( $u->[2] ) { %> <span class="mark"><%= $u->[2] %></span><% } else { %>0<% } %>
+            <% if ( $u->[5] ) { %>, zuletzt online <%= format_timestamp($u->[5]) %><% } %>
         </span>
     </h2>
+%   if ( $u->[4] or $u->[6] or $u->[7] or $u->[8] ) {
+    <table>
+        <tr>
+            <th>Email:</th><td><%= $u->[4] %></td>
+            <th rowspan="3">Adresse:</th><td rowspan="3"><pre><%= $u->[8] %></pre></td>
+        </tr>
+        <tr>
+            <th>Telefon:</th><td><%= $u->[6] %></td>
+        </tr>
+        <tr>
+            <th>Geburtsdatum:</th><td><%= $u->[7] %></td>
+        </tr>
+    </table>
+%   }
 % }
 </div>
 % }

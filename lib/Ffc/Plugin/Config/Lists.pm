@@ -97,9 +97,13 @@ EOSQL
 }
 
 sub _generate_userlist {
-    $_[0]->stash( users => $_[0]->dbh_selectall_arrayref( << 'EOSQL'
-SELECT u."id", u."name",
-    COALESCE(COUNT(p."id"),0), l."lastid"
+     my $sql = q~SELECT u."id", u."name", COALESCE(COUNT(p."id"),0), l."lastid"~;
+     if ( $_[1] ) {
+         $sql .= q~, CASE WHEN u."hideemail" THEN '' ELSE u."email" END~
+              .  q~, CASE WHEN u."hidelastseen" THEN '' ELSE u."lastseen" END~
+              .  q~, u."phone", u."birthdate", u."infos"~;
+     }
+    $sql .= q~
 FROM "users" u
 LEFT OUTER JOIN "lastseenmsgs" l ON u."id"=l."userfromid" AND l."userid"=?
 LEFT OUTER JOIN "posts" p ON p."userfrom"=u."id" AND p."userto" IS NOT NULL AND p."userto"=? 
@@ -107,9 +111,8 @@ LEFT OUTER JOIN "posts" p ON p."userfrom"=u."id" AND p."userto" IS NOT NULL AND 
 WHERE u."active"=1 AND u."id"<>? 
 GROUP BY u."id", u."name", l."lastid"
 ORDER BY l."lastid" DESC, UPPER(u."name") ASC
-EOSQL
-        , ( $_[0]->session->{userid} ) x 3
-    ) );
+~;
+     $_[0]->stash( users => $_[0]->dbh_selectall_arrayref( $sql, ( $_[0]->session->{userid} ) x 3 ) );
 }
 
 1;

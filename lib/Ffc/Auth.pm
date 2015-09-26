@@ -13,7 +13,7 @@ sub install_routes {
 }
 
 sub _update_lastseen {
-    $_[0]->dbh_do('UPDATE "users" SET "lastseen"=CURRENT_TIMESTAMP WHERE "userid"=? AND "hidelastseen"=0',
+    warn('UPDATE "users" SET "lastseen"=CURRENT_TIMESTAMP WHERE "userid"=? AND "hidelastseen"=0',
         $_[0]->session->{userid});
 }
 
@@ -23,7 +23,8 @@ sub check_login {
         my $s = $c->session();
         my $r = $c->dbh_selectall_arrayref(
             'SELECT "admin", "bgcolor", "name", "autorefresh", 
-                "chronsortorder", COALESCE("topiclimit",20), COALESCE("postlimit",10), COALESCE("printpreviewdays", 7)
+                "chronsortorder", COALESCE("topiclimit",20), COALESCE("postlimit",10), COALESCE("printpreviewdays", 7),
+                "hidelastseen"
             FROM "users" WHERE "active"=1 AND "id"=?',
             $s->{userid});
 
@@ -32,7 +33,8 @@ sub check_login {
                 = @{$r->[0]}[0, 1, 3, 4, 5, 6, 7, 8];
             $s->{backgroundcolor} = $c->configdata->{backgroundcolor}
                 unless $s->{backgroundcolor};
-            $c->_update_lastseen();
+            $c->dbh_do('UPDATE "users" SET "lastseen"=CURRENT_TIMESTAMP WHERE "id"=? AND "hidelastseen"=0',
+                $s->{userid});
             return 1;
         }
         else {
@@ -63,7 +65,6 @@ sub login {
     if ( $r and @$r ) {
         @{$c->session}{qw(admin backgroundcolor user userid autorefresh chronsortorder topiclimit postlimit)}
             = @{$r->[0]}[0, 1, 2, 3, 4, 5, 6, 7];
-        $c->_update_lastseen();
         if ( my $lasturl = $c->session->{lasturl} ) {
             undef $c->session->{lasturl};
             $c->redirect_to($lasturl);

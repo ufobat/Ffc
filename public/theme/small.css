@@ -103,3 +103,7 @@ img {
     display: inline;
     border: none;
 }
+.userlist table {
+    display: none;
+}
+

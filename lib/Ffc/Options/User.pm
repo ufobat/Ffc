@@ -57,8 +57,10 @@ sub set_email {
     my $c = shift;
     my $email = $c->param('email');
     my $newsmail = $c->param('newsmail') ? 1 : 0;
+    my $hideemail = $c->param('hideemail') ? 1 : 0;
     unless ( $email ) {
-        $c->set_error_f('Email-Adresse nicht gesetzt');
+        $c->set_info_f('Email-Adresse entfernt');
+        $c->dbh_do( q~UPDATE users SET email='' WHERE id=?~, $c->session->{userid} );
         return $c->redirect_to('options_form');
     }
     if ( 1024 < length $email ) {
@@ -70,8 +72,8 @@ sub set_email {
         return $c->redirect_to('options_form');
     }
     $c->dbh_do(
-        'UPDATE users SET email=?, newsmail=? WHERE UPPER(name)=UPPER(?)'
-        , $email, $newsmail, $c->session->{user});
+        'UPDATE users SET email=?, newsmail=?, hideemail=? WHERE id=?'
+        , $email, $newsmail, $hideemail, $c->session->{userid});
     $c->set_info_f('Email-Adresse geändert');
     $c->redirect_to('options_form');
 }
@@ -113,6 +115,57 @@ sub set_password {
         $c->set_error_f('Passwortwechsel fehlgeschlagen')
     }
 
+    $c->redirect_to('options_form');
+}
+
+sub set_infos {
+    my $c = shift;
+    my $phone = $c->param('phone') // '';
+    my $birthdate = $c->param('birthdate') // '';
+    my $infos = $c->param('infos') // '';
+    my $errors = 0;
+    if ( 50 < length $phone ) {
+        $c->set_error_f('Telefonnummer darf lediglich 50 Zeichen enthalten.');
+        $c->flash(phone => $phone);
+        $phone = undef;
+        $errors++;
+    }
+    if ( 10 < length $birthdate ) {
+        $c->set_error_f('Geburtsdatum darf lediglich 10 Zeichen enthalten.');
+        $c->flash(birthdate => $birthdate);
+        $birthdate = undef;
+        $errors++;
+    }
+    if ( 1024 < length $infos ) {
+        $c->set_error_f('Adressinformationen dürfen maximal 1024 Zeichen enthalten.');
+        $c->flash(infos => $infos);
+        $infos = undef;
+        $errors++;
+    }
+    if ( $errors >= 3 ) {
+        return $c->redirect_to('options_form');
+    }
+    my @params = (($phone//()),($birthdate//()),($infos//()));
+    my $sql = 'UPDATE "users" SET '
+            . join(', ',
+                ( defined $phone     ? 'phone=?'     : ()),
+                ( defined $birthdate ? 'birthdate=?' : ()),
+                ( defined $infos     ? 'infos=?'     : ()))
+            . ' WHERE "id"=?';
+    $c->dbh_do($sql, @params, $c->session->{userid});
+    if ( $errors ) {
+        $c->set_info_f('Benutzerdaten teilweise aktualisiert');
+    }
+    else {
+        $c->set_info_f('Benutzerdaten aktualisiert');
+    }
+    $c->redirect_to('options_form');
+}
+
+sub set_hidelastseen {
+    my $c = shift;
+    my $hide = $c->param('hidelastseen') ? 1 : 0;
+    $c->dbh_do('UPDATE "users" SET "hidelastseen"=?, "lastseen"=NULL WHERE "id"=?', $hide, $c->session->{userid});
     $c->redirect_to('options_form');
 }
 

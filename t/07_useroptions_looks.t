@@ -7,7 +7,7 @@ use Testinit;
 use Ffc::Plugin::Config;
 
 use Test::Mojo;
-use Test::More tests => 712;
+use Test::More tests => 802;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
@@ -35,6 +35,7 @@ $t->get_ok('/')
 test_bgcolor();
 test_email();
 test_autorefresh();
+test_hidelastseen();
 
 sub test_bgcolor {
     note 'checking background colors';
@@ -108,13 +109,13 @@ sub test_email {
       ->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr'active activeoptions">Einstellungen<');
-    error('Email-Adresse nicht gesetzt');
+    info('Email-Adresse entfernt');
     $t->post_ok('/options/email', form => { email => '' })
       ->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr'name="email" type="email" value=""')
       ->content_like(qr'active activeoptions">Einstellungen<');
-    error('Email-Adresse nicht gesetzt');
+    info('Email-Adresse entfernt');
     is $dbh->selectall_arrayref(
         'SELECT email FROM users WHERE name=?'
         , undef, $user1)->[0]->[0], '', 'emailadress not set in database';
@@ -148,37 +149,39 @@ sub test_email {
     is $dbh->selectall_arrayref(
         'SELECT email FROM users WHERE name=?'
         , undef, $user1)->[0]->[0], 'me@home.de', 'emailadress set in database';
-    is $dbh->selectall_arrayref(
-        'SELECT newsmail FROM users WHERE name=?'
-        , undef, $user1)->[0]->[0], 0, 'newsmail now inactive in database';
-    $t->post_ok('/options/email', form => { email => 'him@work.com', newsmail => 1 })
-      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
-    $t->get_ok('/options/form')->status_is(200)
-      ->content_like(qr'active activeoptions">Einstellungen<')
-      ->content_like(qr'name="email" type="email" value="him@work.com"');
-    info('Email-Adresse geändert');
-    is $dbh->selectall_arrayref(
-        'SELECT email FROM users WHERE name=?'
-        , undef, $user1)->[0]->[0], 'him@work.com', 'emailadress set in database';
-    is $dbh->selectall_arrayref(
-        'SELECT newsmail FROM users WHERE name=?'
-        , undef, $user1)->[0]->[0], 1, 'newsmail now active again in database';
-    login($user2, $pass2);
-    $t->get_ok('/options/form')
-      ->status_is(200)
-      ->content_like(qr'name="email" type="email" value=""')
-      ->content_like(qr'active activeoptions">Einstellungen<');
-    is $dbh->selectall_arrayref(
-        'SELECT email FROM users WHERE name=?'
-        , undef, $user2)->[0]->[0], '', 'emailadress not set in database';
-    is $dbh->selectall_arrayref(
-        'SELECT newsmail FROM users WHERE name=?'
-        , undef, $user1)->[0]->[0], 1, 'newsmail active in database';
-    login($user1, $pass1);
-    $t->get_ok('/options/form')
-      ->status_is(200)
-      ->content_like(qr'name="email" type="email" value="him@work.com"')
-      ->content_like(qr'active activeoptions">Einstellungen<');
+    for my $field ( qw(news hidee) ) {
+        is $dbh->selectall_arrayref(
+            "SELECT ${field}mail FROM users WHERE name=?"
+            , undef, $user1)->[0]->[0], 0, "${field}mail now inactive in database";
+        $t->post_ok('/options/email', form => { email => 'him@work.com', "${field}mail" => 1 })
+          ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+        $t->get_ok('/options/form')->status_is(200)
+          ->content_like(qr'active activeoptions">Einstellungen<')
+          ->content_like(qr'name="email" type="email" value="him@work.com"');
+        info('Email-Adresse geändert');
+        is $dbh->selectall_arrayref(
+            'SELECT email FROM users WHERE name=?'
+            , undef, $user1)->[0]->[0], 'him@work.com', 'emailadress set in database';
+        is $dbh->selectall_arrayref(
+            "SELECT ${field}mail FROM users WHERE name=?"
+            , undef, $user1)->[0]->[0], 1, "${field}mail now active again in database";
+        login($user2, $pass2);
+        $t->get_ok('/options/form')
+          ->status_is(200)
+          ->content_like(qr'name="email" type="email" value=""')
+          ->content_like(qr'active activeoptions">Einstellungen<');
+        is $dbh->selectall_arrayref(
+            'SELECT email FROM users WHERE name=?'
+            , undef, $user2)->[0]->[0], '', 'emailadress not set in database';
+        is $dbh->selectall_arrayref(
+            "SELECT ${field}mail FROM users WHERE name=?"
+            , undef, $user1)->[0]->[0], 1, "${field}mail active in database";
+        login($user1, $pass1);
+        $t->get_ok('/options/form')
+          ->status_is(200)
+          ->content_like(qr'name="email" type="email" value="him@work.com"')
+          ->content_like(qr'active activeoptions">Einstellungen<');
+    }
 }
 
 sub test_autorefresh {
@@ -256,5 +259,57 @@ sub test_autorefresh {
       ->content_like(qr~autorefresh:\s+3,~);
     $t->get_ok('/session')->status_is(200)
       ->json_is('/autorefresh', 3);
+}
+
+sub test_hidelastseen {
+    login($user1, $pass1);
+
+    $t->get_ok('/options/form')->status_is(200)
+      ->content_like(qr~name="hidelastseen" value="1" checked="checked" />~);
+    is $dbh->selectall_arrayref(
+        "SELECT hidelastseen FROM users WHERE name=?"
+        , undef, $user1)->[0]->[0], 1, "hidelastseen active in database";
+
+    is $dbh->selectall_arrayref(
+        "SELECT CASE WHEN lastseen IS NULL THEN 0 ELSE 1 END FROM users WHERE name=?"
+        , undef, $user1)->[0]->[0], 0, "lastseen is not logged in database";
+
+    $t->post_ok('/options/hidelastseen', form => {hidelastseen => ''})
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+
+    $t->get_ok('/options/form')->status_is(200)
+      ->content_like(qr~name="hidelastseen" value="1" />~);
+    is $dbh->selectall_arrayref(
+        "SELECT hidelastseen FROM users WHERE name=?"
+        , undef, $user1)->[0]->[0], 0, "hidelastseen inactive in database";
+    is $dbh->selectall_arrayref(
+        "SELECT CASE WHEN lastseen IS NULL THEN 0 ELSE 1 END FROM users WHERE name=?"
+        , undef, $user1)->[0]->[0], 1, "lastseen is logged in database";
+
+    $t->post_ok('/options/hidelastseen', form => {hidelastseen => '1'})
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+
+    $t->get_ok('/options/form')->status_is(200)
+      ->content_like(qr~name="hidelastseen" value="1" checked="checked" />~);
+    is $dbh->selectall_arrayref(
+        "SELECT hidelastseen FROM users WHERE name=?"
+        , undef, $user1)->[0]->[0], 1, "hidelastseen inactive in database";
+    is $dbh->selectall_arrayref(
+        "SELECT CASE WHEN lastseen IS NULL THEN 0 ELSE 1 END FROM users WHERE name=?"
+        , undef, $user1)->[0]->[0], 0, "lastseen is not logged in database";
+
+    $t->post_ok('/options/hidelastseen', form => {hidelastseen => ''})
+      ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+
+    login($user2, $pass2);
+
+    $t->get_ok('/options/form')->status_is(200)
+      ->content_like(qr~name="hidelastseen" value="1" checked="checked" />~);
+    is $dbh->selectall_arrayref(
+        "SELECT hidelastseen FROM users WHERE name=?"
+        , undef, $user2)->[0]->[0], 1, "hidelastseen active in database";
+    is $dbh->selectall_arrayref(
+        "SELECT CASE WHEN lastseen IS NULL THEN 0 ELSE 1 END FROM users WHERE name=?"
+        , undef, $user2)->[0]->[0], 0, "lastseen is not logged in database";
 }
 

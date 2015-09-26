@@ -4,6 +4,7 @@ use strict; use warnings; use utf8;
 sub show_userlist {
     my $c = shift;
     $c->counting;
+    $c->generate_userlist(1);
     $c->session->{query} = '';
     $c->stash( queryurl => $c->url_for('search_pmsgs_posts') );
     $c->render(template => 'userlist');
