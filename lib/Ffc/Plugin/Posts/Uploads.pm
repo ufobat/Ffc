@@ -34,13 +34,6 @@ sub _upload_post_do {
         }
     }
 
-    _update_single_file($c, $postid, 'attachement');
-    $c->set_info_f('Datei an den Beitrag angehängt');
-    _redirect_to_show($c);
-};
-
-sub _upload_singe_file {
-    my ( $c, $postid, $param ) = @_;
     my $fileid;
     my $filepathsub = sub { 
         my ($c, $filename, $filetype, $content_type) = @_;
@@ -59,8 +52,11 @@ sub _upload_singe_file {
         }
         return [ 'uploads', $fileid ];
     };
-    $c->file_upload( $param, undef, 'Dateianhang', 1, $c->configdata->{maxuploadsize}, 2, 200, $filepathsub);
-}
+    $c->file_upload( 'attachement', undef, 'Dateianhang', 1, $c->configdata->{maxuploadsize}, 2, 200, $filepathsub);
+    $c->set_info_f('Datei an den Beitrag angehängt');
+
+    _redirect_to_show($c);
+};
 
 sub _download_post {
     my $c = shift;

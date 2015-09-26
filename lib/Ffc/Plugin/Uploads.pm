@@ -26,12 +26,24 @@ sub _is_image {
 }
 
 sub _file_upload {
+    my @p = (@_);
     my $i = 0;
-    for my $file ( @{$_[0]->every_param($_[1])} ) {
-        return unless _single_file_upload($file, @_);
-        $i++;
-        last if $_[0] and $i >= $_[2];
+    my $files = $p[0]->every_param($p[1]);
+    unless ( @$files ) {
+        $p[0]->set_error_f("Kein $p[3] angegeben.");
+        return;
     }
+    my @rets;
+    for my $file ( @$files ) {
+        my @ret = _single_file_upload($file, @p);
+        last unless @ret;
+        push @rets, \@ret;
+        $i++;
+        last if $p[2] and $i >= $p[2];
+    }
+    if   ( not @rets  ) { return }
+    if   ( $p[2] == 1 ) { return @{$rets[0]} }
+    else                { return @rets }
 }
 
 sub _single_file_upload {
