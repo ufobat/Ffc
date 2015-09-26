@@ -28,7 +28,7 @@
             <th>Telefon:</th><td><%= $u->[6] %></td>
         </tr>
         <tr>
-            <th>Geburtsdatum:</th><td><%= $u->[7] %></td>
+            <th>Geboren:</th><td><%= $u->[7] %></td>
         </tr>
     </table>
 %   }

@@ -54,7 +54,9 @@ Features
 * Weiterhin gibt es eine Druckansicht, in der die Beiträge chronologisch von oben nach unten für alle Themen mit ungelesenen Beträgen ohne Menü direkt zum Drucken und chronologisch durchlesen angezeigt werden
 * Foreneinstellungen, die von Benutzern vorgenommen werden können:
   * Passwortwechsel
-  * Email-Adresse angeben (diese kann vom Administrator lediglich ausserhalb des Forums verwendet werden)
+  * Email-Adresse angeben (Administratoren können die immer sehen, falls mal extern was geklärt werden muss (Support)), optional, wahlweise auch für andere Benutzer über Benutzerliste sichtbar
+  * Zusätzliche Benutzerinformationen (Telefonnummer, Geburtstdatum, Adresse) optional
+  * Benutzer kann einstellen, ob andere Benutzer in der Benutzerliste sehen können, wann er das letzte Mal online war, möchte er das nicht sichtbar machen, wird das auch intern nicht mit protokolliert
   * Hintergrundfarbe der Forenwebseite (falls der Administrator das erlaubt, was voreingestellt ist)
   * Ein Avatarbild hochladen, was neben jedem Beitrag oder Kommentar dargestellt wird (Avatar des Verfassers)
   * Minutenintervall für automatisches Neuladen der Forenwebseite, wenn diese im Hintergrund ist und kein Text eingegeben wurde (kann darüber auch deaktiviert werden, setzt man den Wert auf 0)
