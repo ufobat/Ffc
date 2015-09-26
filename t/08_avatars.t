@@ -382,6 +382,11 @@ sub check_file_online {
                 file => Mojo::Asset::Memory->new->add_chunk($content),
                 filename => $fn,
                 content_type => 'image/png',
+            },
+            avatarfile => {
+                file => Mojo::Asset::Memory->new->add_chunk($content),
+                filename => $fn,
+                content_type => 'image/png',
             }
         }
     )->status_is(302)->content_is('')->header_is(Location => '/options/form');
