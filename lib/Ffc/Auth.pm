@@ -12,11 +12,6 @@ sub install_routes {
              ->name('login_check');
 }
 
-sub _update_lastseen {
-    warn('UPDATE "users" SET "lastseen"=CURRENT_TIMESTAMP WHERE "userid"=? AND "hidelastseen"=0',
-        $_[0]->session->{userid});
-}
-
 sub check_login {
     my $c = shift;
     if ( $c->login_ok ) {
