@@ -103,7 +103,7 @@ img {
     display: inline;
     border: none;
 }
-.userlist table {
+#optionsinfobox, .userlist table {
     display: none;
 }
 

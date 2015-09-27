@@ -72,7 +72,7 @@
         <p><button type="submit">Emailadresse und Benachrichtigungseinstellung speichern</button></p>
     </form>
 </div>
-<div class="postbox options">
+<div class="postbox options" id="optionsinfobox">
     <a name="infos"></a>
     <h1>Benutzerinformationen ändern</h1>
     <p>(Im folgenden können einige zusätzliche Informationen angegeben werden, die für alle Benutzer sichtbar sind.)</p>
