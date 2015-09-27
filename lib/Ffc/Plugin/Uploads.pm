@@ -36,7 +36,10 @@ sub _file_upload {
     my @rets;
     for my $file ( @$files ) {
         my @ret = _single_file_upload($file, @p);
-        last unless @ret;
+        unless ( @ret ) {
+            if ( $p[2] == 1 ) { last }
+            else              { next }
+        }
         push @rets, \@ret;
         $i++;
         last if $p[2] and $i >= $p[2];
@@ -66,7 +69,6 @@ sub _single_file_upload {
     }
 
     my $filename = $file->filename;
-
     unless ( $filename and $filename ne $param ) {
         $c->set_error_f('Dateiname fehlt.');
         return;

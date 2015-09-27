@@ -79,6 +79,27 @@ ffcdata.features.init = function(){
     };
 
     /************************************************************************
+     * Dateihochladefelder ergänzen
+     ************************************************************************/
+    var set_upload_multi = function(){
+        var uibox = document.getElementById('uploadinputsbox');
+        if ( !uibox ) return;
+        var uifield = document.getElementById('uploadinputfield');
+        if ( !uifield ) return;
+        var iter = 1;
+        ffcdata.features.fileuploadchange = function(it){
+            var val = it.value;
+            if ( !val || val === '' || iter > 42 ) return;
+            it.onchange = null;
+            var uifieldnew = uifield.cloneNode(true);
+            uifieldnew.firstChild.value = '';
+            uibox.appendChild(uifieldnew);
+            iter++;
+        };
+    };
+
+
+    /************************************************************************
      * Features initial aktiveren
      ************************************************************************/
     if ( !ffcdata.singleuser )
@@ -88,5 +109,7 @@ ffcdata.features.init = function(){
         if ( ffcdata.completerefresh ) set_autorefresh();
         else                           set_menurefresh();
     }
+    set_upload_multi();
 };
+
 

@@ -136,7 +136,7 @@ sub run_tests {
     }
 
     if ( $do_attachements ) {
-        diag 'test add multi attachements works';
+        #diag 'test add multi attachements works';
         login1();
         add_attachement($user1, 1, undef, 3);
         ck();
