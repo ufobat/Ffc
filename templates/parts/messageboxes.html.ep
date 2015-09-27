@@ -1,19 +1,19 @@
 % if ( $error or $warning or $info or flash('info') or flash('error') or flash('warning') ) {
-    <div class="messagebox">
+    <div class="messagebox" onclick="ffcdata.features.hidemessagebox(this)">
 % if ( $error or flash('error') ) {
-      <div class="error" onclick="ffcdata.features.hidemessagebox(this)">
+      <div class="error">
         <h1>Fehler</h1>
         <p><%= $error %> <%= flash('error') %></p>
       </div>
 % }
 % if ( $warning or flash('warning') ) {
-      <div class="warning" onclick="ffcdata.features.hidemessagebox(this)">
+      <div class="warning">
         <h1>Warnung</h1>
         <p><%= $warning %> <%= flash('warning') %></p>
       </div>
 % }
 % if ( $info or flash('info') ) {
-      <div class="info" onclick="ffcdata.features.hidemessagebox(this)">
+      <div class="info">
         <h1>Hinweis</h1>
         <p><%= $info %> <%= flash('info') %></p>
       </div>
