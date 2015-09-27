@@ -3,6 +3,8 @@
  * Start der Initialiserung von Features
  ************************************************************************/
 ffcdata.features = {};
+ffcdata.features.fileuploadchange = function(it){};
+ffcdata.features.hidemessagebox   = function(it){};
 ffcdata.features.init = function(){
 
     /************************************************************************
@@ -98,6 +100,15 @@ ffcdata.features.init = function(){
         };
     };
 
+    /************************************************************************
+     * Benachrichtigungsfenster mittels Klick verschwinden lassen
+     ************************************************************************/
+    var enable_hidemessagebox = function(){
+        ffcdata.features.hidemessagebox = function(it){
+            if( !it ) return;
+            it.style.display = 'none';
+        };
+    }
 
     /************************************************************************
      * Features initial aktiveren
@@ -110,6 +121,7 @@ ffcdata.features.init = function(){
         else                           set_menurefresh();
     }
     set_upload_multi();
+    enable_hidemessagebox();
 };
 
 
