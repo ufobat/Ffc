@@ -60,7 +60,7 @@ sub _single_file_upload {
         return;
     }
     my $filename = $file->filename;
-    if ( ( $fnum > 1 or not $fnum ) and not $filename ) {
+    if ( ( !$fnum or $fnum > 1 ) and not $filename ) {
         return;
     }
     if ( $file->size < $min_s ) {
