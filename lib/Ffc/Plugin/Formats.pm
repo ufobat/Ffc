@@ -40,7 +40,7 @@ our $SmileyRe   = join '|', map {
     s{([\;\&\^\>\<\-\.\:\\\/\(\)\=\|\,\$])}{\\$1}gxoms;
     $_
 } keys %Smiley;
-our $HTMLRe = qr~ul|ol|pre|code|b|u|i|strike|h3|blockquote|quote|li|em~;
+our $HTMLRe = qr~ul|ol|pre|code|b|u|i|strike|h3|blockquote|q|li|em~;
 our %HTMLHandle = (
 #   tag        => [ disable-p, disable-html, set_n, disable-outer-p ],
     ul         => [ 1, 0, 1, 1 ],

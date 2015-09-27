@@ -174,11 +174,11 @@ input[type="text"].titlestring {
 .italic {
     font-style: italic;
 }
-quote, .quote, .postbox blockquote {
+q, .quote, .postbox blockquote {
     color: dimgrey;
 }
-quote:before, .quote:before { content: "„"}
-quote:after,  .quote:after  { content: "“"}
+q:before, .quote:before { content: "„"}
+q:after,  .quote:after  { content: "“"}
 em:before { content: "*"}
 em:after  { content: "*"}
 em, .emotion {

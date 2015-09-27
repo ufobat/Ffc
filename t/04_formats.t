@@ -299,14 +299,14 @@ EOTXT
     ],
     [
         << 'EOTXT',
-Ist <quote>Programm</quote> mit drin? Dachte die kommen von den Herstellern selber oder sind dann eben in der Verwaltungssoftware mit drin (<quote>System</quote>).
+Ist <q>Programm</q> mit drin? Dachte die kommen von den Herstellern selber oder sind dann eben in der Verwaltungssoftware mit drin (<q>System</q>).
 
 Wenn man sie denn macht, ansonsten isses einem ja irgendwie eh wurscht, was das System da zieht. Wird schon wichtig sein werden ... wenn man sie denn macht.
 
 <b>update:</b> jetzt muss ich doch nochmal eine naive Frage stellen, ich tue das aber im entsprechenden Thread (https://local.host/forum.pl/topic/1, Beitrag: https://local.host/forum.pl/topic/16/display/1)
 EOTXT
         << 'EOHTML',
-<p>Ist <quote>Programm</quote> mit drin? Dachte die kommen von den Herstellern selber oder sind dann eben in der Verwaltungssoftware mit drin (<quote>System</quote>).</p>
+<p>Ist <q>Programm</q> mit drin? Dachte die kommen von den Herstellern selber oder sind dann eben in der Verwaltungssoftware mit drin (<q>System</q>).</p>
 <p>Wenn man sie denn macht, ansonsten isses einem ja irgendwie eh wurscht, was das System da zieht. Wird schon wichtig sein werden ... wenn man sie denn macht.</p>
 <p><b>update:</b> jetzt muss ich doch nochmal eine naive Frage stellen, ich tue das aber im entsprechenden Thread (<a href="https://local.host/forum.pl/topic/1," title="Externe Webseite: https://local.host/forum.pl/topic/1," target="_blank">https://local.h…rum.pl/topic/1,</a> Beitrag: <a href="https://local.host/forum.pl/topic/16/display/1" title="Externe Webseite: https://local.host/forum.pl/topic/16/display/1" target="_blank">https://local.h…ic/16/display/1</a>)</p>
 EOHTML

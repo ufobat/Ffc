@@ -128,7 +128,7 @@ ffcdata.editbuttons.init = function(){
     var buttons = [
         // ButtonId, Tag, BlockTag, OuterBlockBreaks, DoubleOuterBreak
         ['h1button',            'h3',     false,        true,  true ],
-        ['quotebutton',         'quote',  'blockquote', true,  true ],
+        ['quotebutton',         'q',      'blockquote', true,  true ],
         ['unorderedlistbutton', false,    'ul',         true,  true ],
         ['orderedlistbutton',   false,    'ol',         true,  true ],
         ['listitembutton',      'li',     false,        true,  false],
