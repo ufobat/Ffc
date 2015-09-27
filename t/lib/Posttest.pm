@@ -134,6 +134,13 @@ sub run_tests {
         no_delete($user1, 3);
         ck();
     }
+
+    if ( $do_attachements ) {
+        diag 'test add multi attachements works';
+        login1();
+        add_attachement($user1, 1, undef, 3);
+        ck();
+    }
 }
 
 sub no_delete {
@@ -245,10 +252,15 @@ sub query_string {
 }
 
 sub add_attachement {
-    my ( $user, $i, $ext ) = @_;
+    my ( $user, $i, $ext, $multi ) = @_;
+    $multi ||= 1;
     my $entry = $entries[$i] or die "no entry count '$i' available";
-    my ( $str, $nam ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
-    $nam .= $ext ? '.exe' : '.png';
+    $ext = $ext ? 'exe' : 'png';
+
+    my @atts = map {;
+            [Testinit::test_randstring(), Testinit::test_randstring() . ".$ext"]
+        } 1 .. $multi;
+
     $t->get_ok("$Urlpref/upload/$entry->[0]");
     if ( $entry->[2] eq $user ) { 
         $t->status_is(200);
@@ -265,19 +277,23 @@ sub add_attachement {
     $t->post_ok("$Urlpref/upload/$entry->[0]", 
         form => { 
             postid => $entry->[0],
-            attachement => {
-                file => Mojo::Asset::Memory->new->add_chunk($str),
-                filename => $nam,
-                'Content-Type' => $ext ? '*/exe' : 'image/png',
-            },
+            attachement => [
+                map {;
+                    {
+                        file => Mojo::Asset::Memory->new->add_chunk($_->[0]),
+                        filename => $_->[1],
+                        'Content-Type' => $ext ? '*/exe' : 'image/png',
+                    }
+                } @atts
+            ]
         }
     );
     $t->status_is(302)->content_is('')
       ->header_like(location => qr~$Urlpref~);
     $t->get_ok($Urlpref)->status_is(200);
     if ( $entry->[2] eq $user ) {
-        push @{$entry->[4]}, [ $attcnt++, $str, $nam ];
-        info('Datei an den Beitrag angehängt');
+        push @{$entry->[4]}, map {[ $attcnt++, $_->[0], $_->[1] ]} @atts;
+        info('Dateien an den Beitrag angehängt');
     }
     else {
         error('Zum angegebene Beitrag kann kein Anhang hochgeladen werden.');
@@ -478,7 +494,7 @@ sub check_attachements {
 
 sub check_delattachements {
     for my $att ( @delatts ) {
-        $t->content_unlike(qr"$Urlpref/download/$att->[0]")
+        $t->content_unlike(qr~$Urlpref/download/$att->[0]"~)
           ->content_unlike(qr~alt="$att->[2]"~);
     }
 }

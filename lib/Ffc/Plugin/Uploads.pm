@@ -41,9 +41,9 @@ sub _file_upload {
         $i++;
         last if $p[2] and $i >= $p[2];
     }
-    if   ( not @rets  ) { return }
-    if   ( $p[2] == 1 ) { return @{$rets[0]} }
-    else                { return @rets }
+    if   ( not @rets            ) { return }
+    if   ( $p[2] and $p[2] == 1 ) { return @{$rets[0]} }
+    else                          { return @rets }
 }
 
 sub _single_file_upload {

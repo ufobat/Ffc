@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 require Posttest;
 
 use Test::Mojo;
-use Test::More tests => 2704;
+use Test::More tests => 3184;
 
 my $cname = 'pmsgs';
 
