@@ -59,6 +59,10 @@ sub _single_file_upload {
         $c->set_error_f("Keine Datei als $name angegeben.");
         return;
     }
+    my $filename = $file->filename;
+    if ( ( $fnum > 1 or not $fnum ) and not $filename ) {
+        return;
+    }
     if ( $file->size < $min_s ) {
         $c->set_error_f("Datei ist zu klein, sollte mindestens ${min_s}B groß sein.");
         return;
@@ -67,8 +71,6 @@ sub _single_file_upload {
         $c->set_error_f("Datei ist zu groß, darf maximal ${max_s}MB groß sein.");
         return;
     }
-
-    my $filename = $file->filename;
     unless ( $filename and $filename ne $param ) {
         $c->set_error_f('Dateiname fehlt.');
         return;
