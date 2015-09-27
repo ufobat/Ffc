@@ -1,5 +1,6 @@
 % layout 'board';
 <div class="postbox headbox" id="headbox">
+%= include 'parts/textpreviewbox';
 % if ( $topicid ) {
     <h1>Themenüberschrift verändern</h1>
     <form action="<%= url_for 'edit_forum_topic_do' %>" method="post">

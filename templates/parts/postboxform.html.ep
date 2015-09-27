@@ -1,11 +1,5 @@
 <div class="postbox headbox" id="headbox">
-    <div class="nodisplay" id="textpreviewbox">
-        <h2>
-            Textvorschau:
-        </h2>
-        <div id="textpreviewarea" class="textpreviewarea postbox"></div>
-        <p class="textright"><button id="closetextpreviewareabutton" title="Vorschau schließen" type="button">Vorschau schließen</button></p>
-    </div>
+%= include 'parts/textpreviewbox';
 % if ( $heading ) {
     <h1>
         <%= $heading %>
