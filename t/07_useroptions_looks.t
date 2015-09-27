@@ -271,7 +271,7 @@ sub test_hidelastseen {
         , undef, $user1)->[0]->[0], 1, "hidelastseen active in database";
 
     is $dbh->selectall_arrayref(
-        "SELECT CASE WHEN lastseen IS NULL THEN 0 ELSE 1 END FROM users WHERE name=?"
+        "SELECT CASE WHEN lastonline IS NULL THEN 0 ELSE 1 END FROM users WHERE name=?"
         , undef, $user1)->[0]->[0], 0, "lastseen is not logged in database";
 
     $t->post_ok('/options/hidelastseen', form => {hidelastseen => ''})
@@ -283,7 +283,7 @@ sub test_hidelastseen {
         "SELECT hidelastseen FROM users WHERE name=?"
         , undef, $user1)->[0]->[0], 0, "hidelastseen inactive in database";
     is $dbh->selectall_arrayref(
-        "SELECT CASE WHEN lastseen IS NULL THEN 0 ELSE 1 END FROM users WHERE name=?"
+        "SELECT CASE WHEN lastonline IS NULL THEN 0 ELSE 1 END FROM users WHERE name=?"
         , undef, $user1)->[0]->[0], 1, "lastseen is logged in database";
 
     $t->post_ok('/options/hidelastseen', form => {hidelastseen => '1'})
@@ -295,7 +295,7 @@ sub test_hidelastseen {
         "SELECT hidelastseen FROM users WHERE name=?"
         , undef, $user1)->[0]->[0], 1, "hidelastseen inactive in database";
     is $dbh->selectall_arrayref(
-        "SELECT CASE WHEN lastseen IS NULL THEN 0 ELSE 1 END FROM users WHERE name=?"
+        "SELECT CASE WHEN lastonline IS NULL THEN 0 ELSE 1 END FROM users WHERE name=?"
         , undef, $user1)->[0]->[0], 0, "lastseen is not logged in database";
 
     $t->post_ok('/options/hidelastseen', form => {hidelastseen => ''})
@@ -309,7 +309,7 @@ sub test_hidelastseen {
         "SELECT hidelastseen FROM users WHERE name=?"
         , undef, $user2)->[0]->[0], 1, "hidelastseen active in database";
     is $dbh->selectall_arrayref(
-        "SELECT CASE WHEN lastseen IS NULL THEN 0 ELSE 1 END FROM users WHERE name=?"
+        "SELECT CASE WHEN lastonline IS NULL THEN 0 ELSE 1 END FROM users WHERE name=?"
         , undef, $user2)->[0]->[0], 0, "lastseen is not logged in database";
 }
 

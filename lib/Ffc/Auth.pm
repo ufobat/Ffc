@@ -28,7 +28,7 @@ sub check_login {
                 = @{$r->[0]}[0, 1, 3, 4, 5, 6, 7, 8];
             $s->{backgroundcolor} = $c->configdata->{backgroundcolor}
                 unless $s->{backgroundcolor};
-            $c->dbh_do('UPDATE "users" SET "lastseen"=CURRENT_TIMESTAMP WHERE "id"=? AND "hidelastseen"=0',
+            $c->dbh_do('UPDATE "users" SET "lastonline"=CURRENT_TIMESTAMP WHERE "id"=? AND "hidelastseen"=0',
                 $s->{userid});
             return 1;
         }

@@ -165,7 +165,7 @@ sub set_infos {
 sub set_hidelastseen {
     my $c = shift;
     my $hide = $c->param('hidelastseen') ? 1 : 0;
-    $c->dbh_do('UPDATE "users" SET "hidelastseen"=?, "lastseen"=NULL WHERE "id"=?', $hide, $c->session->{userid});
+    $c->dbh_do('UPDATE "users" SET "hidelastseen"=?, "lastonline"=NULL WHERE "id"=?', $hide, $c->session->{userid});
     $c->redirect_to('options_form');
 }
 
