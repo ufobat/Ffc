@@ -53,7 +53,7 @@ sub _upload_post_do {
         return [ 'uploads', $fileid ];
     };
     $c->file_upload( 'attachement', undef, 'Dateianhang', 1, $c->configdata->{maxuploadsize}, 2, 200, $filepathsub);
-    $c->set_info_f('Datei an den Beitrag angehängt');
+    $c->set_info_f('Dateien an den Beitrag angehängt');
 
     _redirect_to_show($c);
 };
