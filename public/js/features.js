@@ -64,6 +64,7 @@ ffcdata.features.init = function(){
         ffcdata.features.autorefresh_interval = window.setInterval(function(){
             ffcdata.utils.request('GET', ffcdata.counturl, null, function(res){
                 if ( res > 0 && res > ffcdata.lastcount ) {
+                    set_title(res);
                     ffcdata.utils.request('POST', ffcdata.menufetchurl, 
                         {pageurl: ffcdata.pageurl, queryurl: ffcdata.queryurl, controller: ffcdata.controller}, 
                         function(res){
@@ -75,7 +76,6 @@ ffcdata.features.init = function(){
                         }, true
                     );
                 }
-                set_title();
             });
         }, ffcdata.autorefresh * 60000 );
     };
