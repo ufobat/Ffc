@@ -234,7 +234,9 @@ yeah: \o/ \O/ \0/
 facepalm: m(
 shock: :$ :-$ =$
 ironie: </ironie> </irony>
+sarcasm: </sarcasm>
 attention: !!!
+joke: !joke
 http://www.testurl.de/test/-test--test-test,1234,1234.html
 EOTXT
         << 'EOHTML',
@@ -245,7 +247,9 @@ EOTXT
 <p>facepalm: <img class="smiley" src="/theme/img/smileys/facepalm.png" alt="m(" title="m(" /></p>
 <p>shock: <img class="smiley" src="/theme/img/smileys/shock.png" alt=":$" title=":$" /> <img class="smiley" src="/theme/img/smileys/shock.png" alt=":-$" title=":-$" /> <img class="smiley" src="/theme/img/smileys/shock.png" alt="=$" title="=$" /></p>
 <p>ironie: <img class="smiley" src="/theme/img/smileys/ironie.png" alt="</ironie>" title="</ironie>" /> <img class="smiley" src="/theme/img/smileys/ironie.png" alt="</irony>" title="</irony>" /></p>
+<p>sarcasm: <img class="smiley" src="/theme/img/smileys/sarcasm.png" alt="</sarcasm>" title="</sarcasm>" /></p>
 <p>attention: <img class="smiley" src="/theme/img/smileys/attention.png" alt="!!!" title="!!!" /></p>
+<p>joke: <img class="smiley" src="/theme/img/smileys/joke.png" alt="!joke" title="!joke" /></p>
 <p><a href="http://www.testurl.de/test/-test--test-test,1234,1234.html" title="Externe Webseite: http://www.testurl.de/test/-test--test-test,1234,1234.html" target="_blank">http://www.test…,1234,1234.html</a></p>
 EOHTML
         5
