@@ -29,6 +29,7 @@ our @Smilies = (
     [ yeah       => ['\o/', '\O/',  '\0/',                        ] ],
     [ shock      => [':$',  ':-$',  '=$',                         ] ],
     [ ironie     => ['</ironie>', '</irony>',                     ] ],
+    [ sarcasm    => ['</sarcasm>',                                ] ],
     [ attention  => ['!!!',                                       ] ],
     [ joke       => ['!joke',                                     ] ],
 );
