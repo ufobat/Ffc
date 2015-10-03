@@ -21,7 +21,7 @@ h1, h2, h3 {
 h2 {
     color: gray;
 }
-.topiclist h2:hover, .userlist h2:hover {
+.topiclist h2:hover, .userlist div:hover {
     background: whitesmoke;
     border-color: whitesmoke;
 }
@@ -258,8 +258,6 @@ pre {
 .postbox > ol {
     list-style-type: decimal;
 }
-.textpreviewarea {
-}
 .hovering {
     box-shadow: 0 0 1em dimgrey;
     background: white;
@@ -280,15 +278,12 @@ pre {
 }
 .userlist td, .userlist th {
     padding: .5em;
-    border-color: gainsboro;
-    border-style: solid;
     vertical-align: top;
 }
 .userlist td {
-    border-width: 0 0 .1em 0;
+    text-align: left;
 }
 .userlist th {
-    border-width: 0 0 .1em .1em;
     font-weight: normal;
     color: dimgray;
 }

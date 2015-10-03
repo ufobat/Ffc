@@ -1,5 +1,4 @@
 <div class="postbox headbox" id="headbox">
-%= include 'parts/textpreviewbox';
 % if ( $heading ) {
     <h1>
         <%= $heading %>
@@ -14,6 +13,7 @@
         )</span> 
 %   }
     </h1>
+%= include 'parts/textpreviewbox';
 % }
 <% if ( $description ) { %><p><%= $description %></p><% } %>
     <form action="<%== $dourl %>" accept-charset="UTF-8" method="POST">

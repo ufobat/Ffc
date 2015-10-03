@@ -75,11 +75,13 @@
 <div class="postbox options" id="optionsinfobox">
     <a name="infos"></a>
     <h1>Benutzerinformationen ändern</h1>
-    <p>(Im folgenden können einige zusätzliche Informationen angegeben werden, die für alle Benutzer in der Benutzer-Liste sichtbar sind. Neben dem Geburtstdatum können noch weitere Kontaktinformationen, wie Telefonnummer oder Adresse angegeben werden.)</p>
+    <p>(Im folgenden können einige zusätzliche Informationen angegeben werden, die für alle Benutzer in der Benutzer-Liste sichtbar sind. Neben dem Geburtstdatum (<code>##.##.####</code>) können noch weitere Kontaktinformationen, wie Telefonnummer oder Adresse angegeben werden.)</p>
     <form action="<%= url_for 'set_infos' %>#infos" method="POST">
         <table class="infooptions">
-            <tr><th>Geburtsdatum:</th><td><input type="text" name="birthdate" value="<%= $birthdate %>" /></td></tr>
-            <tr><th>Infos:</th><td><textarea name="infos" class="infos"><%= $infos %></textarea></td></tr>
+            <tr><th>Geburtsdatum:</th><td><input type="date" name="birthdate" value="<%= $birthdate %>" /></td></tr>
+            <tr><td></td><td><a href="<%= url_for 'help' %>" target="_blank">Hilfe</a><span id="editbuttons" class="editbuttons nodisplay">
+            </span></td></tr>
+            <tr><th>Infos:</th><td><textarea name="infos" class="infos" id="textinput"><%= $infos %></textarea></td></tr>
             <tr><td>&nbsp;</td><td><button type="submit">Daten speichern</button></td></tr>
         </table>
     </form>

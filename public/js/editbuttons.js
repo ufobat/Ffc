@@ -161,9 +161,6 @@ ffcdata.editbuttons.init = function(){
     var previewtextarea = document.getElementById('textpreviewarea');
     var show_preview = function(str) {
         // console.log('display preview');
-        previewwindow.style.width = headboxbox.clientWidth + 'px';
-        previewwindow.style.top = headboxbox.offsetTop + 'px';
-        previewwindow.style.left = headboxbox.offsetLeft + 'px';
         previewtextarea.innerHTML = str;
         previewwindow.className = 'hovering';
     };

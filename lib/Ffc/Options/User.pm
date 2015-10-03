@@ -120,16 +120,9 @@ sub set_password {
 
 sub set_infos {
     my $c = shift;
-    my $phone = $c->param('phone') // '';
     my $birthdate = $c->param('birthdate') // '';
     my $infos = $c->param('infos') // '';
     my $errors = 0;
-    if ( 50 < length $phone ) {
-        $c->set_error_f('Telefonnummer darf lediglich 50 Zeichen enthalten.');
-        $c->flash(phone => $phone);
-        $phone = undef;
-        $errors++;
-    }
     if ( 10 < length $birthdate ) {
         $c->set_error_f('Geburtsdatum darf lediglich 10 Zeichen enthalten.');
         $c->flash(birthdate => $birthdate);
@@ -145,10 +138,9 @@ sub set_infos {
     if ( $errors >= 3 ) {
         return $c->redirect_to('options_form');
     }
-    my @params = (($phone//()),($birthdate//()),($infos//()));
+    my @params = (($birthdate//()),($infos//()));
     my $sql = 'UPDATE "users" SET '
             . join(', ',
-                ( defined $phone     ? 'phone=?'     : ()),
                 ( defined $birthdate ? 'birthdate=?' : ()),
                 ( defined $infos     ? 'infos=?'     : ()))
             . ' WHERE "id"=?';

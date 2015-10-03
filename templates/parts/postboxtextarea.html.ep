@@ -16,7 +16,7 @@
             <textarea name="textdata" id="textinput" class="edit<%= $textdata ? ' inedit' : '' %>"><%== $textdata // '' %></textarea>
         </p>
         <p id="subtabuttonp" class="nodisplay">
-            <button id="textpreviewtabutton" title="Vorschau anzeigen für den eingegebenen Text" type="button">Vorschau</button>
+        <button id="textpreviewtabutton" title="Vorschau anzeigen für den eingegebenen Text" type="button">Vorschau</button>
             <button id="closetextabutton" title="Textfeld wieder zusammen klappen" type="button" class="nodisplay">Textfeld einklappen</button>
         </p>
 

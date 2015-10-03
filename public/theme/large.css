@@ -208,7 +208,9 @@ input[type="text"].titlestring {
 .hovering {
     position: absolute;
     margin-top: 0;
-    height: 32em
+    width: 46em;
+    min-width: 46em;
+    max-width: 46em;
 }
 .hovering > h2 {
     padding-top: 1em;
@@ -216,7 +218,7 @@ input[type="text"].titlestring {
 .hovering > div {
     margin-bottom: .25em;
     margin-top: 1em;
-    height: 26.5em;
+    height: 18em;
     overflow: auto;
 }
 .hovering > p {
@@ -226,22 +228,30 @@ input[type="text"].titlestring {
 #textinput:focus {
     box-shadow: 0 0 .25em silver;
 }
-textarea.infos {
-    height: 7em;
+.infooptions #textinput, .infooptions #textinput:focus {
+    height: 10em;
+    width: 30em;
 }
 .infooptions th {
     text-align: right;
     vertical-align: top;
 }
-.userlist th {
-    width: 2em;
-    width: 5%;
-}
-.userlist td {
-    /*max-width: 10em;*/
-    width: 40%;
-}
 .userlist table {
     width: 100%;
+}
+.userlist h2 {
+    margin-bottom: 0;
+}
+.userlist th {
+    width: 5em;
+}
+.userlist .userinfobox {
+    width: 50%;
+}
+.userlist td, .userlist th {
+    vertical-align: top;
+}
+.userlist table, .userlist td, .userlist th {
+    margin-top: 0;
 }
 

@@ -9,6 +9,7 @@
 % if ( @$users ) {
 <div class="postbox userlist">
 % for my $u ( @$users ) {
+  <div>
     <h2<%== $u->[2] ? ' class="newpost"' : '' %>>
         <img class="avatar" src="<%= url_for 'avatar_show', userid => $u->[0] %>" />
         <a href="<%= url_for 'show_pmsgs', usertoid => $u->[0] %>"><%= $u->[1] %></a>
@@ -21,17 +22,27 @@
 %   if ( $u->[4] or $u->[6] or $u->[7] or $u->[8] ) {
     <table>
         <tr>
+%     if ( $u->[8] ) {
+            <td rowspan="2" class="userinfobox"><pre><%= $u->[8] %></pre></td>
+%     }
+%     if ( $u->[4] ) {
             <th>Email:</th><td><%= $u->[4] %></td>
-            <th rowspan="3">Adresse:</th><td rowspan="3"><pre><%= $u->[8] %></pre></td>
-        </tr>
-        <tr>
-            <th>Telefon:</th><td><%= $u->[6] %></td>
-        </tr>
-        <tr>
+%     } elsif ( $u->[7] ) {
             <th>Geboren:</th><td><%= $u->[7] %></td>
+%     } else {
+            <th>&nbsp;</th><td>&nbsp;</td>
+%     }
+        </tr>
+        <tr>
+%     if ( $u->[4] ) {
+            <th>Geboren:</th><td><%= $u->[7] %></td>
+%     } else {
+            <th>&nbsp;</th><td>&nbsp;</td>
+%     }
         </tr>
     </table>
 %   }
+  </div>
 % }
 </div>
 % }
