@@ -36,13 +36,13 @@ $t->post_ok('/menu', json => {pageurl => '/bla/blubb', queryurl => '/blu/plum', 
         </form>
     </div>
     <div class="otherspopuplink menuentry">
-        <span class="othersmenulinktext">Men&uuml;</span>
+        <span class="othersmenulinktext">Einstellungen</span>
         <div class="otherspopup popup">
             <p class="optionslink">
                 <a href="/quick" target="_blank" title="Schnelle einfache &Uuml;bersicht &uuml;ber neue Beitr&auml;ge">Statusfenster</a>
             </p>
             <p class="optionslink">
-                <a href="/options/form"><span class="linktext linkoptions">Einstellungen</span></a>
+                <a href="/options/form"><span class="linktext linkoptions">Benutzerkonto</span></a>
             </p>
             <p class="optionslink">
                 <a href="/options/admin/form"><span class="linktext linkoptions">Administration</span></a>
@@ -73,7 +73,7 @@ $t->post_ok('/menu', json => {pageurl => '/bla/blubb', queryurl => '/blu/plum', 
 
     </div>
     <div class="menuentry">
-        <a href="/pmsgs"><span class="linktext linkpmsgs">Nachrichten</span></a>
+        <a href="/pmsgs"><span class="linktext linkpmsgs">Benutzer</span></a>
         <div class="userspopup popup">
             <p><a href="/pmsgs/1">admin</a></p>
         </div>
@@ -93,13 +93,13 @@ $t->post_ok('/menu', json => {pageurl => '/bla/blubb', queryurl => '/blu/plum', 
         </form>
     </div>
     <div class="otherspopuplink menuentry">
-        <span class="othersmenulinktext">Men&uuml;</span>
+        <span class="othersmenulinktext">Einstellungen</span>
         <div class="otherspopup popup">
             <p class="optionslink">
                 <a href="/quick" target="_blank" title="Schnelle einfache &Uuml;bersicht &uuml;ber neue Beitr&auml;ge">Statusfenster</a>
             </p>
             <p class="optionslink">
-                <a href="/options/form"><span class="linktext linkoptions">Einstellungen</span></a>
+                <a href="/options/form"><span class="linktext linkoptions">Benutzerkonto</span></a>
             </p>
             <p><a href="/help" target="_blank">Hilfe</a></p>
             <p class="othersmenutext">Angemeldet als $user</p>

@@ -9,7 +9,7 @@
     </div>
 % if ( @$users ) {
     <div class="menuentry">
-        <a href="<%= url_for 'show_pmsgs_userlist' %>"><span class="linktext linkpmsgs<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>"><% if ( $newmsgscount ) { %><span class="mark">Nachrichten (<%= $newmsgscount %>) </span><% } else { %>Nachrichten<% } %></span></a>
+        <a href="<%= url_for 'show_pmsgs_userlist' %>"><span class="linktext linkpmsgs<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>"><% if ( $newmsgscount ) { %><span class="mark">Benutzer (<%= $newmsgscount %>) </span><% } else { %>Benutzer<% } %></span></a>
 %= include('layouts/parts/users');
     </div>
 % }
@@ -33,7 +33,7 @@
         </form>
     </div>
     <div class="otherspopuplink menuentry">
-        <span class="othersmenulinktext">Men&uuml;</span>
+        <span class="othersmenulinktext">Einstellungen</span>
         <div class="otherspopup popup">
 % if ( $controller eq 'forum' ) {
             <p class="optionslink">
@@ -48,7 +48,7 @@
                 <a href="<%= url_for 'quickview_html' %>" target="_blank" title="Schnelle einfache &Uuml;bersicht &uuml;ber neue Beitr&auml;ge">Statusfenster</a>
             </p>
             <p class="optionslink">
-                <a href="<%= url_for 'options_form' %>"><span class="linktext linkoptions<%= $action eq 'options_form' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
+                <a href="<%= url_for 'options_form' %>"><span class="linktext linkoptions<%= $action eq 'options_form' ? ' active activeoptions' : '' %>">Benutzerkonto</span></a>
             </p>
 % if ( session()->{admin} ) {
             <p class="optionslink">

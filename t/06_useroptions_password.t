@@ -16,8 +16,8 @@ sub info  { Testinit::test_info(  $t, @_           ) }
 
 sub check_optionsform {
     $t->status_is(200)
-      ->content_like(qr'active activeoptions">Einstellungen<')
-      ->content_unlike(qr'Benutzerverwaltung')
+      ->content_like(qr'active activeoptions">Benutzerkonto<')
+      ->content_unlike(qr'Administration')
       ->content_unlike(qr'<form action="/options/useradmin" method="POST">');
 }
 

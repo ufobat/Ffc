@@ -50,7 +50,7 @@ sub test_bgcolor {
     $t->post_ok("/options/bgcolor/color", form => {})
       ->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200)
-      ->content_like(qr'active activeoptions">Einstellungen<');
+      ->content_like(qr'active activeoptions">Benutzerkonto<');
     info('Hintergrundfarbe zurück gesetzt');
 
     for my $c ( @good ) {
@@ -68,7 +68,7 @@ sub test_bgcolor {
             info($goodreset);
         }
         $t->status_is(200)
-          ->content_like(qr'active activeoptions">Einstellungen<');
+          ->content_like(qr'active activeoptions">Benutzerkonto<');
         $t->get_ok('/')
           ->status_is(200)
           ->content_like(qr~Angemeldet als "$user1"~);
@@ -108,13 +108,13 @@ sub test_email {
     $t->post_ok('/options/email')
       ->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200)
-      ->content_like(qr'active activeoptions">Einstellungen<');
+      ->content_like(qr'active activeoptions">Benutzerkonto<');
     info('Email-Adresse entfernt');
     $t->post_ok('/options/email', form => { email => '' })
       ->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr'name="email" type="email" value=""')
-      ->content_like(qr'active activeoptions">Einstellungen<');
+      ->content_like(qr'active activeoptions">Benutzerkonto<');
     info('Email-Adresse entfernt');
     is $dbh->selectall_arrayref(
         'SELECT email FROM users WHERE name=?'
@@ -123,7 +123,7 @@ sub test_email {
       ->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr'name="email" type="email" value=""')
-      ->content_like(qr'active activeoptions">Einstellungen<');
+      ->content_like(qr'active activeoptions">Benutzerkonto<');
     error('Email-Adresse darf maximal 1024 Zeichen lang sein');
     is $dbh->selectall_arrayref(
         'SELECT email FROM users WHERE name=?'
@@ -132,7 +132,7 @@ sub test_email {
       ->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr'name="email" type="email" value=""')
-      ->content_like(qr'active activeoptions">Einstellungen<');
+      ->content_like(qr'active activeoptions">Benutzerkonto<');
     error('Email-Adresse sieht komisch aus');
     is $dbh->selectall_arrayref(
         'SELECT email FROM users WHERE name=?'
@@ -143,7 +143,7 @@ sub test_email {
     $t->post_ok('/options/email', form => { email => 'me@home.de', newsmail => 0 })
       ->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200)
-      ->content_like(qr'active activeoptions">Einstellungen<')
+      ->content_like(qr'active activeoptions">Benutzerkonto<')
       ->content_like(qr'name="email" type="email" value="me@home.de"');
     info('Email-Adresse geändert');
     is $dbh->selectall_arrayref(
@@ -156,7 +156,7 @@ sub test_email {
         $t->post_ok('/options/email', form => { email => 'him@work.com', "${field}mail" => 1 })
           ->status_is(302)->content_is('')->header_is(Location => '/options/form');
         $t->get_ok('/options/form')->status_is(200)
-          ->content_like(qr'active activeoptions">Einstellungen<')
+          ->content_like(qr'active activeoptions">Benutzerkonto<')
           ->content_like(qr'name="email" type="email" value="him@work.com"');
         info('Email-Adresse geändert');
         is $dbh->selectall_arrayref(
@@ -169,7 +169,7 @@ sub test_email {
         $t->get_ok('/options/form')
           ->status_is(200)
           ->content_like(qr'name="email" type="email" value=""')
-          ->content_like(qr'active activeoptions">Einstellungen<');
+          ->content_like(qr'active activeoptions">Benutzerkonto<');
         is $dbh->selectall_arrayref(
             'SELECT email FROM users WHERE name=?'
             , undef, $user2)->[0]->[0], '', 'emailadress not set in database';
@@ -180,7 +180,7 @@ sub test_email {
         $t->get_ok('/options/form')
           ->status_is(200)
           ->content_like(qr'name="email" type="email" value="him@work.com"')
-          ->content_like(qr'active activeoptions">Einstellungen<');
+          ->content_like(qr'active activeoptions">Benutzerkonto<');
     }
 }
 
