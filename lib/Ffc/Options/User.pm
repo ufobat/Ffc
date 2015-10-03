@@ -120,16 +120,16 @@ sub set_password {
 
 sub set_infos {
     my $c = shift;
-    my $birthdate = $c->param('birthdate') // '';
-    my $infos = $c->param('infos') // '';
+    my $birthdate = $c->param('birthdate');
+    my $infos = $c->param('infos');
     my $errors = 0;
-    if ( 10 < length $birthdate ) {
+    if ( $birthdate and 10 < length $birthdate ) {
         $c->set_error_f('Geburtsdatum darf lediglich 10 Zeichen enthalten.');
         $c->flash(birthdate => $birthdate);
         $birthdate = undef;
         $errors++;
     }
-    if ( 1024 < length $infos ) {
+    if ( $infos and 1024 < length $infos ) {
         $c->set_error_f('Adressinformationen dürfen maximal 1024 Zeichen enthalten.');
         $c->flash(infos => $infos);
         $infos = undef;
