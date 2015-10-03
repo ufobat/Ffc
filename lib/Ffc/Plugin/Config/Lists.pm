@@ -101,7 +101,7 @@ sub _generate_userlist {
      if ( $_[1] ) {
          $sql .= q~, CASE WHEN u."hideemail" THEN '' ELSE u."email" END~
               .  q~, CASE WHEN u."hidelastseen" THEN '' ELSE datetime(u."lastonline", 'localtime') END~
-              .  q~, u."phone", u."birthdate", u."infos"~;
+              .  q~, u."birthdate", u."infos"~;
      }
     $sql .= q~
 FROM "users" u

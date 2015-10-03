@@ -22,17 +22,16 @@ sub options_form {
     $c->stash(fontsizes => \%Ffc::Plugin::Config::FontSizeMap);
     $c->counting;
     my $r = $c->dbh_selectall_arrayref(
-        'SELECT email, newsmail, hideemail, phone, birthdate, infos, hidelastseen FROM users WHERE id=?'
+        'SELECT email, newsmail, hideemail, birthdate, infos, hidelastseen FROM users WHERE id=?'
         , $c->session->{userid});
     $r = 'ARRAY' eq ref $r ? $r->[0] : [];
     $c->stash(
         email        => $r->[0],
         newsmail     => $r->[1],
         hideemail    => $r->[2],
-        phone        => $c->stash('phone') // $r->[3],
-        birthdate    => $c->stash('birthdate') // $r->[4],
-        infos        => $c->stash('infos') // $r->[5],
-        hidelastseen => $r->[6],
+        birthdate    => $c->stash('birthdate') // $r->[3],
+        infos        => $c->stash('infos') // $r->[4],
+        hidelastseen => $r->[5],
     );
     $c->render(template => 'optionsform');
 }
