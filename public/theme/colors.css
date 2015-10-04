@@ -35,17 +35,17 @@ button {
     color: black;
     background: lavender;
 }
-#textinput, input {
+#textinput, input, select {
     color: black;
     background: white;
 }
-#textinput, input, button {
+#textinput, input, button, select {
     border: .1em steelblue solid;
 }
-#textinput:hover, input:hover {
+#textinput:hover, input:hover, button:active, select:hover {
     border-color: dodgerblue;
 }
-#textinput:focus, input:focus, button:hover {
+#textinput:focus, input:focus, button:hover, select:focus {
     border-color: blue;
     box-shadow: 0 0 .25em silver;
 }
