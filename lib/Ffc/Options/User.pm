@@ -158,6 +158,7 @@ sub set_hidelastseen {
     my $c = shift;
     my $hide = $c->param('hidelastseen') ? 1 : 0;
     $c->dbh_do('UPDATE "users" SET "hidelastseen"=?, "lastonline"=NULL WHERE "id"=?', $hide, $c->session->{userid});
+    $c->set_info_f($hide ? 'Letzer Online-Zeitpunkt wird versteckt': 'Letzer Online-Zeitpunkt wird für andere Benutzer angezeigt');
     $c->redirect_to('options_form');
 }
 
