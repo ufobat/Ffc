@@ -59,11 +59,13 @@ button:hover {
 a > img {
     border: .1em steelblue solid;
 }
-a {
+a, .othersmenulinktext {
     color: steelblue;
-    text-decoration: underline;
     border: none;
     background: none;
+}
+a {
+    text-decoration: underline;
     cursor: pointer;
 }
 a:hover {
