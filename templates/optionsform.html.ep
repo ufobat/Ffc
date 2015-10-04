@@ -69,7 +69,7 @@
             <input type="checkbox" name="hideemail" value="1"<%== $hideemail ? ' checked="checked"' : '' %> />
             Email in der Benutzerliste verstecken
         </p>
-        <p><button type="submit">Emailadresse und Benachrichtigungseinstellung speichern</button></p>
+        <p><button type="submit">Email-Einstellungen speichern</button></p>
     </form>
 </div>
 <div class="postbox options" id="optionsinfobox">
