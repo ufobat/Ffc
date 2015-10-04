@@ -99,9 +99,9 @@ form {
     margin: -0.25em 0 .5em 1em;
     float: right;
     font-size: 1em;
-    max-width: 7.5em;
-    min-width: 2.5em;
-    height: 5em;
+    max-width: 6em;
+    min-width: 2em;
+    height: 4em;
     overflow: hidden;
     text-align: center;
 }
@@ -113,7 +113,7 @@ li {
     margin-left: 2em;
 }
 .userlist .avatar {
-    height: 2.75em;
+    height: 3em;
     margin-top: .05em;
 }
 img.smiley, img.icon {
