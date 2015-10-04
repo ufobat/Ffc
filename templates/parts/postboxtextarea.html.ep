@@ -3,7 +3,7 @@
 %   if ( defined $postid ) {
             <input type="hidden" name="postid" value="<%= $postid %>" />
 %   }
-            <button type="submit" class="send">Speichern</button>
+            <button type="submit" class="send"><%= $controller eq 'pmsgs' ? 'Senden' : 'Speichern' %></button>
             (
             <a href="<%== $returl %>">abbrechen</a>,
 % }
@@ -13,7 +13,7 @@
             )
         </p>
         <p>
-            <textarea name="textdata" id="textinput" class="edit<%= $textdata ? ' inedit' : '' %>"><%== $textdata // '' %></textarea>
+            <textarea required name="textdata" id="textinput" class="edit<%= $textdata ? ' inedit' : '' %>"><%== $textdata // '' %></textarea>
         </p>
         <p id="subtabuttonp" class="nodisplay">
         <button id="textpreviewtabutton" title="Vorschau anzeigen für den eingegebenen Text" type="button">Vorschau</button>

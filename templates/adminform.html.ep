@@ -10,13 +10,13 @@
         <input type="hidden" name="overwriteok" value="0" />
         <p>
             Benutzername:
-            <input type="text" name="username" value="" />
+            <input required type="text" name="username" value="" />
         </p>
         <p>
             Passwort:
-            <input type="password" name="newpw1" value="" />
+            <input required type="password" name="newpw1" value="" />
             wiederholen:
-            <input type="password" name="newpw2" value="" />
+            <input required type="password" name="newpw2" value="" />
         </p>
         <p>
             <input type="checkbox" name="active" checked="checked" />
@@ -37,9 +37,9 @@
         <input type="hidden" name="overwriteok" value="1" />
         <p>
             Passwort:
-            <input type="password" name="newpw1" value="" />
+            <input required type="password" name="newpw1" value="" />
             wiederholen:
-            <input type="password" name="newpw2" value="" />
+            <input required type="password" name="newpw2" value="" />
         </p>
         <p>
             <input type="checkbox" name="active"<%== $u->[2] ? ' checked="checked"' : '' %> />
@@ -84,7 +84,7 @@
     <p>(Hier kann ein neues Favoriten-Icon hochgeladen werden, welches dann in der Browser-Tableiste oder in den Lesezeichen des Browsers verwendet wird. Das originale Icon findest du <a href="<%= url_for '/theme/img/favicon.png' %>" title="Standard-Favoriten-Icon">hier</a>.)</p>
     <p><a href="<%= url_for 'favicon_show' %>"><img src="<%= url_for 'favicon_show' %>" alt="Derzeitiges Favoriten-Icon" /></a> (derzeitiges Favoriten-Icon)</p>
     <form action="<%= url_for 'favicon_upload' %>#faviconuploadform" enctype="multipart/form-data" method="POST">
-        <input name="faviconfile" type="file" accept="image/*" />
+        <input required name="faviconfile" type="file" accept="image/*" />
         <button type="submit">Favoriten-Icon hochladen</button>
     </form>
 </div>
