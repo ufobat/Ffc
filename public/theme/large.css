@@ -193,8 +193,7 @@ input[type="text"].titlestring {
     display: none;
 }
 .othersmenulinktext {
-    cursor: pointer;
-    text-decoration: underline;
+    cursor: default;
 }
 .topiclistpopup {
     margin-left: -15em;
