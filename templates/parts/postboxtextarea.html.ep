@@ -3,7 +3,7 @@
 %   if ( defined $postid ) {
             <input type="hidden" name="postid" value="<%= $postid %>" />
 %   }
-            %= submit_button 'Speichern', class => 'send'
+            <button type="submit" class="send">Speichern</button>
             (
             <a href="<%== $returl %>">abbrechen</a>,
 % }

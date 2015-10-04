@@ -120,11 +120,14 @@ sub set_password {
 
 sub set_infos {
     my $c = shift;
-    my $birthdate = $c->param('birthdate');
-    my $infos = $c->param('infos');
+    my $birthdate = $c->param('birthdate') // '';
+    my $infos = $c->param('infos') // '';
     my $errors = 0;
-    if ( $birthdate and 10 < length $birthdate ) {
-        $c->set_error_f('Geburtsdatum darf lediglich 10 Zeichen enthalten.');
+    if ( $birthdate eq '' or $birthdate =~ m~\A(\d\d?)\.(\d\d?)\.(\d\d\d\d)?\z~xmso ) {
+        $birthdate = sprintf '%02d.%02d.%s', $1, $2, $3 // '';
+    }
+    else {
+        $c->set_error_f('Geburtsdatum muss die Form "##.##.####" haben, wobei das Jahr weggelassen werden kann.');
         $c->flash(birthdate => $birthdate);
         $birthdate = undef;
         $errors++;

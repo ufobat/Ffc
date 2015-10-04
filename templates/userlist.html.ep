@@ -34,7 +34,7 @@
 %     }
         </tr>
         <tr>
-%     if ( $u->[4] ) {
+%     if ( $u->[4] and $u->[7] ) {
             <th>Geboren:</th><td><%= $u->[7] %></td>
 %     } else {
             <th>&nbsp;</th><td>&nbsp;</td>

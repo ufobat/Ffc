@@ -99,8 +99,8 @@ EOSQL
 sub _generate_userlist {
      my $sql = q~SELECT u."id", u."name", COALESCE(COUNT(p."id"),0), l."lastid"~;
      if ( $_[1] ) {
-         $sql .= q~, CASE WHEN u."hideemail" THEN '' ELSE u."email" END~
-              .  q~, CASE WHEN u."hidelastseen" THEN '' ELSE datetime(u."lastonline", 'localtime') END~
+         $sql .= q~, CASE WHEN u."hideemail"=1 THEN '' ELSE u."email" END~
+              .  q~, CASE WHEN u."hidelastseen"=1 THEN '' ELSE datetime(u."lastonline", 'localtime') END~
               .  q~, u."birthdate", u."infos"~;
      }
     $sql .= q~

@@ -8,7 +8,7 @@ use utf8;
 
 use Carp;
 use Test::Mojo;
-use Test::More tests => 43;
+use Test::More tests => 238;
 
 ###############################################################################
 note q~Testsystem vorbereiten~;
@@ -33,7 +33,7 @@ my $email = Testinit::test_randstring() . '@' . Testinit::test_randstring() . '.
 note q~Emailadresse eintragen~;
 ###############################################################################
 login_user1();
-$t->post_ok('/options/email', form => { email => $email })
+$t->post_ok('/options/email', form => { email => $email, hideemail => 1 })
   ->status_is(302)->content_is('')->header_is(Location => '/options/form');
 $t->get_ok('/options/form')->status_is(200)
   ->content_like(qr'active activeoptions">Benutzerkonto<')
