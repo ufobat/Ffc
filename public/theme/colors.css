@@ -31,19 +31,27 @@ h3 {
 .loginform, .headbox, .popup {
     background: whitesmoke;
 }
-#textinput {
-    resize: vertical;
-    padding: .1em;
+button {
+    color: black;
+    background: lavender;
+}
+#textinput, input {
     color: black;
     background: white;
+}
+#textinput, input, button {
     border: .1em steelblue solid;
 }
-#textinput:focus {
+#textinput:hover, input:hover {
+    border-color: dodgerblue;
+}
+#textinput:focus, input:focus, button:hover {
     border-color: blue;
     box-shadow: 0 0 .25em silver;
 }
-#textinput:hover {
-    border-color: dodgerblue;
+#textinput {
+    resize: vertical;
+    padding: .1em;
 }
 a > img {
     border: .1em steelblue solid;
