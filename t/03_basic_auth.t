@@ -86,10 +86,10 @@ sub check_notloggedin {
     note 'check that i am not logged in';
     $t->status_is($error ? 403 : 200)
       ->content_like(qr/Angemeldet als "\&lt;noone\&gt;"/)
-      ->content_like(qr/<input type="text" name="username"/)
-      ->content_like(qr/<input type="password" name="password"/)
+      ->content_like(qr/<input required type="text" name="username"/)
+      ->content_like(qr/<input required type="password" name="password"/)
       ->content_like(qr~<form action="/login" method="POST">~i)
-      ->content_like(qr~<input type="submit" value="anmelden" class="linkalike~);
+      ->content_like(qr~<button type="submit" class="linkalike">Anmelden</button>~);
 }
 
 sub check_loggedin {

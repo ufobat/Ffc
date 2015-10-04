@@ -123,37 +123,50 @@ sub set_infos {
     my $birthdate = $c->param('birthdate') // '';
     my $infos = $c->param('infos') // '';
     my $errors = 0;
-    if ( $birthdate eq '' or $birthdate =~ m~\A(\d\d?)\.(\d\d?)\.(\d\d\d\d)?\z~xmso ) {
-        $birthdate = sprintf '%02d.%02d.%s', $1, $2, $3 // '';
+    my @msginfo;
+    my @errors;
+    if ( $birthdate =~ m~\A(\d\d?)\.(\d\d?)\.(\d\d\d\d)?\z~xmso ) {
+        if ( $3 and not $3 > 0 ) { $errors++ }
+        if ( $1 == 0 or $1 > 31        ) { $errors++ }
+        if ( $2 == 0 or $2 > 12        ) { $errors++ }
+        unless ( $errors ) {
+            push @msginfo, 'Geburtsdatum aktualisiert';
+            if ( $3 ) { $birthdate = sprintf '%02d.%02d.%04d', $1, $2, $3 }
+            else      { $birthdate = sprintf '%02d.%02d.',     $1, $2 }
+        }
+    }
+    elsif ( $birthdate eq '' ) {
+        push @msginfo, 'Geburtsdatum entfernt';
     }
     else {
-        $c->set_error_f('Geburtsdatum muss die Form "##.##.####" haben, wobei das Jahr weggelassen werden kann.');
+        $errors++;
+    }
+    if ( $errors > 0 ) {
+        push @errors, 'Geburtsdatum muss gültig sein und die Form "##.##.####" haben, wobei das Jahr weggelassen werden kann.';
         $c->flash(birthdate => $birthdate);
         $birthdate = undef;
         $errors++;
     }
     if ( $infos and 1024 < length $infos ) {
-        $c->set_error_f('Adressinformationen dürfen maximal 1024 Zeichen enthalten.');
+        push @errors, 'Benutzerinformationen dürfen maximal 1024 Zeichen enthalten.';
         $c->flash(infos => $infos);
         $infos = undef;
         $errors++;
     }
-    if ( $errors >= 3 ) {
-        return $c->redirect_to('options_form');
+    else {
+        push @msginfo, $infos ? 'Informationen aktualisiert' : 'Informationen entfernt';
     }
     my @params = (($birthdate//()),($infos//()));
-    my $sql = 'UPDATE "users" SET '
-            . join(', ',
-                ( defined $birthdate ? 'birthdate=?' : ()),
-                ( defined $infos     ? 'infos=?'     : ()))
-            . ' WHERE "id"=?';
-    $c->dbh_do($sql, @params, $c->session->{userid});
-    if ( $errors ) {
-        $c->set_info_f('Benutzerdaten teilweise aktualisiert');
+    if ( @params ) {
+        my $sql = 'UPDATE "users" SET '
+                . join(', ',
+                    ( defined $birthdate ? 'birthdate=?' : ()),
+                    ( defined $infos     ? 'infos=?'     : ()))
+                . ' WHERE "id"=?';
+        $c->dbh_do($sql, @params, $c->session->{userid});
     }
-    else {
-        $c->set_info_f('Benutzerdaten aktualisiert');
-    }
+    $c->set_info_f(@msginfo) if @msginfo;
+    $c->set_error_f(@errors) if @errors;
     $c->redirect_to('options_form');
 }
 

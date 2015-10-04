@@ -19,23 +19,23 @@
             zuletzt online: <%= format_timestamp($u->[5]) %><% } %>
         </span>
     </h2>
-%   if ( $u->[4] or $u->[6] or $u->[7] or $u->[8] ) {
+%   if ( $u->[4] or $u->[6] or $u->[7] ) {
     <table>
         <tr>
-%     if ( $u->[8] ) {
-            <td rowspan="2" class="userinfobox"><pre><%= $u->[8] %></pre></td>
+%     if ( $u->[7] ) {
+            <td rowspan="2" class="userinfobox"><pre><%= $u->[7] %></pre></td>
 %     }
 %     if ( $u->[4] ) {
             <th>Email:</th><td><%= $u->[4] %></td>
-%     } elsif ( $u->[7] ) {
-            <th>Geboren:</th><td><%= $u->[7] %></td>
+%     } elsif ( $u->[6] ) {
+            <th>Geboren:</th><td><%= $u->[6] %></td>
 %     } else {
             <th>&nbsp;</th><td>&nbsp;</td>
 %     }
         </tr>
         <tr>
-%     if ( $u->[4] and $u->[7] ) {
-            <th>Geboren:</th><td><%= $u->[7] %></td>
+%     if ( $u->[4] and $u->[6] ) {
+            <th>Geboren:</th><td><%= $u->[6] %></td>
 %     } else {
             <th>&nbsp;</th><td>&nbsp;</td>
 %     }

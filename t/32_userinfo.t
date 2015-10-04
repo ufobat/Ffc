@@ -7,8 +7,9 @@ use Testinit;
 use utf8;
 
 use Carp;
+use Data::Dumper;
 use Test::Mojo;
-use Test::More tests => 238;
+use Test::More tests => 4259;
 
 ###############################################################################
 note q~Testsystem vorbereiten~;
@@ -117,19 +118,30 @@ sub test_data {
         $t->post_ok('/options/infos', form => { birthdate => $bd, infos => $io })
           ->status_is(302)->content_is('')->header_is(Location => '/options/form');
         $t->get_ok('/options/form')->status_is(200);
-        if ( exists $p{BirthDate} and not ( exists $p{BirthDateError} and $p{BirthDateError} ) ) {
-            $birthdate = $bd;
+        if ( defined($p{BirthDate}) and not ( defined($p{BirthDateError}) and $p{BirthDateError} ) ) {
+            note qq~Geburtsdatum wird im Test global umgesetzt auf "$bd"~;
+            if ( $bd =~ m~\A(\d\d?)\.(\d\d?)\.(\d\d\d\d)?~xsmo ) {
+                if ( $3 ) { $birthdate = sprintf '%02d.%02d.%04d', $1, $2, $3 }
+                else      { $birthdate = sprintf '%02d.%02d.',     $1, $2     }
+            }
+            else {
+                $birthdate = '';
+            }
         }
         $t->content_like(qr~<input type="date" name="birthdate" value="$birthdate" />~);
-        if ( exists $p{Info} and not ( exists $p{InfoError} and $p{InfoError} ) ) {
+        if ( defined($p{Info}) and not ( defined($p{InfoError}) and $p{InfoError} ) ) {
+            note qq~Info wird im Test global umgesetzt auf "$io"~;
             $infos = $io;
         }
-        $t->content_like(qr~<input type="date" name="info" value="$infos" />~);
+        $t->content_like(qr~<textarea name="infos" class="infos" id="textinput">$infos</textarea>~);
     }
-    for my $err ( qw(BirthDateError InfoError ) ) {
-        error($p{$err}) if exists $p{$err}
+    if ( $p{BirthDateError} or $p{InfoError} ) {
+        error(join ' ', grep {$_} @p{qw(BirthDateError InfoError)});
     }
-    for my $inf ( qw(HideMailOkMsg LastOnlineOkMsg BirthDateOkBsg InfoOkMsg) ) {
+    if ( $p{BirthDateOkMsg} or $p{InfoOkMsg} ) {
+        $p{BirthDateInfoOkMsg} = join ' ', grep {$_} @p{qw(BirthDateOkMsg InfoOkMsg)}
+    }
+    for my $inf ( qw(HideMailOkMsg LastOnlineOkMsg BirthDateInfoOkMsg) ) {
         info($p{$inf}) if exists $p{$inf};
     }
 }
@@ -140,17 +152,128 @@ note q~Tests laufen lassen~;
 note q~Ausgangslage checken~;
 check_data();
 
-note q~Online-Status-Anzeige umschalten~;
-test_data(HideLastSeen => 0, HideLastSeenOkMsg => 'Letzter Online-Status wird für andere Benutzer angezeigt');
-check_data();
-test_data(HideLastSeen => 1, HideLastSeenOkMsg => 'Letzter Online-Status wird versteckt');
-check_data();
-test_data(HideLastSeen => 0, HideLastSeenOkMsg => 'Letzter Online-Status wird für andere Benutzer angezeigt');
-check_data();
+sub test_online_status {
+    note q~Online-Status-Anzeige umschalten~;
+    test_data(HideLastSeen => 0, HideLastSeenOkMsg => 'Letzter Online-Status wird für andere Benutzer angezeigt');
+    check_data();
+    test_data(HideLastSeen => 1, HideLastSeenOkMsg => 'Letzter Online-Status wird versteckt');
+    check_data();
+    test_data(HideLastSeen => 0, HideLastSeenOkMsg => 'Letzter Online-Status wird für andere Benutzer angezeigt');
+    check_data();
+}
 
-note q~Email-Adress-Anzeige umschalten~;
-test_data(HideMail => 0, HideMailOkMsg => 'Email-Adresse geändert');
-check_data();
-test_data(HideMail => 1, HideMailOkMsg => 'Email-Adresse geändert');
-check_data();
-test_data(HideMail => 0, HideMailOkMsg => 'Email-Adresse geändert');
+sub test_email_visible {
+    note q~Email-Adress-Anzeige umschalten~;
+    test_data(HideMail => 0, HideMailOkMsg => 'Email-Adresse geändert');
+    check_data();
+    test_data(HideMail => 1, HideMailOkMsg => 'Email-Adresse geändert');
+    check_data();
+    test_data(HideMail => 0, HideMailOkMsg => 'Email-Adresse geändert');
+    check_data();
+}
+
+my @bdakt = (BirthDateOkMsg => 'Geburtsdatum aktualisiert');
+my @bdentf = (BirthDateOkMsg => 'Geburtsdatum entfernt');
+my @bderr = (BirthDateError => 'Geburtsdatum muss gültig sein und die Form &quot;##.##.####&quot; haben, wobei das Jahr weggelassen werden kann.');
+my @infakt = (InfoOkMsg => 'Informationen aktualisiert');
+my @infentf = (InfoOkMsg => 'Informationen entfernt');
+my @inferr = (InfoError => 'Benutzerinformationen dürfen maximal 1024 Zeichen enthalten.');
+my %params;
+sub test_one_data {
+    my ( $i, $str, @msgs ) = @_;
+    my $p = sprintf '%s%02d', $str, $i;
+    note qq~Test-Set '$p': ~ . Dumper($params{$p});
+    if ( exists $params{$p} ) { $p = $params{$p} }
+    else { confess "Testvariable '$p' unbekannt: erlaubt: " . keys %params  }
+    test_data(@$p, @msgs);
+    check_data();
+}
+
+%params = ( %params,
+    BirthDateError01 => [ BirthDate => 'asdfasdfas' ],
+    BirthDateError02 => [ BirthDate => '    ' ],
+    BirthDateError03 => [ BirthDate => '00000000' ],
+    BirthDateError04 => [ BirthDate => '00.00.0000' ],
+    BirthDateError05 => [ BirthDate => '03.00.' ],
+    BirthDateError06 => [ BirthDate => '03.13.' ],
+    BirthDateError07 => [ BirthDate => '0.03.' ],
+    BirthDateError08 => [ BirthDate => '32.03.' ],
+    BirthDateError09 => [ BirthDate => '03.03.0000' ],
+    BirthDateError10 => [ BirthDate => '03.03.000' ],
+    BirthDateOk01 => [ BirthDate => '03.03.' ],
+    BirthDateOk02 => [ BirthDate => '4.04.' ],
+    BirthDateOk03 => [ BirthDate => '05.5.' ],
+    BirthDateOk04 => [ BirthDate => '6.6.' ],
+    BirthDateOk05 => [ BirthDate => '7.7.1001' ],
+    BirthDateOk06 => [ BirthDate => '08.8.1002' ],
+    BirthDateOk07 => [ BirthDate => '9.09.1003' ],
+    BirthDateOk08 => [ BirthDate => '' ],
+);
+sub test_birthdate_single {
+    note q~Geburtstdatum einzeln testen~;
+    test_one_data($_, 'BirthDateError', @bderr,  @infentf) for 1 .. 3;
+    test_one_data($_, 'BirthDateOk',    @bdakt,  @infentf) for 1 .. 7;
+    test_one_data($_, 'BirthDateError', @bderr,  @infentf) for 4 .. 6;
+    test_one_data($_, 'BirthDateOk',    @bdentf, @infentf) for 8;
+    test_one_data($_, 'BirthDateError', @bderr,  @infentf) for 7 .. 10;
+}
+
+%params = ( %params,
+    InfosError01 => [ Info => 'x' x 1025 ],
+    InfosOk01 => [ Info => 'x' x 1024 ],
+    InfosOk02 => [ Info => Testinit::test_randstring() ],
+    InfosOk03 => [ Info => Testinit::test_randstring() ],
+    InfosOk04 => [ Info => '' ],
+);
+sub test_infos_single {
+    note q~Infos einzeln testen~;
+    test_one_data(1, 'InfosError', @inferr, @bdentf);
+    test_one_data(1, 'InfosOk', @infakt, @bdentf);
+    test_one_data(2, 'InfosOk', @infakt, @bdentf);
+    test_one_data(4, 'InfosOk', @infentf, @bdentf);
+    test_one_data(1, 'InfosOk', @infakt, @bdentf);
+    test_one_data(1, 'InfosError', @inferr, @bdentf);
+    test_one_data(4, 'InfosOk', @infentf, @bdentf);
+    test_one_data(1, 'InfosError', @inferr, @bdentf);
+}
+
+sub test_two_data {
+    my ( $ik, $im, $dk, $dm ) = @_;
+    confess qq~Erster Info-Key "$ik" nicht bekannt~
+        unless exists $params{$ik};
+    confess qq~Zweiter Geburtsdatum-Key "$dk" nicht bekannt~
+        unless exists $params{$dk};
+    test_data(@{$params{$ik}}, @$im, @{$params{$dk}}, @$dm);
+    check_data();
+}
+sub test_both_infos_and_birthdate {
+    note q~Geburtstdatum und Infos im Zusammenspiel testen~;
+    my @ips = (
+        [InfosError01 => \@inferr],
+        [InfosOk01 => \@infakt],
+        [InfosOk02 => \@infakt],
+        [InfosOk03 => \@infakt],
+        [InfosOk04 => \@infentf],
+    );
+    my @bds = (
+        map({;[sprintf('BirthDateOk%02d',$_) => \@bdakt]} 1 .. 7),
+        [BirthDateOk08 => \@bdentf],
+        map({;[sprintf('BirthDateError%02d',$_) => \@bderr]} 1 .. 10),
+    );
+    for my $i ( @ips ) {
+        for my $d ( @bds ) {
+            test_two_data(@$i, @$d);
+        }
+    }
+}
+
+###############################################################################
+note q~Tests laufen lassen~;
+###############################################################################
+
+test_online_status();
+test_email_visible();
+test_birthdate_single();
+test_infos_single();
+test_both_infos_and_birthdate();
+
