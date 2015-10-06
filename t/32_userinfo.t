@@ -9,7 +9,7 @@ use utf8;
 use Carp;
 use Data::Dumper;
 use Test::Mojo;
-use Test::More tests => 4259;
+use Test::More tests => 1668;
 
 ###############################################################################
 note q~Testsystem vorbereiten~;
@@ -182,7 +182,7 @@ my %params;
 sub test_one_data {
     my ( $i, $str, @msgs ) = @_;
     my $p = sprintf '%s%02d', $str, $i;
-    note qq~Test-Set '$p': ~ . Dumper($params{$p});
+    #note qq~Test-Set '$p': ~ . Dumper($params{$p});
     if ( exists $params{$p} ) { $p = $params{$p} }
     else { confess "Testvariable '$p' unbekannt: erlaubt: " . keys %params  }
     test_data(@$p, @msgs);
@@ -251,14 +251,16 @@ sub test_both_infos_and_birthdate {
     my @ips = (
         [InfosError01 => \@inferr],
         [InfosOk01 => \@infakt],
-        [InfosOk02 => \@infakt],
-        [InfosOk03 => \@infakt],
+        #[InfosOk02 => \@infakt],
+        #[InfosOk03 => \@infakt],
         [InfosOk04 => \@infentf],
     );
     my @bds = (
-        map({;[sprintf('BirthDateOk%02d',$_) => \@bdakt]} 1 .. 7),
+        #map({;[sprintf('BirthDateOk%02d',$_) => \@bdakt]} 1 .. 7),
+        map({;[sprintf('BirthDateOk%02d',$_) => \@bdakt]} 1 .. 2), # sollte reichen für den test, sonst ufert das aus
         [BirthDateOk08 => \@bdentf],
-        map({;[sprintf('BirthDateError%02d',$_) => \@bderr]} 1 .. 10),
+        #map({;[sprintf('BirthDateError%02d',$_) => \@bderr]} 1 .. 10),
+        map({;[sprintf('BirthDateError%02d',$_) => \@bderr]} 1 .. 2), # sollte reichen für den test, sonst ufert das aus
     );
     for my $i ( @ips ) {
         for my $d ( @bds ) {
