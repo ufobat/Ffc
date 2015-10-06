@@ -6,7 +6,7 @@
         <div id="uploadinputsbox">
             <p id="uploadinputfield"><%= file_field attachement => (accept => '*', onchange => 'ffcdata.features.fileuploadchange(this)') %></p>
         </div>
-        %= submit_button 'Hochladen', class => 'linkalike send'
+        <button type="submit" class="linkalike send">Hochladen</button>
     </form>
     <a href="<%== $returl %>" title="Den Vorgang abbrechen">Abbrechen</a>
 </div>
