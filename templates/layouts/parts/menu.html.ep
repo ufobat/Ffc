@@ -5,14 +5,22 @@
 
     <div class="menuentry">
         <span class="othersmenulinktext<%= $controller eq 'forum' ? ' active activeforum' : '' %>"><%= @$users ? 'Forum' : 'Themen' %><% if ( $newpostcount ) { %> (<span class="mark"><%= $newpostcount %></span>)<% } %></span>
-<%= $topics && @$topics ? include('layouts/parts/topics') : '' %>
+        <div class="topicpopup popup">
+            <p class="separated"><a href="<%= url_for 'show_forum_topiclist', page => 1 %>"><span class="linktext linkforum">Themenübersicht</span></a></p>
+% for my $t ( @$topics ) {
+            <p<%== $t->[10] ? qq~ class="$t->[10]"~ : '' %>><a href="<%= url_for 'show_forum', topicid => $t->[0] %>"><%= substr $t->[2], 0, $configdata->{urlshorten} %></a>...<% if ( $t->[3] and not $t->[5] ) { %> (<span class="mark"><%= $t->[3] %></span>)<% } %></p>
+% }
+        </div>
     </div>
-% if ( @$users ) {
     <div class="menuentry">
         <span class="othersmenulinktext<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>">Benutzer<% if ( $newmsgscount ) { %><span class="mark"> (<%= $newmsgscount %>)</span><% } %></span>
-%= include('layouts/parts/users');
-    </div>
+        <div class="userspopup popup">
+            <p class="separated"><a href="<%= url_for 'show_pmsgs_userlist' %>"><span class="linktext linkpmsgs">Benutzerliste</span></a>
+% for my $u ( @$users ) {
+            <p><a href="<%= url_for 'show_pmsgs', usertoid => $u->[0] %>"><%= $u->[1] %></a><% if ( $u->[2] ) { %> (<span class="mark"><%= $u->[2] %></span>)<% } %></p>
 % }
+        </div>
+    </div>
     <div class="menuentry">
         <a href="<%= url_for 'show_notes', page => 1 %>"><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
     </div>

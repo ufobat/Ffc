@@ -1,6 +1,0 @@
-        <div class="userspopup popup">
-            <p class="separated"><a href="<%= url_for 'show_pmsgs_userlist' %>"><span class="linktext linkpmsgs">Benutzerliste</span></a>
-% for my $u ( @$users ) {
-            <p><a href="<%= url_for 'show_pmsgs', usertoid => $u->[0] %>"><%= $u->[1] %></a><% if ( $u->[2] ) { %> (<span class="mark"><%= $u->[2] %></span>)<% } %></p>
-% }
-        </div>
