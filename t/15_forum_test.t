@@ -46,7 +46,7 @@ $t->get_ok('/topic/2/ignore')->status_is(302)
   ->header_like(location => qr~\A/~);
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~<title>\($newcntsum\)\s+Ffc\s+Forum~)
-  ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span></a>~xms)
+  ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span>~xms)
   ->content_like(qr~href="/topic/2/unignore"~)
   ->content_like(qr~href="/topic/1/ignore"~);
 info('Zum gewählten Thema werden keine neuen Beiträge mehr angezählt.');
@@ -59,7 +59,7 @@ $t->get_ok('/topic/2/unignore')->status_is(302)
   ->header_like(location => qr~\A/~);
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~<title>\($newcntsum\)\s+Ffc\s+Forum~)
-  ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span></a>~xms)
+  ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span>~xms)
   ->content_like(qr~href="/topic/2/ignore"~)
   ->content_like(qr~href="/topic/1/ignore"~);
 info('Das gewählte Thema wird jetzt nicht mehr ignoriert.');
@@ -88,7 +88,7 @@ sub check_env {
     login1();
     $t->get_ok('/')->status_is(200)
       ->content_like(qr~<title>\(0\)\s+Ffc\s+Forum~)
-      ->content_like(qr~activeforum">Forum</span></a>~);
+      ->content_like(qr~activeforum">Forum</span>~);
     check_for_topic_count($t, $Topics[$_], $_ + 1, 0) for 0 .. $#Topics;
 
     # login zum lesen
@@ -97,7 +97,7 @@ sub check_env {
     my $newcntsum = $newcnt + 2;
     $t->get_ok('/')->status_is(200)
       ->content_like(qr~<title>\($newcntsum\)\s+Ffc Forum~)
-      ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span></a>~xms);
+      ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span>~xms);
     #use Data::Dumper; diag Dumper $newcnt, $newcntsum, $entries;
     check_for_topic_count($t, $Topics[$_], $_ + 1, $_ ? 1 : $newcnt) for 0 .. $#Topics;
 
@@ -106,7 +106,7 @@ sub check_env {
     my $u1 = users(1);
     $t->get_ok('/topic/1')->status_is(200)
       ->content_like(qr~<title>\($newcntsum\)\s+Ffc\s+Forum~)
-      ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span></a>~xms)
+      ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span>~xms)
       ->content_like(qr~/pmsgs/2"\s+title="Private\s+Nachricht\s+an\s+den\s+Beitragsautoren\s+schreiben">private\s+Nachricht</a>~xms);
     $entries->[-1]->[5] = 0;
 
@@ -117,7 +117,7 @@ sub check_env {
     # jetzt wurde einiges gelesen
     $t->get_ok('/')->status_is(200)
       ->content_like(qr~<title>\($newcntsum\)\s+Ffc\s+Forum~)
-      ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span></a>~xms);
+      ->content_like(qr~activeforum">Forum\s+\(<span\s+class="mark">$newcntsum</span>\)</span>~xms);
     check_for_topic_count($t, $Topics[0], 1, 0);
     check_for_topic_count($t, $Topics[$_], $_ + 1, 1) for 1 .. $#Topics;
 
