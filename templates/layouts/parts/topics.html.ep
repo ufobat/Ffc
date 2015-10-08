@@ -1,4 +1,5 @@
         <div class="topicpopup popup">
+            <p class="separated"><a href="<%= url_for 'show_forum_topiclist', page => 1 %>"><span class="linktext linkforum">Themenübersicht</span></a></p>
 % for my $t ( @$topics ) {
             <p<%== $t->[10] ? qq~ class="$t->[10]"~ : '' %>><a href="<%= url_for 'show_forum', topicid => $t->[0] %>"><%= substr $t->[2], 0, $configdata->{urlshorten} %></a>...<% if ( $t->[3] and not $t->[5] ) { %> (<span class="mark"><%= $t->[3] %></span>)<% } %></p>
 % }

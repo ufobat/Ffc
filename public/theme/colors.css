@@ -300,4 +300,7 @@ pre {
     font-weight: normal;
     color: dimgray;
 }
+.separated {
+    border-bottom: .1em silver solid;
+}
 
