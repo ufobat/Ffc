@@ -253,4 +253,7 @@ input[type="text"].titlestring {
 .userlist table, .userlist td, .userlist th {
     margin-top: 0;
 }
+.postbox .smallfont, h1 .smallfont, .postbox .functionlinks {
+    white-space: nowrap;
+}
 
