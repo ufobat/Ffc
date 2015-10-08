@@ -103,7 +103,7 @@ img {
     display: inline;
     border: none;
 }
-#optionsinfobox, .userlist table, p.smallnodisplay {
+#optionsinfobox, .userlist table, .smallnodisplay, p.smallnodisplay {
     display: none;
 }
 .menu {
