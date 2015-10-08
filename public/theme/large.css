@@ -18,7 +18,7 @@ body > * > *, .hovering > .postbox > *, blockquote > p {
 h1 {
     font-size: 1.25em;
 }
-h2, h3 {
+.postbox h1, h2, h3 {
     font-size: 1em;
 }
 img {
