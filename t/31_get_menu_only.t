@@ -25,8 +25,9 @@ EOMENU
   << "EOMENU",
     <div class="menuentry">
         <span class="othersmenulinktext">Themen</span>
-        <div class="topicpopup popup">
-            <p class="separated"><a href="/forum"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>
+        <div class="topicpopup popup otherspopup">
+            <p><a href="/forum"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>
+            <p class="separated"><a href="/topic/new" title="Neues Thema beginnen">Neues Thema</a></p>
         </div>
     </div>
 EOMENU
@@ -68,7 +69,7 @@ EOMENU
             <p class="separated"><a href="/help" target="_blank">Hilfe</a></p>
 EOMENU
   << "EOMENU",
-            <p class="othersmenutext">Angemeldet als admin</p>
+            <p class="othersmenutext smallnodisplay">Angemeldet als admin</p>
 EOMENU
   << "EOMENU",
             <p class="logoutbutton2">
@@ -112,17 +113,18 @@ EOMENU
   << "EOMENU",
     <div class="menuentry">
         <span class="othersmenulinktext">Forum</span>
-        <div class="topicpopup popup">
-            <p class="separated"><a href="/forum"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>
+        <div class="topicpopup popup otherspopup">
+            <p><a href="/forum"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>
+            <p class="separated"><a href="/topic/new" title="Neues Thema beginnen">Neues Thema</a></p>
         </div>
     </div>
 EOMENU
   << "EOMENU",
     <div class="menuentry">
         <span class="othersmenulinktext">Benutzer</span>
-        <div class="userspopup popup">
+        <div class="userspopup popup otherspopup">
             <p class="separated"><a href="/pmsgs"><span class="linktext linkpmsgs">Benutzerliste</span></a>
-            <p><a href="/pmsgs/1">admin</a></p>
+            <p class="smallnodisplay"><a href="/pmsgs/1">admin</a></p>
         </div>
     </div>
 EOMENU
@@ -164,7 +166,7 @@ EOMENU
             <p class="separated"><a href="/help" target="_blank">Hilfe</a></p>
 EOMENU
   << "EOMENU",
-            <p class="othersmenutext">Angemeldet als $user</p>
+            <p class="othersmenutext smallnodisplay">Angemeldet als $user</p>
 EOMENU
   << "EOMENU",
             <p class="logoutbutton2">

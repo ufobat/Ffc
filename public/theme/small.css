@@ -103,7 +103,10 @@ img {
     display: inline;
     border: none;
 }
-#optionsinfobox, .userlist table {
+#optionsinfobox, .userlist table, p.smallnodisplay {
     display: none;
+}
+.menu {
+    text-align: justify;
 }
 

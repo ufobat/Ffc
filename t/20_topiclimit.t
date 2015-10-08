@@ -34,9 +34,10 @@ sub check_topics {
         }
     }
     note 'check popup topics';
-    my $topicpopup = join '\\s*', 
-        '<div class="topicpopup popup">',
-        '<p class="separated"><a href="/forum"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>',
+    my $topicpopup = join "\\s*\n\\s*", 
+        '<div class="topicpopup popup otherspopup">',
+        '<p><a href="/forum"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>',
+        '<p class="separated"><a href="/topic/new" title="Neues Thema beginnen">Neues Thema</a></p>',
         map( {; 
             my $id = $_ + 1; my $text = $topics[$_];
             qq~<p(?:\\s+class="[\\w\\s]+")?><a href="/topic/$id">$text</a>...~
