@@ -13,7 +13,6 @@
 % }
         </div>
     </div>
-    <a class="smallnodisplay" href="<%= url_for 'show_forum_topiclist', page => 1 %>" title="Themen&uuml;bersicht"><span class="linktext linkforum">=</span></a>
 % if ( @$users ) {
     <div class="menuentry">
         <span class="othersmenulinktext<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>">Benutzer<% if ( $newmsgscount ) { %><span class="mark"> (<%= $newmsgscount %>)</span><% } %></span>
