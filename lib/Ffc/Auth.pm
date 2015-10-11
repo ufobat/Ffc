@@ -29,7 +29,7 @@ sub check_login {
             $s->{backgroundcolor} = $c->configdata->{backgroundcolor}
                 unless $s->{backgroundcolor};
             $c->dbh_do('UPDATE "users" SET "lastonline"=CURRENT_TIMESTAMP WHERE "id"=? AND "hidelastseen"=0',
-                $s->{userid});
+                $s->{userid}) unless $c->match->endpoint->name() eq 'countings';
             return 1;
         }
         else {
