@@ -160,7 +160,7 @@ sub del_post {
     $t->get_ok("$Urlpref/delete/$edbid");
     if ( $entries[$eid][2] eq $user ) {
         $t->status_is(200)
-          ->content_like(qr~<form\s+action="$Urlpref/delete/$edbid"\s+accept-charset="UTF-8"\s+method="POST">\s*<p>Möchten Sie den unten gezeigten Beitrag wirklich komplett und unwiederruflich entfernen\?</p>\s*<input\s+class="linkalike\s+send"\s+type="submit"\s+value="Entfernen"(?:\s+/)?>\s*</form>~);
+          ->content_like(qr~<form\s+action="$Urlpref/delete/$edbid"\s+accept-charset="UTF-8"\s+method="POST">\s*<p>Möchten Sie den unten gezeigten Beitrag wirklich komplett und unwiederruflich entfernen\?</p>\s*<p>\s*<button\s+type="submit"\s+class="linkalike\s+send">Entfernen</button>\s*</p>\s*</form>~);
     }
     else {
         $t->status_is(302)->content_is('')
@@ -214,7 +214,7 @@ sub del_attachement {
     $t->get_ok("$Urlpref/upload/delete/$edbid/$aid");
     if ( $entries[$eid][2] eq $user ) {
         $t->status_is(200)
-          ->content_like(qr~<form\s+action="$Urlpref/upload/delete/$edbid/$aid"\s+accept-charset="UTF-8"\s+method="POST">\s*<input\s+class="linkalike\s+send"\s+type="submit"\s+value="Entfernen"(?:\s+/)?>\s*</form>~)
+          ->content_like(qr~<form\s+action="$Urlpref/upload/delete/$edbid/$aid"\s+accept-charset="UTF-8"\s+method="POST">\s*<button\s+type="submit"\s+class="linkalike\s+send">Entfernen</button>\s*</form>~)
           ->content_like(qr~Möchten Sie den gezeigten Anhang zu unten gezeigtem Beitrag wirklich löschen\?~);
     }
     else {
