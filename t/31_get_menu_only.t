@@ -26,7 +26,7 @@ EOMENU
     <div class="menuentry">
         <span class="othersmenulinktext">Themen</span>
         <div class="topicpopup popup otherspopup">
-            <p><a href="/forum"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>
+            <p class="separated"><a href="/forum"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>
         </div>
     </div>
 EOMENU
@@ -113,7 +113,7 @@ EOMENU
     <div class="menuentry">
         <span class="othersmenulinktext">Forum</span>
         <div class="topicpopup popup otherspopup">
-            <p><a href="/forum"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>
+            <p class="separated"><a href="/forum"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>
         </div>
     </div>
 EOMENU
