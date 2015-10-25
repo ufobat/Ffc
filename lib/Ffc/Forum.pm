@@ -3,6 +3,7 @@ use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 
 use Ffc::Forum::Topics;
+use Ffc::Forum::Readlater;
 use Ffc::Forum::Printpreview;
 
 sub install_routes { 
@@ -94,6 +95,17 @@ sub install_routes {
     # Diese Route verschiebt einen Beitrag in ein anderes Thema
     $l->route('/topic/:topicid/move/:postid', topicid => $Ffc::Digqr, postid => $Ffc::Digqr)->via('post')
       ->to(controller => 'forum', action => 'moveto_topiclist_do')->name('move_forum_topiclist_do');
+
+    # Behandlung der Später-Lesen-Liste
+    $l->route('/forum/readlater/list')->via('get')
+      ->to(controller => 'forum', action => 'list_readlater')
+      ->name('list_readlater');
+    $l->route('/forum/readlater/mark/:postid')->via('get')
+      ->to(controller => 'forum', action => 'mark_readlater')
+      ->name('mark_readlater');
+    $l->route('/forum/readlater/unmark/:postid')->via('get')
+      ->to(controller => 'forum', action => 'unmark_readlater')
+      ->name('unmark_readlater');
     
     # Standardrouten für die Beitragsbehandlung
     Ffc::Plugin::Posts::install_routes_posts($l, 'forum', '/topic/:topicid', topicid => $Ffc::Digqr);
