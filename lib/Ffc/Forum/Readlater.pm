@@ -3,7 +3,22 @@ use strict; use warnings; use utf8;
 
 sub mark_readlater {
     my $c = shift;
-    $c->redirect_to('show_posts');
+    my ( $userid, $postid ) = ( $c->session->{userid}, $c->param('postid') );
+    my $r =  $c->dbh_selectall_arrayref(
+        'SELECT "postid" FROM "readlater" WHERE "postid"=? AND "userid"=?',
+        $postid, $userid
+    );
+    if ( @$r ) {
+        $c->set_info_f('Vormerkung besteht bereits');
+    }
+    else {
+        $c->dbh_selectall_arrayref(
+            'INSERT INTO "readlater" ("postid", "userid") VALUES (?,?)',
+            $postid, $userid
+        );
+        $c->set_info_f('Beitrag wurde vorgemerkt')
+    }
+    $c->redirect_to('show_forum', topicid => $c->param('topicid'));
 }
 
 sub unmark_readlater {

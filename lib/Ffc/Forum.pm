@@ -100,7 +100,7 @@ sub install_routes {
     $l->route('/forum/readlater/list')->via('get')
       ->to(controller => 'forum', action => 'list_readlater')
       ->name('list_readlater');
-    $l->route('/forum/readlater/mark/:postid')->via('get')
+    $l->route('/forum/readlater/:topicid/mark/:postid', topicid => $Ffc::Digqr, postid => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'mark_readlater')
       ->name('mark_readlater');
     $l->route('/forum/readlater/unmark/:postid')->via('get')
