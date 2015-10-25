@@ -38,6 +38,7 @@ sub register {
     $app->helper( inc_post_highscore       => \&_inc_highscore            );
     $app->helper( dec_post_highscore       => \&_dec_highscore            );
     $app->helper( get_single_post          => \&_get_single_post          );
+    $app->helper( pagination               => \&_pagination               );
     return $self;
 }
 

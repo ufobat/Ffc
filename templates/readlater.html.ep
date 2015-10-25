@@ -1,0 +1,12 @@
+% layout 'board';
+<script type="text/javascript">
+    ffcdata.completerefresh = true;
+</script>
+<div class="headbox" id="headbox">
+    <h1>Zum lesen vorgemerkte Beiträge</h1>
+</div>
+% for my $p ( @$rposts) {
+%= include 'parts/postbox', post => $p
+% }
+%= include 'parts/pagelinks', more => @$rposts >= session->{postlimit} ? 1 : 0
+

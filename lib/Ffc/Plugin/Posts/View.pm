@@ -100,7 +100,7 @@ sub _show_posts {
     $c->stash(queryurl => $queryurl) if $queryurl;
     my $sql = $c->get_show_sql($wheres, undef, $postid);
     my $posts = $c->dbh_selectall_arrayref(
-        $sql, $c->session->{userid}, @wherep, ( $query ? "\%$query\%" : () ), ($postid || ()),  _pagination($c)
+        $sql, $c->session->{userid}, @wherep, ( $query ? "\%$query\%" : () ), ($postid || ()),  $c->pagination()
     );
     $c->stash(posts => $posts);
 
