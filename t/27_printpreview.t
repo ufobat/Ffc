@@ -15,9 +15,10 @@ my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 
 my ( $user1, $pass1 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
 my ( $user2, $pass2 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
+my $liuser = 1;
 Testinit::test_add_users( $t, $admin, $apass, $user1, $pass1, $user2, $pass2 );
-sub login1 { Testinit::test_login(   $t, $user1, $pass1 ) }
-sub login2 { Testinit::test_login(   $t, $user2, $pass2 ) }
+sub login1 { Testinit::test_login(   $t, $user1, $pass1 ); $liuser = 1 }
+sub login2 { Testinit::test_login(   $t, $user2, $pass2 ); $liuser = 2 }
 my $timeqr = qr~(?:jetzt|(\d?\d\.\d?\d\.\d\d\d\d, )?\d?\d:\d\d)~;
 
 ##################################################
@@ -96,8 +97,9 @@ sub check_topic_in_ppv {
             }
             elsif ( $lastseen >= $artid ) {
                 note("Beitrag Nr. $artid wurde bereits gelesen");
+                my $class = $liuser == 1 ? ' ownpost' : '';
                 $t->content_like(qr~
-<div class="postbox">
+<div class="postbox$class">
     <h2 class="title">
         <img class="avatar" src="/avatar/2" alt="" />
         <span class="username">$user1</span>,
@@ -107,6 +109,7 @@ sub check_topic_in_ppv {
                 <span class="othersmenulinktext">Aktionen,</span>
                 <div class="otherspopup popup postpopup">
                     <p><a href="/pmsgs/2" title="Private Nachricht an den Beitragsautoren schreiben">private Nachricht</a></p>
+                    <p><a href="/forum/readlater/list" title="Beitrag zum späteren lesen vorgemerkt">für später vorgemerkt</a></p>
                     <p><a href="/topic/$id/display/$artid" target="_blank" title="Direkter Link zum Beitrag">verlinken</a></p>
                 </div>
             </span>
@@ -133,6 +136,7 @@ sub check_topic_in_ppv {
                 <span class="othersmenulinktext">Aktionen,</span>
                 <div class="otherspopup popup postpopup">
                     <p><a href="/pmsgs/2" title="Private Nachricht an den Beitragsautoren schreiben">private Nachricht</a></p>
+                    <p><a href="/forum/readlater/list" title="Beitrag zum späteren lesen vorgemerkt">für später vorgemerkt</a></p>
                     <p><a href="/topic/$id/display/$artid" target="_blank" title="Direkter Link zum Beitrag">verlinken</a></p>
                 </div>
             </span>
