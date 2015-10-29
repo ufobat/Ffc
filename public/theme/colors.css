@@ -303,4 +303,6 @@ pre {
 .separated {
     border-bottom: .1em silver solid;
 }
-
+div.ownpost {
+    color: dimgray;
+}
