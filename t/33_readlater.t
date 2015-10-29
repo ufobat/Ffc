@@ -9,13 +9,13 @@ use utf8;
 use Carp;
 use Data::Dumper;
 use Test::Mojo;
-use Test::More tests => 1668;
+use Test::More tests => 59;
 
 ###############################################################################
 note q~Testsystem vorbereiten~;
 ###############################################################################
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
-my ( $user1, $pass1 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
+my ( $user1, $pass1, $user2, $pass2 ) = ( map {; Testinit::test_randstring() } 1 .. 4 );
 Testinit::test_add_users( $t, $admin, $apass, $user1, $pass1, $user2, $pass2 );
 sub login_user1 { Testinit::test_login( $t, $user1, $pass1 ) }
 sub login_user2 { Testinit::test_login( $t, $user2, $pass2 ) }
@@ -33,20 +33,20 @@ login_user1();
 $t->post_ok('/topic/new', 
     form => {
         titlestring => "Testtopic 1",
-        textdata => $scores[1][1],
+        textdata => Testinit::test_randstring(),
     })->status_is(302)->content_is('');
 $t->post_ok('/topic/new', 
     form => {
         titlestring => "Testtopic 2",
-        textdata => $scores[1][1],
+        textdata => Testinit::test_randstring(),
     })->status_is(302)->content_is('');
 
 
 #     0   =>             1,           2,        3
 # ([ Zufälliger Text => Beitrags-Id, Topic-Id, SpäterLesen-Flag ])
 my @data = ( 
-    map( {;[Testinit::randstring() => $_, 1, 0]} 1 .. 3 ), 
-    map( {;[Testinit::randstring() => $_, 2, 0]} 4 .. 6 ), 
+    map( {;[Testinit::test_randstring() => $_, 1, 0]} 1 .. 3 ), 
+    map( {;[Testinit::test_randstring() => $_, 2, 0]} 4 .. 6 ), 
 );
 for my $d ( @data ) {
     $t->post_ok("/topic/$d->[2]/new", 
@@ -54,6 +54,8 @@ for my $d ( @data ) {
             textdata => $d->[0],
         })->status_is(302)->content_is('');
 }
+# Unechte Beiträge
+my @dummy = ( [Testinit::test_randstring() => 7, 1, 0] );
 
 ###############################################################################
 note q~Pruefungen in Subroutinen giessen~;
@@ -68,11 +70,14 @@ sub check_readlaterlist {
 }
 
 sub mark_readlater {
-    my ( $error ) = @_;
-
+    my ( $post ) = @_;
+    $t->get_ok()->status_is(302);
+    info($post->[3] ? 'Vormerkung besteht bereits' : 'Beitrag wurde vorgemerkt');
+    $post->[3] = 1;
 }
 
 sub unmark_readlater {
-    my ( $error ) = @_;
+    my ( $post, $error ) = @_;
+    $post->[3] = 1;
 
 }
