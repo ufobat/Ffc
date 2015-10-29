@@ -13,8 +13,8 @@ ffcdata.features.init = function(){
     var mytitle = document.getElementsByTagName("title")[0].firstChild.data;
     // Titel aktualisieren
     var set_title = function(cnt){
-        document.getElementsByTagName("title")[0].firstChild.data
-            = ffcdata.title[0] + cnt + ffcdata.title[1];
+        mytitle = ffcdata.title[0] + cnt + ffcdata.title[1];
+        ffcdata.lastcount = cnt;
         set_titletime();
     };
     // Aktualisierungszeitpunkt nach lokaler Uhrzeit in den Titel schreiben
@@ -123,5 +123,4 @@ ffcdata.features.init = function(){
     set_upload_multi();
     enable_hidemessagebox();
 };
-
 
