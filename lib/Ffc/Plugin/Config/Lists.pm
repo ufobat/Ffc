@@ -29,8 +29,16 @@ sub _newmsgscount {
     return $cnt;
 }
 
+sub _readlatercount {
+    return $_[0]->dbh_selectall_arrayref(
+        'SELECT COUNT(r."postid") FROM "readlater" r WHERE r."userid"=?',
+        $_[0]->session->{userid}
+    )->[0]->[0];
+}
+
 sub _counting { 
     $_[0]->stash(
+        readlatercount => _readlatercount($_[0]),
         newpostcount => _newpostcount($_[0]),
         newmsgscount => _newmsgscount($_[0]),
         notecount => $_[0]->dbh_selectall_arrayref(

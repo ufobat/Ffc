@@ -65,7 +65,7 @@ sub register {
         map( {; $_ => [] }
             qw(additional_params topics users attachements) ),
         map( {;$_.'count' => 0} 
-            qw(newmsgs newpost note) ),
+            qw(newmsgs newpost note readlater) ),
         map( {;$_ => ''} 
             qw(error info warning query textdata heading description backtext queryurl pageurl queryreset
                dourl returl editurl moveurl msgurl delurl uplurl delupl downld backurl topicediturl ) ),
@@ -83,6 +83,7 @@ sub register {
     $app->helper( counting           => \&_counting );
     $app->helper( newpostcount       => \&_newpostcount );
     $app->helper( newmsgscount       => \&_newmsgscount );
+    $app->helper( readlatercount     => \&_readlatercount );
     $app->helper( generate_topiclist => \&_generate_topiclist );
     $app->helper( generate_userlist  => \&_generate_userlist );
 

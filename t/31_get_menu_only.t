@@ -27,7 +27,7 @@ EOMENU
         <span class="othersmenulinktext">Themen</span>
         <div class="topicpopup popup otherspopup">
             <p><a href="/forum"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>
-            <p class="separated"><a href="/forum/readlater/list" title="Beiträge zum späteren lesen">Vorgemerkte Beiträge</a></p>
+            <p class="separated"><a href="/forum/readlater/list" title="Beiträge zum späteren lesen">Vorgemerkte Beiträge \\(0\\)</a></p>
         </div>
     </div>
 EOMENU
@@ -115,7 +115,7 @@ EOMENU
         <span class="othersmenulinktext">Forum</span>
         <div class="topicpopup popup otherspopup">
             <p><a href="/forum"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>
-            <p class="separated"><a href="/forum/readlater/list" title="Beiträge zum späteren lesen">Vorgemerkte Beiträge</a></p>
+            <p class="separated"><a href="/forum/readlater/list" title="Beiträge zum späteren lesen">Vorgemerkte Beiträge \\(0\\)</a></p>
         </div>
     </div>
 EOMENU

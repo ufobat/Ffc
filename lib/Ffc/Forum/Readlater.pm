@@ -27,6 +27,7 @@ sub unmark_readlater {
         'DELETE FROM "readlater" WHERE "postid"=? AND "userid"=?',
         $c->param('postid'), $c->session->{userid}
     );
+    $c->set_info_f('Vormerkung wurde aufgehoben');
     $c->redirect_to('list_readlater');
 }
 
