@@ -265,13 +265,10 @@ button, textarea, input, select, .popup {
 .postbox, .headbox, .pages, .avatar, #msglog, #userlist {
     border-radius: .5em;
 }
-button, .postbox, .headbox, .pages, #msglog, #userlist {
+button {
     box-shadow: inset 0 -0.25em .5em silver;
 }
-.menu {
-    box-shadow: 0 0 1em dimgray;
-}
-.popup, option {
+.popup {
     box-shadow: 0 0 .5em dimgray;
 }
 .textpreviewarea {
