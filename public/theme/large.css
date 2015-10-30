@@ -256,4 +256,24 @@ input[type="text"].titlestring {
 .postbox .smallfont, h1 .smallfont, .postbox .functionlinks {
     white-space: nowrap;
 }
-
+textarea, input[type="text"], input[type="password"] {
+    box-shadow: inset 0 .1em .25em silver;
+}
+button, textarea, input[type="text"], input[type="password"] {
+    border-radius: .25em;
+}
+.postbox, .headbox, .pages, .avatar {
+    border-radius: .5em;
+}
+button, .postbox, .headbox, .pages {
+    box-shadow: inset 0 -0.25em .5em silver;
+}
+.menu {
+    box-shadow: 0 0 1em dimgray;
+}
+.popup {
+    box-shadow: 0 0 .5em dimgray;
+}
+.textpreviewarea {
+    box-shadow: none;
+}
