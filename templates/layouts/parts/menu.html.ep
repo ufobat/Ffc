@@ -6,8 +6,10 @@
     <div class="menuentry">
         <span class="othersmenulinktext<%= $controller eq 'forum' ? ' active activeforum' : '' %>"><%= @$users ? 'Forum' : 'Themen' %><% if ( $newpostcount ) { %> (<span class="mark"><%= $newpostcount %></span>)<% } %></span>
         <div class="topicpopup popup otherspopup">
-            <p><a href="<%= url_for 'show_forum_topiclist', page => 1 %>"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>
+            <p<%== $readlatercount ? '' : ' class="separated"' %>><a href="<%= url_for 'show_forum_topiclist', page => 1 %>"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>
+% if ( $readlatercount ) {
             <p class="separated"><a href="<%= url_for 'list_readlater' %>" title="Beiträge zum späteren lesen">Vorgemerkte Beiträge (<%= $readlatercount %>)</a></p>
+% }
 % for my $t ( @$topics ) {
             <p class="smallnodisplay<%== $t->[10] ? qq~ $t->[10]~ : '' %>"><a href="<%= url_for 'show_forum', topicid => $t->[0] %>"><%= substr $t->[2], 0, $configdata->{urlshorten} %></a>...<% if ( $t->[3] and not $t->[5] ) { %> (<span class="mark"><%= $t->[3] %></span>)<% } %></p>
 % }

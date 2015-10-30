@@ -69,13 +69,14 @@ sub check_posts {
     my ( $empty ) = @_; # for user without anything on readlater list
     for my $tix ( 0 .. $#topics ) {
         my $tid = $tix + 1;
-        $t->get_ok("/topic/$tid")->status_is(200)
-          ->content_like(qr~href="/forum/readlater/list"~);
-        if ( $empty ) {
-          $t->content_like(qr~Vorgemerkte Beiträge \(0\)</a>~);
+        $t->get_ok("/topic/$tid")->status_is(200);
+        if ( $empty or not $rlcnt ) {
+            $t->content_unlike(qr~href="/forum/readlater/list"~)
+              ->content_unlike(qr~Vorgemerkte Beiträge \(\d+\)</a>~);
         }
         else {
-          $t->content_like(qr~Vorgemerkte Beiträge \($rlcnt\)</a>~);
+            $t->content_like(qr~href="/forum/readlater/list"~)
+              ->content_like(qr~Vorgemerkte Beiträge \($rlcnt\)</a>~);
         }
         for my $p ( @{$topics[$tix]} ) {
             $t->content_like(qr~$p->[0]~);
