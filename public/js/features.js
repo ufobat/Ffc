@@ -113,6 +113,23 @@ ffcdata.features.init = function(){
     /************************************************************************
      * Features initial aktiveren
      ************************************************************************/
+    var enable_strg_s = function() {
+        var tif = document.getElementById('textinputform'); 
+        if ( tif ) {
+            console.log(tif);
+            tif.onkeydown = function(ev) {
+                console.log(ev.keyCode + '-' + ev.ctrlKey);
+                if (ev.keyCode == 83 && ev.ctrlKey) {
+                    tif.submit();
+                    ev.preventDefault();
+                }
+            };
+        }
+    };
+
+    /************************************************************************
+     * Features initial aktiveren
+     ************************************************************************/
     if ( !ffcdata.singleuser )
         set_titletime();
     activate_chatbutton();
@@ -122,5 +139,6 @@ ffcdata.features.init = function(){
     }
     set_upload_multi();
     enable_hidemessagebox();
+    enable_strg_s();
 };
 
