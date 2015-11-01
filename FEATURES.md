@@ -52,6 +52,8 @@ Features
 * Es ist über einen Link möglich, eine kurze schnörkellose Auflistung von Themen mit neuen Beiträgen oder Benutzern, von denen neue Privatnachrichten gekommen sind, mit entsprechenden Links dahinter anzeigen zu lassen
   * Alternativ kann diese Liste (komplett mit alle Benutzern und aktuellen Themen der ersten Seite) auch über JSON geliefert werden
 * Weiterhin gibt es eine Druckansicht, in der die Beiträge chronologisch von oben nach unten für alle Themen mit ungelesenen Beträgen ohne Menü direkt zum Drucken und chronologisch durchlesen angezeigt werden
+* Beiträge aus dem Forum-Teil können im "Aktionen"-Klappmenü zum jeweiligen Beitrag zum "später lesen" markiert werden, dann kann man sie in einer separaten Liste zu einem gegebenen Zeitpunkt angesehen werden, welche über das "Forum"-Klappmenü in der Menüleiste am oberen Rand erreichbar ist
+  * In dieser Liste kann die Vormerkung eines Beitrages entsprechend über das "Aktionen"-Klappmenü am Beitrag aufgehoben werden
 * Foreneinstellungen, die von Benutzern vorgenommen werden können:
   * Passwortwechsel
   * Email-Adresse angeben (Administratoren können die immer sehen, falls mal extern was geklärt werden muss (Support)), optional, wahlweise auch für andere Benutzer über Benutzerliste sichtbar
