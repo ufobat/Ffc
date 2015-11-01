@@ -269,7 +269,7 @@ note q~Einige Beitraege kuenstlich auf 8 Tage altern~;
 my @oldies = ( @{$Topics[1][1]}[1,2], @{$Topics[2][1]}[3,4] );
 for my $art ( @oldies ) {
     $art->[1] = 1;
-    $dbh->do(qq~UPDATE "posts" SET "posted"=DATETIME("posted", '-8 days') WHERE "id"=?~, 
+    $dbh->do(qq~UPDATE "posts" SET "posted"=DATETIME("posted", 'localtime', '-8 days') WHERE "id"=?~, 
         undef, $art->[2]);
 }
 
