@@ -23,7 +23,7 @@ for my $str (
     </div>
 EOMENU
   << "EOMENU",
-    <div class="menuentry">
+    <div class="activedim menuentry">
         <span class="othersmenulinktext">Themen</span>
         <div class="topicpopup popup otherspopup">
             <p class="separated"><a href="/forum"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>
@@ -31,7 +31,7 @@ EOMENU
     </div>
 EOMENU
   << "EOMENU",
-    <div class="menuentry">
+    <div class="menuentry activemenuentry">
         <a href="/notes"><span class="linktext linknotes active activenotes">Notizen</span></a>
     </div>
 EOMENU
@@ -45,7 +45,7 @@ EOMENU
     </div>
 EOMENU
   << "EOMENU",
-    <div class="otherspopuplink menuentry">
+    <div class="otherspopuplink activedim menuentry">
         <span class="othersmenulinktext">Einstellungen</span>
         <div class="otherspopup popup">
 EOMENU
@@ -85,7 +85,7 @@ EOMENU
 }
 for my $str (
   << "EOMENU",
-    <div class="menuentry">
+    <div class="activedim menuentry">
         <span class="othersmenulinktext">Benutzer</span>
         <div class="userspopup popup">
             <p class="separated"><a href="/pmsgs"><span class="linktext linkpmsgs">Benutzerliste</span></a>
@@ -110,7 +110,7 @@ $t->post_ok('/menu', json => {pageurl => '/bla/blubb', queryurl => '/blu/plum', 
     </div>
 EOMENU
   << "EOMENU",
-    <div class="menuentry">
+    <div class="activedim menuentry">
         <span class="othersmenulinktext">Forum</span>
         <div class="topicpopup popup otherspopup">
             <p class="separated"><a href="/forum"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>
@@ -118,7 +118,7 @@ EOMENU
     </div>
 EOMENU
   << "EOMENU",
-    <div class="menuentry">
+    <div class="activedim menuentry">
         <span class="othersmenulinktext">Benutzer</span>
         <div class="userspopup popup otherspopup">
             <p class="separated"><a href="/pmsgs"><span class="linktext linkpmsgs">Benutzerliste</span></a>
@@ -127,7 +127,7 @@ EOMENU
     </div>
 EOMENU
   << "EOMENU",
-    <div class="menuentry">
+    <div class="menuentry activemenuentry">
         <a href="/notes"><span class="linktext linknotes active activenotes">Notizen</span></a>
     </div>
 EOMENU
@@ -146,7 +146,7 @@ EOMENU
     </div>
 EOMENU
   << "EOMENU",
-    <div class="otherspopuplink menuentry">
+    <div class="otherspopuplink activedim menuentry">
         <span class="othersmenulinktext">Einstellungen</span>
         <div class="otherspopup popup">
 EOMENU

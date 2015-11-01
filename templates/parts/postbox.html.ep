@@ -8,7 +8,7 @@
         <%= format_timestamp($post->[6]) %>
 % if ( not $postid ) {
         <span class="functionlinks">(
-            <span class="menuentry">
+            <span class="activedim menuentry">
                 <span class="othersmenulinktext">Aktionen<%= $controller eq 'forum' ? ',' : '' %></span>
                 <div class="otherspopup popup postpopup">
 % if ( ( $editurl or $delurl or $uplurl ) and $post->[1] == session()->{userid} and not $post->[11] ) {

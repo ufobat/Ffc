@@ -304,8 +304,14 @@ div.ownpost {
 .dim {
     color: gray;
 }
-.menuentry:hover {
+.activedim:hover {
     background: gainsboro;
+}
+.postbox .activedim:hover {
+    background: whitesmoke;
+}
+.activemenuentry:hover {
+    background: none;
 }
 input[type="text"], input[type="password"], input[type="number"],
 input[type="date"], input[type="color"], textarea {

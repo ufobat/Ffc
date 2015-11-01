@@ -3,7 +3,7 @@
         <a href="<%= url_for $pageurl %>"><span class="linkalike linkrefresh">aktualisieren</span></a>
     </div>
 
-    <div class="menuentry">
+    <div class="activedim menuentry<%= $controller eq 'forum' ? ' activemenuentry' : '' %>">
         <span class="othersmenulinktext<%= $controller eq 'forum' ? ' active activeforum' : '' %>"><%= @$users ? 'Forum' : 'Themen' %><% if ( $newpostcount ) { %> (<span class="mark"><%= $newpostcount %></span>)<% } %></span>
         <div class="topicpopup popup otherspopup">
             <p<%== $readlatercount ? '' : ' class="separated"' %>><a href="<%= url_for 'show_forum_topiclist', page => 1 %>"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>
@@ -16,7 +16,7 @@
         </div>
     </div>
 % if ( @$users ) {
-    <div class="menuentry">
+    <div class="activedim menuentry<%= $controller eq 'pmsgs' ? ' activemenuentry' : '' %>">
         <span class="othersmenulinktext<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>">Benutzer<% if ( $newmsgscount ) { %><span class="mark"> (<%= $newmsgscount %>)</span><% } %></span>
         <div class="userspopup popup otherspopup">
             <p class="separated"><a href="<%= url_for 'show_pmsgs_userlist' %>"><span class="linktext linkpmsgs">Benutzerliste</span></a>
@@ -26,7 +26,7 @@
         </div>
     </div>
 % }
-    <div class="menuentry">
+    <div class="menuentry<%= $controller eq 'notes' ? ' activemenuentry' : '' %>">
         <a href="<%= url_for 'show_notes', page => 1 %>"><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
     </div>
 % if ( @$users ) {
@@ -45,8 +45,8 @@
             <button type="submit">&raquo;Suche</button>
         </form>
     </div>
-    <div class="otherspopuplink menuentry">
-        <span class="othersmenulinktext">Einstellungen</span>
+    <div class="otherspopuplink activedim menuentry<%= $controller eq 'options' ? ' activemenuentry' : '' %>">
+        <span class="othersmenulinktext<%= $controller eq 'options' ? ' active activeoption' : '' %>">Einstellungen</span>
         <div class="otherspopup popup">
 % if ( $controller eq 'forum' ) {
             <p class="smallnodisplay optionslink">
