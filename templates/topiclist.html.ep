@@ -17,7 +17,7 @@
             Neu: <span class="mark"><%= $t->[3] %></span>,
 % }
 % if ( $t->[8] or $t->[9] ) {
-            <%= $t->[8] %>, <%= $t->[9] %>,
+            <%= $t->[8] %><%= $t->[8] && $t->[9] ? ', ' : '' %><%= $t->[9] %>,
 % }
             <span class="menuentry">
                 <span class="othersmenulinktext">Optionen</span>
