@@ -134,10 +134,10 @@ sub check_for_topic_count {
                 \s+<span\sclass="menuentry">
                 \s+<span\sclass="othersmenulinktext">Optionen</span>
                 \s+<div\sclass="otherspopup\spopup\stopiclistpopup">
-                \s+<a\shref="/forum/printpreview/$i\#goto_unread_$i"
-                \s+title="Thema\sin\sder\sDruckvorschau\sanzeigen">Leseansicht</a>,
-                \s+<a\shref="/topic/$i/seen"\s+title="Thema\sals\sgelesen\smarkieren">gelesen</a>,
-                \s+<a\s+href="/topic/$i/(?:un)?(?:ignore|pin)"~xms);
+                \s+<p><a\shref="/forum/printpreview/$i\#goto_unread_$i"
+                \s+title="Thema\sin\sder\sDruckvorschau\sanzeigen">Leseansicht</a></p>
+                \s+<p><a\shref="/topic/$i/seen"\s+title="Thema\sals\sgelesen\smarkieren">gelesen</a></p>
+                \s+<p><a\s+href="/topic/$i/(?:un)?(?:ignore|pin)"~xms);
     }
     else {
         $t->content_like(qr~$top->[0]\s*</a>\s*\.\.\.\s*</p>~xms)
@@ -148,9 +148,9 @@ sub check_for_topic_count {
                 \s+<span\sclass="menuentry">
                 \s+<span\sclass="othersmenulinktext">Optionen</span>
                 \s+<div\sclass="otherspopup\spopup\stopiclistpopup">
-                \s+<a\shref="/forum/printpreview/$i\#goto_unread_$i"
-                \s+title="Thema\sin\sder\sDruckvorschau\sanzeigen">Leseansicht</a>,
-                \s+<a\s+href="/topic/$i/(?:un)?(?:ignore|pin)"~xms);
+                \s+<p><a\shref="/forum/printpreview/$i\#goto_unread_$i"
+                \s+title="Thema\sin\sder\sDruckvorschau\sanzeigen">Leseansicht</a></p>
+                \s+<p><a\s+href="/topic/$i/(?:un)?(?:ignore|pin)"~xms);
     }
 }
 

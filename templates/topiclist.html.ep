@@ -22,28 +22,28 @@
             <span class="menuentry">
                 <span class="othersmenulinktext">Optionen</span>
                 <div class="otherspopup popup topiclistpopup">
-                    <a href="<%= url_for 'printpreview_topic', topicid => $t->[0] %>#goto_unread_<%= $t->[0] %>"
-                        title="Thema in der Druckvorschau anzeigen">Leseansicht</a>,
+                    <p><a href="<%= url_for 'printpreview_topic', topicid => $t->[0] %>#goto_unread_<%= $t->[0] %>"
+                        title="Thema in der Druckvorschau anzeigen">Leseansicht</a></p>
 % if ( $t->[3] ) {
-                    <a href="<%= url_for 'topic_mark_seen', topicid => $t->[0] %>"
-                        title="Thema als gelesen markieren">gelesen</a>,
+                    <p><a href="<%= url_for 'topic_mark_seen', topicid => $t->[0] %>"
+                        title="Thema als gelesen markieren">gelesen</a></p>
 % }
 % unless ( $t->[5] ) {
 %   if ( $t->[6] ) {
-                    <a href="<%= url_for 'unpin_forum_topic_do', topicid => $t->[0] %>"
-                        title="Thema normal in der Liste einsortieren">nicht mehr oben anheften</a>
+                    <p><a href="<%= url_for 'unpin_forum_topic_do', topicid => $t->[0] %>"
+                        title="Thema normal in der Liste einsortieren">nicht mehr oben anheften</a></p>
 %   } else {
-                    <a href="<%= url_for 'pin_forum_topic_do', topicid => $t->[0] %>"
-                        title="Thema immer oben in der Liste mit anzeigen">oben anheften</a>,
+                    <p><a href="<%= url_for 'pin_forum_topic_do', topicid => $t->[0] %>"
+                        title="Thema immer oben in der Liste mit anzeigen">oben anheften</a></p>
 %   }
 % }
 % unless ( $t->[6] ) {
 %   if ( $t->[5] ) {
-                    <a href="<%= url_for 'unignore_forum_topic_do', topicid => $t->[0] %>"
-                        title="Beiträge zum Thema anzeigen, Thema nicht mehr ignorieren">beachten</a>
+                    <p><a href="<%= url_for 'unignore_forum_topic_do', topicid => $t->[0] %>"
+                        title="Beiträge zum Thema anzeigen, Thema nicht mehr ignorieren">beachten</a></p>
 %   } else {
-                    <a href="<%= url_for 'ignore_forum_topic_do', topicid => $t->[0] %>"
-                        title="Thema ignorieren und keine neuen Beiträge anzeigen">ignorieren</a>
+                    <p><a href="<%= url_for 'ignore_forum_topic_do', topicid => $t->[0] %>"
+                        title="Thema ignorieren und keine neuen Beiträge anzeigen">ignorieren</a></p>
 %   }
 % }
                 </div>

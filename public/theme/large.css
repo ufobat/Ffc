@@ -195,12 +195,6 @@ input[type="text"].titlestring {
 .othersmenulinktext {
     cursor: default;
 }
-.topiclistpopup {
-    margin-left: -15em;
-}
-.topiclistpopup > * {
-    padding: .5em 0;
-}
 .headbox .subtabuttonp {
     padding-top: .5em;
 }
@@ -279,5 +273,8 @@ button {
 }
 .hovering {
     box-shadow: 0 0 1em dimgrey;
+}
+.topiclistpopup {
+   margin-top: -1em;
 }
 
