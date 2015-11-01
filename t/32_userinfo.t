@@ -9,7 +9,7 @@ use utf8;
 use Carp;
 use Data::Dumper;
 use Test::Mojo;
-use Test::More tests => 1668;
+use Test::More tests => 1812;
 
 ###############################################################################
 note q~Testsystem vorbereiten~;
@@ -46,6 +46,21 @@ note q~Testroutinen~;
 sub check_data {
     note q~checking data~;
     login_admin();
+    $t->get_ok('/forum')->status_is(200);
+    if ( $seeonline ) {
+        $t->content_like(qr~\s*
+<div\s+class="userspopup\s+popup\s+otherspopup">\s*
+<p\s+class="separated"><a\s+href="/pmsgs"><span\s+class="linktext\s+linkpmsgs">Benutzerliste</span></a>\s*
+<p\s+class="smallnodisplay"><a\s+href="/pmsgs/2">$user1</a>\s+<span\s+class="dim">\($timeqr\)</span></p>\s*
+</div>~xms);
+    }
+    else {
+        $t->content_like(qr~\s*
+<div\s+class="userspopup\s+popup\s+otherspopup">\s*
+<p\s+class="separated"><a\s+href="/pmsgs"><span\s+class="linktext\s+linkpmsgs">Benutzerliste</span></a>\s*
+<p\s+class="smallnodisplay"><a\s+href="/pmsgs/2">$user1</a></p>\s*
+</div>~xms);
+    }
     $t->get_ok('/pmsgs')->status_is(200)
       ->content_like(qr~<a href="/pmsgs/2">$user1</a>~);
     if ( $emailon ) {
