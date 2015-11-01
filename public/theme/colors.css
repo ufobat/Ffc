@@ -304,4 +304,7 @@ div.ownpost {
 .dim {
     color: gray;
 }
+.menuentry:hover {
+    background: gainsboro;
+}
 
