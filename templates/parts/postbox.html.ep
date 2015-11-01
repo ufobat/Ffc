@@ -1,5 +1,5 @@
 % if ( $post and ref($post) eq 'ARRAY' and $#$post ) {
-<div class="postbox<%= $post->[1] != session->{userid} && $lastseen < $post->[0] && $controller ne 'notes' ? ' newpost' : '' %><%= $post->[1] == session->{userid} ? ' ownpost' : '' %>">
+<div class="postbox<%= $post->[1] != session->{userid} && $lastseen < $post->[0] && $controller ne 'notes' ? ' newpost' : '' %><%= $controller ne 'notes' && $post->[1] == session->{userid} ? ' ownpost' : '' %>">
     <h2 class="title">
 % if ( $controller ne 'notes' and @$users ) {
         <img class="avatar" src="<%= url_for 'avatar_show', userid => $post->[1] // session->{userid} %>" alt="" />
