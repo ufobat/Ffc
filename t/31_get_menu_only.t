@@ -7,7 +7,7 @@ use Testinit;
 use utf8;
 
 use Test::Mojo;
-use Test::More tests => 67;
+use Test::More tests => 65;
 
 ###############################################################################
 note q~Testsystem vorbereiten~;
@@ -60,12 +60,9 @@ EOMENU
             </p>
 EOMENU
   << "EOMENU",
-            <p class="optionslink">
+            <p class="optionslink separated">
                 <a href="/options/admin/form"><span class="linktext linkoptions">Administration</span></a>
             </p>
-EOMENU
-  << "EOMENU",
-            <p class="separated"><a href="/help" target="_blank">Hilfe</a></p>
 EOMENU
   << "EOMENU",
             <p class="othersmenutext smallnodisplay">Angemeldet als admin</p>
@@ -156,12 +153,9 @@ EOMENU
             </p>
 EOMENU
   << "EOMENU",
-            <p class="optionslink">
+            <p class="optionslink separated">
                 <a href="/options/form"><span class="linktext linkoptions">Benutzerkonto</span></a>
             </p>
-EOMENU
-  << "EOMENU",
-            <p class="separated"><a href="/help" target="_blank">Hilfe</a></p>
 EOMENU
   << "EOMENU",
             <p class="othersmenutext smallnodisplay">Angemeldet als $user</p>

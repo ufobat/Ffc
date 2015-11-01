@@ -60,15 +60,14 @@
             <p class="optionslink separated">
                 <a href="<%= url_for 'quickview_html' %>" target="_blank" title="Schnelle einfache &Uuml;bersicht &uuml;ber neue Beitr&auml;ge">Statusfenster</a>
             </p>
-            <p class="optionslink">
+            <p class="optionslink<%= session()->{admin} ? '' : ' separated' %>">
                 <a href="<%= url_for 'options_form' %>"><span class="linktext linkoptions<%= $action eq 'options_form' ? ' active activeoptions' : '' %>">Benutzerkonto</span></a>
             </p>
 % if ( session()->{admin} ) {
-            <p class="optionslink">
+            <p class="optionslink separated">
                 <a href="<%= url_for 'admin_options_form' %>"><span class="linktext linkoptions<%= $action eq 'admin_options_form' ? ' active activeoptions' : '' %>">Administration</span></a>
             </p>
 % }
-            <p class="separated"><a href="<%= url_for 'help' %>" target="_blank">Hilfe</a></p>
             <p class="othersmenutext smallnodisplay">Angemeldet als <%= session->{user} %></p>
             <p class="logoutbutton2">
                 <a href="<%= url_for 'logout' %>"><span class="linkalike linklogout">abmelden</span></a>
