@@ -262,6 +262,9 @@ button, textarea, input, select, .popup, .menuentry, .active, a {
 button {
     box-shadow: inset 0 -0.25em .5em silver;
 }
+button:focus {
+    box-shadow: 0 0 .1em midnightblue;
+}
 .menu, .messagebox > div, .shadowed {
     box-shadow: 0 0 .25em dimgrey;
 }
