@@ -69,6 +69,7 @@ a {
 }
 a:hover {
     text-decoration: none;
+    background: whitesmoke;
 }
 .active {
     background: steelblue;
@@ -80,7 +81,10 @@ a:hover {
     color: white;
 }
 a:focus {
-    color: gainsboro;
+    color: midnightblue;
+}
+.menu a:hover, .popup a:hover, .topiclist a:hover, .pages a:hover, .headbox a:hover {
+    background: gainsboro;
 }
 .active:focus, a.active:focus {
     color: gray;
