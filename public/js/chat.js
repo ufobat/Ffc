@@ -84,9 +84,11 @@ ffcdata.chat.init = function() {
                         newdaymsg = true;
                     }
                 }
+                var mecmd = false;
                 if ( msgs[i][2].match(/^\/me\s+/ ) ) {
                     msgs[i][2] = msgs[i][2].replace(/^\/me\s+/, '');
                     userstr = msgs[i][1] + ' ';
+                    mecmd = true;
                 }
                 else {
                     userstr = '<span class="username">' + msgs[i][1] + '</span>: ';
@@ -99,7 +101,7 @@ ffcdata.chat.init = function() {
                    
                 ml = ml + '<p' + ( classstr.length > 0 ? ' class="' + classstr.join(' ') + '"' : '' ) + '>'
                    + '<span class="timestamp">(' + msgs[i][3] + ')</span> '
-                   + ( !sameuser || newdaymsg ? userstr : '' )
+                   + ( !sameuser || mecmd || newdaymsg ? userstr : '' )
                    + usernamefilter(msgs[i][2]) + '</p>\n';
 
                 ffcdata.chat.lastmsguser = msgs[i][1];
@@ -228,6 +230,7 @@ ffcdata.chat.init = function() {
      ************************************************************************/
     var clrscr = function() {
         msglog.innerHTML = '';
+        ffcdata.chat.lastmsguser = '';
     };
     document.getElementById('clrscr').onclick = function(e) {
         // console.log('clear message log');
