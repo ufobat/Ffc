@@ -185,6 +185,7 @@ input[type="text"].titlestring {
 .buttonalike, .buttonalike:active, .buttonalike:focus {
     margin-bottom: .25em;
     box-shadow: 0 0 .1em dimgray;
+    border-radius: 0;
 }
 #closetextap {
     margin-top: .25em;
