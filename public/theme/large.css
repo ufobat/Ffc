@@ -268,7 +268,7 @@ textarea, input, select {
 button, textarea, input, select, .popup, .menuentry, .active, a, #textpreviewbox {
     border-radius: .25em;
 }
-.postbox, .headbox, .pages, .avatar, #msglog, #userlist {
+.postbox, .headbox, .pages, .avatar, #msglog, #userlist, .optionsavatar {
     border-radius: .5em;
 }
 button {
