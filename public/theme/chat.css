@@ -130,12 +130,6 @@ div, textarea {
     text-align: right;
     margin-right: 3em;
 }
-.editbuttons a {
-    background: whitesmoke;
-    box-shadow: none;
-    border: 1px solid silver;
-    margin-left: 1px;
-}
 .hovering {
     margin-top: 25em;
     max-height: 12.5em;
