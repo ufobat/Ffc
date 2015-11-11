@@ -66,6 +66,7 @@ CREATE TABLE "lastseenforum" (
   "lastseen" integer NOT NULL DEFAULT '0',
   "ignore" tinyint(1) NOT NULL DEFAULT '0',
   "pin" tinyint(1) NOT NULL DEFAULT '0',
+  "newsmail" tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY ("userid", "topicid")
 );
 CREATE INDEX "lsf_user_id" ON "lastseenforum"("userid");
