@@ -138,9 +138,6 @@ a.coloroption:hover {
     color: gainsboro;
     background: whitesmoke;
 }
-.pin {
-    border-color: gold;
-}
 .menu .pin {
     background-color: lightgoldenrodyellow;
 }
@@ -246,7 +243,6 @@ pre {
     text-align: right;
 }
 .ignored {
-    border-color: white;
     background: whitesmoke;
 }
 .menu .ignored {
@@ -326,5 +322,8 @@ input[type="date"], input[type="color"], textarea {
 }
 .menu {
     cursor: default;
+}
+.newsmail {
+    border-color: cyan;
 }
 
