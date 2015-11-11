@@ -20,7 +20,6 @@ CREATE TABLE "users" (
   "chatrefreshsecs" integer NOT NULL DEFAULT 60,
   "lastonline" timestamp,
   "email" varchar(1024) NOT NULL DEFAULT '',
-  "newsmail" tinyint(1) NOT NULL DEFAULT 1,
   "hideemail" tinyint(1) NOT NULL DEFAULT 1,
   "birthdate" varchar(10),
   "infos" varchar(1024),
