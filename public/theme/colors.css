@@ -147,16 +147,14 @@ ul.topiclist {
 .mark {
     color: palevioletred;
 }
-.newpost, .newpost .avatar {
-    border-color: palevioletred;
-}
 h2.newpost, .newpost h1, .newpost .title, input.activesearch {
     background: lemonchiffon;
+}
+.newpost h1, .newpost .title, input.activesearch, .newpost .avatar {
     border-color: palevioletred;
 }
 h2.newpinpost {
     background: lightyellow;
-    border-color: orange;
 }
 .topiclist p.smallfont {
     background: whitesmoke;
@@ -323,7 +321,7 @@ input[type="date"], input[type="color"], textarea {
 .menu {
     cursor: default;
 }
-.newsmail {
-    border-color: cyan;
+h2.newsmail {
+    border-color: lightblue;
 }
 

@@ -1,6 +1,15 @@
 package Ffc::Forum;
 use strict; use warnings; use utf8;
 
+sub   newsmail_topic_do { $_[0]->_handle_newsmail_topic_do(1, $_[1]) }
+sub unnewsmail_topic_do { $_[0]->_handle_newsmail_topic_do(0, $_[1]) }
+sub _handle_newsmail_topic_do {
+    $_[0]->_handle_val_topic_do('newsmail', $_[1],
+        'Für das gewählte Thema werden Informations-Emails bei neuen Beiträgen verschickt.',
+        'Für das gewählte Thema werden keine Informations-Emails bei neuen Beiträgen mehr verschickt.',
+        $_[2]);
+}
+
 sub   ignore_topic_do { $_[0]->_handle_ignore_topic_do(1, $_[1]) }
 sub unignore_topic_do { $_[0]->_handle_ignore_topic_do(0, $_[1]) }
 sub _handle_ignore_topic_do {

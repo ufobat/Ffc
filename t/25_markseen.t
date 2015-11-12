@@ -51,7 +51,7 @@ sub check_unseen {
         \s+title="Thema\sin\sder\sDruckvorschau\sanzeigen">Leseansicht</a></p>
         \s+<p><a\shref="/topic/$id/seen"
         \s+title="Thema\sals\sgelesen\smarkieren">gelesen</a></p>
-        \s+<p><a\shref="/topic/$id/pin"
+        \s+<p><a\shref="/topic/$id/newsmail"
     ~xms);
 }
 sub check_seen {
@@ -70,7 +70,7 @@ sub check_seen {
         \s+<div\sclass="otherspopup\spopup\stopiclistpopup">
         \s+<p><a\shref="/forum/printpreview/$id\#goto_unread_$id"
         \s+title="Thema\sin\sder\sDruckvorschau\sanzeigen">Leseansicht</a></p>
-        \s+<p><a\shref="/topic/$id/pin"
+        \s+<p><a\shref="/topic/$id/newsmail"
     ~xms);
 }
 

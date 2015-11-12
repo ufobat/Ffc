@@ -56,7 +56,7 @@ sub check_topiclist_unseen {
         \s+title="Thema\sin\sder\sDruckvorschau\sanzeigen">Leseansicht</a></p>
         \s+<p><a\shref="/topic/$id/seen"
         \s+title="Thema\sals\sgelesen\smarkieren">gelesen</a></p>
-        \s+<p><a\shref="/topic/$id/pin"
+        \s+<p><a\shref="/topic/$id/newsmail"
     ~xms);
 }
 

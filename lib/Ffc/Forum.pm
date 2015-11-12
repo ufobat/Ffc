@@ -39,6 +39,14 @@ sub install_routes {
       ->to(controller => 'forum', action => 'unpin_topic_do')
       ->name('unpin_forum_topic_do');
 
+    # Für Email-Notification vormerken
+    $l->route('/topic/:topicid/newsmail', topicid => $Ffc::Digqr)->via('get')
+      ->to(controller => 'forum', action => 'newsmail_topic_do')
+      ->name('newsmail_forum_topic_do');
+    $l->route('/topic/:topicid/nonewsmail', topicid => $Ffc::Digqr)->via('get')
+      ->to(controller => 'forum', action => 'unnewsmail_topic_do')
+      ->name('unnewsmail_forum_topic_do');
+
     # Themenlistensortierung anpassen
     $l->route('/topic/sort/chronological')
       ->to(controller => 'forum', action => 'sort_order_chronological')

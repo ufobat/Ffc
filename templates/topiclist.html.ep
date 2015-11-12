@@ -11,7 +11,7 @@
 % if ( @$topics_for_list ) {
 <div class="postbox topiclist">
 % for my $t ( @$topics_for_list ) {
-    <h2<%== $t->[10] ? qq~ class="$t->[10]"~ : '' %>>
+    <h2<%== $t->[11] ? qq~ class="$t->[11]"~ : '' %>>
         <span class="smallfont">(
 % if ( $t->[3] and not $t->[5] ) {
             Neu: <span class="mark"><%= $t->[3] %></span>,
@@ -29,6 +29,13 @@
                         title="Thema als gelesen markieren">gelesen</a></p>
 % }
 % unless ( $t->[5] ) {
+%   if ( $t->[10] ) {
+                    <p><a href="<%= url_for 'unnewsmail_forum_topic_do', topicid => $t->[0] %>"
+                        title="Keine Email mehr verschicken bei neuen Beiträgen zu Thema">keine Email-Info</a></p>
+%   } else {
+                    <p><a href="<%= url_for 'newsmail_forum_topic_do', topicid => $t->[0] %>"
+                        title="Per Email bei neuen Beiträgen im Thema informieren">Email-Info</a></p>
+%   }
 %   if ( $t->[6] ) {
                     <p><a href="<%= url_for 'unpin_forum_topic_do', topicid => $t->[0] %>"
                         title="Thema normal in der Liste einsortieren">nicht mehr oben anheften</a></p>
