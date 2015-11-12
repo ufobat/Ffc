@@ -17,7 +17,7 @@
     </div>
 % if ( @$users ) {
     <div class="activedim menuentry<%= $controller eq 'pmsgs' ? ' activemenuentry' : '' %>">
-        <span class="othersmenulinktext<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>">Benutzer<% if ( $newmsgscount ) { %><span class="mark"> (<%= $newmsgscount %>)</span><% } %></span>
+        <span class="othersmenulinktext<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>">Benutzer<% if ( $newmsgscount ) { %> (<span class="mark"><%= $newmsgscount %></span>)<% } %></span>
         <div class="userspopup popup otherspopup">
             <p class="separated"><a href="<%= url_for 'show_pmsgs_userlist' %>"><span class="linktext linkpmsgs">Benutzerliste</span></a>
 %   for my $u ( @$users ) {
