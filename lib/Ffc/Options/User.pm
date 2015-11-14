@@ -56,6 +56,7 @@ sub bg_color {
 sub set_email {
     my $c = shift;
     my $email = $c->param('email');
+    my $newsmail = $c->param('newsmail') ? 1 : 0;
     my $hideemail = $c->param('hideemail') ? 1 : 0;
     unless ( $email ) {
         $c->set_info_f('Email-Adresse entfernt');
@@ -71,8 +72,8 @@ sub set_email {
         return $c->redirect_to('options_form');
     }
     $c->dbh_do(
-        'UPDATE users SET email=?, hideemail=? WHERE id=?'
-        , $email, $hideemail, $c->session->{userid});
+        'UPDATE users SET email=?, newsmail=?, hideemail=? WHERE id=?'
+        , $email, $newsmail, $hideemail, $c->session->{userid});
     $c->set_info_f('Email-Adresse geändert');
     $c->redirect_to('options_form');
 }

@@ -37,7 +37,7 @@ my $sender = 'admin@'.hostname();
         $_[0]->render(json => $_[0]->dbh_selectall_arrayref( << 'EOSQL' ));
     SELECT u."name", u."email", u."id" 
     FROM "users" u
-    WHERE u."email" IS NOT NULL AND u."email"<>'' AND u."active"=1
+    WHERE u."email" IS NOT NULL AND u."email"<>'' AND u."active"=1 AND u."newsmail"=1
     ORDER BY UPPER("name"), "id"
 EOSQL
     };

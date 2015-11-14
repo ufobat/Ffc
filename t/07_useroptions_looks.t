@@ -7,7 +7,7 @@ use Testinit;
 use Ffc::Plugin::Config;
 
 use Test::Mojo;
-use Test::More tests => 761;
+use Test::More tests => 802;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
@@ -137,7 +137,10 @@ sub test_email {
     is $dbh->selectall_arrayref(
         'SELECT email FROM users WHERE name=?'
         , undef, $user1)->[0]->[0], '', 'emailadress not set in database';
-    $t->post_ok('/options/email', form => { email => 'me@home.de' })
+    is $dbh->selectall_arrayref(
+        'SELECT newsmail FROM users WHERE name=?'
+        , undef, $user1)->[0]->[0], 1, 'newsmail still active in database';
+    $t->post_ok('/options/email', form => { email => 'me@home.de', newsmail => 0 })
       ->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr'active activeoptions">Benutzerkonto<')
@@ -146,7 +149,7 @@ sub test_email {
     is $dbh->selectall_arrayref(
         'SELECT email FROM users WHERE name=?'
         , undef, $user1)->[0]->[0], 'me@home.de', 'emailadress set in database';
-    for my $field ( qw(hidee) ) {
+    for my $field ( qw(news hidee) ) {
         is $dbh->selectall_arrayref(
             "SELECT ${field}mail FROM users WHERE name=?"
             , undef, $user1)->[0]->[0], 0, "${field}mail now inactive in database";

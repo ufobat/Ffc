@@ -7,7 +7,9 @@ sub _handle_newsmail_topic_do {
     $_[0]->_handle_val_topic_do('newsmail', $_[1],
         'Für das gewählte Thema werden Informations-Emails bei neuen Beiträgen verschickt.',
         'Für das gewählte Thema werden keine Informations-Emails bei neuen Beiträgen mehr verschickt.',
-        $_[2]);
+        $_[2],
+        (($_[1] and not $_[0]->session->{newsmail}) ? ' Mailversand ist generell unterbunden, es kommen keine Emails an. Um den Emailversand zu aktivieren, musst du unter "Benutzerkonto" in den "Einstellungen" oben rechts im Menü beim Punk "Email-Adresse einstellen" den Punkt "Benachrichtigungen per Email erhalten" anhaken.' : ''),
+    );
 }
 
 sub   ignore_topic_do { $_[0]->_handle_ignore_topic_do(1, $_[1]) }
@@ -27,7 +29,7 @@ sub _handle_pin_topic_do {
 }
 
 sub _handle_val_topic_do {
-    my ( $c, $name, $val, $dotxt, $undotxt, $redirect ) = @_;
+    my ( $c, $name, $val, $dotxt, $undotxt, $redirect, $warning ) = @_;
     my $topicid = $c->param('topicid');
     my $lastseen = $c->dbh_selectall_arrayref(
         'SELECT "lastseen"
@@ -45,8 +47,9 @@ sub _handle_val_topic_do {
             qq~INSERT INTO "lastseenforum" ("userid", "topicid", "$name") VALUES (?,?,?)~,
             $c->session->{userid}, $topicid, $val);
     }
-    if ( $val ) { $c->set_info_f( $dotxt   ) }
-    else        { $c->set_info_f( $undotxt ) }
+    if ( $val )     { $c->set_info_f(    $dotxt   ) }
+    else            { $c->set_info_f(    $undotxt ) }
+    if ( $warning ) { $c->set_warning_f( $warning ) } 
     $c->redirect_to($redirect ? ( $redirect, topicid => $topicid ) : 'show_forum_topiclist');
 }
 
