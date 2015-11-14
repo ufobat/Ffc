@@ -17,12 +17,13 @@ my $sender = 'admin@'.hostname();
 {
     use Mojolicious::Lite;
     plugin 'Ffc::Plugin::Config';
+    plugin 'Ffc::Plugin::Formats';
     get '/:userid' => [userid => qr/\d+/xmso] => sub { 
         my $c = shift;
         $c->session->{userid} = $c->param('userid');
         $c->counting;
         $c->render(json => {
-            newmsgs_count => $c->stash('newmsgs_count'),
+            (map {; "new${_}count" => $c->stash("new${_}count")} qw(msgs post)),
             newposts      => [
                 map  {;[@{$_}[2,3]]} 
                 grep {;$_->[10]}
@@ -58,9 +59,13 @@ for my $u ( @$users ) {
         $cnt += $data->{newmsgs_count};
         say "Benutzer $username hat $cnt neue private Nachrichten erhalten.";
     }
-    for my $d ( @{$data->{newposts}} ) {
-        my $cntp += scalar @{$d->[1]};
-        push @lines, "$d->[0]: $d->[1]";
+    if ( @{$data->{newposts}} ) {
+        push @lines, "Neue Forenbeiträge: $data->{newpostcount}";
+        $cnt++;
+        for my $d ( @{$data->{newposts}} ) {
+            my $cntp += $d->[1];
+            push @lines, "$d->[0]: $d->[1]";
+        }
     }
     if ( $cntp ) {
         say "Benutzer $username wird ueber $cntp neue Beitraege informiert.";

@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 my $t = require Posttest;
 
 use Test::Mojo;
-use Test::More tests => 2691;
+use Test::More tests => 2727;
 
 my $cname = 'forum';
 
@@ -72,12 +72,41 @@ $t->get_ok('/topic/2/pin')->status_is(302)
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~href="/topic/2/unpin"~)
   ->content_like(qr~href="/topic/1/pin"~);
+info('Das gewählte Thema wird immer oben angeheftet.');
 # und wieder unanpinnen
 $t->get_ok('/topic/2/unpin')->status_is(302)
   ->header_like(location => qr~\A/~);
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~href="/topic/2/pin"~)
   ->content_like(qr~href="/topic/1/pin"~);
+info('Das gewählte Thema wird jetzt nicht mehr oben angeheftet.');
+
+# email-notifications von themen ausprobieren
+$t->post_ok('/options/email', form => { email => 'me@home.de', newsmail => 1 }) # Startwert
+  ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+$t->get_ok('/topic/2/newsmail')->status_is(302)
+  ->header_like(location => qr~\A/~);
+$t->get_ok('/')->status_is(200)
+  ->content_like(qr~href="/topic/2/nonewsmail"~)
+  ->content_like(qr~href="/topic/1/newsmail"~)
+  ->content_unlike(qr~Mailversand ist generell unterbunden, es kommen keine Emails an. Um den Emailversand zu aktivieren, musst du unter &quot;Benutzerkonto&quot; in den &quot;Einstellungen&quot; oben rechts im Menü beim Punk &quot;Email-Adresse einstellen&quot; den Punkt &quot;Benachrichtigungen per Email erhalten&quot; anhaken\.~);
+info('Für das gewählte Thema werden Informations-Emails bei neuen Beiträgen verschickt.');
+# und nicht mehr notifizieren
+$t->get_ok('/topic/2/nonewsmail')->status_is(302)
+  ->header_like(location => qr~\A/~);
+$t->get_ok('/')->status_is(200)
+  ->content_like(qr~href="/topic/2/newsmail"~)
+  ->content_like(qr~href="/topic/1/newsmail"~);
+info('Für das gewählte Thema werden keine Informations-Emails bei neuen Beiträgen mehr verschickt.');
+$t->post_ok('/options/email', form => { email => 'me@home.de', newsmail => 0 })
+  ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+$t->get_ok('/topic/2/newsmail')->status_is(302)
+  ->header_like(location => qr~\A/~);
+$t->get_ok('/')->status_is(200)
+  ->content_like(qr~href="/topic/2/nonewsmail"~)
+  ->content_like(qr~href="/topic/1/newsmail"~);
+info('Für das gewählte Thema werden Informations-Emails bei neuen Beiträgen verschickt.');
+warning('Mailversand ist generell unterbunden, es kommen keine Emails an. Um den Emailversand zu aktivieren, musst du unter &quot;Benutzerkonto&quot; in den &quot;Einstellungen&quot; oben rechts im Menü beim Punk &quot;Email-Adresse einstellen&quot; den Punkt &quot;Benachrichtigungen per Email erhalten&quot; anhaken.');
 
 # checks for correct appearance of side effects
 sub check_env {
