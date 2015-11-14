@@ -211,7 +211,7 @@ sub _format_short {
     my ( $c, $str ) = @_;
     return '' unless $str;
     $str = substr($str,0,255);
-    $str = _pre_format_text_part($c, $str);
+    $str = _pre_format_text_part($c, $str, (undef) x 5, 1 );
     $str =~ s~</?["\s\w]+>~~gxmso;
     $str =~ s~</?["\s\w]*\z~~gxmso;
     $str =~ s~&lt;/?["\s\w]+&gt;~~gxmso;
