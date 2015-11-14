@@ -65,7 +65,7 @@ sub run_tests {
     $t->post_ok("$Urlpref/new", form => {textdata => '<u></u>'})->status_is(200);
     error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen ohne Auszeichnungen\\)');
 
-    note 'neue Beitraege: 1 .. ' . $Postlimit * 2 + 1 ;
+    note 'neue Beitraege: 1 .. ' . ($Postlimit * 2 + 1) ;
     map { insert_text($Users[$from], ( $to && $Users[$to] ) ) } 1 .. $Postlimit * 2 + 1;
     ck();
 
