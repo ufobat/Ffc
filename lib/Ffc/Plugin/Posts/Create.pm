@@ -47,8 +47,11 @@ VALUES
 EOSQL
         $userid, $userto, $topicid, $text, $cache
     );
+
+    my $summary = $controller eq 'forum' ? $c->format_short($text) : ''; 
+
     if ( $controller eq 'forum' and $topicid ) {
-        _update_topic_lastid($c, $topicid);
+        _update_topic_lastid($c, $topicid, $summary);
     }
     if ( $controller eq 'pmsgs' and $userto ) {
         _update_pmsgs_lastid( $c, $userid, $userto );

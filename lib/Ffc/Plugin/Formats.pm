@@ -62,6 +62,7 @@ sub register {
     my ( $self, $app ) = @_;
     $app->helper( pre_format       => \&_pre_format_text  );
     $app->helper( format_timestamp => \&_format_timestamp );
+    $app->helper( format_short     => \&_format_short     );
 }
 
 sub _format_timestamp {
@@ -204,6 +205,19 @@ sub _make_smiley {
     return qq~<img class="smiley" src="~
         . $c->url_for("/theme/img/smileys/$Smiley{$orig}.png")
         . qq~" alt="$str" title="$str" />~;
+}
+
+sub _format_short {
+    my ( $c, $str ) = @_;
+    return '' unless $str;
+    $str = substr($str,0,255);
+    $str = _pre_format_text_part($c, $str);
+    $str =~ s~</?["\s\w]+>~~gxmso;
+    $str =~ s~</?["\s\w]*\z~~gxmso;
+    $str =~ s~&lt;/?["\s\w]+&gt;~~gxmso;
+    $str =~ s~&lt;/?["\s\w]*\z~~gxmso;
+    chomp $str;
+    return $str;
 }
 
 1;

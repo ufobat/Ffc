@@ -70,7 +70,8 @@ sub _generate_topiclist {
             COUNT(p."id"), t."lastid",
             COALESCE(l."ignore",0), COALESCE(l."pin",0),
             UPPER(t."title") as "uctitle",
-            u."name", datetime(p2."posted",'localtime'), COALESCE(l."newsmail",0)
+            u."name", datetime(p2."posted",'localtime'), 
+            COALESCE(l."newsmail",0), t."summary"
         FROM "topics" t
         LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=t."id"
         LEFT OUTER JOIN "posts" p ON p."userfrom"<>? AND p."topicid"=t."id" AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",0)
@@ -89,7 +90,7 @@ EOSQL
     );
     for my $t ( @$tlist ) {
         $t->[9] = $c->format_timestamp($t->[9]);
-        $t->[11] = join ' ',
+        $t->[12] = join ' ',
             ( $t->[3]             ? 'newpost'    : () ),
             ( $t->[5]             ? 'ignored'    : () ),
             ( $t->[6]             ? 'pin'        : () ),

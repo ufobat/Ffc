@@ -114,10 +114,12 @@ sub _inc_highscore { _update_highscore( $_[0], 1 ) }
 sub _dec_highscore { _update_highscore( $_[0], 0 ) }
 
 sub _update_topic_lastid {
-    my ( $c, $topicid ) = @_;
-    $c->dbh_do( << 'EOSQL', $topicid, $topicid );
+    my ( $c, $topicid, $summary ) = @_;
+    $c->dbh_do( << 'EOSQL', $summary, $topicid, $topicid );
 UPDATE "topics" 
-SET "lastid"=(
+SET 
+  "summary"=?,
+  "lastid"=(
     SELECT COALESCE(MAX(p."id"),0) 
     FROM "posts" p 
     WHERE p."topicid" IS NOT NULL 

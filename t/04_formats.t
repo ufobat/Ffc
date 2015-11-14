@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 62;
+use Test::More tests => 83;
 
 srand;
 
@@ -32,6 +32,11 @@ srand;
         my $c = shift;
         $c->prepare;
         $c->render(text => $c->format_timestamp($c->param('text'), 1));
+    };
+    any '/format_short' => sub {
+        my $c = shift;
+        $c->prepare;
+        $c->render(text => $c->format_short($c->param('text')));
     };
     any '/pre_format' => sub {
         my $c = shift;
@@ -110,6 +115,7 @@ sub _escape_str2re {
 sub format_things_test {
     my $tests = shift;
     my $nosmil = shift;
+    my $summary = shift;
     note q~Testing the formatting functions~;
 
     for my $test ( @$tests ) {
@@ -118,7 +124,9 @@ sub format_things_test {
         chomp $txt;
         my $html = $test->[1];
         chomp $html;
-        my $url = $nosmil ? '/pre_format_nosmiley' : '/pre_format';
+        my $url = '/pre_format';
+        $url = '/pre_format_nosmiley' if $nosmil;
+        $url = '/format_short' if $summary;
         $t->post_ok($url, form => {text => $test->[0]})
           ->status_is(200);
         $t->content_is($html);
@@ -406,6 +414,65 @@ EOHTML
         2
     ],
 );
+
+my @Tests_Short = (
+    [
+        << 'EOTXT',
+asdfasdfasdf
+EOTXT
+        << 'EOHTML',
+asdfasdfasdf
+EOHTML
+        1
+    ],
+    [
+        << 'EOTXT',
+as<b>df</b>asdfasdf
+EOTXT
+        << 'EOHTML',
+asdfasdfasdf
+EOHTML
+        2
+    ],
+    [
+        << 'EOTXT',
+as<b>dfasdfasdf
+EOTXT
+        << 'EOHTML',
+asdfasdfasdf
+EOHTML
+        3
+    ],
+    [
+        << 'EOTXT',
+as</b>dfasdfasdf
+EOTXT
+        << 'EOHTML',
+asdfasdfasdf
+EOHTML
+        4
+    ],
+    [
+        << 'EOTXT',
+asdfasdfasdf<b>
+EOTXT
+        << 'EOHTML',
+asdfasdfasdf
+EOHTML
+        5
+    ],
+    [
+        ('a' x 240) . '</a',
+        ('a' x 240),
+        6
+    ],
+    [
+        ('b' x 240) . '<b',
+        ('b' x 240),
+        7
+    ],
+);
+
 ###############################################################################
 ###############################################################################
 note q~run some tests~;
@@ -415,4 +482,5 @@ note q~run some tests~;
 format_timestamp_test();
 format_things_test(\@Tests);
 format_things_test(\@Tests_NoSmil, 1);
+format_things_test(\@Tests_Short, 0, 1);
 
