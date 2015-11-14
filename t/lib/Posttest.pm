@@ -36,12 +36,18 @@ sub set_postlimit {
     info("Anzahl der auf einer Seite der Liste angezeigten Beiträge auf $Postlimit geändert.");
 }
 
-sub ck { $Check_env->($t, shift() // \@entries, \@delents, \@delatts, @_) }
+sub ck { 
+    note 'HERKUNFT: ' . join ' ; ', map {; join ', ', (caller($_))[1,2] } 0 .. 3; 
+    my $entries = shift() // \@entries;
+    note Dumper $entries, \@delents, \@delatts, \@_;
+    $Check_env->($t, $entries, \@delents, \@delatts, @_);
+}
 
 sub run_tests {
     my ( $from, $to, $do_attachements, $do_edit, $do_delete );
     ( $from, $to, $Urlpref, $Check_env, $do_attachements, $do_edit, $do_delete ) = @_;
     logina();
+    note 'setting the postlimit';
     set_postlimit($t);
 
     ck();
@@ -51,57 +57,59 @@ sub run_tests {
     login2();
     set_postlimit($t);
     login1();
-    #diag 'test new entries';
+    note 'test new entries';
 
-    # Leerer Beitrag
+    note 'Leerer Beitrag';
     $t->post_ok("$Urlpref/new", form => {})->status_is(200);
     error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\)');
     $t->post_ok("$Urlpref/new", form => {textdata => '<u></u>'})->status_is(200);
     error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen ohne Auszeichnungen\\)');
 
+    note 'neue Beitraege: 1 .. ' . $Postlimit * 2 + 1 ;
     map { insert_text($Users[$from], ( $to && $Users[$to] ) ) } 1 .. $Postlimit * 2 + 1;
     ck();
 
     if ( $do_edit ) {
-        #diag 'test text updates fail';
+        note 'test text updates fail';
         login2();
         update_text($user2, 0);
 
-        #diag 'test text updates work';
+        note 'test text updates work';
         login1();
         update_text($user1, $_) for 1, 3, 6;
         ck();
     }
     else {
-        # diag 'check, that no edits are possible';
+        note 'check, that no edits are possible';
         login1();
         no_update_text($user1, 6);
         ck();
     }
 
-    #diag 'test query filter';
+    note 'test query filter';
     login2();
     query_string($entries[0][1]);
     ck();
     login1();
     my $filter = query_string();
-    ck([$entries[$filter]], scalar(@entries));
+    note "Filter: $filter";
+    ck([$entries[$filter]], scalar(@entries), $filter);
 
     if ( $do_attachements ) {
-        #diag 'test add attachements fails';
+        note 'test add attachements fails';
         login2();
         add_attachement($user2, 0);
 
-        #diag 'test add attachements works';
+        note 'test add attachements works';
         login1();
         add_attachement($user1, $_) for 1, 3, 3, 5, 5, 5, 6; # array id's
         ck();
 
-        #diag 'test delete single attachements fails';
+        note 'test delete single attachements fails';
         login2();
         del_attachement($user2, 6 => 7);
 
-        #diag 'test delete single attachements works';
+        note 'test delete single attachements works';
         login1();
         del_attachement($user1, @$_) for [1 => 1], [5 => 6], [5 => 5]; # array id's to db id's!!!
         ck();
@@ -119,11 +127,11 @@ sub run_tests {
     }
 
     if ( $do_delete ) {
-        #diag 'test delete complete posts (check attachements) fails';
+        note 'test delete complete posts (check attachements) fails';
         login2();
         del_post($user2, 1);
 
-        #diag 'test delete complete posts (check attachements) works';
+        note 'test delete complete posts (check attachements) works';
         login1();
         del_post($user1, 3);
         ck();
@@ -136,7 +144,7 @@ sub run_tests {
     }
 
     if ( $do_attachements ) {
-        #diag 'test add multi attachements works';
+        note 'test add multi attachements works';
         login1();
         add_attachement($user1, 1, undef, 3);
         ck();
@@ -416,7 +424,7 @@ sub check_pages {
             my $limit = $offset + $main::Postlimit - 1;
             my $plink = "$Urlpref/$page";
 
-            #diag "page=$page, offset=$offset, limit=$limit, postlimit=$main::Postlimit, entrix=$#entries, scalar=" . scalar @entries;
+            note "page=$page, offset=$offset, limit=$limit, postlimit=$main::Postlimit, entrix=$#entries, scalar=" . scalar @entries;
             $t->get_ok( $plink )->status_is(200);
             
             if ( $page > 1 ) {

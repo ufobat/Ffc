@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 274;
+use Test::More tests => 280;
 
 use Data::Dumper;
 
@@ -121,6 +121,7 @@ sub delete_article {
     my $lasttopicid_m = select_lastid_for_topic($topic_id);
     note(qq~Aktuellste Artikel-ID fuer Thema Nr. $topic_id ist laut Datenbank zwischenzeitlich $lasttopicid_m~);
     $t->post_ok("/topic/$topic_id/delete/$article_id")->status_is(302)
+    ->content_is('')
       ->header_is( Location => "/topic/$topic_id" );
     $article->[1] = 0;
     note(qq~Artikel Nr. $article_id vom Thema Nr. $topic_id wurde geloescht~);

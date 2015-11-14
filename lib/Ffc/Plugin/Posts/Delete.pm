@@ -62,7 +62,14 @@ sub _delete_post_do {
         $sql   .= qq~ AND $wheres~ if $wheres;
         $c->dbh_do( $sql, $postid, @wherep );
 
-        _update_topic_lastid($c, $topicid) if $controller eq 'forum';
+        my $summary = $c->dbh_selectall_arrayref('SELECT "text" FROM "posts" WHERE "topicid"=? ORDER BY "id" DESC LIMIT 1', $topicid);
+        if ( $controller eq 'forum' and @$summary ) {
+            $summary = $c->format_short($summary->[0]->[0]); 
+        }
+        else {
+            $summary = '';
+        }
+        _update_topic_lastid($c, $topicid, $summary) if $controller eq 'forum';
     }
     $c->set_info_f('Der Beitrag wurde komplett entfernt');
     _redirect_to_show($c);

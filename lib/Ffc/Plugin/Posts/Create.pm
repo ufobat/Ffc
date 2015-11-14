@@ -103,6 +103,7 @@ sub _edit_post_do {
     my $c = shift;
     my ( $wheres, @wherep ) = $c->where_modify;
     my $postid = $c->param('postid');
+    my $topicid = $c->param('topicid');
     my $text = $c->param('textdata');
     unless ( $postid and $postid =~ $Ffc::Digqr ) {
         $c->set_error_f('Konnte den Beitrag nicht ändern, da die Beitragsnummer irgendwie verloren ging');
@@ -129,11 +130,14 @@ sub _edit_post_do {
         return _redirect_to_show($c);
     }
 
+    my $summary = $c->stash('controller') eq 'forum' ? $c->format_short($text) : ''; 
     $sql = qq~UPDATE "posts"\n~
             . qq~SET "textdata"=?, "cache"=?, "altered"=current_timestamp\n~
             . qq~WHERE "id"=? AND "blocked"=0~;
     $sql .= qq~ AND $wheres~ if $wheres;
     $c->dbh_do( $sql, $text, $cache, $postid, @wherep );
+    $sql = q~UPDATE "topics" SET "summary"=? WHERE "topicid"=?~;
+    $c->dbh_do( $sql, $summary, $topicid );
     $c->set_info_f('Der Beitrag wurde geändert');
     _redirect_to_show($c);
 }
