@@ -84,7 +84,7 @@ sub check_topic_in_ppv {
         if ( $ignore ) {
             note("Thema Nr. $id wird ignoriert, nichts davon soll angezeigt werden");
             $t->content_unlike(qr~$top</a></h1>~);
-            $t->content_unlike(qr~$_->[0]~) for @$arts;
+            $t->content_unlike(qr~$_->[0]($! \.\.\.)~) for @$arts;
             next;
         }
         my $ungelesene = 0;
