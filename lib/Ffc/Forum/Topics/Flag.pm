@@ -59,5 +59,16 @@ sub mark_seen {
     $_[0]->redirect_to($_[1] ? ( $_[1], topicid => $topicid ) : 'show_forum_topiclist');
 }
 
+sub mark_all_seen {
+    my $c = shift;
+    $c->counting;
+    my $uid = $c->session->{userid};
+    for my $top ( grep {;$_->[3]} @{$c->stash('topics')} ) {
+        $c->set_lastseen( $uid, $top->[0] );
+    }
+    $c->set_info_f('Alle Themen wurden als gelesen markiert.');
+    $c->redirect_to('show_forum_topiclist');
+}
+
 1;
 

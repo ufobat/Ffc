@@ -6,6 +6,7 @@
     <h1>Allgemeines Forum</h1>
     <p>
         <a href="<%= url_for 'add_forum_topic_form' %>" title="Neues Thema beginnen">Klicke hier</a>, um ein neues Thema zu beginnen.
+        <a href="<%= url_for 'mark_forum_topic_all_seen' %>" title="Alle Themen mit neuen Beiträgen als gelesen markieren">Klicke hier</a>, um alle neuen Beiträge in allen Themen als &quot;gelesen&quot; zu markieren.
     </p>
 </div>
 % if ( @$topics_for_list ) {

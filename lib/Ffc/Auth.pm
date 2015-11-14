@@ -39,7 +39,7 @@ sub check_login {
             return;
         }
     }
-    $c->session->{lasturl} = $c->req->url->to_string;
+    $c->session->{lasturl} = $c->req->url->path_query;
     $c->render(template => 'loginform');
     return;
 }

@@ -114,6 +114,11 @@ sub install_routes {
     $l->route('/forum/readlater/unmark/:postid')->via('get')
       ->to(controller => 'forum', action => 'unmark_readlater')
       ->name('unmark_readlater');
+
+    # Alle Beiträge in einem Rutsch als gelesen markieren
+    $l->route('/topic/mark_all_read')->via('get')
+      ->to(controller => 'forum', action => 'mark_all_seen')
+      ->name('mark_forum_topic_all_seen');
     
     # Standardrouten für die Beitragsbehandlung
     Ffc::Plugin::Posts::install_routes_posts($l, 'forum', '/topic/:topicid', topicid => $Ffc::Digqr);
