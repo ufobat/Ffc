@@ -220,7 +220,7 @@ sub edit_form {
     $c->edit_post_form();
 }
 
-sub edit_do { $_[0]->edit_post_do() }
+sub edit_do { $_[0]->edit_post_do(undef, $_[0]->param('topicid')) }
 
 sub delete_check {
     my $c = shift;

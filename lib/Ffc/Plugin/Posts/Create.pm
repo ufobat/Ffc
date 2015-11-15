@@ -100,7 +100,7 @@ sub _edit_post_form {
 }
 
 sub _edit_post_do {
-    my $c = shift;
+    my ( $c, $userto, $topicid, $noinfo, $noredirect ) = @_;
     my ( $wheres, @wherep ) = $c->where_modify;
     my $postid = $c->param('postid');
     my $topicid = $c->param('topicid');
@@ -136,7 +136,7 @@ sub _edit_post_do {
             . qq~WHERE "id"=? AND "blocked"=0~;
     $sql .= qq~ AND $wheres~ if $wheres;
     $c->dbh_do( $sql, $text, $cache, $postid, @wherep );
-    $sql = q~UPDATE "topics" SET "summary"=? WHERE "topicid"=?~;
+    $sql = q~UPDATE "topics" SET "summary"=? WHERE "id"=?~;
     $c->dbh_do( $sql, $summary, $topicid );
     $c->set_info_f('Der Beitrag wurde geändert');
     _redirect_to_show($c);
