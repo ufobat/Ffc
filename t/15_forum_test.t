@@ -163,18 +163,9 @@ sub check_env {
 
 sub check_for_topic_count {
     my ( $t, $top, $i, $new, $entries, $delents, $cnt, $query ) = @_;
-    my $art = '';
-    my $fuzzy = ( $cnt && $cnt != scalar @$entries ) || ( 'ARRAY' eq ref($delents) and @$delents ) ? 1 : 0;
-    if    ( $fuzzy )  { $art = qr~\w+~                  }
-    elsif ( $i == 1 ) { $art = $entries->[0]->[1] // '' }
-    else              { $art = $top->[1]                }
-    $art = qr~<div\s+class="otherspopup\s+popup\s+topiclistpopup\s+summarypopup">\s*<p>$art\s+\.\.\.</p>\s*</div>\s*</span>~xms
-        if $art;
-    $art = qr~(?:$art)?~xms;
-    #$art = '' unless $i == 1;
     if ( $new ) {
         $t->content_like(qr~$top->[0]\s*</a>\s*\.\.\.\s*\(<span\s+class="mark">$new</span>\)\s*</p>~xms)
-          ->content_like(qr~href="/topic/$i">$top->[0]</a>\s*$art\s*</h2>~)
+          ->content_like(qr~href="/topic/$i">$top->[0]</a>~)
           ->content_like(qr~
                 <span\s+class="smallfont">\(\s*Neu:\s+<span\s+class="mark">$new</span>,
                 \s*\w+,\s*(?:[.\d:]+|jetzt),
@@ -188,7 +179,7 @@ sub check_for_topic_count {
     }
     else {
         $t->content_like(qr~$top->[0]\s*</a>\s*\.\.\.\s*</p>~xms)
-          ->content_like(qr~href="/topic/$i">$top->[0]</a>\s*\s*$art\s*</h2>~)
+          ->content_like(qr~href="/topic/$i">$top->[0]</a>~)
           ->content_like(qr~
                 <span\s+class="smallfont">\(
                 \s*\w+,\s*(?:[.\d:]+|jetzt),
