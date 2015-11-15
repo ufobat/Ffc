@@ -170,8 +170,7 @@ sub check_for_topic_count {
     else              { $art = $top->[1]                }
     $art = qr~<div\s+class="otherspopup\s+popup\s+topiclistpopup\s+summarypopup">\s*<p>$art\s+\.\.\.</p>\s*</div>\s*</span>~xms
         if $art;
-    $art = qr~(?:$art)?~xms
-        if $cnt and $cnt != scalar @$entries;
+    $art = qr~(?:$art)?~xms;
     #$art = '' unless $i == 1;
     if ( $new ) {
         $t->content_like(qr~$top->[0]\s*</a>\s*\.\.\.\s*\(<span\s+class="mark">$new</span>\)\s*</p>~xms)
