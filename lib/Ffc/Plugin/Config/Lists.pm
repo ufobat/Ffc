@@ -124,5 +124,45 @@ EOSQL
      $_[0]->stash( users => $_[0]->dbh_selectall_arrayref( $sql, ( $_[0]->session->{userid} ) x 3 ) );
 }
 
+sub _set_lastseen {
+    my ( $c, $uid, $topicid, $mailonly ) = @_;
+    my $lastseen = $c->dbh_selectall_arrayref(
+        'SELECT "lastseen"
+        FROM "lastseenforum"
+        WHERE "userid"=? AND "topicid"=?',
+        $uid, $topicid
+    );
+    my $newlastseen = $c->dbh_selectall_arrayref(
+        'SELECT "id" FROM "posts" WHERE "userto" IS NULL AND "topicid"=? ORDER BY "id" DESC LIMIT 1',
+        $topicid);
+    $newlastseen = @$newlastseen ? $newlastseen->[0]->[0] : -1;
+    if ( @$lastseen ) {
+        $c->stash( lastseen => $lastseen->[0]->[0] );
+        if ( $mailonly ) {
+            $c->dbh_do(
+                'UPDATE "lastseenforum" SET "mailed"=1 WHERE "userid"=? AND "topicid"=?',
+                $uid, $topicid );
+        }
+        else {
+            $c->dbh_do(
+                'UPDATE "lastseenforum" SET "lastseen"=?, "mailed"=1 WHERE "userid"=? AND "topicid"=?',
+                $newlastseen, $uid, $topicid );
+        }
+    }
+    else {
+        $c->stash( lastseen => -1 );
+        if ( $mailonly ) {
+            $c->dbh_do(
+                'INSERT INTO "lastseenforum" ("userid", "topicid", "mailed") VALUES (?,?,1)',
+                $uid, $topicid );
+        }
+        else {
+            $c->dbh_do(
+                'INSERT INTO "lastseenforum" ("userid", "topicid", "lastseen", "mailed") VALUES (?,?,?,1)',
+                $uid, $topicid, $newlastseen );
+        }
+    }
+}
+
 1;
 

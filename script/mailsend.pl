@@ -20,14 +20,18 @@ my $sender = 'admin@'.hostname();
     plugin 'Ffc::Plugin::Formats';
     get '/:userid' => [userid => qr/\d+/xmso] => sub { 
         my $c = shift;
-        $c->session->{userid} = $c->param('userid');
+        my $uid = $c->session->{userid} = $c->param('userid');
         $c->counting;
+        my $topics =  $c->stash('topics');
+        for my $top ( @$topics ) {
+            $c->set_lastseen($uid,$top->[0],1);
+        }
         $c->render(json => {
             (map {; "new${_}count" => $c->stash("new${_}count")} qw(msgs post)),
             newposts      => [
                 map  {;[@{$_}[2,3]]} 
-                grep {;$_->[10]}
-                    @{$c->stash('topics')},
+                grep {;$_->[10] and $_->[3]}
+                    @$topics,
             ],
         });
     };

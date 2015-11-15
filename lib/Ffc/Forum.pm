@@ -162,32 +162,6 @@ sub show_startuppage {
     }
 }
 
-sub set_lastseen {
-    my ( $c, $uid, $topicid ) = @_;
-    my $lastseen = $c->dbh_selectall_arrayref(
-        'SELECT "lastseen"
-        FROM "lastseenforum"
-        WHERE "userid"=? AND "topicid"=?',
-        $uid, $topicid
-    );
-    my $newlastseen = $c->dbh_selectall_arrayref(
-        'SELECT "id" FROM "posts" WHERE "userto" IS NULL AND "topicid"=? ORDER BY "id" DESC LIMIT 1',
-        $topicid);
-    $newlastseen = @$newlastseen ? $newlastseen->[0]->[0] : -1;
-    if ( @$lastseen ) {
-        $c->stash( lastseen => $lastseen->[0]->[0] );
-        $c->dbh_do(
-            'UPDATE "lastseenforum" SET "lastseen"=? WHERE "userid"=? AND "topicid"=?',
-            $newlastseen, $uid, $topicid );
-    }
-    else {
-        $c->stash( lastseen => -1 );
-        $c->dbh_do(
-            'INSERT INTO "lastseenforum" ("userid", "topicid", "lastseen") VALUES (?,?,?)',
-            $uid, $topicid, $newlastseen );
-    }
-}
-
 sub show {
     my $c = shift;
     my ( $uid, $topicid ) = ( $c->session->{userid}, $c->param('topicid') );

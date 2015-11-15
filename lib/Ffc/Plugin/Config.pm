@@ -43,9 +43,11 @@ sub register {
         }
     }
 
-    $app->helper(datapath    => sub { $datapath  });
-    $app->helper(configdata  => sub { $config    });
-    $app->helper(data_return => \&_data_return    );
+    $app->helper(datapath     => sub { $datapath  });
+    $app->helper(configdata   => sub { $config    });
+    $app->helper(data_return  => \&_data_return    );
+
+    $app->helper(set_lastseen => \&_set_lastseen   );
 
     $app->helper(dbh                    => sub { dbh($self) }        );
     $app->helper(dbh_selectall_arrayref => \&_dbh_selectall_arrayref );

@@ -66,6 +66,7 @@ CREATE TABLE "lastseenforum" (
   "userid" integer NOT NULL,
   "topicid" integer NOT NULL,
   "lastseen" integer NOT NULL DEFAULT '0',
+  "mailed" tinyint(1) NOT NULL DEFAULT '0',
   "ignore" tinyint(1) NOT NULL DEFAULT '0',
   "pin" tinyint(1) NOT NULL DEFAULT '0',
   "newsmail" tinyint(1) NOT NULL DEFAULT '0',
