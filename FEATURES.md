@@ -18,6 +18,7 @@ Features
 * Alle Benutzerdaten, Foreneinstellungen und Beiträge werden in einer SQLite-Datenbank innerhalb des festgelegten Verzeichnisses abgelegt
 * Das festgelegte Forenverzeichnis ist transparent und portabel
 * Forenbeiträge werden in Themen sortiert, die jeder Benutzer frei anlegen kann
+* Themen mit neuen Beiträgen können in der Themenliste über einen Klick als gelesen markiert werden
 * Themenüberschriften können frei vom Benutzer, der das Thema angelegt hat, geändert werden
 * Wird eine Themenüberschrift in ein bereits existierendes Thema geändert, dann werden die Beiträge in dieses andere Thema verschoben
 * Themen können vom Benutzer ignoriert werden, dann werden die nicht mehr hervor gehoben, wenn neue Beiträge von anderen Benutzern erstellt werden in dem Thema
