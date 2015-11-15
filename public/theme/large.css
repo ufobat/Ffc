@@ -302,5 +302,6 @@ button:focus {
     white-space: normal;
     overflow: auto; 
     font-weight: normal;
+    color: black;
 }
 

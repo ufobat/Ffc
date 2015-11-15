@@ -61,7 +61,7 @@
             <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"><%= $t->[2] %></a>
 % if ( $t->[11] ) {
             <div class="otherspopup popup topiclistpopup summarypopup">
-                <p><%= $t->[11] %> ...</p>
+                <p><%== $t->[11] %> ...</p>
             </div>
 % }
         </span>
