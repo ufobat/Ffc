@@ -63,13 +63,13 @@ sub show {
     if ( @$lastseen ) {
         $c->stash( lastseen => $lastseen->[0]->[0] );
         $c->dbh_do(
-            'UPDATE "lastseenmsgs" SET "lastseen"=? WHERE "userid"=? AND "userfromid"=?',
+            'UPDATE "lastseenmsgs" SET "lastseen"=?, "mailed"=1 WHERE "userid"=? AND "userfromid"=?',
             $newlastseen, $uid, $utoid );
     }
     else {
         $c->stash( lastseen => -1 );
         $c->dbh_do(
-            'INSERT INTO "lastseenmsgs" ("userid", "userfromid", "lastseen") VALUES (?,?,?)',
+            'INSERT INTO "lastseenmsgs" ("userid", "userfromid", "lastseen", "mailed") VALUES (?,?,?,1)',
             $uid, $utoid, $newlastseen );
     }
     $c->counting;
@@ -78,7 +78,26 @@ sub show {
 
 sub query { $_[0]->query_posts }
 
-sub add { $_[0]->add_post($_[0]->param('usertoid'), undef) }
+sub add { 
+    my $c = shift;
+    my $utoid = $c->param('usertoid');
+    my $uid = $c->session->{userid};
+    my $lastseen = $c->dbh_selectall_arrayref(
+        'SELECT "lastseen" FROM "lastseenmsgs" WHERE "userid"=? AND "userfromid"=?',
+        $utoid, $uid
+    );
+    if ( @$lastseen ) {
+        $c->dbh_do(
+            'UPDATE "lastseenmsgs" SET "mailed"=0 WHERE "userid"=? AND "userfromid"=?',
+            $utoid, $uid );
+    }
+    else {
+        $c->dbh_do(
+            'INSERT INTO "lastseenmsgs" ("userid", "userfromid", "mailed") VALUES (?,?,0)',
+            $utoid, $uid );
+    }
+    $c->add_post($utoid, undef);
+}
 
 sub upload_form {
     my $c = shift;

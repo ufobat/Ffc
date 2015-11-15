@@ -23,14 +23,36 @@ my $sender = 'admin@'.hostname();
         my $uid = $c->session->{userid} = $c->param('userid');
         $c->counting;
         my $topics =  $c->stash('topics');
+        my $users  =  $c->stash('users');
         for my $top ( @$topics ) {
             $c->set_lastseen($uid,$top->[0],1);
         }
+        my $pmsgscnt = 0;
+        for my $m ( @$users ) {
+            next unless $m->[8];
+            $pmsgscnt += $m->[8];
+            my $utoid = $m->[0];
+            my $lastseen = $c->dbh_selectall_arrayref(
+                'SELECT "lastseen" FROM "lastseenmsgs"
+                WHERE "userid"=? AND "userfromid"=?',
+                $uid, $utoid
+            );
+            if ( @$lastseen ) {
+                $c->dbh_do(
+                    'UPDATE "lastseenmsgs" SET "mailed"=1 WHERE "userid"=? AND "userfromid"=?',
+                    $uid, $utoid );
+            }
+            else {
+                $c->dbh_do(
+                    'INSERT INTO "lastseenmsgs" ("userid", "userfromid", "mailed") VALUES (?,?,1)',
+                    $uid, $utoid );
+            }
+        }
         $c->render(json => {
-            (map {; "new${_}count" => $c->stash("new${_}count")} qw(msgs post)),
-            newposts      => [
+            newmsgs  => $pmsgscnt,
+            newposts => [
                 map  {;[@{$_}[2,3]]} 
-                grep {;$_->[10] and $_->[3]}
+                grep {;$_->[10] and $_->[3] and not $_->[12]}
                     @$topics,
             ],
         });
@@ -58,9 +80,9 @@ for my $u ( @$users ) {
 
     my $data = $t->get_ok("/$uid")->tx->res->json;
 
-    if ( $data->{newmsgs_count} ) {
-        push @lines, "Private Nachrichten: $data->{newmsgs_count}\n";
-        $cnt += $data->{newmsgs_count};
+    if ( $data->{newmsgs} ) {
+        push @lines, "Private Nachrichten: $data->{newmsgs}\n";
+        $cnt += $data->{newmsgs};
         say "Benutzer $username hat $cnt neue private Nachrichten erhalten.";
     }
     if ( @{$data->{newposts}} ) {
@@ -93,7 +115,7 @@ sub send_email {
     $smtp->datasend("To: $email\n");
     $smtp->datasend("\n");
     $smtp->datasend("Hallo $username,\n\n");
-    $smtp->datasend("es warten folgende neuen Nachrichten in $title auf dich:\n\n");
+    $smtp->datasend("es warten folgende neue Nachrichten in $title auf dich:\n\n");
     for my $l ( @$lines ) {
         $smtp->datasend("    $l\n");
     }
