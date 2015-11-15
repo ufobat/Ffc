@@ -23,6 +23,8 @@ Features
 * Themen können vom Benutzer ignoriert werden, dann werden die nicht mehr hervor gehoben, wenn neue Beiträge von anderen Benutzern erstellt werden in dem Thema
 * Themen können von den Benutzern auch "angeheftet" werden, dann erscheinen sie immer mit ganz oben in der Themenliste
 * Themen mit neuen Beiträgen können aus der Themenliste über einen Link als "gelesen" markiert werden, was bedeutet, dass der Benutzer "gesehen" hat, dass neue Beiträge da sind, auf diese aber nicht näher eingehen wollte
+* Themen können separat so eingestellt werden über ein Menü in der Themenliste, dass gezielt Email-Benachrichtungen über das Thema verschickt werden können (passiert über den separaten Mechanismus via Cron, Email muss in den Benutzerkonteneinstellungen generell freigeschalten sein und über Privatnachrichten wird grundsätzlich informiert per Email, falls gewünscht)
+* In der Themenliste erscheint eine Beitragsvorschau, wenn man mit der Maus über den Überschriftenlink zu einem Thema fährt
 * Für die Themenlisten kann eingestellt werden, ob aktuelle Themen auf einer Themenseite und im Menü chronologisch nach dem aktuellsten Beitrag oder alphabetisch sortiert anzeigt werden
 * Anzahl der gleichzeitig angezeigten Überschriften auf der Startseite und damit auch im Foren-Menü-Popup ändern
 * Anzahl der gleichzeitig auf einer Seite angezeigten Beiträge ändern
