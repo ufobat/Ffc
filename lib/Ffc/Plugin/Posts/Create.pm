@@ -100,7 +100,7 @@ sub _edit_post_form {
 }
 
 sub _edit_post_do {
-    my ( $c, $userto, $topicid, $noinfo, $noredirect ) = @_;
+    my $c = shift;
     my ( $wheres, @wherep ) = $c->where_modify;
     my $postid = $c->param('postid');
     my $topicid = $c->param('topicid');
