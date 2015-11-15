@@ -5,8 +5,6 @@ Ffc - A Bulletin Board System For Smaller Groups
 
 So here is my presentation of what is kind of a pet project of mine. It's tied to a call for supporters because, as you might recognize while reading and digging into it, there is a lot to revamp all over the whole project in order to bring it to a broader audience.
 
-A detailed Feature List (in german language) can be found here: [FEATURES.md on GitHub](https://github.com/4FriendsForum/Ffc/blob/master/FEATURES.md)
-
 Installation information (in german language) is located here: [INSTALL.md on GitHub](https://github.com/4FriendsForum/Ffc/blob/master/INSTALL.md)
 
 First of all I would like to introduce the project as such and the ideas that lead to this project. The project is called Ffc, an abbreviation from the depths of history so far away that even I do not remember anymore.
