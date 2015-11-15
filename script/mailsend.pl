@@ -29,8 +29,8 @@ my $sender = 'admin@'.hostname();
         }
         my $pmsgscnt = 0;
         for my $m ( @$users ) {
-            next unless $m->[8];
-            $pmsgscnt += $m->[8];
+            next unless $m->[2];
+            $pmsgscnt += $m->[2];
             my $utoid = $m->[0];
             my $lastseen = $c->dbh_selectall_arrayref(
                 'SELECT "lastseen" FROM "lastseenmsgs"
@@ -50,6 +50,7 @@ my $sender = 'admin@'.hostname();
         }
         $c->render(json => {
             newmsgs  => $pmsgscnt,
+            newpostcount => $c->stash('newpostcount'),
             newposts => [
                 map  {;[@{$_}[2,3]]} 
                 grep {;$_->[10] and $_->[3] and not $_->[12]}

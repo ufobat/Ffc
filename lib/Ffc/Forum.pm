@@ -184,7 +184,11 @@ sub show {
 
 sub query { $_[0]->query_posts }
 
-sub add { my $c = shift; $c->add_post( undef, $c->param('topicid'), @_ ) }
+sub add { 
+    my $c = shift; 
+    my $topicid = $c->param('topicid');
+    $c->dbh_do( 'UPDATE "lastseenforum" SET "mailed"=0 WHERE "topicid"=?', $topicid );
+    $c->add_post( undef, $topicid, @_ ) }
 
 sub edit_form {
     my $c = shift;
