@@ -297,7 +297,7 @@ button:focus {
 }
 .summarypopup {
     max-width: 38em;
-    margin-top: -0.25em;
+    margin-top: -0.5em;
     margin-left: 12em;
     white-space: normal;
     overflow: auto; 
