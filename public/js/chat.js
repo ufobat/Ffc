@@ -84,6 +84,10 @@ ffcdata.chat.init = function() {
                         newdaymsg = true;
                     }
                 }
+                if ( newdaymsg ) classstr.push('newdaymsg');
+                var sameuser = ffcdata.chat.lastmsguser === msgs[i][1];
+                if ( sameuser && !newdaymsg ) classstr.push('sameuser');
+
                 var userstrthing = '';
                 if ( msgs[i][4] === 0 ) {
                     var mecmd = false;
@@ -96,10 +100,7 @@ ffcdata.chat.init = function() {
                         userstr = '<span class="username">' + msgs[i][1] + '</span>: ';
                     }
                     var classstr = [];
-                    var sameuser = ffcdata.chat.lastmsguser === msgs[i][1];
-                    if ( newdaymsg ) classstr.push('newdaymsg');
                     if ( ffcdata.user === msgs[i][1] ) classstr.push('ownmsg');
-                    if ( sameuser && !newdaymsg ) classstr.push('sameuser');
                     userstrthing = ( !sameuser || mecmd || newdaymsg ? userstr : '' );
                 }
                 ml = ml + '<p' + ( classstr.length > 0 ? ' class="' + classstr.join(' ') + '"' : '' ) + '>'
