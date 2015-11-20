@@ -62,55 +62,66 @@ ffcdata.chat.init = function() {
     };
 
     /************************************************************************
+     *** Neue Chatnachrichten zusammenbauen                               ***
+     ************************************************************************/
+    var compose_msg = function(msgs, i, match_l){
+        var newdaymsg = false;
+        var userstrthing = '';
+        var userstr = '';
+        var msgstr = msgs[i][2];
+        var classstr = [];
+        var userstrthing = '';
+        var userstr = '';
+        var msgstr = msgs[i][2];
+        var classstr = [];
+        var match_n = msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/);
+        if ( i < msgs.length - 1 ) {
+            var match_a = msgs[i + 1][3].match(/\d\d\.\d\d\.\d\d\d\d/);
+            if ( match_a && ( !match_n || match_n[0] !== match_a[0] ) ) {
+                newdaymsg = true;
+            }
+        }
+        else {
+            if ( match_l && ( !match_n || match_n[0] !== match_l[0] ) ) {
+                newdaymsg = true;
+            }
+        }
+        if ( newdaymsg ) classstr.push('newdaymsg');
+        var sameuser = ffcdata.chat.lastmsguser === msgs[i][1];
+        if ( sameuser && !newdaymsg ) classstr.push('sameuser');
+
+        if ( msgs[i][4] === 0 ) {
+            var mecmd = false;
+            if ( msgs[i][2].match(/^\/me\s+/ ) ) {
+                msgs[i][2] = msgs[i][2].replace(/^\/me\s+/, '');
+                userstr = msgs[i][1] + ' ';
+                mecmd = true;
+            }
+            else {
+                userstr = '<span class="username">' + msgs[i][1] + '</span>: ';
+            }
+            if ( ffcdata.user === msgs[i][1] ) classstr.push('ownmsg');
+            userstrthing = ( !sameuser || mecmd || newdaymsg ? userstr : '' );
+            msgstr = usernamefilter(msgs[i][2]);
+        }
+
+        ffcdata.chat.lastmsguser = msgs[i][1];
+
+        return '<p' + ( classstr.length > 0 ? ' class="' + classstr.join(' ') + '"' : '' ) + '>'
+           + '<span class="timestamp">(' + msgs[i][3] + ')</span> '
+           + userstrthing + msgstr
+           + '</p>\n';
+    }
+
+    /************************************************************************
      *** Neue Chatnachrichten anzeigen                                    ***
      ************************************************************************/
     var add_msgs = function(msgs) {
         if ( msgs.length > 0 ) {
             var ml = msglog.innerHTML;
-            var newdaymsg = false;
-            var userstr = '';
             var match_l = ffcdata.chat.lastmsgtime.match(/\d\d\.\d\d\.\d\d\d\d/);
             for ( var i = msgs.length - 1; i >= 0; i-- ) {
-                newdaymsg = false;
-                var match_n = msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/);
-                if ( i < msgs.length - 1 ) {
-                    var match_a = msgs[i + 1][3].match(/\d\d\.\d\d\.\d\d\d\d/);
-                    if ( match_a && ( !match_n || match_n[0] !== match_a[0] ) ) {
-                        newdaymsg = true;
-                    }
-                }
-                else {
-                    if ( match_l && ( !match_n || match_n[0] !== match_l[0] ) ) {
-                        newdaymsg = true;
-                    }
-                }
-                if ( newdaymsg ) classstr.push('newdaymsg');
-                var sameuser = ffcdata.chat.lastmsguser === msgs[i][1];
-                if ( sameuser && !newdaymsg ) classstr.push('sameuser');
-
-                var userstrthing = '';
-                var msgstr = msgs[i][2];
-                if ( msgs[i][4] === 0 ) {
-                    var mecmd = false;
-                    if ( msgs[i][2].match(/^\/me\s+/ ) ) {
-                        msgs[i][2] = msgs[i][2].replace(/^\/me\s+/, '');
-                        userstr = msgs[i][1] + ' ';
-                        mecmd = true;
-                    }
-                    else {
-                        userstr = '<span class="username">' + msgs[i][1] + '</span>: ';
-                    }
-                    var classstr = [];
-                    if ( ffcdata.user === msgs[i][1] ) classstr.push('ownmsg');
-                    userstrthing = ( !sameuser || mecmd || newdaymsg ? userstr : '' );
-                    msgstr = usernamefilter(msgs[i][2]);
-                }
-                ml = ml + '<p' + ( classstr.length > 0 ? ' class="' + classstr.join(' ') + '"' : '' ) + '>'
-                   + '<span class="timestamp">(' + msgs[i][3] + ')</span> '
-                   + userstrthing + msgstr
-                   + '</p>\n';
-
-                ffcdata.chat.lastmsguser = msgs[i][1];
+                ml = ml + compose_msg(msgs, i, match_l);
             }
             msglog.innerHTML = ml;
             ffcdata.chat.lastmsgtime = msgs[0][3];
