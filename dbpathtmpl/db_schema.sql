@@ -104,7 +104,8 @@ CREATE TABLE "chat" (
    "id" integer PRIMARY KEY AUTOINCREMENT,
    "userfromid" integer NOT NULL,
    "msg" text NOT NULL,
-  "posted" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+   "posted" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   "sysmsg" tinyint(1) NOT NULL DEFAULT 0
 );
 
 CREATE TABLE "config" (

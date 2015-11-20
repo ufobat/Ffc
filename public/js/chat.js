@@ -84,24 +84,27 @@ ffcdata.chat.init = function() {
                         newdaymsg = true;
                     }
                 }
-                var mecmd = false;
-                if ( msgs[i][2].match(/^\/me\s+/ ) ) {
-                    msgs[i][2] = msgs[i][2].replace(/^\/me\s+/, '');
-                    userstr = msgs[i][1] + ' ';
-                    mecmd = true;
+                var userstrthing = '';
+                if ( msgs[i][4] === 0 ) {
+                    var mecmd = false;
+                    if ( msgs[i][2].match(/^\/me\s+/ ) ) {
+                        msgs[i][2] = msgs[i][2].replace(/^\/me\s+/, '');
+                        userstr = msgs[i][1] + ' ';
+                        mecmd = true;
+                    }
+                    else {
+                        userstr = '<span class="username">' + msgs[i][1] + '</span>: ';
+                    }
+                    var classstr = [];
+                    var sameuser = ffcdata.chat.lastmsguser === msgs[i][1];
+                    if ( newdaymsg ) classstr.push('newdaymsg');
+                    if ( ffcdata.user === msgs[i][1] ) classstr.push('ownmsg');
+                    if ( sameuser && !newdaymsg ) classstr.push('sameuser');
+                    userstrthing = ( !sameuser || mecmd || newdaymsg ? userstr : '' );
                 }
-                else {
-                    userstr = '<span class="username">' + msgs[i][1] + '</span>: ';
-                }
-                var classstr = [];
-                var sameuser = ffcdata.chat.lastmsguser === msgs[i][1];
-                if ( newdaymsg ) classstr.push('newdaymsg');
-                if ( ffcdata.user === msgs[i][1] ) classstr.push('ownmsg');
-                if ( sameuser && !newdaymsg ) classstr.push('sameuser');
-                   
                 ml = ml + '<p' + ( classstr.length > 0 ? ' class="' + classstr.join(' ') + '"' : '' ) + '>'
                    + '<span class="timestamp">(' + msgs[i][3] + ')</span> '
-                   + ( !sameuser || mecmd || newdaymsg ? userstr : '' )
+                   + userstrthing
                    + usernamefilter(msgs[i][2]) + '</p>\n';
 
                 ffcdata.chat.lastmsguser = msgs[i][1];

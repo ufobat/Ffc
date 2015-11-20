@@ -64,8 +64,20 @@ sub leave_chat {
     my $c = $_[0];
     # vermerk in der datenbank: benutzer hat chat verlassen,
     $c->dbh_do('UPDATE "users" SET "inchat"=0 WHERE "id"=?', $c->session->{userid} );
+    _add_msg($c,$c->session->{user}.' hat den Chat verlassen.', 1);
     # kann bei document.on("close"... im javascript verwendet werden
     $c->render( text => 'ok' );
+}
+
+sub _add_msg {
+    return unless $_[1];
+    my ( $c, $msg, $issys ) = @_;
+    $msg = $c->pre_format($msg, 1);
+    $msg =~ s~\A\s*<p>~~xmso;
+    $msg =~ s~</p>\s*\z~~xmso;
+    $msg =~ s~</p>\s*<p>~<br />~xmso;
+    $c->dbh_do('INSERT INTO "chat" ("userfromid", "msg", "sysmsg") VALUES (?,?,?)',
+        $c->session->{userid}, $msg, $issys ? 1 : 0);
 }
 
 sub receive_started   { _receive($_[0], 1, 1) }
@@ -73,24 +85,19 @@ sub receive_focused   { _receive($_[0], 1, 0) }
 sub receive_unfocused { _receive($_[0], 0, 0) }
 sub _receive {
     my ( $c, $active, $started ) = @_;
-    my $msg = '';
-    $msg = $c->req->json if $c->req->method eq 'POST';
-    if ( $msg ) { # neue nachricht erhalten
-        $msg = $c->pre_format($msg, 1);
-        $msg =~ s~\A\s*<p>~~xmso;
-        $msg =~ s~</p>\s*\z~~xmso;
-        $msg =~ s~</p>\s*<p>~<br />~xmso;
-        $c->dbh_do('INSERT INTO "chat" ("userfromid", "msg") VALUES (?,?)',
-            $c->session->{userid}, $msg);
-    } # ende neue nachricht erhalten
+    if ( $c->req->method eq 'POST' ) {
+        _add_msg($c,$c->req->json);
+    }
+    my $s = $c->session;
 
     # rückgabe erzeugen
     my $sql = << 'EOSQL';
-SELECT c."id", uf."name", c."msg", datetime(c."posted", 'localtime')
+SELECT c."id", uf."name", c."msg", datetime(c."posted", 'localtime'), c."sysmsg"
 FROM "chat" c 
 INNER JOIN "users" uf ON uf."id"=c."userfromid"
 EOSQL
     if ( $started ) {
+        _add_msg($c,$s->{user}.' hat den Chat betreten.', 1);
         $sql .= << 'EOSQL';
 ORDER BY c."id" DESC
 LIMIT ?;
@@ -105,7 +112,7 @@ EOSQL
     }
 
     my $msgs = $c->dbh_selectall_arrayref( $sql,
-        ( $started ? 50 : $c->session->{userid} )
+        ( $started ? 50 : $s->{userid} )
     );
     for my $m ( @$msgs ) {
         $m->[1] = xml_escape($m->[1]);
@@ -118,7 +125,7 @@ EOSQL
     $sql .= qq~    "inchat"=1,\n    "lastseenchat"=CURRENT_TIMESTAMP~;
     $sql .= qq~,\n    "lastseenchatactive"=CURRENT_TIMESTAMP~ if $active;
     $sql .= qq~\nWHERE "id"=?~;
-    $c->dbh_do( $sql, ( @$msgs ? $msgs->[0]->[0] : () ), $c->session->{userid} );
+    $c->dbh_do( $sql, ( @$msgs ? $msgs->[0]->[0] : () ), $s->{userid} );
 
     # benutzerliste ermitteln, die im chat sind
     $sql = << 'EOSQL';
