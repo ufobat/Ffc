@@ -67,8 +67,8 @@ ffcdata.chat.init = function() {
     var add_msgs = function(msgs) {
         if ( msgs.length > 0 ) {
             var ml = msglog.innerHTML;
-            var userstr = '';
             var newdaymsg = false;
+            var userstr = '';
             var match_l = ffcdata.chat.lastmsgtime.match(/\d\d\.\d\d\.\d\d\d\d/);
             for ( var i = msgs.length - 1; i >= 0; i-- ) {
                 newdaymsg = false;
@@ -89,6 +89,7 @@ ffcdata.chat.init = function() {
                 if ( sameuser && !newdaymsg ) classstr.push('sameuser');
 
                 var userstrthing = '';
+                var msgstr = msgs[i][2];
                 if ( msgs[i][4] === 0 ) {
                     var mecmd = false;
                     if ( msgs[i][2].match(/^\/me\s+/ ) ) {
@@ -102,11 +103,12 @@ ffcdata.chat.init = function() {
                     var classstr = [];
                     if ( ffcdata.user === msgs[i][1] ) classstr.push('ownmsg');
                     userstrthing = ( !sameuser || mecmd || newdaymsg ? userstr : '' );
+                    msgstr = usernamefilter(msgs[i][2]);
                 }
                 ml = ml + '<p' + ( classstr.length > 0 ? ' class="' + classstr.join(' ') + '"' : '' ) + '>'
                    + '<span class="timestamp">(' + msgs[i][3] + ')</span> '
-                   + userstrthing
-                   + usernamefilter(msgs[i][2]) + '</p>\n';
+                   + userstrthing + msgstr
+                   + '</p>\n';
 
                 ffcdata.chat.lastmsguser = msgs[i][1];
             }
