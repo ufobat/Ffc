@@ -215,6 +215,7 @@ ffcdata.chat.init = function() {
      ************************************************************************/
     window.onbeforeunload = function() {
         ffcdata.utils.request('GET', ffcdata.chat.leaveurl, null, function(ret) { console.log(ret); });
+        return;
     };
 
     /************************************************************************
