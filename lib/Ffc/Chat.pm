@@ -97,7 +97,14 @@ FROM "chat" c
 INNER JOIN "users" uf ON uf."id"=c."userfromid"
 EOSQL
     if ( $started ) {
-        _add_msg($c,$s->{user}.' hat den Chat betreten.', 1);
+        unless ( 
+            $c->dbh_selectall_arrayref( << 'EOSQL', $s->{userid} )->[0]->[0]
+SELECT CASE WHEN
+    "inchat" AND DATETIME("lastseenchat", 'localtime', '+'||"chatrefreshsecs"||' seconds') >= DATETIME('now', 'localtime') THEN 1 ELSE 0 END
+FROM "users" 
+WHERE "id"=?
+EOSQL
+        ) { _add_msg($c,$s->{user}.' hat den Chat betreten.', 1) }
         $sql .= << 'EOSQL';
 ORDER BY c."id" DESC
 LIMIT ?;
