@@ -324,4 +324,7 @@ input[type="date"], input[type="color"], textarea {
 h2.newsmail {
     border-color: lightblue;
 }
+h2.pin {
+    border-color: gold;
+}
 
