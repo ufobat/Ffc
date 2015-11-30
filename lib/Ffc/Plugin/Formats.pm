@@ -32,6 +32,7 @@ our @Smilies = (
     [ sarcasm    => ['</sarcasm>',                                ] ],
     [ attention  => ['!!!',                                       ] ],
     [ joke       => ['!joke',                                     ] ],
+    [ headbange  => ['\m/',                                       ] ],
 );
 our %Smiley     = map {my ($n,$l)=($_->[0],$_->[1]); map {
     #s~<~&lt;~gxmos; s~>~&gt;~gxmso; 

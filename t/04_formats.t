@@ -235,6 +235,7 @@ EOHTML
     ],
     [
         << 'EOTXT',
+headbange: \m/,
 devilsmile: >:) >:-) >=),
 evilgrin: >:D >:-D >=D,
 angry: >:( >:-( >=(
@@ -248,6 +249,7 @@ joke: !joke
 http://www.testurl.de/test/-test--test-test,1234,1234.html
 EOTXT
         << 'EOHTML',
+<p>headbange: <img class="smiley" src="/theme/img/smileys/headbange.png" alt="\m/" title="\m/" />,</p>
 <p>devilsmile: <img class="smiley" src="/theme/img/smileys/devilsmile.png" alt=">:)" title=">:)" /> <img class="smiley" src="/theme/img/smileys/devilsmile.png" alt=">:-)" title=">:-)" /> <img class="smiley" src="/theme/img/smileys/devilsmile.png" alt=">=)" title=">=)" />,</p>
 <p>evilgrin: <img class="smiley" src="/theme/img/smileys/evilgrin.png" alt=">:D" title=">:D" /> <img class="smiley" src="/theme/img/smileys/evilgrin.png" alt=">:-D" title=">:-D" /> <img class="smiley" src="/theme/img/smileys/evilgrin.png" alt=">=D" title=">=D" />,</p>
 <p>angry: <img class="smiley" src="/theme/img/smileys/angry.png" alt=">:(" title=">:(" /> <img class="smiley" src="/theme/img/smileys/angry.png" alt=">:-(" title=">:-(" /> <img class="smiley" src="/theme/img/smileys/angry.png" alt=">=(" title=">=(" /></p>
