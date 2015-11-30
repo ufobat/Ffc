@@ -17,7 +17,7 @@
                     <p><a href="<%= url_for $editurl, postid => $post->[0], @$additional_params %>" title="Beitrag bearbeiten">bearbeiten</a></p>
 %   }
 %   if ( $moveurl ) {
-                    <p><a href="<%= url_for $moveurl, postid => $post->[0], @$additional_params %>" title="Beitrag in ein anderes Thema verschieben">verschschieben</a></p>
+                    <p><a href="<%= url_for $moveurl, postid => $post->[0], @$additional_params %>" title="Beitrag in ein anderes Thema verschieben">verschieben</a></p>
 %   }
 %   if ( $delurl ) {
                     <p><a href="<%= url_for $delurl, postid => $post->[0], @$additional_params %>" title="Beitrag löschen">entfernen</a></p>
