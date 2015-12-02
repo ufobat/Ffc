@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 83;
+use Test::More tests => 86;
 
 srand;
 
