@@ -260,7 +260,7 @@ EOTXT
 <p>sarcasm: <img class="smiley" src="/theme/img/smileys/sarcasm.png" alt="</sarcasm>" title="</sarcasm>" /></p>
 <p>attention: <img class="smiley" src="/theme/img/smileys/attention.png" alt="!!!" title="!!!" /></p>
 <p>joke: <img class="smiley" src="/theme/img/smileys/joke.png" alt="!joke" title="!joke" /></p>
-<p><a href="http://www.testurl.de/test/-test--test-test,1234,1234.html" title="Externe Webseite: http://www.testurl.de/test/-test--test-test,1234,1234.html" target="_blank">http://www.test…,1234,1234.html</a></p>
+<p><a href="http://www.testurl.de/test/-test--test-test" title="Externe Webseite: http://www.testurl.de/test/-test--test-test" target="_blank">http://www.test…-test--test-test</a>,1234,1234.html</p>
 EOHTML
         5
     ],
@@ -322,7 +322,7 @@ EOTXT
         << 'EOHTML',
 <p>Ist <q>Programm</q> mit drin? Dachte die kommen von den Herstellern selber oder sind dann eben in der Verwaltungssoftware mit drin (<q>System</q>).</p>
 <p>Wenn man sie denn macht, ansonsten isses einem ja irgendwie eh wurscht, was das System da zieht. Wird schon wichtig sein werden ... wenn man sie denn macht.</p>
-<p><b>update:</b> jetzt muss ich doch nochmal eine naive Frage stellen, ich tue das aber im entsprechenden Thread (<a href="https://local.host/forum.pl/topic/1," title="Externe Webseite: https://local.host/forum.pl/topic/1," target="_blank">https://local.h…rum.pl/topic/1,</a> Beitrag: <a href="https://local.host/forum.pl/topic/16/display/1" title="Externe Webseite: https://local.host/forum.pl/topic/16/display/1" target="_blank">https://local.h…ic/16/display/1</a>)</p>
+<p><b>update:</b> jetzt muss ich doch nochmal eine naive Frage stellen, ich tue das aber im entsprechenden Thread (<a href="https://local.host/forum.pl/topic/1" title="Externe Webseite: https://local.host/forum.pl/topic/1" target="_blank">https://local.h…forum.pl/topic/1</a>, Beitrag: <a href="https://local.host/forum.pl/topic/16/display/1" title="Externe Webseite: https://local.host/forum.pl/topic/16/display/1" target="_blank">https://local.h…ic/16/display/1</a>)</p>
 EOHTML
         10
     ],
@@ -393,6 +393,23 @@ EOTXT
 <p>asdf asdf <u>asdfasfd</u></p>
 EOHTML
         13
+    ],
+    [
+        << 'EOTXT',
+asdf asdf http://test.org/bla/blubb asdfas.
+blubblbub (https://test2.org/bla.html) fdf das.
+bloblo fd (http://test3.com/bli.pl, hat sich erledigt).
+daddel didi <b>http://test5.co.uk/balla.cgi baddabing</b> und da.
+dummdi dummi <u>didumm https://test4.de/bong.lua</u> oder so.
+EOTXT
+        << 'EOHTML',
+<p>asdf asdf <a href="http://test.org/bla/blubb" title="Externe Webseite: http://test.org/bla/blubb" target="_blank">http://test.org/bla/blubb</a> asdfas.</p>
+<p>blubblbub (<a href="https://test2.org/bla.html" title="Externe Webseite: https://test2.org/bla.html" target="_blank">https://test2.org/bla.html</a>) fdf das.</p>
+<p>bloblo fd (<a href="http://test3.com/bli.pl" title="Externe Webseite: http://test3.com/bli.pl" target="_blank">http://test3.com/bli.pl</a>, hat sich erledigt).</p>
+<p>daddel didi <b><a href="http://test5.co.uk/balla.cgi" title="Externe Webseite: http://test5.co.uk/balla.cgi" target="_blank">http://test5.co.uk/balla.cgi</a> baddabing</b> und da.</p>
+<p>dummdi dummi <u>didumm <a href="https://test4.de/bong.lua" title="Externe Webseite: https://test4.de/bong.lua" target="_blank">https://test4.de/bong.lua</a></u> oder so.</p>
+EOHTML
+        14
     ],
 );
 
