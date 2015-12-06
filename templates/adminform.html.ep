@@ -37,9 +37,9 @@
         <input type="hidden" name="overwriteok" value="1" />
         <p>
             Passwort:
-            <input required type="password" name="newpw1" value="" />
+            <input type="password" name="newpw1" value="" />
             wiederholen:
-            <input required type="password" name="newpw2" value="" />
+            <input type="password" name="newpw2" value="" />
         </p>
         <p>
             <input type="checkbox" name="active"<%== $u->[2] ? ' checked="checked"' : '' %> />
