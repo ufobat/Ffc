@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 86;
+use Test::More tests => 89;
 
 srand;
 
@@ -260,7 +260,7 @@ EOTXT
 <p>sarcasm: <img class="smiley" src="/theme/img/smileys/sarcasm.png" alt="</sarcasm>" title="</sarcasm>" /></p>
 <p>attention: <img class="smiley" src="/theme/img/smileys/attention.png" alt="!!!" title="!!!" /></p>
 <p>joke: <img class="smiley" src="/theme/img/smileys/joke.png" alt="!joke" title="!joke" /></p>
-<p><a href="http://www.testurl.de/test/-test--test-test" title="Externe Webseite: http://www.testurl.de/test/-test--test-test" target="_blank">http://www.test…-test--test-test</a>,1234,1234.html</p>
+<p><a href="http://www.testurl.de/test/-test--test-test,1234,1234.html" title="Externe Webseite: http://www.testurl.de/test/-test--test-test,1234,1234.html" target="_blank">http://www.test…,1234,1234.html</a></p>
 EOHTML
         5
     ],
@@ -392,7 +392,7 @@ EOTXT
         << 'EOHTML',
 <p>asdf asdf <u>asdfasfd</u></p>
 EOHTML
-        13
+        14
     ],
     [
         << 'EOTXT',
@@ -409,7 +409,16 @@ EOTXT
 <p>daddel didi <b><a href="http://test5.co.uk/balla.cgi" title="Externe Webseite: http://test5.co.uk/balla.cgi" target="_blank">http://test5.co.uk/balla.cgi</a> baddabing</b> und da.</p>
 <p>dummdi dummi <u>didumm <a href="https://test4.de/bong.lua" title="Externe Webseite: https://test4.de/bong.lua" target="_blank">https://test4.de/bong.lua</a></u> oder so.</p>
 EOHTML
-        14
+        15
+    ],
+    [
+        << 'EOTXT',
+Blaaa blubb (http://www.test.de/?test=bla,blubb, https://www.test.org/?toast=bli,) und http://wupp.pl/hlu.,&roh so https://www.test.com/?tast=blo,
+EOTXT
+        << 'EOHTML',
+<p>Blaaa blubb (<a href="http://www.test.de/?test=bla,blubb" title="Externe Webseite: http://www.test.de/?test=bla,blubb" target="_blank">http://www.test…?test=bla,blubb</a>, <a href="https://www.test.org/?toast=bli" title="Externe Webseite: https://www.test.org/?toast=bli" target="_blank">https://www.tes…t.org/?toast=bli</a>,) und <a href="http://wupp.pl/hlu.,&roh" title="Externe Webseite: http://wupp.pl/hlu.,&amp;roh" target="_blank">http://wupp.pl/hlu.,&amp;roh</a> so <a href="https://www.test.com/?tast=blo" title="Externe Webseite: https://www.test.com/?tast=blo" target="_blank">https://www.test.com/?tast=blo</a>,</p>
+EOHTML
+        16
     ],
 );
 

@@ -55,7 +55,7 @@ our %HTMLHandle = (
 );
 
 our $SmileyHandleRe = qr~(?<smileymatch>$SmileyRe)~xms;
-our $URLHandleRe = qr~(?<urlmatch>(?<url>https?://.+?)(?=[\)\s<,]|\z))~xms;
+our $URLHandleRe = qr~(?<urlmatch>(?<url>https?://.+?))(?=,?(?:[\s<\)]|\z))~xms;
 our $HTMLHandleRe = qr~(?<htmlmatch><(?<tag>$HTMLRe)>(?<inner>.*?)</\g{tag}>)~xmsi;
 our $BigMatch = qr~(?<completematch>$HTMLHandleRe|$URLHandleRe|$SmileyHandleRe)~xms;
 
