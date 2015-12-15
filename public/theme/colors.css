@@ -327,4 +327,9 @@ h2.newsmail {
 h2.pin {
     border-color: gold;
 }
+.postbox hr {
+    border: none;
+    border-bottom: .1em gainsboro solid;
+    height: 0;
+}
 

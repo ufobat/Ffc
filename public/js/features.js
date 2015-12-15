@@ -116,9 +116,9 @@ ffcdata.features.init = function(){
     var enable_strg_s = function() {
         var tif = document.getElementById('textinputform'); 
         if ( tif ) {
-            console.log(tif);
+            // console.log(tif);
             tif.onkeydown = function(ev) {
-                console.log(ev.keyCode + '-' + ev.ctrlKey);
+                // console.log(ev.keyCode + '-' + ev.ctrlKey);
                 if (ev.keyCode == 83 && ev.ctrlKey) {
                     tif.submit();
                     ev.preventDefault();

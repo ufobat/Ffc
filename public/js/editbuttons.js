@@ -50,7 +50,7 @@ ffcdata.editbuttons.init = function(){
     /************************************************************************
      * Tags in der Textarea passend setzen bei Editbutton-Benutzung
      ************************************************************************/
-    var tagthat = function(ntag, btag, obb, dout){
+    var tagthat = function(ntag, btag, obb, dout, empty){
         tinput.focus();
 
         // Textbestandteile der Markierung oder Cursorposition ermitteln
@@ -58,7 +58,7 @@ ffcdata.editbuttons.init = function(){
         var txt0 = tinput.value.substr(0,sel[0]);
         var txt1 = tinput.value.substr(sel[0],sel[1] - sel[0]);
         var txt2 = tinput.value.substr(sel[1],tinput.value.length);
-
+        
         // Gestaltung des Quelltextes ermitteln
         var big_b = ( ( btag && !ntag ) || ( ntag && btag && txt1.match(/\n/) ) )
             ? true : false; // Ein "großer" Block nur bei exklusivem Block oder Inline-Zu-Block-Umwandung wegen Zeilenumbruch im Textabschnitt und wenn beide Tags verfügbar sind
@@ -102,20 +102,34 @@ ffcdata.editbuttons.init = function(){
         if ( big_b ) { s_br_i = "\n"; e_br_i = "\n"; }
 
         // Neuen Textinhalt zusammenstellen
-        tinput.value
-            = txt0
-                + s_br_o + "<" + tag + ">"
-                    + s_br_i + txt1 + e_br_i
-                + "</" + tag + ">" + e_br_o
-            + txt2;
+        if ( empty ) {
+            tinput.value
+                = txt0 + s_br_o + txt1 
+                + "<" + tag + " />" 
+                + e_br_o + txt2;
+        }
+        else {
+            tinput.value
+                = txt0
+                    + s_br_o + "<" + tag + ">"
+                        + s_br_i + txt1 + e_br_i
+                    + "</" + tag + ">" + e_br_o
+                + txt2;
+        }
 
         // Textcursor an eine passende Stelle setzen
         var pos = sel[1] + tag.length + 2;
         if ( s_br_o ) pos++;
         if ( s_br_i ) pos++;
-        if ( txt1.length > 0 ) {
+        if ( txt1.length > 0 && !empty ) {
             pos += tag.length + 3;
             if ( e_br_i ) pos++;
+            if ( e_br_o ) pos++;
+        }
+        else if ( empty ) {
+            pos += tag.length;
+            if ( txt1.length > 0 )
+                pos += 2;
             if ( e_br_o ) pos++;
         }
         tinput.selectionStart = pos;
@@ -126,18 +140,19 @@ ffcdata.editbuttons.init = function(){
      * Definition der Aktionsweise der verschiedenen Formatierungsbuttons
      ************************************************************************/
     var buttons = [
-        // ButtonId, Tag, BlockTag, OuterBlockBreaks, DoubleOuterBreak
-        ['h1button',            'h3',     false,        true,  true ],
-        ['quotebutton',         'q',      'blockquote', true,  true ],
-        ['unorderedlistbutton', false,    'ul',         true,  true ],
-        ['orderedlistbutton',   false,    'ol',         true,  true ],
-        ['listitembutton',      'li',     false,        true,  false],
-        ['codebutton',          'code',   'pre',        true,  true ],
-        ['underlinebutton',     'u',      false,        false, false],
-        ['boldbutton',          'b',      false,        false, false],
-        ['linethroughbutton',   'strike', false,        false, false],
-        ['italicbutton',        'i',      false,        false, false],
-        ['emotionalbutton',     'em',     false,        false, false],
+        // ButtonId, Tag, BlockTag, OuterBlockBreaks, DoubleOuterBreak, EmptyTag
+        ['h1button',            'h3',     false,        true,  true,  false],
+        ['quotebutton',         'q',      'blockquote', true,  true,  false],
+        ['unorderedlistbutton', false,    'ul',         true,  true,  false],
+        ['orderedlistbutton',   false,    'ol',         true,  true,  false],
+        ['listitembutton',      'li',     false,        true,  false, false],
+        ['codebutton',          'code',   'pre',        true,  true,  false],
+        ['underlinebutton',     'u',      false,        false, false, false],
+        ['boldbutton',          'b',      false,        false, false, false],
+        ['linethroughbutton',   'strike', false,        false, false, false],
+        ['italicbutton',        'i',      false,        false, false, false],
+        ['emotionalbutton',     'em',     false,        false, false, false],
+        ['horizontalline',      'hr',     false,        true,  true,  true ],
     ];
     /************************************************************************
      * Fomatierungs-Buttonereignisse passend zur Definition registrieren
@@ -145,7 +160,7 @@ ffcdata.editbuttons.init = function(){
     var show_formatbuttons = function(){
         var register_one_button = function(b){
             document.getElementById(b[0]).onclick = function(){
-                tagthat(b[1],b[2],b[3],b[4]);
+                tagthat(b[1],b[2],b[3],b[4],b[5]);
             };
         };
         for (var j=0; j<buttons.length; j++){

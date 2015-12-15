@@ -42,22 +42,34 @@ our $SmileyRe   = join '|', map {
     s{([\;\&\^\>\<\-\.\:\\\/\(\)\=\|\,\$])}{\\$1}gxoms;
     $_
 } keys %Smiley;
-our $HTMLRe = qr~ul|ol|pre|code|b|u|i|strike|h3|blockquote|q|li|em~;
+our $HTMLBlockRe = qr~pre|blockquote~xmsio;
+our $HTMLSinglRe = qr~h3~xmsio;
+our $HTMLListRe  = qr~li|ol|ul~xmsio;
+our $HTMLStyleRe = qr~code|b|u|i|strike|q|em~xmsio;
+our $HTMLEmptyTagRe = qr~hr~xmsio;
 our %HTMLHandle = (
-#   tag        => [ disable-p, disable-html, set_n, disable-outer-p ],
-    ul         => [ 1, 0, 1, 1 ],
-    ol         => [ 1, 0, 1, 1 ],
-    li         => [ 1, 0, 0, 1 ],
-    pre        => [ 1, 1, 1, 1 ],
-    code       => [ 1, 1, 0, 0 ],
-    blockquote => [ 0, 0, 1, 1 ],
-    h3         => [ 1, 0, 1, 1 ],
+#   tag        => [ disable-p, disable-html, set_n, disable-outer-p, disable-inner-blocks ],
+    ul         => [ 1, 0, 1, 1, 0 ],
+    ol         => [ 1, 0, 1, 1, 0 ],
+    li         => [ 1, 0, 0, 1, 0 ],
+    pre        => [ 1, 1, 1, 1, 0 ],
+    code       => [ 1, 1, 0, 0, 0 ],
+    blockquote => [ 0, 0, 1, 1, 0 ],
+    h3         => [ 1, 0, 1, 1, 0 ],
+    map({;$_   => [0,0,0,0,1]} qw(b u i strike q em)),
 );
 
 our $SmileyHandleRe = qr~(?<smileymatch>$SmileyRe)~xms;
 our $URLHandleRe = qr~(?<urlmatch>(?<url>https?://.+?))(?=,?(?:[\s<\)]|\z))~xms;
-our $HTMLHandleRe = qr~(?<htmlmatch><(?<tag>$HTMLRe)>(?<inner>.*?)</\g{tag}>)~xmsi;
+our $HTMLBlockHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<btag>$HTMLBlockRe))>(?<inner>.*?)</\g{btag}>))~xmsi;
+our $HTMLListHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<btag>$HTMLListRe))>(?<inner>.*?)</\g{btag}>))~xmsi;
+our $HTMLSinglHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<btag>$HTMLSinglRe))>(?<inner>.*?)</\g{btag}>))~xmsi;
+our $HTMLStyleHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<stag>$HTMLStyleRe))>(?<inner>[^\n]*?)</\g{stag}>))~xmsi;
+our $HTMLEmptyHandleRe = qr~(?:(?:\A|\n)\s*(?<htmlmatch><(?<tag>(?<etag>$HTMLEmptyTagRe))\s+/>)\s*(?:\n|\z))~xmsi;
+our $HTMLHandleRe = qr~(?:$HTMLBlockHandleRe|$HTMLListHandleRe|$HTMLSinglHandleRe|$HTMLStyleHandleRe|$HTMLEmptyHandleRe)~xms;
 our $BigMatch = qr~(?<completematch>$HTMLHandleRe|$URLHandleRe|$SmileyHandleRe)~xms;
+our $BigMatchWOBlock = qr~(?<completematch>(?:$HTMLStyleHandleRe)|$URLHandleRe|$SmileyHandleRe)~xms;
+our $NoInStyleRe = qr~(?:$HTMLBlockHandleRe|$HTMLListHandleRe|$HTMLSinglHandleRe|$HTMLEmptyHandleRe)~xms;
 
 sub register {
     my ( $self, $app ) = @_;
@@ -82,33 +94,44 @@ sub _format_timestamp {
 }
 
 sub _pre_format_text_part {
-#   controller, string, disable-p, disable-html, insert in newlines, disable outer p, no smileys
-    my ( $c, $str, $lvl, $dis_p, $dis_html, $set_n, $dis_outer_p, $nosmil ) = @_;
-    return '' if $str =~ m/\A\s*\z/xmso;
+#   controller, string, disable-p, disable-html, insert in newlines, disable outer p, no smileys, no blocks
+    my ( $c, $ostr, $lvl, $dis_p, $dis_html, $set_n, $dis_outer_p, $nosmil, $dis_block ) = @_;
+    my $str = $ostr;
+    if ( $str =~ m/\A\s*\z/xmso ) {
+        return '';
+    }
     $lvl ||= 0;
     $lvl++;
     $str =~ s~(?:\r?\n\r?)+~\n~gxmsio;
     my $o = '';
     my $start = 0;
     if ( $dis_html ) {
-        _xml_escape($str);
-        return $str;
+        my $nstr = _xml_escape($str);
+        return $nstr;
     }
     else {
-        while ( $str =~ m~$BigMatch~gxms ) {
+        #my $str = $str;
+        #my $re = $dis_block ? $BigMatchWOBlock : $BigMatch;
+        while ( $str =~ qr~$BigMatch~xms ) {
+            #warn "DISBLOCK=".($dis_block//0);
             #use Data::Dumper; warn Dumper \%+, $lvl;
             my ( $end, $newstart ) = ( $-[0], $+[0] );
             my %m = ( %+ );
 
-            if ( $start < $end ) 
-                { $o .= _format_plain_text( substr($str, $start, $end - $start), $dis_p, $dis_outer_p ) }
+            if ( $start < $end )  {
+                $o .= _format_plain_text( substr($str, $start, $end - $start), $dis_p, $dis_outer_p );
+            }
 
-            if    ( $m{htmlmatch}   )
-                { $o .= _make_tag(    $c, $m{tag}, $m{inner}, $lvl, $dis_p, $dis_html, $set_n, $dis_outer_p ) }
-            elsif ( $m{urlmatch}    ) 
-                { $o .= _make_link(   $c, $m{url} ) }
-            elsif ( $m{smileymatch} )
-                { $o .= _make_smiley( $c, $m{smileymatch}, $nosmil ) }
+            if ( $m{htmlmatch} ) {
+                $o .= _make_tag( $c, $m{tag}, $m{inner} // '', $lvl, $dis_p, $dis_html, $set_n, $dis_outer_p, $dis_block );
+            }
+            elsif ( $m{urlmatch} ) {
+                $o .= _make_link( $c, $m{url} );
+            }
+            elsif ( $m{smileymatch} ) {
+                warn "HAHA";
+                $o .= _make_smiley( $c, $m{smileymatch}, $nosmil );
+            }
 
             $start = $newstart;
         }
@@ -123,53 +146,74 @@ sub _format_plain_text {
     my $str = shift;
     my $dis_p = shift;
     my $dis_outer_p = shift;
-    _xml_escape( $str );
+    my $nstr = _xml_escape( $str );
     unless ( $dis_p )
-        { $str =~ s~\n+~</p>\n<p>~gsmxo }
+        { $nstr =~ s~\n+~</p>\n<p>~gsmxo }
     if ( $dis_outer_p ) {
-        $str =~ s~\A\s*<p>~~gsmxo;
-        $str =~ s~</p>\s*\z~~gsmxo;
+        $nstr =~ s~\A\s*<p>~~gsmxo;
+        $nstr =~ s~</p>\s*\z~~gsmxo;
     }
-    return $str;
+    return $nstr;
 }
 
 sub _pre_format_text {
-    my ( $c, $str, $nosmil ) = @_;
+    my $c = shift;
+    my $str = shift;
+    my $nosmil = shift;
     my $o = _pre_format_text_part($c, $str, (undef) x 5, $nosmil );
     return '' if $o =~ m/\A\s*\z/xmso;
     $o = "<p>$o</p>";
     $o =~ s~<p>\s*</p>~~gsimxo;
     return '' if $o =~ m/\A\s*\z/xmso;
-    $o =~ s~\n\n+~\n~gsmxo;
     $o =~ s~</(blockquote|pre|h3|ul|ol)>\s*</p>~</$1>~gismx;
     $o =~ s~<blockquote>\s*</p>~<blockquote>~gsmiox;
     $o =~ s~<p>\s*<(blockquote|pre|h3|ul|ol)>~<$1>~gsimx;
     $o =~ s~<p>\s*</blockquote>~</blockquote>~gsiomx;
+    $o =~ s~(?<!\A)<hr\s+/>(?!\z)~</p>\n<hr />\n<p>~gsiomx;
+    $o =~ s~<p>\s*</p>~~gsimxo;
+    $o =~ s~\n\n+~\n~gsmxo;
+    $o =~ s~\A\s+~~smxo;
+    $o =~ s~\s+\z~~smxo;
     chomp $o;
     return $o;
 }
 
 sub _make_tag {
-    my ( $c, $tag, $inner, $lvl, $dis_p, $dis_html, $set_n, $dis_outer_p ) = @_;
+    my ( $c, $tag, $inner, $lvl, $dis_p, $dis_html, $set_n, $dis_outer_p, $dis_block ) = @_;
+#    if ( $dis_block ) {
+#        warn "DISBLOCK in: $inner";
+#        $inner =~ s~<($NoInStyleRe)((?:\s+/)?)>~\&lt;$1$2&gt;~gxms;
+#    }
 
     if ( exists $HTMLHandle{$tag} ) {
         $dis_p       ||= $HTMLHandle{$tag}[0];
         $dis_html    ||= $HTMLHandle{$tag}[1];
         $set_n       ||= $HTMLHandle{$tag}[2];
         $dis_outer_p ||= $HTMLHandle{$tag}[3];
+        $dis_block   ||= $HTMLHandle{$tag}[4];
     }
-    my $in = _pre_format_text_part($c, $inner, $lvl, $dis_p, $dis_html, undef, $dis_outer_p);
-    return '' if $in =~ m/\A\s*\z/xmso;
-    return 
-         ( $set_n ? "\n" : '' )
-       . "<$tag>" . $in .  "</$tag>"
-       . ( $set_n ? "\n" : '' );
+    if ( $inner ) {
+        my $in = _pre_format_text_part($c, $inner, $lvl, $dis_p, $dis_html, undef, $dis_outer_p, undef, $dis_block );
+        return '' if $in =~ m/\A\s+\z/xmso;
+        return 
+             ( $set_n ? "\n" : '' )
+           . "<$tag>" . $in .  "</$tag>"
+           . ( $set_n ? "\n" : '' );
+    }
+    elsif ( $tag =~ $HTMLEmptyTagRe ) {
+        return "<$tag />";
+    }
+    else {
+        return '';
+    }
 }
 
 sub _xml_escape {
-    $_[0] =~ s/\&/\&amp;/gxmo;
-    $_[0] =~ s/\</\&lt;/gxom;
-    $_[0] =~ s/\>/\&gt;/goxm;
+    my $str = shift;
+    $str =~ s/\&/\&amp;/gxmo;
+    $str =~ s/\</\&lt;/gxom;
+    $str =~ s/\>/\&gt;/goxm;
+    return $str;
 }
 
 sub _make_username_mark {
@@ -183,7 +227,7 @@ sub _make_link {
     my ( $c, $url ) = @_;
     $url =~ s/"/\%22/xmso;
     my $url_xmlencode = $url;
-    _xml_escape($url_xmlencode);
+    $url_xmlencode = _xml_escape($url_xmlencode);
     my $url_show = $url_xmlencode;
     _stripped_url($c, $url_xmlencode);
     return qq~<a href="$url" title="Externe Webseite: $url_show" target="_blank">$url_xmlencode</a>~;

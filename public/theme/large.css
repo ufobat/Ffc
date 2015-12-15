@@ -307,4 +307,8 @@ button:active {
     font-weight: normal;
     color: black;
 }
+.postbox hr {
+    width: 42em;
+    margin: 0 auto;
+}
 

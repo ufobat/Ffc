@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 89;
+use Test::More tests => 92;
 
 srand;
 
@@ -419,6 +419,45 @@ EOTXT
 <p>Blaaa blubb (<a href="http://www.test.de/?test=bla,blubb" title="Externe Webseite: http://www.test.de/?test=bla,blubb" target="_blank">http://www.test…?test=bla,blubb</a>, <a href="https://www.test.org/?toast=bli" title="Externe Webseite: https://www.test.org/?toast=bli" target="_blank">https://www.tes…t.org/?toast=bli</a>,) und <a href="http://wupp.pl/hlu.,&roh" title="Externe Webseite: http://wupp.pl/hlu.,&amp;roh" target="_blank">http://wupp.pl/hlu.,&amp;roh</a> so <a href="https://www.test.com/?tast=blo" title="Externe Webseite: https://www.test.com/?tast=blo" target="_blank">https://www.test.com/?tast=blo</a>,</p>
 EOHTML
         16
+    ],
+    [
+        << 'EOTXT',
+<hr />
+<u>Bla</u>
+<b><hr /></b>
+asdf<hr />asdfas
+<hr />
+<hr //>
+<hr>
+<hr />
+EOTXT
+        << 'EOHTML',
+<hr />
+<p><u>Bla</u></p>
+<p><b>&lt;hr /&gt;</b></p>
+<hr />
+<p>asdf&lt;hr /&gt;asdfas</p>
+<p><hr /></p>
+<p>&lt;hr //&gt;</p>
+<p>&lt;hr&gt;</p>
+<hr />
+EOHTML
+        17
+    ],
+    [
+        << 'EOTXT',
+asdfasdf
+asdf<b>zert
+fasd</b>hfgjhfg
+gsdfggsdfg
+EOTXT
+        << 'EOHTML',
+<p>asdfasdf</p>
+<p>asdf&lt;b&gt;zert</p>
+<p>fasd&lt;/b&gt;hfgjhfg</p>
+<p>gsdfggsdfg</p>
+EOHTML
+        18
     ],
 );
 
