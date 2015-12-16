@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 95;
+use Test::More tests => 101;
 
 srand;
 
@@ -295,12 +295,14 @@ EOHTML
     ],
     [
         '<u></u>',
-        '<p>&lt;u&gt;&lt;/u&gt;</p>',
+        '',
+        #'<p>&lt;u&gt;&lt;/u&gt;</p>',
         7
     ],
     [
         '<u></u><b></b>',
-        '<p>&lt;u&gt;&lt;/u&gt;&lt;b&gt;&lt;/b&gt;</p>',
+        '',
+        #'<p>&lt;u&gt;&lt;/u&gt;&lt;b&gt;&lt;/b&gt;</p>',
         8
     ],
     [
@@ -308,8 +310,9 @@ EOHTML
 <u></u><b></b>
 <h3></h3>
 EOTXT
-        '<p>&lt;u&gt;&lt;/u&gt;&lt;b&gt;&lt;/b&gt;</p>
-<p>&lt;h3&gt;&lt;/h3&gt;</p>',
+        '',
+        #'<p>&lt;u&gt;&lt;/u&gt;&lt;b&gt;&lt;/b&gt;</p>
+#<p>&lt;h3&gt;&lt;/h3&gt;</p>',
         9
     ],
     [
@@ -461,6 +464,16 @@ EOTXT
 EOHTML
         18
     ],
+    [
+        '',
+        '',
+        19
+    ],
+    [
+        '<u></u>',
+        '',
+        20
+    ],
 );
 
 my @Tests_NoSmil = (
@@ -552,5 +565,4 @@ format_timestamp_test();
 format_things_test(\@Tests);
 format_things_test(\@Tests_NoSmil, 1);
 format_things_test(\@Tests_Short, 0, 1);
-#format_things_test([$Tests[16]]);
 

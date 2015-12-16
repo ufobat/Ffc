@@ -75,7 +75,8 @@ sub test_error {
     my ( $t, $error ) = @_;
     $t->content_like(qr~<div\s+class="error">\s*<h1>Fehler</h1>\s*<p>\s*$error\s*</p>\s*</div>~);
     unless ( $t->success ) {
-       diag(Dumper([caller(1)])); 
+        diag(Dumper([caller(1)])); 
+        diag 'HERKUNFT: ' . join ' ; ', map {; join ', ', (caller($_))[1,2] } 0 .. 3; 
     }
 }
 

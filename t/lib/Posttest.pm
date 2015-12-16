@@ -62,8 +62,8 @@ sub run_tests {
     note 'Leerer Beitrag';
     $t->post_ok("$Urlpref/new", form => {})->status_is(200);
     error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\)');
-    $t->post_ok("$Urlpref/new", form => {textdata => '<u></u>'})->status_is(200);
-    error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen ohne Auszeichnungen\\)');
+    $t->post_ok("$Urlpref/new", form => {textdata => ''})->status_is(200);
+    error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\)');
 
     note 'neue Beitraege: 1 .. ' . ($Postlimit * 2 + 1) ;
     map { insert_text($Users[$from], ( $to && $Users[$to] ) ) } 1 .. $Postlimit * 2 + 1;
@@ -339,16 +339,16 @@ sub update_text {
         error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\) Konnte keinen passenden Beitrag zum Ändern finden');
         seen_entries();
     }
-    $t->post_ok("$Urlpref/edit/$entry->[0]", form => {textdata => '<u></u>', postid => $entry->[0]});
+    $t->post_ok("$Urlpref/edit/$entry->[0]", form => {textdata => '', postid => $entry->[0]});
     if ( $entry->[2] eq $user ) {
         $t->status_is(200);
-        error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen ohne Auszeichnungen\\)');
+        error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\)');
     }
     else {
         $t->status_is(302)->content_is('')
           ->header_like(location => qr~$Urlpref~);
         $t->get_ok($Urlpref)->status_is(200);
-        error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen ohne Auszeichnungen\\) Konnte keinen passenden Beitrag zum Ändern finden');
+        error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\) Konnte keinen passenden Beitrag zum Ändern finden');
         seen_entries();
     }
 

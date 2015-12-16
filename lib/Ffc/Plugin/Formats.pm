@@ -184,7 +184,8 @@ sub _pre_format_text {
     $o =~ s~<p>\s*</blockquote>~</blockquote>~gsiomx;
     $o =~ s~(?<!\A)<hr\s+/>(?!\z)~</p>\n<hr />\n<p>~gsiomx;
     $o =~ s~<($HTMLStyleRe)>\s*</p>\s*<hr\s+/>\s*<p>\s*</\1>~<$1>&lt;hr /&gt;</$1>~gsmio;
-    $o =~ s~<p>\s*</p>~~gsimxo;
+    $o =~ s~<p>\s*(&lt;\w+&gt;\s*&lt;/\w+&gt;\s*)*</p>~~gsmo;
+    #$o =~ s~<p>\s*</p>~~gsimxo;
     $o =~ s~\n\n+~\n~gsmxo;
     $o =~ s~\A\s+~~smxo;
     $o =~ s~\s+\z~~smxo;
