@@ -62,7 +62,7 @@ our %HTMLHandle = (
 our $SmileyHandleRe = qr~(?<smileymatch>$SmileyRe)~xms;
 our $URLHandleRe = qr~(?<urlmatch>(?<url>https?://.+?))(?=,?(?:[\s<\)]|\z))~xms;
 our $HTMLBlockHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<btag>$HTMLBlockRe))>(?<inner>.*?)</\g{btag}>))~xmsi;
-our $HTMLListHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<btag>$HTMLListRe))>(?<inner>.*?)</\g{btag}>))~xmsi;
+our $HTMLListHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<ltag>$HTMLListRe))>(?<inner>.*?)</\g{ltag}>))~xmsi;
 our $HTMLSinglHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<btag>$HTMLSinglRe))>(?<inner>.*?)</\g{btag}>))~xmsi;
 our $HTMLStyleHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<stag>$HTMLStyleRe))>(?<inner>[^\n]*?)</\g{stag}>))~xmsi;
 our $HTMLEmptyHandleRe = qr~(?:(?:\A|\n)\s*(?<htmlmatch><(?<tag>(?<etag>$HTMLEmptyTagRe))\s+/>)\s*(?:\n|\z))~xmsi;
@@ -110,11 +110,9 @@ sub _pre_format_text_part {
         return $nstr;
     }
     else {
-        #my $str = $str;
-        #my $re = $dis_block ? $BigMatchWOBlock : $BigMatch;
-        while ( $str =~ qr~$BigMatch~xms ) {
-            #warn "DISBLOCK=".($dis_block//0);
-            #use Data::Dumper; warn Dumper \%+, $lvl;
+        my $str = $str;
+        my $re = $dis_block ? $BigMatchWOBlock : $BigMatch;
+        while ( $str =~ m~$BigMatch~xmgs ) {
             my ( $end, $newstart ) = ( $-[0], $+[0] );
             my %m = ( %+ );
 
@@ -129,7 +127,6 @@ sub _pre_format_text_part {
                 $o .= _make_link( $c, $m{url} );
             }
             elsif ( $m{smileymatch} ) {
-                warn "HAHA";
                 $o .= _make_smiley( $c, $m{smileymatch}, $nosmil );
             }
 
@@ -180,10 +177,10 @@ sub _pre_format_text {
 
 sub _make_tag {
     my ( $c, $tag, $inner, $lvl, $dis_p, $dis_html, $set_n, $dis_outer_p, $dis_block ) = @_;
-#    if ( $dis_block ) {
-#        warn "DISBLOCK in: $inner";
-#        $inner =~ s~<($NoInStyleRe)((?:\s+/)?)>~\&lt;$1$2&gt;~gxms;
-#    }
+    if ( $dis_block ) {
+        warn "DISBLOCK in: $inner";
+        $inner =~ s~<($NoInStyleRe)((?:\s+/)?)>~\&lt;$1$2&gt;~gxms;
+    }
 
     if ( exists $HTMLHandle{$tag} ) {
         $dis_p       ||= $HTMLHandle{$tag}[0];
@@ -229,16 +226,17 @@ sub _make_link {
     my $url_xmlencode = $url;
     $url_xmlencode = _xml_escape($url_xmlencode);
     my $url_show = $url_xmlencode;
-    _stripped_url($c, $url_xmlencode);
+    $url_xmlencode = _stripped_url($c, $url_xmlencode);
     return qq~<a href="$url" title="Externe Webseite: $url_show" target="_blank">$url_xmlencode</a>~;
 }
 
 sub _stripped_url {
+    return '' unless $_[1];
     my $u = $_[0]->configdata->{urlshorten};
     if ( $u and $u < length $_[1] ) {
         my $d = int( ( length($_[1]) - $u ) / 2 );
         my $h = int( length($_[1]) / 2 );
-        $_[1] = substr($_[1], 0, $h - $d) . '…' . substr($_[1], $h + $d);
+        return substr($_[1], 0, $h - $d) . '…' . substr($_[1], $h + $d);
     }
     return $_[1];
 }
