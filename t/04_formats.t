@@ -295,12 +295,12 @@ EOHTML
     ],
     [
         '<u></u>',
-        '',
+        '<p>&lt;u&gt;&lt;/u&gt;</p>',
         7
     ],
     [
         '<u></u><b></b>',
-        '',
+        '<p>&lt;u&gt;&lt;/u&gt;&lt;b&gt;&lt;/b&gt;</p>',
         8
     ],
     [
@@ -308,7 +308,8 @@ EOHTML
 <u></u><b></b>
 <h3></h3>
 EOTXT
-        '',
+        '<p>&lt;u&gt;&lt;/u&gt;&lt;b&gt;&lt;/b&gt;</p>
+<p>&lt;h3&gt;&lt;/h3&gt;</p>',
         9
     ],
     [
@@ -425,6 +426,7 @@ EOHTML
 <hr />
 <u>Bla</u>
 <b><hr /></b>
+<b>asdf <hr />fasd</b>
 asdf<hr />asdfas
 <hr />
 <hr //>
@@ -435,9 +437,9 @@ EOTXT
 <hr />
 <p><u>Bla</u></p>
 <p><b>&lt;hr /&gt;</b></p>
-<hr />
+<p><b>asdf &lt;hr /&gt;fasd</b></p>
 <p>asdf&lt;hr /&gt;asdfas</p>
-<p><hr /></p>
+<hr />
 <p>&lt;hr //&gt;</p>
 <p>&lt;hr&gt;</p>
 <hr />
@@ -550,4 +552,5 @@ format_timestamp_test();
 format_things_test(\@Tests);
 format_things_test(\@Tests_NoSmil, 1);
 format_things_test(\@Tests_Short, 0, 1);
+#format_things_test([$Tests[16]]);
 
