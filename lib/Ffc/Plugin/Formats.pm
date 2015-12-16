@@ -177,10 +177,6 @@ sub _pre_format_text {
 
 sub _make_tag {
     my ( $c, $tag, $inner, $lvl, $dis_p, $dis_html, $set_n, $dis_outer_p, $dis_block ) = @_;
-    if ( $dis_block ) {
-        warn "DISBLOCK in: $inner";
-        $inner =~ s~<($NoInStyleRe)((?:\s+/)?)>~\&lt;$1$2&gt;~gxms;
-    }
 
     if ( exists $HTMLHandle{$tag} ) {
         $dis_p       ||= $HTMLHandle{$tag}[0];
@@ -190,6 +186,9 @@ sub _make_tag {
         $dis_block   ||= $HTMLHandle{$tag}[4];
     }
     if ( $inner ) {
+        if ( $dis_block ) {
+            $inner =~ s~<(?<startofthetag$NoInStyleRe)(?<insidethetag(?:\s+/)?)>~\&lt;$+{startifthetag}$+{insidethetag}&gt;~gxms;
+        }
         my $in = _pre_format_text_part($c, $inner, $lvl, $dis_p, $dis_html, undef, $dis_outer_p, undef, $dis_block );
         return '' if $in =~ m/\A\s+\z/xmso;
         return 
