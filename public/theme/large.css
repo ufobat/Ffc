@@ -225,8 +225,10 @@ input[type="text"].titlestring {
 .hovering > div {
     margin-bottom: .25em;
     margin-top: 1em;
-    height: 18em;
     overflow: auto;
+}
+#textpreviewarea {
+    height: 17em;
 }
 .hovering > p {
     padding-top: .5em;

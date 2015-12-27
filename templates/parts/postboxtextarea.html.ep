@@ -12,6 +12,7 @@
             </span>
             )
         </p>
+%= include 'parts/textpreviewbox';
         <p>
             <textarea required name="textdata" id="textinput" class="edit<%= $textdata ? ' inedit' : '' %>"><%== $textdata // '' %></textarea>
         </p>

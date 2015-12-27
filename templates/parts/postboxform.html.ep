@@ -13,7 +13,6 @@
         )</span> 
 %   }
     </h1>
-%= include 'parts/textpreviewbox';
 % }
 <% if ( $description ) { %><p><%= $description %></p><% } %>
     <form action="<%== $dourl %>" accept-charset="UTF-8" method="POST" id="textinputform">
