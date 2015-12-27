@@ -167,6 +167,21 @@ ffcdata.editbuttons.init = function(){
             register_one_button(buttons[j]);
         }
     };
+    
+    /************************************************************************
+     * Fomatierungs-Buttons wahlweise ein- oder ausblenden
+     ************************************************************************/
+    var editbuttons = document.getElementById('editbuttons');
+    var display_fomatbuttons = function() {
+        // Formatierungsbuttons anzeigen
+        if ( editbuttons )
+            editbuttons.className = 'editbuttons';
+    };
+    var hide_fomatbuttons = function() {
+        // Formatierungsbuttons verstecken
+        if ( editbuttons )
+            editbuttons.className = 'graydisplay noboxshadow';
+    };
 
     /************************************************************************
      * Textvorschaubox implementieren
@@ -178,6 +193,7 @@ ffcdata.editbuttons.init = function(){
         // console.log('display preview');
         previewtextarea.innerHTML = str;
         previewwindow.className = 'hovering';
+        hide_fomatbuttons();
     };
     // Textvorschau vom Server anfordern
     var get_preview = function(){
@@ -190,6 +206,7 @@ ffcdata.editbuttons.init = function(){
     var close_preview = function(){
         // console.log('close preview');
         previewwindow.className = 'nodisplay';
+        display_fomatbuttons();
     };
 
     /************************************************************************
@@ -212,13 +229,8 @@ ffcdata.editbuttons.init = function(){
             }
         }
 
-        // Formatierungsbuttons anzeigen
-        var editbuttons = document.getElementById('editbuttons');
-        if ( editbuttons ) {
-            editbuttons.className = 'editbuttons';
-            // Formatierungsbuttons aktivieren
-            show_formatbuttons();
-        }
+        show_formatbuttons();
+        display_fomatbuttons();
 
         // Vorschau-Button aktivieren
         var previewbutton = document.getElementById('textpreviewtabutton');

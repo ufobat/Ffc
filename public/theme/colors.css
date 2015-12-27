@@ -234,6 +234,9 @@ pre {
 .nodisplay {
     display: none;
 }
+.hiddendisplay {
+    visibility: hidden;
+}
 .blockdisplay {
     display: block;
 }
