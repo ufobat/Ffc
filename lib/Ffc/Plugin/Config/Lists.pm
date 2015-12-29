@@ -109,7 +109,7 @@ EOSQL
 sub _generate_userlist {
      my $sql = << 'EOSQL';
 SELECT
-    u."id", u."name", COALESCE(COUNT(p."id"),0), l."lastid",
+    u."id", u."name", COUNT(p."id"), l."lastid",
     CASE WHEN u."hideemail"=1 THEN '' ELSE u."email" END,
     CASE WHEN u."hidelastseen"=1 THEN '' ELSE datetime(u."lastonline", 'localtime') END,
     u."birthdate", u."infos", l."mailed"
@@ -118,7 +118,7 @@ LEFT OUTER JOIN "lastseenmsgs" l ON u."id"=l."userfromid" AND l."userid"=?
 LEFT OUTER JOIN "posts" p ON p."userfrom"=u."id" AND p."userto" IS NOT NULL AND p."userto"=? 
     AND p."id">COALESCE(l."lastseen",0)
 WHERE u."active"=1 AND u."id"<>? 
-GROUP BY u."id", u."name", l."lastid"
+GROUP BY 1,2,4,5,6,7,8,9
 ORDER BY l."lastid" DESC, UPPER(u."name") ASC
 EOSQL
      $_[0]->stash( users => $_[0]->dbh_selectall_arrayref( $sql, ( $_[0]->session->{userid} ) x 3 ) );
