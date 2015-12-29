@@ -119,7 +119,7 @@ LEFT OUTER JOIN "posts" p ON p."userfrom"=u."id" AND p."userto" IS NOT NULL AND 
     AND p."id">COALESCE(l."lastseen",0)
 WHERE u."active"=1 AND u."id"<>? 
 GROUP BY 1,2,4,5,6,7,8,9
-ORDER BY l."lastid" DESC, UPPER(u."name") ASC
+ORDER BY 6 DESC, 4 DESC, UPPER(u."name") ASC
 EOSQL
      $_[0]->stash( users => $_[0]->dbh_selectall_arrayref( $sql, ( $_[0]->session->{userid} ) x 3 ) );
 }
