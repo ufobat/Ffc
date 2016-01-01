@@ -7,12 +7,14 @@ use Testinit;
 use utf8;
 
 use Test::Mojo;
-use Test::More tests => 65;
+use Test::More tests => 84;
 
 ###############################################################################
 note q~Testsystem vorbereiten~;
 ###############################################################################
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
+my ( $user1, $pass1 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
+Testinit::test_add_users( $t, $admin, $apass, $user1, $pass1 );
 Testinit::test_login($t, $admin, $apass);
 $t->post_ok('/menu', json => {pageurl => '/bla/blubb', queryurl => '/blu/plum', controller => 'notes'})->status_is(200);
 for my $str (
@@ -24,7 +26,7 @@ for my $str (
 EOMENU
   << "EOMENU",
     <div class="activedim menuentry">
-        <span class="othersmenulinktext">Themen</span>
+        <span class="othersmenulinktext">Forum</span>
         <div class="topicpopup popup otherspopup">
             <p class="separated"><a href="/forum"><span class="linktext linkforum">Themen&uuml;bersicht</span></a></p>
         </div>
@@ -87,6 +89,7 @@ for my $str (
         <div class="userspopup popup">
             <p class="separated"><a href="/pmsgs"><span class="linktext linkpmsgs">Benutzerliste</span></a>
             <p><a href="/pmsgs/1">admin</a></p>
+            <p><a href="/pmsgs/2">$user1</a></p>
         </div>
     </div>
 EOMENU
@@ -120,6 +123,7 @@ EOMENU
         <div class="userspopup popup otherspopup">
             <p class="separated"><a href="/pmsgs"><span class="linktext linkpmsgs">Benutzerliste</span></a>
             <p class="smallnodisplay"><a href="/pmsgs/1">admin</a></p>
+            <p class="smallnodisplay"><a href="/pmsgs/2">$user1</a></p>
         </div>
     </div>
 EOMENU

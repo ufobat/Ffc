@@ -1,7 +1,9 @@
 <div class="menu" id="menu">
+% if ( @$users ) {
     <div class="menuentry refreshlink">
         <a href="<%= url_for $pageurl %>"><span class="linkalike linkrefresh">aktualisieren</span></a>
     </div>
+% }
 
     <div class="activedim menuentry<%= $controller eq 'forum' ? ' activemenuentry' : '' %>">
         <span class="othersmenulinktext<%= $controller eq 'forum' ? ' active activeforum' : '' %>"><%= @$users ? 'Forum' : 'Themen' %><% if ( $newpostcount ) { %> (<span class="mark"><%= $newpostcount %></span>)<% } %></span>
@@ -25,11 +27,9 @@
 %   }
         </div>
     </div>
-% }
     <div class="menuentry<%= $controller eq 'notes' ? ' activemenuentry' : '' %>">
         <a href="<%= url_for 'show_notes', page => 1 %>"><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
     </div>
-% if ( @$users ) {
     <div id="chatbutton" class="nodisplay">
         <a href="<%= url_for 'chat_window' %>" target="_blank"><span class="linktext linkchat">Chat</span></a>
     </div>
@@ -57,9 +57,11 @@
 %   }
             </p>
 % }
+% if ( @$users ) {
             <p class="optionslink separated">
                 <a href="<%= url_for 'quickview_html' %>" target="_blank" title="Schnelle einfache &Uuml;bersicht &uuml;ber neue Beitr&auml;ge">Statusfenster</a>
             </p>
+% }
             <p class="optionslink<%= session()->{admin} ? '' : ' separated' %>">
                 <a href="<%= url_for 'options_form' %>"><span class="linktext linkoptions<%= $action eq 'options_form' ? ' active activeoptions' : '' %>">Benutzerkonto</span></a>
             </p>
