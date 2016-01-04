@@ -48,9 +48,8 @@ EOSQL
         $userid, $userto, $topicid, $text, $cache
     );
 
-    my $summary = $controller eq 'forum' ? $c->format_short($text) : ''; 
-
     if ( $controller eq 'forum' and $topicid ) {
+        my $summary = $c->format_short($text) // ''; 
         _update_topic_lastid($c, $topicid, $summary);
     }
     if ( $controller eq 'pmsgs' and $userto ) {
@@ -130,14 +129,21 @@ sub _edit_post_do {
         return _redirect_to_show($c);
     }
 
-    my $summary = $c->stash('controller') eq 'forum' ? $c->format_short($text) : ''; 
     $sql = qq~UPDATE "posts"\n~
             . qq~SET "textdata"=?, "cache"=?, "altered"=current_timestamp\n~
             . qq~WHERE "id"=? AND "blocked"=0~;
     $sql .= qq~ AND $wheres~ if $wheres;
     $c->dbh_do( $sql, $text, $cache, $postid, @wherep );
-    $sql = q~UPDATE "topics" SET "summary"=? WHERE "id"=?~;
-    $c->dbh_do( $sql, $summary, $topicid );
+
+    if ( $c->stash('controller') eq 'forum' ) {
+        $sql = 'SELECT "id", "textdata" FROM "posts" WHERE "topicid"=? ORDER BY "id" DESC LIMIT 1';
+        my $text = $c->dbh_selectall_arrayref($sql, $topicid);
+        if ( @$text and $text->[0]->[0] == $postid ) {
+            my $summary = $c->format_short($text->[0]->[1]) // ''; 
+            $sql = q~UPDATE "topics" SET "summary"=? WHERE "id"=?~;
+            $c->dbh_do( $sql, $summary, $topicid );
+        }
+    }
     $c->set_info_f('Der Beitrag wurde geändert');
     _redirect_to_show($c);
 }

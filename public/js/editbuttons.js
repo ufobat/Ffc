@@ -148,7 +148,7 @@ ffcdata.editbuttons.init = function(){
         ['orderedlistbutton',   false,    'ol',         true,  true,  false],
         ['listitembutton',      'li',     false,        true,  false, false],
         ['codebutton',          'code',   'pre',        true,  true,  false],
-        //['prebutton',           false,    'pre',        true,  true,  false],
+        ['prebutton',           false,    'pre',        true,  true,  false],
         ['underlinebutton',     'u',      false,        false, false, false],
         ['boldbutton',          'b',      false,        false, false, false],
         ['linethroughbutton',   'strike', false,        false, false, false],

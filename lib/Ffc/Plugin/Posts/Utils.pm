@@ -120,11 +120,12 @@ UPDATE "topics"
 SET 
   "summary"=?,
   "lastid"=(
-    SELECT COALESCE(MAX(p."id"),0) 
+    SELECT p."id" 
     FROM "posts" p 
     WHERE p."topicid" IS NOT NULL 
       AND p."topicid"=?
       AND p."userto" IS NULL
+    ORDER BY p."id" DESC
     LIMIT 1
   )
 WHERE "id"=?
@@ -136,9 +137,10 @@ sub _update_pmsgs_lastid {
     $c->dbh_do( << 'EOSQL', $userid, $userto, $userid, $userto );
 UPDATE "lastseenmsgs"
 SET "lastid"=(
-    SELECT COALESCE(MAX(p."id"),0)
+    SELECT p."id"
     FROM "posts" p
     WHERE p."userfrom"=? AND p."userto"=?
+    ORDER BY p."id" DESC
     LIMIT 1)
 WHERE "userfromid"=? AND "userid"=?
 EOSQL
