@@ -17,10 +17,13 @@
     <h2<%== $t->[13] ? qq~ class="$t->[13]"~ : '' %>>
         <span class="smallfont">(
 % if ( $t->[3] and not $t->[5] ) {
-                Neu: <span class="mark"><%= $t->[3] %></span>,
+            Neu: <span class="mark"><%= $t->[3] %></span>,
 % }
-% if ( $t->[8] or $t->[9] ) {
-                <%= $t->[8] %><%= @$users &&  $t->[8] && $t->[9] ? ', ' : '' %><%= $t->[9] %>,
+% if ( @$users && $t->[8] ) {
+            <%= $t->[8] %><%= $t->[9] ? ',' : '' %>
+% }
+% if ( $t->[9] ) {
+            <%= $t->[9] %>,
 % }
             <span class="menuentry">
                 <span class="othersmenulinktext">Optionen</span>
