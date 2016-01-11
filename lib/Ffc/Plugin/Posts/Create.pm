@@ -20,7 +20,7 @@ sub _add_post {
     my $controller = $c->stash('controller');
     if ( $controller eq 'forum' and $topicid ) {
         my $sql = 'SELECT'
-            . ' CASE WHEN MAX(COALESCE(p.id,0))>MAX(COALESCE(l.lastseen,0)) THEN 1 ELSE 0 END'
+            . ' CASE WHEN MAX(p.id)>MAX(l.lastseen) OR MAX(l.lastseen)<=0 THEN 1 ELSE 0 END'
             . ' FROM users u LEFT OUTER JOIN posts p ON p.userfrom<>? AND p.'
               . ( $userto ? 'userto=?' : 'topicid=?' )
             . ' LEFT OUTER JOIN lastseen' 
