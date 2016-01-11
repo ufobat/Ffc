@@ -63,13 +63,15 @@ sub _delete_post_do {
         $c->dbh_do( $sql, $postid, @wherep );
 
         my $summary = $c->dbh_selectall_arrayref('SELECT "text" FROM "posts" WHERE "topicid"=? ORDER BY "id" DESC LIMIT 1', $topicid);
-        if ( $controller eq 'forum' and @$summary ) {
-            $summary = $c->format_short($summary->[0]->[0]); 
+        if ( $controller eq 'forum' ) {
+            if ( @$summary ) {
+                $summary = $c->format_short($summary->[0]->[0]); 
+                _update_topic_lastid($c, $topicid, $summary);
+            }
+            else {
+                _update_topic_lastid($c, $topicid, '', 1);
+            }
         }
-        else {
-            $summary = '';
-        }
-        _update_topic_lastid($c, $topicid, $summary) if $controller eq 'forum';
     }
     $c->set_info_f('Der Beitrag wurde komplett entfernt');
     _redirect_to_show($c);

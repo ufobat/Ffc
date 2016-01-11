@@ -114,8 +114,16 @@ sub _inc_highscore { _update_highscore( $_[0], 1 ) }
 sub _dec_highscore { _update_highscore( $_[0], 0 ) }
 
 sub _update_topic_lastid {
-    my ( $c, $topicid, $summary ) = @_;
-    $c->dbh_do( << 'EOSQL', $summary, $topicid, $topicid );
+    my ( $c, $topicid, $summary, $zeroing ) = @_;
+    if ( $zeroing ) {
+        $c->dbh_do( << 'EOSQL', $topicid );
+UPDATE "topics" 
+SET "summary"='', "lastid"=-1
+WHERE "id"=?
+EOSQL
+    }
+    else {
+        $c->dbh_do( << 'EOSQL', $summary, $topicid, $topicid );
 UPDATE "topics" 
 SET 
   "summary"=?,
@@ -130,6 +138,7 @@ SET
   )
 WHERE "id"=?
 EOSQL
+    }
 }
 
 sub _update_pmsgs_lastid {

@@ -19,21 +19,24 @@ sub _add_post {
     }
     my $controller = $c->stash('controller');
     if ( $controller eq 'forum' and $topicid ) {
-        my $sql = 'SELECT'
-            . ' CASE WHEN MAX(p.id)>MAX(l.lastseen) OR MAX(l.lastseen)<=0 OR MAX(p.id) IS NULL THEN 1 ELSE 0 END'
-            . ' FROM users u LEFT OUTER JOIN posts p ON p.userfrom<>? AND p.'
-              . ( $userto ? 'userto=?' : 'topicid=?' )
-            . ' LEFT OUTER JOIN lastseen' 
-            . ( $controller eq 'pmsgs' 
-                ? 'msgs l ON l.userid=u.id AND l.userfromid=?' 
-                : 'forum l ON l.userid=u.id AND l.topicid=?' )
-            . ' WHERE u.id=? GROUP BY u.id';
-        my $r = $c->dbh_selectall_arrayref( 
-            $sql, $userid,
-            ( $userto ? ($userto, $userto) : ($topicid, $topicid) ),
-            $userid,
-        );
-        if ( @$r and $r->[0]->[0] ) {
+        my $sql = << 'EOSQL';
+SELECT t.lastid, COALESCE(l.lastseen,0)
+FROM topics t
+LEFT OUTER JOIN lastseenforum l ON  l.topicid=t.id
+WHERE l.userid=? AND t.id=?
+GROUP BY t.id
+EOSQL
+#        'SELECT'
+#            . ' CASE WHEN MAX(p.id)>MAX(l.lastseen) OR MAX(l.lastseen)<=0 THEN 1 ELSE 0 END'
+#            . ' FROM users u LEFT OUTER JOIN posts p ON p.userfrom<>? AND p.'
+#              . ( $userto ? 'userto=?' : 'topicid=?' )
+#            . ' LEFT OUTER JOIN lastseen' 
+#            . ( $controller eq 'pmsgs' 
+#                ? 'msgs l ON l.userid=u.id AND l.userfromid=?' 
+#                : 'forum l ON l.userid=u.id AND l.topicid=?' )
+#            . ' WHERE u.id=? GROUP BY u.id';
+        my $r = $c->dbh_selectall_arrayref( $sql, $userid, $topicid );
+        if ( @$r and $r->[0]->[0] > $r->[0]->[1] ) {
             $c->stash(textdata => $text);
             $c->set_warning('Es wurde zwischenzeitlich ein neuer Beitrag erstellt, bitte prüfen!');
             return $c->show;
