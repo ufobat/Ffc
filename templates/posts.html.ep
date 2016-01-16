@@ -1,6 +1,0 @@
-% layout 'board';
-%= include 'parts/postboxform';
-% for my $p ( @$posts) {
-%= include 'parts/postbox', post => $p
-% }
-%= include 'parts/pagelinks', more => @$posts >= session->{postlimit} ? 1 : 0

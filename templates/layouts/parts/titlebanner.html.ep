@@ -1,2 +1,0 @@
-    <h1 class="titlebanner"><%= $configdata->{title} %></h1>
-    <!-- Angemeldet als "<%= session()->{user} || '<noone>' %>" !-->

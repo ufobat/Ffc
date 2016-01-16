@@ -1,8 +1,0 @@
-% layout 'board';
-<div class="postbox headbox" id="headbox">
-    <h1>Beiträge aus einem Thema in ein anderes Thema verschieben</h1>
-    <p>Das gewünschte Thema &quot;<%= $titlestringdest %>&quot; gibt es bereits. Möchten sie alle Beiträge des Themas &quot;<%= $titlestringorig %>&quot; dorthin verschieben?</p>
-    <p><a href="<%= url_for 'move_forum_topic_do', topicid => $topicid, topicidto => $topicidto %>" title="Alle Beiträge in das andere Thema verschieben">Ja, alle Beiträge verschieben.</a></p>
-    <p><a href="<%= url_for 'edit_forum_topic_form' %>" title="Überschrift des Themas und dessen Beiträge beibehalten">Nein, alles soll so bleiben, wie es ist. Ich werde dem Thema einen anderen Titel geben.</a></p>
-</div>
-
