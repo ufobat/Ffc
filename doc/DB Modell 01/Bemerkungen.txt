@@ -1,0 +1,5 @@
+Dieses Modell basiert auf dem vorhergehenden Datenmodell.
+
+Alle Textdaten sind in einer einzigen Tabelle gespeichert. Lediglich Flags (respektive userto, commentto, chat) ordnen den jeweiligen Eintrag seiner Bestimmung zu.
+
+Da wir im System keine Speicherplatzprobleme im Bereich der Datenbank haben und da dieses Modell einige JOINS weniger erfordert, würde ich das sogar bevorzugen.
