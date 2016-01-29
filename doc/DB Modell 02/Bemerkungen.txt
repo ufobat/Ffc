@@ -1,5 +1,0 @@
-Dieses Modell wurde neu gedacht.
-
-Es abstrahiert die Textbeiträge von ihrer Verwendung weg. Zur Verwendung gehört jeweils eine eigene Tabelle, welche auf ihre speziellen Daten (Privatnachrichten auf Sender, Kommentare an anhängende Beiträge, ect.) sowie auf den jeweiligen Textbeitrag verweist.
-
-Dieses Modell erfordert einige JOINS mehr, was der Übersicht vermutlich abträglich ist. Die Speicherersparniss steht dazu vermutlich in keinem Verhältnis.
