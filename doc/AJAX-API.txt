@@ -1,48 +1,49 @@
-/topics/get
-/topics/get/offset/#/limit/#
-﻿/topics/add
-/topics/#/edit
-/topics/#/pin
-/topics/#/unpin
-/topics/#/ignore
-/topics/#/unignore
+G /topics/get
+G /topics/get/offset/#/limit/#
+﻿P /topics/add
+P /topics/#/edit
+G /topics/#/pin
+G /topics/#/unpin
+G /topics/#/ignore
+G /topics/#/unignore
 
-/topics/#/posts/get
-/topics/#/posts/get/offset/#/limit/#
-/topics/#/posts/add
-/topics/#/posts/#/edit
-/topics/#/posts/#/delete
+G /topics/#/posts/get
+G /topics/#/posts/get/offset/#/limit/#
+P /topics/#/posts/add
+P /topics/#/posts/#/edit
+G /topics/#/posts/#/delete
 
-/topics/#/posts/#/attachements/get
-/topics/#/posts/#/attachements/add
-/topics/#/posts/#/attachements/#/get
-/topics/#/posts/#/attachements/#/delete
+G /topics/#/posts/#/attachements/get
+P /topics/#/posts/#/attachements/add
+G /topics/#/posts/#/attachements/#/get
+G /topics/#/posts/#/attachements/#/delete
 
-/topics/#/posts/#/comments/get
-/topics/#/posts/#/comments/get/offset/#/limit/#
-/topics/#/posts/#/comments/#/edit
-/topics/#/posts/#/comments/#/delete
+G /topics/#/posts/#/comments/get
+G /topics/#/posts/#/comments/get/offset/#/limit/#
+P /topics/#/posts/#/comments/add
+P /topics/#/posts/#/comments/#/edit
+G /topics/#/posts/#/comments/#/delete
 
-/users
-/users/#/messages/get
-/users/#/messages/get/offset/#/limit/#
-/users/#/messages/add
+G /users/get
+G /users/#/messages/get
+G /users/#/messages/get/offset/#/limit/#
+P /users/#/messages/add
 
-/chat
-/chat/join
-/chat/leave
-/chat/messages/get
+G /chat/join
+G /chat/leave
+G /chat/messages/get
+P /chat/messages/add
 
-/config/password/edit
-/config/owncolor/set/#
-/config/bgcolor/set/#
-/config/topics/chronsort
-/config/topics/alphsort
+P /config/password/edit
+G /config/owncolor/set/#
+G /config/bgcolor/set/#
+G /config/topics/chronsort
+G /config/topics/alphsort
 
-/admin/config/title/set
-/admin/config/users
-/admin/config/users/#/name/edit/#
-/admin/config/users/#/isadmin
-/admin/config/users/#/notadmin
-/admin/config/users/#/active
-/admin/config/users/#/inactive
+P /admin/config/title/set
+G /admin/config/users/show
+P /admin/config/users/#/name/edit
+G /admin/config/users/#/isadmin
+G /admin/config/users/#/notadmin
+G /admin/config/users/#/active
+G /admin/config/users/#/inactive
