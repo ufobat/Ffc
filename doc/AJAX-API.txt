@@ -31,9 +31,7 @@
 /chat
 /chat/join
 /chat/leave
-/chat/refreshtime/set/#
 /chat/messages/get
-/chat/messages/get/offset/#/limit/#
 
 /config/password/edit
 /config/owncolor/set/#
