@@ -37,8 +37,6 @@ P /chat/messages/add
 P /config/password/edit
 G /config/owncolor/set/#
 G /config/bgcolor/set/#
-G /config/topics/chronsort
-G /config/topics/alphsort
 
 P /admin/config/title/set
 G /admin/config/users/show
