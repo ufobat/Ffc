@@ -11,18 +11,18 @@ G /topics/#/posts/get
 G /topics/#/posts/get/offset/#/limit/#
 P /topics/#/posts/add
 P /topics/#/posts/#/edit
-G /topics/#/posts/#/delete
+D /topics/#/posts/#/delete
 
 G /topics/#/posts/#/attachements/get
 P /topics/#/posts/#/attachements/add
 G /topics/#/posts/#/attachements/#/get
-G /topics/#/posts/#/attachements/#/delete
+D /topics/#/posts/#/attachements/#/delete
 
 G /topics/#/posts/#/comments/get
 G /topics/#/posts/#/comments/get/offset/#/limit/#
 P /topics/#/posts/#/comments/add
 P /topics/#/posts/#/comments/#/edit
-G /topics/#/posts/#/comments/#/delete
+D /topics/#/posts/#/comments/#/delete
 
 G /users/get
 G /users/#/messages/get
