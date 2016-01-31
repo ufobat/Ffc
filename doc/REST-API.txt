@@ -1,47 +1,47 @@
-G /topics/get
-G /topics/get/offset/#/limit/#
-﻿P /topics/add
-P /topics/#/edit
-G /topics/#/pin
-G /topics/#/unpin
-G /topics/#/ignore
-G /topics/#/unignore
+GET    /topics/get
+GET    /topics/get/offset/#/limit/#
+﻿POST   /topics/add
+POST   /topics/#/edit
+GET    /topics/#/pin
+GET    /topics/#/unpin
+GET    /topics/#/ignore
+GET    /topics/#/unignore
 
-G /topics/#/posts/get
-G /topics/#/posts/get/offset/#/limit/#
-P /topics/#/posts/add
-P /topics/#/posts/#/edit
-D /topics/#/posts/#/delete
+GET    /topics/#/posts/get
+GET    /topics/#/posts/get/offset/#/limit/#
+POST   /topics/#/posts/add
+POST   /topics/#/posts/#/edit
+DELETE /topics/#/posts/#/delete
 
-G /topics/#/posts/#/attachements/get
-P /topics/#/posts/#/attachements/add
-G /topics/#/posts/#/attachements/#/get
-D /topics/#/posts/#/attachements/#/delete
+GET    /topics/#/posts/#/attachements/get
+POST   /topics/#/posts/#/attachements/add
+GET    /topics/#/posts/#/attachements/#/get
+DELETE /topics/#/posts/#/attachements/#/delete
 
-G /topics/#/posts/#/comments/get
-G /topics/#/posts/#/comments/get/offset/#/limit/#
-P /topics/#/posts/#/comments/add
-P /topics/#/posts/#/comments/#/edit
-D /topics/#/posts/#/comments/#/delete
+GET    /topics/#/posts/#/comments/get
+GET    /topics/#/posts/#/comments/get/offset/#/limit/#
+POST   /topics/#/posts/#/comments/add
+POST   /topics/#/posts/#/comments/#/edit
+DELETE /topics/#/posts/#/comments/#/delete
 
-G /users/get
-G /users/#/messages/get
-G /users/#/messages/get/offset/#/limit/#
-P /users/#/messages/add
+GET    /users/get
+GET    /users/#/messages/get
+GET    /users/#/messages/get/offset/#/limit/#
+POST   /users/#/messages/add
 
-G /chat/join
-G /chat/leave
-G /chat/messages/get
-P /chat/messages/add
+GET    /chat/join
+GET    /chat/leave
+GET    /chat/messages/get
+POST   /chat/messages/add
 
-P /config/password/edit
-G /config/owncolor/set/#
-G /config/bgcolor/set/#
+POST   /config/password/edit
+GET    /config/owncolor/set/#
+GET    /config/bgcolor/set/#
 
-P /admin/config/title/set
-G /admin/config/users/show
-P /admin/config/users/#/name/edit
-G /admin/config/users/#/isadmin
-G /admin/config/users/#/notadmin
-G /admin/config/users/#/active
-G /admin/config/users/#/inactive
+POST   /admin/config/title/set
+GET    /admin/config/users/show
+POST   /admin/config/users/#/name/edit
+GET    /admin/config/users/#/isadmin
+GET    /admin/config/users/#/notadmin
+GET    /admin/config/users/#/active
+GET    /admin/config/users/#/inactive
