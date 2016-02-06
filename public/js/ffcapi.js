@@ -110,13 +110,9 @@ ffcapi.posts_delete = function(postid) {
  * Comments                                                                   *
  ******************************************************************************/
 ffcapi.comments = function(postsid, limit = 10, offset = 0) {
-    return aget(   'comments/' + postsid + '/get/limit/' + limit + '/offset/' + offset) };
+    return aget(   'posts/' + postsid + '/comments/get/limit/' + limit + '/offset/' + offset) };
 ffcapi.comments_add  = function(commentsid) {
-    return apost(  'comments/' + postsid + '/add') };
-ffcapi.comments_edit = function(commentssid) {
-    return aget(   'comments/' + commentsid + '/get') };
-ffcapi.comments_delete = function(commentsid) {
-    return adelete('comments/' + commentsid + '/delete') };
+    return apost(  'posts/' + postsid + '/comments/add') };
 
 /******************************************************************************
  * Attachements                                                               *
