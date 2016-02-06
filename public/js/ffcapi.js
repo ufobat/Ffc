@@ -63,6 +63,10 @@ ffcapi.topics_add = function(titlestr) {
     return apost('topics/add', {title: titlestr}) };
 ffcapi.topics_edit = function(topicid,titlestr) {
     return apost('topics/' + topicid + '/edit', {title: titlestr}) };
+
+/******************************************************************************
+ * Topic-Markers                                                              *
+ ******************************************************************************/
 ffcapi.topics_pin = function(topicid) {
     return aget( 'topics/' + topicid + '/pin') };
 ffcapi.topics_unpin = function(topicid) {
