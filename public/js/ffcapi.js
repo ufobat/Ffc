@@ -93,10 +93,10 @@ ffcapi.users_get = function() {
 /******************************************************************************
  * Users: Posts-get and Posts-add                                             *
  ******************************************************************************/
-ffcapi.messages_posts_get = function(messagesid, limit = 10, offset = 0) {
-    return aget(   'messages/' + messagesid + '/posts/get/limit/' + limit + '/offset/' + offset) };
-ffcapi.messages_posts_add = function(messagesid, text) {
-    return apost(  'messages/' + messagesid + '/add', {textdata: text}) };
+ffcapi.users_posts_get = function(usersid, limit = 10, offset = 0) {
+    return aget(   'users/' + usersid + '/posts/get/limit/' + limit + '/offset/' + offset) };
+ffcapi.users_posts_add = function(messagesid, text) {
+    return apost(  'users/' + usersid + '/add', {textdata: text}) };
 
 /******************************************************************************
  * Posts altering                                                             *
