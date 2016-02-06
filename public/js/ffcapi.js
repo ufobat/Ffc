@@ -122,7 +122,7 @@ ffcapi.attachements_delete = function(attachementsid) {
  * Comments                                                                   *
  ******************************************************************************/
 ffcapi.comments = function(postsid, limit = 10, offset = 0) {
-    return aget(   'comments/' + postsid + '/get/limit/' + limit + '/offset/' + offset') };
+    return aget(   'comments/' + postsid + '/get/limit/' + limit + '/offset/' + offset) };
 ffcapi.comments_add  = function(commentsid) {
     return apost(  'comments/' + postsid + '/add') };
 ffcapi.comments_edit = function(commentssid) {
