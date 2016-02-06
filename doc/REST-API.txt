@@ -34,10 +34,11 @@ POST   /config/password/edit
 GET    /config/usercolor/set/#
 GET    /config/bgcolor/set/#
 
-POST   /admin/config/title/set
-GET    /admin/config/users/show
-POST   /admin/config/users/#/name/edit
-GET    /admin/config/users/#/isadmin
-GET    /admin/config/users/#/notadmin
-GET    /admin/config/users/#/active
-GET    /admin/config/users/#/inactive
+POST   /admin/title/set
+GET    /admin/language/set/#
+GET    /admin/users/show
+POST   /admin/users/#/name/edit
+GET    /admin/users/#/isadmin
+GET    /admin/users/#/notadmin
+GET    /admin/users/#/active
+GET    /admin/users/#/inactive
