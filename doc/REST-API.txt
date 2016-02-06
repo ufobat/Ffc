@@ -35,7 +35,7 @@ GET    /chat/messages/get
 POST   /chat/messages/add
 
 POST   /config/password/edit
-GET    /config/owncolor/set/#
+GET    /config/usercolor/set/#
 GET    /config/bgcolor/set/#
 
 POST   /admin/config/title/set
