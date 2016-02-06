@@ -25,6 +25,10 @@ GET    /users/get
 GET    /users/#/messages/get/limit/#/offset/#
 POST   /users/#/messages/add
 
+POST   /topics/search
+POST   /topics/#/posts/search
+POST   /users/#/messages/search
+
 GET    /chat/join
 GET    /chat/leave
 GET    /chat/messages/get
