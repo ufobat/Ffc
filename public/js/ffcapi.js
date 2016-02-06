@@ -123,7 +123,7 @@ ffcapi.comments_delete = function(commentsid) {
  ******************************************************************************/
 ffcapi.attachements = function(postsid) {
     return aget(   'posts/' + postsid + '/attachements/get') };
-ffcapi.attachements_posts_add = function(postsid) {
+ffcapi.attachements_add = function(postsid) {
     return aupload('posts/' + postsid + '/attachements/add') };
 ffcapi.attachements_get = function(attachmentsid) {
     return aget(   'attachements/' + attachmentsid + '/get') };
