@@ -14,7 +14,7 @@ var acall = function(method, url, data = null) {
     try {
         // console.log('starting request');
         var req = new XMLHttpRequest();
-        req.open(method, url, true);
+        req.open(method, ffcdata.baseurl + url, true);
         req.addEventListener("load", function() {
                 if (req.status < 400)
                     return(JSON.parse(req.responseText))
@@ -57,19 +57,19 @@ var adelete = function(url)       { acall('DELETE', url       ) };
  * Topics                                                                     *
  ******************************************************************************/
 ffcapi.topics_get = function(limit = 10, offset = 0) {
-    return aget( '/topics/get/limit/' + limit + '/offset/' + offset) };
+    return aget( 'topics/get/limit/' + limit + '/offset/' + offset) };
 ffcapi.topics_add = function(titlestr) {
-    return apost('/topics/add', {title => titlestr}) };
+    return apost('topics/add', {title => titlestr}) };
 ffcapi.topics_edit = function(topicid,titlestr) {
-    return apost('/topics/' + topicid + '/edit', {title => $titlestr}) };
+    return apost('topics/' + topicid + '/edit', {title => $titlestr}) };
 ffcapi.topics_pin = function(topicid) {
-    return aget( '/topics/' + topicid + '/pin') };
+    return aget( 'topics/' + topicid + '/pin') };
 ffcapi.topics_unpin = function(topicid) {
-    return aget( '/topics/' + topicid + '/unpin') };
+    return aget( 'topics/' + topicid + '/unpin') };
 ffcapi.topics_ignore = function(topicid) {
-    return aget( '/topics/' + topicid + '/ignore') };
+    return aget( 'topics/' + topicid + '/ignore') };
 ffcapi.topics_unignore = function(topicid) {
-    return aget( '/topics/' + topicid + '/unignore') };
+    return aget( 'topics/' + topicid + '/unignore') };
 
 /******************************************************************************
  * Posts                                                                      *
