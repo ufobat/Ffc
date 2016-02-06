@@ -107,18 +107,6 @@ ffcapi.posts_delete = function(postid) {
     return adelete('posts/' + postsid + '/delete') };
 
 /******************************************************************************
- * Attachements                                                               *
- ******************************************************************************/
-ffcapi.attachements = function(postsid) {
-    return aget(   'posts/' + postsid + '/attachements/get') };
-ffcapi.attachements_posts_add = function(postsid) {
-    return aupload('posts/' + postsid + '/attachements/add') };
-ffcapi.attachements_get = function(attachmentsid) {
-    return aget(   'attachements/' + attachmentsid + '/get') };
-ffcapi.attachements_delete = function(attachementsid) {
-    return adelete('attachements/' + attachementsid + '/delete') };
-
-/******************************************************************************
  * Comments                                                                   *
  ******************************************************************************/
 ffcapi.comments = function(postsid, limit = 10, offset = 0) {
@@ -129,6 +117,18 @@ ffcapi.comments_edit = function(commentssid) {
     return aget(   'comments/' + commentsid + '/get') };
 ffcapi.comments_delete = function(commentsid) {
     return adelete('comments/' + commentsid + '/delete') };
+
+/******************************************************************************
+ * Attachements                                                               *
+ ******************************************************************************/
+ffcapi.attachements = function(postsid) {
+    return aget(   'posts/' + postsid + '/attachements/get') };
+ffcapi.attachements_posts_add = function(postsid) {
+    return aupload('posts/' + postsid + '/attachements/add') };
+ffcapi.attachements_get = function(attachmentsid) {
+    return aget(   'attachements/' + attachmentsid + '/get') };
+ffcapi.attachements_delete = function(attachementsid) {
+    return adelete('attachements/' + attachementsid + '/delete') };
 
 /******************************************************************************
  * Searches                                                                   *
