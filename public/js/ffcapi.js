@@ -39,6 +39,7 @@ var acall = function(method, url, data = null) {
         console.log('Error on request: ' + e); 
     }
 };
+var aupload = function(){alert('not impplemented yet')}
 var aget    = function(url)       { acall('GET',    url       ) };
 var apost   = function(url, data) { acall('POST',   url, data ) };
 var adelete = function(url)       { acall('DELETE', url       ) };
@@ -59,9 +60,9 @@ var adelete = function(url)       { acall('DELETE', url       ) };
 ffcapi.topics_get = function(limit = 10, offset = 0) {
     return aget( 'topics/get/limit/' + limit + '/offset/' + offset) };
 ffcapi.topics_add = function(titlestr) {
-    return apost('topics/add', {title => titlestr}) };
+    return apost('topics/add', {title: titlestr}) };
 ffcapi.topics_edit = function(topicid,titlestr) {
-    return apost('topics/' + topicid + '/edit', {title => $titlestr}) };
+    return apost('topics/' + topicid + '/edit', {title: titlestr}) };
 ffcapi.topics_pin = function(topicid) {
     return aget( 'topics/' + topicid + '/pin') };
 ffcapi.topics_unpin = function(topicid) {
@@ -72,35 +73,58 @@ ffcapi.topics_unignore = function(topicid) {
     return aget( 'topics/' + topicid + '/unignore') };
 
 /******************************************************************************
- * Posts                                                                      *
+ * Topics: Posts-get and Posts-add                                            *
  ******************************************************************************/
-//~ GET    /topics/#/posts/get/limit/#/offset/#
-//~ POST   /topics/#/posts/add
-//~ POST   /topics/#/posts/#/edit
-//~ DELETE /topics/#/posts/#/delete
+ffcapi.topics_posts_get = function(topicsid, limit = 10, offset = 0) {
+    return aget(   'topics/' + topicsid + '/posts/get/limit/' + limit + '/offset/' + offset) };
+ffcapi.topics_posts_add = function(topicsid, text) {
+    return apost(  'topics/' + topicsid + '/add', {textdata: text}) };
+
+/******************************************************************************
+ * Users                                                                      *
+ ******************************************************************************/
+ffcapi.users_get = function() {
+    return aget( 'users/get') };
+
+/******************************************************************************
+ * Users: Posts-get and Posts-add                                             *
+ ******************************************************************************/
+ffcapi.messages_posts_get = function(messagesid, limit = 10, offset = 0) {
+    return aget(   'messages/' + messagesid + '/posts/get/limit/' + limit + '/offset/' + offset) };
+ffcapi.messages_posts_add = function(messagesid, text) {
+    return apost(  'messages/' + messagesid + '/add', {textdata: text}) };
+
+/******************************************************************************
+ * Posts altering                                                             *
+ ******************************************************************************/
+ffcapi.posts_edit = function(postsid,text) {
+    return apost(  'posts/' + postsid + '/edit', {textdata: text}) };
+ffcapi.posts_delete = function(postid) {
+    return adelete('posts/' + postsid + '/delete') };
 
 /******************************************************************************
  * Attachements                                                               *
  ******************************************************************************/
-//~ GET    /topics/#/posts/#/attachements/get
-//~ POST   /topics/#/posts/#/attachements/add
-//~ GET    /topics/#/posts/#/attachements/#/get
-//~ DELETE /topics/#/posts/#/attachements/#/delete
+ffcapi.attachements = function(postsid) {
+    return aget(   'posts/' + postsid + '/attachements/get') };
+ffcapi.attachements_posts_add = function(postsid) {
+    return aupload('posts/' + postsid + '/attachements/add') };
+ffcapi.attachements_get = function(attachmentsid) {
+    return aget(   'attachements/' + attachmentsid + '/get') };
+ffcapi.attachements_delete = function(attachementsid) {
+    return adelete('attachements/' + attachementsid + '/delete') };
 
 /******************************************************************************
  * Comments                                                                   *
  ******************************************************************************/
-//~ GET    /topics/#/posts/#/comments/get/limit/#/offset/#
-//~ POST   /topics/#/posts/#/comments/add
-//~ POST   /topics/#/posts/#/comments/#/edit
-//~ DELETE /topics/#/posts/#/comments/#/delete
-
-/******************************************************************************
- * Usermessage                                                                *
- ******************************************************************************/
-//~ GET    /users/get
-//~ GET    /users/#/messages/get/limit/#/offset/#
-//~ POST   /users/#/messages/add
+ffcapi.comments = function(postsid, limit = 10, offset = 0) {
+    return aget(   'comments/' + postsid + '/get/limit/' + limit + '/offset/' + offset') };
+ffcapi.comments_add  = function(commentsid) {
+    return apost(  'comments/' + postsid + '/add') };
+ffcapi.comments_edit = function(commentssid) {
+    return aget(   'comments/' + commentsid + '/get') };
+ffcapi.comments_delete = function(commentsid) {
+    return adelete('comments/' + commentsid + '/delete') };
 
 /******************************************************************************
  * Searches                                                                   *
