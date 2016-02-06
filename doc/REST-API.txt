@@ -1,5 +1,4 @@
-GET    /topics/get
-GET    /topics/get/offset/#/limit/#
+GET    /topics/get/limit/#/offset/#
 ﻿POST   /topics/add
 POST   /topics/#/edit
 GET    /topics/#/pin
@@ -7,8 +6,7 @@ GET    /topics/#/unpin
 GET    /topics/#/ignore
 GET    /topics/#/unignore
 
-GET    /topics/#/posts/get
-GET    /topics/#/posts/get/offset/#/limit/#
+GET    /topics/#/posts/get/limit/#/offset/#
 POST   /topics/#/posts/add
 POST   /topics/#/posts/#/edit
 DELETE /topics/#/posts/#/delete
@@ -18,15 +16,13 @@ POST   /topics/#/posts/#/attachements/add
 GET    /topics/#/posts/#/attachements/#/get
 DELETE /topics/#/posts/#/attachements/#/delete
 
-GET    /topics/#/posts/#/comments/get
-GET    /topics/#/posts/#/comments/get/offset/#/limit/#
+GET    /topics/#/posts/#/comments/get/limit/#/offset/#
 POST   /topics/#/posts/#/comments/add
 POST   /topics/#/posts/#/comments/#/edit
 DELETE /topics/#/posts/#/comments/#/delete
 
 GET    /users/get
-GET    /users/#/messages/get
-GET    /users/#/messages/get/offset/#/limit/#
+GET    /users/#/messages/get/limit/#/offset/#
 POST   /users/#/messages/add
 
 GET    /chat/join
