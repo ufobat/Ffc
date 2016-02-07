@@ -7,7 +7,7 @@ ffcapi = {};
 
 /******************************************************************************
  ******************************************************************************
- ***   Helper                                                               ***
+ ***   Internal Helpers                                                     ***
  ******************************************************************************
  ******************************************************************************/
 var acall = function(method, url, data = null) {
@@ -129,39 +129,66 @@ ffcapi.attachements_delete = function(attachementsid) {
 /******************************************************************************
  * Searches                                                                   *
  ******************************************************************************/
-//~ POST   /topics/search
-//~ POST   /topics/#/posts/search
-//~ POST   /users/#/messages/search
+ffcapi.topics_search = function(searchstr) {
+    return apost( '/topics/search', { search: searchstr } ) };
+ffcapi.topics_posts_search = function(topicsid, searchstr) {
+    return apost( '/topics/' + topicsid + '/posts/search', { search: searchstr } ) };
+ffcapi.topics_posts_search = function(userssid, searchstr) {
+    return apost( '/users/' + usersid + '/posts/search', { search: searchstr } ) };
 
 /******************************************************************************
  * Chat                                                                       *
  ******************************************************************************/
-//~ GET    /chat/join
-//~ GET    /chat/leave
-//~ GET    /chat/messages/get
-//~ POST   /chat/messages/add
+ffcapi.chat_join = function() {
+    return aget( '/chat/join' ) };
+ffcapi.chat_leave = function() {
+    return aget( '/chat/leave' ) };
+ffcapi.chat_get = function() {
+    return aget( '/chat/get' ) };
+ffcapi.chat_add = function(text) {
+    return apost( '/chat/add', { textdata: text } ) };
 
 /******************************************************************************
  * User-Configuration                                                         *
  ******************************************************************************/
-//~ POST   /config/password/edit
-//~ GET    /config/usercolor/set/#
-//~ GET    /config/bgcolor/set/#
+ffcapi.config_password_edit = function(npassword1) {
+    return apost( '/config/password/set', { npassword: npassword1 } ) };
+ffcapi.config_usercolor = function(colorhex) {
+    return aget( '/config/usercolor/set/' + colorhex ) };
+ffcapi.config_bgcolor = function(colorhex) {
+    return aget( '/config/bgcolor/set/' + colorhex ) };
 
 /******************************************************************************
  * Board-Administration                                                        *
  ******************************************************************************/
-//~ POST   /admin/title/set
-//~ GET    /admin/language/set/#
+ffcapi.admin_forumtitle = function(titlestr) {
+    return apost( '/admin/title/set', { title: titlestr } ) };
+ffcapi.admin_forumlanguage = function(languagestr) {
+    return aget( '/admin/language/set/' + languagestr ) };
 
 /******************************************************************************
  * User-Administration                                                        *
  ******************************************************************************/
-//~ GET    /admin/users/show
-//~ POST   /admin/users/#/name/edit
-//~ GET    /admin/users/#/isadmin
-//~ GET    /admin/users/#/notadmin
-//~ GET    /admin/users/#/active
-//~ GET    /admin/users/#/inactive
+ffcapi.admin_users_get = function() {
+    return aget( '/admin/users/get' ) };
+ffcapi.admin_users_add = function(nname) {
+    return apost( '/admin/users/add', { name: namestr } ) }; 
+ffcapi.admin_users_name_edit = function(usersid, nname) {
+    return apost( '/admin/users/' + usersid + '/name/edit', { name: namestr } ) }; 
+ffcapi.admin_users_isadmin = function(usersid) {
+    return apost( '/admin/users/' + usersid + '/set/isadmin' ) }; 
+ffcapi.admin_users_notadmin = function(usersid) {
+    return apost( '/admin/users/' + usersid + '/set/notadmin' ) }; 
+ffcapi.admin_users_active = function(usersid) {
+    return apost( '/admin/users/' + usersid + '/set/active' ) }; 
+ffcapi.admin_users_inactive = function(usersid) {
+    return apost( '/admin/users/' + usersid + '/set/inactive' ) }; 
 
+
+
+/******************************************************************************
+ ******************************************************************************
+ ***   API is there                                                         ***
+ ******************************************************************************
+ ******************************************************************************/
 })();
