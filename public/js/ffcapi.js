@@ -24,19 +24,19 @@ var acall = function(method, url, data = null) {
         );
         req.addEventListener("error", function() {
             new Error("Network error");
-        }); 
+        });
 
-        if ( methd === 'POST' ) { 
+        if ( methd === 'POST' ) {
             req.setRequestHeader("Content-type", "multipart/formdata");
             req.setRequestHeader("Connection", "close");
             req.send(JSON.stringify(data));
-        }   
+        }
         else {
             req.send();
-        }   
-    }   
+        }
+    }
     catch (e) {
-        console.log('Error on request: ' + e); 
+        console.log('Error on request: ' + e);
     }
 };
 var aupload = function(){alert('not impplemented yet')}
@@ -53,6 +53,12 @@ var adelete = function(url)       { acall('DELETE', url       ) };
  ******************************************************************************/
 
 
+
+/******************************************************************************
+ * General                                                                    *
+ ******************************************************************************/
+ffcapi.countings = function() {
+    return aget('countings') };
 
 /******************************************************************************
  * Topics                                                                     *
@@ -79,6 +85,8 @@ ffcapi.topics_unignore = function(topicid) {
 /******************************************************************************
  * Topics: Posts-get and Posts-add                                            *
  ******************************************************************************/
+ffcapi.topics_posts_get_new = function() {
+    return aget(   'topics/posts/get/new') };
 ffcapi.topics_posts_get = function(topicsid, limit = 10, offset = 0) {
     return aget(   'topics/' + topicsid + '/posts/get/limit/' + limit + '/offset/' + offset) };
 ffcapi.topics_posts_add = function(topicsid, text) {
@@ -93,6 +101,8 @@ ffcapi.users_get = function() {
 /******************************************************************************
  * Users: Posts-get and Posts-add                                             *
  ******************************************************************************/
+ffcapi.users_posts_get_new = function() {
+    return aget(   'users/posts/get/new') };
 ffcapi.users_posts_get = function(usersid, limit = 10, offset = 0) {
     return aget(   'users/' + usersid + '/posts/get/limit/' + limit + '/offset/' + offset) };
 ffcapi.users_posts_add = function(messagesid, text) {
@@ -145,6 +155,8 @@ ffcapi.chat_leave = function() {
     return aget( '/chat/leave' ) };
 ffcapi.chat_get = function() {
     return aget( '/chat/get' ) };
+ffcapi.chat_get_new = function() {
+    return aget( '/chat/get/new' ) };
 ffcapi.chat_add = function(text) {
     return apost( '/chat/add', { textdata: text } ) };
 
@@ -159,8 +171,10 @@ ffcapi.config_bgcolor = function(colorhex) {
     return aget( '/config/bgcolor/set/' + colorhex ) };
 
 /******************************************************************************
- * Board-Administration                                                        *
+ * Board-Administration                                                       *
  ******************************************************************************/
+ffcapi.admin_config_get = function() {
+    return aget('/admin/config/get') };
 ffcapi.admin_forumtitle = function(titlestr) {
     return apost( '/admin/title/set', { title: titlestr } ) };
 ffcapi.admin_forumlanguage = function(languagestr) {
@@ -172,17 +186,17 @@ ffcapi.admin_forumlanguage = function(languagestr) {
 ffcapi.admin_users_get = function() {
     return aget( '/admin/users/get' ) };
 ffcapi.admin_users_add = function(nname) {
-    return apost( '/admin/users/add', { name: namestr } ) }; 
+    return apost( '/admin/users/add', { name: namestr } ) };
 ffcapi.admin_users_name_edit = function(usersid, nname) {
-    return apost( '/admin/users/' + usersid + '/name/edit', { name: namestr } ) }; 
+    return apost( '/admin/users/' + usersid + '/name/edit', { name: namestr } ) };
 ffcapi.admin_users_isadmin = function(usersid) {
-    return apost( '/admin/users/' + usersid + '/set/isadmin' ) }; 
+    return apost( '/admin/users/' + usersid + '/set/isadmin' ) };
 ffcapi.admin_users_notadmin = function(usersid) {
-    return apost( '/admin/users/' + usersid + '/set/notadmin' ) }; 
+    return apost( '/admin/users/' + usersid + '/set/notadmin' ) };
 ffcapi.admin_users_active = function(usersid) {
-    return apost( '/admin/users/' + usersid + '/set/active' ) }; 
+    return apost( '/admin/users/' + usersid + '/set/active' ) };
 ffcapi.admin_users_inactive = function(usersid) {
-    return apost( '/admin/users/' + usersid + '/set/inactive' ) }; 
+    return apost( '/admin/users/' + usersid + '/set/inactive' ) };
 
 
 

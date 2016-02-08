@@ -1,39 +1,44 @@
-GET    'topics/get/limit/' + limit + '/offset/' + offset
-POST   'topics/add', {title: titlestr}
-POST   'topics/' + topicid + '/edit', {title: titlestr}
-GET    'topics/' + topicid + '/pin'
-GET    'topics/' + topicid + '/unpin'
-GET    'topics/' + topicid + '/ignore'
-GET    'topics/' + topicid + '/unignore'
-GET    'topics/' + topicsid + '/posts/get/limit/' + limit + '/offset/' + offset
-POST   'topics/' + topicsid + '/add', {textdata: text}
-GET    'users/get'
-GET    'users/' + usersid + '/posts/get/limit/' + limit + '/offset/' + offset
-POST   'users/' + usersid + '/add', {textdata: text}
-POST   'posts/' + postsid + '/edit', {textdata: text}
-DELETE 'posts/' + postsid + '/delete'
-GET    'posts/' + postsid + '/comments/get/limit/' + limit + '/offset/' + offset
-POST   'posts/' + postsid + '/comments/add'
-GET    'posts/' + postsid + '/attachements/get'
-UPLOAD 'posts/' + postsid + '/attachements/add'
-GET    'attachements/' + attachmentsid + '/get'
-DELETE 'attachements/' + attachementsid + '/delete'
+GET    '/countings'
+GET    '/topics/get/limit/' + limit + '/offset/' + offset
+POST   '/topics/add', {title: titlestr}
+POST   '/topics/' + topicid + '/edit', {title: titlestr}
+GET    '/topics/' + topicid + '/pin'
+GET    '/topics/' + topicid + '/unpin'
+GET    '/topics/' + topicid + '/ignore'
+GET    '/topics/' + topicid + '/unignore'
+GET    '/topics/posts/get/new'
+GET    '/topics/' + topicsid + '/posts/get/limit/' + limit + '/offset/' + offset
+POST   '/topics/' + topicsid + '/add', {textdata: text}
+GET    '/users/get'
+GET    '/users/posts/get/new'
+GET    '/users/' + usersid + '/posts/get/limit/' + limit + '/offset/' + offset
+POST   '/users/' + usersid + '/add', {textdata: text}
+POST   '/posts/' + postsid + '/edit', {textdata: text}
+DELETE '/posts/' + postsid + '/delete'
+GET    '/posts/' + postsid + '/comments/get/limit/' + limit + '/offset/' + offset
+POST   '/posts/' + postsid + '/comments/add'
+GET    '/posts/' + postsid + '/attachements/get'
+UPLOAD '/posts/' + postsid + '/attachements/add'
+GET    '/attachements/' + attachmentsid + '/get'
+DELETE '/attachements/' + attachementsid + '/delete'
 POST   '/topics/search', { search: searchstr }
 POST   '/topics/' + topicsid + '/posts/search', { search: searchstr }
 POST   '/users/' + usersid + '/posts/search', { search: searchstr }
 GET    '/chat/join'
 GET    '/chat/leave'
+GET    '/chat/get/new'
 GET    '/chat/get'
 POST   '/chat/add', { textdata: text }
 POST   '/config/password/set', { npassword: npassword1 }
 GET    '/config/usercolor/set/' + colorhex
 GET    '/config/bgcolor/set/' + colorhex
+GET    '/admin/config/get'
 POST   '/admin/title/set', { title: titlestr }
 GET    '/admin/language/set/' + languagestr
 GET    '/admin/users/get'
-POST   '/admin/users/add', { name: namestr } 
-POST   '/admin/users/' + usersid + '/name/edit', { name: namestr } 
-POST   '/admin/users/' + usersid + '/set/isadmin' 
-POST   '/admin/users/' + usersid + '/set/notadmin' 
-POST   '/admin/users/' + usersid + '/set/active' 
-POST   '/admin/users/' + usersid + '/set/inactive' 
+POST   '/admin/users/add', { name: namestr }
+POST   '/admin/users/' + usersid + '/name/edit', { name: namestr }
+POST   '/admin/users/' + usersid + '/set/isadmin'
+POST   '/admin/users/' + usersid + '/set/notadmin'
+POST   '/admin/users/' + usersid + '/set/active'
+POST   '/admin/users/' + usersid + '/set/inactive'
