@@ -91,7 +91,7 @@ CREATE TABLE "posts" (
     "topics_id"       INTEGER,                                    -- Forenbeitrag
     "parent_posts_id" INTEGER,                                    -- Beitragskommentar
     "create_time"     INTEGER NOT NULL DEFAULT current_timestamp, -- Unix-Timestamp
-    "plain_text"      TEXT    NOT NULL,                           -- Eingegebener Text ohne Formatierungsumwandlungen
+    "plain_text"      TEXT    NOT NULL,                           -- Plain-Text ohne Formatierung
     "cache"           TEXT    NOT NULL,                           -- Formatierter Text
     FOREIGN KEY ("users_from_id")   REFERENCES  "users"(rowid)
     FOREIGN KEY ("users_to_id")     REFERENCES  "users"(rowid) ON DELETE SET NULL,
