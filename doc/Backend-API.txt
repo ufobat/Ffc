@@ -8,18 +8,22 @@ GET    '/topics/' + topicid + '/ignore'
 GET    '/topics/' + topicid + '/unignore'
 GET    '/topics/posts/get/new'
 GET    '/topics/' + topicsid + '/posts/get/limit/' + limit + '/offset/' + offset
-POST   '/topics/' + topicsid + '/add', {textdata: text}
+POST   '/topics/' + topicsid + '/posts/add', {textdata: text}
 GET    '/users/get'
 GET    '/users/posts/get/new'
 GET    '/users/' + usersid + '/posts/get/limit/' + limit + '/offset/' + offset
 POST   '/users/' + usersid + '/add', {textdata: text}
 POST   '/posts/' + postsid + '/edit', {textdata: text}
+GET    '/posts/' + postsid + '/delete/check'
 DELETE '/posts/' + postsid + '/delete'
+GET    '/posts/' + postsid + '/topics/' + topicid + '/move/check'
+GET    '/posts/' + postsid + '/topics/' + topicid + '/move'
 GET    '/posts/' + postsid + '/comments/get/limit/' + limit + '/offset/' + offset
 POST   '/posts/' + postsid + '/comments/add'
 GET    '/posts/' + postsid + '/attachements/get'
 UPLOAD '/posts/' + postsid + '/attachements/add'
 GET    '/attachements/' + attachmentsid + '/get'
+GET    '/attachements/' + attachementsid + '/delete/check'
 DELETE '/attachements/' + attachementsid + '/delete'
 POST   '/topics/search', { search: searchstr }
 POST   '/topics/' + topicsid + '/posts/search', { search: searchstr }
@@ -34,6 +38,7 @@ GET    '/config/usercolor/set/' + colorhex
 GET    '/config/bgcolor/set/' + colorhex
 GET    '/admin/config/get'
 POST   '/admin/title/set', { title: titlestr }
+GET    '/admin/language/get/'
 GET    '/admin/language/set/' + languagestr
 GET    '/admin/users/get'
 POST   '/admin/users/add', { name: namestr }
