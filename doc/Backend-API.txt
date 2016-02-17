@@ -28,11 +28,6 @@ DELETE '/attachements/' + attachementsid + '/delete'
 POST   '/topics/search', { search: searchstr }
 POST   '/topics/' + topicsid + '/posts/search', { search: searchstr }
 POST   '/users/' + usersid + '/posts/search', { search: searchstr }
-GET    '/chat/join'
-GET    '/chat/leave'
-GET    '/chat/get/new'
-GET    '/chat/get'
-POST   '/chat/add', { textdata: text }
 POST   '/config/password/set', { npassword: npassword1 }
 GET    '/config/usercolor/set/' + colorhex
 GET    '/config/bgcolor/set/' + colorhex

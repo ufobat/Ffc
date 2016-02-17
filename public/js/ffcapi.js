@@ -147,20 +147,6 @@ ffcapi.topics_posts_search = function(userssid, searchstr) {
     return apost( '/users/' + usersid + '/posts/search', { search: searchstr } ) };
 
 /******************************************************************************
- * Chat                                                                       *
- ******************************************************************************/
-ffcapi.chat_join = function() {
-    return aget( '/chat/join' ) };
-ffcapi.chat_leave = function() {
-    return aget( '/chat/leave' ) };
-ffcapi.chat_get = function() {
-    return aget( '/chat/get' ) };
-ffcapi.chat_get_new = function() {
-    return aget( '/chat/get/new' ) };
-ffcapi.chat_add = function(text) {
-    return apost( '/chat/add', { textdata: text } ) };
-
-/******************************************************************************
  * User-Configuration                                                         *
  ******************************************************************************/
 ffcapi.config_password_edit = function(npassword1) {
