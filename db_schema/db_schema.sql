@@ -19,8 +19,7 @@ CREATE TABLE "users" (
     "is_active" INTEGER NOT NULL DEFAULT 1, -- Boolean
     "name"      TEXT    NOT NULL,
     "color"     INTEGER,                    -- sprintf('%x', $_)
-    "lastseen"  INTEGER,                    -- Unix-Timestamp
-    "is_inchat" INTEGER NOT NULL DEFAULT 0  -- Boolean
+    "lastseen"  INTEGER                     -- Unix-Timestamp
 );
 
 CREATE INDEX "users_is_active_ix" ON "users"("is_active");
@@ -28,11 +27,11 @@ CREATE INDEX "users_is_inchat_ix" ON "users"("is_inchat");
 
 CREATE VIEW "active_users" (
         "users_id", "users_name", "users_color",
-        "users_lastseen", "users_is_inchat"
+        "users_lastseen"
     ) AS 
     SELECT 
         rowid, "name", "color",
-        "lastseen", "is_inchat"
+        "lastseen"
     FROM "users"
     WHERE "is_active" = 1
     ORDER BY "lastseen" DESC;
@@ -221,35 +220,4 @@ CREATE TABLE "attachements" (
 );
 
 CREATE INDEX "attachements_posts_id_ix" ON "attachements"("posts_id");
-
-/**************************************************************************************************/
-/*** Chatkomponente                                                                             ***/
-/**************************************************************************************************/
-CREATE TABLE "chat" (
-    "users_from_id" INTEGER NOT NULL,
-    "posts_id"      INTEGER NOT NULL,
-    FOREIGN KEY ("users_from_id") REFERENCES "users"(rowid),
-    FOREIGN KEY ("posts_id")      REFERENCES "posts"(rowid)    
-);
-
-CREATE VIEW get_chat_messages (
-        "posts_id",
-        "users_id", "users_name", "users_color",
-        "ref_id", "ref_description", "ref_marker",
-        "create_time", "textdata"
-    ) AS
-    SELECT 
-        p.rowid,
-        u.rowid, u."name", u."color",
-        NULL, NULL, NULL,
-        p."create_time", COAELSCE(p."cache", p."plain_text")
-    FROM "chat"        AS c
-    INNER JOIN "users" AS u ON c."users_from_id" = u.rowid
-    INNER JOIN "posts" AS p ON c."posts_id"      = p.rowid
-    WHERE p."users_to_id"     IS NULL
-      AND p."topics_id"       IS NULL
-      AND p."parent_posts_id" IS NULL
-    ORDER BY p."create_time" DESC;
-
-
 
