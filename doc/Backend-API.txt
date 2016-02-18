@@ -1,3 +1,6 @@
+GET  '/login'
+POST '/login'
+GET  '/logout'
 GET  '/countings'
 GET  '/topics/get/limit/' + limit + '/offset/' + offset
 POST '/topics/add', {title: titlestr}
