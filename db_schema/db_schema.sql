@@ -118,14 +118,12 @@ CREATE INDEX "users_2_topics_pin_ix"      ON "users_2_topics"("pin");
 CREATE INDEX "users_2_topics_ignore_ix"   ON "users_2_topics"("ignore");
 
 CREATE VIEW "get_users_2_topics" (
-        "topics_id", "topics_title", 
-        "users_id", "users_name", "users_color",
+        "topics_id", "topics_title", "users_id",
         "topics_pin", "topics_ignore", "topics_posts_last_id"
     ) AS
     SELECT 
-        t.rowid, t."title", 
-        u.rowid, u."name", u."color", 
-        t."pin", t."ignore", t."posts_last_id"
+        t.rowid, t."title", u.rowid, 
+        u2t."pin", u2t."ignore", u2t."posts_last_id"
     FROM "users_2_topics" AS u2t
     INNER JOIN "users"    AS u ON u2t."users_id"  = u.rowid
     INNER JOIN "topics"   AS t ON u2t."topics_id" = t.rowid;
@@ -150,7 +148,7 @@ CREATE TABLE "posts" (
 CREATE INDEX "posts_users_from_id_ix"   ON "posts"("users_from_id");
 CREATE INDEX "posts_users_to_id_ix"     ON "posts"("users_to_id");
 CREATE INDEX "posts_topics_id_ix"       ON "posts"("topics_id");
-CREATE INDEX "posts_parent_posts_id_ix" ON "posts"("parents_posts_id");
+CREATE INDEX "posts_parent_posts_id_ix" ON "posts"("parent_posts_id");
 CREATE INDEX "posts_create_time_ix"     ON "posts"("create_time");
 
 CREATE VIEW "get_forum_posts" (
@@ -163,7 +161,7 @@ CREATE VIEW "get_forum_posts" (
         p.rowid, 
         u.rowid, u."name", u."color", 
         t.rowid, t."title", NULL, 
-        p."create_time", COAELSCE(p."cache", p."plain_text")
+        p."create_time", COALESCE(p."cache", p."plain_text", '')
     FROM "posts"        AS p
     INNER JOIN "users"  AS u ON p."users_from_id" = u.rowid
     INNER JOIN "topics" AS t ON p."topics_id"     = t.rowid
@@ -182,7 +180,7 @@ CREATE VIEW "get_private_posts" (
         p.rowid, 
         u.rowid, u."name", u."color", 
         t.rowid, t."name", t."color", 
-        p."create_time", COAELSCE(p."cache", p."plain_text")
+        p."create_time", COALESCE(p."cache", p."plain_text", '')
     FROM "posts"        AS p
     INNER JOIN "users"  AS u ON p."users_from_id" = u.rowid
     INNER JOIN "users"  AS t ON p."users_to_id"   = t.rowid
@@ -200,12 +198,12 @@ CREATE VIEW "get_comment_posts" (
     SELECT 
         p.rowid, 
         u.rowid, u."name", u."color", 
-        t.rowid, t."name", t."color", 
-        p."create_time", COAELSCE(p."cache", p."plain_text")
+        t.rowid, NULL, NULL, 
+        p."create_time", COALESCE(p."cache", p."plain_text", '')
     FROM "posts"        AS p
     INNER JOIN "users"  AS u ON p."users_from_id"    = u.rowid
-    INNER JOIN "posts"  AS t ON p."parents_posts_id" = t.rowid
-    WHERE p."parten_posts_id" IS NOT NULL
+    INNER JOIN "posts"  AS t ON p."parent_posts_id" = t.rowid
+    WHERE p."parent_posts_id" IS NOT NULL
       AND p."users_to_id"     IS NULL
       AND p."topics_id"       IS NULL
     ORDER BY p."create_time" DESC;
