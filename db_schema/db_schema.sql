@@ -6,9 +6,8 @@ CREATE TABLE "config" (
     "value" TEXT
 );
 
-INSERT INTO "config" ("key", "value") VALUES ('title', 'Ffc-Forum');   
-INSERT INTO "config" ("key", "value") VALUES ('language', 'de');   
-INSERT INTO "config" ("key", "value") VALUES ('seed', 'Ffc-Forum-Dummy-Seed');
+INSERT INTO "config" ("key", "value") VALUES ('title', 'Ffc-Forum');
+INSERT INTO "config" ("key", "value") VALUES ('language', 'de');
 
 CREATE INDEX "config_key_ix" ON "config"("key");
 
@@ -28,8 +27,8 @@ CREATE INDEX "users_is_inchat_ix" ON "users"("is_inchat");
 CREATE VIEW "active_users" (
         "users_id", "users_name", "users_color",
         "users_lastseen"
-    ) AS 
-    SELECT 
+    ) AS
+    SELECT
         rowid, "name", "color",
         "lastseen"
     FROM "users"
@@ -60,7 +59,7 @@ CREATE VIEW "users_all_config" (
     FROM "users"              AS u
     INNER JOIN "users_config" AS c ON c."users_id" = u.rowid
     WHERE u."is_active" = 1;
-    
+
 /**************************************************************************************************/
 /*** Privatnachrichten-Management                                                               ***/
 /**************************************************************************************************/
@@ -81,9 +80,9 @@ CREATE VIEW "users_2_users_data" (
         "users_from_id", "users_from_name", "users_from_color",
         "posts_last_id"
     ) AS
-    SELECT 
-        ut.rowid, ut."name", ut."color", 
-        uf.rowid, uf."name", uf."color", 
+    SELECT
+        ut.rowid, ut."name", ut."color",
+        uf.rowid, uf."name", uf."color",
         u2u."posts_last_id"
     FROM "users_2_users" AS u2u
     INNER JOIN "users"   AS uf  ON u2u."users_id"      = uf.rowid
@@ -121,8 +120,8 @@ CREATE VIEW "get_users_2_topics" (
         "topics_id", "topics_title", "users_id",
         "topics_pin", "topics_ignore", "topics_posts_last_id"
     ) AS
-    SELECT 
-        t.rowid, t."title", u.rowid, 
+    SELECT
+        t.rowid, t."title", u.rowid,
         u2t."pin", u2t."ignore", u2t."posts_last_id"
     FROM "users_2_topics" AS u2t
     INNER JOIN "users"    AS u ON u2t."users_id"  = u.rowid
@@ -153,14 +152,14 @@ CREATE INDEX "posts_create_time_ix"     ON "posts"("create_time");
 
 CREATE VIEW "get_forum_posts" (
         "posts_id",
-        "users_id", "users_name", "users_color", 
+        "users_id", "users_name", "users_color",
         "ref_id", "ref_description", "ref_marker",
         "create_time", "textdata"
     ) AS
-    SELECT 
-        p.rowid, 
-        u.rowid, u."name", u."color", 
-        t.rowid, t."title", NULL, 
+    SELECT
+        p.rowid,
+        u.rowid, u."name", u."color",
+        t.rowid, t."title", NULL,
         p."create_time", COALESCE(p."cache", p."plain_text", '')
     FROM "posts"        AS p
     INNER JOIN "users"  AS u ON p."users_from_id" = u.rowid
@@ -172,14 +171,14 @@ CREATE VIEW "get_forum_posts" (
 
 CREATE VIEW "get_private_posts" (
         "posts_id",
-        "users_id", "users_name", "users_color", 
+        "users_id", "users_name", "users_color",
         "ref_id", "ref_description", "ref_marker",
         "create_time", "textdata"
     ) AS
-    SELECT 
-        p.rowid, 
-        u.rowid, u."name", u."color", 
-        t.rowid, t."name", t."color", 
+    SELECT
+        p.rowid,
+        u.rowid, u."name", u."color",
+        t.rowid, t."name", t."color",
         p."create_time", COALESCE(p."cache", p."plain_text", '')
     FROM "posts"        AS p
     INNER JOIN "users"  AS u ON p."users_from_id" = u.rowid
@@ -191,14 +190,14 @@ CREATE VIEW "get_private_posts" (
 
 CREATE VIEW "get_comment_posts" (
         "posts_id",
-        "users_id", "users_name", "users_color", 
+        "users_id", "users_name", "users_color",
         "ref_id", "ref_description", "ref_marker",
         "create_time", "textdata"
     ) AS
-    SELECT 
-        p.rowid, 
-        u.rowid, u."name", u."color", 
-        t.rowid, NULL, NULL, 
+    SELECT
+        p.rowid,
+        u.rowid, u."name", u."color",
+        t.rowid, NULL, NULL,
         p."create_time", COALESCE(p."cache", p."plain_text", '')
     FROM "posts"        AS p
     INNER JOIN "users"  AS u ON p."users_from_id"    = u.rowid
