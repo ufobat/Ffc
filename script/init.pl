@@ -8,6 +8,7 @@ use File::Path qw(make_path);
 use File::Copy;
 use Digest::SHA 'sha512_base64';
 use lib catdir(splitdir(File::Basename::dirname(__FILE__)), '..', 'lib');
+use Carp;
 srand;
 
 my $uname = 'admin'; # name of initial first user
@@ -89,6 +90,7 @@ sub generate_random_security {
         use Mojolicious::Lite;
         plugin 'Ffc::Plugin::Config';
     };
+    my $attr = {};
     my $config = $Config->{secconfig};
     my $salt = $config->{cryptsalt};
     if ( $salt ) {
@@ -108,9 +110,24 @@ sub generate_random_security {
     }
     alter_configfile($Config, 'cookiename', $cookie);
     my $pw = generate_random(4);
+    say qq~ok: insert initial admin user called "admin"~;
     $Config->dbh()->do(
-        'INSERT INTO users (name, password, admin, active) VALUES (?,?,?,?)',
-        undef, $uname, sha512_base64($pw, $salt), 1, 1);
+        'INSERT INTO "users" ("name", "is_active") VALUES (?,?)',
+        $attr, $uname, 1);
+    my $id = $Config->dbh()->selectall_arrayref(
+        'SELECT "rowid" FROM "users" WHERE "name"=?',
+        $attr, $uname);
+    die qq~error: could not insert initial admin user "$uname"~
+        unless $id or 'ARRAY' eq ref $id;
+    say qq~ok: configure initial admin user~;
+    $Config->dbh()->do(
+        'INSERT INTO "users_config" ("users_id", "password", "is_admin") VALUES (?,?,?)',
+        $attr, $id->[0]->[0], sha512_base64($pw, $salt), 1);
+    my $idc = $Config->dbh()->selectall_arrayref(
+        'SELECT "rowid" FROM "users_config" WHERE "users_id"=?',
+        $attr, $id->[0]->[0]);
+    die qq~error: could not insert initial admin user credentials~
+        unless $idc and 'ARRAY' eq ref $idc and $id->[0]->[0] == $idc->[0]->[0];
 
     if ( $debug ) {
         say 'ok: initial cookiesecret, salt, admin user and password:';
