@@ -3,11 +3,11 @@ use 5.010;
 use strict;
 use warnings;
 use File::Spec::Functions qw(catdir splitdir);
-use File::Basename;
 use File::Path qw(make_path);
+use FindBin;
 use File::Copy;
 use Digest::SHA 'sha512_base64';
-use lib catdir(splitdir(File::Basename::dirname(__FILE__)), '..', 'lib');
+use lib catdir(splitdir($FindBin::Bin), '..', 'lib');
 use Carp;
 srand;
 
