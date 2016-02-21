@@ -7,7 +7,7 @@ use File::Path qw(make_path);
 use FindBin;
 use File::Copy;
 use Digest::SHA 'sha512_base64';
-use lib catdir(splitdir($FindBin::Bin), '..', 'lib');
+use lib catdir(splitdir($FindBin::RealBin), '..', 'lib');
 use Carp;
 srand;
 
