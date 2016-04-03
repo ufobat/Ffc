@@ -1,7 +1,9 @@
 etc/*.json
 log/*
 .htaccess
+*~
 *.swp
+*.geany
 Makefile
 MYMETA.json
 MYMETA.yml
