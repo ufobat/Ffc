@@ -185,9 +185,6 @@ input[type="text"].titlestring {
 .italic {
     font-style: italic;
 }
-q, .quote, .postbox blockquote {
-    color: dimgrey;
-}
 q:before, .quote:before { content: "„"}
 q:after,  .quote:after  { content: "“"}
 em:before { content: "*"}
