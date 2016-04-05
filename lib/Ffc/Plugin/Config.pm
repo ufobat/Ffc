@@ -6,16 +6,9 @@ use Mojo::Base 'Mojolicious::Plugin';
 use DBI;
 use File::Spec::Functions qw(splitdir catdir catfile);
 use Digest::SHA 'sha512_base64';
-use Ffc::Plugin::Config::Lists;
 
 our %Defaults = (
     title           => 'Ffc Forum',
-    urlshorten      => 30,
-    sessiontimeout  => 259200,
-    backgroundcolor => '',
-    starttopic      => 0,
-    maxscore        => 10,
-    cookiename      => 'ffc_cookie',
 );
 
 sub register {
@@ -34,29 +27,16 @@ sub register {
     $app->secrets([$secconfig->{cookiesecret}]);
     $app->sessions->cookie_name(
         $config->{cookiename} || $Defaults{cookiename});
-    $app->sessions->default_expiration(
-        $config->{sessiontimeout} || $Defaults{sessiontimeout});
-
-    for ( qw(urlshorten starttopic) ) {
-        unless ( $config->{$_} and $config->{$_} =~ m/\A\d+\z/xmso ) {
-            $config->{$_} = $Defaults{$_};
-        }
-    }
 
     $app->helper(datapath     => sub { $datapath  });
     $app->helper(configdata   => sub { $config    });
     $app->helper(data_return  => \&_data_return    );
-
     $app->helper(set_lastseen => \&_set_lastseen   );
-
-    $app->helper(dbh                    => sub { dbh($self) }        );
+    $app->helper(dbh                    => sub { _dbh($self) }       );
     $app->helper(dbh_selectall_arrayref => \&_dbh_selectall_arrayref );
     $app->helper(dbh_do                 => \&_dbh_do                 );
 
-    for ( qw(title backgroundcolor) ) {
-        $config->{$_} = $Defaults{$_}
-            unless $config->{$_};
-    }
+    $config->{title} ||= $Defaults{title};
 
     $app->defaults({
         configdata => $config,
@@ -82,12 +62,6 @@ sub register {
 
     $app->helper( hash_password  => 
         sub { sha512_base64 $_[1], $secconfig->{cryptsalt} } );
-    $app->helper( counting           => \&_counting );
-    $app->helper( newpostcount       => \&_newpostcount );
-    $app->helper( newmsgscount       => \&_newmsgscount );
-    $app->helper( readlatercount     => \&_readlatercount );
-    $app->helper( generate_topiclist => \&_generate_topiclist );
-    $app->helper( generate_userlist  => \&_generate_userlist );
 
     return $self;
 }

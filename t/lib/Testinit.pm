@@ -19,11 +19,11 @@ our $Script
 our @Chars = ('a' .. 'z', 'A' .. 'C', 'E' .. 'O', 'Q' .. 'X', 'Y', 'Z'); # 'D' und so wird in Smilies verwendet, das geht für Tests blöd, Smilies werden extra getestet
 {
     my $scnt = 1;
-    my $ts = sub { join '', map { $Chars[int rand @Chars] } 1 .. 3 };
-    sub test_randstring { sprintf "%s%04d%s", $ts->(), $scnt++, $ts->() }
+    my $ts = sub { join '', map { $Chars[int rand @Chars] } 1 .. $_[0] };
+    sub test_randstring { sprintf "%s%04d%s", $ts->($_[0]//3), $scnt++, $ts->($_[0]//3) }
 }
 
-our $CookieName = test_randstring();
+our $CookieName = test_randstring(6);
 our @Users; our %Users;
 
 sub start_test {
@@ -71,64 +71,6 @@ sub test_dbh {
         , { AutoCommit => 1, RaiseError => 1 });
 }
 
-sub test_error {
-    my ( $t, $error ) = @_;
-    $t->content_like(qr~<div\s+class="error">\s*<h1>Fehler</h1>\s*<p>\s*$error\s*</p>\s*</div>~);
-    unless ( $t->success ) {
-        diag(Dumper([caller(1)])); 
-        diag 'HERKUNFT: ' . join ' ; ', map {; join ', ', (caller($_))[1,2] } 0 .. 3; 
-    }
-}
-
-sub test_info {
-    my ( $t, $info ) = @_;
-    $t->content_like(
-        qr~<div\s+class="info">\s*<h1>Hinweis</h1>\s*<p>\s*$info\s*</p>\s*</div>~);
-    unless ( $t->success ) {
-       diag(Dumper([caller(1)])); 
-    }
-}
-
-sub test_warning {
-    my ( $t, $warning ) = @_;
-    use Carp;
-    $t->content_like(
-        qr~<div\s+class="warning">\s*<h1>Warnung</h1>\s*<p>\s*$warning\s*</p>\s*</div>~);
-    unless ( $t->success ) {
-       diag(Dumper([caller(1)])); 
-    }
-}
-
-sub test_add_user { &test_add_users } # Alias
-sub test_add_users {
-    my $t = shift; my $admin = shift; my $apass = shift;
-    test_login($t, $admin, $apass);
-    my $cnt = 0;
-    while ( @_ ) {
-        my $user = shift;
-        my $pass = shift;
-        last unless $user and $pass;
-        push @Users, $user;
-        $Users{$user} = @Users;
-        $t->post_ok('/options/admin/useradd', form => {username => $user, newpw1 => $pass, newpw2 => $pass, active => 1})
-          ->status_is(302)->header_is(Location => '/options/admin/form')->content_is('');
-        $t->get_ok('/options/admin/form')->status_is(200)
-          ->content_like(qr~Benutzer \&quot;$user\&quot; angelegt~);
-        $cnt++;
-    }
-    test_logout($t);
-    if ( $cnt ) {
-        note $cnt == 1
-            ? 'one user created'
-            : "$cnt users created";
-    }
-    else {
-        diag 'no users created';
-
-    }
-    return $t;
-}
-
 sub test_get_userid {
     my $dbh = shift;
     my $user = shift;
@@ -136,4 +78,3 @@ sub test_get_userid {
 }
 
 1;
-
