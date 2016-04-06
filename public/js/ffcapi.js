@@ -175,7 +175,7 @@ ffcapi.admin_users_add = function(nname, passwordstr) {
     return apost( '/admin/users/add', { name: namestr, password: passwordstr } ) };
 ffcapi.admin_users_name_edit = function(usersid, nname) {
     return apost( '/admin/users/' + usersid + '/name/edit', { name: namestr } ) };
-ffcapi.admin_users_name_edit = function(userid, passwordstr) {
+ffcapi.admin_users_password_set = function(userid, passwordstr) {
     return apost( '/admin/users/' + usersid + '/password/set', {password: passwordstr } ) };
 ffcapi.admin_users_isadmin = function(usersid) {
     return apost( '/admin/users/' + usersid + '/set/isadmin' ) };
