@@ -121,16 +121,16 @@ ffcapi.posts_delete = function(postid) {
  ******************************************************************************/
 ffcapi.comments = function(postsid, limit = 10, offset = 0) {
     return aget(   'posts/' + postsid + '/comments/get/limit/' + limit + '/offset/' + offset) };
-ffcapi.comments_add  = function(commentsid) {
-    return apost(  'posts/' + postsid + '/comments/add') };
+ffcapi.comments_add  = function(postsid, text) {
+    return apost(  'posts/' + postsid + '/comments/add', {textdata: text}) };
 
 /******************************************************************************
  * Attachements                                                               *
  ******************************************************************************/
 ffcapi.attachements = function(postsid) {
     return aget(   'posts/' + postsid + '/attachements/get') };
-ffcapi.attachements_add = function(postsid) {
-    return aupload('posts/' + postsid + '/attachements/add') };
+ffcapi.attachements_add = function(postsid, attachementsfields) {
+    return aupload('posts/' + postsid + '/attachements/add', , {fields: attachementsfields}) };
 ffcapi.attachements_get = function(attachmentsid) {
     return aget(   'attachements/' + attachmentsid + '/get') };
 ffcapi.attachements_delete = function(attachementsid) {

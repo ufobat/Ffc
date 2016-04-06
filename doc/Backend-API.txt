@@ -22,9 +22,9 @@ POST '/posts/' + postsid + '/delete'
 GET  '/posts/' + postsid + '/topics/' + topicid + '/move/check'
 GET  '/posts/' + postsid + '/topics/' + topicid + '/move'
 GET  '/posts/' + postsid + '/comments/get/limit/' + limit + '/offset/' + offset
-POST '/posts/' + postsid + '/comments/add'
+POST '/posts/' + postsid + '/comments/add', {textdata: text}
 GET  '/posts/' + postsid + '/attachements/get'
-POST '/posts/' + postsid + '/attachements/add'
+POST '/posts/' + postsid + '/attachements/add', {fields: attachementsfields}
 GET  '/attachements/' + attachmentsid + '/get'
 GET  '/attachements/' + attachementsid + '/delete'
 POST '/attachements/' + attachementsid + '/delete'
