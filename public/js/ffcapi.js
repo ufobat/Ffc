@@ -171,10 +171,12 @@ ffcapi.admin_forumlanguage = function(languagestr) {
  ******************************************************************************/
 ffcapi.admin_users_get = function() {
     return aget( '/admin/users/get' ) };
-ffcapi.admin_users_add = function(nname) {
-    return apost( '/admin/users/add', { name: namestr } ) };
+ffcapi.admin_users_add = function(nname, passwordstr) {
+    return apost( '/admin/users/add', { name: namestr, password: passwordstr } ) };
 ffcapi.admin_users_name_edit = function(usersid, nname) {
     return apost( '/admin/users/' + usersid + '/name/edit', { name: namestr } ) };
+ffcapi.admin_users_name_edit = function(userid, passwordstr) {
+    return apost( '/admin/users/' + usersid + '/password/set', {password: passwordstr } ) };
 ffcapi.admin_users_isadmin = function(usersid) {
     return apost( '/admin/users/' + usersid + '/set/isadmin' ) };
 ffcapi.admin_users_notadmin = function(usersid) {

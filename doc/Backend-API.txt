@@ -39,8 +39,9 @@ POST '/admin/title/set', { title: titlestr }
 GET  '/admin/language/get/'
 GET  '/admin/language/set/' + languagestr
 GET  '/admin/users/get'
-POST '/admin/users/add', { name: namestr }
+POST '/admin/users/add', { name: namestr, password: passwordstr }
 POST '/admin/users/' + usersid + '/name/edit', { name: namestr }
+POST '/admin/users/' + usersid + '/password/set', {password: passwordstr }
 POST '/admin/users/' + usersid + '/set/isadmin'
 POST '/admin/users/' + usersid + '/set/notadmin'
 POST '/admin/users/' + usersid + '/set/active'
