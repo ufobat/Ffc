@@ -73,14 +73,14 @@ ffcapi.topics_edit = function(topicid,titlestr) {
 /******************************************************************************
  * Topic-Markers                                                              *
  ******************************************************************************/
-ffcapi.topics_pin = function(topicid) {
-    return aget( 'topics/' + topicid + '/pin') };
-ffcapi.topics_unpin = function(topicid) {
-    return aget( 'topics/' + topicid + '/unpin') };
-ffcapi.topics_ignore = function(topicid) {
-    return aget( 'topics/' + topicid + '/ignore') };
-ffcapi.topics_unignore = function(topicid) {
-    return aget( 'topics/' + topicid + '/unignore') };
+ffcapi.topics_pin = function(topicsid) {
+    return aget( 'topics/' + topicsid + '/pin') };
+ffcapi.topics_unpin = function(topicsid) {
+    return aget( 'topics/' + topicsid + '/unpin') };
+ffcapi.topics_ignore = function(topicsid) {
+    return aget( 'topics/' + topicsid + '/ignore') };
+ffcapi.topics_unignore = function(topicsid) {
+    return aget( 'topics/' + topicsid + '/unignore') };
 
 /******************************************************************************
  * Topics: Posts-get and Posts-add                                            *
@@ -113,7 +113,7 @@ ffcapi.users_posts_add = function(messagesid, text) {
  ******************************************************************************/
 ffcapi.posts_edit = function(postsid,text) {
     return apost(  'posts/' + postsid + '/edit', {textdata: text}) };
-ffcapi.posts_delete = function(postid) {
+ffcapi.posts_delete = function(postsid) {
     return adelete('posts/' + postsid + '/delete') };
 
 /******************************************************************************
@@ -131,9 +131,9 @@ ffcapi.attachements = function(postsid) {
     return aget(   'posts/' + postsid + '/attachements/get') };
 ffcapi.attachements_add = function(postsid, attachementsfields) {
     return aupload('posts/' + postsid + '/attachements/add', , {fields: attachementsfields}) };
-ffcapi.attachements_get = function(attachmentsid) {
-    return aget(   'attachements/' + attachmentsid + '/get') };
-ffcapi.attachements_delete = function(attachementsid) {
+ffcapi.attachements_get = function(attachementsid) {
+    return aget(   'attachements/' + attachementsid + '/get') };
+ffcapi.attachements_delete = function(attachmentsid) {
     return adelete('attachements/' + attachementsid + '/delete') };
 
 /******************************************************************************
