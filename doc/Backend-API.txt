@@ -1,24 +1,40 @@
 # Auth
 GET  '/login'
+    * HTML: loginpage.html.ep
 POST '/login'
+    * HTML: page.html.ep
 GET  '/logout'
+    * HTML: loginpage.html.ep
 
 # Informations
 GET  '/countings'
+    * <<topics_id, topics_title, topics_posts_count>, <users_id, users_name, users_posts_count>>
 GET  '/topics/posts/get/new'
+    * <<posts_id, users_id, users_name, users_color, ref_id, ref_description, ref_marker, create_time, textdata>>
 GET  '/users/posts/get/new'
+    * <<posts_id, users_id, users_name, users_color, ref_id, ref_description, ref_marker, create_time, textdata>>
 
 # Topics
 GET  '/topics/get/limit/' + limit + '/offset/' + offset
+    * <<topics_id, topics_title, users_id, topics_pin, topics_ignore, topics_posts_last_id>>
 POST '/topics/add', {title: titlestr}
+    * bool
 POST '/topics/' + topicid + '/edit', {title: titlestr}
+    * bool
 GET  '/topics/' + topicid + '/pin'
+    * bool
 GET  '/topics/' + topicid + '/unpin'
+    * bool
 GET  '/topics/' + topicid + '/ignore'
+    * bool
 GET  '/topics/' + topicid + '/unignore'
+    * bool
 GET  '/topics/' + topicsid + '/posts/get/limit/' + limit + '/offset/' + offset
+    * bool
 GET  '/posts/' + postsid + '/topics/' + topicid + '/move/check'
+    * bool
 GET  '/posts/' + postsid + '/topics/' + topicid + '/move'
+    * bool
 POST '/topics/search', { search: searchstr }
 POST '/topics/' + topicsid + '/posts/search', { search: searchstr }
 
