@@ -15,42 +15,44 @@ GET  '/users/posts/get/new'
     * <<posts_id, users_id, users_name, users_color, ref_id, ref_description, ref_marker, create_time, textdata>>
 
 # Topics
-GET  '/topics/get/limit/' + limit + '/offset/' + offset
+GET  '/topics/get/limit/:limit/offset/:offset'
     * <<topics_id, topics_title, users_id, topics_pin, topics_ignore, topics_posts_last_id>>
 POST '/topics/add', {title: titlestr}
     * bool
-POST '/topics/' + topicid + '/edit', {title: titlestr}
+POST '/topics/:topicsid/edit', {title: titlestr}
     * bool
-GET  '/topics/' + topicid + '/pin'
+GET  '/topics/:topicsid/pin'
     * bool
-GET  '/topics/' + topicid + '/unpin'
+GET  '/topics/:topicsid/unpin'
     * bool
-GET  '/topics/' + topicid + '/ignore'
+GET  '/topics/:topicsid/ignore'
     * bool
-GET  '/topics/' + topicid + '/unignore'
+GET  '/topics/:topicsid/unignore'
     * bool
-GET  '/topics/' + topicsid + '/posts/get/limit/' + limit + '/offset/' + offset
+GET  '/topics/:topicsid/posts/get/limit/:limit/offset/:offset'
     * bool
-GET  '/posts/' + postsid + '/topics/' + topicid + '/move/check'
+GET  '/posts/:postsid/topics/:topicsid/move/check'
     * bool
-GET  '/posts/' + postsid + '/topics/' + topicid + '/move'
+GET  '/posts/:postsid/topics/:topicsid/move'
     * bool
 POST '/topics/search', { search: searchstr }
-POST '/topics/' + topicsid + '/posts/search', { search: searchstr }
+    * <<posts_id, users_id, users_name, users_color, ref_id, ref_description, ref_marker, create_time, textdata, <topics_id, topics_title, users_id, topics_pin, topics_ignore, topics_posts_last_id>>>
+POST '/topics/:topicsid/posts/search', { search: searchstr }
+    * <<posts_id, users_id, users_name, users_color, ref_id, ref_description, ref_marker, create_time, textdata>>
 
 # Users
 GET  '/users/get'
-GET  '/users/' + usersid + '/posts/get/limit/' + limit + '/offset/' + offset
-POST '/users/' + usersid + '/posts/search', { search: searchstr }
-
-# Postcreation
-POST '/topics/' + topicsid + '/posts/add', {textdata: text}
-POST '/users/' + usersid + '/add', {textdata: text}
+GET  '/users/:usersid/posts/get/limit/:limit/offset/:offset'
+POST '/users/:usersid/posts/search', { search: searchstr }
 
 # Posts
+POST '/users/:usersid/add', {textdata: text}
+POST '/topics/:topicsid/posts/add', {textdata: text}
 POST '/posts/' + postsid + '/edit', {textdata: text}
 GET  '/posts/' + postsid + '/delete'
 POST '/posts/' + postsid + '/delete'
+
+# Comments
 GET  '/posts/' + postsid + '/comments/get/limit/' + limit + '/offset/' + offset
 POST '/posts/' + postsid + '/comments/add', {textdata: text}
 
@@ -69,7 +71,6 @@ GET  '/config/bgcolor/set/' + colorhex
 # Adminconfig
 GET  '/admin/config/get'
 POST '/admin/title/set', { title: titlestr }
-GET  '/admin/language/get/'
 GET  '/admin/language/set/' + languagestr
 
 # Adminusers
