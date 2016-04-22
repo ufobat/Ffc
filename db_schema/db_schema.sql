@@ -50,11 +50,11 @@ CREATE INDEX "users_config_users_id_ix" ON "users_config"("users_id");
 
 CREATE VIEW "users_all_config" (
         "users_id", "users_name", "users_color", "users_bgcolor",
-        "users_is_admin", "users_password"
+        "users_is_admin", "users_lastseen"
     ) AS
     SELECT
         u.rowid, u."name", u."color", c."bgcolor",
-        c."is_admin", c."password"
+        c."is_admin", "users_lastseen"
     FROM "users"              AS u
     INNER JOIN "users_config" AS c ON c."users_id" = u.rowid
     WHERE u."is_active" = 1;
