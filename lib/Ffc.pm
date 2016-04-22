@@ -8,8 +8,6 @@ sub startup {
   # Router
   my $r = $self->routes;
 
-  # Normal route to controller
-  $r->get('/')->to('example#welcome');
 }
 
 1;
