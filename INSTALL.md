@@ -32,7 +32,7 @@ Verzeichnis für das Forum vorbereiten (dieses Kommando liefert am Ende die Date
 $ FFC_DATA_PATH="Forenpfad" "script/init.pl" "Cookie-Name"
 ```
 
-Den Webserver so konfigurieren, dass er mit der entsprechenden Pfadvariable `FFC_DATA_PATH="Forenpfad"` das Script `script/ffc` aufrufen kann. Im Apache kann das wie folgt aussehen:
+Den Webserver so konfigurieren, dass er mit der entsprechenden Pfadvariable `FFC_DATA_PATH="Forenpfad"` das Script `script/ffc` aufrufen kann. Im Apache kann das für CGI (andere Backends müssen entsprechend der Serverdokumentation konfiguriert werden) wie folgt aussehen:
 
 ```
 <Location /forum.pl>
