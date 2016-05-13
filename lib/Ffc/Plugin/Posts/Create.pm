@@ -6,13 +6,13 @@ sub _add_post {
     my ( $c, $userto, $topicid, $noinfo, $noredirect ) = @_;
     my $text = $c->param('textdata');
     my $userid = $c->session->{userid};
-    if ( !defined($text) or (2 >= length $text) ) {
+    if ( !defined($text) or (2 > length $text) ) {
         $c->stash(textdata => $text);
         $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen)');
         return $c->show;
     }
     my $cache = $c->pre_format($text);
-    if ( !defined($cache) or (2 >= length $cache) ) {
+    if ( !defined($cache) or (2 > length $cache) ) {
         $c->stash(textdata => $text);
         $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen ohne Auszeichnungen)');
         return $c->show;
@@ -112,13 +112,13 @@ sub _edit_post_do {
         $c->stash(textdata => $text);
         return _redirect_to_show($c);
     }
-    if ( !defined($text) or (2 >= length $text) ) {
+    if ( !defined($text) or (2 > length $text) ) {
         $c->stash(textdata => $text);
         $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen)');
         return $c->edit_form;
     }
     my $cache = $c->pre_format($text);
-    if ( !defined($cache) or (2 >= length $cache) ) {
+    if ( !defined($cache) or (2 > length $cache) ) {
         $c->stash(textdata => $text);
         $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen ohne Auszeichnungen)');
         return $c->edit_form;
