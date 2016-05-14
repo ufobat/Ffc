@@ -48,7 +48,7 @@
 <div class="postbox options">
     <a name="usercolor"></a>
     <h1>Hintergrundfarbe für den Benutzer setzen</h1>
-    <p>(Der Benutzername im Titel eines Beitrages kann über diese Einstellung farbig hinterlegt werden)</q>
+    <p>(Der Benutzername im Titel eines Beitrages kann über diese Einstellung farbig hinterlegt werden, die Hintergrundfarbe muss eine Webfarbe (siehe Wikipedia) oder eine Angabe in hexadizimaler Farbschreibweise (<code>#00aaff</code>) sein - moderne Webbrowser bieten an dieser Stelle auch eine einfache Farbauswahl an, in der man sich die gewünschte Farbe einfach per Klick auswählen kann)</p>
     <form action="<%= url_for 'usercolor_form' %>#usercolor" method="POST">
         <input type="color" name="usercolor" value="<%= session()->{usercolor} || '' %>" />
         <button type="submit">Hintergrundfarbe für den Benutzernamen ändern</button>
