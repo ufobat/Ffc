@@ -48,15 +48,6 @@
     <div class="otherspopuplink activedim menuentry<%= $controller eq 'options' ? ' activemenuentry' : '' %>">
         <span class="othersmenulinktext<%= $controller eq 'options' ? ' active activeoption' : '' %>">Einstellungen</span>
         <div class="otherspopup popup">
-% if ( $controller eq 'forum' ) {
-            <p class="smallnodisplay optionslink">
-%   if ( $topicid ) {
-                <a href="<%= url_for 'printpreview_topic', topicid => $topicid %>">Leseansicht</a>
-%   } else {
-                <a href="<%= url_for 'printpreview' %>">Leseansicht</a>
-%   }
-            </p>
-% }
 % if ( @$users ) {
             <p class="optionslink separated">
                 <a href="<%= url_for 'quickview_html' %>" target="_blank" title="Schnelle einfache &Uuml;bersicht &uuml;ber neue Beitr&auml;ge">Statusfenster</a>

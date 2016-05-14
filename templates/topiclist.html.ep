@@ -28,8 +28,6 @@
             <span class="menuentry">
                 <span class="othersmenulinktext">Optionen</span>
                 <div class="otherspopup popup topiclistpopup">
-                    <p><a href="<%= url_for 'printpreview_topic', topicid => $t->[0] %>#goto_unread_<%= $t->[0] %>"
-                        title="Thema in der Druckvorschau anzeigen">Leseansicht</a></p>
 % if ( $t->[3] ) {
                     <p><a href="<%= url_for 'topic_mark_seen', topicid => $t->[0] %>"
                         title="Thema als gelesen markieren">gelesen</a></p>

@@ -4,7 +4,6 @@ use Mojo::Base 'Mojolicious::Controller';
 
 use Ffc::Forum::Topics;
 use Ffc::Forum::Readlater;
-use Ffc::Forum::Printpreview;
 
 sub install_routes { 
     my $l = shift;
@@ -24,9 +23,6 @@ sub install_routes {
     $l->route('/topic/:topicid/ignore', topicid => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'ignore_topic_do')
       ->name('ignore_forum_topic_do');
-    $l->route('/topic/:topicid/printpreview/ignore', topicid => $Ffc::Digqr)->via('get')
-      ->to(controller => 'forum', action => 'ignore_ppv_topic_do')
-      ->name('ignore_ppv_forum_topic_do');
     $l->route('/topic/:topicid/unignore', topicid => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'unignore_topic_do')
       ->name('unignore_forum_topic_do');
@@ -64,9 +60,6 @@ sub install_routes {
     $l->route('/topic/:topicid/seen', topicid => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'mark_seen')
       ->name('topic_mark_seen');
-    $l->route('/topic/:topicid/printpreview/seen', topicid => $Ffc::Digqr)->via('get')
-      ->to(controller => 'forum', action => 'ppv_mark_seen')
-      ->name('topic_ppv_mark_seen');
 
     # Überschriften ändern
     $l->route('/topic/:topicid/edit', topicid => $Ffc::Digqr)->via('get')
@@ -84,17 +77,6 @@ sub install_routes {
     $l->route('/forum/:page', page => $Ffc::Digqr)->via('get')
       ->to(controller => 'forum', action => 'show_topiclist')
       ->name('show_forum_topiclist_page');
-
-    # Druckvorschau
-    $l->route('/forum/printpreview')->via('get')
-      ->to(controller => 'forum', action => 'printpreview')
-      ->name('printpreview');
-    $l->route('/forum/printpreview/:topicid', topicid => $Ffc::Digqr)->via('get')
-      ->to(controller => 'forum', action => 'printpreview')
-      ->name('printpreview_topic');
-    $l->route('/forum/set_ppv_period/:days', days => $Ffc::Digqr)->via('get')
-      ->to(controller => 'forum', action => 'set_period')
-      ->name('set_printpreview_period');
 
     # Diese Route ist der Startpunkt, um im Forum Beiträge in andere Themen zu verschieben
     # Diese Route liefert eine Liste von Themen, in die ein Beitrag verschoben werden kann

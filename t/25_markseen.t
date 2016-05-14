@@ -47,8 +47,6 @@ sub check_unseen {
         \s+<span\sclass="menuentry">
         \s+<span\sclass="othersmenulinktext">Optionen</span>
         \s+<div\sclass="otherspopup\spopup\stopiclistpopup">
-        \s+<p><a\shref="/forum/printpreview/$id\#goto_unread_$id"
-        \s+title="Thema\sin\sder\sDruckvorschau\sanzeigen">Leseansicht</a></p>
         \s+<p><a\shref="/topic/$id/seen"
         \s+title="Thema\sals\sgelesen\smarkieren">gelesen</a></p>
         \s+<p><a\shref="/topic/$id/newsmail"
@@ -68,8 +66,6 @@ sub check_seen {
         \s+<span\sclass="menuentry">
         \s+<span\sclass="othersmenulinktext">Optionen</span>
         \s+<div\sclass="otherspopup\spopup\stopiclistpopup">
-        \s+<p><a\shref="/forum/printpreview/$id\#goto_unread_$id"
-        \s+title="Thema\sin\sder\sDruckvorschau\sanzeigen">Leseansicht</a></p>
         \s+<p><a\shref="/topic/$id/newsmail"
     ~xms);
 }
