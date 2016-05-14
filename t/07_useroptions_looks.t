@@ -33,6 +33,7 @@ $t->get_ok('/')
   ->content_unlike(qr'background-color:');
 
 test_bgcolor();
+test_usercolor();
 test_email();
 test_autorefresh();
 test_hidelastseen();
@@ -311,5 +312,9 @@ sub test_hidelastseen {
     is $dbh->selectall_arrayref(
         "SELECT CASE WHEN lastonline IS NULL THEN 0 ELSE 1 END FROM users WHERE name=?"
         , undef, $user2)->[0]->[0], 0, "lastseen is not logged in database";
+}
+
+sub test_usercolor {
+
 }
 
