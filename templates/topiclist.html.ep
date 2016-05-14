@@ -14,7 +14,7 @@
 % if ( @$topics_for_list ) {
 <div class="postbox topiclist">
 % for my $t ( @$topics_for_list ) {
-    <h2<%== $t->[13] ? qq~ class="$t->[13]"~ : '' %>>
+    <h2<%== $t->[14] ? qq~ class="$t->[14]"~ : '' %>>
         <span class="smallfont">(
 % if ( $t->[3] and not $t->[5] ) {
             Neu: <span class="mark"><%= $t->[3] %></span>,

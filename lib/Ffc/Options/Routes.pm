@@ -17,6 +17,14 @@ sub install_routes {
       ->to('options#bg_color')
       ->name('bg_color_form');
 
+    my $u = $o->under('/usercolor')->name('usercolor_bridge');
+    $u->get('/none')
+      ->to('options#no_usercolor')
+      ->name('no_usercolor');
+    $u->post('/color')
+      ->to('options#usercolor')
+      ->name('usercolor_form');
+
     # Benutzeroptionen mit Fomularen
     $o->post("/$_")
       ->to("options#set_$_")
