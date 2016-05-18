@@ -153,4 +153,7 @@ div, textarea {
     margin-top: 0;
     margin-bottom: 0;
 }
+#textpreviewarea {
+    height: 8em;
+}
 
