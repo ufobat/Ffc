@@ -23,7 +23,7 @@
         <div class="userspopup popup otherspopup">
             <p class="separated"><a href="<%= url_for 'show_pmsgs_userlist' %>"><span class="linktext linkpmsgs">Benutzerliste</span></a>
 %   for my $u ( @$users ) {
-            <p class="smallnodisplay"<%== $u->[9] ? ' style="background:'.$u->[9].'"' : '' %>><a href="<%= url_for 'show_pmsgs', usertoid => $u->[0] %>"><%= $u->[1] %></a><% if ( $u->[2] or $u->[5] ) { %> <span class="dim">(<% if ( $u->[2] ) { %><span class="mark"><%= $u->[2] %></span><% } if ( $u->[2] and $u->[5] ) { %>, <% } if ( $u->[5] ) { %><%= format_timestamp($u->[5]) %><% } %>)</span><% } %></p>
+            <p class="smallnodisplay"><a href="<%= url_for 'show_pmsgs', usertoid => $u->[0] %>"<%== $u->[9] ? ' style="color:'.$u->[9].'"' : '' %>><%= $u->[1] %></a><% if ( $u->[2] or $u->[5] ) { %> <span class="dim">(<% if ( $u->[2] ) { %><span class="mark"><%= $u->[2] %></span><% } if ( $u->[2] and $u->[5] ) { %>, <% } if ( $u->[5] ) { %><%= format_timestamp($u->[5]) %><% } %>)</span><% } %></p>
 %   }
         </div>
     </div>
