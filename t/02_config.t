@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 36;
+use Test::More tests => 38;
 use Test::Mojo;
 
 use DBI;
@@ -24,6 +24,7 @@ test_config({
     backgroundcolor => '#cc9933',
     fixbackgroundcolor => 1,
     favicon => 'favicon3.ico',
+    hypnotoad => 'http://127.0.0.1:8083',
 });
 
 sub test_config {
@@ -58,7 +59,7 @@ sub test_config {
     is_deeply $config, $Config->_config(), 'config data ok';
     for my $c (qw( fixbackgroundcolor favicon
     cookiename postlimit title sessiontimeout
-    urlshorten backgroundcolor)) {
+    urlshorten backgroundcolor hypnotoad)) {
         $t->json_is("/$c", $config->{$c});
     }
     my $r = $dbh->selectall_arrayref(

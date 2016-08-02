@@ -17,6 +17,7 @@ our %Defaults = (
     maxscore        => 10,
     cookiename      => 'ffc_cookie',
     usercolor       => '',
+    hypnotoad       => 'http://localhost:8083/', 
 );
 
 sub register {
@@ -89,6 +90,10 @@ sub register {
     $app->helper( readlatercount     => \&_readlatercount );
     $app->helper( generate_topiclist => \&_generate_topiclist );
     $app->helper( generate_userlist  => \&_generate_userlist );
+
+    if ( exists $config->{hypnotoad} ) {
+        $app->config(hypnotoad => { listen => [$config->{hypnotoad}] });
+    }
 
     return $self;
 }
