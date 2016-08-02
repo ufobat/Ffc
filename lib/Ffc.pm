@@ -25,6 +25,13 @@ sub startup {
     $app->plugin('Ffc::Plugin::Uploads');
     $app->plugin('Ffc::Plugin::Posts');
     $app->helper(login_ok => sub { $_[0]->session->{user} ? 1 : 0 });
+    $app->hook('before_dispatch' => sub {
+        my $self = shift;
+        if ($self->req->headers->header('X-Forwarded-Host')) {
+            my $path = shift @{$self->req->url->path->parts};
+            push @{$self->req->url->base->path->parts}, $path;
+        }
+    });
     _install_routes($app);
 }
 
