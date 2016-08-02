@@ -55,7 +55,7 @@ sub register {
     $app->helper(dbh_selectall_arrayref => \&_dbh_selectall_arrayref );
     $app->helper(dbh_do                 => \&_dbh_do                 );
 
-    for ( qw(title backgroundcolor) ) {
+    for ( qw(title backgroundcolor hypnotoad) ) {
         $config->{$_} = $Defaults{$_}
             unless $config->{$_};
     }
@@ -90,10 +90,6 @@ sub register {
     $app->helper( readlatercount     => \&_readlatercount );
     $app->helper( generate_topiclist => \&_generate_topiclist );
     $app->helper( generate_userlist  => \&_generate_userlist );
-
-    if ( exists $config->{hypnotoad} ) {
-        $app->config(hypnotoad => { listen => [$config->{hypnotoad}] });
-    }
 
     return $self;
 }

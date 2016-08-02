@@ -6,7 +6,7 @@
     <%= stylesheet '/theme/colors.css' %>
     <%= stylesheet '/theme/small.css', media => 'all and (max-device-width: 800px)' %>
     <%= stylesheet '/theme/large.css', media => 'all and (min-device-width: 801px)' %>
-    <%= stylesheet 'theme/chat.css' %>
+    <%= stylesheet '/theme/chat.css' %>
 %= include 'layouts/parts/styleinc';
     <script type="text/javascript">
       ffcdata = { 
