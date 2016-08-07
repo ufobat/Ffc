@@ -21,39 +21,6 @@ sub set_autorefresh {
 
 my $ColorRe = qr(\A(?:|\#[0-9a-f]{6}|\w{2,128})\z)xmsio;
 
-sub no_usercolor {
-    my $c = shift;
-    $c->dbh_do( 'UPDATE users SET usercolor=NULL WHERE id=?', 
-        $c->session()->{userid} );
-    $c->set_info_f('Benutzerfarbe zurück gesetzt');
-    $c->redirect_to('options_form');
-}
-
-sub usercolor {
-    my $c = shift;
-    my $s = $c->session();
-    my $color = $c->param('usercolor') // '';
-    if ( $color !~ $ColorRe ) {
-        $c->set_error_f('Die Benutzerfarbe muss in hexadezimaler Schreibweise mit führender Raute oder als Webfarbenname angegeben werden');
-        $c->set_warning_f($color);
-    }
-    else {
-        my $s = $c->session();
-        $c->dbh_do(
-            'UPDATE users SET usercolor=? WHERE id=?',
-            $color, $s->{userid});
-        if ( $color ) {
-            $s->{usercolor} = $color;
-            $c->set_info_f('Benutzerfarbe angepasst');
-        }
-        else {
-            $s->{usercolor} = undef;
-            $c->set_info_f('Benutzerfarbe zurück gesetzt');
-        }
-    }
-    $c->redirect_to('options_form');
-}
-
 sub no_bg_color {
     my $c = shift;
     my $s = $c->session();

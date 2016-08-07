@@ -7,7 +7,7 @@ use Testinit;
 use Ffc::Plugin::Config;
 
 use Test::Mojo;
-use Test::More tests => 894;
+use Test::More tests => 802;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
@@ -33,7 +33,6 @@ $t->get_ok('/')
   ->content_unlike(qr'background-color:');
 
 test_bgcolor();
-test_usercolor();
 test_email();
 test_autorefresh();
 test_hidelastseen();
@@ -312,67 +311,5 @@ sub test_hidelastseen {
     is $dbh->selectall_arrayref(
         "SELECT CASE WHEN lastonline IS NULL THEN 0 ELSE 1 END FROM users WHERE name=?"
         , undef, $user2)->[0]->[0], 0, "lastseen is not logged in database";
-}
-
-sub test_usercolor {
-    my $topic1 = q~ASDFyxcv~;
-    my $str1 = q~asdfYXCV~;
-    my $col1 = q~#adadad~;
-    my $nocol = '#qwertz';
-
-    login($user1, $pass1);
-    $t->get_ok('/')->status_is(200)
-      ->content_like(qr~<p class="smallnodisplay"><a href="/pmsgs/3">$user2</a></p>~);
-    $t->post_ok("/topic/new", form => { textdata => $str1, titlestring => $topic1 })
-      ->status_is(302)->content_is('')
-      ->header_like(location => qr~/topic/1~);
-    $t->get_ok('/topic/1')->status_is(200)
-      ->content_like(qr~<span class="username">$user1</span>~);
-    $t->post_ok("/options/usercolor/color", form => { usercolor => $nocol } )
-      ->status_is(302)->content_is('')
-      ->header_like(location => qr~/options~);
-    $t->get_ok('/options/form')->status_is(200)
-      ->content_like(qr~<input type="color" name="usercolor" value="" />~);
-    error('Die Benutzerfarbe muss in hexadezimaler Schreibweise mit führender Raute oder als Webfarbenname angegeben werden');
-    $t->post_ok("/options/usercolor/color", form => { usercolor => $col1 } )
-      ->status_is(302)->content_is('')
-      ->header_like(location => qr~/options/form~);
-    $t->get_ok('/options/form')->status_is(200)
-      ->content_like(qr~<input type="color" name="usercolor" value="$col1" />~);
-    info(q~Benutzerfarbe angepasst~);
-
-    login($user2, $pass2);
-    $t->get_ok('/')->status_is(200)
-      ->content_like(qr~<p class="smallnodisplay"><a href="/pmsgs/2" style="color:$col1">$user1</a></p>~);
-    $t->get_ok('/topic/1')->status_is(200)
-      ->content_like(qr~<h2 class="title">\s+<img class="avatar" src="/avatar/2" alt="" style="border-color:$col1" />\s+<span class="username" style="color:$col1">$user1</span>~);
-
-    login($user1, $pass1);
-    $t->post_ok("/options/usercolor/color", form => { usercolor => '' } )
-      ->status_is(302)->content_is('')
-      ->header_like(location => qr~/options/form~);
-    $t->get_ok('/options/form')->status_is(200)
-      ->content_like(qr~<input type="color" name="usercolor" value="" />~);
-    info('Benutzerfarbe zurück gesetzt');
-    $t->get_ok('/topic/1')->status_is(200)
-      ->content_like(qr~<h2 class="title">\s+<img class="avatar" src="/avatar/2" alt="" />\s+<span class="username">$user1</span>~);
-
-    $t->post_ok("/options/usercolor/color", form => { usercolor => $col1 } )
-      ->status_is(302)->content_is('')
-      ->header_like(location => qr~/options/form~);
-    $t->get_ok('/options/form')->status_is(200)
-      ->content_like(qr~<input type="color" name="usercolor" value="$col1" />~);
-    info(q~Benutzerfarbe angepasst~);
-    $t->get_ok('/topic/1')->status_is(200)
-      ->content_like(qr~<h2 class="title">\s+<img class="avatar" src="/avatar/2" alt="" style="border-color:$col1" />\s+<span class="username" style="color:$col1">$user1</span>~);
-
-    $t->get_ok("/options/usercolor/none")
-      ->status_is(302)->content_is('')
-      ->header_like(location => qr~/options/form~);
-    $t->get_ok('/options/form')->status_is(200)
-      ->content_like(qr~<input type="color" name="usercolor" value="" />~);
-    info('Benutzerfarbe zurück gesetzt');
-    $t->get_ok('/topic/1')->status_is(200)
-      ->content_like(qr~<h2 class="title">\s+<img class="avatar" src="/avatar/2" alt="" />\s+<span class="username">$user1</span>~);
 }
 

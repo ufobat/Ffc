@@ -10,7 +10,6 @@ CREATE TABLE "users" (
   "avatartype" varchar(16) NOT NULL DEFAULT '',
   "admin" tinyint(1) NOT NULL DEFAULT '0',
   "bgcolor" varchar(24) NOT NULL DEFAULT '',
-  "usercolor" varchar(24),
   "autorefresh" integer NOT NULL DEFAULT 3,
   "hidelastseen" tinyint(1) NOT NULL DEFAULT 1,
   "inchat" tinyint(1) NOT NULL DEFAULT '0',
