@@ -71,7 +71,7 @@ sub _generate_topiclist {
             COALESCE(l."ignore",0), COALESCE(l."pin",0),
             UPPER(t."title") as "uctitle",
             u."name", datetime(p2."posted",'localtime'), 
-            COALESCE(l."newsmail",0), t."summary", l."mailed", u."usercolor"
+            COALESCE(l."newsmail",0), t."summary", l."mailed"
         FROM "topics" t
         LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=t."id"
         LEFT OUTER JOIN "posts" p ON p."userfrom"<>? AND p."topicid"=t."id" AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",0)
@@ -112,7 +112,7 @@ SELECT
     u."id", u."name", COUNT(p."id"), l."lastid",
     CASE WHEN u."hideemail"=1 THEN '' ELSE u."email" END,
     CASE WHEN u."hidelastseen"=1 THEN '' ELSE datetime(u."lastonline", 'localtime') END,
-    u."birthdate", u."infos", l."mailed", u."usercolor"
+    u."birthdate", u."infos", l."mailed"
 FROM "users" u
 LEFT OUTER JOIN "lastseenmsgs" l ON u."id"=l."userfromid" AND l."userid"=?
 LEFT OUTER JOIN "posts" p ON p."userfrom"=u."id" AND p."userto" IS NOT NULL AND p."userto"=? 

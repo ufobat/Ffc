@@ -19,13 +19,13 @@ sub check_login {
         my $r = $c->dbh_selectall_arrayref(
             'SELECT "admin", "bgcolor", "name", "autorefresh", 
                 "chronsortorder", COALESCE("topiclimit",20), COALESCE("postlimit",10),
-                "hidelastseen", "newsmail", "usercolor"
+                "hidelastseen", "newsmail"
             FROM "users" WHERE "active"=1 AND "id"=?',
             $s->{userid});
 
         if ( $r and @$r and $r->[0]->[2] eq $s->{user} ) {
-            @$s{qw(admin backgroundcolor autorefresh chronsortorder topiclimit postlimit hidelastseen newsmail usercolor)}
-                = @{$r->[0]}[0, 1, 3, 4, 5, 6, 7, 8, 9];
+            @$s{qw(admin backgroundcolor autorefresh chronsortorder topiclimit postlimit hidelastseen newsmail)}
+                = @{$r->[0]}[0, 1, 3, 4, 5, 6, 7, 8];
             $s->{backgroundcolor} = $c->configdata->{backgroundcolor}
                 unless $s->{backgroundcolor};
             $c->dbh_do('UPDATE "users" SET "lastonline"=CURRENT_TIMESTAMP WHERE "id"=? AND "hidelastseen"=0',
@@ -77,7 +77,6 @@ sub logout {
     delete $s->{user};
     delete $s->{userid};
     delete $s->{backgroundcolor};
-    delete $s->{usercolor};
     delete $s->{admin};
     delete $s->{autorefresh};
     delete $s->{chronsortorder};

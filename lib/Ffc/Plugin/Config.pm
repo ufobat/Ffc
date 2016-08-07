@@ -16,7 +16,6 @@ our %Defaults = (
     starttopic      => 0,
     maxscore        => 10,
     cookiename      => 'ffc_cookie',
-    usercolor       => '',
     hypnotoad       => 'http://localhost:8083/', 
 );
 
