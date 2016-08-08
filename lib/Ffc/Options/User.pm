@@ -127,7 +127,7 @@ sub set_infos {
     my $errors = 0;
     my @msginfo;
     my @errors;
-    if ( $birthdate =~ m~\A(\d\d?)\.(\d\d?)\.(\d\d\d\d)?\z~xmso ) {
+    if ( $birthdate =~ m~\A\s*(\d\d?)\s*\.\s*(\d\d?)\s*\.\s*((?:\d\d)?\d\d)?\s*\z~xmso ) {
         if ( $3 and not $3 > 0 ) { $errors++ }
         if ( $1 == 0 or $1 > 31        ) { $errors++ }
         if ( $2 == 0 or $2 > 12        ) { $errors++ }
