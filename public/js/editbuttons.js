@@ -161,9 +161,12 @@ ffcdata.editbuttons.init = function(){
      ************************************************************************/
     var show_formatbuttons = function(){
         var register_one_button = function(b){
-            document.getElementById(b[0]).onclick = function(){
-                tagthat(b[1],b[2],b[3],b[4],b[5]);
-            };
+            var butt = document.getElementById(b[0]);
+            if ( butt ) {
+                butt.onclick = function(){
+                    tagthat(b[1],b[2],b[3],b[4],b[5]);
+                };
+            }
         };
         for (var j=0; j<buttons.length; j++){
             register_one_button(buttons[j]);
