@@ -127,14 +127,23 @@ sub set_infos {
     my $errors = 0;
     my @msginfo;
     my @errors;
-    if ( $birthdate =~ m~\A\s*(\d\d?)\s*\.\s*(\d\d?)\s*\.\s*((?:\d\d)?\d\d)?\s*\z~xmso ) {
-        if ( $3 and not $3 > 0 ) { $errors++ }
-        if ( $1 == 0 or $1 > 31        ) { $errors++ }
-        if ( $2 == 0 or $2 > 12        ) { $errors++ }
+    if ( $birthdate =~ m~\A\s*(?:
+            (?<tag>\d\d?)\s*[-./]\s*(?<monat>\d\d?)\s*[-./]\s*(?<jahr>(?:\d\d)?\d\d)?
+          |
+            (?<jahr>(?:\d\d)?\d\d)\s*[-/]\s*(?<monat>\d\d?)\s*[-/]\s*(?<tag>\d\d?)
+        )\s*\z~xmso 
+    ) {
+        if ( $+{jahr}  and  not $+{jahr}  > 0  ) { $errors++ }
+        if ( $+{tag}   == 0 or  $+{tag}   > 31 ) { $errors++ }
+        if ( $+{monat} == 0 or  $+{monat} > 12 ) { $errors++ }
         unless ( $errors ) {
             push @msginfo, 'Geburtsdatum aktualisiert';
-            if ( $3 ) { $birthdate = sprintf '%02d.%02d.%04d', $1, $2, $3 }
-            else      { $birthdate = sprintf '%02d.%02d.',     $1, $2 }
+            if ( $+{jahr} ) { 
+                $birthdate = sprintf '%02d.%02d.%04d', $+{tag}, $+{monat}, $+{jahr} 
+            }
+            else { 
+                $birthdate = sprintf '%02d.%02d.', $+{tag}, $+{monat} 
+            }
         }
     }
     elsif ( $birthdate eq '' ) {
@@ -144,7 +153,7 @@ sub set_infos {
         $errors++;
     }
     if ( $errors > 0 ) {
-        push @errors, 'Geburtsdatum muss gültig sein und die Form "##.##.####" haben, wobei das Jahr weggelassen werden kann.';
+        push @errors, qq~Geburtsdatum muss gültig sein und die Form "##.##.####" haben, wobei das Jahr weggelassen werden kann.~;
         $c->flash(birthdate => $birthdate);
         $birthdate = undef;
         $errors++;
