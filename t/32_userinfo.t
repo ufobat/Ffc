@@ -78,7 +78,9 @@ sub check_data {
           ->content_unlike(qr~zuletzt online: $timeqr~);
     }
     if ( $birthdate ) {
-        $t->content_like(qr~<th>Geboren:</th><td>$birthdate</td>~);
+        my @date = ( $birthdate =~ m~(?:(\d\d\d\d|)\-?)(\d\d?)\-(\d\d)~xmso );
+        my $bd = $date[0] ? sprintf('%02d.%02d.%04d', @date[2,1,0]) : sprintf('%02d.%02d.', @date[2,1]);
+        $t->content_like(qr~<th>Geboren:</th><td>$bd</td>~);
     }
     else {
         $t->content_unlike(qr~<th>Geboren:</th>~);
@@ -136,8 +138,8 @@ sub test_data {
         if ( defined($p{BirthDate}) and not ( defined($p{BirthDateError}) and $p{BirthDateError} ) ) {
             note qq~Geburtsdatum wird im Test global umgesetzt auf "$bd"~;
             if ( $bd =~ m~\A(\d\d?)\.(\d\d?)\.(\d\d\d\d)?~xsmo ) {
-                if ( $3 ) { $birthdate = sprintf '%02d.%02d.%04d', $1, $2, $3 }
-                else      { $birthdate = sprintf '%02d.%02d.',     $1, $2     }
+                if ( $3 ) { $birthdate = sprintf '%04d-%02d-%02d', $3, $2, $1 }
+                else      { $birthdate = sprintf '%02d-%02d.',     $2, $1     }
             }
             else {
                 $birthdate = '';
@@ -189,7 +191,7 @@ sub test_email_visible {
 
 my @bdakt = (BirthDateOkMsg => 'Geburtsdatum aktualisiert');
 my @bdentf = (BirthDateOkMsg => 'Geburtsdatum entfernt');
-my @bderr = (BirthDateError => 'Geburtsdatum muss gültig sein und die Form &quot;##.##.####&quot; haben, wobei das Jahr weggelassen werden kann.');
+my @bderr = (BirthDateError => 'Geburtsdatum muss gültig sein und die Form &quot;##.##.####&quot; bzw. &quot;####-##-##&quot; haben, wobei das Jahr weggelassen werden kann.');
 my @infakt = (InfoOkMsg => 'Informationen aktualisiert');
 my @infentf = (InfoOkMsg => 'Informationen entfernt');
 my @inferr = (InfoError => 'Benutzerinformationen dürfen maximal 1024 Zeichen enthalten.');

@@ -15,6 +15,11 @@ use Ffc::Quickview;
 
 our $Digqr = qr/\d+/xmso;
 our $Usrqr = qr(\w{2,32})xmso;
+our $Dater = qr~\A\s*(?:
+    (?<tag>\d\d?)\s*[-./]\s*(?<monat>\d\d?)\s*[-./]\s*(?<jahr>(?:\d\d)?\d\d)?
+    |
+    (?<jahr>(?:\d\d)?\d\d)\s*[-/]\s*(?<monat>\d\d?)\s*[-/]\s*(?<tag>\d\d?)
+)\s*\z~xmso;
 our $Optky;
 
 # This method will run once at server start

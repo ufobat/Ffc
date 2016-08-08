@@ -121,7 +121,23 @@ WHERE u."active"=1 AND u."id"<>?
 GROUP BY 1,2,4,5,6,7,8,9
 ORDER BY 6 DESC, 4 DESC, UPPER(u."name") ASC
 EOSQL
-     $_[0]->stash( users => $_[0]->dbh_selectall_arrayref( $sql, ( $_[0]->session->{userid} ) x 3 ) );
+    my $data = $_[0]->dbh_selectall_arrayref( $sql, ( $_[0]->session->{userid} ) x 3 );
+    for my $dat ( @$data ) {
+        if ( $dat->[6] ) { # Birthdate-Fuckup
+            if ( $dat->[6] =~ m~$Ffc::Dater~ ) {
+                if ( $+{jahr} ) { 
+                    $dat->[6] = sprintf '%02d.%02d.%04d', $+{tag}, $+{monat}, $+{jahr} 
+                }
+                else { 
+                    $dat->[6] = sprintf '%02d.%02d.', $+{tag}, $+{monat} 
+                }
+            }
+            else {
+                $dat->[6] = '';
+            }
+        }
+    }
+    $_[0]->stash( users => $data );
 }
 
 sub _set_lastseen {
