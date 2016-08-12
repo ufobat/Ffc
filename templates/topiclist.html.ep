@@ -47,28 +47,28 @@
 % unless ( $t->[5] ) {
 %   if ( $t->[10] ) {
             <a href="<%= url_for 'unnewsmail_forum_topic_do', topicid => $t->[0] %>"
-                title="Keine Email mehr verschicken bei neuen Beiträgen zu Thema"><u>email</u></a>
+                title="Keine Email mehr verschicken bei neuen Beiträgen zu Thema">email</a>
 %   } else {
             <a href="<%= url_for 'newsmail_forum_topic_do', topicid => $t->[0] %>"
-                title="Per Email bei neuen Beiträgen im Thema informieren">email</a> 
+                title="Per Email bei neuen Beiträgen im Thema informieren"><u>email</u></a> 
 %   }
             /
 %   if ( $t->[6] ) {
             <a href="<%= url_for 'unpin_forum_topic_do', topicid => $t->[0] %>"
-                title="Thema normal in der Liste einsortieren"><u>anheften</u></a>
+                title="Thema normal in der Liste einsortieren">angeheftet</a>
 %   } else {
             <a href="<%= url_for 'pin_forum_topic_do', topicid => $t->[0] %>"
-                title="Thema immer oben in der Liste mit anzeigen">anheften</a>
+                title="Thema immer oben in der Liste mit anzeigen"><u>angeheftet</u></a>
 %   }
 % }
 % unless ( $t->[6] ) {
 %   if ( $t->[5] ) {
             <a href="<%= url_for 'unignore_forum_topic_do', topicid => $t->[0] %>"
-                title="Beiträge zum Thema anzeigen, Thema nicht mehr ignorieren"><u>ignorieren</u></a>
+                title="Beiträge zum Thema anzeigen, Thema nicht mehr ignorieren">ignoriert</a>
 %   } else {
             /
             <a href="<%= url_for 'ignore_forum_topic_do', topicid => $t->[0] %>"
-                title="Thema ignorieren und keine neuen Beiträge anzeigen">ignorieren</a>
+                title="Thema ignorieren und keine neuen Beiträge anzeigen"><u>ignoriert</u></a>
 %   }
 % }
             </span>
