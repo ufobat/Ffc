@@ -123,8 +123,11 @@ img.smiley, img.icon {
     font-size: 1em;
     clear: both;
 }
-.topiclist .smallfont {
-    float: right;
+.topiclist {
+    text-align: right;
+}
+.topiclist .menuentry {
+    float: left;
 }
 .popup {
     display: none;

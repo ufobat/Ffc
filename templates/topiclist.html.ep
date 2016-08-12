@@ -15,7 +15,15 @@
 <div class="postbox topiclist">
 % for my $t ( @$topics_for_list ) {
     <h2<%== $t->[14] ? qq~ class="$t->[14]"~ : '' %>>
-        <span class="smallfont">(
+        <span class="menuentry">
+            <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"><%= $t->[2] %></a>
+% if ( $t->[11] ) {
+            <div class="otherspopup popup topiclistpopup summarypopup">
+                <p><%== $t->[11] %> ...</p>
+            </div>
+% }
+        </span>
+        <span class="smallfont">
 % if ( $t->[3] and not $t->[5] ) {
             Neu: <span class="mark"><%= $t->[3] %></span>,
 % }
@@ -25,47 +33,40 @@
 % if ( $t->[9] ) {
             <%= $t->[9] %>,
 % }
-            <span class="menuentry">
-                <span class="othersmenulinktext">Optionen</span>
-                <div class="otherspopup popup topiclistpopup">
+            <br />
 % if ( $t->[3] ) {
-                    <p><a href="<%= url_for 'topic_mark_seen', topicid => $t->[0] %>"
-                        title="Thema als gelesen markieren">gelesen</a></p>
+            <a href="<%= url_for 'topic_mark_seen', topicid => $t->[0] %>"
+                title="Thema als gelesen markieren">gelesen</a>
+%   unless ( $t->[5] ) {
+            /
+%   }
 % }
 % unless ( $t->[5] ) {
 %   if ( $t->[10] ) {
-                    <p><a href="<%= url_for 'unnewsmail_forum_topic_do', topicid => $t->[0] %>"
-                        title="Keine Email mehr verschicken bei neuen Beiträgen zu Thema">keine Email-Info</a></p>
+            <a href="<%= url_for 'unnewsmail_forum_topic_do', topicid => $t->[0] %>"
+                title="Keine Email mehr verschicken bei neuen Beiträgen zu Thema">keine Email-Info</a>
 %   } else {
-                    <p><a href="<%= url_for 'newsmail_forum_topic_do', topicid => $t->[0] %>"
-                        title="Per Email bei neuen Beiträgen im Thema informieren">Email-Info</a></p>
+            <a href="<%= url_for 'newsmail_forum_topic_do', topicid => $t->[0] %>"
+                title="Per Email bei neuen Beiträgen im Thema informieren">Email-Info</a> 
 %   }
+            /
 %   if ( $t->[6] ) {
-                    <p><a href="<%= url_for 'unpin_forum_topic_do', topicid => $t->[0] %>"
-                        title="Thema normal in der Liste einsortieren">nicht mehr oben anheften</a></p>
+            <a href="<%= url_for 'unpin_forum_topic_do', topicid => $t->[0] %>"
+                title="Thema normal in der Liste einsortieren">nicht mehr oben anheften</a>
 %   } else {
-                    <p><a href="<%= url_for 'pin_forum_topic_do', topicid => $t->[0] %>"
-                        title="Thema immer oben in der Liste mit anzeigen">oben anheften</a></p>
+            <a href="<%= url_for 'pin_forum_topic_do', topicid => $t->[0] %>"
+                title="Thema immer oben in der Liste mit anzeigen">oben anheften</a>
 %   }
 % }
 % unless ( $t->[6] ) {
+            /
 %   if ( $t->[5] ) {
-                    <p><a href="<%= url_for 'unignore_forum_topic_do', topicid => $t->[0] %>"
-                        title="Beiträge zum Thema anzeigen, Thema nicht mehr ignorieren">beachten</a></p>
+            <a href="<%= url_for 'unignore_forum_topic_do', topicid => $t->[0] %>"
+                title="Beiträge zum Thema anzeigen, Thema nicht mehr ignorieren">beachten</a>
 %   } else {
-                    <p><a href="<%= url_for 'ignore_forum_topic_do', topicid => $t->[0] %>"
-                        title="Thema ignorieren und keine neuen Beiträge anzeigen">ignorieren</a></p>
+            <a href="<%= url_for 'ignore_forum_topic_do', topicid => $t->[0] %>"
+                title="Thema ignorieren und keine neuen Beiträge anzeigen">ignorieren</a>
 %   }
-% }
-                </div>
-            </span>
-        )</span>
-        <span class="menuentry">
-            <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"><%= $t->[2] %></a>
-% if ( $t->[11] ) {
-            <div class="otherspopup popup topiclistpopup summarypopup">
-                <p><%== $t->[11] %> ...</p>
-            </div>
 % }
         </span>
     </h2>
