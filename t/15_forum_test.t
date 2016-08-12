@@ -167,24 +167,21 @@ sub check_for_topic_count {
         $t->content_like(qr~$top->[0]\s*</a>\s*\.\.\.\s*\(<span\s+class="mark">$new</span>\)\s*</p>~xms)
           ->content_like(qr~href="/topic/$i">$top->[0]</a>~)
           ->content_like(qr~
-                <span\s+class="smallfont">\(\s*Neu:\s+<span\s+class="mark">$new</span>,
-                \s*\w+,\s*(?:[.\d:]+|jetzt),
-                \s+<span\sclass="menuentry">
-                \s+<span\sclass="othersmenulinktext">Optionen</span>
-                \s+<div\sclass="otherspopup\spopup\stopiclistpopup">
-                \s+<p><a\shref="/topic/$i/seen"\s+title="Thema\sals\sgelesen\smarkieren">gelesen</a></p>
-                \s+<p><a\s+href="/topic/$i/(?:un)?(?:ignore|pin|newsmail)"~xms);
+                <span\s+class="addinfos">\s*Neu:\s+<span\s+class="mark">\[$new\]</span>,
+                \s*\w+,\s*(?:[.\d:]+|jetzt)\s*<br\s+/>
+                \s+<span\sclass="smallfont">
+                \s+<a\shref="/topic/$i/seen"\s+title="Thema\sals\sgelesen\smarkieren">gelesen</a>
+                \s+/
+                \s+<a\s+href="/topic/$i/(?:un)?(?:ignore|pin|newsmail)"~xms);
     }
     else {
         $t->content_like(qr~$top->[0]\s*</a>\s*\.\.\.\s*</p>~xms)
           ->content_like(qr~href="/topic/$i">$top->[0]</a>~)
           ->content_like(qr~
-                <span\s+class="smallfont">\(
-                \s*\w+,\s*(?:[.\d:]+|jetzt),
-                \s+<span\sclass="menuentry">
-                \s+<span\sclass="othersmenulinktext">Optionen</span>
-                \s+<div\sclass="otherspopup\spopup\stopiclistpopup">
-                \s+<p><a\s+href="/topic/$i/(?:un)?(?:ignore|pin|newsmail)"~xms);
+                <span\s+class="addinfos">
+                \s*\w+,\s*(?:[.\d:]+|jetzt)\s*<br\s+/>
+                \s+<span\sclass="smallfont">
+                \s+<a\s+href="/topic/$i/(?:un)?(?:ignore|pin|newsmail)"~xms);
     }
     unless ( $t->success ) {
         diag Dumper $top, $i, $new, $entries, $delents;

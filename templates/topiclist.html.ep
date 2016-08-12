@@ -23,17 +23,18 @@
             </div>
 % }
         </span>
-        <span class="smallfont">
+        <span class="addinfos">
 % if ( $t->[3] and not $t->[5] ) {
-            Neu: <span class="mark"><%= $t->[3] %></span>,
+            Neu: <span class="mark">[<%= $t->[3] %>]</span>,
 % }
 % if ( @$users && $t->[8] ) {
             <%= $t->[8] %><%= $t->[9] ? ',' : '' %>
 % }
 % if ( $t->[9] ) {
-            <%= $t->[9] %>,
+            <%= $t->[9] %>
 % }
             <br />
+            <span class="smallfont">
 % if ( $t->[3] ) {
             <a href="<%= url_for 'topic_mark_seen', topicid => $t->[0] %>"
                 title="Thema als gelesen markieren">gelesen</a>
@@ -44,30 +45,31 @@
 % unless ( $t->[5] ) {
 %   if ( $t->[10] ) {
             <a href="<%= url_for 'unnewsmail_forum_topic_do', topicid => $t->[0] %>"
-                title="Keine Email mehr verschicken bei neuen Beiträgen zu Thema">keine Email-Info</a>
+                title="Keine Email mehr verschicken bei neuen Beiträgen zu Thema"><u>email</u></a>
 %   } else {
             <a href="<%= url_for 'newsmail_forum_topic_do', topicid => $t->[0] %>"
-                title="Per Email bei neuen Beiträgen im Thema informieren">Email-Info</a> 
+                title="Per Email bei neuen Beiträgen im Thema informieren">email</a> 
 %   }
             /
 %   if ( $t->[6] ) {
             <a href="<%= url_for 'unpin_forum_topic_do', topicid => $t->[0] %>"
-                title="Thema normal in der Liste einsortieren">nicht mehr oben anheften</a>
+                title="Thema normal in der Liste einsortieren"><u>anheften</u></a>
 %   } else {
             <a href="<%= url_for 'pin_forum_topic_do', topicid => $t->[0] %>"
-                title="Thema immer oben in der Liste mit anzeigen">oben anheften</a>
+                title="Thema immer oben in der Liste mit anzeigen">anheften</a>
 %   }
 % }
 % unless ( $t->[6] ) {
-            /
 %   if ( $t->[5] ) {
             <a href="<%= url_for 'unignore_forum_topic_do', topicid => $t->[0] %>"
-                title="Beiträge zum Thema anzeigen, Thema nicht mehr ignorieren">beachten</a>
+                title="Beiträge zum Thema anzeigen, Thema nicht mehr ignorieren"><u>ignorieren</u></a>
 %   } else {
+            /
             <a href="<%= url_for 'ignore_forum_topic_do', topicid => $t->[0] %>"
                 title="Thema ignorieren und keine neuen Beiträge anzeigen">ignorieren</a>
 %   }
 % }
+            </span>
         </span>
     </h2>
 % }

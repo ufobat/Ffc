@@ -29,7 +29,7 @@ sub check_topics {
         $sp = qq~<div class="otherspopup popup topiclistpopup summarypopup">\\s*<p>$sp ...</p>\\s*</div>\\s*</span>\\s*~;
         my $id = $i + 1;
         if ( $i >= $start and $i <= $end ) {
-            $t->content_like(qr~<a href="/topic/$id">$topics[$i]</a>\s*$sp</h2>~);
+            $t->content_like(qr~<h2(?:\s+class="newpost")?>\s*<span\s+class="menuentry">\s*<a href="/topic/$id">$topics[$i]</a>\s*$sp~);
         }
         else {
             $t->content_unlike(qr~<a href="/topic/$id">$topics[$i]</a>\s*$sp</h2>~);
@@ -42,7 +42,7 @@ sub check_topics {
         map( {; 
             my $id = $_ + 1; my $text = $topics[$_];
             qq~<p(?:\\s+class="[\\w\\s]+")?><a href="/topic/$id">$text</a>...~
-                . qq~(?: \\(<span class="mark">1</span>\\))?~
+                . qq~(?: \\(<span class="mark">\[1\]</span>\\))?~
                 . qq~</p>~ 
         } $#topics - $topiclimit + 1 .. $#topics ),
         '</div>';

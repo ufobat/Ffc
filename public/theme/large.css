@@ -181,7 +181,7 @@ input[type="text"].titlestring {
     display: block;
     margin-top: .75em;
 }
-.topiclist p.smallfont {
+.topiclist .smallfont {
     margin-left: 2em;
 }
 /* Editbuttons */
@@ -314,4 +314,12 @@ button:active {
     width: 32em;
     margin: 2em auto;
 }
-
+.topiclist h2 {
+    margin-bottom: 1em;
+}
+.topiclist {
+    padding-bottom: 0;
+}
+.topiclist > h2 {
+    border-bottom-width: .2em;
+}

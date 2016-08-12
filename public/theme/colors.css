@@ -23,7 +23,6 @@ h2 {
 }
 .topiclist h2:hover, .userlist div:hover {
     background: whitesmoke;
-    border-color: whitesmoke;
 }
 h3 {
     text-decoration: underline;
@@ -155,9 +154,6 @@ h2.newpost, .newpost h1, .newpost .title, input.activesearch {
 }
 h2.newpinpost {
     background: lightyellow;
-}
-.topiclist p.smallfont {
-    background: whitesmoke;
 }
 .mark {
     font-weight: bolder;
@@ -321,9 +317,6 @@ input[type="date"], input[type="color"], textarea {
 .menu {
     cursor: default;
 }
-h2.newsmail {
-    border-color: lightblue;
-}
 h2.pin {
     border-color: gold;
 }
@@ -331,5 +324,16 @@ h2.pin {
     border: none;
     border-bottom: .1em gainsboro solid;
     height: 0;
+}
+.topiclist .addinfos {
+    color: black;
+    font-weight: normal;
+    font-size: 1em;
+}
+.topiclist .smallfont {
+    font-size: .75em;
+}
+.topiclist .smallfont u {
+    text-decoration: line-through underline;
 }
 

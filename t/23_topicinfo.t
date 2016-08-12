@@ -36,7 +36,7 @@ ch_nfo('Ein neuer Beitrag wurde erstellt');
 
 login2();
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~<span class="smallfont">\(\s*Neu: <span class="mark">1</span>,\s*$user1,\n\s*$timeqr,\s*~)
+  ->content_like(qr~<span class="addinfos">\s*Neu: <span class="mark">\[1\]</span>,\n\s*$user1,\n\s*$timeqr\s*~)
   ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~);
 $t->get_ok('/topic/1')->status_is(200)->content_like(qr~$Articles[0][0]~);
 $t->post_ok('/topic/1/new', form => {textdata => $Articles[0][0]})
@@ -45,11 +45,11 @@ $t->get_ok('/topic/1')->status_is(200)->content_like(qr~$Articles[0][0]~);
 ch_nfo('Ein neuer Beitrag wurde erstellt');
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~)
-  ->content_like(qr~$user2,\n\s*$timeqr,~);
+  ->content_like(qr~$user2,\n\s*$timeqr~);
 
 login1();
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~<span class="smallfont">\(\s*Neu: <span class="mark">1</span>,\s*$user2,\n\s*$timeqr,\s*~)
+  ->content_like(qr~<span class="addinfos">\s*Neu: <span class="mark">\[1\]</span>,\n\s*$user2,\n\s*$timeqr\s*~)
   ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~);
 $t->get_ok('/topic/1')->status_is(200)->content_like(qr~$Articles[0][0]~);
 $t->post_ok('/topic/1/new', form => {textdata => $Articles[0][0]})
@@ -66,10 +66,10 @@ $t->get_ok('/topic/1')->status_is(200)->content_like(qr~$Articles[0][0]~);
 ch_nfo('Ein neuer Beitrag wurde erstellt');
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~)
-  ->content_like(qr~$user1,\n\s*$timeqr,~);
+  ->content_like(qr~$user1,\n\s*$timeqr~);
 
 login2();
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~<span class="smallfont">\(\s*Neu: <span class="mark">3</span>,\s*$user1,\n\s*$timeqr,\s*~)
+  ->content_like(qr~<span class="addinfos">\s*Neu: <span class="mark">\[3\]</span>,\n\s*$user1,\n\s*$timeqr\s*~)
   ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~);
 

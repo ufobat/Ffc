@@ -41,15 +41,13 @@ sub check_unseen {
     note("Thema Nr. $id sollte $acnt ungelesene Beitraege haben");
     $t->content_like(qr~$top~);
     $t->content_like(qr~
-        <span\sclass="smallfont">\(
-        \s+Neu:\s<span\sclass="mark">$acnt</span>,
-        \s+$user1,\s+$timeqr,
-        \s+<span\sclass="menuentry">
-        \s+<span\sclass="othersmenulinktext">Optionen</span>
-        \s+<div\sclass="otherspopup\spopup\stopiclistpopup">
-        \s+<p><a\shref="/topic/$id/seen"
-        \s+title="Thema\sals\sgelesen\smarkieren">gelesen</a></p>
-        \s+<p><a\shref="/topic/$id/newsmail"
+        <span\s+class="addinfos">
+        \s+Neu:\s+<span\s+class="mark">\[$acnt\]</span>,
+        \s+$user1,\s+$timeqr\s+<br\s+/>
+        \s+<span\s+class="smallfont">
+        \s+<a\s+href="/topic/$id/seen"
+        \s+title="Thema\s+als\s+gelesen\s+markieren">gelesen</a>
+        \s+/\s+<a\s+href="/topic/$id/newsmail"
     ~xms);
 }
 sub check_seen {
@@ -61,12 +59,10 @@ sub check_seen {
     note("Thema Nr. $id sollte als gelesene markiert sein");
     $t->content_like(qr~$top~);
     $t->content_like(qr~
-        <span\sclass="smallfont">\(
-        \s+$user1,\s+$timeqr,
-        \s+<span\sclass="menuentry">
-        \s+<span\sclass="othersmenulinktext">Optionen</span>
-        \s+<div\sclass="otherspopup\spopup\stopiclistpopup">
-        \s+<p><a\shref="/topic/$id/newsmail"
+        <span\s+class="addinfos">
+        \s+$user1,\s+$timeqr\s+<br\s+/>
+        \s+<span\s+class="smallfont">
+        \s+<a\s+href="/topic/$id/newsmail"
     ~xms);
 }
 
