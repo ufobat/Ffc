@@ -47,9 +47,7 @@ sub set_topiclimit {
         $c->redirect_to('show_forum_topiclist');
         return;
     }
-    $c->session->{topiclimit} = $topiclimit;
-    $c->dbh_do('UPDATE "users" SET "topiclimit"=? WHERE "id"=?',
-        $topiclimit, $c->session->{userid});
+    $c->session->{limits}->{$c->session->{userid}}->{topiclimit} = $c->session->{topiclimit} = $topiclimit;
     $c->set_info_f("Anzahl der auf einer Seite der Liste angezeigten Überschriften auf $topiclimit geändert.");
     $c->redirect_to('show_forum_topiclist');
 }

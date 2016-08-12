@@ -125,9 +125,7 @@ sub _set_post_postlimit {
         $c->set_error_f('Die Anzahl der auf einer Seite in der Liste angezeigten Beiträge muss eine ganze Zahl kleiner 128 sein.');
         return _redirect_to_show($c);
     }
-    $c->session->{postlimit} = $postlimit;
-    $c->dbh_do('UPDATE "users" SET "postlimit"=? WHERE "id"=?',
-        $postlimit, $c->session->{userid});
+    $c->session->{limits}->{$c->session->{userid}}->{postlimit} = $c->session->{postlimit} = $postlimit;
     $c->set_info_f("Anzahl der auf einer Seite der Liste angezeigten Beiträge auf $postlimit geändert.");
     return _redirect_to_show($c);
 }

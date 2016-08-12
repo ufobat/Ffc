@@ -4,8 +4,6 @@ CREATE TABLE "users" (
   "password" varchar(512) NOT NULL,
   "active" tinyint(1) NOT NULL DEFAULT '0',
   "chronsortorder" tinyint(1) NOT NULL DEFAULT '0',
-  "topiclimit" smallint NOT NULL DEFAULT 20,
-  "postlimit" smallint NOT NULL DEFAULT 10,
   "avatar" varchar(128) NOT NULL DEFAULT '',
   "avatartype" varchar(16) NOT NULL DEFAULT '',
   "admin" tinyint(1) NOT NULL DEFAULT '0',
