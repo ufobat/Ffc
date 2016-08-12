@@ -336,4 +336,6 @@ h2.pin {
 .topiclist .smallfont u {
     text-decoration: line-through underline;
 }
-
+.headbox h1 {
+    border-bottom: none;
+}

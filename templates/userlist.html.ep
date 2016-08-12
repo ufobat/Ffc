@@ -2,9 +2,8 @@
 <script type="text/javascript">
     ffcdata.completerefresh = true;
 </script>
-<div class="headbox" id="headbox">
-    <h1>Privatnachrichten mit Benutzern</h1>
-    <p>Klicke auf einen Benutzernamen, um Nachrichten mit diesem Benutzer auszutauschen.</p>
+<div class="headbox userlistbox" id="headbox">
+    <h1 class="userlisth1">Privatnachrichten mit Benutzern</h1>
 </div>
 % if ( @$users ) {
 <div class="postbox userlist">

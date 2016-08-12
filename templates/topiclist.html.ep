@@ -2,14 +2,16 @@
 <script type="text/javascript">
     ffcdata.completerefresh = true;
 </script>
-<div class="headbox" id="headbox">
-    <h1>Allgemeines Forum</h1>
-    <p>
-        <a href="<%= url_for 'add_forum_topic_form' %>" title="Neues Thema beginnen">Klicke hier</a>, um ein neues Thema zu beginnen.
+<div class="headbox topiclistbox" id="headbox">
+    <h1 class="topiclisth1">Allgemeines Forum
+        <span class="smallfont">(
+            <a href="<%= url_for 'add_forum_topic_form' %>" title="Neues Thema beginnen">neues Thema</a>
 % if ( @$users ) {
-    <a href="<%= url_for 'mark_forum_topic_all_seen' %>" title="Alle Themen mit neuen Beiträgen als gelesen markieren">Klicke hier</a>, um alle neuen Beiträge in allen Themen als &quot;gelesen&quot; zu markieren.
+            /
+            <a href="<%= url_for 'mark_forum_topic_all_seen' %>" title="Alle Themen mit neuen Beiträgen als gelesen markieren">alle als gelesen</a>
 % }
-    </p>
+        )</span>
+    </h1>
 </div>
 % if ( @$topics_for_list ) {
 <div class="postbox topiclist">

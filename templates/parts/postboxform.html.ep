@@ -14,7 +14,6 @@
 %   }
     </h1>
 % }
-<% if ( $description ) { %><p><%= $description %></p><% } %>
     <form action="<%== $dourl %>" accept-charset="UTF-8" method="POST" id="textinputform">
 %= include 'parts/postboxtextarea', headbuttons => 1;
     </form>

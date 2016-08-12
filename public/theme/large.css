@@ -323,3 +323,12 @@ button:active {
 .topiclist > h2 {
     border-bottom-width: .2em;
 }
+.userlisth1, .topiclisth1 {
+    margin-bottom: 0;
+}
+.topiclisth1 .smallfont {
+    font-size: .75em;
+}
+.topiclistbox p {
+    margin: 0;
+}
