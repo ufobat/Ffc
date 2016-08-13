@@ -75,7 +75,7 @@ sub login {
 
 sub _set_limits {
     my $s = shift()->session();
-    for my $o ( [ topiclimit => 20 ], [ postlimit => 10 ] ) {
+    for my $o ( [ topiclimit => 15 ], [ postlimit => 10 ] ) {
         if ( my $l = $s->{limits}->{$s->{userid}}->{$o->[0]} ) {
             $s->{$o->[0]} = $l;
         }

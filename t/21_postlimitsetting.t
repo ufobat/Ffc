@@ -136,7 +136,7 @@ sub check_ok_in_setting {
     my $postlimit = 5;
     set_postlimit_ok($postlimit, $location1);
     check_postlimit($posts1, $postlimit, $location1);
-    $postlimit = 7;
+    $postlimit = 10;
     set_postlimit_ok($postlimit, $location1);
     check_postlimit($posts1, $postlimit, $location1);
     login2(); # implizites Logout

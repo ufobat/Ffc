@@ -10,6 +10,7 @@ use Test::Mojo;
 use File::Spec::Functions qw(catdir splitdir);
 use File::Basename;
 use lib catdir(splitdir(File::Basename::dirname(__FILE__)), '..', 'lib');
+use Ffc;
 
 my $host   = 'localhost';
 my $sender = 'admin@'.hostname();
