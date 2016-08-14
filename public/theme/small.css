@@ -109,7 +109,7 @@ img {
 .menu {
     text-align: justify;
 }
-.summarypopup {
+.summarypopup, .topiclistbox {
     display: none;
 }
 .menuentry:hover, .topiclist .menuentry:hover, .functionlinks .menuentry:hover {
