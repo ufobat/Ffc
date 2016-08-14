@@ -112,4 +112,7 @@ img {
 .summarypopup {
     display: none;
 }
+.menuentry:hover, .topiclist .menuentry:hover, .functionlinks .menuentry:hover {
+    background: transparent;
+}
 
