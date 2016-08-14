@@ -1,7 +1,6 @@
 % layout 'board';
-<div class="postbox headbox" id="headbox">
+<div class="postbox headbox useroptionsbox" id="headbox">
     <h1>Einstellungen für das Forum</h1>
-    <p>Hier können Einstellungen für Forum und Konteninformationen vorgenommen werden.</p>
 </div>
 <div class="postbox options">
     <a name="bgcolor"></a>
