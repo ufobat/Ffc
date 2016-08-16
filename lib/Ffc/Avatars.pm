@@ -5,8 +5,6 @@ use File::Spec::Functions qw(catfile);
 use Mojo::Util 'quote';
 use Encode qw( encode decode_utf8 );
 
-our $DefaultAvatar = catfile 'theme', 'img', 'avatar.png';
-
 sub install_routes {
     my $p = $_[0]->under('/avatar')->name('avatars_bridge');
     $p->route('/:userid', userid => $Ffc::Digqr)
@@ -27,14 +25,14 @@ sub avatar_show {
         'SELECT avatar, avatartype FROM users WHERE id=?'
         , $u);
     if ( @$file and ($filename = $file->[0]->[0]) ) {
-        $filetype = $file->[0]->[1] || ( $filename =~ m/\.(png|jpe?g|bmp|gif)\z/xmiso ? lc($1) : '*' );
+        $filetype = $file->[0]->[1] || ( $filename =~ $Ffc::ImgFileqr ? lc($1) : '*' );
         $file = catfile @{$c->datapath}, 'avatars', $filename;
         $filename = quote encode 'UTF-8', $filename;
     }
     else {
         $file = '';
     }
-    return $c->reply->static($DefaultAvatar)
+    return $c->reply->static($Ffc::DefaultAvatar)
         unless $file and -e $file;
 
     $file = Mojo::Asset::File->new(path => $file);
