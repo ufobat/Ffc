@@ -1,4 +1,3 @@
-lib/Ffc/Auth.pm
 lib/Ffc/Avatars.pm
 lib/Ffc/Chat.pm
 lib/Ffc/Customstyle.pm

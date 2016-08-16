@@ -12,6 +12,7 @@ use Ffc::Notes;
 use Ffc::Chat;
 use Ffc::Quickview;
 
+###############################################################################
 # Vorcompilierte standartisierte Ziffernprüfung
 our $Digqr = qr/\d+/xmso;
 # Vorkompilierte standartisierte Username-Prüfung
@@ -25,6 +26,7 @@ our $Dater = qr~\A\s*(?:
 # Admin-Options-Ablage
 our $Optky;
 
+###############################################################################
 # This method will run once at server start
 sub startup {
     my $app = shift;
@@ -59,6 +61,7 @@ sub startup {
     _install_routes($l);
 }
 
+###############################################################################
 # Routen für alle Anwendungsbereiche
 sub _install_routes {
     my $l = $_[0]; # Login-bridged
@@ -72,6 +75,7 @@ sub _install_routes {
     Ffc::Quickview::install_routes($l);
 }
 
+###############################################################################
 # Zusätzliche Routen
 sub _install_util_routes {
     my $l = $_[0]; # Login-bridged
