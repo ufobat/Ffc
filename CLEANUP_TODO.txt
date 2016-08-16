@@ -28,7 +28,6 @@ lib/Ffc/Plugin/Posts/Uploads.pm
 lib/Ffc/Plugin/Posts/Utils.pm
 lib/Ffc/Plugin/Posts/View.pm
 lib/Ffc/Plugin/Uploads.pm
-lib/Ffc.pm
 lib/Ffc/Pmsgs.pm
 lib/Ffc/Pmsgs/Userlist.pm
 lib/Ffc/Quickview.pm

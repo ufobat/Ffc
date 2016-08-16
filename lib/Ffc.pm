@@ -1,7 +1,6 @@
 package Ffc;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious';
-use File::Spec::Functions qw(catdir);
 
 use Ffc::Customstyle;
 use Ffc::Options;
@@ -13,23 +12,30 @@ use Ffc::Notes;
 use Ffc::Chat;
 use Ffc::Quickview;
 
+# Vorcompilierte standartisierte Ziffernprüfung
 our $Digqr = qr/\d+/xmso;
+# Vorkompilierte standartisierte Username-Prüfung
 our $Usrqr = qr(\w{2,32})xmso;
+# Vorkompilierte standartisierte Datums-Wert-Prüfung
 our $Dater = qr~\A\s*(?:
     (?<tag>\d\d?)\s*[-./]\s*(?<monat>\d\d?)\s*[-./]\s*(?<jahr>(?:\d\d)?\d\d)?
     |
     (?<jahr>(?:\d\d)?\d\d)\s*[-/]\s*(?<monat>\d\d?)\s*[-/]\s*(?<tag>\d\d?)
 )\s*\z~xmso;
+# Admin-Options-Ablage
 our $Optky;
 
 # This method will run once at server start
 sub startup {
     my $app = shift;
+
+    # Plugins
     $app->plugin('Ffc::Plugin::Config');
     $app->plugin('Ffc::Plugin::Formats');
     $app->plugin('Ffc::Plugin::Uploads');
     $app->plugin('Ffc::Plugin::Posts');
-    $app->helper(login_ok => sub { $_[0]->session->{user} ? 1 : 0 });
+    
+    # Reverse-Proxy-Hook
     $app->hook('before_dispatch' => sub {
         my $self = shift;
         if ($self->req->headers->header('X-Forwarded-Host')) {
@@ -37,11 +43,25 @@ sub startup {
             push @{$self->req->url->base->path->parts}, $path;
         }
     });
-    _install_routes($app);
+    
+
+    # Authentification-Routes und Bridge abholen
+    my $l = Ffc::Auth::install_routes($app);
+
+    # Startseite
+    $l->any('/')->to(controller => 'forum', action => 'show_startuppage')
+      ->name('show');
+
+    # Routen für zusätzliche Hilfskonstrukte
+    _install_util_routes($l);
+
+    # Anwendungsrouten
+    _install_routes($l);
 }
 
+# Routen für alle Anwendungsbereiche
 sub _install_routes {
-    my $l = Ffc::Auth::install_routes($_[0]->routes);
+    my $l = $_[0]; # Login-bridged
     Ffc::Customstyle::install_routes($l);
     Ffc::Avatars::install_routes($l);
     Ffc::Options::install_routes($l);
@@ -50,14 +70,11 @@ sub _install_routes {
     Ffc::Notes::install_routes($l);
     Ffc::Chat::install_routes($l);
     Ffc::Quickview::install_routes($l);
-    _install_routes_helper($l);
 }
 
-sub _install_routes_helper {
-    my $l = $_[0];
-    # Standardseitenauslieferungen
-    $l->any('/')->to(controller => 'forum', action => 'show_startuppage')
-      ->name('show');
+# Zusätzliche Routen
+sub _install_util_routes {
+    my $l = $_[0]; # Login-bridged
     $l->any('/help' => sub { $_[0]->stash( controller => 'help' )->render(template => 'help') } )
       ->name('help');
     $l->get('/session' => sub { $_[0]->render( json => $_[0]->session() ) } )

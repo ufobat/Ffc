@@ -3,10 +3,13 @@ use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 
 sub install_routes {
-    my $r = $_[0];
+    my $r = $_[0]->routes;
+
     # Anmeldehandling und Anmeldeprüfung
     $r->post('/login')->to('auth#login')->name('login');
     $r->get('/logout')->to('auth#logout')->name('logout');
+
+    # Bridge-Auslieferung
     return $r->under('/')
              ->to('auth#check_login')
              ->name('login_check');
@@ -14,7 +17,7 @@ sub install_routes {
 
 sub check_login {
     my $c = shift;
-    if ( $c->login_ok ) {
+    if ( $c->session->{user} ) {
         my $s = $c->session();
         my $r = $c->dbh_selectall_arrayref(
             'SELECT "admin", "bgcolor", "name", "autorefresh", 
