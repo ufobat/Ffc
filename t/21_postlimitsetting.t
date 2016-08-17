@@ -7,6 +7,7 @@ use Testinit;
 use Ffc::Plugin::Config;
 use File::Temp qw~tempfile tempdir~;
 use File::Spec::Functions qw(catfile catdir splitdir);
+use Mojo::Util 'xml_escape';
 
 use Test::Mojo;
 use Test::More tests => 2148;
@@ -62,7 +63,7 @@ sub setup_user {
 sub check_post {
     my ( $posts, $i, $start, $end, $location ) = @_;
     return if $i < 0 or $i > $#$posts;
-    my ( $post, $id ) = @{ $posts->[$i] };
+    my ( $post, $id ) = ( xml_escape($posts->[$i]->[0]), $posts->[$i]->[1] );
     if ( $i >= $start and $i <= $end ) {
         $t->content_like(qr~"$location/display/$id"~)
           ->content_like(qr~$post~);

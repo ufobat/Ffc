@@ -14,7 +14,6 @@ lib/Ffc/Options/Routes.pm
 lib/Ffc/Options/User.pm
 lib/Ffc/Plugin/Config/Lists.pm
 lib/Ffc/Plugin/Config.pm
-lib/Ffc/Plugin/Formats.pm
 lib/Ffc/Plugin/Posts/Create.pm
 lib/Ffc/Plugin/Posts/Delete.pm
 lib/Ffc/Plugin/Posts.pm

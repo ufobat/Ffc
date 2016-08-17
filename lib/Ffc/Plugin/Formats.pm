@@ -2,8 +2,11 @@ package Ffc::Plugin::Formats;
 use 5.010;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Plugin';
+use Mojo::Util 'xml_escape';
 
-our @Smilies = (
+###############################################################################
+# Smiley-Definitionen
+my @Smilies = (
     [ look       => ['O.O', '0.0',  'O_O',  '0_0',                ] ],
     [ what       => ['o.O', 'O.o',  'O.ò',  'ó.O',                ] ],
     [ smile      => [':)',  ':-)',  '=)',                         ] ],
@@ -34,20 +37,13 @@ our @Smilies = (
     [ joke       => ['!joke',                                     ] ],
     [ headbange  => ['\m/',                                       ] ],
 );
-our %Smiley     = map {my ($n,$l)=($_->[0],$_->[1]); map {
-    #s~<~&lt;~gxmos; s~>~&gt;~gxmso; 
-    $_=>$n
-} @$l} @Smilies;
-our $SmileyRe   = join '|', map {
-    s{([\;\&\^\>\<\-\.\:\\\/\(\)\=\|\,\$])}{\\$1}gxoms;
-    $_
-} keys %Smiley;
-our $HTMLBlockRe    = qr~pre|blockquote~io;
-our $HTMLSinglRe    = qr~h3~io;
-our $HTMLListRe     = qr~li|ol|ul~io;
-our $HTMLStyleRe    = qr~code|b|u|i|strike|q|em~io;
-our $HTMLEmptyTagRe = qr~hr~io;
-our %HTMLHandle = (
+# Definitionen der HTML-Tag-Elemente für die Formatierungen
+my $HTMLBlockRe    = qr~pre|blockquote~io;
+my $HTMLSinglRe    = qr~h3~io;
+my $HTMLListRe     = qr~li|ol|ul~io;
+my $HTMLStyleRe    = qr~code|b|u|i|strike|q|em~io;
+my $HTMLEmptyTagRe = qr~hr~io;
+my %HTMLHandle = (
 #   tag        => [ disable-p, disable-html, set_n, disable-outer-p, disable-inner-blocks ],
     ul         => [ 1, 0, 1, 1, 0 ],
     ol         => [ 1, 0, 1, 1, 0 ],
@@ -59,226 +55,254 @@ our %HTMLHandle = (
     map({;$_   => [0,0,0,0,1]} qw(b u i strike q em)),
 );
 
-our $SmileyHandleRe = qr~(?<smileymatch>$SmileyRe)~o;
-our $URLHandleRe = qr~(?<urlmatch>(?<url>https?://.+?))(?=,?(?:[\s<\)]|\z))~;
-our $HTMLBlockHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<btag>$HTMLBlockRe))>(?<inner>.+?)</\g{btag}>))~ms;
-our $HTMLListHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<ltag>$HTMLListRe))>(?<inner>.+?)</\g{ltag}>))~ms;
-our $HTMLSinglHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<btag>$HTMLSinglRe))>(?<inner>.+?)</\g{btag}>))~ms;
-our $HTMLStyleHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<stag>$HTMLStyleRe))>(?<inner>.+?)</\g{stag}>))~;
-our $HTMLEmptyHandleRe = qr~(?:(?:\A|\n)\s*(?<htmlmatch><(?<tag>(?<etag>$HTMLEmptyTagRe))\s+/>)\s*(?:\n|\z))~m;
-our $HTMLHandleRe = qr~(?:$HTMLBlockHandleRe|$HTMLListHandleRe|$HTMLSinglHandleRe|$HTMLEmptyHandleRe|$HTMLStyleHandleRe)~;
-our $BigMatch = qr~(?<completematch>$HTMLHandleRe|$URLHandleRe|$SmileyHandleRe)~;
-our $BigMatchWOBlock = qr~(?<completematch>(?:$HTMLStyleHandleRe)|$URLHandleRe|$SmileyHandleRe)~;
-our $NoInStyleRe = qr~(?:$HTMLBlockHandleRe|$HTMLListHandleRe|$HTMLSinglHandleRe|$HTMLEmptyHandleRe)~;
-
+###############################################################################
+# App-Helper registrieren
 sub register {
     my ( $self, $app ) = @_;
+    # Das Formatieren von Beiträgen und in reduzierter Form auch Chatnachrichten
     $app->helper( pre_format       => \&_pre_format_text  );
-    $app->helper( format_timestamp => \&_format_timestamp );
-    $app->helper( format_short     => \&_format_short     );
+    # Zeitstempel auf Maß bringen (inkl. "jetzt" und so)
+    $app->helper( format_timestamp => \&_format_timestamp ); 
+    # Formatierung für Zusammenfassung der neuesten Beiträge für die Themenliste
+    $app->helper( format_short     => \&_format_short     ); 
 }
 
+###############################################################################
+# Vorbereitung der Definitionen für die Weiterverarbeitung
+
+# Umwandlung in eine Hashmap zur besseren Verarbeitung
+my %Smiley     = map { my ( $n, $l )= @$_; map { $_=>$n } @$l} @Smilies;
+# Escapen der RegEx-Sonderzeichen in den Smiley-Definitionen aus der weiterverwendeten Hash-Map
+my $SmileyRe   = join '|', map { s{([\;\&\^\>\<\-\.\:\\\/\(\)\=\|\,\$])}{\\$1}gxoms; $_ } keys %Smiley;
+# Smiley-Math-Capture
+my $SmileyHandleRe = qr~(?<smileymatch>$SmileyRe)~o;
+# Diverse HTML-Tag-Handle-Captures
+my $URLHandleRe = qr~(?<urlmatch>(?<url>https?://.+?))(?=,?(?:[\s<\)]|\z))~o;
+my $HTMLBlockHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<btag>$HTMLBlockRe))>(?<inner>.+?)</\g{btag}>))~ms;
+my $HTMLListHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<ltag>$HTMLListRe))>(?<inner>.+?)</\g{ltag}>))~ms;
+my $HTMLSinglHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<btag>$HTMLSinglRe))>(?<inner>.+?)</\g{btag}>))~ms;
+my $HTMLStyleHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<stag>$HTMLStyleRe))>(?<inner>.+?)</\g{stag}>))~;
+my $HTMLEmptyHandleRe = qr~(?:(?:\A|\n)\s*(?<htmlmatch><(?<tag>(?<etag>$HTMLEmptyTagRe))\s+/>)\s*(?:\n|\z))~mo;
+# Sammlung der Captures zur globalen Regex
+my $HTMLHandleRe = qr~(?:$HTMLBlockHandleRe|$HTMLListHandleRe|$HTMLSinglHandleRe|$HTMLEmptyHandleRe|$HTMLStyleHandleRe)~;
+my $BigMatch = qr~(?<completematch>$HTMLHandleRe|$URLHandleRe|$SmileyHandleRe)~;
+my $NoInStyleRe = qr~(?:$HTMLBlockHandleRe|$HTMLListHandleRe|$HTMLSinglHandleRe|$HTMLEmptyHandleRe)~;
+
+###############################################################################
+# Zeitstempel zurecht formatieren
 sub _format_timestamp {
-    my $t = $_[1] || return '';
+    my $t = $_[1] // return '';
     my $oj = $_[2] ? 0 : 1;
+    # Übliches Format (z.B. aus der Datenbank) auswerten
     if ( $t =~ m/(\d\d\d\d)-(\d\d)-(\d\d)\s+(\d\d):(\d\d)/xmso ) {
+        # In die gewünschte Form bringen
         $t = sprintf '%02d.%02d.%04d, %02d:%02d', $3, $2, $1, $4, $5;
+        # Sonderfälle behandeln
         return 'neu' if $t eq '00.00.0000, 00:00';
-        my @time = localtime; $time[5] += 1900; $time[4]++;
-#        $time[3]-- if $time[2] < 2;$time[2] -= 2; # FIXME Zeitzonenzeuch
-        my $time = sprintf '%02d.%02d.%04d', @time[3,4,5];
-        return 'jetzt' if $oj and $t eq sprintf "$time, \%02d:\%02d", @time[2,1];
-        return substr $t, 12, 5 if $t =~ m/\A$time/xmos;
+        my @time = localtime; $time[5] += 1900; $time[4]++; # Aktuellen Zeitpunkt raus holen
+        my $time = sprintf '%02d.%02d.%04d', @time[3,4,5];  # Aktuellen Zeitpunkt auf Linie formatieren
+        return 'jetzt' if $oj and $t eq sprintf "$time, \%02d:\%02d", @time[2,1]; # Jetzt ...
+        return substr $t, 12, 5 if $t =~ m/\A$time/xmos;                          # ... oder heute
     }
+    # Im Zweifelsfall einfach den String ohne Veränderung zurück liefern
     return $t;
 }
 
+###############################################################################
+# Teil-Formatierung für iterativen Durchlauf des HTML-angelehnten Markup-Baumes
 sub _pre_format_text_part {
-#   controller, string, disable-p, disable-html, insert in newlines, disable outer p, no smileys, no blocks
-    my ( $c, $ostr, $lvl, $dis_p, $dis_html, $set_n, $dis_outer_p, $nosmil, $dis_block ) = @_;
-    my $str = $ostr;
-    if ( $str =~ m/\A\s*\z/xmso ) {
-        return '';
-    }
-    $lvl ||= 0;
-    $lvl++;
+#   controller, string, stacklevel, disable-p, disable-html, insert in newlines, no smileys, no blocks
+    my ( $c, $ostr, $lvl, $dis_p, $dis_html, $set_n, $nosmil, $dis_block ) = @_;
+    my $str = $ostr; # Ich arbeite hier auf einer Kopie
+
+    # Leerstrings fallen von vorn herein raus, Zeilenumbrüche werden normalisiert
+    $str =~ m/\A\s*\z/xmso and return '';
     $str =~ s~(?:\r?\n\r?)+~\n~gxmsio;
+    # Ist HTML-Formatierung abgeschalten, wird der String lediglich XML-Escaped zurück gegeben, mehr passiert da nicht
+    $dis_html and return xml_escape($str);
+    
+    # Schachtelungs-Level mitzählen
+    $lvl ||= 0; $lvl++;
+
+    # Ausgabe-String-Container vorbereiten 
     my $o = '';
+    # Die Formatierung in diesem Teil der Abarbeitung beginnt an erster Stelle des übergebenen Strings, logisch
     my $start = 0;
-    if ( $dis_html ) {
-        my $nstr = _xml_escape($str);
-        return $nstr;
-    }
-    else {
-        my $str = $str;
-        my $re = $dis_block ? $BigMatchWOBlock : $BigMatch;
-        while ( $str =~ m~$BigMatch~xmgs ) {
-            my ( $end, $newstart ) = ( $-[0], $+[0] );
+
+    # Und wieder nur auf einer Kopie
+    my $lstr = $str;
+    while ( $lstr =~ m~$BigMatch~xmgs ) {
+        my ( $end, $newstart ) = ( $-[0], $+[0] );
 #warn "\nSTART=$start, END=$end, NEWSTART=$newstart\n";
-            my %m = ( %+ );
+        my %m = ( %+ );
 
 #warn 'OBACHT: "' . ($str//'') . "\"\n";
 #warn '     LEVEL: ' . $lvl . "\n";
 
-            if ( $start < $end )  {
+        # Sonderfall, wenn der Start des Teilstrings über das Ende hinaus geht ... keine Ahnung, warum ich das brauche
+        $start < $end and
 #warn "    PLAIN\n";
 #warn '    SUBSTR: "' .substr($str, $start, $end - $start). "\"\n";
-                $o .= _format_plain_text( substr($str, $start, $end - $start), $dis_p, $dis_outer_p );
-            }
+            $o .= _format_plain_text( substr($lstr, $start, $end - $start), $dis_p );
 
-            if ( $m{htmlmatch} ) {
+        # Wenn die gesuchten "HTML-Tags" matchen, werden diese hier umgesetzt
+        if ( $m{htmlmatch} ) {
 #warn "     HTML!\n";
-                my $dis_block ||= defined($m{tag}) && exists($HTMLHandle{$m{tag}}) && $HTMLHandle{$m{tag}}[4];
+            my $dis_block ||= defined($m{tag}) && exists($HTMLHandle{$m{tag}}) && $HTMLHandle{$m{tag}}[4];
 #warn '    BLOCKS: ' . ($dis_block ? 'no blocks' : 'blocks allowed') . "\n";
 #warn '       TAG: "' . ($m{tag}//'') . "\"\n";
 #warn '     INNER: "' . ($m{inner}//'') . "\"\n";
-                $o .= _make_tag( $c, $m{tag}, $m{inner} // '', $lvl, $dis_p, $dis_html, $set_n, $dis_outer_p, $dis_block );
-            }
-            elsif ( $m{urlmatch} ) {
+            $o .= _make_tag( $c, $m{tag}, $m{inner} // '', $lvl, $dis_p, $dis_html, $set_n, $dis_block );
+        }
+        # Ansonsten kann es sich um einen URL-Link handeln, der wieder speziell behandelt wird
+        elsif ( $m{urlmatch} ) {
 #warn "      URL!\n;";
 #warn '     LINK: "' .($m{url}//''). "\"\n";
-                $o .= _make_link( $c, $m{url} );
-            }
-            elsif ( $m{smileymatch} ) {
+            $o .= _make_link( $c, $m{url} );
+        }
+        # Oder wir haben es mit einem Smiley zu tun, welches ebenfalls gesondert formatiert wird
+        elsif ( $m{smileymatch} ) {
 #warn "   SMILEY!\n;";
 #warn '     FACE: "' .($m{smileymatch}//''). "\"\n";
 #warn '   NOSMIL: ' .($nosmil ? 'true' : 'false'). "\n";
-                $o .= _make_smiley( $c, $m{smileymatch}, $nosmil );
-            }
-#warn "\n";
-            $start = $newstart;
+            $o .= _make_smiley( $c, $m{smileymatch}, $nosmil );
         }
+#warn "\n";
+        # Die Verarbeitung geht nach dem Match-Ende weiter
+        $start = $newstart;
     }
-    if ( $start < length( $str ) ) 
-        { $o .= _format_plain_text(substr($str, $start, length($str) - $start), $dis_p ) }
+
+    # Solange wir uns noch im String befinden, wird der String plain formatiert angefügt
+    $start < length( $str ) and
+        $o .= _format_plain_text(substr($str, $start, length($str) - $start), $dis_p );
 
     return $o;
 }
 
+###############################################################################
+# Plain-Text-Formatierung, bei dem lediglich der Text XML-Escaped und zeilenweise,
+# falls nicht explizit abgeschalten, in p-Tags eingeschlossen wird
 sub _format_plain_text {
-    my $str = shift;
-    my $dis_p = shift;
-    my $dis_outer_p = shift;
-    my $nstr = _xml_escape( $str );
-    unless ( $dis_p )
-        { $nstr =~ s~\n+~</p>\n<p>~gsmxo }
-    if ( $dis_outer_p ) {
-        $nstr =~ s~\A\s*<p>~~gsmxo;
-        $nstr =~ s~</p>\s*\z~~gsmxo;
-    }
+    my ( $str, $dis_p ) = @_;
+    my $nstr = xml_escape( $str );
+    # Sind p-Tags nicht unerwünscht (!), kommen die bei Zeilenumbrüchen mit rein
+    $dis_p or $nstr =~ s~\n+~</p>\n<p>~gsmxo;
+    # Sollen um den String ebenfalls
     return $nstr;
 }
 
+###############################################################################
+# Hier wird der Text tatsächlich einer schier meisterhaften Formatierung unterzogen
 sub _pre_format_text {
-    my $c = shift;
-    my $str = shift;
-    my $nosmil = shift;
-    my $o = _pre_format_text_part($c, $str, (undef) x 5, $nosmil );
+    my ( $c, $str, $nosmil ) = @_;
+
+    # Hier wird durch die Formatierung durch iteriert
+    my $o = _pre_format_text_part($c, $str, (undef) x 4, $nosmil );
+    # Leere Rückgabestrings fallen generell raus
     return '' if $o =~ m/\A\s*\z/xmso;
+    
+    # HTML-Absatz-Formatierungen hinzufügen
     $o = "<p>$o</p>";
-    $o =~ s~<p>\s*</p>~~gsimxo;
-    return '' if $o =~ m/\A\s*\z/xmso;
+    
+    # HTML-Absatz-Formatierungen entfernen, wo sie nicht hin gehören
     $o =~ s~</(blockquote|pre|h3|ul|ol)>\s*</p>~</$1>~gismx;
     $o =~ s~<blockquote>\s*</p>~<blockquote>~gsmiox;
     $o =~ s~<p>\s*<(blockquote|pre|h3|ul|ol)>~<$1>~gsimx;
     $o =~ s~<p>\s*</blockquote>~</blockquote>~gsiomx;
     $o =~ s~(?<!\A)<hr\s+/>(?!\z)~</p>\n<hr />\n<p>~gsiomx;
     $o =~ s~<($HTMLStyleRe)>\s*</p>\s*<hr\s+/>\s*<p>\s*</\1>~<$1>&lt;hr /&gt;</$1>~gsmio;
+
     $o =~ s~<p>\s*(&lt;\w+&gt;\s*&lt;/\w+&gt;\s*)*</p>~~gsmo;
-    #$o =~ s~<p>\s*</p>~~gsimxo;
+    # Leerzeichen und Zeilenumbrüche zurecht stutzen und überflüssiges entfernen
     $o =~ s~\n\n+~\n~gsmxo;
     $o =~ s~\A\s+~~smxo;
     $o =~ s~\s+\z~~smxo;
-    chomp $o;
+
     return $o;
 }
 
+###############################################################################
+# HTML-ähnliche Tags aus der Formatierung passend ersetzen
 sub _make_tag {
-    my ( $c, $tag, $inner, $lvl, $dis_p, $dis_html, $set_n, $dis_outer_p, $dis_block ) = @_;
+    my ( $c, $tag, $inner, $lvl, $dis_p, $dis_html, $set_n, $dis_block ) = @_;
 
+    # Sonderfall Leertags (wie z.B. <hr />)
+    not $inner and $tag =~ $HTMLEmptyTagRe and return "<$tag />";
+    # Sonderfall "Nüscht"
+    $inner or return '';
+        
+    # Übergabewerte durch Defaults ersetzen, falls diese nicht vorhanden sind
     if ( exists $HTMLHandle{$tag} ) {
         $dis_p       ||= $HTMLHandle{$tag}[0];
         $dis_html    ||= $HTMLHandle{$tag}[1];
         $set_n       ||= $HTMLHandle{$tag}[2];
-        $dis_outer_p ||= $HTMLHandle{$tag}[3];
         $dis_block   ||= $HTMLHandle{$tag}[4];
     }
-    if ( $inner ) {
-        if ( $dis_block ) {
-            $inner =~ s~<(?<startofthetag>$NoInStyleRe)(?<insidethetag>(?:\s+/)?)>~\&lt;$+{startofthetag}$+{insidethetag}&gt;~gxms;
-        }
-        my $in = _pre_format_text_part($c, $inner, $lvl, $dis_p, $dis_html, undef, $dis_outer_p, undef, $dis_block );
-        return '' if $in =~ m/\A\s+\z/xmso;
-        return 
-             ( $set_n ? "\n" : '' )
-           . "<$tag>" . $in .  "</$tag>"
-           . ( $set_n ? "\n" : '' );
-    }
-    elsif ( $tag =~ $HTMLEmptyTagRe ) {
-        return "<$tag />";
-    }
-    else {
-        return '';
-    }
+
+    # Formatierungen innerhalb des Tags
+    my $in = _pre_format_text_part($c, $inner, $lvl, $dis_p, $dis_html, undef, undef, $dis_block );
+
+    # Ausgabe bei Bedarf mit Leerzeilen
+    return $set_n
+        ? "\n<$tag>" . $in .  "</$tag>\n"
+        :   "<$tag>" . $in .  "</$tag>";
 }
 
-sub _xml_escape {
-    my $str = shift;
-    $str =~ s/\&/\&amp;/gxmo;
-    $str =~ s/\</\&lt;/gxom;
-    $str =~ s/\>/\&gt;/goxm;
-    return $str;
-}
-
-sub _make_username_mark {
-    $_[2]
-        ? qq($_[1]<span class="username"><span class="alert">$_[2]</span>$_[0]</span>)
-        : qq($_[1]<span class="username">$_[0]</span>);
-
-}
-
+###############################################################################
+# Einen Link formatieren
 sub _make_link {
     my ( $c, $url ) = @_;
+    # Quotes URL-kompatibel machen
     $url =~ s/"/\%22/xmso;
-    my $url_xmlencode = $url;
-    $url_xmlencode = _xml_escape($url_xmlencode);
-    my $url_show = $url_xmlencode;
-    $url_xmlencode = _stripped_url($c, $url_xmlencode);
-    return qq~<a href="$url" title="Externe Webseite: $url_show" target="_blank">$url_xmlencode</a>~;
+    # XML-Escape für die HTML-Anzeige 
+    my $url_xmlencode = xml_escape($url);
+    return qq~<a href="$url" title="Externe Webseite: $url_xmlencode" target="_blank">~ 
+        . _stripped_url($c, $url_xmlencode) . qq~</a>~;
 }
 
+###############################################################################
+# Eine URL für die Anzeige im Text zusammenkürzen ... damit das nicht so ausufernd aussieht
 sub _stripped_url {
-    return '' unless $_[1];
+    return '' unless $_[1]; # Nüx gibt nüx
+
+    # Optional in der Mitte was raus schneiden, damit die URL-Anzeige im Text nicht zu lang wird
     my $u = $_[0]->configdata->{urlshorten};
-    if ( $u and $u < length $_[1] ) {
-        my $d = int( ( length($_[1]) - $u ) / 2 );
-        my $h = int( length($_[1]) / 2 );
+    if ( $u and $u < ( my $l = length $_[1] ) ) {
+        my $d = int( ( $l - $u ) / 2 );
+        my $h = int(   $l        / 2 );
         return substr($_[1], 0, $h - $d) . '…' . substr($_[1], $h + $d);
     }
+
+    # Wenn die URL kürzer ist, dann wird die natürlich komplett zurück geliefert
     return $_[1];
 }
 
+###############################################################################
+# Smiley-Code (HTML-Bild) erzeugen
 sub _make_smiley {
-    my ( $c, $str, $nosmil ) = @_;
-    return $str if $nosmil;
-    my $orig = $str;
+    $_[2] and return $_[1] // ''; # Wenn keine Smiley gewollt sind ...
+    $_[1] or exists $Smiley{$_[1]} or return ''; # Oder wenn es nix gibt oder kein passendes Smiley zum übergebenen Textstück
+    # HTML-Image-Tag zusammenbauen
     return qq~<img class="smiley" src="~
-        . $c->url_for("/theme/img/smileys/$Smiley{$orig}.png")
-        . qq~" alt="$str" title="$str" />~;
+        . $_[0]->url_for("/theme/img/smileys/$Smiley{$_[1]}.png")
+        . qq~" alt="$_[1]" title="$_[1]" />~;
 }
 
+###############################################################################
+# Formatierung für die Zusammenfassungen in der Themenliste
 sub _format_short {
-    my ( $c, $str ) = @_;
-    return '' unless $str;
-    $str = substr($str,0,255);
-    $str = _pre_format_text_part($c, $str, 1, 1, 1, 1);
-    $str =~ s~</?["\s\w]+>~~gxmso;
-    $str =~ s~</?["\s\w]*\z~~gxmso;
-    $str =~ s~&lt;/?["\s\w]+&gt;~~gxmso;
-    $str =~ s~&lt;/?["\s\w]*\z~~gxmso;
-    chomp $str;
-    return $str;
+    $_[1] or return ''; # Nüx gibt nüx
+
+    # Normales Formatieren ohne Tag-Ersetzung und Smiley-Ersetzung
+    my $str = _pre_format_text_part($_[0], substr($_[1],0,255), 1, 1, 1, 1);
+    
+    # Bestimmte Sachen rausschneiden, die wir in der Zusammenfassung nicht sehen wollen 
+    # (bissel unschön, aber passt so)
+    $str =~ s~</?["\s\w]+(?:>|\z)~~gxmso;
+    $str =~ s~&lt;/?["\s\w]+(?:&gt;|\z)~~gxmso;
+    
+    # Überflüssigen Rest abschneiden und raus damit
+    chomp $str; return $str;
 }
 
 1;
-
