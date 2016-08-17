@@ -4,98 +4,129 @@ use Mojo::Base 'Mojolicious::Controller';
 use Mojo::Util 'xml_escape';
 use Mojo::JSON 'encode_json';
 
-sub _noop { $Ffc::Digqr };
-
+###############################################################################
+# Routen für die Behandlung des Chats einrichten
 sub install_routes {
     my $r = $_[0];
 
-    # die route erzeugt lediglich das chatfenster
+    # Lediglich das Chatfenster darstellen
     $r->route('/chat')->via('get')
          ->to(controller => 'chat', action => 'chat_window_open')
          ->name('chat_window');
 
-    # die route liefert die notwendigen Nachrichten beim Start einer Chatsession
+    # Start des Chats mit Eingangsinformationen
     $r->route('/chat/receive/started')->via(qw(GET))
          ->to(controller => 'chat', action => 'receive_started')
          ->name('chat_receive_started');
-    # die route ist für nachrichten genauso wie für statusabfragen zuständig
+   
+    # Regelmäßige Statusabfrage inklusive Nachrichtenübermittlung, wenn der Fokus auf dem Chat-Webbrowserfenster liegt
     $r->route('/chat/receive/focused')->via(qw(GET POST))
          ->to(controller => 'chat', action => 'receive_focused')
          ->name('chat_receive_focused');
 
+    # Regelmäßige Statusabfrage, wenn der Fokus nicht auf dem Chat-Webbrowserfenster liegt
     $r->route('/chat/receive/unfocused')->via(qw(GET POST))
          ->to(controller => 'chat', action => 'receive_unfocused')
          ->name('chat_receive_unfocused');
 
-    # benutzer verlässt den chat (schließt das fenster)
+    # Der Benutzer verlässt den Chat, zum Beispiel, in dem er das entsprechende Browserfenster schließt
     $r->route('/chat/leave')->via(qw(GET))
          ->to(controller => 'chat', action => 'leave_chat')
          ->name('chat_leave');
 
-    # refresh-timer umsetzen
+    # Häufigkeit der Statusabfragen festlegen
     $r->route('/chat/refresh/:refresh', refresh => $Ffc::Digqr)->via(qw(GET))
          ->to(controller => 'chat', action => 'set_refresh')
          ->name('chat_set_refresh');
 }
 
+###############################################################################
+# Häufigkeit der Statusabfragen in der Datenbank festlegen
 sub set_refresh {
     my $c = $_[0];
     my $refresh = $c->param('refresh');
-    if ( $refresh ) {
+    if ( $refresh and $refresh =~ $Ffc::Digqr ) {
         $c->dbh_do('UPDATE "users" SET "chatrefreshsecs"=? WHERE "id"=?',
             $refresh, $c->session->{userid} );
     }
     $c->render( json => 'ok' );
 }
 
+###############################################################################
+# Chat-Fenster wird geöffnet, am Chat wird teil genommen
 sub chat_window_open {
     my $c = $_[0];
+
+    # Eine History-Liste neuester Nachrichten
     my @history_list = map {$_->[0]} reverse @{ $c->dbh_selectall_arrayref(
             'SELECT c."msg" FROM "chat" c WHERE c."userfromid"=? ORDER BY c."id" DESC LIMIT ?',
             $c->session->{userid}, 10) };
-    $c->stash(title_array => encode_json $c->configdata->{title});
     $c->stash(history_list => encode_json \@history_list);
-    $c->stash(history_pointer => scalar @history_list);
+    $c->stash(history_pointer => scalar @history_list); # An welcher Stelle in der History sind wir
+
+    # Die "Rahmeninformationen" für den Chat-Titel einrichten
+    $c->stash(title_array => encode_json $c->configdata->{title});
+
+    # Caching-Vorgaben und Fenster-Rendering anstoßen
     $c->res->headers( 'Cache-Control' => 'public, max-age=0, no-cache' );
     $c->render( template => 'chat' );
 }
 
+###############################################################################
+# Den Chat verlassen bzw. das Chat-Webbrowserfenster schließen
 sub leave_chat {
     my $c = $_[0];
-    # vermerk in der datenbank: benutzer hat chat verlassen,
+    # Vermerk und Info-Nachricht in die Datenbank eintragen, dass der entsprechende Benutzer den Chat verlassen hat
     $c->dbh_do('UPDATE "users" SET "inchat"=0 WHERE "id"=?', $c->session->{userid} );
     _add_msg($c,$c->session->{user}.' hat den Chat verlassen.', 1);
-    # kann bei document.on("close"... im javascript verwendet werden
     $c->render( text => 'ok' );
 }
 
+###############################################################################
+# Eine neue Chat-Nachricht in die Datenbank eintragen
 sub _add_msg {
     return unless $_[1];
     my ( $c, $msg, $issys ) = @_;
+
+    # Formatieren der neuen Nachricht
     $msg = $c->pre_format($msg, 1);
     $msg =~ s~\A\s*<p>~~xmso;
     $msg =~ s~</p>\s*\z~~xmso;
     $msg =~ s~</p>\s*<p>~<br />~xmso;
+
+    # Die neue Nachricht in die Daten eintragen, wenn sie Daten enthält
     $c->dbh_do('INSERT INTO "chat" ("userfromid", "msg", "sysmsg") VALUES (?,?,?)',
-        $c->session->{userid}, $msg, $issys ? 1 : 0);
+        $c->session->{userid}, $msg, $issys ? 1 : 0)
+            if $msg;
 }
 
+###############################################################################
+# Currying der Actions
 sub receive_started   { _receive($_[0], 1, 1) }
 sub receive_focused   { _receive($_[0], 1, 0) }
 sub receive_unfocused { _receive($_[0], 0, 0) }
+
+###############################################################################
+# Action-Handler für die Status-Ermittlung aus der Datenbank und den optionalen Nachrichtentransfer in die Datenbank
 sub _receive {
     my ( $c, $active, $started ) = @_;
+
+    # Für den Fall, dass eine Nachricht gesendet wurde, diese in die Datenbank eintragen
+    # ( Nur notwendig, wenn das Fenster aktiv ist beim Senden bzw. wenn ein POST-Request stattfand)
     if ( $c->req->method eq 'POST' ) {
-        _add_msg($c,$c->req->json);
+        _add_msg($c, $c->req->json);
     }
     my $s = $c->session;
 
-    # rückgabe erzeugen
+    # Beginn des Rückgabe-SQL erstellen
     my $sql = << 'EOSQL';
 SELECT c."id", uf."name", c."msg", datetime(c."posted", 'localtime'), c."sysmsg"
 FROM "chat" c 
 INNER JOIN "users" uf ON uf."id"=c."userfromid"
 EOSQL
+    
+    # Bei Betreten des Chats wird eventuell eine Nachricht erzeugt, dass der Benutzer den Chat betreten hat,
+    # wobei die Refresh-Zeit des Benutzers mit in die Berechnung mit einbezogen wird
     if ( $started ) {
         unless ( 
             $c->dbh_selectall_arrayref( << 'EOSQL', $s->{userid} )->[0]->[0]
@@ -104,13 +135,19 @@ SELECT CASE WHEN
 FROM "users" 
 WHERE "id"=?
 EOSQL
-        ) { _add_msg($c,$s->{user}.' hat den Chat betreten.', 1) }
+        ) { 
+            _add_msg($c, $s->{user}.' hat den Chat betreten.', 1);
+        }
+
+        # Nachrichtensortierung und Nachrichtenlimit für den Einstieg berücksichtigen
         $sql .= << 'EOSQL';
 ORDER BY c."id" DESC
 LIMIT ?;
 EOSQL
     }
     else {
+        # Ist man bereits drin, müssen die anderen Benutzer für die Nachrichten berücksichtigt werden
+        # (umgekehrte Sortierung ist auch hier wichtig, muss aber wegen der String-Verkettung hier so nochmal extra da stehen)
         $sql .= << 'EOSQL';
 LEFT OUTER JOIN "users" u2 ON u2."id"=?
 WHERE c."id">COALESCE(u2."lastchatid",0)
@@ -118,15 +155,17 @@ ORDER BY c."id" DESC
 EOSQL
     }
 
+    # Nachrichten-Abfrage wird durchgeführt
     my $msgs = $c->dbh_selectall_arrayref( $sql,
         ( $started ? 50 : $s->{userid} )
     );
+    # Nachbearbeitung der empfangenen Nachrichten
     for my $m ( @$msgs ) {
         $m->[1] = xml_escape($m->[1]);
         $m->[3] = $c->format_timestamp($m->[3], 1);
     }
 
-    # refresh-timer aktualsieren
+    # Refresh-Timer neu setzen, damit diese Statusabfrage bei der Berechnung der Aktivität berücksichtig werden kann
     $sql = qq~UPDATE "users" SET\n~;
     $sql .= qq~    "lastchatid"=?,\n~ if @$msgs;
     $sql .= qq~    "inchat"=1,\n    "lastseenchat"=CURRENT_TIMESTAMP~;
@@ -134,7 +173,7 @@ EOSQL
     $sql .= qq~\nWHERE "id"=?~;
     $c->dbh_do( $sql, ( @$msgs ? $msgs->[0]->[0] : () ), $s->{userid} );
 
-    # benutzerliste ermitteln, die im chat sind
+    # Als nächste ermitteln wir die Liste der Benutzer
     $sql = << 'EOSQL';
 SELECT 
     "name", 
@@ -147,26 +186,16 @@ WHERE
     AND "inchat"=1
 ORDER BY UPPER("name"), "id"
 EOSQL
-
     my $users = $c->dbh_selectall_arrayref( $sql );
+    # Nachbearbeitung der Benutzerliste
     for my $u ( @$users ) {
         $u->[1] = $c->format_timestamp( $u->[1] || 0 );
         $u->[0] = xml_escape($u->[0]);
     }
 
-    # und die notwendigen daten als json zurück geben
-# # returned dataset:
-# [ 
-#        # msgs:
-#    [ "userfromname", "msg" ],
-#        # users:
-#    [ "username", "lastseenchatactive", "chatrefreshsecs" ],
-#        # countings: 
-#    "newpostcount", "newmsgscount"
-# ]
+    # Rückgabe der Statusabfragen inkl. der Anzahlen der neuen Nachrichten und Forenbeiträge für die Titelleiste
     $c->res->headers( 'Cache-Control' => 'public, max-age=0, no-cache' );
     $c->render( json => [$msgs, $users, $c->newpostcount, $c->newmsgscount] );
 }
 
 1;
-
