@@ -1,4 +1,3 @@
-lib/Ffc/Customstyle.pm
 lib/Ffc/Forum.pm
 lib/Ffc/Forum/Readlater.pm
 lib/Ffc/Forum/Topics/Create.pm
