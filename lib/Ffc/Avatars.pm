@@ -37,8 +37,8 @@ sub avatar_show {
         # Zusatzinformationen zum Avatarbild
         $filename = quote encode 'UTF-8', $filename;
     }
+    #
     # Gibt es die reale Datei nicht, wird ebenfalls auf den Default-Avatar gewechselt
-
     return $c->reply->static(
         $DefaultAvatar || ( $DefaultAvatar = catfile 'theme', 'img', 'avatar.png' ) ) 
             unless $filename and -e $file;
@@ -73,6 +73,8 @@ sub avatar_upload {
                 return [ 'avatars', $u . '_' . $_[1] ];
             }
         );
+
+    # Der Upload hat nicht funktioniert
     return $c->redirect_to('options_form')
         unless $filename;
 
