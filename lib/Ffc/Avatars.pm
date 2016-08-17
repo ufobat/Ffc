@@ -11,10 +11,12 @@ my $DefaultAvatar;
 # Routen für das Avatar-Management einrichten
 sub install_routes {
     my $p = $_[0]->under('/avatar')->name('avatars_bridge');
+    # Avatar anzeigen
     $p->route('/:userid', userid => $Ffc::Digqr)
       ->via('get')
       ->to('avatars#avatar_show')
       ->name('avatar_show');
+    # Avatar hochladen
     $p->route('/upload')
       ->via('post')
       ->to('avatars#avatar_upload')
