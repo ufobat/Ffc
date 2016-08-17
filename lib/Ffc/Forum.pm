@@ -161,7 +161,6 @@ sub show {
     $c->stash( topicediturl => $c->url_for('edit_forum_topic_form', topicid => $topicid) )
         if $uid eq $userfrom or $c->session->{admin};
     $c->set_lastseen( $uid, $topicid );
-    $c->counting;
     $c->show_posts();
 }
 
@@ -175,7 +174,6 @@ sub add {
 
 sub edit_form {
     my $c = shift;
-    $c->counting;
     $c->stash( heading => 
         'Beitrag zum Thema "' . $c->_get_title_from_topicid . '" ändern' );
     $c->edit_post_form();
@@ -185,7 +183,6 @@ sub edit_do { $_[0]->edit_post_do(undef, $_[0]->param('topicid')) }
 
 sub delete_check {
     my $c = shift;
-    $c->counting;
     $c->stash( heading => 
         'Beitrag zum Thema "' . $c->_get_title_from_topicid . '" entfernen' );
     $c->delete_post_check();
@@ -195,7 +192,6 @@ sub delete_do { $_[0]->delete_post_do() }
 
 sub upload_form {
     my $c = shift;
-    $c->counting;
     $c->stash( heading => 
         'Eine Datei zum Beitrag zum Thema "' . $c->_get_title_from_topicid . '" anhängen' );
     $c->upload_post_form();
@@ -209,7 +205,6 @@ sub download {  $_[0]->download_post() }
 
 sub delete_upload_check {
     my $c = shift;
-    $c->counting;
     $c->stash( heading => 
         'Eine Datei zum Beitrag zum Thema "' . $c->_get_title_from_topicid . '" löschen' );
     $c->delete_upload_post_check();

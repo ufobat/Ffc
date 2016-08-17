@@ -21,7 +21,6 @@ sub check_admin {
 sub options_form {
     my $c = shift;
     $c->stash(fontsizes => \%Ffc::Plugin::Config::FontSizeMap);
-    $c->counting;
     my $r = $c->dbh_selectall_arrayref(
         'SELECT email, newsmail, hideemail, birthdate, infos, hidelastseen FROM users WHERE id=?'
         , $c->session->{userid});
@@ -34,12 +33,12 @@ sub options_form {
         infos        => $c->stash('infos') // $r->[4],
         hidelastseen => $r->[5],
     );
+    $c->counting;
     $c->render(template => 'optionsform');
 }
 
 sub admin_options_form {
     my $c = shift;
-    $c->counting;
     my $userlist = $c->dbh_selectall_arrayref(
             'SELECT u.id, u.name, u.active, u.admin, u.email FROM users u WHERE UPPER(u.name) != UPPER(?) ORDER BY UPPER(u.name) ASC'
             , $c->session->{user});
@@ -52,6 +51,7 @@ sub admin_options_form {
         configoptions => \@Ffc::Options::Settings,
         themes        => $themes,
     );
+    $c->counting;
     $c->render(template => 'adminform');
 }
 

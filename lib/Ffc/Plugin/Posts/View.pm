@@ -17,7 +17,6 @@ sub _search_posts {
         queryurl => $c->url_for("search_${cname}_posts"),
         returl   => $c->url_for("search_${cname}_posts"),
     );
-    $c->counting;
     if ( my $q = $c->param('query') ) {
         $c->session->{query} = $q;
     }
@@ -103,6 +102,7 @@ sub _show_posts {
         $sql, $c->session->{userid}, @wherep, ( $query ? "\%$query\%" : () ), ($postid || ()),  $c->pagination()
     );
     $c->stash(posts => $posts);
+    $c->counting;
 
     if ( $c->stash('action') eq 'search' ) {
         $c->render(template => 'search');

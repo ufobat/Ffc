@@ -73,7 +73,6 @@ sub show {
             'INSERT INTO "lastseenmsgs" ("userid", "userfromid", "lastseen", "mailed") VALUES (?,?,?,1)',
             $uid, $utoid, $newlastseen );
     }
-    $c->counting;
     $c->show_posts();
 }
 
@@ -102,7 +101,6 @@ sub add {
 
 sub upload_form {
     my $c = shift;
-    $c->counting;
     $c->stash( heading => 
         'Eine Datei zur privaten Nachrichten mit "' . $c->_get_username . '" anhängen' );
     $c->upload_post_form();
@@ -116,7 +114,6 @@ sub download {  $_[0]->download_post() }
 
 sub delete_upload_check {
     my $c = shift;
-    $c->counting;
     $c->stash( heading => 
         'Einen Dateianhang der privaten Nachrichten mit "' . $c->_get_username . '" löschen' );
     $c->delete_upload_post_check();

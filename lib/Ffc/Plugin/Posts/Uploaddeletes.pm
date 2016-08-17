@@ -12,6 +12,7 @@ sub _delete_upload_post_check {
         $c->set_error_f('Konnte keinen passenden Beitrag zum Löschen der Anhänge finden');
         return _redirect_to_show($c);
     }
+    $c->counting;
     $c->render( template => 'delete_upload_check' );
 }
 

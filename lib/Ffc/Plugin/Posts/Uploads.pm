@@ -12,6 +12,7 @@ sub _upload_post_form {
         $c->set_error_f('Konnte keinen passenden Beitrag um Anhänge hochzuladen finden');
         return _redirect_to_show($c);
     }
+    $c->counting;
     $c->render( template => 'upload_form' );
 }
 

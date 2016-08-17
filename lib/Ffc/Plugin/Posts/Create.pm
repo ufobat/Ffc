@@ -98,6 +98,7 @@ sub _edit_post_form {
         $c->set_error_f('Konnte keinen passenden Beitrag zum Ändern finden');
         return _redirect_to_show($c);
     }
+    $c->counting;
     $c->render( template => 'edit_form' );
 }
 

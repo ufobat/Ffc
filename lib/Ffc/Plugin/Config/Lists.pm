@@ -149,6 +149,7 @@ sub _set_lastseen {
                 ? 'UPDATE "lastseenforum" SET "mailed"=1 WHERE "userid"=? AND "topicid"=?'
                 : 'INSERT INTO "lastseenforum" ("userid", "topicid", "mailed") VALUES (?,?,1)'
             ), $uid, $topicid );
+        return;
     }
 
     # Was ist denn die neueste Id zum Thema der entsprechenden Topic-Id
