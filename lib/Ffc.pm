@@ -38,10 +38,11 @@ sub startup {
     my $app = shift;
 
     # Plugins
-    $app->plugin('Ffc::Plugin::Config');
-    $app->plugin('Ffc::Plugin::Formats');
-    $app->plugin('Ffc::Plugin::Uploads');
-    $app->plugin('Ffc::Plugin::Posts');
+    $app->plugin('Ffc::Plugin::Config'  );
+    $app->plugin('Ffc::Plugin::Counts'  );
+    $app->plugin('Ffc::Plugin::Formats' );
+    $app->plugin('Ffc::Plugin::Uploads' );
+    $app->plugin('Ffc::Plugin::Posts'   );
     
     # Reverse-Proxy-Hook
     $app->hook('before_dispatch' => sub {

@@ -6,7 +6,6 @@ use Mojo::Base 'Mojolicious::Plugin';
 use DBI;
 use File::Spec::Functions qw(splitdir catdir catfile);
 use Digest::SHA 'sha512_base64';
-use Ffc::Plugin::Config::Lists;
 
 our %Defaults = (
     title           => 'Ffc Forum',
@@ -48,8 +47,6 @@ sub register {
     $app->helper(configdata   => sub { $config    });
     $app->helper(data_return  => \&_data_return    );
 
-    $app->helper(set_lastseen => \&_set_lastseen   );
-
     $app->helper(dbh                    => sub { dbh($self) }        );
     $app->helper(dbh_selectall_arrayref => \&_dbh_selectall_arrayref );
     $app->helper(dbh_do                 => \&_dbh_do                 );
@@ -83,11 +80,6 @@ sub register {
 
     $app->helper( hash_password  => 
         sub { sha512_base64 $_[1], $secconfig->{cryptsalt} } );
-    $app->helper( counting           => \&_counting );
-    $app->helper( newpostcount       => \&_newpostcount );
-    $app->helper( newmsgscount       => \&_newmsgscount );
-    $app->helper( generate_topiclist => \&_generate_topiclist );
-    $app->helper( generate_userlist  => \&_generate_userlist );
 
     return $self;
 }

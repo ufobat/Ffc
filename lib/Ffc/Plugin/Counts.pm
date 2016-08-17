@@ -1,6 +1,21 @@
-package Ffc::Plugin::Config;
+package Ffc::Plugin::Counts;
 use 5.18.0;
 use strict; use warnings; use utf8;
+use Mojo::Base 'Mojolicious::Plugin';
+
+###############################################################################
+# Utility-Funktionen und Helper initialisieren
+sub register {
+    my ( $self, $app ) = @_;
+    $_[1]->helper( counting           => \&_counting           );
+    $_[1]->helper( newpostcount       => \&_newpostcount       );
+    $_[1]->helper( newmsgscount       => \&_newmsgscount       );
+    $_[1]->helper( generate_topiclist => \&_generate_topiclist );
+    $_[1]->helper( generate_userlist  => \&_generate_userlist  );
+    $_[1]->helper(set_lastseen        => \&_set_lastseen       );
+
+    return $_[0];
+}
 
 ###############################################################################
 # Anzahl neuer Beiträge direkt aus der Datenbank ermitteln
