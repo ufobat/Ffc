@@ -6,14 +6,12 @@ use Mojo::Base 'Mojolicious::Plugin';
 ###############################################################################
 # Utility-Funktionen und Helper initialisieren
 sub register {
-    my ( $self, $app ) = @_;
     $_[1]->helper( counting           => \&_counting           );
     $_[1]->helper( newpostcount       => \&_newpostcount       );
     $_[1]->helper( newmsgscount       => \&_newmsgscount       );
     $_[1]->helper( generate_topiclist => \&_generate_topiclist );
     $_[1]->helper( generate_userlist  => \&_generate_userlist  );
     $_[1]->helper(set_lastseen        => \&_set_lastseen       );
-
     return $_[0];
 }
 
@@ -129,12 +127,9 @@ EOSQL
     # Aufbereitung des Geburtstdatums
     for my $dat ( @$data ) {
         if ( $dat->[6] and $dat->[6] =~ $Ffc::Dater ) {
-            if ( $+{jahr} ) { 
-                $dat->[6] = sprintf '%02d.%02d.%04d', $+{tag}, $+{monat}, $+{jahr} 
-            }
-            else { 
-                $dat->[6] = sprintf '%02d.%02d.', $+{tag}, $+{monat} 
-            }
+            $dat->[6] = $+{jahr}
+                ? sprintf( '%02d.%02d.%04d', $+{tag}, $+{monat}, $+{jahr} )
+                : sprintf( '%02d.%02d.',     $+{tag}, $+{monat}           );
         }
         else {
             $dat->[6] = '';
