@@ -11,7 +11,7 @@ sub register {
     $_[1]->helper( newmsgscount       => \&_newmsgscount       );
     $_[1]->helper( generate_topiclist => \&_generate_topiclist );
     $_[1]->helper( generate_userlist  => \&_generate_userlist  );
-    $_[1]->helper(set_lastseen        => \&_set_lastseen       );
+    $_[1]->helper( set_lastseen       => \&_set_lastseen       );
     return $_[0];
 }
 
