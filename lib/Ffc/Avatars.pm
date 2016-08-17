@@ -61,18 +61,17 @@ sub avatar_upload {
     my $u = $c->session->{user};
     
     # Datei-Upload-Helper
-    my ( $filename, $filetype ) 
-        = $c->file_upload(
-            'avatarfile', 1, 'Avatarbild', 100, 1, 8, 80, 
-            sub { 
-                # Optionaler Spezial-Check für den Upload
-                unless ( $_[0]->is_image($_[3]) ) {
-                    $_[0]->set_error_f('Datei ist keine Bilddatei, muss PNG, JPG, BMP, ICO oder GIF sein.');
-                    return;
-                }
-                return [ 'avatars', $u . '_' . $_[1] ];
+    my ( $filename, $filetype ) = $c->file_upload(
+        'avatarfile', 1, 'Avatarbild', 100, 1, 8, 80, 
+        sub { 
+            # Optionaler Spezial-Check für den Upload
+            unless ( $_[0]->is_image($_[3]) ) {
+                $_[0]->set_error_f('Datei ist keine Bilddatei, muss PNG, JPG, BMP, ICO oder GIF sein.');
+                return;
             }
-        );
+            return [ 'avatars', $u . '_' . $_[1] ];
+        },
+    );
 
     # Der Upload hat nicht funktioniert
     return $c->redirect_to('options_form')
