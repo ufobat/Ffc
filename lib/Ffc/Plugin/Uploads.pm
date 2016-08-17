@@ -16,13 +16,11 @@ sub register {
 }
 
 sub _is_inline {
-    return 1 if $_[1] =~ m~\A(?:image|video|audio)|\*/(?:jpe?g|bmp|gif|png|mkv|avi|divx|ogg|ogv|mp3|flac|wav)\z~xmsio;
-    return;
+    $_[1] =~ m~\A(?:image|video|audio)|\*/(?:jpe?g|bmp|gif|png|mkv|avi|divx|ogg|ogv|mp3|flac|wav)\z~xmsio;
 }
 
 sub _is_image {
-    return 1 if $_[1] =~ m~\Aimage|\*/(?:jp[eg]|bmp|gif|png)\z~xmsio;
-    return;
+    $_[1] =~ m~\Aimage|\*/(?:jp[eg]|bmp|gif|png)\z~xmsio;
 }
 
 sub _file_upload {

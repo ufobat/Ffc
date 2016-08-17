@@ -27,12 +27,6 @@ our $Dater = qr~\A\s*(?:
     (?<jahr>(?:\d\d)?\d\d)\s*[-/]\s*(?<monat>\d\d?)\s*[-/]\s*(?<tag>\d\d?)
 )\s*\z~xmso;
 
-# Vorkompilierte standartisierte Prüfung, ob eine Datei ein Bild enthält (Dateinamensprüfung)
-our $ImgFileqr = qr~\.(png|jpe?g|bmp|gif)\z~xmiso;
-
-# Fallback-Avatarbild
-our $DefaultAvatar = catfile 'theme', 'img', 'avatar.png';
-
 # Admin-Options-Ablage - das brauch ich irgendwie so, weil ich darauf Controller-Übergreifend zugreifen muss
 # ... Stash?
 our $Optky;
