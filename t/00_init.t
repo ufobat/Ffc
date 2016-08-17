@@ -165,7 +165,7 @@ sub test_path {
         do {
             use Mojolicious::Lite;
             plugin 'Ffc::Plugin::Config';
-        }->dbh()->disconnect() or die;
+        }->_get_dbh()->disconnect() or die;
         unlink "$testpath/database.sqlite3";
     }
     $cookie  = Testinit::test_randstring();

@@ -7,7 +7,9 @@ use DBI;
 use File::Spec::Functions qw(splitdir catdir catfile);
 use Digest::SHA 'sha512_base64';
 
-our %Defaults = (
+###############################################################################
+# Default-Vorbelegung für bestimmte Konfigurationsvariablen
+my %Defaults = (
     title           => 'Ffc Forum',
     urlshorten      => 30,
     sessiontimeout  => 259200,
@@ -18,44 +20,54 @@ our %Defaults = (
     hypnotoad       => 'http://localhost:8083/', 
 );
 
+###############################################################################
+# Plugin-Registrierung für Konfigurationshelper
 sub register {
     my ( $self, $app ) = @_;
-    $self->reset();
-    my $datapath  = $self->_datapath();
-    my $dbh       = $self->dbh();
-    my $config    = $self->_config();
-    my $secconfig = $self->{secconfig} = {};
+    $self->_reset_envconfig();
 
+    # Variablenvorbelegung für weitere Verwendung
+    my $datapath  = $self->_get_datapath();  # Pfad zu den Daten
+    my $dbh       = $self->_get_dbh();       # Datenbankhandle
+    my $config    = $self->_get_config();    # Normale Konfigurationseinstellungen
+    my $secconfig = $self->{secconfig} = {}; # Besonders gesicherte Konfigurationseinstellungen
+
+    # Sicherheitsrelevante Einstellungen werden aus der normalen Konfiguration heraus gelöscht
+    # und stehen nur noch innerhalb dieser Subroutine zur Verfügung
     for my $c ( qw(cookiesecret cryptsalt) ) {
-        $secconfig->{$c} = $config->{$c};
-        delete $config->{$c};
+        $secconfig->{$c} = delete $config->{$c};
     }
 
+    # Session-Einstellungen
     $app->secrets([$secconfig->{cookiesecret}]);
     $app->sessions->cookie_name(
         $config->{cookiename} || $Defaults{cookiename});
     $app->sessions->default_expiration(
         $config->{sessiontimeout} || $Defaults{sessiontimeout});
 
+    # Konfigurierte Voreinstellungen, falls bei diesen Parametern nichts brauchbares angegeben ist
     for ( qw(urlshorten starttopic) ) {
         unless ( $config->{$_} and $config->{$_} =~ m/\A\d+\z/xmso ) {
             $config->{$_} = $Defaults{$_};
         }
     }
 
+    # Konfigurationshelper
     $app->helper(datapath     => sub { $datapath  });
     $app->helper(configdata   => sub { $config    });
     $app->helper(data_return  => \&_data_return    );
 
-    $app->helper(dbh                    => sub { dbh($self) }        );
+    # Datenbankhelper
+    $app->helper(dbh                    => sub{ $dbh }               );
     $app->helper(dbh_selectall_arrayref => \&_dbh_selectall_arrayref );
     $app->helper(dbh_do                 => \&_dbh_do                 );
 
+    # Besondere Default-Werte
     for ( qw(title backgroundcolor hypnotoad) ) {
-        $config->{$_} = $Defaults{$_}
-            unless $config->{$_};
+        $config->{$_} ||= $Defaults{$_};
     }
 
+    # Default-Vorbelegungen für Template-Variablen
     $app->defaults({
         configdata => $config,
         page       => 1,
@@ -71,6 +83,7 @@ sub register {
                dourl returl editurl moveurl msgurl delurl uplurl delupl downld backurl topicediturl ) ),
     });
 
+    # Benutzer-Benachrichtigungs-Helper
     for my $w ( qw(info error warning ) ) {
         $app->helper( "set_$w" => 
             sub { $_[0]->stash($w => join ' ', ($_[0]->stash($w) // ()), @_[1 .. $#_]) } );
@@ -78,30 +91,36 @@ sub register {
             sub { $_[0]->flash($w => join ' ', ($_[0]->stash($w) // ()), @_[1 .. $#_]) } );
     }
 
+    # Helper für verschlüsselte Passwortprüfung
     $app->helper( hash_password  => 
         sub { sha512_base64 $_[1], $secconfig->{cryptsalt} } );
 
     return $self;
 }
 
-sub _datapath {
-    my $self = $_[0];
-    return $self->{datapath} if $self->{datapath};
+###############################################################################
+# Datenpfad zurück geben, und bei Bedarf ermitteln
+sub _get_datapath {
+    $_[0]->{datapath} and return $_[0]->{datapath};
     die qq~need a directory as "FFC_DATA_PATH" environment variable ('~.($ENV{FFC_DATA_PATH}//'').q~')~
         unless $ENV{FFC_DATA_PATH} and -e -d -r $ENV{FFC_DATA_PATH};
-    return $self->{datapath} = [ splitdir $ENV{FFC_DATA_PATH} ];
+    return $_[0]->{datapath} = [ splitdir $ENV{FFC_DATA_PATH} ];
 }
 
-sub _config {
+###############################################################################
+# Konfigurationsdaten aus der Datenbank ermitteln
+sub _get_config {
     return { map { @$_ } 
         @{ $_[0]->{dbh}->selectall_arrayref(
             'SELECT "key", "value" FROM "config"') } };
 }
 
-sub dbh {
+###############################################################################
+# Datenbank-Handle erzeugen
+sub _get_dbh {
     return $_[0]->{dbh} if $_[0]->{dbh};
     my $self = $_[0];
-    $self->{dbfile} = catdir @{ $self->_datapath() }, 'database.sqlite3';
+    $self->{dbfile} = catdir @{ $self->_get_datapath() }, 'database.sqlite3';
     $self->{dbh} = DBI->connect("DBI:SQLite:database=$self->{dbfile}", 
         '', '', { AutoCommit => 1, RaiseError => 1 })
         or die qq~could not connect to database "$self->{dbfile}": $DBI::errstr~;
@@ -109,42 +128,39 @@ sub dbh {
     return $self->{dbh};
 }
 
-sub reset {
+###############################################################################
+# Konfig für die Instanz-Umgebung zurücksetzen
+sub _reset_envconfig {
     @{$_[0]}{qw(datapath dbh dbfile)} = (undef,undef,undef);
 }
 
+###############################################################################
+# Datenbank-Handling inkl. Caching von Prepared-Statements
 {
-my %sths;
-sub _dbh_selectall_arrayref {
-    my $c = shift; my $sql = shift;
-    my $sth = exists $sths{$sql}
-        ? $sths{$sql}
-        : $sths{$sql} = $c->dbh->prepare($sql)
-            || die $sths{$sql}->errstr;
-    $sth->execute( @_ ) or die $sth->errstr;
-    return $sth->fetchall_arrayref || die $sth->errstr;
-}
-sub _dbh_do {
-    my $c = shift; my $sql = shift;
-    my $sth = exists $sths{$sql}
-        ? $sths{$sql}
-        : $sths{$sql} = $c->dbh->prepare($sql)
-            || die $sths{$sql}->errstr;
-    $sth->execute( @_ ) or die $sth->errstr;
-    $sth->finish;
-}
-}
-
-sub _data_return {
-    my ( $c, $template, $data ) = @_;
-    my $h = $c->req->headers->header('X-Requested-With');
-    if ( $h and $h eq 'XMLHttpRequest' ) {
-        $c->render_json($data);
+    my %sths;
+###############################################################################
+# SELECT mit Datenrückgabe
+    sub _dbh_selectall_arrayref {
+        my $c = shift; my $sql = shift;
+        my $sth = exists $sths{$sql}
+            ? $sths{$sql}
+            : $sths{$sql} = $c->dbh->prepare($sql)
+                || die $sths{$sql}->errstr;
+        $sth->execute( @_ ) or die $sth->errstr;
+        return $sth->fetchall_arrayref || die $sth->errstr;
     }
-    else {
-        $c->render(template => $template);
+
+###############################################################################
+# SQL-Abfrage ohne Datenrückgabe
+    sub _dbh_do {
+        my $c = shift; my $sql = shift;
+        my $sth = exists $sths{$sql}
+            ? $sths{$sql}
+            : $sths{$sql} = $c->dbh->prepare($sql)
+                || die $sths{$sql}->errstr;
+        $sth->execute( @_ ) or die $sth->errstr;
+        $sth->finish;
     }
 }
 
 1;
-

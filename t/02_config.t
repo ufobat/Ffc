@@ -49,14 +49,14 @@ sub test_config {
       ->json_hasnt('/cookiesecret')
       ->json_hasnt('/cryptsalt');
 
-    my $dbh = $Config->dbh();
+    my $dbh = $Config->_get_dbh();
     ok $dbh, 'database handle received';
     my $config = { map {@$_} @{ 
         $dbh->selectall_arrayref(
             'SELECT "key", "value" FROM "config"'
         )
     } };
-    is_deeply $config, $Config->_config(), 'config data ok';
+    is_deeply $config, $Config->_get_config(), 'config data ok';
     for my $c (qw( fixbackgroundcolor favicon
     cookiename postlimit title sessiontimeout
     urlshorten backgroundcolor hypnotoad)) {

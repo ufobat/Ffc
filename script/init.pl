@@ -112,7 +112,7 @@ sub generate_random_security {
     }
     alter_configfile($Config, 'cookiename', $cookie);
     my $pw = generate_random(4);
-    $Config->dbh()->do(
+    $Config->_get_dbh()->do(
         'INSERT INTO users (name, password, admin, active) VALUES (?,?,?,?)',
         undef, $uname, sha512_base64($pw, $salt), 1, 1);
 
@@ -133,7 +133,7 @@ sub alter_configfile {
     my $key = shift;
     my $value = shift;
     my $say = shift;
-    $config->dbh()->do(
+    $config->_get_dbh()->do(
         'UPDATE "config" SET "value"=? WHERE "key"=?',
         undef, $value, $key);
 }
