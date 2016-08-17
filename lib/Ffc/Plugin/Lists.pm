@@ -1,4 +1,4 @@
-package Ffc::Plugin::Counts;
+package Ffc::Plugin::Lists;
 use 5.18.0;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Plugin';

@@ -39,7 +39,7 @@ sub startup {
 
     # Plugins
     $app->plugin('Ffc::Plugin::Config'  );
-    $app->plugin('Ffc::Plugin::Counts'  );
+    $app->plugin('Ffc::Plugin::Lists'   );
     $app->plugin('Ffc::Plugin::Formats' );
     $app->plugin('Ffc::Plugin::Uploads' );
     $app->plugin('Ffc::Plugin::Posts'   );
