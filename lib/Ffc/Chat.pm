@@ -1,4 +1,5 @@
 package Ffc::Chat;
+use 5.18.0;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 use Mojo::Util 'xml_escape';

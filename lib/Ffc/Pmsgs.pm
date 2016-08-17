@@ -1,4 +1,5 @@
 package Ffc::Pmsgs;
+use 5.18.0;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 

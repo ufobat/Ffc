@@ -1,5 +1,5 @@
 package Ffc::Plugin::Posts; # Create
-use 5.010;
+use 5.18.0;
 use strict; use warnings; use utf8;
 
 use File::Spec qw(catfile);

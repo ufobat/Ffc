@@ -1,4 +1,5 @@
 package Ffc::Options; # Routes
+use 5.18.0;
 use strict; use warnings; use utf8;
 
 sub install_routes {

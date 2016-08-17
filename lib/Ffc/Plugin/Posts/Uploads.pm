@@ -1,5 +1,5 @@
 package Ffc::Plugin::Posts; # Uploads
-use 5.010;
+use 5.18.0;
 use strict; use warnings; use utf8;
 use Mojo::Util 'quote';
 use Encode qw( encode decode_utf8 );

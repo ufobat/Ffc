@@ -1,4 +1,5 @@
 package Ffc::Options; # AdminBoardsettings
+use 5.18.0;
 use strict; use warnings; use utf8;
 
 our @Settings = (

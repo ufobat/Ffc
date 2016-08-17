@@ -1,5 +1,5 @@
 package Ffc::Plugin::Config;
-use 5.010;
+use 5.18.0;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Plugin';
 
@@ -86,7 +86,6 @@ sub register {
     $app->helper( counting           => \&_counting );
     $app->helper( newpostcount       => \&_newpostcount );
     $app->helper( newmsgscount       => \&_newmsgscount );
-    $app->helper( readlatercount     => \&_readlatercount );
     $app->helper( generate_topiclist => \&_generate_topiclist );
     $app->helper( generate_userlist  => \&_generate_userlist );
 

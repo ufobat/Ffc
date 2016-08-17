@@ -1,4 +1,5 @@
 package Ffc::Forum;
+use 5.18.0;
 use strict; use warnings; use utf8;
 
 sub mark_readlater {

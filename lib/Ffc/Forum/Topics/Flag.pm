@@ -1,4 +1,5 @@
 package Ffc::Forum;
+use 5.18.0;
 use strict; use warnings; use utf8;
 
 sub   newsmail_topic_do { $_[0]->_handle_newsmail_topic_do(1, $_[1]) }
