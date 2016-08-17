@@ -3,7 +3,7 @@ use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 use File::Spec::Functions qw(catfile);
 use Mojo::Util 'quote';
-use Encode qw( encode decode_utf8 );
+use Encode 'encode';
 
 my $DefaultAvatar;
 
