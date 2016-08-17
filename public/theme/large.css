@@ -333,7 +333,7 @@ button:active {
     margin: 0;
 }
 .topiclist .newpost, .newpost .postboxinner {
-    padding-left: .5em;
+    padding-left: 1em;
 }
 .topiclist .newpost {
     border-width: 0 0 .1em .5em;
