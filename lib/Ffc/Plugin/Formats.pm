@@ -37,6 +37,8 @@ my @Smilies = (
     [ joke       => ['!joke',                                     ] ],
     [ headbange  => ['\m/',                                       ] ],
 );
+
+###############################################################################
 # Definitionen der HTML-Tag-Elemente für die Formatierungen
 my $HTMLBlockRe    = qr~pre|blockquote~io;
 my $HTMLSinglRe    = qr~h3~io;
