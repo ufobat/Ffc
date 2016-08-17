@@ -1,7 +1,7 @@
 package Ffc;
 use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious';
-use File::Spec::Functions qw(catfile);
+use File::Spec::Functions 'catfile';
 
 use Ffc::Customstyle;
 use Ffc::Options;
