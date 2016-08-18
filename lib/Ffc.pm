@@ -6,6 +6,7 @@ use File::Spec::Functions 'catfile';
 
 use Ffc::Customstyle;
 use Ffc::Options;
+use Ffc::Admin;
 use Ffc::Auth;
 use Ffc::Avatars;
 use Ffc::Forum;
@@ -27,10 +28,6 @@ our $Dater = qr~\A\s*(?:
     |
     (?<jahr>(?:\d\d)?\d\d)\s*[-/]\s*(?<monat>\d\d?)\s*[-/]\s*(?<tag>\d\d?)
 )\s*\z~xmso;
-
-# Admin-Options-Ablage - das brauch ich irgendwie so, weil ich darauf Controller-Übergreifend zugreifen muss
-# ... Stash?
-our $Optky;
 
 ###############################################################################
 # This method will run once at server start
@@ -75,6 +72,7 @@ sub _install_routes {
     Ffc::Customstyle::install_routes($l);
     Ffc::Avatars::install_routes($l);
     Ffc::Options::install_routes($l);
+    Ffc::Admin::install_routes($l);
     Ffc::Forum::install_routes($l);
     Ffc::Pmsgs::install_routes($l);
     Ffc::Notes::install_routes($l);

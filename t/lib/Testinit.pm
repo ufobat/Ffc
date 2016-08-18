@@ -110,9 +110,9 @@ sub test_add_users {
         last unless $user and $pass;
         push @Users, $user;
         $Users{$user} = @Users;
-        $t->post_ok('/options/admin/useradd', form => {username => $user, newpw1 => $pass, newpw2 => $pass, active => 1})
-          ->status_is(302)->header_is(Location => '/options/admin/form')->content_is('');
-        $t->get_ok('/options/admin/form')->status_is(200)
+        $t->post_ok('/admin/useradd', form => {username => $user, newpw1 => $pass, newpw2 => $pass, active => 1})
+          ->status_is(302)->header_is(Location => '/admin/form')->content_is('');
+        $t->get_ok('/admin/form')->status_is(200)
           ->content_like(qr~Benutzer \&quot;$user\&quot; angelegt~);
         $cnt++;
     }

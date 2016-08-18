@@ -1,7 +1,15 @@
-package Ffc::Options; # AdminBoardsettings
+package Ffc::Admin;
 use 5.18.0;
 use strict; use warnings; use utf8;
 
+use Mojo::Base 'Mojolicious::Controller';
+
+use Ffc::Admin::Routes;
+use Ffc::Admin::User;
+use Ffc::Admin::Boardsettings;
+
+###############################################################################
+# Einstellungs-Schema
 our @Settings = (
 #   [ optkey => realname, valid-regex, regexcheck, inputtype
 #               optionsheading, optionsexplaination, errormessage, optsub ],
@@ -41,60 +49,47 @@ our @Settings = (
         'Die Dateigröße wird in Megabyte angegeben und muss eine Zahl sein' ],
 );
 
-{
+# RegEx für die Settings
+our $Optky = do {
     my $str = join '|', map {$_->[0]} @Settings;
-    $Ffc::Optky = qr~$str~xmso;
+    qr~$str~xmso
+};
+
+###############################################################################
+# Prüfung, ob jemand als Admin eingetragen ist und ggf. eine Meldung ausliefern
+sub check_admin {
+    unless ( $_[0]->session->{admin} ) {
+        $_[0]->set_error_f('Nur Administratoren dürfen das')
+             ->redirect_to('options_form');
+        return;
+    }
+    return 1;
 }
 
-sub boardsettingsadmin {
-    my $c = shift;
-    my $optkey = $c->param('optionkey') // '';
-    my $optvalue = $c->param('optionvalue') // '';
-    my @setting = grep {$optkey eq $_->[0]} @Settings;
-    unless ( @setting ) {
-        $c->redirect_to('admin_options_form');
-        return; # theoretisch nicht möglich laut routen
-    }
-    my ( $tit, $re, $rechk, $err, $sub ) = @{$setting[0]}[1,2,3,7,8];
-    # Die zentrale FarbRegex steht erst zur Laufzeit zur Verfügung und kann deswegen nicht oben schon in die
-    # Array-Ref beim use hinein kopiert werden, deswegen hier der Umweg über die Sub:
-    'CODE' eq ref $re and $re = $re->(); 
+###############################################################################
+# Formular inkl. der Daten für die Administratoreneinstellungen vorbereiten
+sub admin_options_form {
+    my $c = $_[0];
 
-    unless ( $tit ) {
-        $c->redirect_to('admin_options_form');
-        return; # theoretisch nicht möglich laut routen
-    }
-    if ( ( $rechk and $optvalue =~ $re ) or ( not $rechk and ( $optvalue eq '1' or not $optvalue ) ) ) {
-        $c->dbh_do('UPDATE "config" SET "value"=? WHERE "key"=?',
-            $optvalue, $optkey);
-        $c->configdata->{$optkey} = $optvalue;
-        if ( $sub ) {
-            $sub->($c, $optkey, $optvalue);
-        }
-        $c->set_info_f("$tit geändert");
-    }
-    else {
-        $c->set_error_f($err);
-    }
+    # Benutzerdaten speziell für die Administration der Benutzerverwaltung auslesen
+    my $userlist = $c->dbh_selectall_arrayref(
+            'SELECT u.id, u.name, u.active, u.admin, u.email FROM users u WHERE UPPER(u.name) != UPPER(?) ORDER BY UPPER(u.name) ASC'
+            , $c->session->{user});
 
-    $c->redirect_to('admin_options_form');
-}
+    # Themenliste speziell für die Auswahl eines Default-Themas auslesen, welches als "Startseite" angezeigt wird
+    my $topics = $c->dbh_selectall_arrayref(
+            'SELECT "id", SUBSTR("title", 0, ?) FROM "topics" ORDER BY UPPER("title")'
+             , $c->configdata->{urlshorten});
 
-sub set_starttopic {
-    my $c = shift;
-    my $tid = $c->param('topicid');
-    $tid = 0 unless $tid;
-    if ( $tid =~ $Ffc::Digqr ) {
-        $c->dbh_do(q~UPDATE "config" SET "value"=? WHERE "key"='starttopic'~,
-            $tid);
-        $c->configdata->{starttopic} = $tid;
-        $c->set_info_f("Startseitenthema geändert");
-    }
-    else {
-        $c->set_error_f('Fehler beim Setzen der Startseite');
-    }
-    $c->redirect_to('admin_options_form');
+    # Formulardaten vorbereiten und Formular erzeugen
+    $c->stash(
+        useremails    => join( '; ', map { $_->[4] || () } @$userlist ),
+        userlist      => $userlist,
+        configoptions => \@Settings,
+        themes        => $topics,
+    );
+    $c->counting;
+    $c->render(template => 'adminform');
 }
 
 1;
-
