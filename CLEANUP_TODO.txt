@@ -7,8 +7,6 @@ lib/Ffc/Forum/Topics/Flag.pm
 lib/Ffc/Forum/Topics/Movepost.pm
 lib/Ffc/Forum/Topics.pm
 lib/Ffc/Notes.pm
-lib/Ffc/Options/AdminBoardsettings.pm
-lib/Ffc/Options/AdminUser.pm
 lib/Ffc/Plugin/Posts/Create.pm
 lib/Ffc/Plugin/Posts/Delete.pm
 lib/Ffc/Plugin/Posts.pm

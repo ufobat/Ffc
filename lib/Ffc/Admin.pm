@@ -73,8 +73,8 @@ sub admin_options_form {
 
     # Benutzerdaten speziell für die Administration der Benutzerverwaltung auslesen
     my $userlist = $c->dbh_selectall_arrayref(
-            'SELECT u.id, u.name, u.active, u.admin, u.email FROM users u WHERE UPPER(u.name) != UPPER(?) ORDER BY UPPER(u.name) ASC'
-            , $c->session->{user});
+            'SELECT u.id, u.name, u.active, u.admin, u.email FROM users u WHERE u.id!=? ORDER BY UPPER(u.name) ASC'
+            , $c->session->{userid});
 
     # Themenliste speziell für die Auswahl eines Default-Themas auslesen, welches als "Startseite" angezeigt wird
     my $topics = $c->dbh_selectall_arrayref(

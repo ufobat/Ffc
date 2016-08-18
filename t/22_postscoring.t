@@ -65,9 +65,9 @@ sub check_score {
 
 logina();
 note 'Maximalzahl aendern wegen damit nicht so viel rumgetestet werden muss';
-$t->post_ok('/options/admin/boardsettings/maxscore', form => {optionvalue => 2})
+$t->post_ok('/admin/boardsettings/maxscore', form => {optionvalue => 2})
   ->status_is(302)->content_is('')
-  ->header_is(Location => '/options/admin/form');
+  ->header_is(Location => '/admin/form');
 
 note 'Ein Thema (Id=1, immer) mit zwei Testbeitraegen für Admin anlegen';
 $t->post_ok('/topic/new', 

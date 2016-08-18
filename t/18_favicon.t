@@ -63,7 +63,7 @@ sub favicon_upload {
     $filename = 'favicon.png' unless defined $filename;
     $ftype = ($filename =~ m/\.(\w+)\z/xmso ? '' : '') unless defined $ftype;
     $ctype = "image/$ftype" unless $ctype;
-    $t->post_ok('/options/admin/favicon', form => {
+    $t->post_ok('/admin/favicon', form => {
             faviconfile => {
                 file => Mojo::Asset::Memory->new->add_chunk($content),
                 filename => $filename,
@@ -82,8 +82,8 @@ sub favicon_upload {
         error('Nur Administratoren dürfen das');
     }
     else {
-        $t->status_is(302)->content_is('')->header_is(Location => '/options/admin/form');
-        $t->get_ok('/options/admin/form')->status_is(200);
+        $t->status_is(302)->content_is('')->header_is(Location => '/admin/form');
+        $t->get_ok('/admin/form')->status_is(200);
     }
 }
 

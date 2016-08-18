@@ -44,12 +44,12 @@ sub set_password {
     $c->dbh_do( 
         'UPDATE users SET password=? WHERE id=? AND password=?'
         , $pwh, $uid, $oph );
-    
     # Passwortänderung noch einmal prüfen, ist immerhin wichtig
     $i = $c->dbh_selectall_arrayref(
         'SELECT COUNT(id) FROM users WHERE UPPER(name)=UPPER(?) AND password=?'
         , $uid, $pwh)->[0]->[0];
 
+    
     # Info und weg
     $c->set_info_f('Passwortwechsel ' . ( $i ? 'fehlgeschlagen' : 'erfolgreich' ) );
     $c->redirect_to('options_form');

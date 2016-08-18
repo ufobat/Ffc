@@ -63,7 +63,7 @@ EOMENU
 EOMENU
   << "EOMENU",
             <p class="optionslink separated">
-                <a href="/options/admin/form"><span class="linktext linkoptions">Administration</span></a>
+                <a href="/admin/form"><span class="linktext linkoptions">Administration</span></a>
             </p>
 EOMENU
   << "EOMENU",
