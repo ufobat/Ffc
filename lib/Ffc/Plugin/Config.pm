@@ -86,9 +86,9 @@ sub register {
     # Benutzer-Benachrichtigungs-Helper
     for my $w ( qw(info error warning ) ) {
         $app->helper( "set_$w" => 
-            sub { $_[0]->stash($w => join ' ', ($_[0]->stash($w) // ()), @_[1 .. $#_]) } );
+            sub { $_[0]->stash($w => join ' ', ($_[0]->stash($w) // ()), @_[1 .. $#_]); $_[0] } );
         $app->helper( "set_${w}_f" => 
-            sub { $_[0]->flash($w => join ' ', ($_[0]->stash($w) // ()), @_[1 .. $#_]) } );
+            sub { $_[0]->flash($w => join ' ', ($_[0]->stash($w) // ()), @_[1 .. $#_]); $_[0] } );
     }
 
     # Helper für verschlüsselte Passwortprüfung
