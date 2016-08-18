@@ -27,7 +27,7 @@ our @Settings = (
         'Längen-Kürzung für URL-Anzeige ändern',
         'URLs werden in Beiträgen und im Foren-Popup im Menü auf diese Anzahl von Zeichen in der Darstellung zurecht gekürzt, damit die in den Beiträgen nicht zu lang werden, die gesamte URL ist jedoch im Tooltip ersichtlich',
         'Die Länge, auf die URLs in der Anzeige gekürzt werden, muss eine Zahl sein' ],
-    [ backgroundcolor => 'Hintergrundfarbe', qr(\A(?:|\#[0-9a-f]{6}|\w{2,128})\z)msoi, 1, 'color',
+    [ backgroundcolor => 'Hintergrundfarbe', sub { $Ffc::Options::ColorRe }, 1, 'color',
         'Hintergrundfarbe für die Webseite ändern',
         'Hier kann die Hintergrundfarbe für die Webseite in hexadezimaler Schreibweise mit führender Raute ("#") oder als Webfarbenname angegeben werden, welche Benutzer stanardmäßig angezeigt bekommen, Achtung: Wenn man selber eine Hintergrundfarbe bei sich eingestellt hat, dann zeigt diese Option bei einem selbst keine Wirkung, falls Benutzern erlaubt ist, die Hintergrundfarbe zu ändern',
         'Die Hintergrundfarbe für die Webseite muss in hexadezimaler Schreibweise mit führender Raute oder als Webfarbenname angegeben werden' ],
@@ -56,6 +56,10 @@ sub boardsettingsadmin {
         return; # theoretisch nicht möglich laut routen
     }
     my ( $tit, $re, $rechk, $err, $sub ) = @{$setting[0]}[1,2,3,7,8];
+    # Die zentrale FarbRegex steht erst zur Laufzeit zur Verfügung und kann deswegen nicht oben schon in die
+    # Array-Ref beim use hinein kopiert werden, deswegen hier der Umweg über die Sub:
+    'CODE' eq ref $re and $re = $re->(); 
+
     unless ( $tit ) {
         $c->redirect_to('admin_options_form');
         return; # theoretisch nicht möglich laut routen
