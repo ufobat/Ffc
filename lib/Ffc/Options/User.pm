@@ -7,11 +7,15 @@ use strict; use warnings; use utf8;
 sub set_autorefresh {
     my $c = $_[0];
     my $ar = $c->param('refresh') // '';
-    unless ( $ar =~ m/(\d+)/xoms ) { # weil ich brauch den Capture
+
+    # Parameter ermitteln und prüfen
+    unless ( $ar =~ m/(\d+)/xoms ) { # das so weil ich brauch den Capture
         $c->set_error_f('Zeit für das automatische Neuladen der Seite konnte nicht geändert werden');
         return $c->redirect_to('options_form');
     }
     $ar = $1;
+    
+    # Refresh-Zeit umsetzen
     $c->session->{autorefresh} = $ar;
     $c->dbh_do('UPDATE "users" SET "autorefresh"=? WHERE "id"=?',
         $ar, $c->session->{userid});

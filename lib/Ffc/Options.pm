@@ -33,6 +33,7 @@ sub options_form {
     my $r = $c->dbh_selectall_arrayref(
         'SELECT email, newsmail, hideemail, birthdate, infos, hidelastseen FROM users WHERE id=?'
         , $c->session->{userid})->[0];
+
     $c->stash(
         email        => $r->[0],
         newsmail     => $r->[1],
