@@ -60,7 +60,7 @@ sub _get_single_post {
     if ( $post and @$post ) {
         $textdata ||= $post->[0]->[9];
         $c->stash( post => $post->[0] );
-        _get_attachements($c, $post, $wheres, @wherep) and return;
+        _get_attachements($c, $post, $wheres, @wherep) or return;
     }
     else {
         $c->set_warning('Keine passenden Beiträge gefunden');
@@ -102,7 +102,7 @@ sub _update_highscore {
     # Den bestehenden Score holen
     my $score = $c->dbh_selectall_arrayref('SELECT "score", "userfrom" FROM "posts" WHERE "id"=?', $c->param('postid'));
     # Man selber darf seine eigenen Beiträge natürlich nicht bewerten, klar
-    $score->[0]->[1] eq $c->session->{userid} and _redirect_to_show($c);
+    $score->[0]->[1] eq $c->session->{userid} and return _redirect_to_show($c);
     $score = $score->[0]->[0] || 0;
 
     # Aufpassen, dass der Score nicht überläuft
@@ -120,15 +120,16 @@ sub _update_highscore {
 # Für das gelesen-Tracking für das Forum
 sub _update_topic_lastid {
     my ( $c, $topicid, $summary, $zeroing ) = @_;
-    if ( $zeroing ) {
-        $c->dbh_do( << 'EOSQL', $topicid );
+    # Alles auf Null zurück für ein Thema, wenn nichts angegeben wurde 
+    # (letzter Beitrag im Thema wurde gelöscht)
+    $zeroing and return $c->dbh_do( << 'EOSQL', $topicid );
 UPDATE "topics" 
 SET "summary"='', "lastid"=-1
 WHERE "id"=?
 EOSQL
-    }
-    else {
-        $c->dbh_do( << 'EOSQL', $summary, $topicid, $topicid );
+
+    # Normal auf den aktuellsten Beitrag im Thema setzen
+    $c->dbh_do( << 'EOSQL', $summary, $topicid, $topicid );
 UPDATE "topics" 
 SET 
   "summary"=?,
@@ -143,14 +144,14 @@ SET
   )
 WHERE "id"=?
 EOSQL
-    }
 }
 
 ###############################################################################
 # Für das gelesen-Tracking bei den Privatnachrichten
+# (früher:  my ( $c, $userid, $userto ) = @_;)
 sub _update_pmsgs_lastid {
     my ( $c, $userid, $userto ) = @_;
-    $c->dbh_do( << 'EOSQL', $userid, $userto, $userid, $userto );
+    $_[0]->dbh_do( << 'EOSQL', $_[1], $_[2], $_[1], $_[2] );
 UPDATE "lastseenmsgs"
 SET "lastid"=(
     SELECT p."id"
