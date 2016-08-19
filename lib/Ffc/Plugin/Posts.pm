@@ -12,8 +12,10 @@ use Ffc::Plugin::Posts::Delete;
 use Ffc::Plugin::Posts::Uploads;
 use Ffc::Plugin::Posts::Uploaddeletes;
 
+###############################################################################
+# Helper registrieren für die Verwendung in den einzelnen Teilen des Forums
 sub register {
-    my ( $self, $app ) = @_;
+    my $app = $_[1];
     $app->helper( show_posts               => \&_show_posts               );
     $app->helper( query_posts              => \&_query_posts              );
     $app->helper( search_posts             => \&_search_posts             );
@@ -35,7 +37,7 @@ sub register {
     $app->helper( dec_post_highscore       => \&_dec_highscore            );
     $app->helper( get_single_post          => \&_get_single_post          );
     $app->helper( pagination               => \&_pagination               );
-    return $self;
+    return $_[0];
 }
 
 1;
