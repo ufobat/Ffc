@@ -2,10 +2,13 @@ package Ffc::Forum;
 use 5.18.0;
 use strict; use warnings; use utf8;
 
-sub   newsmail_topic_do { $_[0]->_handle_newsmail_topic_do(1, $_[1]) }
-sub unnewsmail_topic_do { $_[0]->_handle_newsmail_topic_do(0, $_[1]) }
+###############################################################################
+# Email-Benachrichtung umschalten
+sub   newsmail_topic_do { _handle_newsmail_topic_do($_[0], 1, $_[1]) }
+sub unnewsmail_topic_do { _handle_newsmail_topic_do($_[0], 0, $_[1]) }
+# Handler
 sub _handle_newsmail_topic_do {
-    $_[0]->_handle_val_topic_do('newsmail', $_[1],
+    _handle_val_topic_do($_[0], 'newsmail', $_[1],
         'Für das gewählte Thema werden Informations-Emails bei neuen Beiträgen verschickt.',
         'Für das gewählte Thema werden keine Informations-Emails bei neuen Beiträgen mehr verschickt.',
         $_[2],
@@ -13,31 +16,43 @@ sub _handle_newsmail_topic_do {
     );
 }
 
-sub   ignore_topic_do { $_[0]->_handle_ignore_topic_do(1, $_[1]) }
-sub unignore_topic_do { $_[0]->_handle_ignore_topic_do(0, $_[1]) }
+###############################################################################
+# Ignorieren-Schalter
+sub   ignore_topic_do { _handle_ignore_topic_do($_[0], 1, $_[1]) }
+sub unignore_topic_do { _handle_ignore_topic_do($_[0], 0, $_[1]) }
+# Handler
 sub _handle_ignore_topic_do {
-    $_[0]->_handle_val_topic_do('ignore', $_[1],
+    _handle_val_topic_do($_[0], 'ignore', $_[1],
         'Zum gewählten Thema werden keine neuen Beiträge mehr angezählt.',
         'Das gewählte Thema wird jetzt nicht mehr ignoriert.', $_[2]);
 }
 
-sub   pin_topic_do { $_[0]->_handle_pin_topic_do(1) }
-sub unpin_topic_do { $_[0]->_handle_pin_topic_do(0) }
+###############################################################################
+# Oben Anpinnen-Schalter
+sub   pin_topic_do { _handle_pin_topic_do($_[0], 1) }
+sub unpin_topic_do { _handle_pin_topic_do($_[0], 0) }
+# Handler
 sub _handle_pin_topic_do {
-    $_[0]->_handle_val_topic_do('pin', $_[1],
+    _handle_val_topic_do($_[0], 'pin', $_[1],
         'Das gewählte Thema wird immer oben angeheftet.', 
         'Das gewählte Thema wird jetzt nicht mehr oben angeheftet.');
 }
 
+###############################################################################
+# Bearbeitungs-Handler der Schalteranfrage
 sub _handle_val_topic_do {
     my ( $c, $name, $val, $dotxt, $undotxt, $redirect, $warning ) = @_;
     my $topicid = $c->param('topicid');
+
+    # Gibt es schon einen Eintrag für diesen Schalter
     my $lastseen = $c->dbh_selectall_arrayref(
         'SELECT "lastseen"
         FROM "lastseenforum"
         WHERE "userid"=? AND "topicid"=?',
         $c->session->{userid}, $topicid
     );
+
+    # Datenbank-Eintrag entsprechend erzeugen oder ändern
     if ( @$lastseen ) {
         $c->dbh_do(
             qq~UPDATE "lastseenforum" SET "$name"=? WHERE "userid"=? AND "topicid"=?~,
@@ -48,28 +63,32 @@ sub _handle_val_topic_do {
             qq~INSERT INTO "lastseenforum" ("userid", "topicid", "$name") VALUES (?,?,?)~,
             $c->session->{userid}, $topicid, $val);
     }
+
+    # Webseiten-Daten befüllen
     if ( $val )     { $c->set_info_f(    $dotxt   ) }
     else            { $c->set_info_f(    $undotxt ) }
     if ( $warning ) { $c->set_warning_f( $warning ) } 
     $c->redirect_to($redirect ? ( $redirect, topicid => $topicid ) : 'show_forum_topiclist');
 }
 
+###############################################################################
+# Künstlich einen Beitrag als gelesen markieren
 sub mark_seen {
     my $topicid = $_[0]->param('topicid');
     $_[0]->set_lastseen( $_[0]->session->{userid}, $topicid );
-    $_[0]->redirect_to($_[1] ? ( $_[1], topicid => $topicid ) : 'show_forum_topiclist');
+    $_[0]->redirect_to(  $_[1] ? ( $_[1], topicid => $topicid ) : 'show_forum_topiclist' );
 }
 
+###############################################################################
+# Künstlich alle neuen Beiträge direkt in der Themenliste als gelesen markieren
 sub mark_all_seen {
-    my $c = shift;
+    my $c = $_[0];
     $c->counting;
-    my $uid = $c->session->{userid};
     for my $top ( grep {;$_->[3]} @{$c->stash('topics')} ) {
-        $c->set_lastseen( $uid, $top->[0] );
+        $c->set_lastseen( $c->session->{userid}, $top->[0] );
     }
     $c->set_info_f('Alle Themen wurden als gelesen markiert.');
     $c->redirect_to('show_forum_topiclist');
 }
 
 1;
-
