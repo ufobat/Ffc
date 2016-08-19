@@ -2,6 +2,7 @@ package Ffc::Forum;
 use 5.18.0;
 use strict; use warnings; use utf8;
 
+###############################################################################
 sub show_topiclist {
     my $c = shift;
     $c->counting;
@@ -53,6 +54,4 @@ sub set_topiclimit {
     $c->redirect_to('show_forum_topiclist');
 }
 
-
 1;
-

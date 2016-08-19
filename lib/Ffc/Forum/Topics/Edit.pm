@@ -2,6 +2,7 @@ package Ffc::Forum;
 use 5.18.0;
 use strict; use warnings; use utf8;
 
+###############################################################################
 sub edit_topic_form {
     my $c = shift;
     $c->counting;
@@ -12,6 +13,7 @@ sub edit_topic_form {
     $c->render(template => 'topicform');
 }
 
+###############################################################################
 sub _check_topic_edit {
     my $c = shift;
     return 1 if $c->session->{admin};
@@ -28,6 +30,7 @@ sub _check_topic_edit {
     return 1;
 }
 
+###############################################################################
 sub edit_topic_do {
     my $c = shift;
     my $titlestring = $c->param('titlestring');
@@ -57,6 +60,7 @@ sub edit_topic_do {
     $c->redirect_to('show_forum', topicid => $topicid);
 }
 
+###############################################################################
 sub move_topic_do {
     my $c = shift;
     my $topicid = $c->param('topicid');
@@ -90,4 +94,3 @@ sub move_topic_do {
 }
 
 1;
-

@@ -2,6 +2,7 @@ package Ffc::Forum;
 use 5.18.0;
 use strict; use warnings; use utf8;
 
+###############################################################################
 sub moveto_topiclist_select {
     my $c = shift;
     $c->counting;
@@ -15,6 +16,7 @@ sub moveto_topiclist_select {
     $c->render(template => 'move_post_topiclist');
 }
 
+###############################################################################
 sub _moveto_old_topic {
     my $c = shift;
     my $postid = $c->param('postid');
@@ -70,6 +72,7 @@ EOSQL
     return $newtopicid;
 }
 
+###############################################################################
 sub _moveto_new_topic {
     my $c = shift;
     my $postid = $c->param('postid');
@@ -83,6 +86,7 @@ sub _moveto_new_topic {
     }
 }
 
+###############################################################################
 sub moveto_topiclist_do {
     my $c = shift;
     my $postid = $c->param('postid');
@@ -115,4 +119,3 @@ sub moveto_topiclist_do {
 }
 
 1;
-

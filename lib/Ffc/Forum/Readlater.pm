@@ -3,6 +3,22 @@ use 5.18.0;
 use strict; use warnings; use utf8;
 
 ###############################################################################
+# Routen für die Beitragsvormerkungsliste erstellen
+sub install_readlater_routes {
+    my $l = $_[0];
+
+    $l->route('/forum/readlater/list')->via('get')
+      ->to(controller => 'forum', action => 'list_readlater')
+      ->name('list_readlater');
+    $l->route('/forum/readlater/:topicid/mark/:postid', topicid => $Ffc::Digqr, postid => $Ffc::Digqr)->via('get')
+      ->to(controller => 'forum', action => 'mark_readlater')
+      ->name('mark_readlater');
+    $l->route('/forum/readlater/unmark/:postid')->via('get')
+      ->to(controller => 'forum', action => 'unmark_readlater')
+      ->name('unmark_readlater');
+}
+
+###############################################################################
 # Vormerkung für Späterlesen eintragen
 sub mark_readlater {
     my $c = $_[0];
