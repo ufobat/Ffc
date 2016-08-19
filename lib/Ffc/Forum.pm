@@ -7,8 +7,9 @@ use Ffc::Forum::Topics;
 use Ffc::Forum::Readlater;
 
 ###############################################################################
+# Die verschiedenen Routen des Forenteils installieren
 sub install_routes { 
-    my $l = shift;
+    my $l = $_[0];
 
     # Themenlisten-Routen einrichten
     Ffc::Forum::install_topics_routes($l);
@@ -21,24 +22,20 @@ sub install_routes {
 }
 
 ###############################################################################
+# Abfrage-Einschränkgung von Beiträgen im Forum
 sub where_select { 
-    my $topicid = $_[0]->param('topicid');
-    if ( $topicid ) {
-        my $action = $_[0]->stash('action');
-        if ( $action =~ m~\A(?:delete|edit|upload|move)~xmsio ) {
-            return 
-                'p."userto" IS NULL AND p."topicid"=? AND p."userfrom"=?',
-                $topicid, $_[0]->session->{userid};
-        }
-        return 
-            'p."userto" IS NULL AND p."topicid"=?',
-            $topicid;
-    }
-    else {
-        return 'p."userto" IS NULL';
-    }
+    # Bei bestimmten Aktionen muss noch geprüft werden, ob der angemeldete Benutzer Überhaupt zugriff auf die Aktion hat
+    $_[0]->stash('action') =~ m~\A(?:delete|edit|upload|move)~xmsio
+        and return 
+            'p."userto" IS NULL AND p."topicid"=? AND p."userfrom"=?',
+            $_[0]->param('topicid'), $_[0]->session->{userid};
+
+    # Die Übliche Beitragsausgabe innerhalb eines Themas
+    return 'p."userto" IS NULL AND p."topicid"=?', $_[0]->param('topicid');
 }
+
 ###############################################################################
+# Beim Modifizieren von Beiträgen im Forum muss auch darauf geachtet werden, dass das nur der angemeldete Benutzer darf
 sub where_modify {
     return
         '"userto" IS NULL AND "topicid"=? AND "userfrom"=?',
@@ -46,26 +43,27 @@ sub where_modify {
 }
 
 ###############################################################################
-sub additional_params {
-    return topicid => $_[0]->param('topicid');
-}
+# Es wird immer eine Themen-Id gebraucht, wenn man irgendwas mit den Beiträgen im Forum machen will
+sub additional_params { topicid => $_[0]->param('topicid') }
 
 ###############################################################################
+# Wahlweise die Themenliste oder die Liste der Themen in der Startseiten-Thema-Einstellung anzeigen
 sub show_startuppage {
-    if ( $_[0]->configdata->{starttopic} ) {
-        $_[0]->redirect_to('show_forum', topicid => $_[0]->configdata->{starttopic});
-    }
-    else {
-        $_[0]->show_topiclist;
-    }
+    $_[0]->configdata->{starttopic}
+        and return
+            $_[0]->redirect_to('show_forum', topicid => $_[0]->configdata->{starttopic});
+    
+    $_[0]->show_topiclist;
 }
 
 ###############################################################################
+# Beiträge eines Foren-Themas anzeigen
 sub show {
-    my $c = shift;
+    my $c = $_[0];
     my ( $uid, $topicid ) = ( $c->session->{userid}, $c->param('topicid') );
     my ( $heading, $userfrom ) = $c->_get_title_from_topicid;
-    return unless $heading;
+    # Ohne Themenüberschrift kein Thema
+    $heading or return;
     $c->stash(
         topicid      => $topicid,
         backurl      => $c->url_for('show_forum_topiclist'),
@@ -81,6 +79,7 @@ sub show {
 }
 
 ###############################################################################
+# Einen Beitrag zu einem Thema hinzu fügen
 sub add { 
     my $c = shift; 
     my $topicid = $c->param('topicid');
@@ -88,40 +87,41 @@ sub add {
     $c->add_post( undef, $topicid, @_ ) }
 
 ###############################################################################
+# Formular anzeigen, um einen Beitrag zu ändern
 sub edit_form {
-    my $c = shift;
-    $c->stash( heading => 
-        'Beitrag zum Thema "' . $c->_get_title_from_topicid . '" ändern' );
-    $c->edit_post_form();
+    $_[0]->stash( heading => 
+        'Beitrag zum Thema "' . $_[0]->_get_title_from_topicid . '" ändern' );
+    $_[0]->edit_post_form();
 }
 
 ###############################################################################
+# Änderungen an einem Beitrag durchführen
 sub edit_do { $_[0]->edit_post_do(undef, $_[0]->param('topicid')) }
 
 ###############################################################################
+# Rückfragebestätigung, ob ein Beitrag gelöscht werden soll
 sub delete_check {
-    my $c = shift;
-    $c->stash( heading => 
-        'Beitrag zum Thema "' . $c->_get_title_from_topicid . '" entfernen' );
-    $c->delete_post_check();
+    $_[0]->stash( heading => 
+        'Beitrag zum Thema "' . $_[0]->_get_title_from_topicid . '" entfernen' );
+    $_[0]->delete_post_check();
 }
 
 
 ###############################################################################
+# Hochladeformular
 sub upload_form {
-    my $c = shift;
-    $c->stash( heading => 
-        'Eine Datei zum Beitrag zum Thema "' . $c->_get_title_from_topicid . '" anhängen' );
-    $c->upload_post_form();
+    $_[0]->stash( heading => 
+        'Eine Datei zum Beitrag zum Thema "' . $_[0]->_get_title_from_topicid . '" anhängen' );
+    $_[0]->upload_post_form();
 }
 
 
 ###############################################################################
+# Rückfragebestätigung, wenn man einen Dateiupload doch wieder löschen möchte
 sub delete_upload_check {
-    my $c = shift;
-    $c->stash( heading => 
-        'Eine Datei zum Beitrag zum Thema "' . $c->_get_title_from_topicid . '" löschen' );
-    $c->delete_upload_post_check();
+    $_[0]->stash( heading => 
+        'Eine Datei zum Beitrag zum Thema "' . $_[0]->_get_title_from_topicid . '" löschen' );
+    $_[0]->delete_upload_post_check();
 }
 
 ###############################################################################
