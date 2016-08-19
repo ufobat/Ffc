@@ -12,10 +12,6 @@ use Ffc::Plugin::Posts::Delete;
 use Ffc::Plugin::Posts::Uploads;
 use Ffc::Plugin::Posts::Uploaddeletes;
 
-# Die Dokumentation dieses Plugins wurde beispielhaft und sehr ausführlich
-# im Controller Ffc::Notes durchgeführt. Bitte da rein schauen, um raus zu
-# bekommen, wie dieses Plugin zu verwenden ist.
-
 sub register {
     my ( $self, $app ) = @_;
     $app->helper( show_posts               => \&_show_posts               );
