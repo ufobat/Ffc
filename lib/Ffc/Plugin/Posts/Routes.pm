@@ -2,6 +2,8 @@ package Ffc::Plugin::Posts; # Routes
 use 5.18.0;
 use strict; use warnings; use utf8;
 
+###############################################################################
+# Routen jeweils für die einzelnen Beitrags-Module erzeugen
 sub install_routes_posts {
     my ( $l, $cname, $start, @startps ) = @_;
 
