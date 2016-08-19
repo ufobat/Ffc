@@ -2,25 +2,26 @@ package Ffc::Pmsgs;
 use 5.18.0;
 use strict; use warnings; use utf8;
 
+###############################################################################
+# Die Benutzerliste kommt direkt aus dem Plugin
 sub show_userlist {
-    my $c = shift;
-    $c->counting;
-    $c->session->{query} = '';
-    $c->stash( queryurl => $c->url_for('search_pmsgs_posts') );
-    $c->render(template => 'userlist');
+    $_[0]->session->{query} = '';
+    $_[0]->counting
+         ->stash( queryurl => $_[0]->url_for('search_pmsgs_posts') );
+    $_[0]->render(template => 'userlist');
 }
 
+###############################################################################
+# Ein Benutzername wird über die User-To-Id aus privaten Nachrichten ermittelt
 sub _get_username {
-    my $c = shift;
-    my $name = $c->dbh_selectall_arrayref(
-        'SELECT "name" FROM "users" WHERE "id"=?', $c->param('usertoid'));
+    my $utid = $_[0]->param('usertoid');
+    my $name = $_[0]->dbh_selectall_arrayref(
+        'SELECT "name" FROM "users" WHERE "id"=?', $utid);
     unless ( @$name ) {
-        $c->set_error(
-            'Benutzername für Benutzerid "'.($c->param('usertoid') // '<NULL>').'" konnte nicht ermittelt werden');
+        $_[0]->set_error( qq~Benutzername für Benutzerid "$utid" konnte nicht ermittelt werden~);
         return 'Unbekannt';
     }
     return $name->[0]->[0];
 }
 
 1;
-

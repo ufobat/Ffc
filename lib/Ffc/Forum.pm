@@ -134,8 +134,6 @@ sub additional_params {
     return topicid => $_[0]->param('topicid');
 }
 
-sub search { $_[0]->search_posts(); }
-
 sub show_startuppage {
     if ( $_[0]->configdata->{starttopic} ) {
         $_[0]->redirect_to('show_forum', topicid => $_[0]->configdata->{starttopic});
@@ -164,8 +162,6 @@ sub show {
     $c->show_posts();
 }
 
-sub query { $_[0]->query_posts }
-
 sub add { 
     my $c = shift; 
     my $topicid = $c->param('topicid');
@@ -188,7 +184,6 @@ sub delete_check {
     $c->delete_post_check();
 }
 
-sub delete_do { $_[0]->delete_post_do() }
 
 sub upload_form {
     my $c = shift;
@@ -197,11 +192,6 @@ sub upload_form {
     $c->upload_post_form();
 }
 
-sub set_postlimit { $_[0]->set_post_postlimit() }
-
-sub upload_do { $_[0]->upload_post_do() }
-
-sub download {  $_[0]->download_post() }
 
 sub delete_upload_check {
     my $c = shift;
@@ -210,10 +200,17 @@ sub delete_upload_check {
     $c->delete_upload_post_check();
 }
 
-sub delete_upload_do { $_[0]->delete_upload_post_do() }
-
 sub inc_highscore { $_[0]->inc_post_highscore() }
 sub dec_highscore { $_[0]->dec_post_highscore() }
 
-1;
+###############################################################################
+# Das wird direkt durechgeleitet
+sub search           { $_[0]->search_posts()          }
+sub query            { $_[0]->query_posts             }
+sub set_postlimit    { $_[0]->set_post_postlimit()    }
+sub upload_do        { $_[0]->upload_post_do()        }
+sub download         { $_[0]->download_post()         }
+sub delete_upload_do { $_[0]->delete_upload_post_do() }
+sub delete_do        { $_[0]->delete_post_do()        }
 
+1;

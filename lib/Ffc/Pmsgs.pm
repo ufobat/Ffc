@@ -5,62 +5,82 @@ use Mojo::Base 'Mojolicious::Controller';
 
 use Ffc::Pmsgs::Userlist;
 
+###############################################################################
+# Routen für die Privatnachrichtenbehandlung erstellen
 sub install_routes { 
-    my $l = shift;
-    $l->route('/pmsgs')->via('get')
+    # Route zur Benutzerliste als Übersichtsseite und Einstiegsseite für alle privaten Nachrichtenkonversationen
+    $_[0]->route('/pmsgs')->via('get')
       ->to(controller => 'pmsgs', action => 'show_userlist')
       ->name('show_pmsgs_userlist');
-    Ffc::Plugin::Posts::install_routes_posts($l, 'pmsgs', '/pmsgs/:usertoid', usertoid => $Ffc::Digqr);
+
+    # Beitrags-Standard-Routen
+    Ffc::Plugin::Posts::install_routes_posts(
+        $_[0], 'pmsgs', '/pmsgs/:usertoid', usertoid => $Ffc::Digqr);
 }
 
+###############################################################################
+# Beiträge auf Privatnachrichten einschränken (nur in der Konversationsansicht notwendig)
 sub where_select {
-    my $uid = $_[0]->session->{userid};
-    my $cid = $_[0]->param('usertoid');
-    my $sql = 'p."userto" IS NOT NULL AND p."userfrom"<>p."userto" AND (p."userfrom"=? OR p."userto"=?)';
-    if ( $cid ) {
-        return 
-            $sql . ' AND (p."userfrom"=? OR p."userto"=?) AND (?<>?)', 
-            $uid, $uid, $cid, $cid, $uid, $cid;
-    }
-    else {
-        return $sql, $uid, $uid;
-    }
+    my $utid = $_[0]->param('usertoid');
+
+    # Basic-SQL, brauch ich immer
+    my $sql = << 'EOSQL';
+              p."userto"   IS NOT NULL 
+        AND   p."userfrom" <> p."userto" 
+        AND ( p."userfrom" =  ? 
+         OR   p."userto"   =  ? )
+EOSQL
+    # Falls es keine Gegenseite gibt, dann war es das auch schon    
+    $utid or 
+        return $sql, ( ( $_[0]->session->{userid} ) x 2 );
+
+    # Gibt es eine Gegenseite (aka private Konversation), müssen wir das in Betracht ziehen
+    return $sql . << 'EOSQL',
+        AND ( p."userfrom" =  ? 
+         OR   p."userto"   =  ? )
+        AND ( ?            <> ? )
+EOSQL
+        ( ( $_[0]->session->{userid} ) x 5 ), 
+        $utid,
 }
 
+###############################################################################
+# Veränderungen dürfen nur vom Beitragsersteller durchgeführt werden, 
+# darunter zählen auch Uploads und so, deswegen brauchen wir das auch für Privatnachrichten
 sub where_modify {
-    my $uid = $_[0]->session->{userid};
-    my $cid = $_[0]->param('usertoid');
-    return 
-        '"userto" IS NOT NULL AND "userfrom"<>"userto" AND ("userfrom"=? OR "userto"=?) AND ("userfrom"=? OR "userto"=?) AND (?<>?)', 
-        $uid, $uid, $cid, $cid, $uid, $cid;
+    return << 'EOSQL',
+              "userto"   IS NOT NULL 
+        AND   "userfrom" <> "userto" 
+        AND ( "userfrom" =  ? )
+        AND ( "userto"   =  ? )
+EOSQL
+        $_[0]->session->{userid}, 
+        $_[0]->param('usertoid');
 }
 
-sub additional_params {
-    return usertoid => $_[0]->param('usertoid');
-}
+###############################################################################
+# Als zusätzlichen Parameter in den URL's wird lediglich die Id des Benutzers, 
+# mit dem man die private Konversation führt, benötigt
+sub additional_params { usertoid => $_[0]->param('usertoid') }
 
-sub search { $_[0]->search_posts(); }
-
+###############################################################################
+# Private Nachrichten anzeigen
 sub show {
-    my $c = shift;
-    $c->stash(
-        backurl  => $c->url_for('show_pmsgs_userlist'),
-        backtext => 'zur Benutzerliste',
-        heading  => 
-            'Private Nachrichten mit "' . $c->_get_username . '"',
-    );
+    my $c = $_[0];
     my ( $uid, $utoid ) = ( $c->session->{userid}, $c->param('usertoid') );
+
+    # Id der letzten erfassten (als gesehen markierten) Privatnachricht für den Benutzer
     my $lastseen = $c->dbh_selectall_arrayref(
-        'SELECT "lastseen"
-        FROM "lastseenmsgs"
-        WHERE "userid"=? AND "userfromid"=?',
+        'SELECT "lastseen" FROM "lastseenmsgs" WHERE "userid"=? AND "userfromid"=?',
         $uid, $utoid
     );
+    # Id der letzten Privatnachricht für den Benutzer
     my $newlastseen = $c->dbh_selectall_arrayref(
         'SELECT "id" FROM "posts" WHERE "userto"=? AND "userfrom"=? ORDER BY "id" DESC LIMIT 1',
         $uid, $utoid);
     $newlastseen = @$newlastseen ? $newlastseen->[0]->[0] : -1;
 
+    # Daten für Webseiten befüllen
     if ( @$lastseen ) {
         $c->stash( lastseen => $lastseen->[0]->[0] );
         $c->dbh_do(
@@ -70,22 +90,33 @@ sub show {
     else {
         $c->stash( lastseen => -1 );
         $c->dbh_do(
-            'INSERT INTO "lastseenmsgs" ("userid", "userfromid", "lastseen", "mailed") VALUES (?,?,?,1)',
-            $uid, $utoid, $newlastseen );
+            'INSERT INTO "lastseenmsgs" ("lastseen", "userid", "userfromid", "mailed") VALUES (?,?,?,1)',
+             $newlastseen, $uid, $utoid );
     }
+
+    $c->stash(
+        backurl  => $c->url_for('show_pmsgs_userlist'),
+        backtext => 'zur Benutzerliste',
+        heading  => 'Private Nachrichten mit "' . $c->_get_username . '"',
+    );
     $c->show_posts();
 }
 
-sub query { $_[0]->query_posts }
-
+###############################################################################
+# Eine neue Privatnachricht an einem Benutzer schreiben
 sub add { 
-    my $c = shift;
-    my $utoid = $c->param('usertoid');
-    my $uid = $c->session->{userid};
+    my $c = $_[0];
+    my ( $utoid, $uid ) = ( $c->param('usertoid'), $c->session->{userid} );
+
+    # Nachsehen, ob es für den Benutzer bereits einen Eintrag gibt, der mitverfolgt,
+    # welche Privatnachricht in der bestimmten Konversation bereits gesehen wurden
     my $lastseen = $c->dbh_selectall_arrayref(
         'SELECT "lastseen" FROM "lastseenmsgs" WHERE "userid"=? AND "userfromid"=?',
         $utoid, $uid
     );
+
+    # In der Konversationsverfolgung mit dem Benutzer hinterlegen, dass gleich eine neue
+    # nocht nicht veremailte (falls das gewünscht ist) Nachricht vorhanden ist
     if ( @$lastseen ) {
         $c->dbh_do(
             'UPDATE "lastseenmsgs" SET "mailed"=0 WHERE "userid"=? AND "userfromid"=?',
@@ -96,33 +127,38 @@ sub add {
             'INSERT INTO "lastseenmsgs" ("userid", "userfromid", "mailed") VALUES (?,?,0)',
             $utoid, $uid );
     }
+
+    # Regulärer Ablauf
     $c->add_post($utoid, undef);
 }
 
+###############################################################################
+# Formular für das Hochladen befüllen (nur Überschrift)
 sub upload_form {
-    my $c = shift;
-    $c->stash( heading => 
-        'Eine Datei zur privaten Nachrichten mit "' . $c->_get_username . '" anhängen' );
-    $c->upload_post_form();
+    $_[0]->stash( heading => 'Eine Datei zur privaten Nachrichten mit "' . $_[0]->_get_username . '" anhängen' );
+    $_[0]->upload_post_form();
 }
 
-sub set_postlimit { $_[0]->set_post_postlimit() }
 
-sub upload_do { $_[0]->upload_post_do() }
-
-sub download {  $_[0]->download_post() }
-
+###############################################################################
+# Formular für die Löschnachfrage befüllen (nur Überschrift)
 sub delete_upload_check {
-    my $c = shift;
-    $c->stash( heading => 
-        'Einen Dateianhang der privaten Nachrichten mit "' . $c->_get_username . '" löschen' );
-    $c->delete_upload_post_check();
+    $_[0]->stash( heading => 'Einen Dateianhang der privaten Nachrichten mit "' . $_[0]->_get_username . '" löschen' );
+    $_[0]->delete_upload_post_check();
 }
 
-sub delete_upload_do { $_[0]->delete_upload_post_do() }
-
+###############################################################################
+# Highscores machen bei Privatnachrichten keinen Sinn, und werden deswegen auf die Startseite umgeleitet
 sub inc_highscore { $_[0]->show_posts() }
 sub dec_highscore { $_[0]->show_posts() }
 
-1;
+###############################################################################
+# Das hier wird direkt durchgeleitet und nicht überschrieben
+sub search           { $_[0]->search_posts()          }
+sub query            { $_[0]->query_posts             }
+sub set_postlimit    { $_[0]->set_post_postlimit()    }
+sub upload_do        { $_[0]->upload_post_do()        }
+sub download         { $_[0]->download_post()         }
+sub delete_upload_do { $_[0]->delete_upload_post_do() }
 
+1;
