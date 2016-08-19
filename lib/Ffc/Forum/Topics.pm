@@ -28,8 +28,11 @@ sub _get_title_from_topicid {
         $_[1] // $_[0]->param('topicid')
     );
     unless ( @$r ) {
-        $_[0]->set_error('Konnte das gewünschte Thema nicht finden.');
-        $_[0]->show_topiclist;
+        # Wahlweise kann die Weiterleitung unterbunden werden ... da muss man aber ein extra Flag setzen
+        unless ( $_[1] ) {
+            $_[0]->set_error('Konnte das gewünschte Thema nicht finden.');
+            $_[0]->show_topiclist;
+        }
         return;
     }
     return wantarray ? @{$r->[0]} : $r->[0]->[0];

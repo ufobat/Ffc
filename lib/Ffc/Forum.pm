@@ -6,6 +6,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Ffc::Forum::Topics;
 use Ffc::Forum::Readlater;
 
+###############################################################################
 sub install_routes { 
     my $l = shift;
 
@@ -19,6 +20,7 @@ sub install_routes {
     Ffc::Plugin::Posts::install_routes_posts($l, 'forum', '/topic/:topicid', topicid => $Ffc::Digqr);
 }
 
+###############################################################################
 sub where_select { 
     my $topicid = $_[0]->param('topicid');
     if ( $topicid ) {
@@ -36,16 +38,19 @@ sub where_select {
         return 'p."userto" IS NULL';
     }
 }
+###############################################################################
 sub where_modify {
     return
         '"userto" IS NULL AND "topicid"=? AND "userfrom"=?',
         $_[0]->param('topicid'), $_[0]->session->{userid};
 }
 
+###############################################################################
 sub additional_params {
     return topicid => $_[0]->param('topicid');
 }
 
+###############################################################################
 sub show_startuppage {
     if ( $_[0]->configdata->{starttopic} ) {
         $_[0]->redirect_to('show_forum', topicid => $_[0]->configdata->{starttopic});
@@ -55,6 +60,7 @@ sub show_startuppage {
     }
 }
 
+###############################################################################
 sub show {
     my $c = shift;
     my ( $uid, $topicid ) = ( $c->session->{userid}, $c->param('topicid') );
@@ -74,12 +80,14 @@ sub show {
     $c->show_posts();
 }
 
+###############################################################################
 sub add { 
     my $c = shift; 
     my $topicid = $c->param('topicid');
     $c->dbh_do( 'UPDATE "lastseenforum" SET "mailed"=0 WHERE "topicid"=?', $topicid );
     $c->add_post( undef, $topicid, @_ ) }
 
+###############################################################################
 sub edit_form {
     my $c = shift;
     $c->stash( heading => 
@@ -87,8 +95,10 @@ sub edit_form {
     $c->edit_post_form();
 }
 
+###############################################################################
 sub edit_do { $_[0]->edit_post_do(undef, $_[0]->param('topicid')) }
 
+###############################################################################
 sub delete_check {
     my $c = shift;
     $c->stash( heading => 
@@ -97,6 +107,7 @@ sub delete_check {
 }
 
 
+###############################################################################
 sub upload_form {
     my $c = shift;
     $c->stash( heading => 
@@ -105,6 +116,7 @@ sub upload_form {
 }
 
 
+###############################################################################
 sub delete_upload_check {
     my $c = shift;
     $c->stash( heading => 
@@ -112,6 +124,8 @@ sub delete_upload_check {
     $c->delete_upload_post_check();
 }
 
+###############################################################################
+# Hier ist der einzige Ort, wo High-Scores gezählt werden
 sub inc_highscore { $_[0]->inc_post_highscore() }
 sub dec_highscore { $_[0]->dec_post_highscore() }
 
