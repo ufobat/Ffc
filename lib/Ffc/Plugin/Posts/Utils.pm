@@ -2,14 +2,13 @@ package Ffc::Plugin::Posts; # Utils
 use 5.18.0;
 use strict; use warnings; use utf8;
 
-
+###############################################################################
 # Diese Hilfsfunktion setzt den Rahmen für alle Formulare innerhalb
 # der Beitrags-Handling-Routinen. Es legt einige Stash-Variablen fest,
 # die von allen Templates benötigt werden
 sub _setup_stash {
-    my $c = shift;
-    my $cname = $c->stash('controller');
-    my $act = $c->stash('action');
+    my $c = $_[0];
+    my ( $cname, $act ) = ( $c->stash('controller'), $c->stash('action') );
     $c->stash( 
         # Routenname für Abbrüche, der auf die Einstiegsseite der Beitragsübersicht verweißt.
         # Diese Route wird direkt als URL festgelegt, da sie keine weiteren Daten braucht.
@@ -22,23 +21,22 @@ sub _setup_stash {
         # mit angegeben werden müssen.
         additional_params => [ $c->additional_params ],
     );
-    $c->stash(
-        # Routenname für Filter-Suchen aus dem Menü heraus.
-        # Diese Route wird direkt als URL festgelegt, da sie keine weiteren Daten braucht.
-        queryurl => $c->url_for("query_$cname"),
-    ) if $act ne 'search';
+    $act ne 'search' 
+        and $c->stash(
+           # Routenname für Filter-Suchen aus dem Menü heraus.
+           # Diese Route wird direkt als URL festgelegt, da sie keine weiteren Daten braucht.
+            queryurl => $c->url_for("query_$cname"),
+        );
 }
 
-sub _redirect_to_show {
-    $_[0]->redirect_to('show_'.$_[0]->stash('controller'), $_[0]->additional_params)
-}
+###############################################################################
+# Zur Liste der Beiträge zurück kehren
+sub _redirect_to_show   { $_[0]->redirect_to('show_'.$_[0]->stash('controller'), $_[0]->additional_params) }
 
-sub _redirect_to_search {
-    $_[0]->redirect_to('search_'.$_[0]->stash('controller').'_posts')
-}
-
+###############################################################################
+# Einen einzigen Beitrag ermitteln
 sub _get_single_post {
-    my $c = shift;
+    my $c = $_[0];
     my ( $wheres, @wherep ) = $c->where_select;
 
     my $postid = $c->param('postid');
@@ -54,14 +52,15 @@ sub _get_single_post {
         .qq~INNER JOIN "users" uf ON p."userfrom"=uf."id"\n~
         .qq~LEFT OUTER JOIN "users" ut ON p."userto"=ut."id"\n~
         .qq~WHERE p."id"=?~;
-    $sql .= qq~ AND $wheres~ if $wheres;
+    $wheres and ( $sql .= qq~ AND $wheres~ );
     my $post = $c->dbh_selectall_arrayref( $sql, $postid, @wherep );
-    #use Data::Dumper; warn Dumper $sql, [$postid, @wherep], $post;
+
+    # Eventuell wurde Text eingegeben, den wollen wir natürlich nicht übschreiben
     my $textdata = $c->param('textdata') // '';
     if ( $post and @$post ) {
-        $textdata = $post->[0]->[9] unless $textdata;
+        $textdata ||= $post->[0]->[9];
         $c->stash( post => $post->[0] );
-        return unless _get_attachements($c, $post, $wheres, @wherep);
+        _get_attachements($c, $post, $wheres, @wherep) and return;
     }
     else {
         $c->set_warning('Keine passenden Beiträge gefunden');
@@ -69,14 +68,15 @@ sub _get_single_post {
         return;
     }
 
-    $c->stash( textdata => $textdata );
-    $c->stash( postid   => $postid );
+    # Wir haben etwas passendes gefunden
+    $c->stash( textdata => $textdata, postid   => $postid );
 }
 
+###############################################################################
+# Alle Anhänge zu einem Beitrag finden
 sub _get_attachements {
-    my $c = shift;
+    my ( $c, $posts ) = @_;
     my ( $wheres, @wherep ) = $c->where_select;
-    my $posts = shift;
     my $sql = qq~SELECT\n~
             . qq~a."id", a."postid", a."filename", a."isimage", a."inline",\n~
             . qq~CASE WHEN p."userfrom"=? THEN 1 ELSE 0 END AS "deleteable"\n~
@@ -85,34 +85,39 @@ sub _get_attachements {
             .  q~WHERE a."postid" IN ('~
             . (join q~', '~, map { $_->[0] } @$posts)
             .  q~')~;
-    $sql .= " AND $wheres" if $wheres;
+    $wheres and ( $sql .= " AND $wheres" );
     $sql .= qq~\nORDER BY a."filename", a."id"~;
     return $c->stash( attachements =>
         $c->dbh_selectall_arrayref( $sql, $c->session->{userid}, @wherep ) );
 }
 
+###############################################################################
+# Bewertung ändern
+sub _inc_highscore { _update_highscore( $_[0], 1 ) }
+sub _dec_highscore { _update_highscore( $_[0], 0 ) }
+# Handler
 sub _update_highscore {
     my ( $c, $up ) = @_;
+
+    # Den bestehenden Score holen
     my $score = $c->dbh_selectall_arrayref('SELECT "score", "userfrom" FROM "posts" WHERE "id"=?', $c->param('postid'));
-    return _redirect_to_show($c)
-        if $score->[0]->[1] eq $c->session->{userid};
+    # Man selber darf seine eigenen Beiträge natürlich nicht bewerten, klar
+    $score->[0]->[1] eq $c->session->{userid} and _redirect_to_show($c);
     $score = $score->[0]->[0] || 0;
+
+    # Aufpassen, dass der Score nicht überläuft
     my $maxscore = $c->configdata->{maxscore};
-    if ( $up ) {
-        $score++;
-        $score = $maxscore if $score > $maxscore;
-    }
-    else {
-        $score--;
-        $score = -$maxscore if $score < -$maxscore;
-    }
+    if ( $up ) { $score++; $score >  $maxscore and ( $score =  $maxscore ) }
+    else       { $score--; $score < -$maxscore and ( $score = -$maxscore ) }
+
+    # Und ab damit in die Datenbank und weiter zur Seite
     $c->dbh_do('UPDATE "posts" SET "score"=? WHERE "id"=?', $score, $c->param('postid'));
     $c->set_info_f( 'Bewertung ' . ( $up ? 'erhöht' : 'veringert' ) );
     _redirect_to_show($c);
 }
-sub _inc_highscore { _update_highscore( $_[0], 1 ) }
-sub _dec_highscore { _update_highscore( $_[0], 0 ) }
 
+###############################################################################
+# Für das gelesen-Tracking für das Forum
 sub _update_topic_lastid {
     my ( $c, $topicid, $summary, $zeroing ) = @_;
     if ( $zeroing ) {
@@ -141,6 +146,8 @@ EOSQL
     }
 }
 
+###############################################################################
+# Für das gelesen-Tracking bei den Privatnachrichten
 sub _update_pmsgs_lastid {
     my ( $c, $userid, $userto ) = @_;
     $c->dbh_do( << 'EOSQL', $userid, $userto, $userid, $userto );
@@ -153,9 +160,6 @@ SET "lastid"=(
     LIMIT 1)
 WHERE "userfromid"=? AND "userid"=?
 EOSQL
-        
-
 }
 
 1;
-
