@@ -89,4 +89,3 @@ sub install_routes_posts {
 }
 
 1;
-
