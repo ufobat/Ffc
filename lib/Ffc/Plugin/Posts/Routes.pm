@@ -73,7 +73,7 @@ sub install_routes_posts {
       ->to(controller => $cname, action => 'download')->name("download_att_${cname}");
 
     # Die Route löscht einen Anhang, der an einem Beitrag hängt.
-    $l->route("$start/upload/delete/:postid/:fileid", @startps)->via('post')
+    $l->route("$start/upload/delete/:postid/:fileid", @startps, postid => $Ffc::Digqr, fileid => $Ffc::Digqr)->via('post')
       ->to(controller => $cname, action => 'delete_upload_do')->name("delete_upload_${cname}_do");
     # Diese Route erzeugt ein Bestätigungsformular, wenn der Benutzer
     # einen Dateianhang löschen möchte, in dem er nochmal gefragt wird, 

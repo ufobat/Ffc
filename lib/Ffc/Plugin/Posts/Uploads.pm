@@ -4,6 +4,7 @@ use strict; use warnings; use utf8;
 use Mojo::Util 'quote';
 use Encode qw( encode decode_utf8 );
 
+###############################################################################
 sub _upload_post_form {
     my $c = shift;
     $c->stash( dourl => $c->url_for('upload_'.$c->stash('controller').'_do', $c->additional_params) );
@@ -16,6 +17,7 @@ sub _upload_post_form {
     $c->render( template => 'upload_form' );
 }
 
+###############################################################################
 sub _upload_post_do {
     my $c = shift;
     my ( $wheres, @wherep ) = $c->where_modify;
@@ -59,6 +61,7 @@ sub _upload_post_do {
     _redirect_to_show($c);
 };
 
+###############################################################################
 sub _download_post {
     my $c = shift;
     my ( $wheres, @wherep ) = $c->where_select;

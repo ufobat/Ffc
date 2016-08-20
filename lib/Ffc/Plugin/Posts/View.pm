@@ -2,6 +2,7 @@ package Ffc::Plugin::Posts; # View
 use 5.18.0;
 use strict; use warnings; use utf8;
 
+###############################################################################
 sub _pagination {
     my $c = shift;
     my $page = $c->param('page') // 1;
@@ -10,6 +11,7 @@ sub _pagination {
     return $postlimit, ( $page - 1 ) * $postlimit;
 }
 
+###############################################################################
 sub _search_posts {
     my $c = shift;
     my $cname = $c->stash('controller');
@@ -23,12 +25,14 @@ sub _search_posts {
     _show_posts($c);
 }
 
+###############################################################################
 sub _query_posts {
     my $c = shift;
     $c->session->{query} = $c->param('query');
     $c->show;
 }
 
+###############################################################################
 sub _get_show_sql {
     my ( $c, $wheres, $noorder, $postid, $groupbys, $nolimit, $noquery, $orderbys, $reverseorder ) = @_;
     my $query  = $noquery ? '' : $c->session->{query};
@@ -69,6 +73,7 @@ sub _get_show_sql {
     return $sql;
 }
 
+###############################################################################
 sub _show_posts {
     my $c = shift;
     my $queryurl = shift;
@@ -118,6 +123,7 @@ sub _show_posts {
     }
 }
 
+###############################################################################
 sub _set_post_postlimit {
     my $c = $_[0];
     my $postlimit = $c->param('postlimit');

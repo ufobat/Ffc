@@ -2,6 +2,7 @@ package Ffc::Plugin::Posts; # Create
 use 5.18.0;
 use strict; use warnings; use utf8;
 
+###############################################################################
 sub _add_post {
     my ( $c, $userto, $topicid, $noinfo, $noredirect ) = @_;
     my $text = $c->param('textdata');
@@ -90,6 +91,7 @@ EOSQL
     _redirect_to_show($c) unless $noredirect;
 }
 
+###############################################################################
 sub _edit_post_form {
     my $c = shift;
     $c->stash( dourl => $c->url_for('edit_'.$c->stash('controller').'_do', $c->additional_params) );
@@ -102,6 +104,7 @@ sub _edit_post_form {
     $c->render( template => 'edit_form' );
 }
 
+###############################################################################
 sub _edit_post_do {
     my $c = shift;
     my ( $wheres, @wherep ) = $c->where_modify;

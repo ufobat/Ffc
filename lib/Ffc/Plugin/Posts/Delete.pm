@@ -4,6 +4,7 @@ use strict; use warnings; use utf8;
 
 use File::Spec qw(catfile);
 
+###############################################################################
 sub _delete_post_check {
     my $c = shift;
     $c->stash( dourl => $c->url_for('delete_'.$c->stash('controller').'_do', $c->additional_params) );
@@ -16,6 +17,7 @@ sub _delete_post_check {
     $c->render( template => 'delete_check' );
 }
 
+###############################################################################
 sub _delete_post_do {
     my $c = shift;
     my ( $wheres, @wherep ) = $c->where_modify;
