@@ -3,10 +3,12 @@ use 5.18.0;
 use strict; use warnings; use utf8;
 
 ###############################################################################
+# Einen Beitrag hinzu fügen
 sub _add_post {
     my ( $c, $userto, $topicid, $noinfo, $noredirect ) = @_;
-    my $text = $c->param('textdata');
-    my $userid = $c->session->{userid};
+    my ( $text, $userid ) = ( $c->param('textdata'), $c->session->{userid} );
+
+    # Eingabeprüfungen
     if ( !defined($text) or (2 > length $text) ) {
         $c->stash(textdata => $text);
         $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen)');
@@ -18,7 +20,10 @@ sub _add_post {
         $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen ohne Auszeichnungen)');
         return $c->show;
     }
+
     my $controller = $c->stash('controller');
+    
+    # Spezialbehandlung "Forum" - Gibt es neue Beiträge zwischenzeitlich?
     if ( $controller eq 'forum' and $topicid ) {
         my $sql = << 'EOSQL';
 SELECT t.lastid, COALESCE(l.lastseen,0)
@@ -27,15 +32,6 @@ LEFT OUTER JOIN lastseenforum l ON  l.topicid=t.id
 WHERE l.userid=? AND t.id=?
 GROUP BY t.id
 EOSQL
-#        'SELECT'
-#            . ' CASE WHEN MAX(p.id)>MAX(l.lastseen) OR MAX(l.lastseen)<=0 THEN 1 ELSE 0 END'
-#            . ' FROM users u LEFT OUTER JOIN posts p ON p.userfrom<>? AND p.'
-#              . ( $userto ? 'userto=?' : 'topicid=?' )
-#            . ' LEFT OUTER JOIN lastseen' 
-#            . ( $controller eq 'pmsgs' 
-#                ? 'msgs l ON l.userid=u.id AND l.userfromid=?' 
-#                : 'forum l ON l.userid=u.id AND l.topicid=?' )
-#            . ' WHERE u.id=? GROUP BY u.id';
         my $r = $c->dbh_selectall_arrayref( $sql, $userid, $topicid );
         if ( @$r and $r->[0]->[0] > $r->[0]->[1] ) {
             $c->stash(textdata => $text);
@@ -43,6 +39,8 @@ EOSQL
             return $c->show;
         }
     }
+
+    # Neuen Beitrag in die Datenbank schreiben
     $c->dbh_do( << 'EOSQL', 
 INSERT INTO "posts"
     ("userfrom", "userto", "topicid", "textdata", "cache")
@@ -52,23 +50,25 @@ EOSQL
         $userid, $userto, $topicid, $text, $cache
     );
 
-    if ( $controller eq 'forum' and $topicid ) {
-        my $summary = $c->format_short($text) // ''; 
-        _update_topic_lastid($c, $topicid, $summary);
-    }
-    if ( $controller eq 'pmsgs' and $userto ) {
-        _update_pmsgs_lastid( $c, $userid, $userto );
-    }
+    # Ermitteln der neuen ID für diesen neuen Beitrag
     my $sql = << 'EOSQL',
 SELECT "id" FROM "posts"
 WHERE "userfrom"=?
 EOSQL
     my @params = ( $userid );
+
+    # Jeweilige Sonderbehandlungen zur Einschränkung des Suchkreises
     if ( $controller eq 'forum' ) {
+        # Topic-Eintrag auf aktuellsten Beitrag setzen
+        $topicid and
+            _update_topic_lastid($c, $topicid, $c->format_short($text) // '');
         $sql .= ' AND "topicid"=? AND "userto" IS NULL';
         push @params, $topicid;
     }
     elsif ( $controller eq 'pmsgs' ) {
+        # Privatnachrichten-Eintrag auf die aktuellste Nachricht setzen
+        $userto and
+            _update_pmsgs_lastid( $c, $userid, $userto );
         $sql .= ' AND "userto"=? AND "topicid" IS NULL';
         push @params, $userto;
     }
@@ -81,6 +81,8 @@ ORDER BY "id" DESC
 LIMIT 1;
 EOSQL
     my $r = $c->dbh_selectall_arrayref($sql, @params);
+    
+    # Einfache Prüfung, ob alles passte, und dann raus mit der Webseite
     unless ( @$r and $r->[0]->[0] ) {
         $c->set_error('Konnte den neuen Beitrag nicht finden in der Datenbank, irgend etwas ging schief');
         return $c->show;
@@ -92,6 +94,7 @@ EOSQL
 }
 
 ###############################################################################
+# Formular zum ändern eines einzelnen Beitrags zusammen stellen
 sub _edit_post_form {
     my $c = shift;
     $c->stash( dourl => $c->url_for('edit_'.$c->stash('controller').'_do', $c->additional_params) );
@@ -105,17 +108,13 @@ sub _edit_post_form {
 }
 
 ###############################################################################
+# Einen einzelnen Beitrag ändern
 sub _edit_post_do {
-    my $c = shift;
+    my $c = $_[0];
     my ( $wheres, @wherep ) = $c->where_modify;
-    my $postid = $c->param('postid');
-    my $topicid = $c->param('topicid');
-    my $text = $c->param('textdata');
-    unless ( $postid and $postid =~ $Ffc::Digqr ) {
-        $c->set_error_f('Konnte den Beitrag nicht ändern, da die Beitragsnummer irgendwie verloren ging');
-        $c->stash(textdata => $text);
-        return _redirect_to_show($c);
-    }
+    my ( $postid, $topicid, $text ) = ( $c->param('postid'), $c->param('topicid'), $c->param('textdata') );
+
+    # Texteingabe überprüfen
     if ( !defined($text) or (2 > length $text) ) {
         $c->stash(textdata => $text);
         $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen)');
@@ -128,32 +127,37 @@ sub _edit_post_do {
         return $c->edit_form;
     }
 
+    # Es sollte schon einen Eintrag zum Ändern geben
     my $sql = qq~ SELECT COUNT("id")\nFROM "posts"\n~
             . qq~ WHERE "id"=? AND "blocked"=0~;
     $sql .= qq~ AND $wheres~ if $wheres;
-    unless ( $c->dbh_selectall_arrayref( $sql, $postid, @wherep )->[0]->[0] ) {
+    if ( not $c->dbh_selectall_arrayref( $sql, $postid, @wherep )->[0]->[0] ) {
         $c->set_error_f('Kein passender Beitrag zum ändern gefunden');
         return _redirect_to_show($c);
     }
 
+    # Das Update auf den Datensatz durchführen
     $sql = qq~UPDATE "posts"\n~
             . qq~SET "textdata"=?, "cache"=?, "altered"=current_timestamp\n~
             . qq~WHERE "id"=? AND "blocked"=0~;
-    $sql .= qq~ AND $wheres~ if $wheres;
+    $wheres and $sql .= qq~ AND $wheres~;
     $c->dbh_do( $sql, $text, $cache, $postid, @wherep );
 
+    # Im Forenteil muss noch die Themenliste für die entsprechende Topic auf Stand 
+    # (Zusammenfassung des aktuellsten Beitrags, nicht notwendigerweise der bearbeitete)
+    # gebracht werden
     if ( $c->stash('controller') eq 'forum' ) {
         $sql = 'SELECT "id", "textdata" FROM "posts" WHERE "topicid"=? ORDER BY "id" DESC LIMIT 1';
         my $text = $c->dbh_selectall_arrayref($sql, $topicid);
         if ( @$text and $text->[0]->[0] == $postid ) {
-            my $summary = $c->format_short($text->[0]->[1]) // ''; 
             $sql = q~UPDATE "topics" SET "summary"=? WHERE "id"=?~;
-            $c->dbh_do( $sql, $summary, $topicid );
+            $c->dbh_do( $sql, $c->format_short($text->[0]->[1]) // '', $topicid );
         }
     }
+
+    # Und raus mit der Webseite
     $c->set_info_f('Der Beitrag wurde geändert');
     _redirect_to_show($c);
 }
 
 1;
-

@@ -1,4 +1,3 @@
-lib/Ffc/Plugin/Posts/Create.pm
 lib/Ffc/Plugin/Posts/Delete.pm
 lib/Ffc/Plugin/Posts/Uploads.pm
 lib/Ffc/Plugin/Posts/View.pm

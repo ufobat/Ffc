@@ -42,7 +42,7 @@ sub install_routes_posts {
     if ( $cname ne 'pmsgs' ) {
         # Mit der folgenden Route wird der bearbeitete Beitrag mit
         # seinen Änderungen abgespeichert.
-        $l->route("$start/edit/:postid", @startps)->via('post')
+        $l->route("$start/edit/:postid", @startps, postid => $Ffc::Digqr)->via('post')
           ->to(controller => $cname, action => 'edit_do')->name("edit_${cname}_do");
         # Mit dieser Route wird ein Bearbeitungsformular für einen
         # Beitrag erstellt.
@@ -50,7 +50,7 @@ sub install_routes_posts {
           ->to(controller => $cname, action => 'edit_form')->name("edit_${cname}_form");
         
         # Diese Route löscht einen Beitrag mit all seinen Anhängen und allem.
-        $l->route("$start/delete/:postid", @startps)->via('post')
+        $l->route("$start/delete/:postid", @startps, postid => $Ffc::Digqr)->via('post')
           ->to(controller => $cname, action => 'delete_do')->name("delete_${cname}_do");
         # Diese Route erzeugt ein Bestätigungsformular, was den Benutzer
         # fragt, ob er den gewünschten Beitrag tatsächlich und unwiderbringlich
@@ -60,7 +60,7 @@ sub install_routes_posts {
     }
 
     # Folgende Route lädt Dateien zu einem Beitrag hoch.
-    $l->route("$start/upload/:postid", @startps)->via('post')
+    $l->route("$start/upload/:postid", @startps, postid => $Ffc::Digqr)->via('post')
       ->to(controller => $cname, action => 'upload_do')->name("upload_${cname}_do");
     # Diese Route dient dem Upload von Anhängen an einen Beitrag
     # und liefert dafür das entsprechende Upload-Formular.
