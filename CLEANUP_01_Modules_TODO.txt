@@ -1,1 +1,0 @@
-lib/Ffc/Plugin/Posts/View.pm

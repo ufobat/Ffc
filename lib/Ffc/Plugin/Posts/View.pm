@@ -3,138 +3,158 @@ use 5.18.0;
 use strict; use warnings; use utf8;
 
 ###############################################################################
+# Seitenschaltungs-Hilfsfunktion, welche die zugehörigen Variablen passend setzt
 sub _pagination {
-    my $c = shift;
-    my $page = $c->param('page') // 1;
-    my $postlimit = $c->session->{postlimit};
-    $c->stash(page => $page);
+    my $page = $_[0]->param('page') // 1;
+    my $postlimit = $_[0]->session->{postlimit};
+    $_[0]->stash(page => $page);
     return $postlimit, ( $page - 1 ) * $postlimit;
 }
 
 ###############################################################################
+# Suche mit Suchtext initialisieren
 sub _search_posts {
-    my $c = shift;
-    my $cname = $c->stash('controller');
-    $c->stash( 
-        queryurl => $c->url_for("search_${cname}_posts"),
-        returl   => $c->url_for("search_${cname}_posts"),
-    );
-    if ( my $q = $c->param('query') ) {
-        $c->session->{query} = $q;
+    my $url = $_[0]->url_for('search_'.$_[0]->stash('controller').'_posts');
+    $_[0]->stash( queryurl => $url, returl => $url );
+    if ( my $q = $_[0]->param('query') ) {
+        $_[0]->session->{query} = $q;
     }
-    _show_posts($c);
+    _show_posts($_[0]);
 }
 
 ###############################################################################
+# Den Suchtext in der Session speichern
 sub _query_posts {
-    my $c = shift;
-    $c->session->{query} = $c->param('query');
-    $c->show;
+    $_[0]->session->{query} = $_[0]->param('query');
+    $_[0]->show;
 }
 
 ###############################################################################
+# Das SQL-Statement für die Beitragsabfrage zusammen basteln
+# (wird auch für Readlater gebraucht, dort ist es aber über einen Helper erreichbar)
 sub _get_show_sql {
     my ( $c, $wheres, $noorder, $postid, $groupbys, $nolimit, $noquery, $orderbys, $reverseorder ) = @_;
-    my $query  = $noquery ? '' : $c->session->{query};
+    my $query = $noquery ? '' : $c->session->{query};
 
-    my $sql = qq~SELECT\n~
-        .qq~p."id", uf."id", uf."name", ut."id", ut."name", p."topicid", ~
-        .qq~datetime(p."posted",'localtime'), datetime(p."altered",'localtime'), p."cache", ~
-        .qq~t."title", p."score", p."blocked", r."postid"\n~
-        .qq~FROM "posts" p\n~
-        .qq~INNER JOIN "users" uf ON p."userfrom"=uf."id"\n~
-        .qq~LEFT OUTER JOIN "users" ut ON p."userto"=ut."id"\n~
-        .qq~LEFT OUTER JOIN "topics" t ON p."topicid"=t."id"\n~
-        .qq~LEFT OUTER JOIN "readlater" r ON r."postid"=p."id" AND "userid"=?\n~;
-    if ( $wheres ) {
-        $sql .= "WHERE $wheres\n"
-             . ( $query ? qq~AND UPPER(p."textdata") LIKE UPPER(?)\n~ : "\n" );
+    # Das ist die Basis, die gleichzeitig die Rückgabe-Reihenfolge festlegt
+    my $sql = << 'EOSQL';
+SELECT
+    p."id", uf."id", uf."name", ut."id", ut."name", p."topicid",
+    datetime(p."posted",'localtime'), datetime(p."altered",'localtime'), p."cache",
+    t."title", p."score", p."blocked", r."postid"
+FROM "posts" p
+INNER JOIN "users" uf ON p."userfrom"=uf."id"
+LEFT OUTER JOIN "users" ut ON p."userto"=ut."id"
+LEFT OUTER JOIN "topics" t ON p."topicid"=t."id"
+LEFT OUTER JOIN "readlater" r ON r."postid"=p."id" AND "userid"=?
+EOSQL
+
+    # Kommen den Einschränkungen?
+    ( $wheres or $query or $postid ) and ( $sql .= 'WHERE ' );
+    if ( $wheres ){
+        $sql .= "$wheres\n";
+        $query and ( $sql .= 'AND ' );
     }
-    elsif ( $query ) {
-        $sql .= qq~WHERE UPPER(p."textdata") LIKE UPPER(?)\n~;
-    }
+
+    # Es wird eine Textsuche durchgeführt
+    $query and ( $sql .= qq~UPPER(p."textdata") LIKE UPPER(?)\n~ );
+    
+    # Es geht um einen einzigen bestimmten Beitrag
     if ( $postid ) {
-        if ( $wheres or $query ) {
-            $sql .= q~AND ~;
-        }
-        else {
-            $sql .= q~WHERE ~;
-        }
+        ( $wheres or $query ) and ( $sql .= q~AND ~ );
         $sql .= qq~p."id"=?\n~;
     }
 
-    $sql .= "GROUP BY $groupbys\n" if $groupbys;
-    unless ( $noorder ) {
-        $sql .= 'ORDER BY';
-        $sql .= " $orderbys," if $orderbys;
-        $sql .= ' p."id" ' . ( $reverseorder ? 'ASC' : 'DESC' ) . "\n";
-    }
-    $sql .= "LIMIT ? OFFSET ?\n" unless $nolimit;
+    # Soll gruppiert werden
+    $groupbys and ( $sql .= "GROUP BY $groupbys\n" );
+
+    # Soll die Sortierung ausgeschalten werden
+    $noorder or (
+        $sql .= 'ORDER BY ' . ( $orderbys || '' )
+             . ' p."id" ' . ( $reverseorder ? 'ASC' : 'DESC' ) . "\n" );
+
+    # Anzahl-Begrenzung
+    $nolimit or ( $sql .= "LIMIT ? OFFSET ?\n" );
+
     return $sql;
 }
 
 ###############################################################################
+# Eine Liste von Beiträgen anzeigen
 sub _show_posts {
-    my $c = shift;
-    my $queryurl = shift;
+    my ( $c, $queryurl ) = @_[0,1];
     my ( $wheres, @wherep ) = $c->where_select;
-    my $query  = $c->session->{query};
-    my $postid = $c->param('postid');
-    my $cname = $c->stash('controller');
+    my ( $query, $postid, $cname ) = ( $c->session->{query}, $c->param('postid'), $c->stash('controller') );
     $c->stash( query => $query );
+
+    # Hier werden verschiedene Routen-Namen gesetzt, die später im Template im Bedarsfall verwendet werden
     if ( $c->stash('action') ne 'search' ) {
         $c->stash(
             dourl   => $c->url_for("add_${cname}", $c->additional_params ), # Neuen Beitrag erstellen
-            editurl => "edit_${cname}_form",           # Formuar zum Bearbeiten von Beiträgen
+            # Die hier werden nicht immer angezeigt, 
+            # aber wenn, dann müssen die jeweils dynamisch mit der Beitrags-ID erzeugt werden
+            editurl => "edit_${cname}_form",           # Formular zum Bearbeiten von Beiträgen
             delurl  => "delete_${cname}_check",        # Formular, um den Löschvorgang einzuleiten
             uplurl  => "upload_${cname}_form",         # Formular für Dateiuploads
             delupl  => "delete_upload_${cname}_check", # Formular zum entfernen von Anhängen
+            # ... oder eben mit der Seitenzahl, auf die geblättert werden soll
             pageurl => "show_${cname}_page",           # URL für die Seitenweiterschaltung
         );
         _setup_stash($c);
     }
     else {
         $c->stash( pageurl => "search_${cname}_posts_page" );
+        # Hier muss setup_stash vor dem nächsten Stash-Schritt kommen, weil
+        # in dem folgenden Schritt werden einige Variablen aus setup_stash wieder überschrieben, is halt so
         _setup_stash($c);
         $c->stash( 
             additional_params => [],
             returl            => $c->url_for("search_${cname}_posts"),
         );
     }
-    $c->stash(queryurl => $queryurl) if $queryurl;
-    my $sql = $c->get_show_sql($wheres, undef, $postid);
+
+    # Suchanfrage für das Seitenrendering weiterreichen
+    $queryurl and $c->stash(queryurl => $queryurl);
+
+    # Und hier holen wir uns unsere schöne SQL-Abfrage aus der anderen Subroutine,
+    # führen diese aus und legen die im Stash für das Seitenrendering ab ...
+    # zusätzlich mit den anderen notwendigen Daten (counting)
+    my $sql = _get_show_sql($c, $wheres, undef, $postid);
     my $posts = $c->dbh_selectall_arrayref(
         $sql, $c->session->{userid}, @wherep, ( $query ? "\%$query\%" : () ), ($postid || ()),  $c->pagination()
     );
     $c->stash(posts => $posts);
     $c->counting;
 
-    if ( $c->stash('action') eq 'search' ) {
-        $c->render(template => 'search');
-    }
-    else {
-        $c->get_attachements($posts, $wheres, @wherep);
-        if ( $postid ) {
-            $c->render(template => 'display');
-        }
-        else {
-            $c->render(template => 'posts');
-        }
-    }
+    # Bei einer Suchanfrage wird das passende Such-Ergebnis-Formular angezeigt
+    $c->stash('action') eq 'search' and return $c->render(template => 'search');
+
+    # Für alles andere benötigen wir natürlich noch die Anhängsel zu den Beiträgen
+    $c->get_attachements($posts, $wheres, @wherep);
+
+    # Seite für einen Beitrag oder mehrere Beiträge ausgeben
+    $c->render(template => $postid ? 'display': 'posts');
 }
 
 ###############################################################################
+# Die Anzahl der auf einer Seite angezeigten Beiträge einstellen
 sub _set_post_postlimit {
     my $c = $_[0];
     my $postlimit = $c->param('postlimit');
-    unless ( $postlimit =~ $Ffc::Digqr and $postlimit > 0 and $postlimit < 128 ) {
+    
+    # Es gibt Grenzen, was eingetragen werden darf
+    unless ( $postlimit > 0 and $postlimit < 128 ) {
         $c->set_error_f('Die Anzahl der auf einer Seite in der Liste angezeigten Beiträge muss eine ganze Zahl kleiner 128 sein.');
         return _redirect_to_show($c);
     }
+
+    # Hier wird die Einstellung in die Session übernommen und gleichzeitig im Cookie
+    # Benutzerübergreifend als clientseitig verfügbar abgelegt
     $c->session->{limits}->{$c->session->{userid}}->{postlimit} = $c->session->{postlimit} = $postlimit;
+
+    # Änderung aktiv
     $c->set_info_f("Anzahl der auf einer Seite der Liste angezeigten Beiträge auf $postlimit geändert.");
     return _redirect_to_show($c);
 }
 
 1;
-
