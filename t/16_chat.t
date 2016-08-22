@@ -12,7 +12,7 @@ my ( $t1, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = ( 'x'.Testinit::test_randstring(), Testinit::test_randstring() );
 Testinit::test_add_users( $t1, $admin, $apass, $user, $pass );
 my $t2 = Test::Mojo->new('Ffc');
-my $sleepval = 1;
+my $sleepval = 2;
 my $id = 0;
 
 # log users into chat
