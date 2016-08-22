@@ -1,2 +1,1 @@
-lib/Ffc/Plugin/Posts/Delete.pm
 lib/Ffc/Plugin/Posts/View.pm
