@@ -111,7 +111,7 @@ for my $u ( @$users ) {
         say "Benutzer $username hat $cnt neue private Nachrichten erhalten.";
     }
     # Neue Forenbeiträge zum Vermailen sammeln
-    if ( @{$data->{newposts}} ) {
+    if ( exists $data->{newposts} and 'ARRAY' eq ref $data->{newposts} and @{$data->{newposts}} ) {
         push @lines, "Neue Forenbeiträge: $data->{newpostcount}";
         $cnt++;
         for my $d ( @{$data->{newposts}} ) {
