@@ -23,6 +23,7 @@ my $sender = 'admin@'.hostname();
     use Mojolicious::Lite;
     plugin 'Ffc::Plugin::Config';
     plugin 'Ffc::Plugin::Formats';
+    plugin 'Ffc::Plugin::Lists';
     
     # Hierrüber können wir uns je Nutzer die notwendigen Informationen holen,
     # so wie sie auch im Forum geholt werden könnten
@@ -33,6 +34,8 @@ my $sender = 'admin@'.hostname();
         $c->counting;
         my $topics =  $c->stash('topics');
         my $users  =  $c->stash('users');
+
+        # Benutzer und Themenliste zurück setzen
         for my $top ( @$topics ) {
             $c->set_lastseen($uid,$top->[0],1);
         }
@@ -42,7 +45,7 @@ my $sender = 'admin@'.hostname();
         for my $m ( @$users ) {
             next unless $m->[2];
             $pmsgscnt += $m->[2];
-            my $utoid = $m->[0];
+            my $utoid  = $m->[0];
             my $lastseen = $c->dbh_selectall_arrayref(
                 'SELECT "lastseen" FROM "lastseenmsgs"
                 WHERE "userid"=? AND "userfromid"=?',
@@ -50,25 +53,21 @@ my $sender = 'admin@'.hostname();
             );
             # Mailsend setzen, wird bei neuen Nachrichten wieder umgesetzt
             if ( @$lastseen ) {
-                $c->dbh_do(
-                    'UPDATE "lastseenmsgs" SET "mailed"=1 WHERE "userid"=? AND "userfromid"=?',
-                    $uid, $utoid );
+                $c->dbh_do( 'UPDATE "lastseenmsgs" SET "mailed"=1 WHERE "userid"=? AND "userfromid"=?', $uid, $utoid );
             }
             else {
-                $c->dbh_do(
-                    'INSERT INTO "lastseenmsgs" ("userid", "userfromid", "mailed") VALUES (?,?,1)',
-                    $uid, $utoid );
+                $c->dbh_do( 'INSERT INTO "lastseenmsgs" ("userid", "userfromid", "mailed") VALUES (?,?,1)', $uid, $utoid );
             }
         }
+        
         # und als JSON raus damit
         $c->render(json => {
-            newmsgs  => $pmsgscnt,
-            newpostcount => $c->stash('newpostcount'),
-            newposts => [
-                map  {;[@{$_}[2,3]]} 
-                grep {;$_->[10] and $_->[3] and not $_->[12]}
-                    @$topics,
-            ],
+            newmsgscount => $pmsgscnt,
+            newpostcount => do {
+                my $res = 0;
+                $res += $_->[3] for @$topics;
+                $res;
+            }
         });
     };
     #
@@ -99,33 +98,22 @@ my $users = $t->get_ok('/userids')->tx->res->json || [];
 # Wir gehen die Benutzerliste durch und versenden die notwendigen Emails
 for my $u ( @$users ) {
     my ( $username, $email, $uid ) = @$u;
-    my $cnt = 0; my @lines; my $cntp = 0;
+    my $cnt = 0; my @lines;
 
     # Alle Daten Benutzerbezogen ermitteln
     my $data = $t->get_ok("/$uid")->tx->res->json;
 
     # Neue Nachrichten zum Vermailen sammeln
-    if ( $data->{newmsgs} ) {
-        push @lines, "Private Nachrichten: $data->{newmsgs}\n";
-        $cnt += $data->{newmsgs};
-        say "Benutzer $username hat $cnt neue private Nachrichten erhalten.";
-    }
-    # Neue Forenbeiträge zum Vermailen sammeln
-    if ( exists $data->{newposts} and 'ARRAY' eq ref $data->{newposts} and @{$data->{newposts}} ) {
-        push @lines, "Neue Forenbeiträge: $data->{newpostcount}";
-        $cnt++;
-        for my $d ( @{$data->{newposts}} ) {
-            my $cntp += $d->[1];
-            push @lines, "$d->[0]: $d->[1]";
+    for my $what ( [newmsgscount => 'private Nachrichten'], [newpostscount => 'Forenbeiträge'] ) {
+        if ( $data->{$what->[0]} ) {
+            push @lines, "Erhaltene neue $what->[1]: $data->{$what->[0]}\n";
+            $cnt += $data->{$what->[0]};
+            say "Benutzer $username hat $data->{$what->[0]} neue $what->[1] erhalten.";
         }
     }
 
-    # Debuginformationen
-    if ( $cntp ) {
-        say "Benutzer $username wird ueber $cntp neue Beitraege informiert.";
-    }
     # Es wird natürlich nur eine Email rausgeschickt, wenn es tatsächlich was zum mailen gibt
-    if ( $cnt + $cntp ) {
+    if ( $cnt ) {
         send_email($username, $email, \@lines);
         say "Benutzer $username wurde per Email informiert.";
     }
