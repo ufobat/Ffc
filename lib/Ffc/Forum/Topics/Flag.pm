@@ -3,20 +3,6 @@ use 5.18.0;
 use strict; use warnings; use utf8;
 
 ###############################################################################
-# Email-Benachrichtung umschalten
-sub   newsmail_topic_do { _handle_newsmail_topic_do($_[0], 1, $_[1]) }
-sub unnewsmail_topic_do { _handle_newsmail_topic_do($_[0], 0, $_[1]) }
-# Handler
-sub _handle_newsmail_topic_do {
-    _handle_val_topic_do($_[0], 'newsmail', $_[1],
-        'Für das gewählte Thema werden Informations-Emails bei neuen Beiträgen verschickt.',
-        'Für das gewählte Thema werden keine Informations-Emails bei neuen Beiträgen mehr verschickt.',
-        $_[2],
-        (($_[1] and not $_[0]->session->{newsmail}) ? ' Mailversand ist generell unterbunden, es kommen keine Emails an. Um den Emailversand zu aktivieren, musst du unter "Benutzerkonto" in den "Einstellungen" oben rechts im Menü beim Punk "Email-Adresse einstellen" den Punkt "Benachrichtigungen per Email erhalten" anhaken.' : ''),
-    );
-}
-
-###############################################################################
 # Ignorieren-Schalter
 sub   ignore_topic_do { _handle_ignore_topic_do($_[0], 1, $_[1]) }
 sub unignore_topic_do { _handle_ignore_topic_do($_[0], 0, $_[1]) }

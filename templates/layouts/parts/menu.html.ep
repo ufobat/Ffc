@@ -13,7 +13,7 @@
             <p class="separated"><a href="<%= url_for 'list_readlater' %>" title="Beiträge zum späteren lesen">Vorgemerkte Beiträge (<%= $readlatercount %>)</a></p>
 % }
 % for my $t ( @$topics ) {
-            <p class="smallnodisplay<%== $t->[14] ? qq~ $t->[14]~ : '' %>"><a href="<%= url_for 'show_forum', topicid => $t->[0] %>"><%= substr $t->[2], 0, $configdata->{urlshorten} %></a>...<% if ( $t->[3] and not $t->[5] ) { %> (<span class="mark"><%= $t->[3] %></span>)<% } %></p>
+            <p class="smallnodisplay<%== $t->[11] ? qq~ $t->[11]~ : '' %>"><a href="<%= url_for 'show_forum', topicid => $t->[0] %>"><%= substr $t->[2], 0, $configdata->{urlshorten} %></a>...<% if ( $t->[3] and not $t->[5] ) { %> (<span class="mark"><%= $t->[3] %></span>)<% } %></p>
 % }
         </div>
     </div>

@@ -47,7 +47,6 @@ sub check_unseen {
         \s+<span\s+class="smallfont">
         \s+<a\s+href="/topic/$id/seen"
         \s+title="Thema\s+als\s+gelesen\s+markieren">gelesen</a>
-        \s+/\s+<a\s+href="/topic/$id/newsmail"
     ~xms);
 }
 sub check_seen {
@@ -62,7 +61,6 @@ sub check_seen {
         <span\s+class="addinfos">
         \s+$user1,\s+$timeqr\s+<br\s+/>
         \s+<span\s+class="smallfont">
-        \s+<a\s+href="/topic/$id/newsmail"
     ~xms);
 }
 

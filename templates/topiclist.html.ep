@@ -16,12 +16,12 @@
 % if ( @$topics_for_list ) {
 <div class="postbox topiclist">
 % for my $t ( @$topics_for_list ) {
-    <h2<%== $t->[14] ? qq~ class="$t->[14]"~ : '' %>>
+    <h2<%== $t->[11] ? qq~ class="$t->[11]"~ : '' %>>
         <span class="menuentry">
             <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"><%= $t->[2] %></a>
-% if ( $t->[11] ) {
+% if ( $t->[10] ) {
             <div class="otherspopup popup topiclistpopup summarypopup">
-                <p><%== $t->[11] %> ...</p>
+                <p><%== $t->[10] %> ...</p>
             </div>
 % }
         </span>
@@ -45,14 +45,6 @@
 %   }
 % }
 % unless ( $t->[5] ) {
-%   if ( $t->[10] ) {
-            <a href="<%= url_for 'unnewsmail_forum_topic_do', topicid => $t->[0] %>"
-                title="Keine Email mehr verschicken bei neuen Beiträgen zu Thema">email</a>
-%   } else {
-            <a href="<%= url_for 'newsmail_forum_topic_do', topicid => $t->[0] %>"
-                title="Per Email bei neuen Beiträgen im Thema informieren"><u>email</u></a> 
-%   }
-            /
 %   if ( $t->[6] ) {
             <a href="<%= url_for 'unpin_forum_topic_do', topicid => $t->[0] %>"
                 title="Thema normal in der Liste einsortieren">angeheftet</a>

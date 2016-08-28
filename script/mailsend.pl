@@ -34,7 +34,6 @@ my $sender = 'admin@'.hostname();
         # und als JSON raus damit
         $c->render(json => {
             newmsgscount => $c->newmsgscount(),
-            newpostcount => $c->newpostcount(),
         });
     };
     #
@@ -72,12 +71,10 @@ for my $u ( @$users ) {
     #$t->status_is(200)->content_is('');
 
     # Neue Nachrichten zum Vermailen sammeln
-    for my $what ( [newmsgscount => 'private Nachrichten'], [newpostcount => 'Forenbeitraege'] ) {
-        if ( $data->{$what->[0]} ) {
-            push @lines, "Erhaltene neue $what->[1]: $data->{$what->[0]}\n";
-            $cnt += $data->{$what->[0]};
-            say "Benutzer $username hat $data->{$what->[0]} neue $what->[1] erhalten.";
-        }
+    if ( $data->{newmsgscount} ) {
+        push @lines, "Neue Nachrichten: $data->{newmsgscount}\n";
+        $cnt += $data->{newmsgscount};
+        say "Benutzer $username hat $data->{newmsgscount} neue Nachrichten erhalten.";
     }
 
     # Es wird natürlich nur eine Email rausgeschickt, wenn es tatsächlich was zum mailen gibt

@@ -17,8 +17,8 @@ CREATE TABLE "users" (
   "chatrefreshsecs" integer NOT NULL DEFAULT 60,
   "lastonline" timestamp,
   "email" varchar(1024) NOT NULL DEFAULT '',
-  "newsmail" tinyint(1) NOT NULL DEFAULT 1,
   "hideemail" tinyint(1) NOT NULL DEFAULT 1,
+  "newsmail" tinyint(1) NOT NULL DEFAULT 1,
   "birthdate" varchar(10),
   "infos" varchar(1024),
   UNIQUE ("name")
@@ -63,10 +63,8 @@ CREATE TABLE "lastseenforum" (
   "userid" integer NOT NULL,
   "topicid" integer NOT NULL,
   "lastseen" integer NOT NULL DEFAULT '0',
-  "mailed" tinyint(1) NOT NULL DEFAULT '0',
   "ignore" tinyint(1) NOT NULL DEFAULT '0',
   "pin" tinyint(1) NOT NULL DEFAULT '0',
-  "newsmail" tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY ("userid", "topicid")
 );
 CREATE INDEX "lsf_user_id" ON "lastseenforum"("userid");

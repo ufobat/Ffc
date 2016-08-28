@@ -82,9 +82,7 @@ sub show {
 # Einen Beitrag zu einem Thema hinzu fügen
 sub add { 
     my $c = shift; 
-    my $topicid = $c->param('topicid');
-    $c->dbh_do( 'UPDATE "lastseenforum" SET "mailed"=0 WHERE "topicid"=?', $topicid );
-    $c->add_post( undef, $topicid, @_ ) }
+    $c->add_post( undef, $c->param('topicid'), @_ ) }
 
 ###############################################################################
 # Formular anzeigen, um einen Beitrag zu ändern
