@@ -10,7 +10,7 @@ sub _upload_post_form {
     my $c = $_[0];
     $c->stash( dourl => $c->url_for('upload_'.$c->stash('controller').'_do', $c->additional_params) );
     _setup_stash($c);
-    unless ( _get_single_post($c, @_) ) {
+    unless ( _get_single_post(@_) ) {
         $c->set_error_f('Konnte keinen passenden Beitrag um Anhänge hochzuladen finden');
         return _redirect_to_show($c);
     }

@@ -220,7 +220,8 @@ sub del_attachement {
     my ( $user, $eid, $aid ) = @_;
     my $edbid = $entries[$eid][0];
     $t->get_ok("$Urlpref/upload/delete/$edbid/$aid");
-    if ( $entries[$eid][2] eq $user ) {
+    #diag Dumper $entries[$eid];
+    if ( $entries[$eid][2] eq $user or ( $entries[$eid][3] and $entries[$eid][3] eq $user ) ) {
         $t->status_is(200)
           ->content_like(qr~<form\s+action="$Urlpref/upload/delete/$edbid/$aid"\s+accept-charset="UTF-8"\s+method="POST">\s*<button\s+type="submit"\s+class="linkalike\s+send">Entfernen</button>\s*</form>~)
           ->content_like(qr~Möchten Sie den gezeigten Anhang zu unten gezeigtem Beitrag wirklich löschen\?~);
@@ -242,7 +243,12 @@ sub del_attachement {
         $entries[$eid][4] = [ grep { $aid != $_->[0] } @{ $entries[$eid][4] } ];
     }
     else {
-        error('Konnte keinen passenden Beitrag zum Löschen der Anhänge finden');
+        if ( $entries[$eid][3] and $entries[$eid][3] eq $user ) {
+            error('Sie dürfen diesen Anhang nicht löschen, da der Beitrag nicht von Ihnen erstellt wurde');
+        }
+        else {
+            error('Konnte keinen passenden Beitrag zum Löschen der Anhänge finden');
+        }
     }
 }
 
@@ -261,6 +267,8 @@ sub query_string {
 
 sub add_attachement {
     my ( $user, $i, $ext, $multi ) = @_;
+    note 'HERKUNFT: ' . join ' ; ', map {; join ', ', (caller($_))[1,2] } 0 .. 3; 
+    note '( $user, $i, $ext, $multi ) = (' . join ', ', map {$_ // ''} $user, $i, $ext, $multi;
     $multi ||= 1;
     my $entry = $entries[$i] or die "no entry count '$i' available";
     $ext = $ext ? 'exe' : 'png';
@@ -270,7 +278,7 @@ sub add_attachement {
         } 1 .. $multi;
 
     $t->get_ok("$Urlpref/upload/$entry->[0]");
-    if ( $entry->[2] eq $user ) { 
+    if ( $entry->[2] eq $user or ( $entry->[3] and $entry->[3] eq $user ) ) { 
         $t->status_is(200);
         $t->content_like(qr~<p>\s*$entry->[1]\s*</p>~xms);
         $t->content_like(qr~<form action="$Urlpref/upload/$entry->[0]"\s+accept-charset="UTF-8"\s+enctype="multipart/form-data"\s+method="POST">~);

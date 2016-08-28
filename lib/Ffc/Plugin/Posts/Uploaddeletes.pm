@@ -9,7 +9,7 @@ use File::Spec qw(catfile);
 sub _delete_upload_post_check {
     my $c = $_[0];
     $c->stash( dourl => $c->url_for('delete_upload_'.$c->stash('controller').'_do', $c->additional_params) );
-    if ( not _get_single_post($c, @_) ) {
+    if ( not _get_single_post(@_) ) {
         $c->set_error_f('Konnte keinen passenden Beitrag zum Löschen der Anhänge finden');
         return _redirect_to_show($c);
     }
@@ -22,11 +22,11 @@ sub _delete_upload_post_check {
 # Löschen eines Uploads mit allem drum und dran
 sub _delete_upload_post_do {
     my $c = $_[0];
-    my ( $wheres, @wherep ) = $c->where_select;
+    my ( $wheres, @wherep ) = $c->where_modify;
     my $fileid = $c->param('fileid');
 
     # Bekommen wir auch wirklich einen Beitrag heraus?
-    unless ( _get_single_post($c, @_) ) {
+    unless ( _get_single_post(@_) ) {
         $c->set_error_f('Konnte keinen passenden Beitrag zum Löschen der Anhänge finden');
         return _redirect_to_show($c);
     }

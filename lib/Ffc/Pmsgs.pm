@@ -38,10 +38,8 @@ EOSQL
     return $sql . << 'EOSQL',
         AND ( p."userfrom" =  ? 
          OR   p."userto"   =  ? )
-        AND ( ?            <> ? )
 EOSQL
-        ( ( $_[0]->session->{userid} ) x 5 ), 
-        $utid,
+        ( ( $_[0]->session->{userid} ) x 2, ( $utid ) x 2 ), 
 }
 
 ###############################################################################
