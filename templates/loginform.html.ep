@@ -1,7 +1,6 @@
 % layout 'login';
-    <div class="postbox headbox" id="headbox">
-      <h1>Anmeldebereich</h1>
-      <p>Melden Sie sich hier mit dem Benutzernamen und Passwort an, welches Sie von einem Administrator des Forums erhalten haben.</p>
+    <div class="postbox headbox loginbox" id="headbox">
+      <h1 class="loginformh1">Anmeldung</h1>
     </div>
     <div class="postbox loginform">
       <h2 class="title">Anmeldung</h2>

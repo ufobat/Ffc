@@ -10,6 +10,7 @@ sub install_routes {
 
     # Anmeldehandling und Anmeldeprüfung
     $r->post('/login')->to('auth#login')->name('login');
+    $r->get('/login')->to('auth#loginform')->name('loginform'); # just in case
     $r->get('/logout')->to('auth#logout')->name('logout');
 
     # Bridge-Auslieferung
@@ -74,6 +75,10 @@ sub check_login {
     $c->render(template => 'loginform');
     return;
 }
+
+###############################################################################
+# Anmelde-Formular anzeigen
+sub loginform { $_[0]->render(template => 'loginform') }
 
 ###############################################################################
 # Anmeldevorgang durchführen
