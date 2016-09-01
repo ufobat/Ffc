@@ -38,7 +38,7 @@ die 'error: "FFC_DATA_PATH" environment variable needs to be a directory'
 my @BasePath = splitdir $ENV{FFC_DATA_PATH};
 my $BasePath = catdir @BasePath;
 my @BaseRoot = splitdir File::Basename::dirname(__FILE__);
-my @DBRoot   = ( @BaseRoot, '..', 'dbpathtmpl' );
+my @DBRoot   = ( @BaseRoot, '..', 'db_template' );
 my @FavRoot  = ( @BaseRoot, '..', 'public', 'theme', 'img' );
 
 # Die Benutzer- und Gruppeninformationen der Basispfade werden automatisch zum 
