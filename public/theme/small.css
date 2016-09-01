@@ -19,7 +19,7 @@ body > * > * {
     width: 5em;
 }
 .menuentry {
-    padding: .5em;
+    padding: 0;
 }
 .menu form {
     white-space: nowrap;
@@ -29,9 +29,6 @@ h2, h3, h4 {
 }
 h2 {
     border-bottom-width: .25em;
-}
-h1 {
-    display: none;
 }
 .headbox textarea {
     width: 90%;
@@ -96,20 +93,16 @@ img {
     background: transparent;
     border: none;
 }
-.othersmenulinktext, .otherspopup {
-    display: none;
-}
 .otherspopup, .otherspopup p {
     display: inline;
     border: none;
 }
-#optionsinfobox, .userlist table, .smallnodisplay, p.smallnodisplay {
+h1, .othersmenulinktext, #optionsinfobox, .userlist table, .smallnodisplay, p.smallnodisplay, .summarypopup, .topiclistbox, .userlistbox, .useroptionsbox {
     display: none;
 }
 .menu {
     text-align: justify;
 }
-.summarypopup, .topiclistbox, .userlistbox, .useroptionsbox {
     display: none;
 }
 .menuentry:hover, .topiclist .menuentry:hover, .functionlinks .menuentry:hover {
