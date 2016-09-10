@@ -16,9 +16,7 @@ sub _pagination {
 sub _search_posts {
     my $url = $_[0]->url_for('search_'.$_[0]->stash('controller').'_posts');
     $_[0]->stash( queryurl => $url, returl => $url );
-    if ( my $q = $_[0]->param('query') ) {
-        $_[0]->session->{query} = $q;
-    }
+    $_[0]->session->{query} = $_[0]->param('query');
     _show_posts($_[0]);
 }
 
@@ -26,7 +24,7 @@ sub _search_posts {
 # Den Suchtext in der Session speichern
 sub _query_posts {
     $_[0]->session->{query} = $_[0]->param('query');
-    $_[0]->show;
+    _show_posts($_[0]);
 }
 
 ###############################################################################

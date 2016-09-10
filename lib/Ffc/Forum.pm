@@ -31,7 +31,9 @@ sub where_select {
             $_[0]->param('topicid'), $_[0]->session->{userid};
 
     # Die Übliche Beitragsausgabe innerhalb eines Themas
-    return 'p."userto" IS NULL AND p."topicid"=?', $_[0]->param('topicid');
+    return $_[0]->param('topicid')
+        ? ( 'p."userto" IS NULL AND p."topicid"=?', $_[0]->param('topicid') )
+        : ( 'p."userto" IS NULL' );
 }
 
 ###############################################################################
