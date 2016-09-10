@@ -13,7 +13,6 @@ use Ffc::Forum;
 use Ffc::Pmsgs;
 use Ffc::Notes;
 use Ffc::Chat;
-use Ffc::Quickview;
 
 ###############################################################################
 # Vorcompilierte standartisierte Ziffernprüfung
@@ -77,7 +76,6 @@ sub _install_routes {
     Ffc::Pmsgs::install_routes($l);
     Ffc::Notes::install_routes($l);
     Ffc::Chat::install_routes($l);
-    Ffc::Quickview::install_routes($l);
 }
 
 ###############################################################################

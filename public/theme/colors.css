@@ -290,9 +290,6 @@ pre {
     font-weight: normal;
     color: dimgray;
 }
-.separated {
-    border-bottom: .1em silver solid;
-}
 div.ownpost {
     color: #333333;
 }
@@ -343,7 +340,7 @@ h2.pin {
 .popuparrow > span {
     color: lightsteelblue;
 }
-.menubarseperator {
+.menubarseparator {
     font-weight: bolder;
     color: gainsboro;
 }

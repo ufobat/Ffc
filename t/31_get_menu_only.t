@@ -52,11 +52,6 @@ EOMENU
         <div class="otherspopup popup">
 EOMENU
   << "EOMENU",
-            <p class="optionslink separated">
-                <a href="/quick" target="_blank" title="Schnelle einfache &Uuml;bersicht &uuml;ber neue Beitr&auml;ge">Statusfenster</a>
-            </p>
-EOMENU
-  << "EOMENU",
             <p class="optionslink">
                 <a href="/options/form"><span class="linktext linkoptions">Benutzerkonto</span></a>
             </p>
@@ -150,11 +145,6 @@ EOMENU
     <div class="otherspopuplink activedim menuentry">
         <span class="othersmenulinktext">Einstellungen</span>
         <div class="otherspopup popup">
-EOMENU
-  << "EOMENU",
-            <p class="optionslink separated">
-                <a href="/quick" target="_blank" title="Schnelle einfache &Uuml;bersicht &uuml;ber neue Beitr&auml;ge">Statusfenster</a>
-            </p>
 EOMENU
   << "EOMENU",
             <p class="optionslink separated">

@@ -11,7 +11,7 @@
         </div>
     </div>
 % if ( @$users ) {
-    <span class="menubarseperator">|</span>
+    <span class="menubarseparator">|</span>
     <div class="activedim menuentry menulinkwleftpu<%= $controller eq 'pmsgs' ? ' activemenuentry' : '' %>">
         <a href="<%= url_for 'show_pmsgs_userlist' %>" title="Liste aller aktiven Benutzer"><span class="linktext linkpmsgs<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>">Benutzer</span><% if ( $newmsgscount ) { %> (<span class="mark"><%= $newmsgscount %></span>)<% } %></a>
     </div>
@@ -23,16 +23,16 @@
 %   }
         </div>
     </div>
-    <span class="menubarseperator">|</span>
+    <span class="menubarseparator">|</span>
     <div class="menuentry<%= $controller eq 'notes' ? ' activemenuentry' : '' %>">
         <a href="<%= url_for 'show_notes', page => 1 %>"><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>" title="Eigene Notizen">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
     </div>
-    <span class="menubarseperator">|</span>
+    <span class="menubarseparator">|</span>
     <div id="chatbutton" class="nodisplay">
         <a href="<%= url_for 'chat_window' %>" target="_blank" title="Chatfenster öffnen"><span class="linktext linkchat">Chat</span></a>
     </div>
 % }
-    <span class="menubarseperator">|</span>
+    <span class="menubarseparator">|</span>
     <div class="menuentry">
         <form <%== $queryurl ? '' : 'style="visibility: hidden" ' %>action="<%== $queryurl %>" accept-charset="UTF-8" method="POST">
 % if ( $query ) {
@@ -44,20 +44,15 @@
             <button type="submit" title="Suchen">&raquo;</button>
         </form>
     </div>
-    <span class="menubarseperator">|</span>
+    <span class="menubarseparator">|</span>
     <div class="otherspopuplink activedim menuentry<%= $controller eq 'options' ? ' activemenuentry' : '' %>">
         <span class="othersmenulinktext<%= $controller eq 'options' ? ' active activeoption' : '' %>">Konto</span>
         <div class="otherspopup popup optionspopup">
-% if ( @$users ) {
-            <p class="optionslink separated">
-                <a href="<%= url_for 'quickview_html' %>" target="_blank" title="Schnelle einfache &Uuml;bersicht &uuml;ber neue Beitr&auml;ge">Statusfenster</a>
-            </p>
-% }
-            <p class="optionslink<%= session()->{admin} ? '' : ' separated' %>">
+            <p class="optionslink">
                 <a href="<%= url_for 'options_form' %>"><span class="linktext linkoptions<%= $action eq 'options_form' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
             </p>
 % if ( session()->{admin} ) {
-            <p class="optionslink separated">
+            <p class="optionslink">
                 <a href="<%= url_for 'admin_options_form' %>"><span class="linktext linkoptions<%= $action eq 'admin_options_form' ? ' active activeoptions' : '' %>">Administration</span></a>
             </p>
 % }

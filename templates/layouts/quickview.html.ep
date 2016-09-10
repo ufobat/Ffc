@@ -1,7 +1,0 @@
-<!DOCTYPE html>
-<html>
-  <head><title>(<%= $newpostcount + $newmsgscount %>) <%= $configdata->{title} %></title></head>
-  <body>
-<%= content %>  </body>
-</html>
-
