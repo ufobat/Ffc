@@ -1,13 +1,13 @@
 <div class="menu" id="menu">
 % if ( @$users ) {
     <div class="menuentry refreshlink">
-        <a href="<%= url_for $pageurl %>"><span class="linkalike linkrefresh">F5</span></a>
+        <a href="<%= url_for $pageurl %>"><span class="linkalike linkrefresh" title="Webseite aktualisieren">F5</span></a>
     </div>
     <span class="menubarseperator">|</span>
 % }
 
     <div class="activedim menuentry menulinkwleftpu<%= $controller eq 'forum' ? ' activemenuentry' : '' %>">
-        <a href="<%= url_for 'show_forum_topiclist', page => 1 %>"><span class="linktext linkforum<%= $controller eq 'forum' ? ' active activeforum' : '' %>">Themen<% if ( $newpostcount ) { %> (<span class="mark"><%= $newpostcount %></span>)</span><% } %></a>
+        <a href="<%= url_for 'show_forum_topiclist', page => 1 %>"><span class="linktext linkforum<%= $controller eq 'forum' ? ' active activeforum' : '' %>" title="Liste aller Themen">Themen<% if ( $newpostcount ) { %> (<span class="mark"><%= $newpostcount %></span>)</span><% } %></a>
     </div>
     <div class="popuparrow activedim menuentry">
         <span class="othersmenulinktext">***</span>
@@ -20,7 +20,7 @@
 % if ( @$users ) {
     <span class="menubarseperator">|</span>
     <div class="activedim menuentry menulinkwleftpu<%= $controller eq 'pmsgs' ? ' activemenuentry' : '' %>">
-        <a href="<%= url_for 'show_pmsgs_userlist' %>"><span class="linktext linkpmsgs">Benutzer</span><% if ( $newmsgscount ) { %> (<span class="mark"><%= $newmsgscount %></span>)<% } %></a>
+        <a href="<%= url_for 'show_pmsgs_userlist' %>" title="Liste aller aktiven Benutzer"><span class="linktext linkpmsgs">Benutzer</span><% if ( $newmsgscount ) { %> (<span class="mark"><%= $newmsgscount %></span>)<% } %></a>
     </div>
     <div class="popuparrow activedim menuentry">
         <span class="othersmenulinktext<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>">***</span>
@@ -32,11 +32,11 @@
     </div>
     <span class="menubarseperator">|</span>
     <div class="menuentry<%= $controller eq 'notes' ? ' activemenuentry' : '' %>">
-        <a href="<%= url_for 'show_notes', page => 1 %>"><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
+        <a href="<%= url_for 'show_notes', page => 1 %>"><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>" title="Eigene Notizen">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
     </div>
     <span class="menubarseperator">|</span>
     <div id="chatbutton" class="nodisplay">
-        <a href="<%= url_for 'chat_window' %>" target="_blank"><span class="linktext linkchat">Chat</span></a>
+        <a href="<%= url_for 'chat_window' %>" target="_blank" title="Chatfenster öffnen"><span class="linktext linkchat">Chat</span></a>
     </div>
 % }
     <span class="menubarseperator">|</span>
@@ -48,7 +48,7 @@
             <span style="display: none">X</span>
 % }
             %= text_field query => $query, $query ? (class => 'activesearch') : ()
-            <button type="submit">&raquo;</button>
+            <button type="submit" title="Suchen">&raquo;</button>
         </form>
     </div>
     <span class="menubarseperator">|</span>
