@@ -79,7 +79,7 @@ my $SmileyRe   = join '|', map { s{([\;\&\^\>\<\-\.\:\\\/\(\)\=\|\,\$])}{\\$1}gx
 # Smiley-Math-Capture
 my $SmileyHandleRe = qr~(?<smileymatch>$SmileyRe)~o;
 # Diverse HTML-Tag-Handle-Captures
-my $URLHandleRe = qr~(?<urlmatch>(?<url>https?://.+?))(?=,?(?:[\s<\)]|\z))~o;
+my $URLHandleRe = qr~(?<urlmatch>(?<url>https?://.+?))(?=,?(?:[\s<\)\]]|\z))~o;
 my $HTMLBlockHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<btag>$HTMLBlockRe))>(?<inner>.+?)</\g{btag}>))~ms;
 my $HTMLListHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<ltag>$HTMLListRe))>(?<inner>.+?)</\g{ltag}>))~ms;
 my $HTMLSinglHandleRe = qr~(?<htmlmatch>(?:<(?<tag>(?<btag>$HTMLSinglRe))>(?<inner>.+?)</\g{btag}>))~ms;

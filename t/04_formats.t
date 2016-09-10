@@ -402,6 +402,7 @@ EOHTML
         << 'EOTXT',
 asdf asdf http://test.org/bla/blubb asdfas.
 blubblbub (https://test2.org/bla.html) fdf das.
+blubblbub [https://test2.org/bla.html] fdf das.
 bloblo fd (http://test3.com/bli.pl, hat sich erledigt).
 daddel didi <b>http://test5.co.uk/balla.cgi baddabing</b> und da.
 dummdi dummi <u>didumm https://test4.de/bong.lua</u> oder so.
@@ -409,6 +410,7 @@ EOTXT
         << 'EOHTML',
 <p>asdf asdf <a href="http://test.org/bla/blubb" title="Externe Webseite: http://test.org/bla/blubb" target="_blank">http://test.org/bla/blubb</a> asdfas.</p>
 <p>blubblbub (<a href="https://test2.org/bla.html" title="Externe Webseite: https://test2.org/bla.html" target="_blank">https://test2.org/bla.html</a>) fdf das.</p>
+<p>blubblbub [<a href="https://test2.org/bla.html" title="Externe Webseite: https://test2.org/bla.html" target="_blank">https://test2.org/bla.html</a>] fdf das.</p>
 <p>bloblo fd (<a href="http://test3.com/bli.pl" title="Externe Webseite: http://test3.com/bli.pl" target="_blank">http://test3.com/bli.pl</a>, hat sich erledigt).</p>
 <p>daddel didi <b><a href="http://test5.co.uk/balla.cgi" title="Externe Webseite: http://test5.co.uk/balla.cgi" target="_blank">http://test5.co.uk/balla.cgi</a> baddabing</b> und da.</p>
 <p>dummdi dummi <u>didumm <a href="https://test4.de/bong.lua" title="Externe Webseite: https://test4.de/bong.lua" target="_blank">https://test4.de/bong.lua</a></u> oder so.</p>
