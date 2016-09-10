@@ -71,9 +71,6 @@ input[type="color"], input[type="url"], input[type="email"], input[type="text"],
 .smallfont {
     font-weight: normal;
 }
-.menu > * {
-    padding: 0 .25em;
-}
 form {
     display: inline;
 }
@@ -134,7 +131,7 @@ img.smiley, img.icon {
     position: absolute;
     text-align: left;
     margin-top: auto;
-    padding: .25em .5em;
+    padding: .5em .5em;
 }
 .popup > * {
     padding: .25em;
@@ -165,10 +162,6 @@ input[type="text"].titlestring {
 .pages {
     padding-top: .1em;
     padding-bottom: .1em;
-}
-.refreshlink {
-    margin-right: 1.5em;
-    margin-left: 0;
 }
 .titlebanner {
     font-size: 2em;
@@ -208,7 +201,7 @@ input[type="text"].titlestring {
 .othersmenulinktext {
     cursor: default;
 }
-.headbox .subtabuttonp {
+.subtabuttonp {
     padding-top: .5em;
 }
 .hovering {
@@ -344,4 +337,18 @@ button:active {
 .newpost .postboxinner h2 {
     border: none;
 }
-
+.popuparrow, .popuparrow > span {
+    margin-left: 0;
+    padding-left: 0;
+}
+.menulinkwleftpu *, .menulinkwleftpu {
+    margin-right: 0;
+    padding-right: 0;
+}
+.menubarseperator {
+    padding: 0;
+    margin: 0 .5em;
+}
+.headbox {
+    margin-top: 3em;
+}

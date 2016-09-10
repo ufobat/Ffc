@@ -10,6 +10,9 @@
             /
             <a href="<%= url_for 'mark_forum_topic_all_seen' %>" title="Alle Themen mit neuen Beiträgen als gelesen markieren">alle als gelesen</a>
 % }
+% if ( $readlatercount ) {
+            / <a href="<%= url_for 'list_readlater' %>" title="Beiträge zum späteren lesen">später lesen: <%= $readlatercount %></a>
+% }
         )</span>
     </h1>
 </div>

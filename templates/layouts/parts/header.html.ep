@@ -36,3 +36,4 @@
 % }
 <%= include 'layouts/parts/styleinc' %>  </head>
   <body>
+    <!-- Angemeldet als "<%= session()->{user} || '<noone>' %>" !-->
