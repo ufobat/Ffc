@@ -352,3 +352,10 @@ button:active {
 .headbox {
     margin-top: 3em;
 }
+.menu .popup {
+    margin-left: -3em;
+}
+.optionspopup {
+    margin-right: 1em;
+    margin-left: none;
+}

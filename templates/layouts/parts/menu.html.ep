@@ -54,7 +54,7 @@
     <span class="menubarseperator">|</span>
     <div class="otherspopuplink activedim menuentry<%= $controller eq 'options' ? ' activemenuentry' : '' %>">
         <span class="othersmenulinktext<%= $controller eq 'options' ? ' active activeoption' : '' %>">Konto</span>
-        <div class="otherspopup popup">
+        <div class="otherspopup popup optionspopup">
 % if ( @$users ) {
             <p class="optionslink separated">
                 <a href="<%= url_for 'quickview_html' %>" target="_blank" title="Schnelle einfache &Uuml;bersicht &uuml;ber neue Beitr&auml;ge">Statusfenster</a>
