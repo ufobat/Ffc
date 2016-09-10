@@ -61,7 +61,7 @@
             </p>
 % }
             <p class="optionslink<%= session()->{admin} ? '' : ' separated' %>">
-                <a href="<%= url_for 'options_form' %>"><span class="linktext linkoptions<%= $action eq 'options_form' ? ' active activeoptions' : '' %>">Benutzerkonto</span></a>
+                <a href="<%= url_for 'options_form' %>"><span class="linktext linkoptions<%= $action eq 'options_form' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
             </p>
 % if ( session()->{admin} ) {
             <p class="optionslink separated">
