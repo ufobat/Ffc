@@ -67,17 +67,18 @@ my $rlcnt = 0; # Anzahl wieviele in der Readlater-Liste sind
 
 sub check_posts {
     my ( $empty ) = @_; # for user without anything on readlater list
+    $t->get_ok('/forum')->status_is(200);
+    if ( $empty or not $rlcnt ) {
+        $t->content_unlike(qr~href="/forum/readlater/list"~)
+          ->content_unlike(qr~später lesen: \d+</a>~);
+    }
+    else {
+        $t->content_like(qr~href="/forum/readlater/list"~)
+          ->content_like(qr~später lesen: $rlcnt</a>~);
+    }
     for my $tix ( 0 .. $#topics ) {
         my $tid = $tix + 1;
         $t->get_ok("/topic/$tid")->status_is(200);
-        if ( $empty or not $rlcnt ) {
-            $t->content_unlike(qr~href="/forum/readlater/list"~)
-              ->content_unlike(qr~Vorgemerkte Beiträge \(\d+\)</a>~);
-        }
-        else {
-            $t->content_like(qr~href="/forum/readlater/list"~)
-              ->content_like(qr~Vorgemerkte Beiträge \($rlcnt\)</a>~);
-        }
         for my $p ( @{$topics[$tix]} ) {
             $t->content_like(qr~$p->[0]~);
             unless ( $empty ) {

@@ -37,7 +37,7 @@ login_user1();
 $t->post_ok('/options/email', form => { email => $email, hideemail => 1 })
   ->status_is(302)->content_is('')->header_is(Location => '/options/form');
 $t->get_ok('/options/form')->status_is(200)
-  ->content_like(qr'active activeoptions">Benutzerkonto<')
+  ->content_like(qr'active activeoptions">Konto<')
   ->content_like(qr~name="email" type="email" value="$email"~);
 
 ###############################################################################
@@ -50,14 +50,12 @@ sub check_data {
     if ( $seeonline ) {
         $t->content_like(qr~\s*
 <div\s+class="userspopup\s+popup\s+otherspopup">\s*
-<p\s+class="separated"><a\s+href="/pmsgs"><span\s+class="linktext\s+linkpmsgs">Benutzerliste</span></a>\s*
 <p\s+class="smallnodisplay"><a\s+href="/pmsgs/2">$user1</a>\s+<span\s+class="dim">\($timeqr\)</span></p>\s*
 </div>~xms);
     }
     else {
         $t->content_like(qr~\s*
 <div\s+class="userspopup\s+popup\s+otherspopup">\s*
-<p\s+class="separated"><a\s+href="/pmsgs"><span\s+class="linktext\s+linkpmsgs">Benutzerliste</span></a>\s*
 <p\s+class="smallnodisplay"><a\s+href="/pmsgs/2">$user1</a></p>\s*
 </div>~xms);
     }

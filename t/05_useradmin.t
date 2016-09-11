@@ -51,7 +51,7 @@ $dbh->do('UPDATE users SET admin=0 WHERE UPPER(name)=UPPER(?)', undef, $admin);
 $t->get_ok('/admin/form')
   ->status_is(302)->header_is(Location => '/options/form')->content_is('');
 $t->get_ok('/options/form')
-  ->content_like(qr'active activeoptions">Benutzerkonto<')
+  ->content_like(qr'active activeoptions">Konto<')
   ->content_unlike(qr'Neuen Benutzer anlegen')
   ->content_unlike(qr'<form action="/admin/useradd#usernewadmin" method="POST">');
 
