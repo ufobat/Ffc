@@ -363,7 +363,7 @@ button:active {
 .postbox {
     padding-bottom: 0;
 }
-.headbox, .postboxform {
+.headbox, .postboxform, .loginform {
     padding-bottom: 1em;
 }
 
