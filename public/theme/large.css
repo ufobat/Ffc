@@ -363,7 +363,7 @@ button:active {
 .postbox {
     padding-bottom: 0;
 }
-.headbox {
+.headbox, .postboxform {
     padding-bottom: 1em;
 }
 
