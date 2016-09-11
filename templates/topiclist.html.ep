@@ -21,11 +21,11 @@
 % for my $t ( @$topics_for_list ) {
     <h2<%== $t->[11] ? qq~ class="$t->[11]"~ : '' %>>
         <span class="menuentry">
-            <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"><%= $t->[2] %></a>
+            <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"><%= $t->[2] %>
 % if ( $t->[10] ) {
             <div class="otherspopup popup topiclistpopup summarypopup">
                 <p><%== $t->[10] %> ...</p>
-            </div>
+            </div></a>
 % }
         </span>
         <span class="addinfos">

@@ -349,3 +349,7 @@ h2.pin {
     text-align: right;
     border-top: .1em gainsboro solid;
 }
+.summarypopup {
+    background: white;
+}
+

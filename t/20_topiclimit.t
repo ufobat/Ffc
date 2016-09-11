@@ -25,14 +25,15 @@ for my $c ( @topics ) {
 sub check_topics {
     my ( $start, $end, $topiclimit ) = @_;
     for my $i ( 0 .. $#topics ) {
-        my $sp = $topics[$i] x 2;
-        $sp = qq~<div class="otherspopup popup topiclistpopup summarypopup">\\s*<p>$sp ...</p>\\s*</div>\\s*</span>\\s*~;
         my $id = $i + 1;
+        my $sp = $topics[$i] x 2;
+        $sp = qq~<div class="otherspopup popup topiclistpopup summarypopup">\\s*<p>$sp ...</p>\\s*</div>\\s*</a>\\s*</span>\\s*~;
+        $sp = qq~<h2(?:\\s+class="newpost")?>\\s*<span\\s+class="menuentry">\\s*<a href="/topic/$id">$topics[$i]\\s*$sp~;
         if ( $i >= $start and $i <= $end ) {
-            $t->content_like(qr~<h2(?:\s+class="newpost")?>\s*<span\s+class="menuentry">\s*<a href="/topic/$id">$topics[$i]</a>\s*$sp~);
+            $t->content_like(qr~$sp~);
         }
         else {
-            $t->content_unlike(qr~<a href="/topic/$id">$topics[$i]</a>\s*$sp</h2>~);
+            $t->content_unlike(qr~$sp~);
         }
     }
     note 'check popup topics';
