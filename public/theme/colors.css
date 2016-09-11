@@ -328,7 +328,7 @@ h2.pin {
     font-weight: normal;
     font-size: 1em;
 }
-.topiclist .smallfont {
+.topiclist .smallfont, .bottomfunctionlinks {
     font-size: .75em;
 }
 .topiclist .smallfont u {
@@ -343,4 +343,9 @@ h2.pin {
 .menubarseparator {
     font-weight: bolder;
     color: gainsboro;
+}
+.bottomfunctionlinks {
+    clear: both;
+    text-align: right;
+    border-top: .1em gainsboro solid;
 }
