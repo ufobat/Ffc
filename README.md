@@ -3,6 +3,8 @@ Ffc - A Bulletin Board System For Smaller Groups
 
 ![Screenshot](https://raw.github.com/4FriendsForum/Ffc/master/public/Screenshot.png)
 
+![Screenshot Chat](https://raw.github.com/4FriendsForum/Ffc/master/public/Screenshot_Chat.png)
+
 So here is my presentation of what is kind of a pet project of mine. It's tied to a call for supporters because, as you might recognize while reading and digging into it, there is a lot to revamp all over the whole project in order to bring it to a broader audience.
 
 Installation information (in german language) is located here: [INSTALL.md on GitHub](https://github.com/4FriendsForum/Ffc/blob/master/INSTALL.md)
