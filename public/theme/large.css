@@ -296,9 +296,9 @@ button:active {
    margin-left: 2em;
 }
 .summarypopup {
-    max-width: 40em;
+    max-width: 36em;
     margin-top: 0;
-    margin-left: 6em;
+    margin-left: 10em;
     white-space: normal;
     overflow: auto; 
     font-weight: normal;
