@@ -27,7 +27,7 @@
     <div class="menuentry<%= $controller eq 'notes' ? ' activemenuentry' : '' %>">
         <a href="<%= url_for 'show_notes', page => 1 %>"><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>" title="Eigene Notizen">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
     </div>
-    <span class="menubarseparator">|</span>
+    <span class="menubarseparator nodisplay" id="menuchatseparator">|</span>
     <div id="chatbutton" class="nodisplay">
         <a href="<%= url_for 'chat_window' %>" target="_blank" title="Chatfenster öffnen"><span class="linktext linkchat">Chat</span></a>
     </div>

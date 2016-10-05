@@ -32,8 +32,11 @@ ffcdata.features.init = function(){
      ************************************************************************/
     var activate_chatbutton = function(){
         var chatb = document.getElementById('chatbutton');
+        var chats = document.getElementById('menuchatseparator');
         if ( chatb )
             chatb.className = 'menuentry chatlink';
+        if ( chats )
+            chats.className = 'menubarseparator';
     };
 
     /************************************************************************
