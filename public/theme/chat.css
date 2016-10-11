@@ -7,7 +7,7 @@ body {
     color: black;
     background: gainsboro url('img/hg.png') repeat-x top center fixed;
     overflow: hidden;
-    width: 50em;
+    width: 65em;
     height: 30em;
     margin: 0 auto;
     padding: .5em;
