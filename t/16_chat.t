@@ -67,11 +67,14 @@ sub check_receive_messages {
     my $url     = '/chat/receive/'.($focused ? 'focused' : 'unfocused');
 
     my $lcsa1 = get_lastchatseenactive(2);
-    my $str = Testinit::test_randstring();
+    my $str  = Testinit::test_randstring() . '<b>' . Testinit::test_randstring() . "</b>abc:-)\n\n" . Testinit::test_randstring();
+    my $str1 = $str;
+    $str1 =~ s~:-\)~<img class="smiley" src="/theme/img/smileys/smile.png" alt=":-)" title=":-)" />~xmso;
+    $str1 =~ s~\n+~<br />~xmso;
     $t1->post_ok($url, json => $str)->status_is(200);
     sleep $sleepval;
     $t2->get_ok($url)->status_is(200)
-       ->json_is('/0/0/0' => ++$id)->json_is('/0/0/1' => $admin)->json_is('/0/0/2' => $str)
+       ->json_is('/0/0/0' => ++$id)->json_is('/0/0/1' => $admin)->json_is('/0/0/2' => $str1)
        ->json_is('/2' => $fcnt)->json_is('/3' => $pcnt);
     bothusers($t2);
     my $lcsa2 = get_lastchatseenactive(2);
@@ -82,10 +85,11 @@ sub check_receive_messages {
     $t1->post_ok($url, json => $str)->status_is(200);
     sleep $sleepval;
     my $str2 = Testinit::test_randstring();
-    $t2->post_ok($url, json => $str2)->status_is(200)
-       ->json_is('/0/1/0' => ++$id)->json_is('/0/1/1' => $admin)->json_is('/0/1/2' => $str)
-       ->json_is('/0/0/0' => ++$id)->json_is('/0/0/1' => $user)->json_is('/0/0/2' => $str2)
-       ->json_is('/2' => $fcnt)->json_is('/3' => $pcnt);
+    $t2->post_ok($url, json => $str2)->status_is(200);
+    $t2->json_is('/0/1/0' => ++$id)->json_is('/0/1/1' => $admin);
+    $t2->json_is('/0/1/2' => $str);
+    $t2->json_is('/0/0/0' => ++$id)->json_is('/0/0/1' => $user )->json_is('/0/0/2' => $str2);
+    $t2->json_is('/2' => $fcnt)->json_is('/3' => $pcnt);
     bothusers($t2);
 
     my $lcsa3 = get_lastchatseenactive(2);

@@ -91,9 +91,9 @@ sub _add_msg {
 
     # Formatieren der neuen Nachricht
     $msg = $c->pre_format($msg);
-    $msg =~ s~\A\s*<p>~~xmso;
-    $msg =~ s~</p>\s*\z~~xmso;
-    $msg =~ s~</p>\s*<p>~<br />~xmso;
+    $msg =~ s~\A\s*<p>~~xmsgo;
+    $msg =~ s~</p>\s*\z~~xmsgo;
+    $msg =~ s~</p>\s*<p>~<br />~xgmso;
 
     # Die neue Nachricht in die Daten eintragen, wenn sie Daten enthält
     $c->dbh_do('INSERT INTO "chat" ("userfromid", "msg", "sysmsg") VALUES (?,?,?)',
