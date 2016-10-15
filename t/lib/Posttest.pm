@@ -260,7 +260,12 @@ sub query_string {
       ->content_like(qr~<input\s+class="activesearch"\s+name="query"\s+type="text"\s+value="$str"(?:\s+\/)?>~);
     for my $i ( 0 .. $#entries ) {
         next if $i == $filter;
-        $t->content_unlike(qr~$entries[$i][1]~);
+        ok $entries[$i][7], 'searchstring available';
+        like $entries[$i][1], qr~\b$entries[$i][7]\b~, 'viewstring contaings searchstring';
+        $t->content_unlike(qr~\b$entries[$i][7]\b~);
+        unless ( $t->success ) {
+            use Data::Dumper; die Dumper \@entries;
+        }
     }
     return $filter;
 }
@@ -476,7 +481,10 @@ sub check_pages {
                 $t->content_like(qr~href="$str"~);
             }
 
-            $t->content_unlike(qr~$_->[1]~) for @delents;
+            for my $e ( @delents ) {
+                $t->content_unlike(qr~$e->[7]~);
+                like $e->[1], qr~$e->[7]~, 'viewstring contaings searchstring';
+            }
             
             for my $i ( $offset .. $limit ) {
                 next if $i < 0;
@@ -505,9 +513,10 @@ sub check_pages {
           ->content_unlike(qr~alt="$att->[2]"~);
     }
     for my $e ( @delents ) {
+        like $e->[1], qr~$e->[7]~, 'viewstring contaings searchstring';
         $t->get_ok("$Urlpref/display/$e->[0]")
           ->status_is(200)
-          ->content_unlike(qr~$e->[1]~);
+          ->content_unlike(qr~$e->[7]~);
     }
 }
 

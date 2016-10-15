@@ -6,33 +6,39 @@ use lib "$FindBin::Bin/../lib";
 my $t = require Posttest;
 
 use Test::Mojo;
-use Test::More tests => 2693;
+use Test::More tests => 2729;
 
 my $cname = 'forum';
 
 # generate some topics
 my @Topics;
-push @Topics, map { [Testinit::test_randstring(), Testinit::test_randstring(),$_] } 1 .. 3;
+for my $i ( 1 .. 3 ) {
+    my ( $str, $search ) = get_randstring();
+    push @Topics, [Testinit::test_randstring(), $str, $i, $search];
+}
 login1();
 for my $i ( 0 .. $#Topics ) {
     $t->post_ok('/topic/new', form => {
         titlestring => $Topics[$i][0], 
-        textdata    => $Topics[$i][1]
+        textdata    => $Topics[$i][1],
     })->status_is(302);
+    use Data::Dumper;
+    $Topics[$i][1] = format_text($Topics[$i][1]);
     check_topic($t, $i);
     info('Ein neuer Beitrag wurde erstellt');
 }
 # insert the first entry of the first topic into the entries array
-add_entry_testarray($Topics[0][1], undef, undef, [], 1);
+add_entry_testarray(format_text($Topics[0][1]), undef, undef, [], 1, format_for_re($Topics[0][1]), $Topics[0][3]);
 lastid(3);
 
 # check a topic from topics array for precense
 sub check_topic {
     my ( $t, $i ) = @_;
-    $t->get_ok('/topic/'.($i + 1))
-      ->status_is(200)
-      ->content_like(qr~$Topics[$i][0]~)
-      ->content_like(qr~$Topics[$i][1]~);
+    note "checking topic " . ($i + 1);
+    my $str = format_for_re($Topics[$i][1]);
+    $t->get_ok('/topic/'.($i + 1))->status_is(200);
+    $t->content_like(qr~$Topics[$i][0]~);
+    $t->content_like(qr~\b$str\b~);
 }
 
 # runs a standardized test suite
@@ -57,11 +63,11 @@ check_for_topic_count($t, $Topics[2], 3, 1);
 $newcntsum = 2;
 $t->get_ok('/topic/2/unignore')->status_is(302)
   ->header_like(location => qr~\A/~);
-$t->get_ok('/')->status_is(200)
-  ->content_like(qr~<title>\($newcntsum\)\s+Ffc\s+Forum~)
-  ->content_like(qr~activeforum">Themen\s+\(<span\s+class="mark">$newcntsum</span>\)</span>~xms)
-  ->content_like(qr~href="/topic/2/ignore"~)
-  ->content_like(qr~href="/topic/1/ignore"~);
+$t->get_ok('/')->status_is(200);
+$t->content_like(qr~<title>\($newcntsum\)\s+Ffc\s+Forum~);
+$t->content_like(qr~activeforum">Themen\s+\(<span\s+class="mark">$newcntsum</span>\)</span>~xms);
+$t->content_like(qr~href="/topic/2/ignore"~);
+$t->content_like(qr~href="/topic/1/ignore"~);
 info('Das gewählte Thema wird jetzt nicht mehr ignoriert.');
 check_for_topic_count($t, $Topics[1], 2, 1);
 check_for_topic_count($t, $Topics[2], 3, 1);
@@ -99,10 +105,10 @@ sub check_env {
     note 'login zum lesen';
     login2();
     my $newcnt = grep { !$_->[3] and $_->[5] } @$entries;
-    my $newcntsum = $newcnt + 2;
-    $t->get_ok('/')->status_is(200)
-      ->content_like(qr~<title>\($newcntsum\)\s+Ffc Forum~)
-      ->content_like(qr~activeforum">Themen\s+\(<span\s+class="mark">$newcntsum</span>\)</span>~xms);
+    my $newcntsum1 = $newcnt + 2;
+    $t->get_ok('/')->status_is(200);
+    $t->content_like(qr~<title>\($newcntsum1\)\s+Ffc Forum~);
+    $t->content_like(qr~activeforum">Themen\s+\(<span\s+class="mark">$newcntsum1</span>\)</span>~xms);
     for ( 0 .. $#Topics ) {
         note "pruefe mal wieder Topic idx $_";
         check_for_topic_count($t, $Topics[$_], $_ + 1, $_ ? 1 : $newcnt, $entries, $delents, $cnt, $query);
@@ -137,9 +143,9 @@ sub check_env {
 sub check_for_topic_count {
     my ( $t, $top, $i, $new, $entries, $delents, $cnt, $query ) = @_;
     if ( $new ) {
-        $t->content_like(qr~$top->[0]\s*</a>\s*\.\.\.\s*\(<span\s+class="mark">$new</span>\)\s*</p>~xms)
-          ->content_like(qr~href="/topic/$i">$top->[0]</a>~)
-          ->content_like(qr~
+        $t->content_like(qr~$top->[0]\s*</a>\s*\.\.\.\s*\(<span\s+class="mark">$new</span>\)\s*</p>~xms);
+        $t->content_like(qr~href="/topic/$i">$top->[0]</a>~);
+        $t->content_like(qr~
                 <span\s+class="addinfos">\s*Neu:\s+<span\s+class="mark">\[$new\]</span>,
                 \s*\w+,\s*(?:[.\d:]+|jetzt)\s*<br\s+/>
                 \s+<span\sclass="smallfont">
