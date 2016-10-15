@@ -254,7 +254,7 @@ sub del_attachement {
 
 sub query_string {
     my $filter = $Postlimit + 1;
-    my $str = $entries[$filter][1];
+    my $str = $entries[$filter][7];
     $t->post_ok("$Urlpref/query", form => { query => $str })
       ->status_is(200)
       ->content_like(qr~<input\s+class="activesearch"\s+name="query"\s+type="text"\s+value="$str"(?:\s+\/)?>~);
@@ -316,15 +316,41 @@ sub add_attachement {
     }
 }
 
+sub format_text {
+    my $str = shift;
+    $str =~ s~:-\)~<img class="smiley" src="/theme/img/smileys/smile.png" alt=":-\\)" title=":-\\)" />~go;
+    $str =~ s~\n+~</p>\\n<p>~gmso;
+    $str =~ s~\s~\\s~gmso;
+    return $str;
+}
+
+sub format_for_re {
+    my $str = shift;
+    $str =~ s~:-\)~:-\\)~gmso;
+    $str =~ s~\n~\\n~msgo;
+    return $str;
+}
+
+sub get_randstring {
+    my $str = Testinit::test_randstring();
+    return 
+             Testinit::test_randstring() 
+           . '<b>' 
+           . $str 
+           . "</b>abc:-)\n\n" 
+           . Testinit::test_randstring(),
+        $str
+}
+
 sub update_text {
     my ( $user, $i ) = @_;
     my $entry = $entries[$i] or die "no entry count '$i' available";
-    my $str = Testinit::test_randstring();
+    my ( $str, $search ) = get_randstring();
     $t->get_ok("$Urlpref/edit/$entry->[0]");
     if ( $entry->[2] eq $user ) { 
         $t->status_is(200);
 #        use Data::Dumper; warn Dumper \@entries, $user, $i;
-        $t->content_like(qr~$entry->[1]\s*</textarea>~xms);
+        $t->content_like(qr~$entry->[6]\s*</textarea>~xms);
     }
     else {
         $t->status_is(302)->content_is('')
@@ -367,7 +393,9 @@ sub update_text {
       ->header_like(location => qr~$Urlpref~);
     $t->get_ok($Urlpref)->status_is(200);
     if ( $entry->[2] eq $user ) {
-        $entry->[1] = $str;
+        $entry->[1] = format_text($str);
+        $entry->[6] = format_for_re($str);
+        $entry->[7] = $search;
         $entry->[5] = 1;
         info('Der Beitrag wurde geändert');
     }
@@ -390,21 +418,22 @@ sub no_update_text {
 
 sub insert_text {
     my ( $from, $to ) = @_;
-    my $str = Testinit::test_randstring();
+    my ($str,$search)  = get_randstring();
     $t->post_ok("$Urlpref/new", form => { textdata => $str })
       ->status_is(302)->content_is('')
       ->header_like(location => qr~$Urlpref~);
-    $t->get_ok($Urlpref)->status_is(200)->content_like(qr~$str~);
-# $entry = [ $id, $textdata, $userfromid, $usertoid, [$attachements], $is_new_or_altered ];
-    return add_entry_testarray($str, $from, $to, [], 1);
+    my $str1 = format_text($str);
+    $t->get_ok($Urlpref)->status_is(200)->content_like(qr~$str1~);
+# $entry = [ $id, $textdata, $userfromid, $usertoid, [$attachements], $is_new_or_altered, $rawdata, $partialsearchstr ];
+    return add_entry_testarray($str1, $from, $to, [], 1, format_for_re($str), $search);
 }
 
 {
     my $lastid = 0;
     sub lastid { $lastid = shift }
     sub add_entry_testarray {
-        my ( $str, $from, $to, $attsarray, $changed ) = @_;
-        unshift @entries, my $entry = [++$lastid, $str, $from // $user1, $to, $attsarray, $changed];
+        my ( $str, $from, $to, $attsarray, $changed, $rawdata, $search ) = @_;
+        unshift @entries, my $entry = [++$lastid, $str, $from // $user1, $to, $attsarray, $changed, $rawdata, $search];
         return $entry;
     }
 }

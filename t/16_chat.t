@@ -86,8 +86,7 @@ sub check_receive_messages {
     sleep $sleepval;
     my $str2 = Testinit::test_randstring();
     $t2->post_ok($url, json => $str2)->status_is(200);
-    $t2->json_is('/0/1/0' => ++$id)->json_is('/0/1/1' => $admin);
-    $t2->json_is('/0/1/2' => $str);
+    $t2->json_is('/0/1/0' => ++$id)->json_is('/0/1/1' => $admin)->json_is('/0/1/2' => $str );
     $t2->json_is('/0/0/0' => ++$id)->json_is('/0/0/1' => $user )->json_is('/0/0/2' => $str2);
     $t2->json_is('/2' => $fcnt)->json_is('/3' => $pcnt);
     bothusers($t2);
