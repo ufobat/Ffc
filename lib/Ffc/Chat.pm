@@ -90,7 +90,7 @@ sub _add_msg {
     my ( $c, $msg, $issys ) = @_;
 
     # Formatieren der neuen Nachricht
-    $msg = $c->pre_format($msg, 1);
+    $msg = $c->pre_format($msg);
     $msg =~ s~\A\s*<p>~~xmso;
     $msg =~ s~</p>\s*\z~~xmso;
     $msg =~ s~</p>\s*<p>~<br />~xmso;
