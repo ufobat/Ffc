@@ -16,10 +16,10 @@ use lib
 our $Script 
     = catfile( splitdir(File::Basename::dirname(__FILE__)),
         '..', '..', 'script', 'init.pl' );
-our @Chars = ('a' .. 'z', 'A' .. 'C', 'E' .. 'O', 'Q' .. 'X', 'Y', 'Z'); # 'D' und so wird in Smilies verwendet, das geht für Tests blöd, Smilies werden extra getestet
+our @Chars = ('a' .. 'z', 'A' .. 'C', 'E' .. 'N', 'Q' .. 'X', 'Y', 'Z'); # 'D' und so wird in Smilies verwendet, das geht für Tests blöd, Smilies werden extra getestet
 {
     my $scnt = 1;
-    my $ts = sub { join '', map { $Chars[int rand @Chars] } 1 .. 3 };
+    my $ts = sub { join '', map { $Chars[int rand @Chars] } 1 .. 3 }; # "oo" wegen den what.png-Smileys
     sub test_randstring { sprintf "%s%04d%s", $ts->(), $scnt++, $ts->() }
 }
 
