@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 101;
+use Test::More tests => 104;
 
 srand;
 
@@ -475,6 +475,14 @@ EOHTML
         '<u></u>',
         '',
         20
+    ],
+    [
+        join( ' … ', 
+            'o_O', 'O_o', 'O_ò', 'ó_O', 'Oo', 'oO' ),
+        '<p>' . join( ' … ', map {
+            qq~<img class="smiley" src="/theme/img/smileys/what.png" alt="$_" title="$_" />~
+            } 'o_O', 'O_o', 'O_ò', 'ó_O', 'Oo', 'oO' ) . '</p>',
+        21
     ],
 );
 
