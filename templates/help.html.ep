@@ -90,7 +90,7 @@
     <p>Folgende Smileys werden erkannt:</p>
     <ul>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/look.png" %>" /> (Erstaunt guggen): <code>O.O 0.0 O_O 0_0</code></li>
-        <li><img class="smiley" src="<%= url_for "/theme/img/smileys/what.png" %>" /> (Fragend dreinblicken): <code>o.O O.o O.ò ó.O</code></li>
+        <li><img class="smiley" src="<%= url_for "/theme/img/smileys/what.png" %>" /> (Fragend dreinblicken): <code>o.O O.o O.ò ó.O o_O O_o O_ò ó_O Oo oO</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/tongue.png" %>" /> (Frech werden): <code>:P :-P =P :p :-p =p</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/ooo.png" %>" /> (Überraschung andeuten): <code>:O :-O =O :o :-o =o</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/smile.png" %>" /> (Lächeln): <code>:) :-) =)</code></li>
