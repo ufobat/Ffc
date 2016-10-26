@@ -27,7 +27,8 @@ ffcdata.editbuttons.init = function(){
      * Die Klappfunktion des Textfeldes an CSS (Focus) vorbei implementieren
      ************************************************************************/
     var tinputclass = tinput.className;
-    var tap = document.getElementById('subtabuttonp');
+    var tap         = document.getElementById('subtabuttonp');
+    var tcloseb     = document.getElementById('closetextabutton');
     // Textfeld öffnen
     var opentextarea = function(){
         // console.log('opentext');
@@ -220,7 +221,8 @@ ffcdata.editbuttons.init = function(){
     var showbuttons = function(){
         // Textfeld-Klappung einrichten
         if ( !ffcdata.chat ) {
-            tinput.style.resize = 'none';
+            tinput.style.resize = 'vertical';
+            tinput.onresize = function(){ tcloseb.class = 'nodisplay' };
         }
         if ( tinput.className.match(/inedit/i) ) {
             opentextarea();
