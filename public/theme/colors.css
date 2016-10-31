@@ -149,7 +149,7 @@ ul.topiclist {
 h2.newpost, .newpost h1, .newpost .title, input.activesearch {
     background: lemonchiffon;
 }
-.topiclist .newpost, .newpost .postboxinner, .newpost h1, .newpost .title, input.activesearch, .newpost .avatar {
+.topiclist .newpost, .newpost h1, .newpost .title, input.activesearch, .newpost .avatar {
     border-color: cornflowerblue;
     border-style: solid;
 }
@@ -352,4 +352,6 @@ h2.pin {
 .summarypopup {
     background: white;
 }
-
+.newpost .postboxinner {
+    border: 0 khaki solid;
+}
