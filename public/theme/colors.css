@@ -55,10 +55,10 @@ button:hover {
     padding: .1em;
 }
 a > img {
-    border: .1em steelblue solid;
+    border: .1em royalblue solid;
 }
 a, .othersmenulinktext {
-    color: steelblue;
+    color: royalblue;
     border: none;
     background: none;
 }
