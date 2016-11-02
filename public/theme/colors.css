@@ -150,7 +150,7 @@ h2.newpost, .newpost h1, .newpost .title, input.activesearch {
     background: lemonchiffon;
 }
 .topiclist .newpost, .newpost h1, .newpost .title, input.activesearch, .newpost .avatar {
-    border-color: cornflowerblue;
+    border-color: khaki;
     border-style: solid;
 }
 h2.newpinpost {
