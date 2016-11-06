@@ -5,7 +5,7 @@
 body {
     font-family: sans-serif;
     color: black;
-    background: gainsboro url('img/hg.png') repeat-x top center fixed;
+    background: gainsboro url('img/hg.png') repeat-x top center fixed bottom;
     overflow: hidden;
     width: 65em;
     height: 30em;
