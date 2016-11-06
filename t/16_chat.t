@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 545;
+use Test::More tests => 544;
 use Test::Mojo;
 use Data::Dumper;
 
@@ -136,19 +136,23 @@ $t2->get_ok('/chat/receive/focused')->status_is(200);
 $t2->get_ok('/chat/receive/focused')->status_is(200);
 bothusers($t2);
 $t1->get_ok('/chat/leave')->status_is(200)->content_is('ok');
-$t2->get_ok('/chat/receive/focused')->status_is(200)
-   ->json_has('/0')->json_has('/0/0')->json_is('/0/0/0' => $id + 1)
-   ->json_is('/1/0/0' => $user)->json_is('/1/0/2' => 60)
-   ->json_hasnt('/1/1')
-   ->json_is('/2' => 1)->json_is('/3' => 0);
+$t2->get_ok('/chat/receive/focused')->status_is(200);
+$t2->json_has('/0');
+$t2->json_hasnt('/0/0');
+$t2->json_is('/1/0/0' => $user);
+$t2->json_is('/1/0/2' => 60);
+$t2->json_hasnt('/1/1');
+$t2->json_is('/2' => 1)->json_is('/3' => 0);
 
 # und wieder rein in den chat (mit neuen nachrichten)
 my $str3 = Testinit::test_randstring();
 $t2->post_ok('/chat/receive/focused', json => $str3)->status_is(200);
 $t1->get_ok('/chat')->status_is(200)
    ->content_like(qr~<!-- Angemeldet als "$admin" !-->~);
-$t1->get_ok('/chat/receive/focused')->status_is(200)
-   ->json_is('/0/0/0' => ++$id + 1)->json_is('/0/0/1' => $user)->json_is('/0/0/2' => $str3);
+$t1->get_ok('/chat/receive/focused')->status_is(200);
+$t1->json_is('/0/0/0' => ++$id);
+$t1->json_is('/0/0/1' => $user);
+$t1->json_is('/0/0/2' => $str3);
 $t2->get_ok('/chat/receive/focused')->status_is(200);
 bothusers($t2);
 bothusers($t1);
@@ -165,10 +169,12 @@ $t2->get_ok('/chat/receive/focused')->status_is(200)
 # und wieder rein in den chat (mit neuen nachrichten)
 $str3 = Testinit::test_randstring();
 $t2->post_ok('/chat/receive/focused', json => $str3)->status_is(200);
-$t1->get_ok('/chat')->status_is(200)
-   ->content_like(qr~<!-- Angemeldet als "$admin" !-->~);
-$t1->get_ok('/chat/receive/focused')->status_is(200)
-   ->json_is('/0/0/0' => ++$id + 1)->json_is('/0/0/1' => $user)->json_is('/0/0/2' => $str3);
+$t1->get_ok('/chat')->status_is(200);
+$t1->content_like(qr~<!-- Angemeldet als "$admin" !-->~);
+$t1->get_ok('/chat/receive/focused')->status_is(200);
+$t1->json_is('/0/0/0' => ++$id);
+$t1->json_is('/0/0/1' => $user);
+$t1->json_is('/0/0/2' => $str3);
 $t2->get_ok('/chat/receive/focused')->status_is(200);
 bothusers($t2,1);
 bothusers($t1,1);
@@ -181,10 +187,12 @@ $t1->get_ok('/chat/receive/started')->status_is(200);
 $t1->post_ok('/chat/receive/focused', json => $str4)->status_is(200);
 $t1->get_ok('/chat/leave')->status_is(200);
 
-$t2->get_ok('/chat/receive/focused')->status_is(200)
-   ->json_is('/0/3/0' => ++$id + 1, '/0/3/1' => "$admin", '/0/3/2' => "$admin hat den Chat verlassen.", '/0/3/4' => 1)
-   ->json_is('/0/2/0' => ++$id + 1, '/0/2/1' => "$admin", '/0/2/2' => $str4, '/0/2/4' => 0)
-   ->json_is('/0/1/0' => ++$id + 1, '/0/1/1' => "$admin", '/0/1/2' => "$admin hat den Chat betreten.", '/0/1/4' => 1)
-   ->json_is('/0/0/0' => ++$id + 1, '/0/0/1' => "$admin", '/0/0/2' => "$admin hat den Chat verlassen.", '/0/0/4' => 1);
+$t2->get_ok('/chat/receive/focused')->status_is(200);
+$t2->json_hasnt('/0/3');
+$t2->json_hasnt('/0/2');
+#$t2->json_is('/0/3/0' => ++$id + 1, '/0/3/1' => "$admin", '/0/3/2' => "$admin hat den Chat verlassen.", '/0/3/4' => 1);
+#$t2->json_is('/0/2/0' => ++$id + 1, '/0/2/1' => "$admin", '/0/2/2' => $str4, '/0/2/4' => 0);
+$t2->json_is('/0/1/0' => ++$id, '/0/1/1' => "$admin", '/0/1/2' => "$admin hat den Chat betreten.", '/0/1/4' => 1);
+$t2->json_is('/0/0/0' => ++$id, '/0/0/1' => "$admin", '/0/0/2' => "$admin hat den Chat verlassen.", '/0/0/4' => 1);
 
 

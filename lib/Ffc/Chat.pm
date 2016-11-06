@@ -79,7 +79,6 @@ sub leave_chat {
     my $c = $_[0];
     # Vermerk und Info-Nachricht in die Datenbank eintragen, dass der entsprechende Benutzer den Chat verlassen hat
     $c->dbh_do('UPDATE "users" SET "inchat"=0 WHERE "id"=?', $c->session->{userid} );
-    _add_msg($c,$c->session->{user}.' hat den Chat verlassen.', 1);
     $c->render( text => 'ok' );
 }
 
@@ -137,7 +136,8 @@ FROM "users"
 WHERE "id"=?
 EOSQL
         ) { 
-            _add_msg($c, $s->{user}.' hat den Chat betreten.', 1);
+            $c->dbh_do('DELETE FROM "chat" WHERE "sysmsg" = 1 AND "userfromid"=?', $s->{userid});
+            _add_msg($c, $s->{user}.' schaut im Chat vorbei', 1);
         }
 
         # Nachrichtensortierung und Nachrichtenlimit für den Einstieg berücksichtigen
