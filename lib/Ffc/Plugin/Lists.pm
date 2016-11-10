@@ -68,14 +68,15 @@ sub _generate_topiclist {
         LEFT OUTER JOIN "posts" p ON p."userfrom"<>? AND p."topicid"=t."id" AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",0)
         LEFT OUTER JOIN "posts" p2 ON p2."id"=t."lastid"
         LEFT OUTER JOIN "users" u ON p2."userfrom"=u."id"
-        WHERE t."starttopic"<>1
+        WHERE COALESCE(t."starttopic",0)<>1
 EOSQL
         . ( $query ? << 'EOSQL' : '' )
         AND "uctitle" LIKE ?
 EOSQL
         . << 'EOSQL'
         GROUP BY 1,2,3,5,6,7,8,9,10,11
-        ORDER BY COALESCE(l."pin", 0) DESC, COALESCE(l."ignore",0) ASC, t."lastid" DESC
+        --ORDER BY COALESCE(l."pin", 0) DESC, COALESCE(l."ignore",0) ASC, t."lastid" DESC
+        ORDER BY t."lastid" DESC
         LIMIT ? OFFSET ?
 EOSQL
         , ( $session->{userid} ) x 2, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit
@@ -86,10 +87,10 @@ EOSQL
         $t->[9] = $c->format_timestamp($t->[9]);
         # CSS-Class-String für die Themen zusammenstellen
         $t->[11] = join ' ',
-            ( $t->[3]             ? 'newpost'    : () ),
-            ( $t->[5]             ? 'ignored'    : () ),
-            ( $t->[6]             ? 'pin'        : () ),
-            ( $t->[3] &&  $t->[6] ? 'newpinpost' : () ),
+            ( $t->[3]            ? 'newpost'    : () ),
+            ( $t->[5]            ? 'ignored'    : () ),
+            ( $t->[6]            ? 'pin'        : () ),
+            ( $t->[3] && $t->[6] ? 'newpinpost' : () ),
         ;
     }
 

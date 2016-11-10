@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 106;
+use Test::More tests => 213;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -22,6 +22,14 @@ my @Topics = (
     [2, rstr(), rstr()],
     [3, rstr(), rstr()],
 );
+
+# Sortierung definieren, sonst krachts
+user();
+$t->post_ok('/topic/sort/chronological')->status_is(302)->content_is('')->header_is(Location => '/forum');
+admin();
+$t->post_ok('/topic/sort/chronological')->status_is(302)->content_is('')->header_is(Location => '/forum');
+
+
 
 user();
 $t->post_ok('/topic/new', form => {titlestring => $_->[1], textdata => $_->[2]})
@@ -90,8 +98,8 @@ user();
 $t->get_ok('/')->status_is(302)->content_is('')->header_is(Location => '/topic/2');
 # An erster Stelle in den Listen
 $t->get_ok('/forum')->status_is(200);
-$t->content_like(qr~<div class="postbox topiclist">\s*<h2 class="starttopic">\s*<span class="menuentry">\s*<a href="/topic/2"~);
-$t->content_like(qr~<div class="topicpopup popup otherspopup">\s*<p class="smallnodisplay starttopic"><a href="/topic/2">~);
+$t->content_unlike(qr~<div class="postbox topiclist">\s*<h2 [^\w="]>\s*<span class="menuentry">\s*<a href="/topic/2"~);
+$t->content_like(qr~<div class="topicpopup popup otherspopup">\s*<p class="smallnodisplay"><a href="/topic/[13]">~);
 
 # neue Beiträge zählen (Startseite => 3, anderes Thema => 4, insgesamt => 10)
 sub add_post {
@@ -105,25 +113,28 @@ add_post(3); add_post(3); add_post(3); add_post(3);
 
 admin();
 $t->get_ok('/forum')->status_is(200);
-$t->content_like(qr~<div class="postbox topiclist">\s*<h2 class="newpost starttopic">\s*<span class="menuentry">\s*<a href="/topic/2"~);
+$t->content_like(qr~<div class="postbox topiclist">\s*<h2 class="newpost">\s*<span class="menuentry">\s*<a href="/topic/3"~);
 $t->content_like(qr~<title>\(10\) Ffc Forum</title>~);
 $t->content_like(qr~<span class="linktext linkstart">Start \(<span class="mark">4</span>\)</span></a>~);
 $t->content_like(qr~
-       <div class="popuparrow activedim menuentry">
-    \s*<span class="othersmenulinktext">\*\*\*</span>
     \s*<div class="topicpopup popup otherspopup">
-    \s*<p class="smallnodisplay newpost starttopic"><a href="/topic/2">$Topics[1][1]</a>\.\.\. \(<span class="mark">4</span>\)</p>
     \s*<p class="smallnodisplay newpost"><a href="/topic/3">$Topics[2][1]</a>\.\.\. \(<span class="mark">5</span>\)</p>
     \s*<p class="smallnodisplay newpost"><a href="/topic/1">$Topics[0][1]</a>\.\.\. \(<span class="mark">1</span>\)</p>
+    \s*</div>
 ~);
 
 $t->get_ok('/')->status_is(302)->content_is('')->header_is(Location => '/topic/2');
 $t->get_ok('/topic/2')->status_is(200);
-$t->content_like(qr~<div class="postbox topiclist">\s*<h2 class="starttopic">\s*<span class="menuentry">\s*<a href="/topic/2"~);
-$t->content_like(qr~<div class="topicpopup popup otherspopup">\s*<p class="smallnodisplay starttopic"><a href="/topic/2">~);
+$t->content_unlike(qr~<div class="postbox topiclist">\s*<h2\s*[\w="]+>\s*<span class="menuentry">\s*<a href="/topic/2"~);
+$t->content_unlike(qr~<div class="topicpopup popup otherspopup">\s*<p class="smallnodisplay\s*starttopic"><a href="/topic/2">~);
 $t->content_like(qr~<title>\(6\) Ffc Forum</title>~);
-$t->content_like(qr~<span class="linktext linkstart">Start</span></a>~);
-$t->content_is('');
+$t->content_like(qr~<span class="linktext linkstart active activestart">Start \(<span class="mark">4</span>\)</span></a>~);
+$t->content_like(qr~
+    \s*<div class="topicpopup popup otherspopup">
+    \s*<p class="smallnodisplay newpost"><a href="/topic/3">$Topics[2][1]</a>\.\.\. \(<span class="mark">5</span>\)</p>
+    \s*<p class="smallnodisplay newpost"><a href="/topic/1">$Topics[0][1]</a>\.\.\. \(<span class="mark">1</span>\)</p>
+    \s*</div>
+~);
 
 # Jetzt noch mal schauen, dass "ignorieren" und "ankleben" keinen Einfluss auf die Sortierung haben
 
