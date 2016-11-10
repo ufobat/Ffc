@@ -79,3 +79,51 @@ $t->get_ok('/config')->status_is(200)
 $t->get_ok('/')->status_is(200)
   ->content_like(qr'Allgemeines Forum');
 
+
+# schauen wir mal, ob die Startseite auch korrekt einsortiert wird
+admin();
+$t->post_ok('/admin/set_starttopic', form => { topicid => 2 })
+  ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
+$t->get_ok('/')->status_is(302)->content_is('')->header_is(Location => '/topic/2');
+
+user();
+$t->get_ok('/')->status_is(302)->content_is('')->header_is(Location => '/topic/2');
+# An erster Stelle in den Listen
+$t->get_ok('/forum')->status_is(200);
+$t->content_like(qr~<div class="postbox topiclist">\s*<h2 class="starttopic">\s*<span class="menuentry">\s*<a href="/topic/2"~);
+$t->content_like(qr~<div class="topicpopup popup otherspopup">\s*<p class="smallnodisplay starttopic"><a href="/topic/2">~);
+
+# neue Beiträge zählen (Startseite => 3, anderes Thema => 4, insgesamt => 10)
+sub add_post {
+    my $tid = shift;
+    my $r = rstr();
+    $t->post_ok("/topic/$tid/new", form => {textdata => $r})->status_is(302)->content_is('');
+    push @{$Topics[$tid - 1]}, $r;
+}
+add_post(2); add_post(2); add_post(2);
+add_post(3); add_post(3); add_post(3); add_post(3);
+
+admin();
+$t->get_ok('/forum')->status_is(200);
+$t->content_like(qr~<div class="postbox topiclist">\s*<h2 class="newpost starttopic">\s*<span class="menuentry">\s*<a href="/topic/2"~);
+$t->content_like(qr~<title>\(10\) Ffc Forum</title>~);
+$t->content_like(qr~<span class="linktext linkstart">Start \(<span class="mark">4</span>\)</span></a>~);
+$t->content_like(qr~
+       <div class="popuparrow activedim menuentry">
+    \s*<span class="othersmenulinktext">\*\*\*</span>
+    \s*<div class="topicpopup popup otherspopup">
+    \s*<p class="smallnodisplay newpost starttopic"><a href="/topic/2">$Topics[1][1]</a>\.\.\. \(<span class="mark">4</span>\)</p>
+    \s*<p class="smallnodisplay newpost"><a href="/topic/3">$Topics[2][1]</a>\.\.\. \(<span class="mark">5</span>\)</p>
+    \s*<p class="smallnodisplay newpost"><a href="/topic/1">$Topics[0][1]</a>\.\.\. \(<span class="mark">1</span>\)</p>
+~);
+
+$t->get_ok('/')->status_is(302)->content_is('')->header_is(Location => '/topic/2');
+$t->get_ok('/topic/2')->status_is(200);
+$t->content_like(qr~<div class="postbox topiclist">\s*<h2 class="starttopic">\s*<span class="menuentry">\s*<a href="/topic/2"~);
+$t->content_like(qr~<div class="topicpopup popup otherspopup">\s*<p class="smallnodisplay starttopic"><a href="/topic/2">~);
+$t->content_like(qr~<title>\(6\) Ffc Forum</title>~);
+$t->content_like(qr~<span class="linktext linkstart">Start</span></a>~);
+$t->content_is('');
+
+# Jetzt noch mal schauen, dass "ignorieren" und "ankleben" keinen Einfluss auf die Sortierung haben
+

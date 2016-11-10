@@ -56,7 +56,7 @@ sub test_login {
     $t->post_ok('/login', form => { username => $u, password => $p })
       ->status_is(302)
       ->header_like(location => qr~/~);
-    $t->get_ok('/')
+    $t->get_ok('/forum')
       ->status_is(200)
       ->content_like(qr/Angemeldet als "$u"/);
 

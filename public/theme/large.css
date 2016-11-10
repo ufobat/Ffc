@@ -348,7 +348,7 @@ button:active {
 }
 .menubarseparator {
     padding: 0;
-    margin: 0 1em;
+    margin: 0 .5em;
 }
 .headbox, .postboxform {
     margin-top: 3em;
