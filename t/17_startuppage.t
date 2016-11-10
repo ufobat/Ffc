@@ -71,7 +71,7 @@ $t->get_ok('/admin/form')->status_is(200)
   ->content_like(qr~<select\s+name="topicid">\s*<option\s+value="">~xmso);
 $t->content_like(qr~<option\s+value="$_->[0]">$_->[1]</option>~xmso)
     for @Topics;
-info('Startseitenthema geändert');
+info('Startseitenthema zurückgesetzt');
 
 $t->get_ok('/config')->status_is(200)
   ->json_is('/starttopic' => 0);
