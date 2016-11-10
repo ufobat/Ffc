@@ -51,10 +51,8 @@ sub additional_params { topicid => $_[0]->param('topicid') }
 ###############################################################################
 # Wahlweise die Themenliste oder die Liste der Themen in der Startseiten-Thema-Einstellung anzeigen
 sub show_startuppage {
-    $_[0]->configdata->{starttopic}
-        and return
-            $_[0]->redirect_to('show_forum', topicid => $_[0]->configdata->{starttopic});
-    
+    $_[0]->configdata->{starttopic} and
+        return $_[0]->redirect_to('show_forum', topicid => $_[0]->configdata->{starttopic});
     $_[0]->show_topiclist;
 }
 
@@ -76,6 +74,8 @@ sub show {
     );
     $c->stash( topicediturl => $c->url_for('edit_forum_topic_form', topicid => $topicid) )
         if $uid eq $userfrom or $c->session->{admin};
+    $c->stash( startuppage => $topicid )
+        if $topicid == $c->configdata()->{starttopic};
     $c->set_lastseen( $uid, $topicid );
     $c->show_posts();
 }

@@ -15,6 +15,8 @@ my %Defaults = (
     sessiontimeout  => 259200,
     backgroundcolor => '',
     starttopic      => 0,
+    starttopiccount => 0,
+    startuppage     => 0,
     maxscore        => 10,
     cookiename      => 'ffc_cookie',
     hypnotoad       => 'http://localhost:8083/', 
@@ -46,7 +48,7 @@ sub register {
         $config->{sessiontimeout} || $Defaults{sessiontimeout});
 
     # Konfigurierte Voreinstellungen, falls bei diesen Parametern nichts brauchbares angegeben ist
-    for ( qw(urlshorten starttopic) ) {
+    for ( qw(urlshorten starttopic startuppage starttopiccount) ) {
         unless ( $config->{$_} and $config->{$_} =~ m/\A\d+\z/xmso ) {
             $config->{$_} = $Defaults{$_};
         }
@@ -69,9 +71,11 @@ sub register {
 
     # Default-Vorbelegungen für Template-Variablen
     $app->defaults({
-        configdata => $config,
-        page       => 1,
-        lastseen   => -1,
+        configdata      => $config,
+        page            => 1,
+        lastseen        => -1,
+        startuppage     => 0,
+        starttopiccount => 0,
         map( {; $_ => undef }
             qw(postid topicid) ),
         map( {; $_ => [] }

@@ -47,8 +47,11 @@ sub set_starttopic {
     if ( $tid =~ $Ffc::Digqr ) {
         $c->dbh_do(q~UPDATE "config" SET "value"=? WHERE "key"='starttopic'~,
             $tid);
+        $c->dbh_do(q~UPDATE "topics" SET "starttopic"=0~);
+        $c->dbh_do(q~UPDATE "topics" SET "starttopic"=1 WHERE "id"=?~, $tid) if $tid;
         $c->configdata->{starttopic} = $tid;
-        $c->set_info_f("Startseitenthema geändert");
+        if ( $tid ) { $c->set_info_f('Startseitenthema geändert') }
+        else        { $c->set_info_f('Startseitenthema zurückgesetzt') }
     }
     else {
         $c->set_error_f('Fehler beim Setzen der Startseite');

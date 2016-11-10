@@ -44,11 +44,12 @@ CREATE INDEX "readlater_postid_ix" ON "readlater"("postid");
 /* Themenliste
 /******************************************************************************/
 CREATE TABLE "topics" (
-  "id"       integer      PRIMARY KEY AUTOINCREMENT,
-  "userfrom" int(11)      NOT NULL,
-  "title"    varchar(256) NOT NULL,
-  "lastid"   integer      NOT NULL DEFAULT 0,
-  "summary"  varchar(256) NOT NULL DEFAULT ''
+  "id"         integer      PRIMARY KEY AUTOINCREMENT,
+  "userfrom"   int(11)      NOT NULL,
+  "title"      varchar(256) NOT NULL,
+  "lastid"     integer      NOT NULL DEFAULT 0,
+  "summary"    varchar(256) NOT NULL DEFAULT '',
+  "starttopic" tinyint(1)   NOT NULL DEFAULT 0
 );
 CREATE INDEX "topics_id" ON "topics"("id");
 

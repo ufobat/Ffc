@@ -62,7 +62,7 @@ sub _generate_topiclist {
             COALESCE(l."ignore",0), COALESCE(l."pin",0),
             UPPER(t."title") as "uctitle",
             u."name", datetime(p2."posted",'localtime'), 
-            t."summary"
+            t."summary", t."starttopic"
         FROM "topics" t
         LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=t."id"
         LEFT OUTER JOIN "posts" p ON p."userfrom"<>? AND p."topicid"=t."id" AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",0)
@@ -73,8 +73,8 @@ EOSQL
         WHERE "uctitle" LIKE ?
 EOSQL
         . << 'EOSQL'
-        GROUP BY t."id", t."userfrom", t."title", l."ignore", l."pin", t."lastid", p2."posted", u."name"
-        ORDER BY COALESCE(l."pin", 0) DESC, COALESCE(l."ignore",0) ASC, t."lastid" DESC
+        GROUP BY 1,2,3,5,6,7,8,9,10,11,12
+        ORDER BY t."starttopic" DESC, COALESCE(l."pin", 0) DESC, COALESCE(l."ignore",0) ASC, t."lastid" DESC
         LIMIT ? OFFSET ?
 EOSQL
         , ( $session->{userid} ) x 2, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit
@@ -84,21 +84,23 @@ EOSQL
         # Zeitstempel in das gewünschte Format bringen
         $t->[9] = $c->format_timestamp($t->[9]);
         # CSS-Class-String für die Themen zusammenstellen
-        $t->[11] = join ' ',
+        $t->[12] = join ' ',
             ( $t->[3]             ? 'newpost'    : () ),
             ( $t->[5]             ? 'ignored'    : () ),
             ( $t->[6]             ? 'pin'        : () ),
             ( $t->[3]  && $t->[6] ? 'newpinpost' : () ),
+            ( $t->[11]            ? 'starttopic' : () ),
         ;
+        $c->stash(starttopiccount => $t->[3]) if $t->[11];
     }
 
     # Nachträgliche Sortierung der ermittelten Datensätze für die Themenliste
     # und eintragen der Themenliste in den Stash unterhalb des vorgesehenen Stash-Keys $stashkey
     if ( $session->{chronsortorder} ) {
-        $c->stash( $stashkey => [ sort { $a->[5] <=> $b->[5] or $b->[6] <=> $a->[6] or $b->[4] <=> $a->[4] } @$tlist ] );
+        $c->stash( $stashkey => [ sort { $b->[11] <=> $a->[11] or $a->[5] <=> $b->[5] or $b->[6] <=> $a->[6] or $b->[4] <=> $a->[4] } @$tlist ] );
     }
     else {
-        $c->stash( $stashkey => [ sort { $a->[5] <=> $b->[5] or $b->[6] <=> $a->[6] or $a->[7] cmp $b->[7] } @$tlist ] );
+        $c->stash( $stashkey => [ sort { $b->[11] <=> $a->[11] or $a->[5] <=> $b->[5] or $b->[6] <=> $a->[6] or $a->[7] cmp $b->[7] } @$tlist ] );
     }
 }
 
