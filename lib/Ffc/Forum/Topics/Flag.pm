@@ -8,7 +8,7 @@ sub   ignore_topic_do { _handle_ignore_topic_do($_[0], 1, $_[1]) }
 sub unignore_topic_do { _handle_ignore_topic_do($_[0], 0, $_[1]) }
 # Handler
 sub _handle_ignore_topic_do {
-    _handle_val_topic_do($_[0], 'ignore', $_[1],
+    _handle_val_topic_do($_[0], 'ignore', 'pin', $_[1],
         'Zum gewählten Thema werden keine neuen Beiträge mehr angezählt.',
         'Das gewählte Thema wird jetzt nicht mehr ignoriert.', $_[2]);
 }
@@ -19,7 +19,7 @@ sub   pin_topic_do { _handle_pin_topic_do($_[0], 1) }
 sub unpin_topic_do { _handle_pin_topic_do($_[0], 0) }
 # Handler
 sub _handle_pin_topic_do {
-    _handle_val_topic_do($_[0], 'pin', $_[1],
+    _handle_val_topic_do($_[0], 'pin', 'ignore', $_[1],
         'Das gewählte Thema wird immer oben angeheftet.', 
         'Das gewählte Thema wird jetzt nicht mehr oben angeheftet.');
 }
@@ -27,7 +27,7 @@ sub _handle_pin_topic_do {
 ###############################################################################
 # Bearbeitungs-Handler der Schalteranfrage
 sub _handle_val_topic_do {
-    my ( $c, $name, $val, $dotxt, $undotxt, $redirect, $warning ) = @_;
+    my ( $c, $name, $reset, $val, $dotxt, $undotxt, $redirect, $warning ) = @_;
     my $topicid = $c->param('topicid');
 
     # Gibt es schon einen Eintrag für diesen Schalter
@@ -43,10 +43,13 @@ sub _handle_val_topic_do {
         $c->dbh_do(
             qq~UPDATE "lastseenforum" SET "$name"=? WHERE "userid"=? AND "topicid"=?~,
             $val, $c->session->{userid}, $topicid );
+        $c->dbh_do(
+            qq~UPDATE "lastseenforum" SET "$reset"=0 WHERE "userid"=? AND "topicid"=?~,
+            $c->session->{userid}, $topicid );
     }
     else {
         $c->dbh_do(
-            qq~INSERT INTO "lastseenforum" ("userid", "topicid", "$name") VALUES (?,?,?)~,
+            qq~INSERT INTO "lastseenforum" ("userid", "topicid", "$name", "$reset") VALUES (?,?,?,0)~,
             $c->session->{userid}, $topicid, $val);
     }
 
