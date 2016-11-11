@@ -1,7 +1,11 @@
 <div class="postbox headbox" id="headbox">
 % if ( $heading ) {
     <h1>
+%   if ( $controller eq 'forum' && $startuppage ) {
+        Startseite
+%   } else {
         <%= $heading %>
+%   }
 %   if ( $topicediturl or $backurl ) {
         <span class="smallfont">( 
 %     if ( $topicediturl ) {

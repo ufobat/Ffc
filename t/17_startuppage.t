@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 213;
+use Test::More tests => 330;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -22,6 +22,8 @@ my @Topics = (
     [2, rstr(), rstr()],
     [3, rstr(), rstr()],
 );
+
+
 
 # Sortierung definieren, sonst krachts
 user();
@@ -88,6 +90,7 @@ $t->get_ok('/')->status_is(200)
   ->content_like(qr'Allgemeines Forum');
 
 
+
 # schauen wir mal, ob die Startseite auch korrekt einsortiert wird
 admin();
 $t->post_ok('/admin/set_starttopic', form => { topicid => 2 })
@@ -100,6 +103,8 @@ $t->get_ok('/')->status_is(302)->content_is('')->header_is(Location => '/topic/2
 $t->get_ok('/forum')->status_is(200);
 $t->content_unlike(qr~<div class="postbox topiclist">\s*<h2 [^\w="]>\s*<span class="menuentry">\s*<a href="/topic/2"~);
 $t->content_like(qr~<div class="topicpopup popup otherspopup">\s*<p class="smallnodisplay"><a href="/topic/[13]">~);
+
+
 
 # neue Beiträge zählen (Startseite => 3, anderes Thema => 4, insgesamt => 10)
 sub add_post {
@@ -127,6 +132,7 @@ $t->get_ok('/')->status_is(302)->content_is('')->header_is(Location => '/topic/2
 $t->get_ok('/topic/2')->status_is(200);
 $t->content_unlike(qr~<div class="postbox topiclist">\s*<h2\s*[\w="]+>\s*<span class="menuentry">\s*<a href="/topic/2"~);
 $t->content_unlike(qr~<div class="topicpopup popup otherspopup">\s*<p class="smallnodisplay\s*starttopic"><a href="/topic/2">~);
+$t->content_like(qr~<h1>\s*Startseite~);
 $t->content_like(qr~<title>\(6\) Ffc Forum</title>~);
 $t->content_like(qr~<span class="linktext linkstart active activestart">Start \(<span class="mark">4</span>\)</span></a>~);
 $t->content_like(qr~
@@ -136,5 +142,50 @@ $t->content_like(qr~
     \s*</div>
 ~);
 
-# Jetzt noch mal schauen, dass "ignorieren" und "ankleben" keinen Einfluss auf die Sortierung haben
 
+
+# Jetzt noch mal schauen, dass "ignorieren" und "ankleben" keinen Einfluss auf die Sortierung haben
+admin();
+$t->post_ok('/admin/set_starttopic', form => { topicid => '' })
+  ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
+$t->get_ok('/admin/form')->status_is(200)
+  ->content_like(qr~<select\s+name="topicid">\s*<option\s+value="">~xmso);
+$t->content_like(qr~<option\s+value="$_->[0]">$_->[1]</option>~xmso)
+    for @Topics;
+info('Startseitenthema zurückgesetzt');
+$t->content_unlike(qr~<span class="linktext linkstart">Start~);
+$t->content_like(qr~\s*<p class="smallnodisplay"><a href="/topic/2">$Topics[1][1]</a>\.\.\.</p>~);
+
+user();
+$t->get_ok('/')->status_is(200);
+$t->content_unlike(qr~<h1>\s*Startseite~);
+$t->content_unlike(qr~<span class="linktext linkstart">Start~);
+$t->content_like(qr~\s*<p class="smallnodisplay"><a href="/topic/2">$Topics[1][1]</a>\.\.\.</p>~);
+
+# Pin and Ignore
+for my $set ( qw~pin ignore~ ) {
+    admin();
+    $t->get_ok("/topic/2/$set")->status_is(302)->content_is('')->header_is(Location => '/forum');
+    $t->get_ok('/forum')->status_is(200);
+    $t->content_unlike(qr~<span class="linktext linkstart">Start~);
+    if ( $set eq 'ignore' ) {
+        $t->content_like(qr~\s*<p class="smallnodisplay ignored"><a href="/topic/2">$Topics[1][1]</a>\.\.\.</p>~);
+    }
+    else {
+        $t->content_like(qr~\s*<p class="smallnodisplay $set"><a href="/topic/2">$Topics[1][1]</a>\.\.\.</p>~);
+    }
+
+    $t->post_ok('/admin/set_starttopic', form => { topicid => 2 })
+      ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
+    $t->get_ok('/')->status_is(302)->content_is('')->header_is(Location => '/topic/2');
+    $t->get_ok('/forum')->status_is(200);
+    $t->content_like(qr~<span class="linktext linkstart">Start \(<span class="mark">4</span>\)</span></a>~);
+
+    $t->post_ok('/admin/set_starttopic', form => { topicid => '' })
+      ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
+
+    $t->get_ok("/topic/2/un$set")->status_is(302)->content_is('')->header_is(Location => '/forum');
+    $t->get_ok('/forum')->status_is(200);
+    $t->content_unlike(qr~<span class="linktext linkstart">Start~);
+    $t->content_like(qr~\s*<p class="smallnodisplay"><a href="/topic/2">$Topics[1][1]</a>\.\.\.</p>~);
+}
