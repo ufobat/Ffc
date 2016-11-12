@@ -19,22 +19,21 @@ sub register {
 ###############################################################################
 # Beitragszählung für den Forenbereich
 sub _forumpostcount {
-use Data::Dumper;
-    return $_[0]->dbh_selectall_arrayref(
+    $_[0]->dbh_selectall_arrayref(
 'SELECT COUNT(p."id")
 FROM "posts" p
 INNER JOIN "topics" t 
     ON t."id"=p."topicid"
-    AND t."id" ' . ( $_[1] ? '=' : '<>' ) . " COALESCE(?,-1)\n" .
-'LEFT OUTER JOIN "lastseenforum" l 
+    AND t."starttopic" ='.($_[1]?'1':'0').'
+LEFT OUTER JOIN "lastseenforum" l 
     ON l."topicid"=p."topicid" 
     AND l."userid"=?
 WHERE p."userto" IS NULL 
     AND p."id">COALESCE(l."lastseen",0) 
     AND COALESCE(l."ignore",0)=0'
-        , $_[0]->configdata->{starttopic}
+       # , $_[0]->configdata->{starttopic}
         , $_[0]->session->{userid}
-    )->[0]->[0] // 0;
+    )->[0]->[0] // 0
 }
 
 ###############################################################################
@@ -187,7 +186,7 @@ sub _set_lastseen {
         'SELECT "id" FROM "posts" WHERE "userto" IS NULL AND "topicid"=? ORDER BY "id" DESC LIMIT 1',
         $topicid);
     $newlastseen = @$newlastseen ? $newlastseen->[0]->[0] : -1;
-
+    
     # Es gibt bereits einen Eintrag für den Benutzer im Foren-Themen-Tracker zur entsprechenden Topic-Id,
     # da reicht uns ein Update auf den entsprechenden Datensatz
     if ( @$lastseen ) {

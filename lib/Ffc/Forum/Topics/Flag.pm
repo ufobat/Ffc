@@ -63,7 +63,7 @@ sub _handle_val_topic_do {
 ###############################################################################
 # Künstlich einen Beitrag als gelesen markieren
 sub mark_seen {
-    my $topicid = $_[0]->param('topicid');
+    my $topicid = $_[1] // $_[0]->param('topicid');
     $_[0]->set_lastseen( $_[0]->session->{userid}, $topicid );
     $_[0]->redirect_to(  $_[1] ? ( $_[1], topicid => $topicid ) : 'show_forum_topiclist' );
 }
