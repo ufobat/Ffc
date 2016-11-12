@@ -120,7 +120,7 @@ $t->content_unlike(qr~<div class="postbox topiclist">\s*<h2 [^\w="]>\s*<span cla
 $t->content_like(qr~<div class="topicpopup popup otherspopup">\s*<p class="smallnodisplay"><a href="/topic/[13]">~);
 # Alle Themen für User auf gelesen setzen
 $t->get_ok('/topic/mark_all_read')->status_is(302)->content_is('')->header_is(Location => '/forum');
-$t->get_ok('/forum')->content_like(qr~<title>\(7\) Ffc Forum</title>~);
+$t->get_ok('/forum')->content_like(qr~<title>\(0\) Ffc Forum</title>~);
 __END__
 
 
