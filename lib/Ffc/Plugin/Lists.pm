@@ -9,6 +9,7 @@ sub register {
     $_[1]->helper( counting           => \&_counting           );
     $_[1]->helper( newpostcount       => \&_newpostcount       );
     $_[1]->helper( newmsgscount       => \&_newmsgscount       );
+    $_[1]->helper( newstartcount      => \&_newstartcount      );
     $_[1]->helper( generate_topiclist => \&_generate_topiclist );
     $_[1]->helper( generate_userlist  => \&_generate_userlist  );
     $_[1]->helper( set_lastseen       => \&_set_lastseen       );
@@ -16,16 +17,35 @@ sub register {
 }
 
 ###############################################################################
-# Anzahl neuer Beiträge direkt aus der Datenbank ermitteln
-sub _newpostcount {
+# Beitragszählung für den Forenbereich
+sub _forumpostcount {
+use Data::Dumper;
     return $_[0]->dbh_selectall_arrayref(
-        'SELECT COUNT(p."id")
-        FROM "posts" p
-        INNER JOIN "topics" t on t."id"=p."topicid"
-        LEFT OUTER JOIN "lastseenforum" l ON l."topicid"=p."topicid" AND l."userid"=?
-        WHERE p."userto" IS NULL AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",0)',
-        $_[0]->session->{userid}
-    )->[0]->[0];
+'SELECT COUNT(p."id")
+FROM "posts" p
+INNER JOIN "topics" t 
+    ON t."id"=p."topicid"
+    AND t."id" ' . ( $_[1] ? '=' : '<>' ) . " COALESCE(?,-1)\n" .
+'LEFT OUTER JOIN "lastseenforum" l 
+    ON l."topicid"=p."topicid" 
+    AND l."userid"=?
+WHERE p."userto" IS NULL 
+    AND p."id">COALESCE(l."lastseen",0) 
+    AND COALESCE(l."ignore",0)=0'
+        , $_[0]->configdata->{starttopic}
+        , $_[0]->session->{userid}
+    )->[0]->[0] // 0;
+}
+
+###############################################################################
+# Anzahl neuer Beiträge direkt aus der Datenbank ermitteln
+sub _newpostcount { return _forumpostcount($_[0]) }
+
+###############################################################################
+# Anzahl neuer Beiträge in der optionalen Startseite
+sub _newstartcount {
+    return 0 unless $_[0]->configdata->{starttopic};
+    return _forumpostcount($_[0],1);
 }
 
 ###############################################################################
@@ -61,21 +81,20 @@ sub _generate_topiclist {
             COUNT(p."id"), t."lastid",
             COALESCE(l."ignore",0), COALESCE(l."pin",0),
             UPPER(t."title") as "uctitle",
-            u."name", datetime(p2."posted",'localtime'), 
+            u."name", datetime(MAX(p2."posted"),'localtime'), 
             t."summary"
         FROM "topics" t
         LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=t."id"
         LEFT OUTER JOIN "posts" p ON p."userfrom"<>? AND p."topicid"=t."id" AND COALESCE(l."ignore",0)=0 AND p."id">COALESCE(l."lastseen",0)
         LEFT OUTER JOIN "posts" p2 ON p2."id"=t."lastid"
         LEFT OUTER JOIN "users" u ON p2."userfrom"=u."id"
-        WHERE COALESCE(t."starttopic",0)<>1
+        WHERE COALESCE(t."starttopic",0)=0
 EOSQL
         . ( $query ? << 'EOSQL' : '' )
         AND "uctitle" LIKE ?
 EOSQL
         . << 'EOSQL'
-        GROUP BY 1,2,3,5,6,7,8,9,10,11
-        --ORDER BY COALESCE(l."pin", 0) DESC, COALESCE(l."ignore",0) ASC, t."lastid" DESC
+        GROUP BY 1,2,3,5,6,7,8,9,11
         ORDER BY t."lastid" DESC
         LIMIT ? OFFSET ?
 EOSQL
@@ -192,8 +211,9 @@ sub _set_lastseen {
 sub _counting { 
     # Anzahlen ermitteln
     $_[0]->stash(
-        newpostcount    => _newpostcount($_[0]),
-        newmsgscount    => _newmsgscount($_[0]),
+        newpostcount    => _newpostcount(  $_[0] ),
+        newmsgscount    => _newmsgscount(  $_[0] ),
+        starttopiccount => _newstartcount( $_[0] ),
         readlatercount  => $_[0]->dbh_selectall_arrayref(
                 'SELECT COUNT(r."postid") FROM "readlater" r WHERE r."userid"=?',
                 $_[0]->session->{userid}
@@ -201,10 +221,6 @@ sub _counting {
         notecount       => $_[0]->dbh_selectall_arrayref(
                 'SELECT COUNT("id") FROM "posts" WHERE "userfrom"=? AND "userfrom"="userto"',
                 $_[0]->session->{userid}
-            )->[0]->[0],
-        starttopiccount => $_[0]->dbh_selectall_arrayref(
-                'SELECT COUNT("id") FROM "posts" WHERE "topicid"=?',
-                $_[0]->configdata->{starttopic} // 0
             )->[0]->[0],
     );
 

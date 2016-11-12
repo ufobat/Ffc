@@ -76,6 +76,8 @@ sub mark_all_seen {
     for my $top ( grep {;$_->[3]} @{$c->stash('topics')} ) {
         $c->set_lastseen( $c->session->{userid}, $top->[0] );
     }
+    $c->set_lastseen( $c->session->{userid}, $c->configdata->{starttopic} )
+        if $c->configdata->{starttopic};
     $c->set_info_f('Alle Themen wurden als gelesen markiert.');
     $c->redirect_to('show_forum_topiclist');
 }

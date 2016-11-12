@@ -6,7 +6,7 @@
     <link rel="icon" type="image/png" href="<%= url_for '/theme/img/favicon.png' %>">
 % } else {
 %   if ( @$users ) {
-    <title>(<%= $newpostcount + $newmsgscount %>) <%= $configdata->{title} %></title>
+    <title>(<%= $newpostcount + $newmsgscount + $starttopiccount %>) <%= $configdata->{title} %></title>
 %   } else {
     <title><%= $configdata->{title} %></title>
 %   }
