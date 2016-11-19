@@ -8,6 +8,8 @@ use Testinit;
 use Test::Mojo;
 use Test::More tests => 174;
 
+use Data::Dumper;
+
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
 Testinit::test_add_user( $t, $admin, $apass, $user, $pass );
@@ -118,12 +120,11 @@ $t->get_ok('/')->status_is(302)->content_is('')->header_is(Location => '/topic/2
 $t->get_ok('/forum')->status_is(200);
 $t->content_unlike(qr~<div class="postbox topiclist">\s*<h2 [^\w="]>\s*<span class="menuentry">\s*<a href="/topic/2"~);
 $t->content_like(qr~<div class="topicpopup popup otherspopup">\s*<p class="smallnodisplay"><a href="/topic/[13]">~);
+$t->content_like(qr~<title>\(3\) Ffc Forum</title>~);
 # Alle Themen für User auf gelesen setzen
 $t->get_ok('/topic/mark_all_read')->status_is(302)->content_is('')->header_is(Location => '/forum');
-#$t->get_ok('/forum')->content_like(qr~<title>\(0\) Ffc Forum</title>~); ############ WAAAAAAAAAAAAAAAAAH
-__END__
-
-
+#note Dumper $dbh->selectall_arrayref('SELECT "userid", "topicid", "lastseen" FROM "lastseenforum"');
+$t->get_ok('/forum')->content_like(qr~<title>\(0\) Ffc Forum</title>~); ############ WAAAAAAAAAAAAAAAAAH
 
 # neue Beiträge zählen (Startseite => 3, anderes Thema => 4, insgesamt => 7)
 sub add_post {

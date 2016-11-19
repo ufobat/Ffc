@@ -73,7 +73,7 @@ sub mark_seen {
 sub mark_all_seen {
     my $c = $_[0];
     $c->counting;
-    for my $top ( grep {;$_->[3]} @{$c->stash('topics')} ) {
+    for my $top ( @{$c->stash('topics')} ) {
         $c->set_lastseen( $c->session->{userid}, $top->[0] );
     }
     $c->set_lastseen( $c->session->{userid}, $c->configdata->{starttopic} )

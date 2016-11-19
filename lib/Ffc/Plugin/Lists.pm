@@ -19,21 +19,23 @@ sub register {
 ###############################################################################
 # Beitragszählung für den Forenbereich
 sub _forumpostcount {
-    $_[0]->dbh_selectall_arrayref(
-'SELECT COUNT(p."id")
+use Data::Dumper;
+    my $r = $_[0]->dbh_selectall_arrayref(
+'SELECT --COUNT(p."id")
+p."id", t."id", t."starttopic", l."userid", l."lastseen", l."ignore"
 FROM "posts" p
 INNER JOIN "topics" t 
-    ON t."id"=p."topicid"
-    AND t."starttopic" ='.($_[1]?'1':'0').'
 LEFT OUTER JOIN "lastseenforum" l 
     ON l."topicid"=p."topicid" 
     AND l."userid"=?
 WHERE p."userto" IS NULL 
+    AND t."id"=p."topicid"
+    AND t."starttopic" ='.($_[1]?'1':'0').'
     AND p."id">COALESCE(l."lastseen",0) 
     AND COALESCE(l."ignore",0)=0'
-       # , $_[0]->configdata->{starttopic}
         , $_[0]->session->{userid}
-    )->[0]->[0] // 0
+    );
+    return scalar @$r;
 }
 
 ###############################################################################
