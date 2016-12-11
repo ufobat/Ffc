@@ -19,7 +19,6 @@ sub register {
 ###############################################################################
 # Beitragszählung für den Forenbereich
 sub _forumpostcount {
-use Data::Dumper;
     my $r = $_[0]->dbh_selectall_arrayref(
 'SELECT --COUNT(p."id")
 p."id", t."id", t."starttopic", l."userid", l."lastseen", l."ignore"
@@ -32,7 +31,7 @@ WHERE p."userto" IS NULL
     AND t."id"=p."topicid"
     AND t."starttopic" ='.($_[1]?'1':'0').'
     AND p."id">COALESCE(l."lastseen",0) 
-    AND COALESCE(l."ignore",0)=0'
+    AND ( COALESCE(l."ignore",0)=0 or t."starttopic"=1 )'
         , $_[0]->session->{userid}
     );
     return scalar @$r;

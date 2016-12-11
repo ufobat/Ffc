@@ -88,6 +88,9 @@ EOSQL
         return $c->show;
     }
 
+    if ( $controller eq 'forum' ) {
+        $c->set_lastseen($userid, $topicid);
+    }
     $c->param(postid => $r->[0]->[0]);
     $c->set_info_f('Ein neuer Beitrag wurde erstellt') unless $noinfo;
     _redirect_to_show($c) unless $noredirect;
