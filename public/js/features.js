@@ -61,25 +61,38 @@ ffcdata.features.init = function(){
     };
 
     /************************************************************************
+     * Auto-Refresh-Funktion nur für das Menü und den Titel
+     ************************************************************************/
+    var auto_refresh_menu = function(){
+        ffcdata.utils.request('GET', ffcdata.counturl, null, function(res){
+            if ( res > 0 && res > ffcdata.lastcount ) {
+                set_title(res);
+                ffcdata.utils.request('POST', ffcdata.menufetchurl, 
+                    {pageurl: ffcdata.pageurl, queryurl: ffcdata.queryurl, controller: ffcdata.controller}, 
+                    function(res){
+                        var menu = document.getElementById('menu');
+                        if ( !menu ) return false;
+                        menu.outerHTML = res;
+                        return true;
+                    }, true
+                );
+            }
+        });
+    };
+
+    /************************************************************************
      * Auto-Refresh nur für das Menü und den Titel bei Bedarf aktivieren
      ************************************************************************/
     var set_menurefresh = function(){
-        ffcdata.features.autorefresh_interval = window.setInterval(function(){
-            ffcdata.utils.request('GET', ffcdata.counturl, null, function(res){
-                if ( res > 0 && res > ffcdata.lastcount ) {
-                    set_title(res);
-                    ffcdata.utils.request('POST', ffcdata.menufetchurl, 
-                        {pageurl: ffcdata.pageurl, queryurl: ffcdata.queryurl, controller: ffcdata.controller}, 
-                        function(res){
-                            var menu = document.getElementById('menu');
-                            if ( !menu ) return false;
-                            menu.outerHTML = res;
-                            return true;
-                        }, true
-                    );
-                }
-            });
-        }, ffcdata.autorefresh * 60000 );
+        ffcdata.features.autorefresh_interval 
+            = window.setInterval(auto_refresh_menu, ffcdata.autorefresh * 60000 );
+    };
+
+    /************************************************************************
+     * Auto-Refresh für das Menü, wenn das Fenster den Fokus erhält
+     ************************************************************************/
+    var set_focusrefresh = function(){
+        window.onfocus = auto_refresh_menu;
     };
 
     /************************************************************************
@@ -136,8 +149,13 @@ ffcdata.features.init = function(){
         set_titletime();
     activate_chatbutton();
     if ( ffcdata.autorefresh > 0 && !ffcdata.utils.is_disabled() && !ffcdata.singleuser ) {
-        if ( ffcdata.completerefresh ) set_autorefresh();
-        else                           set_menurefresh();
+        if ( ffcdata.completerefresh ) {
+            set_autorefresh();
+        }
+        else {
+            set_menurefresh();
+            set_focusrefresh();
+        }
     }
     set_upload_multi();
     enable_hidemessagebox();
