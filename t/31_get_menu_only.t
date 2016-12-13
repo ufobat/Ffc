@@ -7,7 +7,7 @@ use Testinit;
 use utf8;
 
 use Test::Mojo;
-use Test::More tests => 81;
+use Test::More tests => 80;
 
 ###############################################################################
 note q~Testsystem vorbereiten~;
@@ -116,11 +116,6 @@ EOMENU
   << "EOMENU",
     <div class="menuentry activemenuentry">
         <a href="/notes"><span class="linktext linknotes active activenotes" title="Eigene Notizen">Notizen</span></a>
-    </div>
-EOMENU
-  << "EOMENU",
-    <div id="chatbutton" class="nodisplay">
-        <a href="/chat" target="_blank" title="Chatfenster öffnen"><span class="linktext linkchat">Chat</span></a>
     </div>
 EOMENU
   << "EOMENU",

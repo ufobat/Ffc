@@ -1,0 +1,6 @@
+% if ( @$users ) {
+    <div id="chatbutton" class="nodisplay">
+        <a href="<%= url_for 'chat_window' %>" target="_blank" title="Chatfenster öffnen"><span class="linktext linkchat">Chat</span></a>
+   </div>
+% }
+
