@@ -74,7 +74,6 @@ ffcdata.features.init = function(){
                             var menu = document.getElementById('menu');
                             if ( !menu ) return false;
                             menu.outerHTML = res;
-                            activate_chatbutton();
                             return true;
                         }, true
                     );
