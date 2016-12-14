@@ -1,6 +1,6 @@
 % layout 'board';
 <script type="text/javascript">
-    ffcdata.completerefresh = true;
+    ffcdata.istopiclist     = true;
 </script>
 <div class="headbox topiclistbox" id="headbox">
     <h1 class="topiclisth1">Allgemeines Forum
@@ -16,60 +16,4 @@
         )</span>
     </h1>
 </div>
-% if ( @$topics_for_list ) {
-<div class="postbox topiclist">
-% for my $t ( @$topics_for_list ) {
-    <h2<%== $t->[11] ? qq~ class="$t->[11]"~ : '' %>>
-        <span class="menuentry">
-            <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"><%= $t->[2] %>
-% if ( $t->[10] ) {
-            <div class="otherspopup popup topiclistpopup summarypopup">
-                <p><%== $t->[10] %> ...</p>
-            </div></a>
-% }
-        </span>
-        <span class="addinfos">
-% if ( $t->[3] and not $t->[5] ) {
-            Neu: <span class="mark">[<%= $t->[3] %>]</span>,
-% }
-% if ( @$users && $t->[8] ) {
-            <%= $t->[8] %><%= $t->[9] ? ',' : '' %>
-% }
-% if ( $t->[9] ) {
-            <%= $t->[9] %>
-% }
-            <br />
-            <span class="smallfont">
-% if ( $t->[3] ) {
-            <a href="<%= url_for 'topic_mark_seen', topicid => $t->[0] %>"
-                title="Thema als gelesen markieren">gelesen</a>
-%   unless ( $t->[5] ) {
-            /
-%   }
-% }
-% unless ( $t->[5] ) {
-%   if ( $t->[6] ) {
-           <a href="<%= url_for 'unpin_forum_topic_do', topicid => $t->[0] %>"
-                title="Thema normal in der Liste einsortieren">angeheftet</a>
-%   } else {
-            <a href="<%= url_for 'pin_forum_topic_do', topicid => $t->[0] %>"
-                title="Thema immer oben in der Liste mit anzeigen"><u>angeheftet</u></a>
-%   }
-% }
-% unless ( $t->[6] ) {
-%   if ( $t->[5] ) {
-            <a href="<%= url_for 'unignore_forum_topic_do', topicid => $t->[0] %>"
-              title="Beiträge zum Thema anzeigen, Thema nicht mehr ignorieren">ignoriert</a>
-%   } else {
-            /
-            <a href="<%= url_for 'ignore_forum_topic_do', topicid => $t->[0] %>"
-                title="Thema ignorieren und keine neuen Beiträge anzeigen"><u>ignoriert</u></a>
-%   }
-% }
-            </span>
-        </span>
-    </h2>
-% }
-</div>
-% }
-%= include 'parts/pagelinks', more => @$topics >= session->{topiclimit} ? 1 : 0
+%= include 'parts/topiclist'

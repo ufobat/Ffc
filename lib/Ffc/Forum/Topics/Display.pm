@@ -3,8 +3,8 @@ use 5.18.0;
 use strict; use warnings; use utf8;
 
 ###############################################################################
-# Die Themenliste anzeigen
-sub show_topiclist {
+# Die Daten für die Themenliste sammeln
+sub _calculate_topiclist {
     my $c = $_[0];
     $c->counting;
     $c->session->{query} = '';
@@ -23,7 +23,20 @@ sub show_topiclist {
         returl   => $c->url_for('show_forum_topiclist'),
         queryurl => $c->url_for('search_forum_posts'),
     );
-    $c->render(template => 'topiclist');
+}
+
+###############################################################################
+# Die Themenliste als Inline-HTML ausliefern
+sub get_topiclist { 
+    _calculate_topiclist($_[0]);
+    $_[0]->render(text => $_[0]->render_to_string(template => 'parts/topiclist')); 
+}
+
+###############################################################################
+# Die Themenlisten-Webseite anzeigen
+sub show_topiclist { 
+    _calculate_topiclist($_[0]);
+    $_[0]->render(template => 'topiclist'); 
 }
 
 ###############################################################################

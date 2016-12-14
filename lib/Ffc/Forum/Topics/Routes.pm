@@ -12,6 +12,9 @@ sub install_topics_routes {
     $l->route('/forum')->via('get')
       ->to(controller => 'forum', action => 'show_topiclist')
       ->name('show_forum_topiclist');
+    $l->route('/topiclist')->via('get')
+      ->to(controller => 'forum', action => 'get_topiclist')
+      ->name('get_forum_topiclist');
 
     # Neue Themen erstellen
     $l->route('/topic/new')->via('get')

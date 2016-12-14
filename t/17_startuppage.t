@@ -139,7 +139,7 @@ add_post(3); add_post(3); add_post(3); add_post(3);
 
 admin();
 $t->get_ok('/forum')->status_is(200);
-$t->content_like(qr~<div class="postbox topiclist">\s*<h2 class="newpost">\s*<span class="menuentry">\s*<a href="/topic/3"~);
+$t->content_like(qr~<div class="postbox topiclist" id="topiclist">\s*<h2 class="newpost">\s*<span class="menuentry">\s*<a href="/topic/3"~);
 $t->content_like(qr~<title>\(7\) Ffc Forum</title>~);
 $t->content_like(qr~<span class="linktext linkstart">Start \(<span class="mark">3</span>\)</span></a>~);
 $t->content_like(qr~

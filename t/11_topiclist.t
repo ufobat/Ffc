@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 297;
+use Test::More tests => 301;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 
@@ -29,12 +29,12 @@ sub ch_wrn { Testinit::test_warning( $t, @_             ) }
 
 login1();
 $t->get_ok('/')->status_is(200)
-  ->content_unlike(qr~<div class="postbox topiclist">\s*</div>~)
+  ->content_unlike(qr~<div class="postbox topiclist" id="topiclist">\s*</div>~)
   ->content_like(qr~<a href="/topic/new" title=~);
 
 login2();
 $t->get_ok('/')->status_is(200)
-  ->content_unlike(qr~<div class="postbox topiclist">\s*</div>~);
+  ->content_unlike(qr~<div class="postbox topiclist" id="topiclist">\s*</div>~);
 
 #############################################################################
 ### Neues Thema beginnen - Fehlerbehandlung
@@ -183,7 +183,7 @@ login1(); # Fehler
 $t->get_ok('/topic/1/moveto/2')->status_is(302);
 $t->header_like( Location => qr{\A/forum}xms );
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~"/topic/new"~)->content_like(qr~<div class="postbox topiclist">~)
+  ->content_like(qr~"/topic/new"~)->content_like(qr~<div class="postbox topiclist" id="topiclist">~)
   ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~)
   ->content_like(qr~<a href="/topic/2">$Topics[1]</a>~);
 ch_err('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde und Sie auch kein Administrator sind.');
@@ -195,10 +195,15 @@ $t->get_ok('/topic/2')->status_is(200);
 ch_nfo('Die Beiträge wurden in ein anderes Thema verschoben.');
 $t->content_like(qr~$_~) for @{$Articles[0]}, @{$Articles[1]};
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~"/topic/new"~)->content_like(qr~<div class="postbox topiclist">~)
+  ->content_like(qr~"/topic/new"~)->content_like(qr~<div class="postbox topiclist" id="topiclist">~)
   ->content_unlike(qr~<a href="/topic/1">$Topics[0]</a>~)
   ->content_like(qr~<a href="/topic/2">$Topics[1]</a>~);
 $t->get_ok('/topic/1')->status_is(200)
-  ->content_like(qr~"/topic/new"~)->content_like(qr~<div class="postbox topiclist">~);
+  ->content_like(qr~"/topic/new"~)->content_like(qr~<div class="postbox topiclist" id="topiclist">~);
 ch_err('Konnte das gewünschte Thema nicht finden.');
 
+#############################################################################
+### Nur die Themenliste holen
+$t->get_ok('/topiclist')->status_is(200)
+  ->content_unlike(qr~<a href="/topic/1">$Topics[0]</a>~)
+  ->content_like(qr~<a href="/topic/2">$Topics[1]~);

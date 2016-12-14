@@ -24,6 +24,7 @@
             lastcount: <%= $newpostcount + $newmsgscount %>,
             textpreviewurl: "<%= url_for 'textpreview' %>",
             fetchurl: "<%= url_for 'fetch' %>",
+            topiclisturl: "<%= url_for 'get_forum_topiclist' %>",
             queryurl: "<%= $queryurl %>",
             controller: "<%= $controller %>",
             title: ['(', ") <%= $configdata->{title} %>"],

@@ -40,21 +40,33 @@ ffcdata.features.init = function(){
     };
 
     /************************************************************************
-     * Kompletter Auto-Refresh der gesamten Seite 
+     * Auto-Refresh-Topicliste
      ************************************************************************/
-    var auto_refresh_complete = function(){
-        if ( !document.hasFocus()
-          && (!document.getElementById('textinput')
-            || document.getElementById('textinput').value === '') ) {
-            ffcdata.utils.request('GET', ffcdata.counturl, null, function(res){
-                if ( res > 0 && res > ffcdata.lastcount )
-                    location.reload();
-                else
-                    set_titletime();
-            });
-        }
-        else {
-            return;
+    var auto_refresh_topiclist = function() {
+        ffcdata.utils.request('GET', ffcdata.topiclisturl, null, function(res){
+            var topiclist = document.getElementById('topiclist');
+            if ( topiclist ) topiclist.outerHTML = res;
+            var pages = document.getElementById('pages');
+            if ( pages ) pages.outerHTML = '';
+        }, true);
+    };
+
+    /************************************************************************
+     * Auto-Refresh-Menu setzen
+     ************************************************************************/
+    var set_menu = function(res) {
+        var menu = document.getElementById('menu');
+        if ( menu ) menu.outerHTML = res;
+    };
+
+    /************************************************************************
+     * Auto-Refresh-Chatbutton setzen
+     ************************************************************************/
+    var set_chatbutton = function(res) {
+        var chatbutton = document.getElementById('chatbutton');
+        if ( chatbutton ) {
+            chatbutton.outerHTML = res;
+            activate_chatbutton();
         }
     };
 
@@ -65,29 +77,15 @@ ffcdata.features.init = function(){
         ffcdata.utils.request('POST', ffcdata.fetchurl, 
             {pageurl: ffcdata.pageurl, queryurl: ffcdata.queryurl, controller: ffcdata.controller}, 
             function(res){
-                if ( ffcdata.completerefresh && res[0] > 0 ) {
-                    auto_refresh_complete();
-                    return true;
+                if ( ffcdata.istopiclist && res[0] > 0 && res[0] > ffcdata.lastcount) {
+                    auto_refresh_topiclist();
                 }
-                set_title(res[0]);
-                var menu = document.getElementById('menu');
-                if ( menu ) menu.outerHTML = res[1];
-                var chatbutton = document.getElementById('chatbutton');
-                if ( chatbutton ) {
-                    chatbutton.outerHTML = res[2];
-                    activate_chatbutton();
-                }
+                set_title(      res[0] );
+                set_menu(       res[1] );
+                set_chatbutton( res[2] );
                 return true;
             }
         );
-    };
-
-    /************************************************************************
-     * Auto-Refresh der gesamten Seite bei Bedarf aktivieren
-     ************************************************************************/
-    var set_autorefresh = function(){
-        ffcdata.features.autorefresh_interval = window.setInterval(
-            auto_refresh_complete, ffcdata.autorefresh * 60000 );
     };
 
     /************************************************************************

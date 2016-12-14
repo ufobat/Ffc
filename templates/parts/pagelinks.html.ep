@@ -1,4 +1,4 @@
-<div class="pages">
+<div class="pages" id="pages">
 % if ( $page > 1 ) {
     Seite <%= $page %> /
 % }
