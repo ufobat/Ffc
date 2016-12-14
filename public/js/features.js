@@ -59,12 +59,16 @@ ffcdata.features.init = function(){
     };
 
     /************************************************************************
-     * Auto-Refresh-Funktion nur für das Menü und den Titel
+     * Auto-Refresh-Funktion
      ************************************************************************/
-    var auto_refresh_menu = function(){
+    var auto_refresh = function(){
         ffcdata.utils.request('POST', ffcdata.fetchurl, 
             {pageurl: ffcdata.pageurl, queryurl: ffcdata.queryurl, controller: ffcdata.controller}, 
             function(res){
+                if ( ffcdata.completerefresh && res[0] > 0 ) {
+                    auto_refresh_complete();
+                    return true;
+                }
                 set_title(res[0]);
                 var menu = document.getElementById('menu');
                 if ( menu ) menu.outerHTML = res[1];
@@ -76,14 +80,6 @@ ffcdata.features.init = function(){
                 return true;
             }
         );
-    };
-
-    /************************************************************************
-     * Auto-Refresh-Funktion nur für das Menü und den Titel
-     ************************************************************************/
-    var auto_refresh = function(){
-        if   ( ffcdata.completerefresh ) { auto_refresh_complete() } 
-        else                             { auto_refresh_menu()     }
     };
 
     /************************************************************************
