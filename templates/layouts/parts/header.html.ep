@@ -20,7 +20,7 @@
         ffcdata = {
             singleuser: <%= @$users ? 'false' : 'true' %>,
             autorefresh: <%= session()->{autorefresh} || 0 %>,
-            user: "<%= session()->{user} || '' %>" || undefined,
+            user: "<%= session()->{user} || '' %>",
             lastcount: <%= $newpostcount + $newmsgscount %>,
             textpreviewurl: "<%= url_for 'textpreview' %>",
             fetchurl: "<%= url_for 'fetch' %>",

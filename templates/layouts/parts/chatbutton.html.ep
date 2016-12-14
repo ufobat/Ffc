@@ -2,6 +2,7 @@
 <div id="chatbutton" class="nodisplay">
     <p><a href="<%= url_for 'chat_window' %>" target="_blank" title="Chatfenster öffnen"><span class="linktext linkchat">Chat</span></a></p>
 %   for my $u ( @$chat_users ) {
+%     next if $u->[0] eq session->{user};
     <p class="dim"><%= $u->[0] %> (<%= $u->[1] %>)</p>
 %   }
 </div>
