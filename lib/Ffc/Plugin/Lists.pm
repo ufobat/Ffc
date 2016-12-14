@@ -211,8 +211,8 @@ sub _set_lastseen {
 # Generalroutine fürs Durchzählen und Erstellen der Listen
 sub _counting { 
     # Anzahlen ermitteln
-    my $npc = _newpostcount(  $_[0] );
-    my $nmc = _newmsgscount(  $_[0] );
+    my $npc = _newpostcount(  $_[0] ) // 0;
+    my $nmc = _newmsgscount(  $_[0] ) // 0;
     $_[0]->stash(
         newpostcount    => $npc,
         newmsgscount    => $nmc,
