@@ -79,7 +79,7 @@ sub register {
         map( {; $_ => undef }
             qw(postid topicid) ),
         map( {; $_ => [] }
-            qw(additional_params topics users attachements) ),
+            qw(additional_params topics users attachements chat_users) ),
         map( {;$_.'count' => 0} 
             qw(newmsgs newpost note readlater) ),
         map( {;$_ => ''} 

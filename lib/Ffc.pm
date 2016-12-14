@@ -88,18 +88,22 @@ sub _install_util_routes {
       ->name('sessiondata');
     $l->get('/config' => sub { $_[0]->render( json => $_[0]->configdata() ) } )
       ->name('configdata');
-    $l->get('/counts' => sub { $_[0]->render( text => $_[0]->newpostcount() + $_[0]->newmsgscount() ) } )
-      ->name('countings');
+    #$l->get('/counts' => sub { $_[0]->render( text => $_[0]->newpostcount() + $_[0]->newmsgscount() ) } )
+    #  ->name('countings');
     $l->post('/textpreview' => sub { $_[0]->render( json => $_[0]->pre_format($_[0]->req->json || '') ) } )
       ->name('textpreview');
-    $l->post('/menu' => sub { 
-            my $j = $_[0]->req->json;
-            $_[0]->counting
-                 ->stash(pageurl    => $j ? $j->{pageurl}    : '')
-                 ->stash(queryurl   => $j ? $j->{queryurl}   : '')
-                 ->stash(controller => $j ? $j->{controller} : '')
-                 ->render('layouts/parts/menu');
-    } )->name('menu');
+    $l->post('/fetch' => sub { 
+        my $j = $_[0]->req->json;
+        $_[0]->counting
+             ->stash(pageurl    => $j ? $j->{pageurl}    : '')
+             ->stash(queryurl   => $j ? $j->{queryurl}   : '')
+             ->stash(controller => $j ? $j->{controller} : '');
+        $_[0]->render( json => [
+            $_[0]->stash('newcountall'),
+            $_[0]->render_to_string('layouts/parts/menu'),
+            $_[0]->render_to_string('layouts/parts/chatbutton'),
+        ] );
+    } )->name('fetch');
 }
 
 1;

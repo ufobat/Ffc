@@ -6,13 +6,14 @@ use Mojo::Base 'Mojolicious::Plugin';
 ###############################################################################
 # Utility-Funktionen und Helper initialisieren
 sub register {
-    $_[1]->helper( counting           => \&_counting           );
-    $_[1]->helper( newpostcount       => \&_newpostcount       );
-    $_[1]->helper( newmsgscount       => \&_newmsgscount       );
-    $_[1]->helper( newstartcount      => \&_newstartcount      );
-    $_[1]->helper( generate_topiclist => \&_generate_topiclist );
-    $_[1]->helper( generate_userlist  => \&_generate_userlist  );
-    $_[1]->helper( set_lastseen       => \&_set_lastseen       );
+    $_[1]->helper( counting           => \&_counting                 );
+    $_[1]->helper( newpostcount       => \&_newpostcount             );
+    $_[1]->helper( newmsgscount       => \&_newmsgscount             );
+    $_[1]->helper( newstartcount      => \&_newstartcount            );
+    $_[1]->helper( generate_topiclist => \&_generate_topiclist       );
+    $_[1]->helper( generate_userlist  => \&_generate_userlist        );
+    $_[1]->helper( set_lastseen       => \&_set_lastseen             );
+    $_[1]->helper( get_chat_users     => \&Ffc::Chat::get_chat_users );
     return $_[0];
 }
 
@@ -210,9 +211,12 @@ sub _set_lastseen {
 # Generalroutine fürs Durchzählen und Erstellen der Listen
 sub _counting { 
     # Anzahlen ermitteln
+    my $npc = _newpostcount(  $_[0] );
+    my $nmc = _newmsgscount(  $_[0] );
     $_[0]->stash(
-        newpostcount    => _newpostcount(  $_[0] ),
-        newmsgscount    => _newmsgscount(  $_[0] ),
+        newpostcount    => $npc,
+        newmsgscount    => $nmc,
+        newcountall     => $npc + $nmc,
         starttopiccount => _newstartcount( $_[0] ),
         readlatercount  => $_[0]->dbh_selectall_arrayref(
                 'SELECT COUNT(r."postid") FROM "readlater" r WHERE r."userid"=?',
@@ -227,6 +231,9 @@ sub _counting {
     # Passgenaue Themen- und Benutzerliste generlieren
     $_[0]->generate_topiclist();
     $_[0]->generate_userlist();
+
+    # Benutzerliste aus dem Chat
+    $_[0]->stash( chat_users => $_[0]->get_chat_users() );
 
     # Rückgabe einstellen
     $_[0]->res->headers( 'Cache-Control' => 'public, max-age=0, no-cache' );

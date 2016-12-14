@@ -7,7 +7,7 @@ use Testinit;
 use utf8;
 
 use Test::Mojo;
-use Test::More tests => 80;
+use Test::More tests => 84;
 
 ###############################################################################
 note q~Testsystem vorbereiten~;
@@ -16,7 +16,7 @@ my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
 Testinit::test_add_users( $t, $admin, $apass, $user1, $pass1 );
 Testinit::test_login($t, $admin, $apass);
-$t->post_ok('/menu', json => {pageurl => '/bla/blubb', queryurl => '/blu/plum', controller => 'notes'})->status_is(200);
+$t->post_ok('/fetch', json => {pageurl => '/bla/blubb', queryurl => '/blu/plum', controller => 'notes'})->status_is(200);
 for my $str (
   << "EOMENU",
     <div class="activedim menuentry menulinkwleftpu">
@@ -72,7 +72,7 @@ EOMENU
     </div>
 EOMENU
     ) {
-    $t->content_like(qr~$str~);
+    $t->json_like('/1' => qr~$str~);
 }
 for my $str (
   << "EOMENU",
@@ -85,14 +85,16 @@ for my $str (
     </div>
 EOMENU
     ) {
-    $t->content_unlike(qr~$str~);
+    $t->json_unlike('/1' => qr~$str~);
 }
+$t->json_is('/0' => 0);
+$t->json_like('/2' => qr~<div id="chatbutton" class="nodisplay">~);
 
 my ( $user, $pass ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
 Testinit::test_add_users($t, $admin, $apass, $user, $pass);
 Testinit::test_login($t, $user, $pass);
 
-$t->post_ok('/menu', json => {pageurl => '/bla/blubb', queryurl => '/blu/plum', controller => 'notes'})->status_is(200);
+$t->post_ok('/fetch', json => {pageurl => '/bla/blubb', queryurl => '/blu/plum', controller => 'notes'})->status_is(200);
     for my $str (
   << "EOMENU",
     <div class="activedim menuentry menulinkwleftpu">
@@ -148,6 +150,8 @@ EOMENU
 </div>
 EOMENU
     ) {
-    $t->content_like(qr~$str~);
+    $t->json_like('/1' => qr~$str~);
 }
+$t->json_is('/0' => 0);
+$t->json_like('/2' => qr~<div id="chatbutton" class="nodisplay">~);
 

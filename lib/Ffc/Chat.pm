@@ -107,6 +107,30 @@ sub receive_focused   { _receive($_[0], 1, 0) }
 sub receive_unfocused { _receive($_[0], 0, 0) }
 
 ###############################################################################
+# Benutzerliste ermitteln
+sub get_chat_users {
+    my $sql = << 'EOSQL';
+SELECT 
+    "name", 
+    DATETIME("lastseenchatactive",'localtime'),
+    "chatrefreshsecs",
+    "id"
+FROM "users"
+WHERE 
+    DATETIME("lastseenchat", 'localtime', '+'||"chatrefreshsecs"||' seconds') >= DATETIME('now', 'localtime')
+    AND "inchat"=1
+ORDER BY UPPER("name"), "id"
+EOSQL
+    my $users = $_[0]->dbh_selectall_arrayref( $sql );
+    # Nachbearbeitung der Benutzerliste
+    for my $u ( @$users ) {
+        $u->[1] = $_[0]->format_timestamp( $u->[1] || 0 );
+        $u->[0] = xml_escape($u->[0]);
+    }
+    return $users;
+}
+
+###############################################################################
 # Action-Handler für die Status-Ermittlung aus der Datenbank und den optionalen Nachrichtentransfer in die Datenbank
 sub _receive {
     my ( $c, $active, $started ) = @_;
@@ -174,29 +198,9 @@ EOSQL
     $sql .= qq~\nWHERE "id"=?~;
     $c->dbh_do( $sql, ( @$msgs ? $msgs->[0]->[0] : () ), $s->{userid} );
 
-    # Als nächste ermitteln wir die Liste der Benutzer
-    $sql = << 'EOSQL';
-SELECT 
-    "name", 
-    DATETIME("lastseenchatactive",'localtime'),
-    "chatrefreshsecs",
-    "id"
-FROM "users"
-WHERE 
-    DATETIME("lastseenchat", 'localtime', '+'||"chatrefreshsecs"||' seconds') >= DATETIME('now', 'localtime')
-    AND "inchat"=1
-ORDER BY UPPER("name"), "id"
-EOSQL
-    my $users = $c->dbh_selectall_arrayref( $sql );
-    # Nachbearbeitung der Benutzerliste
-    for my $u ( @$users ) {
-        $u->[1] = $c->format_timestamp( $u->[1] || 0 );
-        $u->[0] = xml_escape($u->[0]);
-    }
-
     # Rückgabe der Statusabfragen inkl. der Anzahlen der neuen Nachrichten und Forenbeiträge für die Titelleiste
     $c->res->headers( 'Cache-Control' => 'public, max-age=0, no-cache' );
-    $c->render( json => [$msgs, $users, $c->newpostcount, $c->newmsgscount] );
+    $c->render( json => [$msgs, get_chat_users($c), $c->newpostcount, $c->newmsgscount] );
 }
 
 1;
