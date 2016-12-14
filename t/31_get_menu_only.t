@@ -7,7 +7,7 @@ use Testinit;
 use utf8;
 
 use Test::Mojo;
-use Test::More tests => 84;
+use Test::More tests => 104;
 
 ###############################################################################
 note q~Testsystem vorbereiten~;
@@ -15,12 +15,20 @@ note q~Testsystem vorbereiten~;
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
 Testinit::test_add_users( $t, $admin, $apass, $user1, $pass1 );
+
+Testinit::test_login($t, $user1, $pass1);
+$t->post_ok('/topic/new', form => { titlestring => 'tzui', textdata    => 'hjkl' })->status_is(302)
+->content_is('');
+$t->post_ok("/topic/1/new", form => { textdata => 'asdf' })
+  ->status_is(302)->content_is('')
+  ->header_like(location => qr~/topic/1~);
+
 Testinit::test_login($t, $admin, $apass);
-$t->post_ok('/fetch', json => {pageurl => '/bla/blubb', queryurl => '/blu/plum', controller => 'notes'})->status_is(200);
+$t->post_ok('/fetch', json => {pageurl => '/bla/blubb', queryurl => '/blu/plum', controller => 'notes', lastcount => 0})->status_is(200);
 for my $str (
   << "EOMENU",
     <div class="activedim menuentry menulinkwleftpu">
-        <a href="/forum" title="Liste aller Themen"><span class="linktext linkforum">Themen</span></a>
+        <a href="/forum" title="Liste aller Themen"><span class="linktext linkforum">Themen \\(<span class="mark">2</span>\\)</span></a>
     </div>
 EOMENU
   << "EOMENU",
@@ -87,8 +95,12 @@ EOMENU
     ) {
     $t->json_unlike('/1' => qr~$str~);
 }
-$t->json_is('/0' => 0);
+$t->json_is('/0' => 2);
 $t->json_like('/2' => qr~<div id="chatbutton" class="nodisplay">~);
+
+$t->post_ok("/topic/1/new", form => { textdata => 'qwer' })
+  ->status_is(302)->content_is('')
+  ->header_like(location => qr~/topic/1~);
 
 my ( $user, $pass ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
 Testinit::test_add_users($t, $admin, $apass, $user, $pass);
@@ -98,7 +110,7 @@ $t->post_ok('/fetch', json => {pageurl => '/bla/blubb', queryurl => '/blu/plum',
     for my $str (
   << "EOMENU",
     <div class="activedim menuentry menulinkwleftpu">
-        <a href="/forum" title="Liste aller Themen"><span class="linktext linkforum">Themen</span></a>
+        <a href="/forum" title="Liste aller Themen"><span class="linktext linkforum">Themen \\(<span class="mark">3</span>\\)</span></a>
     </div>
 EOMENU
   << "EOMENU",
@@ -152,6 +164,6 @@ EOMENU
     ) {
     $t->json_like('/1' => qr~$str~);
 }
-$t->json_is('/0' => 0);
+$t->json_is('/0' => 3);
 $t->json_like('/2' => qr~<div id="chatbutton" class="nodisplay">~);
 

@@ -99,9 +99,11 @@ sub _install_util_routes {
              ->stash(queryurl   => $j ? $j->{queryurl}   : '')
              ->stash(controller => $j ? $j->{controller} : '');
         $_[0]->render( json => [
-            $_[0]->stash('newcountall'),
-            $_[0]->render_to_string('layouts/parts/menu'),
-            $_[0]->render_to_string('layouts/parts/chatbutton'),
+            $_[0]->stash('newcountall') // 0,
+            ( $_[0]->stash('newcountall') // 0 > $j->{lastcount}
+                ? ( $_[0]->render_to_string('layouts/parts/menu'),
+                    $_[0]->render_to_string('layouts/parts/chatbutton') )
+                : ( undef, undef ) ),
         ] );
     } )->name('fetch');
 }

@@ -55,6 +55,7 @@ ffcdata.features.init = function(){
      * Auto-Refresh-Menu setzen
      ************************************************************************/
     var set_menu = function(res) {
+        if ( !res ) return;
         var menu = document.getElementById('menu');
         if ( menu ) menu.outerHTML = res;
     };
@@ -63,6 +64,7 @@ ffcdata.features.init = function(){
      * Auto-Refresh-Chatbutton setzen
      ************************************************************************/
     var set_chatbutton = function(res) {
+        if ( !res ) return;
         var chatbutton = document.getElementById('chatbutton');
         if ( chatbutton ) {
             chatbutton.outerHTML = res;
@@ -75,7 +77,12 @@ ffcdata.features.init = function(){
      ************************************************************************/
     var auto_refresh = function(){
         ffcdata.utils.request('POST', ffcdata.fetchurl, 
-            {pageurl: ffcdata.pageurl, queryurl: ffcdata.queryurl, controller: ffcdata.controller}, 
+            {
+                pageurl:    ffcdata.pageurl, 
+                queryurl:   ffcdata.queryurl, 
+                controller: ffcdata.controller, 
+                lastcount:  ffcdata.lastcount
+            }, 
             function(res){
                 if ( ffcdata.istopiclist && res[0] > 0 && res[0] > ffcdata.lastcount) {
                     auto_refresh_topiclist();
