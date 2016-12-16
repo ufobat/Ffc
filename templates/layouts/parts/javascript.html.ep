@@ -2,7 +2,7 @@
     "use strict";
     window.onload = function(){
         ffcdata.utils.init();
-        ffcdata.utils.notify_init();
+        // ffcdata.utils.notify_init();
         ffcdata.editbuttons.init();
         ffcdata.features.init();
     };
