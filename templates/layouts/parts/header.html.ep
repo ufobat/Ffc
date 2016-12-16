@@ -28,6 +28,7 @@
             queryurl: "<%= $queryurl %>",
             controller: "<%= $controller %>",
             title: ['(', ") <%= $configdata->{title} %>"],
+            newmessagecount: <%= $newpostcount + $newmsgscount + $starttopiccount %>,
         };
     </script>
     <%= javascript '/js/utils.js' %>

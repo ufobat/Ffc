@@ -56,7 +56,7 @@ ffcdata.utils.request = function(methd, url, data, callback, nojson) {
 };
 
 /************************************************************************
- *** Init für die sonstigen Funktioneni                               ***
+ *** Init für die sonstigen Funktionen                                ***
  ************************************************************************/
 ffcdata.utils.init = function(){
     // Browser-Shortcomings ausgleichen
@@ -68,5 +68,26 @@ ffcdata.utils.init = function(){
             return function() { return hfocus; };
         }();
     }
+};
+
+/************************************************************************
+ *** Desktopbenachrichtigung absetzen                                 ***
+ ************************************************************************/
+ffcdata.utils.notify = function(msg){
+    if ( Notification.permission !== 'granted' )
+        return;
+    var n = new Notification(msg);
+    setTimeout(n.close.bind(n), 5000); 
+};
+
+/************************************************************************
+ *** Desktopbenachrichtigung einschalten                              ***
+ ************************************************************************/
+ffcdata.utils.notify_init = function(msg) {
+    if ( Notification.permission === 'denied' || Notification.permission === 'granted' )
+        return;
+    Notification.requestPermission(function(perm){
+        ffcdata.utils.notify('Benachrichtigungen wurden eingeschalten');
+    });
 };
 

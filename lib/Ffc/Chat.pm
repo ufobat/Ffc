@@ -161,7 +161,7 @@ WHERE "id"=?
 EOSQL
         ) { 
             $c->dbh_do('DELETE FROM "chat" WHERE "sysmsg" = 1 AND "userfromid"=?', $s->{userid});
-            _add_msg($c, $s->{user}.' schaut im Chat vorbei', 1);
+            _add_msg($c, $s->{user}.' schaut im Chat vorbei', 2);
         }
 
         # Nachrichtensortierung und Nachrichtenlimit für den Einstieg berücksichtigen

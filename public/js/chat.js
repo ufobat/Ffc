@@ -99,6 +99,9 @@ ffcdata.chat.init = function() {
             }
             else {
                 userstr = '<span class="username">' + msgs[i][1] + '</span>: ';
+                if ( msgs[i][4] === 2 ) {
+                    ffcdata.utils.notify(msgs[i][1]);
+                }
             }
             if ( ffcdata.user === msgs[i][1] ) classstr.push('ownmsg');
             userstrthing = ( !sameuser || mecmd || newdaymsg ? userstr : '' );
@@ -123,6 +126,9 @@ ffcdata.chat.init = function() {
             for ( var i = msgs.length - 1; i >= 0; i-- ) {
                 ml = ml + compose_msg(msgs, i, match_l);
             }
+            if ( !document.hasFocus() )
+                ffcdata.utils.notify('Es sind ' + msgs.length + ' neue Nachrichten im Chat');
+
             msglog.innerHTML = ml;
             ffcdata.chat.lastmsgtime = msgs[0][3];
 

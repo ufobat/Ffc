@@ -27,8 +27,18 @@ ffcdata.features.init = function(){
                       + ':' + ( mym < 10 ? '0'+mym : mym );
     };
 
+    /***********************************************************************
+     * Desktopbenachrichtigungen bei neuen Nachrichten
+     *************************************************************************/
+    var notify_newmsgs = function(){
+        if ( ffcdata.newmessagecount > 0 ) {
+            ffcdata.utils.notify(
+                'Es sind ' + ffcdata.newmessagecount + ' neue Beiträge vorhanden' );
+        }
+    };
+
     /************************************************************************
-     * Chat-Button bei Bedarf im Menü aktivieren
+     * Chat-Button bei Bedarf aktivieren
      ************************************************************************/
     var activate_chatbutton = function(){
         var chatb = document.getElementById('chatbutton');
@@ -86,7 +96,9 @@ ffcdata.features.init = function(){
             function(res){
                 if ( ffcdata.istopiclist && res[0] > 0 && res[0] > ffcdata.lastcount) {
                     auto_refresh_topiclist();
+                    ffcdata.newmessagecount = res[0];
                 }
+                if ( res[0] > 0 ) notify_newmsgs();
                 set_title(      res[0] );
                 set_menu(       res[1] );
                 set_chatbutton( res[2] );
@@ -170,5 +182,6 @@ ffcdata.features.init = function(){
     set_upload_multi();
     enable_hidemessagebox();
     enable_strg_s();
+    notify_newmsgs();
 };
 
