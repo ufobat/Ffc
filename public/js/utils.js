@@ -87,7 +87,8 @@ ffcdata.utils.notify_init = function(msg) {
     if ( Notification.permission === 'denied' || Notification.permission === 'granted' )
         return;
     Notification.requestPermission(function(perm){
-        ffcdata.utils.notify('Benachrichtigungen wurden eingeschalten');
+        if ( perm === 'granted' )
+            ffcdata.utils.notify('Benachrichtigungen wurden eingeschalten');
     });
 };
 
