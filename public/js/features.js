@@ -98,7 +98,8 @@ ffcdata.features.init = function(){
                     auto_refresh_topiclist();
                     ffcdata.newmessagecount = res[0];
                 }
-                if ( res[0] > 0 ) notify_newmsgs();
+                if ( res[0] > 0 && res[0] > ffcdata.lastcount) {
+                    notify_newmsgs();
                 set_title(      res[0] );
                 set_menu(       res[1] );
                 set_chatbutton( res[2] );
