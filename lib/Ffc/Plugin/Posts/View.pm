@@ -31,7 +31,7 @@ sub _query_posts {
 # Das SQL-Statement für die Beitragsabfrage zusammen basteln
 # (wird auch für Readlater gebraucht, dort ist es aber über einen Helper erreichbar)
 sub _get_show_sql {
-    my ( $c, $wheres, $noorder, $postid, $groupbys, $nolimit, $noquery, $orderbys, $reverseorder, $new ) = @_;
+    my ( $c, $wheres, $noorder, $postid, $groupbys, $nolimit, $noquery, $orderbys, $reverseorder ) = @_;
     my $query = $noquery ? '' : $c->session->{query};
 
     # Das ist die Basis, die gleichzeitig die Rückgabe-Reihenfolge festlegt
@@ -47,21 +47,8 @@ LEFT OUTER JOIN "topics" t ON p."topicid"=t."id"
 LEFT OUTER JOIN "readlater" r ON r."postid"=p."id" AND r."userid"=?
 EOSQL
 
-    if ( $new ) {
-        if ( $c->stash('controller') eq 'forum' ) {
-            $sql .= << 'EOSQL';
-LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=p."topicid"
-EOSQL
-        }
-        elsif ( $c->stash('controller') eq 'pmsgs' ) {
-            $sql .= << 'EOSQL';
-LEFT OUTER JOIN "lastseenmsgs" l ON l."userid"=? AND p."userfrom"<>l."userid" AND l."userfromid"=p."userfrom"
-EOSQL
-        }
-    }
-
     # Kommen den Einschränkungen?
-    ( $new or $wheres or $query or $postid ) and ( $sql .= "WHERE\n      " );
+    ( $wheres or $query or $postid ) and ( $sql .= "WHERE\n      " );
     if ( $wheres ){
         $sql .= "$wheres\n";
         $query and ( $sql .= '  AND ' );
@@ -74,12 +61,6 @@ EOSQL
     if ( $postid ) {
         ( $wheres or $query ) and ( $sql .= q~  AND ~ );
         $sql .= qq~p."id"=?\n~;
-    }
-
-    # Nur neue Beiträge liefern
-    if ( $new ) {
-        ( $postid or $wheres or $query ) and ( $sql .= q~  AND ~ );
-        $sql .= qq~COALESCE(l."lastseen",0) < p."id"\n~;
     }
 
     # Soll gruppiert werden
@@ -99,7 +80,7 @@ EOSQL
 ###############################################################################
 # Eine Liste von Beiträgen anzeigen
 sub _show_posts {
-    my ( $c, $queryurl, $ajax, $new ) = @_[0,1,2,3];
+    my ( $c, $queryurl, $ajax ) = @_[0,1,2];
     my ( $wheres, @wherep ) = $c->where_select;
     my ( $query, $postid, $cname ) = ( $c->session->{query}, $c->param('postid'), $c->stash('controller') );
     $c->stash( query => $query );
@@ -141,12 +122,10 @@ sub _show_posts {
     # führen diese aus und legen die im Stash für das Seitenrendering ab ...
     # zusätzlich mit den anderen notwendigen Daten (counting)
     ### $c, $wheres, $noorder, $postid, $groupbys, $nolimit, $noquery, $orderbys, $reverseorder, $new
-    my $sql = _get_show_sql($c, $wheres, undef, $postid, undef, undef, undef, undef, undef, $new);
+    my $sql = _get_show_sql($c, $wheres, undef, $postid);
     my $posts = $c->dbh_selectall_arrayref(
         $sql, 
         $c->session->{userid}, 
-        ( ( $new and ( $c->stash('controller') eq 'forum' or $c->stash('controller') eq 'pmsgs' ) ) 
-            ? $c->session->{userid} : () ),
         @wherep, 
         ( $query ? "\%$query\%" : () ), 
         ($postid || ()), 
@@ -174,7 +153,7 @@ sub _show_posts {
 
 ###############################################################################
 # Neue Beiträge als Ajax-Liste abholen
-sub _fetch_new_posts { _show_posts( $_[0], undef, 1, 1 ) }
+sub _fetch_new_posts { _show_posts( $_[0], undef, 1 ) }
 
 ###############################################################################
 # Die Anzahl der auf einer Seite angezeigten Beiträge einstellen
