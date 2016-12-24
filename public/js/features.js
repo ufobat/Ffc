@@ -62,6 +62,26 @@ ffcdata.features.init = function(){
     };
 
     /************************************************************************
+     * Auto-Refresh-Beitragsliste
+     ************************************************************************/
+    var auto_refresh_postlist = function() {
+        ffcdata.utils.request('POST', ffcdata.fetchnewurl, 
+            {
+                pageurl:    ffcdata.pageurl, 
+                queryurl:   ffcdata.queryurl, 
+                controller: ffcdata.controller, 
+                lastcount:  ffcdata.lastcount
+            },
+            function(res){
+            if ( !res ) return;
+            var boxes = document.getElementsByClassName('postbox');
+            for ( var i = 2; i < boxes.length; i++ ) {
+                if ( boxes[i] && res[i-2] ) boxes[i].outerHTML = res[i-2];
+            }
+        }, false);
+    };
+
+    /************************************************************************
      * Auto-Refresh-Menu setzen
      ************************************************************************/
     var set_menu = function(res) {
@@ -98,8 +118,12 @@ ffcdata.features.init = function(){
                     auto_refresh_topiclist();
                     ffcdata.newmessagecount = res[0];
                 }
-                if ( res[0] > 0 && res[0] > ffcdata.lastcount )
+                if ( res[0] > 0 && res[0] > ffcdata.lastcount ) {
                     notify_newmsgs();
+                }
+                if ( res[0] > 0 && ffcdata.action === 'show' 
+                    && ( ffcdata.controller === 'forum' || ffcdata.controller === 'pmsgs' ) )
+                        auto_refresh_postlist();
                 set_title(      res[0] );
                 set_menu(       res[1] );
                 set_chatbutton( res[2] );

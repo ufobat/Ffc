@@ -30,6 +30,8 @@
             title: ['(', ") <%= $configdata->{title} %>"],
             newmessagecount: <%= $newpostcount + $newmsgscount + $starttopiccount %>,
             fetchnewurl: '<%= $fetchnewurl %>',
+            action: '<%= $action %>',
+            lastseen: '<%= $lastseen %>',
         };
     </script>
     <%= javascript '/js/utils.js' %>

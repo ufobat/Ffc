@@ -76,14 +76,22 @@ sub show {
         if $uid eq $userfrom or $c->session->{admin};
     $c->stash( startuppage => $topicid )
         if $topicid == $c->configdata()->{starttopic};
-    $c->set_lastseen( $uid, $topicid );
+    $c->set_lastseen( $uid, $topicid )
+        unless $ajax;
     if ( $ajax ) { $c->fetch_new_posts() }
     else         { $c->show_posts()      }
 }
 
 ###############################################################################
 # Neue Beiträge als JSON zurück liefern
-sub fetch_new { show($_[0], 1) }
+sub fetch_new { 
+    my $j = $_[0]->req->json;
+    $_[0]->counting
+        ->stash(pageurl    => $j ? $j->{pageurl}    : '')
+        ->stash(queryurl   => $j ? $j->{queryurl}   : '')
+        ->stash(controller => $j ? $j->{controller} : '');
+    show($_[0], 1);
+}
 
 ###############################################################################
 # Einen Beitrag zu einem Thema hinzu fügen
