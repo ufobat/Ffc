@@ -103,12 +103,14 @@ form {
     overflow: hidden;
     text-align: center;
 }
-ol.attachements li img {
-    vertical-align: top;
-    margin-bottom: 0.5em;
+ul.attachements {
+    clear: both;
+    border-top: .1em gainsboro dashed;
+    list-style: none;
 }
-li {
-    margin-left: 2em;
+ul.attachements li {
+    padding-top: .5em;
+    padding-left: 3em;
 }
 .userlist .avatar {
     height: 3em;

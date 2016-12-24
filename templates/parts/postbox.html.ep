@@ -24,12 +24,11 @@
     </h2>
 %== $post->[8];
 % if ( my @attments = grep { $_->[1] == $post->[0] } @$attachements ) {
-    <h2>Anhänge:</h2>
-    <ol class="attachements">
+    <ul class="attachements">
 %   for my $att ( @attments ) {
 %= include 'parts/attachement', attachement => $att, @$additional_params
 %   }
-    </ol>
+    </ul>
 % }
 % if ( ( $action eq 'search' or $action eq 'list_readlater' ) and ( $post->[3] or $post->[5] ) ) {
     <h2>
