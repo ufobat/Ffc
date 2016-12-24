@@ -84,14 +84,7 @@ sub show {
 
 ###############################################################################
 # Neue Beiträge als JSON zurück liefern
-sub fetch_new { 
-    my $j = $_[0]->req->json;
-    $_[0]->counting
-        ->stash(pageurl    => $j ? $j->{pageurl}    : '')
-        ->stash(queryurl   => $j ? $j->{queryurl}   : '')
-        ->stash(controller => $j ? $j->{controller} : '');
-    show($_[0], 1);
-}
+sub fetch_new { show($_[0], 1) }
 
 ###############################################################################
 # Einen Beitrag zu einem Thema hinzu fügen
