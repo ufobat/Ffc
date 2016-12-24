@@ -10,6 +10,9 @@ sub install_routes_posts {
     # Die erste Route zeigt die Liste der passenden Beiträge an.
     $l->route($start, @startps)->via('get')
       ->to(controller => $cname, action => 'show')->name("show_${cname}");
+    # Die erste Route erstellt eine JSON-Liste der neuen Beiträge für AJAX-Calls
+    $l->route($start, @startps)->via('get')
+      ->to(controller => $cname, action => 'fetch_new')->name("fetch_new_${cname}");
     # Mit dieser Route kann man direkt auf einen Beitrag verlinken, der
     # dann in einem extra Fenster angezeigt wird ohne Schnörkel und Menü
     # und so

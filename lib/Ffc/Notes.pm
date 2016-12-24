@@ -9,6 +9,7 @@ sub where_select        { return 'p."userfrom"=p."userto" AND p."userfrom"=?', $
 sub where_modify        { return '"userfrom"="userto" AND "userfrom"=?', $_[0]->session->{userid} }
 sub additional_params   { return () }
 sub show                { $_[0]->stash( heading => 'Persönliche Notizen' )->show_posts() }
+sub fetch_new           { $_[0]->stash( heading => 'Persönliche Notizen' )->fetch_new_posts() }
 sub add                 { $_[0]->add_post($_[0]->session->{userid}, undef) }
 sub edit_form           { $_[0]->stash( heading => 'Persönliche Notiz ändern')->edit_post_form() }
 sub delete_check        { $_[0]->stash( heading => 'Persönliche Notiz entfernen' )->delete_post_check() }

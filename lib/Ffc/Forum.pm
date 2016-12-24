@@ -59,7 +59,7 @@ sub show_startuppage {
 ###############################################################################
 # Beiträge eines Foren-Themas anzeigen
 sub show {
-    my $c = $_[0];
+    my ( $c, $ajax ) = @_[0,1];
     my ( $uid, $topicid ) = ( $c->session->{userid}, $c->param('topicid') );
     my ( $heading, $userfrom ) = $c->_get_title_from_topicid;
     # Ohne Themenüberschrift kein Thema
@@ -77,8 +77,13 @@ sub show {
     $c->stash( startuppage => $topicid )
         if $topicid == $c->configdata()->{starttopic};
     $c->set_lastseen( $uid, $topicid );
-    $c->show_posts();
+    if ( $ajax ) { $c->fetch_new_posts() }
+    else         { $c->show_posts()      }
 }
+
+###############################################################################
+# Neue Beiträge als JSON zurück liefern
+sub fetch_new { show($_[0], 1) }
 
 ###############################################################################
 # Einen Beitrag zu einem Thema hinzu fügen

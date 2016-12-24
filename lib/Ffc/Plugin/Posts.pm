@@ -17,6 +17,7 @@ use Ffc::Plugin::Posts::Uploaddeletes;
 sub register {
     my $app = $_[1];
     $app->helper( show_posts               => \&_show_posts               );
+    $app->helper( fetch_new_posts          => \&_fetch_new_posts          );
     $app->helper( query_posts              => \&_query_posts              );
     $app->helper( search_posts             => \&_search_posts             );
     $app->helper( add_post                 => \&_add_post                 );

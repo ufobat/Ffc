@@ -31,7 +31,7 @@ sub _query_posts {
 # Das SQL-Statement für die Beitragsabfrage zusammen basteln
 # (wird auch für Readlater gebraucht, dort ist es aber über einen Helper erreichbar)
 sub _get_show_sql {
-    my ( $c, $wheres, $noorder, $postid, $groupbys, $nolimit, $noquery, $orderbys, $reverseorder ) = @_;
+    my ( $c, $wheres, $noorder, $postid, $groupbys, $nolimit, $noquery, $orderbys, $reverseorder, $new ) = @_;
     my $query = $noquery ? '' : $c->session->{query};
 
     # Das ist die Basis, die gleichzeitig die Rückgabe-Reihenfolge festlegt
@@ -48,7 +48,7 @@ LEFT OUTER JOIN "readlater" r ON r."postid"=p."id" AND "userid"=?
 EOSQL
 
     # Kommen den Einschränkungen?
-    ( $wheres or $query or $postid ) and ( $sql .= 'WHERE ' );
+    ( $wheres or $query or $postid or $new ) and ( $sql .= 'WHERE ' );
     if ( $wheres ){
         $sql .= "$wheres\n";
         $query and ( $sql .= 'AND ' );
@@ -61,6 +61,12 @@ EOSQL
     if ( $postid ) {
         ( $wheres or $query ) and ( $sql .= q~AND ~ );
         $sql .= qq~p."id"=?\n~;
+    }
+
+    # Nur die neuen Beiträge
+    if ( $new ) {
+        ( $wheres or $query or $postid ) and ( $sql .= q~AND ~ );
+        $sql .= q~p."id" > ?~;
     }
 
     # Soll gruppiert werden
@@ -80,7 +86,7 @@ EOSQL
 ###############################################################################
 # Eine Liste von Beiträgen anzeigen
 sub _show_posts {
-    my ( $c, $queryurl ) = @_[0,1];
+    my ( $c, $queryurl, $ajax, $new ) = @_[0,1,2,3];
     my ( $wheres, @wherep ) = $c->where_select;
     my ( $query, $postid, $cname ) = ( $c->session->{query}, $c->param('postid'), $c->stash('controller') );
     $c->stash( query => $query );
@@ -88,20 +94,24 @@ sub _show_posts {
     # Hier werden verschiedene Routen-Namen gesetzt, die später im Template im Bedarsfall verwendet werden
     if ( $c->stash('action') ne 'search' ) {
         $c->stash(
-            dourl   => $c->url_for("add_${cname}", $c->additional_params ), # Neuen Beitrag erstellen
+            dourl        => $c->url_for("add_${cname}", $c->additional_params ), # Neuen Beitrag erstellen
             # Die hier werden nicht immer angezeigt, 
             # aber wenn, dann müssen die jeweils dynamisch mit der Beitrags-ID erzeugt werden
-            editurl => "edit_${cname}_form",           # Formular zum Bearbeiten von Beiträgen
-            delurl  => "delete_${cname}_check",        # Formular, um den Löschvorgang einzuleiten
-            uplurl  => "upload_${cname}_form",         # Formular für Dateiuploads
-            delupl  => "delete_upload_${cname}_check", # Formular zum entfernen von Anhängen
+            editurl      => "edit_${cname}_form",                                # Formular zum Bearbeiten von Beiträgen
+            delurl       => "delete_${cname}_check",                             # Formular, um den Löschvorgang einzuleiten
+            uplurl       => "upload_${cname}_form",                              # Formular für Dateiuploads
+            delupl       => "delete_upload_${cname}_check",                      # Formular zum entfernen von Anhängen
             # ... oder eben mit der Seitenzahl, auf die geblättert werden soll
-            pageurl => "show_${cname}_page",           # URL für die Seitenweiterschaltung
+            pageurl      => "show_${cname}_page",                                # URL für die Seitenweiterschaltung
+            fetchnewurl  => $c->url_for("fetch_new_${cname}"),                   # URL für AJAX - Neue Beiträge
         );
         _setup_stash($c);
     }
     else {
-        $c->stash( pageurl => "search_${cname}_posts_page" );
+        $c->stash( 
+            pageurl      => "search_${cname}_posts_page",
+            fetchnewurl  => $c->url_for("fetch_new_${cname}"),
+        );
         # Hier muss setup_stash vor dem nächsten Stash-Schritt kommen, weil
         # in dem folgenden Schritt werden einige Variablen aus setup_stash wieder überschrieben, is halt so
         _setup_stash($c);
@@ -117,9 +127,16 @@ sub _show_posts {
     # Und hier holen wir uns unsere schöne SQL-Abfrage aus der anderen Subroutine,
     # führen diese aus und legen die im Stash für das Seitenrendering ab ...
     # zusätzlich mit den anderen notwendigen Daten (counting)
-    my $sql = _get_show_sql($c, $wheres, undef, $postid);
+    ### $c, $wheres, $noorder, $postid, $groupbys, $nolimit, $noquery, $orderbys, $reverseorder, $new
+    my $sql = _get_show_sql($c, $wheres, undef, $postid, undef, undef, undef, undef, undef, $new);
     my $posts = $c->dbh_selectall_arrayref(
-        $sql, $c->session->{userid}, @wherep, ( $query ? "\%$query\%" : () ), ($postid || ()),  $c->pagination()
+        $sql, 
+        $c->session->{userid}, 
+        @wherep, 
+        ( $query ? "\%$query\%" : () ), 
+        ($postid || ()), 
+        ( $new   ? $c->stash('lastseen') : ()),
+        $c->pagination()
     );
     $c->stash(posts => $posts);
     $c->counting;
@@ -130,9 +147,16 @@ sub _show_posts {
     # Für alles andere benötigen wir natürlich noch die Anhängsel zu den Beiträgen
     $c->get_attachements($posts, $wheres, @wherep);
 
-    # Seite für einen Beitrag oder mehrere Beiträge ausgeben
-    $c->render(template => $postid ? 'display': 'posts');
+    # Eine komplette Seite für einen Beitrag oder mehrere Beiträge ausgeben
+    $c->render(template => $postid ? 'display': 'posts')
+        unless $ajax;
+
+    # JSON-Liste der Beiträge zurück geben
 }
+
+###############################################################################
+# Neue Beiträge als Ajax-Liste abholen
+sub _fetch_new_posts { _show_posts( $_[0], 1, 1 ) }
 
 ###############################################################################
 # Die Anzahl der auf einer Seite angezeigten Beiträge einstellen

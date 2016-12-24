@@ -64,7 +64,7 @@ sub additional_params { usertoid => $_[0]->param('usertoid') }
 ###############################################################################
 # Private Nachrichten anzeigen
 sub show {
-    my $c = $_[0];
+    my ( $c, $ajax ) = @_[0,1];
     my ( $uid, $utoid ) = ( $c->session->{userid}, $c->param('usertoid') );
 
     # Id der letzten erfassten (als gesehen markierten) Privatnachricht für den Benutzer
@@ -93,12 +93,17 @@ sub show {
     }
 
     $c->stash(
-        backurl  => $c->url_for('show_pmsgs_userlist'),
-        backtext => 'zur Benutzerliste',
-        heading  => 'Private Nachrichten mit "' . $c->_get_username . '"',
+        backurl      => $c->url_for('show_pmsgs_userlist'),
+        backtext     => 'zur Benutzerliste',
+        heading      => 'Private Nachrichten mit "' . $c->_get_username . '"',
     );
-    $c->show_posts();
+    if ( $ajax ) { $c->fetch_new_posts() }
+    else         { $c->show_posts()      }
 }
+
+###############################################################################
+# Neue Beiträge als JSON zurück liefern
+sub fetch_new { show($_[0], 1) }
 
 ###############################################################################
 # Eine neue Privatnachricht an einem Benutzer schreiben
