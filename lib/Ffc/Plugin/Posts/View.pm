@@ -44,14 +44,27 @@ FROM "posts" p
 INNER JOIN "users" uf ON p."userfrom"=uf."id"
 LEFT OUTER JOIN "users" ut ON p."userto"=ut."id"
 LEFT OUTER JOIN "topics" t ON p."topicid"=t."id"
-LEFT OUTER JOIN "readlater" r ON r."postid"=p."id" AND "userid"=?
+LEFT OUTER JOIN "readlater" r ON r."postid"=p."id" AND r."userid"=?
 EOSQL
 
+    if ( $new ) {
+        if ( $c->stash('controller') eq 'forum' ) {
+            $sql .= << 'EOSQL';
+LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=p."topicid"
+EOSQL
+        }
+        elsif ( $c->stash('controller') eq 'pmsgs' ) {
+            $sql .= << 'EOSQL';
+LEFT OUTER JOIN "lastseenmsgs" l ON l."userid"=? AND p."userfrom"<>l."userid" AND l."userfromid"=p."userfrom"
+EOSQL
+        }
+    }
+
     # Kommen den Einschränkungen?
-    ( $wheres or $query or $postid or $new ) and ( $sql .= 'WHERE ' );
+    ( $new or $wheres or $query or $postid ) and ( $sql .= "WHERE\n      " );
     if ( $wheres ){
         $sql .= "$wheres\n";
-        $query and ( $sql .= 'AND ' );
+        $query and ( $sql .= '  AND ' );
     }
 
     # Es wird eine Textsuche durchgeführt
@@ -59,14 +72,14 @@ EOSQL
     
     # Es geht um einen einzigen bestimmten Beitrag
     if ( $postid ) {
-        ( $wheres or $query ) and ( $sql .= q~AND ~ );
+        ( $wheres or $query ) and ( $sql .= q~  AND ~ );
         $sql .= qq~p."id"=?\n~;
     }
 
-    # Nur die neuen Beiträge
+    # Nur neue Beiträge liefern
     if ( $new ) {
-        ( $wheres or $query or $postid ) and ( $sql .= q~AND ~ );
-        $sql .= q~p."id" > ?~;
+        ( $postid or $wheres or $query ) and ( $sql .= q~  AND ~ );
+        $sql .= qq~COALESCE(l."lastseen",0) < p."id"\n~;
     }
 
     # Soll gruppiert werden
@@ -132,10 +145,11 @@ sub _show_posts {
     my $posts = $c->dbh_selectall_arrayref(
         $sql, 
         $c->session->{userid}, 
+        ( ( $new and ( $c->stash('controller') eq 'forum' or $c->stash('controller') eq 'pmsgs' ) ) 
+            ? $c->session->{userid} : () ),
         @wherep, 
         ( $query ? "\%$query\%" : () ), 
         ($postid || ()), 
-        ( $new   ? $c->stash('lastseen') : ()),
         $c->pagination()
     );
     $c->stash(posts => $posts);
@@ -148,15 +162,19 @@ sub _show_posts {
     $c->get_attachements($posts, $wheres, @wherep);
 
     # Eine komplette Seite für einen Beitrag oder mehrere Beiträge ausgeben
-    $c->render(template => $postid ? 'display': 'posts')
+    return $c->render(template => $postid ? 'display': 'posts')
         unless $ajax;
 
     # JSON-Liste der Beiträge zurück geben
+    $c->render(json => [ map {;
+        $c->stash(post => $_);
+        $c->render_to_string(template => '/parts/postbox');
+    } @$posts ]);
 }
 
 ###############################################################################
 # Neue Beiträge als Ajax-Liste abholen
-sub _fetch_new_posts { _show_posts( $_[0], 1, 1 ) }
+sub _fetch_new_posts { _show_posts( $_[0], undef, 1, 1 ) }
 
 ###############################################################################
 # Die Anzahl der auf einer Seite angezeigten Beiträge einstellen

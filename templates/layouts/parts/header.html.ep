@@ -29,6 +29,7 @@
             controller: "<%= $controller %>",
             title: ['(', ") <%= $configdata->{title} %>"],
             newmessagecount: <%= $newpostcount + $newmsgscount + $starttopiccount %>,
+            fetchnewurl: '<%= $fetchnewurl %>',
         };
     </script>
     <%= javascript '/js/utils.js' %>
