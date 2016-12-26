@@ -371,7 +371,7 @@ button:active {
 #chatbutton {
     position: fixed;
     bottom: 0;
-    left: 0;
+    right: 0;
     padding: .25em .75em .25em .5em;
 }
 #chatbutton p {
