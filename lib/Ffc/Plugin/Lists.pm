@@ -24,14 +24,14 @@ sub _forumpostcount {
 'SELECT --COUNT(p."id")
 p."id", t."id", t."starttopic", l."userid", l."lastseen", l."ignore"
 FROM "posts" p
-INNER JOIN "topics" t 
-LEFT OUTER JOIN "lastseenforum" l 
-    ON l."topicid"=p."topicid" 
+INNER JOIN "topics" t
+LEFT OUTER JOIN "lastseenforum" l
+    ON l."topicid"=p."topicid"
     AND l."userid"=?
-WHERE p."userto" IS NULL 
+WHERE p."userto" IS NULL
     AND t."id"=p."topicid"
     AND t."starttopic" ='.($_[1]?'1':'0').'
-    AND p."id">COALESCE(l."lastseen",0) 
+    AND p."id">COALESCE(l."lastseen",0)
     AND ( COALESCE(l."ignore",0)=0 or t."starttopic"=1 )'
         , $_[0]->session->{userid}
     );
@@ -82,7 +82,7 @@ sub _generate_topiclist {
             COUNT(p."id"), t."lastid",
             COALESCE(l."ignore",0), COALESCE(l."pin",0),
             UPPER(t."title") as "uctitle",
-            u."name", datetime(MAX(p2."posted"),'localtime'), 
+            u."name", datetime(MAX(p2."posted"),'localtime'),
             t."summary"
         FROM "topics" t
         LEFT OUTER JOIN "lastseenforum" l ON l."userid"=? AND l."topicid"=t."id"
@@ -136,9 +136,9 @@ SELECT
     u."birthdate", u."infos", l."mailed"
 FROM "users" u
 LEFT OUTER JOIN "lastseenmsgs" l ON u."id"=l."userfromid" AND l."userid"=?
-LEFT OUTER JOIN "posts" p ON p."userfrom"=u."id" AND p."userto" IS NOT NULL AND p."userto"=? 
+LEFT OUTER JOIN "posts" p ON p."userfrom"=u."id" AND p."userto" IS NOT NULL AND p."userto"=?
     AND p."id">COALESCE(l."lastseen",0)
-WHERE u."active"=1 AND u."id"<>? 
+WHERE u."active"=1 AND u."id"<>?
 GROUP BY 1,2,4,5,6,7,8,9
 ORDER BY 6 DESC, 4 DESC, UPPER(u."name") ASC
 EOSQL
@@ -188,28 +188,30 @@ sub _set_lastseen {
         'SELECT "id" FROM "posts" WHERE "userto" IS NULL AND "topicid"=? ORDER BY "id" DESC LIMIT 1',
         $topicid);
     $newlastseen = @$newlastseen ? $newlastseen->[0]->[0] : -1;
-    
+
     # Es gibt bereits einen Eintrag für den Benutzer im Foren-Themen-Tracker zur entsprechenden Topic-Id,
     # da reicht uns ein Update auf den entsprechenden Datensatz
-    if ( @$lastseen ) {
-        $c->stash( lastseen => $lastseen->[0]->[0] );
-        $c->dbh_do(
-            'UPDATE "lastseenforum" SET "lastseen"=? WHERE "userid"=? AND "topicid"=?',
-            $newlastseen, $uid, $topicid );
-    }
-    # Es gibt noch keinen Eintrag für den Benutzer im Foren-Themen-Tracker zur entsprechenden Topic-Id,
-    # dieser muss also direkt mal erstellt werden mit den entsprechenden Daten
-    else {
-        $c->stash( lastseen => -1 );
-        $c->dbh_do(
-            'INSERT INTO "lastseenforum" ("userid", "topicid", "lastseen") VALUES (?,?,?)',
-            $uid, $topicid, $newlastseen );
+    unless ( $mailonly ) {
+        if ( @$lastseen ) {
+            $c->stash( lastseen => $lastseen->[0]->[0] );
+            $c->dbh_do(
+                'UPDATE "lastseenforum" SET "lastseen"=? WHERE "userid"=? AND "topicid"=?',
+                $newlastseen, $uid, $topicid );
+        }
+        # Es gibt noch keinen Eintrag für den Benutzer im Foren-Themen-Tracker zur entsprechenden Topic-Id,
+        # dieser muss also direkt mal erstellt werden mit den entsprechenden Daten
+        else {
+            $c->stash( lastseen => -1 );
+            $c->dbh_do(
+                'INSERT INTO "lastseenforum" ("userid", "topicid", "lastseen") VALUES (?,?,?)',
+                $uid, $topicid, $newlastseen );
+        }
     }
 }
 
 ###############################################################################
 # Generalroutine fürs Durchzählen und Erstellen der Listen
-sub _counting { 
+sub _counting {
     # Anzahlen ermitteln
     my $npc = _newpostcount(  $_[0] ) // 0;
     my $nmc = _newmsgscount(  $_[0] ) // 0;

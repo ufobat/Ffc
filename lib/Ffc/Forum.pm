@@ -8,12 +8,12 @@ use Ffc::Forum::Readlater;
 
 ###############################################################################
 # Die verschiedenen Routen des Forenteils installieren
-sub install_routes { 
+sub install_routes {
     my $l = $_[0];
 
     # Themenlisten-Routen einrichten
     Ffc::Forum::install_topics_routes($l);
-    
+
     # Späterlesen-Routen einrichten
     Ffc::Forum::install_readlater_routes($l);
 
@@ -23,10 +23,10 @@ sub install_routes {
 
 ###############################################################################
 # Abfrage-Einschränkgung von Beiträgen im Forum
-sub where_select { 
+sub where_select {
     # Bei bestimmten Aktionen muss noch geprüft werden, ob der angemeldete Benutzer Überhaupt zugriff auf die Aktion hat
     $_[0]->stash('action') =~ m~\A(?:delete|edit|upload|move)~xmsio
-        and return 
+        and return
             'p."userto" IS NULL AND p."topicid"=? AND p."userfrom"=?',
             $_[0]->param('topicid'), $_[0]->session->{userid};
 
@@ -76,8 +76,7 @@ sub show {
         if $uid eq $userfrom or $c->session->{admin};
     $c->stash( startuppage => $topicid )
         if $topicid == $c->configdata()->{starttopic};
-    $c->set_lastseen( $uid, $topicid )
-        unless $ajax;
+    $c->set_lastseen( $uid, $topicid, ($ajax ? 1 : 0) );
     if ( $ajax ) { $c->fetch_new_posts() }
     else         { $c->show_posts()      }
 }
@@ -88,14 +87,14 @@ sub fetch_new { show($_[0], 1) }
 
 ###############################################################################
 # Einen Beitrag zu einem Thema hinzu fügen
-sub add { 
-    my $c = shift; 
+sub add {
+    my $c = shift;
     $c->add_post( undef, $c->param('topicid'), @_ ) }
 
 ###############################################################################
 # Formular anzeigen, um einen Beitrag zu ändern
 sub edit_form {
-    $_[0]->stash( heading => 
+    $_[0]->stash( heading =>
         'Beitrag zum Thema "' . $_[0]->_get_title_from_topicid . '" ändern' );
     $_[0]->edit_post_form();
 }
@@ -107,7 +106,7 @@ sub edit_do { $_[0]->edit_post_do(undef, $_[0]->param('topicid')) }
 ###############################################################################
 # Rückfragebestätigung, ob ein Beitrag gelöscht werden soll
 sub delete_check {
-    $_[0]->stash( heading => 
+    $_[0]->stash( heading =>
         'Beitrag zum Thema "' . $_[0]->_get_title_from_topicid . '" entfernen' );
     $_[0]->delete_post_check();
 }
@@ -116,7 +115,7 @@ sub delete_check {
 ###############################################################################
 # Hochladeformular
 sub upload_form {
-    $_[0]->stash( heading => 
+    $_[0]->stash( heading =>
         'Eine Datei zum Beitrag zum Thema "' . $_[0]->_get_title_from_topicid . '" anhängen' );
     $_[0]->upload_post_form();
 }
@@ -125,7 +124,7 @@ sub upload_form {
 ###############################################################################
 # Rückfragebestätigung, wenn man einen Dateiupload doch wieder löschen möchte
 sub delete_upload_check {
-    $_[0]->stash( heading => 
+    $_[0]->stash( heading =>
         'Eine Datei zum Beitrag zum Thema "' . $_[0]->_get_title_from_topicid . '" löschen' );
     $_[0]->delete_upload_post_check();
 }

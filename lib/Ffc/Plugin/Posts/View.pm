@@ -56,7 +56,7 @@ EOSQL
 
     # Es wird eine Textsuche durchgeführt
     $query and ( $sql .= qq~UPPER(p."textdata") LIKE UPPER(?)\n~ );
-    
+
     # Es geht um einen einzigen bestimmten Beitrag
     if ( $postid ) {
         ( $wheres or $query ) and ( $sql .= q~  AND ~ );
@@ -89,7 +89,7 @@ sub _show_posts {
     if ( $c->stash('action') ne 'search' ) {
         $c->stash(
             dourl        => $c->url_for("add_${cname}", $c->additional_params ), # Neuen Beitrag erstellen
-            # Die hier werden nicht immer angezeigt, 
+            # Die hier werden nicht immer angezeigt,
             # aber wenn, dann müssen die jeweils dynamisch mit der Beitrags-ID erzeugt werden
             editurl      => "edit_${cname}_form",                                # Formular zum Bearbeiten von Beiträgen
             delurl       => "delete_${cname}_check",                             # Formular, um den Löschvorgang einzuleiten
@@ -102,14 +102,14 @@ sub _show_posts {
         _setup_stash($c);
     }
     else {
-        $c->stash( 
+        $c->stash(
             pageurl      => "search_${cname}_posts_page",
             fetchnewurl  => $c->url_for("fetch_new_${cname}"),
         );
         # Hier muss setup_stash vor dem nächsten Stash-Schritt kommen, weil
         # in dem folgenden Schritt werden einige Variablen aus setup_stash wieder überschrieben, is halt so
         _setup_stash($c);
-        $c->stash( 
+        $c->stash(
             additional_params => [],
             returl            => $c->url_for("search_${cname}_posts"),
         );
@@ -124,18 +124,19 @@ sub _show_posts {
     ### $c, $wheres, $noorder, $postid, $groupbys, $nolimit, $noquery, $orderbys, $reverseorder, $new
     my $sql = _get_show_sql($c, $wheres, undef, $postid);
     my $posts = $c->dbh_selectall_arrayref(
-        $sql, 
-        $c->session->{userid}, 
-        @wherep, 
-        ( $query ? "\%$query\%" : () ), 
-        ($postid || ()), 
+        $sql,
+        $c->session->{userid},
+        @wherep,
+        ( $query ? "\%$query\%" : () ),
+        ($postid || ()),
         $c->pagination()
     );
     $c->stash(posts => $posts);
     $c->counting;
 
     # Bei einer Suchanfrage wird das passende Such-Ergebnis-Formular angezeigt
-    $c->stash('action') eq 'search' and return $c->render(template => 'search');
+    $c->stash('action') eq 'search' and !$ajax and
+		return $c->render(template => 'search');
 
     # Für alles andere benötigen wir natürlich noch die Anhängsel zu den Beiträgen
     $c->get_attachements($posts, $wheres, @wherep);
@@ -160,7 +161,7 @@ sub _fetch_new_posts { _show_posts( $_[0], undef, 1 ) }
 sub _set_post_postlimit {
     my $c = $_[0];
     my $postlimit = $c->param('postlimit');
-    
+
     # Es gibt Grenzen, was eingetragen werden darf
     unless ( $postlimit > 0 and $postlimit < 128 ) {
         $c->set_error_f('Die Anzahl der auf einer Seite in der Liste angezeigten Beiträge muss eine ganze Zahl kleiner 128 sein.');

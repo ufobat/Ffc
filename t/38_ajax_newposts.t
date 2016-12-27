@@ -8,6 +8,7 @@ use Ffc::Plugin::Config;
 use File::Temp qw~tempfile tempdir~;
 use File::Spec::Functions qw(catfile catdir splitdir);
 use Mojo::Util 'xml_escape';
+use Data::Dumper;
 
 use Test::Mojo;
 use Test::More tests => 278;
@@ -27,19 +28,20 @@ sub _check_ajax {
     note '';
     note '---------- test ' . ( $uto ? 'pmsgs' : 'forum' );
     my ( $t, $uid, $utoid ) = ( $u->{t}, $u->{userid}, $uto->{userid} );
-    my $url = ($utoid ? "/pmsgs/$utoid" : '/topic/1') . '/fetch/new';
-    $t->get_ok( $url )->status_is(200)->json_has( "/$#posts" );
+    my $urlstart = ($utoid ? "/pmsgs/$utoid" : '/topic/1');
+    my $urlfetch = "$urlstart/fetch/new";
+    $t->get_ok( $urlfetch )->status_is(200)->json_has( "/$#posts" );
     note "  -- test userid = $uid ($u->{username})";
-    
+
     my ( @check, @old, @new );
     for my $i ( 0 .. $#posts ) {
         my $p = $posts[$i];
         my $isnew = Testinit::isnew($u, $p) ? 1 : 0;
-        push @check, { 
-            order => $i, 
-            post  => $p, 
-            isnew => $isnew, 
-            own   => ( $uid == $p->{userfrom} ? 1 : 0 ),
+        push @check, {
+            order => $i,
+            post  => $p,
+            isnew => $isnew,
+            own   => ( $uid == $p->{userfrom}->{userid} ? 1 : 0 ),
         };
         if ( $isnew ) { push @new, $p }
         else          { push @old, $p }
@@ -50,6 +52,7 @@ sub _check_ajax {
     for my $pi ( 0 .. $#check ) {
         my $ci = $check[$pi]; my $cp = $ci->{post}; my $jr = "/$pi";
         $t->json_like($jr, qr~<p>$cp->{content}</p>~);
+        $t->json_like($jr, qr~<a href="$urlstart/display/$cp->{postid}"~);
         if ( $ci->{isnew} ) {
             $t->json_like($jr, qr~<div class="postbox newpost">~);
         }
@@ -57,6 +60,8 @@ sub _check_ajax {
             if   ( $ci->{own} ) { $t->json_like( $jr, qr~<div class="postbox ownpost">~ ) }
             else                { $t->json_like( $jr, qr~<div class="postbox">~         ) }
         }
+#        unless ( $t->{test_success} ) {
+#       }
     }
 }
 sub check_forum { _check_ajax( shift(), undef,   @_ ) }
@@ -64,7 +69,7 @@ sub check_pmsgs { _check_ajax( shift(), shift(), @_ ) }
 
 # Neues Thema mit paar Beiträgen - wir benutzen immer das selbe, warum auch nicht
 note "---------- insert start";
-$user2->{t}->post_ok('/topic/new', 
+$user2->{t}->post_ok('/topic/new',
     form => {
         titlestring => 'Topic1',
         textdata => 'Testbeitrag1',
