@@ -35,6 +35,7 @@ sub start_test {
     chomp $user; chomp $salt; chomp $pw; chomp $csecret;
     note "user '$user':'$pw' (salt $salt, secret $csecret) created";
     my $t = Test::Mojo->new('Ffc');
+    _add_user_to_list($t, 1, $user, $pw);
     note "CONFIG:\n" . Dumper($t->app->configdata);
     @Users = ( $user ); $Users{$user} = 1;
     return $t, $testpath, $user, $pw, test_dbh($testpath), $salt, $csecret;
@@ -133,6 +134,113 @@ sub test_get_userid {
     my $dbh = shift;
     my $user = shift;
     $dbh->selectall_arrayref('SELECT id FROM users WHERE UPPER(name)=UPPER(?)', undef, $user)->[0]->[0];
+}
+
+###############################################################################
+# Gebräuchliche Benutzer- und Beitragsverwaltung
+
+my @userlist;
+sub _add_user_to_list {
+    push @userlist, { t => $_[0], userid => $_[1], username => $_[2], password => $_[3] };
+}
+sub make_userobjs {
+    my ( $t, $cnt, $admininit, $apassinit ) = @_;
+    return map {
+        my $u = { userid => $_, t => Test::Mojo->new('Ffc') };
+        $u->{$_} = Testinit::test_randstring() for qw~username password~;
+        Testinit::test_add_users( $t, $admininit, $apassinit, $u->{username}, $u->{password} );
+        Testinit::test_login($u->{t}, $u->{username}, $u->{password});
+        push @userlist, $u;
+        $u;
+    } 2 .. $cnt + 1;
+}
+sub userlist { wantarray ? @userlist : \@userlist }
+
+# Liste der Beiträge für weitere Verwendung
+my $id = 1; my @forums; my @pmsgss;
+
+# Abstrahierte Beitragserstellung
+sub _add {
+    my ($u, $tu, $cnt, $givenstr) = @_;
+    my $uid = $u->{userid};
+    for my $i ( 1 .. $cnt ) {
+        my $str = $givenstr // '___' . Testinit::test_randstring() . '___';
+        note '----------';
+        note '  add to '.($tu?'pmsgs':'forum').": $str";
+        note "    userfrom = $u->{userid} ($u->{username})";
+        note "    userto   = $tu->{userid} ($tu->{username})" if $tu;
+        my $new = {
+            userfrom => $u, 
+            userto   => $tu, 
+            postid   => $id++,
+            content  => $str, 
+            newflags => {map {;$_->{userid} => {isnew => 1, user => $_}} @userlist}
+        };
+        $new->{newflags}->{$u->{userid}}->{isnew} = 0;
+        my $arr = $tu? \@pmsgss : \@forums;
+        push @$arr, $new;
+        if ( $givenstr ) {
+            note "  call allready done (topic creation?)";
+        }
+        else {
+            note "  real insert call";
+            my $url = $tu ? "/pmsgs/$tu->{userid}" : '/topic/1';
+            $u->{t}->post_ok("$url/new", form => { textdata => $str })
+              ->status_is(302)->content_is('')
+              ->header_like(location => qr~$url~);
+            $u->{t}->get_ok($url)->status_is(200)->content_like(qr~$str~);
+        }
+    }
+}
+
+# Forenbeitrag erstellen
+sub add_forum { _add($_[0], undef, $_[1], $_[2]) }
+# Privatnachricht erstellen
+sub add_pmsgs { _add(@_[0,1,2,3]) }
+
+# Forenbeiträge zu Debug-Zwecken anzeigen
+sub _show_posts {
+    my $posts = $_[0];
+    my $usermap = sub {
+        my $u = $_[0];
+        return join ', ', map {"$_ = $u->{$_}"} qw~userid username~;
+    };
+    note '';
+    note '--------------------';
+    for my $p ( @$posts ) {
+        note '';
+        note ' -- ' . ( $p->{userto} ? 'pmsgs' : 'forum' ) . ": postid => $p->{postid} -- content => $p->{content}";
+        my $k = 'userfrom';
+        note '    - from  : ' . $usermap->($p->{$k});
+        $k    = 'userto';
+        note '    - to    : ' . $usermap->($p->{$k}) if $p->{$k};
+        $k    = 'newflags';
+        note '    - isnew : ';
+        for my $fid ( sort keys %{$p->{$k}} ) {
+            my ( $n, $u ) = @{$p->{$k}->{$fid}}{qw~isnew user~};
+            note '       '.($n ? '*' : ' ').' '.$usermap->($u);
+        }
+    }
+};
+
+sub show_forums { _show_posts( \@forums ) }
+sub show_pmsgss { _show_posts( \@pmsgss ) }
+
+sub forums { wantarray ? @forums : \@forums }
+sub pmsgss { wantarray ? @pmsgss : \@pmsgss }
+
+sub isnew {
+    return 
+        $_[1]->{newflags}->{$_[0]->{userid}}->{isnew} 
+            ? 1 : 0;
+}
+
+sub resetall {
+    my $u = shift; my $url = shift; my @posts = @_;
+    note '';
+    note "---------- set all postings as read for userid $u->{userid} via $url";
+    $u->{t}->get_ok($url)->status_is(200);
+    $_->{newflags}->{$u->{userid}}->{isnew} = 0 for @posts;
 }
 
 1;
