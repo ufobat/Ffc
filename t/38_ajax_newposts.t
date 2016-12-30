@@ -11,7 +11,7 @@ use Mojo::Util 'xml_escape';
 use Data::Dumper;
 
 use Test::Mojo;
-use Test::More tests => 278;
+use Test::More tests => 328;
 
 # Benutzer anlegen
 my ( $t, $path, $aname, $apass, $dbh ) = Testinit::start_test();
@@ -101,7 +101,7 @@ note '';
 note '';
 note '---------- pmsgs post test for users';
 check_pmsgs( $user2, $user3, reverse Testinit::pmsgss() );
-check_pmsgs( $user3, $user3, reverse Testinit::pmsgss() );
+check_pmsgs( $user3, $user2, reverse Testinit::pmsgss() );
 
 # Forenbeiträge auf gelesen markieren
 note '';
@@ -115,7 +115,7 @@ Testinit::resetall($user3, '/pmsgs/2', Testinit::pmsgss());
 check_forum( $user2, reverse Testinit::forums() );
 check_forum( $user3, reverse Testinit::forums() );
 check_pmsgs( $user2, $user3, reverse Testinit::pmsgss() );
-check_pmsgs( $user3, $user3, reverse Testinit::pmsgss() );
+check_pmsgs( $user3, $user2, reverse Testinit::pmsgss() );
 
 # Neue Beiträge durch User 2
 note "--------- new entries";
