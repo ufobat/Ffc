@@ -137,7 +137,7 @@ ffcdata.features.init = function(){
      ************************************************************************/
     var set_menurefresh = function(){
         ffcdata.features.autorefresh_interval 
-            = window.setInterval(auto_refresh, ffcdata.autorefresh * 60000 );
+            = window.setInterval(auto_refresh, ffcdata.autorefresh * 1000 );
     };
 
     /************************************************************************

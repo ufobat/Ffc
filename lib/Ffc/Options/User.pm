@@ -20,7 +20,7 @@ sub set_autorefresh {
     $c->dbh_do('UPDATE "users" SET "autorefresh"=? WHERE "id"=?',
         $ar, $c->session->{userid});
     $c->set_info_f( 'Zeit für das automatische Neuladen der Seite '. (
-        $ar ? 'auf '.$ar.' Minuten eingestellt' : 'deaktiviert' ) );
+        $ar ? 'auf '.$ar.' Sekunden eingestellt' : 'deaktiviert' ) );
     $c->redirect_to('options_form');
 }
 

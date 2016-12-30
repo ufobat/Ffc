@@ -227,7 +227,7 @@ sub test_autorefresh {
     $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr~ffcdata.features.init\(\);~)
       ->content_like(qr~autorefresh:\s+$new,~);
-    info('Zeit für das automatische Neuladen der Seite auf '.$new.' Minuten eingestellt');
+    info('Zeit für das automatische Neuladen der Seite auf '.$new.' Sekunden eingestellt');
     $t->get_ok('/session')->status_is(200)
       ->json_is('/autorefresh', $new);
 
@@ -248,7 +248,7 @@ sub test_autorefresh {
     $t->get_ok('/options/form')->status_is(200)
       ->content_like(qr~ffcdata.features.init\(\);~)
       ->content_like(qr~autorefresh:\s+$new,~);
-    info('Zeit für das automatische Neuladen der Seite auf '.$new.' Minuten eingestellt');
+    info('Zeit für das automatische Neuladen der Seite auf '.$new.' Sekunden eingestellt');
     $t->get_ok('/session')->status_is(200)
       ->json_is('/autorefresh', $new);
 
