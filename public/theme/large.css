@@ -11,7 +11,7 @@ body {
 body > *, .hovering {
     padding: 0 1em 1em 1em;
     max-width: 48em;
-    margin: .25em auto 0 auto;
+    margin: .5em auto 0 auto;
 }
 body > * > *, body > * > .postboxinner > *, .hovering > .postbox > *, blockquote > p {
     margin: .75em 0;
