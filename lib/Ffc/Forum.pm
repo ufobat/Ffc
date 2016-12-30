@@ -76,7 +76,7 @@ sub show {
         if $uid eq $userfrom or $c->session->{admin};
     $c->stash( startuppage => $topicid )
         if $topicid == $c->configdata()->{starttopic};
-    $c->set_lastseen( $uid, $topicid, ($ajax ? 1 : 0) );
+    $c->set_lastseenforum( $uid, $topicid );
     if ( $ajax ) { $c->fetch_new_posts() }
     else         { $c->show_posts()      }
 }

@@ -40,7 +40,7 @@ sub bothusers {
 }
 
 # den zeitstempel der letzten anwesenheit eines nutzers (nach id) ermitteln
-sub get_lastchatseenactive { 
+sub get_lastchatseenactive {
     $dbh->selectall_arrayref(
         q~SELECT COALESCE(STRFTIME('%s',"lastseenchatactive"),0) FROM "users" WHERE "id"=?~,
         undef, $_[0])->[0]->[0];
@@ -121,13 +121,15 @@ check_receive_messages(0,1,0);
 my @Pmsgs = map {Testinit::test_randstring()} 1 .. 2;
 $t1->post_ok('/pmsgs/2/new', form => { textdata => $_ })
    ->status_is(302) for @Pmsgs;
+if ( not $t1->{success} ) {
+    $t1->content_is('');
+}
 check_receive_messages(1,1,2);
 check_receive_messages(0,1,2);
 $t2->get_ok('/pmsgs/1')->status_is(200)
    ->content_like(qr~$Pmsgs[0]~)->content_like(qr~$Pmsgs[1]~);
 check_receive_messages(1,1,0);
 check_receive_messages(0,1,0);
-
 # Status für den ersten Benutzer zurücksetzen für die folgenden Tests
 $t1->get_ok('/chat/receive/focused')->status_is(200);
 $t2->get_ok('/chat/receive/focused')->status_is(200);

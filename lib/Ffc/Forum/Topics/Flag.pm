@@ -64,7 +64,7 @@ sub _handle_val_topic_do {
 # Künstlich einen Beitrag als gelesen markieren
 sub mark_seen {
     my $topicid = $_[1] // $_[0]->param('topicid');
-    $_[0]->set_lastseen( $_[0]->session->{userid}, $topicid );
+    $_[0]->set_lastseenforum( $_[0]->session->{userid}, $topicid );
     $_[0]->redirect_to(  $_[1] ? ( $_[1], topicid => $topicid ) : 'show_forum_topiclist' );
 }
 
@@ -74,9 +74,9 @@ sub mark_all_seen {
     my $c = $_[0];
     $c->counting;
     for my $top ( @{$c->stash('topics')} ) {
-        $c->set_lastseen( $c->session->{userid}, $top->[0] );
+        $c->set_lastseenforum( $c->session->{userid}, $top->[0] );
     }
-    $c->set_lastseen( $c->session->{userid}, $c->configdata->{starttopic} )
+    $c->set_lastseenforum( $c->session->{userid}, $c->configdata->{starttopic} )
         if $c->configdata->{starttopic};
     $c->set_info_f('Alle Themen wurden als gelesen markiert.');
     $c->redirect_to('show_forum_topiclist');

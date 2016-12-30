@@ -96,12 +96,11 @@ CREATE TABLE "lastseenmsgs" (
   "userfromid" integer    NOT NULL,
   "lastseen"   integer    NOT NULL DEFAULT '0',
   "mailed"     tinyint(1) NOT NULL DEFAULT '0',
-  "lastid"     integer    NOT NULL DEFAULT '0',
   PRIMARY KEY ("userid", "userfromid")
 );
 CREATE INDEX "lsm_user_id"     ON "lastseenmsgs"("userid");
 CREATE INDEX "lsm_userfrom_id" ON "lastseenmsgs"("userfromid");
-CREATE INDEX "lsm_lastid_id"   ON "lastseenmsgs"("lastid");
+CREATE INDEX "lsm_lastseen_id" ON "lastseenmsgs"("lastseen");
 
 /******************************************************************************/
 /* Verzeichnis der Beitrags-Dateianhänge

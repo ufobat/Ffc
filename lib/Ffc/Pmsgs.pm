@@ -7,7 +7,7 @@ use Ffc::Pmsgs::Userlist;
 
 ###############################################################################
 # Routen für die Privatnachrichtenbehandlung erstellen
-sub install_routes { 
+sub install_routes {
     # Route zur Benutzerliste als Übersichtsseite und Einstiegsseite für alle privaten Nachrichtenkonversationen
     $_[0]->route('/pmsgs')->via('get')
       ->to(controller => 'pmsgs', action => 'show_userlist')
@@ -25,39 +25,39 @@ sub where_select {
 
     # Basic-SQL, brauch ich immer
     my $sql = << 'EOSQL';
-              p."userto"   IS NOT NULL 
-        AND   p."userfrom" <> p."userto" 
-        AND ( p."userfrom" =  ? 
+              p."userto"   IS NOT NULL
+        AND   p."userfrom" <> p."userto"
+        AND ( p."userfrom" =  ?
          OR   p."userto"   =  ? )
 EOSQL
-    # Falls es keine Gegenseite gibt, dann war es das auch schon    
-    $utid or 
+    # Falls es keine Gegenseite gibt, dann war es das auch schon
+    $utid or
         return $sql, ( ( $_[0]->session->{userid} ) x 2 );
 
     # Gibt es eine Gegenseite (aka private Konversation), müssen wir das in Betracht ziehen
     return $sql . << 'EOSQL',
-        AND ( p."userfrom" =  ? 
+        AND ( p."userfrom" =  ?
          OR   p."userto"   =  ? )
 EOSQL
-        ( ( $_[0]->session->{userid} ) x 2, ( $utid ) x 2 ), 
+        ( ( $_[0]->session->{userid} ) x 2, ( $utid ) x 2 ),
 }
 
 ###############################################################################
-# Veränderungen dürfen nur vom Beitragsersteller durchgeführt werden, 
+# Veränderungen dürfen nur vom Beitragsersteller durchgeführt werden,
 # darunter zählen auch Uploads und so, deswegen brauchen wir das auch für Privatnachrichten
 sub where_modify {
     return << 'EOSQL',
-              "userto"   IS NOT NULL 
-        AND   "userfrom" <> "userto" 
+              "userto"   IS NOT NULL
+        AND   "userfrom" <> "userto"
         AND ( "userfrom" =  ? )
         AND ( "userto"   =  ? )
 EOSQL
-        $_[0]->session->{userid}, 
+        $_[0]->session->{userid},
         $_[0]->param('usertoid');
 }
 
 ###############################################################################
-# Als zusätzlichen Parameter in den URL's wird lediglich die Id des Benutzers, 
+# Als zusätzlichen Parameter in den URL's wird lediglich die Id des Benutzers,
 # mit dem man die private Konversation führt, benötigt
 sub additional_params { usertoid => $_[0]->param('usertoid') }
 
@@ -67,36 +67,13 @@ sub show {
     my ( $c, $ajax ) = @_[0,1];
     my ( $uid, $utoid ) = ( $c->session->{userid}, $c->param('usertoid') );
 
-    # Id der letzten erfassten (als gesehen markierten) Privatnachricht für den Benutzer
-    my $lastseen = $c->dbh_selectall_arrayref(
-        'SELECT "lastseen" FROM "lastseenmsgs" WHERE "userid"=? AND "userfromid"=?',
-        $uid, $utoid
-    );
-    # Id der letzten Privatnachricht für den Benutzer
-    my $newlastseen = $c->dbh_selectall_arrayref(
-        'SELECT "id" FROM "posts" WHERE "userto"=? AND "userfrom"=? ORDER BY "id" DESC LIMIT 1',
-        $uid, $utoid);
-    $newlastseen = @$newlastseen ? $newlastseen->[0]->[0] : -1;
-
-    # Daten für Webseiten befüllen
-    if ( @$lastseen ) {
-        $c->stash( lastseen => $lastseen->[0]->[0] );
-        $c->dbh_do(
-            'UPDATE "lastseenmsgs" SET "lastseen"=?, "mailed"=1 WHERE "userid"=? AND "userfromid"=?',
-            $newlastseen, $uid, $utoid );
-    }
-    else {
-        $c->stash( lastseen => -1 );
-        $c->dbh_do(
-            'INSERT INTO "lastseenmsgs" ("lastseen", "userid", "userfromid", "mailed") VALUES (?,?,?,1)',
-             $newlastseen, $uid, $utoid );
-    }
-
     $c->stash(
         backurl      => $c->url_for('show_pmsgs_userlist'),
         backtext     => 'zur Benutzerliste',
         heading      => 'Private Nachrichten mit "' . $c->_get_username . '"',
     );
+    # anders herum, weil ich ja von-zu setze und ich möchte meine eigene Zählung anpassen
+    $c->set_lastseenpmsgs( $utoid, $uid ); 
     if ( $ajax ) { $c->fetch_new_posts() }
     else         { $c->show_posts()      }
 }
@@ -107,7 +84,7 @@ sub fetch_new { show($_[0], 1) }
 
 ###############################################################################
 # Eine neue Privatnachricht an einem Benutzer schreiben
-sub add { 
+sub add {
     my $c = $_[0];
     my ( $utoid, $uid ) = ( $c->param('usertoid'), $c->session->{userid} );
 

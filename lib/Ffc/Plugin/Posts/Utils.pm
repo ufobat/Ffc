@@ -9,7 +9,7 @@ use strict; use warnings; use utf8;
 sub _setup_stash {
     my $c = $_[0];
     my ( $cname, $act ) = ( $c->stash('controller'), $c->stash('action') );
-    $c->stash( 
+    $c->stash(
         # Routenname für Abbrüche, der auf die Einstiegsseite der Beitragsübersicht verweißt.
         # Diese Route wird direkt als URL festgelegt, da sie keine weiteren Daten braucht.
         returl   => $c->url_for("show_$cname", page => 1),
@@ -21,7 +21,7 @@ sub _setup_stash {
         # mit angegeben werden müssen.
         additional_params => [ $c->additional_params ],
     );
-    $act ne 'search' 
+    $act ne 'search'
         and $c->stash(
            # Routenname für Filter-Suchen aus dem Menü heraus.
            # Diese Route wird direkt als URL festgelegt, da sie keine weiteren Daten braucht.
@@ -120,23 +120,23 @@ sub _update_highscore {
 # Für das gelesen-Tracking für das Forum
 sub _update_topic_lastid {
     my ( $c, $topicid, $summary, $zeroing ) = @_;
-    # Alles auf Null zurück für ein Thema, wenn nichts angegeben wurde 
+    # Alles auf Null zurück für ein Thema, wenn nichts angegeben wurde
     # (letzter Beitrag im Thema wurde gelöscht)
     $zeroing and return $c->dbh_do( << 'EOSQL', $topicid );
-UPDATE "topics" 
+UPDATE "topics"
 SET "summary"='', "lastid"=-1
 WHERE "id"=?
 EOSQL
 
     # Normal auf den aktuellsten Beitrag im Thema setzen
     $c->dbh_do( << 'EOSQL', $summary, $topicid, $topicid );
-UPDATE "topics" 
-SET 
+UPDATE "topics"
+SET
   "summary"=?,
   "lastid"=(
-    SELECT p."id" 
-    FROM "posts" p 
-    WHERE p."topicid" IS NOT NULL 
+    SELECT p."id"
+    FROM "posts" p
+    WHERE p."topicid" IS NOT NULL
       AND p."topicid"=?
       AND p."userto" IS NULL
     ORDER BY p."id" DESC
@@ -153,7 +153,7 @@ sub _update_pmsgs_lastid {
     my ( $c, $userid, $userto ) = @_;
     $_[0]->dbh_do( << 'EOSQL', $_[1], $_[2], $_[1], $_[2] );
 UPDATE "lastseenmsgs"
-SET "lastid"=(
+SET "lastseen"=(
     SELECT p."id"
     FROM "posts" p
     WHERE p."userfrom"=? AND p."userto"=?

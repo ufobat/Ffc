@@ -67,8 +67,8 @@ EOSQL
     }
     elsif ( $controller eq 'pmsgs' ) {
         # Privatnachrichten-Eintrag auf die aktuellste Nachricht setzen
-        $userto and
-            _update_pmsgs_lastid( $c, $userid, $userto );
+        #$userto and
+        #    _update_pmsgs_lastid( $c, $userid, $userto );
         $sql .= ' AND "userto"=? AND "topicid" IS NULL';
         push @params, $userto;
     }
@@ -89,7 +89,7 @@ EOSQL
     }
 
     if ( $controller eq 'forum' ) {
-        $c->set_lastseen($userid, $topicid);
+        $c->set_lastseenforum($userid, $topicid);
     }
     $c->param(postid => $r->[0]->[0]);
     $c->set_info_f('Ein neuer Beitrag wurde erstellt') unless $noinfo;

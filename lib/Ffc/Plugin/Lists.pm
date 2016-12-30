@@ -12,7 +12,8 @@ sub register {
     $_[1]->helper( newstartcount      => \&_newstartcount            );
     $_[1]->helper( generate_topiclist => \&_generate_topiclist       );
     $_[1]->helper( generate_userlist  => \&_generate_userlist        );
-    $_[1]->helper( set_lastseen       => \&_set_lastseen             );
+    $_[1]->helper( set_lastseenforum  => \&_set_lastseenforum        );
+    $_[1]->helper( set_lastseenpmsgs  => \&_set_lastseenpmsgs        );
     $_[1]->helper( get_chat_users     => \&Ffc::Chat::get_chat_users );
     return $_[0];
 }
@@ -130,7 +131,7 @@ sub _generate_userlist {
     # Benutzerdaten aus der Datenbank holen
     my $data = $_[0]->dbh_selectall_arrayref( << 'EOSQL'
 SELECT
-    u."id", u."name", COUNT(p."id"), l."lastid",
+    u."id", u."name", COUNT(p."id"), l."lastseen",
     CASE WHEN u."hideemail"=1 THEN '' ELSE u."email" END,
     CASE WHEN u."hidelastseen"=1 THEN '' ELSE datetime(u."lastonline", 'localtime') END,
     u."birthdate", u."infos", l."mailed"
@@ -163,7 +164,7 @@ EOSQL
 
 ###############################################################################
 # Aktualisierung der Informationen, wann ein Benutzer das letzte mal im Forenbereich etwas angesehen hat
-sub _set_lastseen {
+sub _set_lastseenforum {
     my ( $c, $uid, $topicid, $mailonly ) = @_;
 
     # Gibt es Einträge zum User im Foren-Themen-Tracker zur entsprechenden Topic-Id bereits
@@ -206,6 +207,37 @@ sub _set_lastseen {
                 'INSERT INTO "lastseenforum" ("userid", "topicid", "lastseen") VALUES (?,?,?)',
                 $uid, $topicid, $newlastseen );
         }
+    }
+}
+
+###############################################################################
+# Aktualisierung der Informationen, wann ein Benutzer das letzte mal eine Privat-Konversation angesehen hat
+sub _set_lastseenpmsgs {
+    my ( $c, $ufromid, $utoid ) = @_;
+
+    # Id der letzten erfassten (als gesehen markierten) Privatnachricht für den Benutzer
+    my $lastseen = $c->dbh_selectall_arrayref(
+        'SELECT "lastseen" FROM "lastseenmsgs" WHERE "userid"=? AND "userfromid"=?',
+        $utoid, $ufromid
+    );
+    # Id der letzten Privatnachricht für den Benutzer
+    my $newlastseen = $c->dbh_selectall_arrayref(
+        'SELECT "id" FROM "posts" WHERE "userto" IS NOT NULL AND "userto"=? AND "userfrom"=? ORDER BY "id" DESC LIMIT 1',
+        $utoid, $ufromid);
+    $newlastseen = @$newlastseen ? $newlastseen->[0]->[0] : -1;
+
+    # Daten für Webseiten befüllen
+    if ( @$lastseen ) {
+        $c->stash( lastseen => $lastseen->[0]->[0] );
+        $c->dbh_do(
+            'UPDATE "lastseenmsgs" SET "lastseen"=?, "mailed"=1 WHERE "userid"=? AND "userfromid"=?',
+                $newlastseen, $utoid, $ufromid );
+    }
+    else {
+        $c->stash( lastseen => -1 );
+        $c->dbh_do(
+            'INSERT INTO "lastseenmsgs" ("lastseen", "userid", "userfromid", "mailed") VALUES (?,?,?,1)',
+                $newlastseen, $utoid, $ufromid );
     }
 }
 

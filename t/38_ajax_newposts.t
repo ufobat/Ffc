@@ -22,16 +22,27 @@ Testinit::test_login($t, $aname, $apass);
 note '--------- userlist';
 note "  $_->{userid} => $_->{username}" for Testinit::userlist();
 
+sub _lastseen_table {
+    my ($sid, $sfrom) = ($_[0] ? (qw~lastid msgs~) : (qw~userid forum~));
+    $sid = $_[0] ? 'lastid' : 'lastseen';
+    $sfrom = $_[0] ? 'msgs' : 'forum';
+    note my $sql = "SELECT userid, $sid FROM lastseen$sfrom";
+    map {; sprintf 'userid = %d, last-id = %d', @$_ } @{ $dbh->selectall_arrayref( $sql ) };
+}
+
 # Prüfen, ob was da ist, oder ob gerade das nicht da ist
 sub _check_ajax {
     my $u = shift; my $uto = shift; my @posts = @_;
+    my  $ispmsgs = $uto ? 1 : 0;
     note '';
-    note '---------- test ' . ( $uto ? 'pmsgs' : 'forum' );
+    note '---------- test ' . ( $ispmsgs ? 'pmsgs' : 'forum' );
     my ( $t, $uid, $utoid ) = ( $u->{t}, $u->{userid}, $uto->{userid} );
+    note "  -- test userid = $uid ($u->{username})";
     my $urlstart = ($utoid ? "/pmsgs/$utoid" : '/topic/1');
     my $urlfetch = "$urlstart/fetch/new";
+    note '  -- before: ' . join "\n             ", _lastseen_table($ispmsgs);
     $t->get_ok( $urlfetch )->status_is(200)->json_has( "/$#posts" );
-    note "  -- test userid = $uid ($u->{username})";
+    note '  -- after:  ' . join "\n             ", _lastseen_table($ispmsgs);
 
     my ( @check, @old, @new );
     for my $i ( 0 .. $#posts ) {
@@ -60,8 +71,6 @@ sub _check_ajax {
             if   ( $ci->{own} ) { $t->json_like( $jr, qr~<div class="postbox ownpost">~ ) }
             else                { $t->json_like( $jr, qr~<div class="postbox">~         ) }
         }
-#        unless ( $t->{test_success} ) {
-#       }
     }
 }
 sub check_forum { _check_ajax( shift(), undef,   @_ ) }
