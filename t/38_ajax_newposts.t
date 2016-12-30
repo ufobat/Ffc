@@ -23,11 +23,10 @@ note '--------- userlist';
 note "  $_->{userid} => $_->{username}" for Testinit::userlist();
 
 sub _lastseen_table {
-    my ($sid, $sfrom) = ($_[0] ? (qw~lastid msgs~) : (qw~userid forum~));
-    $sid = $_[0] ? 'lastid' : 'lastseen';
-    $sfrom = $_[0] ? 'msgs' : 'forum';
-    note my $sql = "SELECT userid, $sid FROM lastseen$sfrom";
-    map {; sprintf 'userid = %d, last-id = %d', @$_ } @{ $dbh->selectall_arrayref( $sql ) };
+    my $sfrom = $_[0] ? 'msgs' : 'forum';
+    my $sthing = $_[0] ? 'userfromid' : 'topicid';
+    note my $sql = "SELECT userid, '$sthing', $sthing, lastseen FROM lastseen$sfrom";
+    map {; sprintf 'userid = %d, %s = %d, lastseen = %d', @$_ } @{ $dbh->selectall_arrayref( $sql ) };
 }
 
 # Prüfen, ob was da ist, oder ob gerade das nicht da ist
@@ -42,6 +41,9 @@ sub _check_ajax {
     my $urlfetch = "$urlstart/fetch/new";
     note '  -- before: ' . join "\n             ", _lastseen_table($ispmsgs);
     $t->get_ok( $urlfetch )->status_is(200)->json_has( "/$#posts" );
+    if ( not $t->{success} ) {
+        $t->content_is('');
+    }
     note '  -- after:  ' . join "\n             ", _lastseen_table($ispmsgs);
 
     my ( @check, @old, @new );

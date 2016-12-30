@@ -66,6 +66,9 @@ sub additional_params { usertoid => $_[0]->param('usertoid') }
 sub show {
     my ( $c, $ajax ) = @_[0,1];
     my ( $uid, $utoid ) = ( $c->session->{userid}, $c->param('usertoid') );
+    if ( $uid == $utoid ) {
+        $c->set_warning('Bist du blöde? Redest wohl gern mit dir selber? Hört die sonst keiner zu oder was? Denk mal drüber nach!');
+    }
 
     $c->stash(
         backurl      => $c->url_for('show_pmsgs_userlist'),

@@ -215,6 +215,8 @@ sub _set_lastseenforum {
 sub _set_lastseenpmsgs {
     my ( $c, $ufromid, $utoid ) = @_;
 
+    return if $ufromid == $utoid;
+
     # Id der letzten erfassten (als gesehen markierten) Privatnachricht für den Benutzer
     my $lastseen = $c->dbh_selectall_arrayref(
         'SELECT "lastseen" FROM "lastseenmsgs" WHERE "userid"=? AND "userfromid"=?',
