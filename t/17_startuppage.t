@@ -119,7 +119,7 @@ $t->get_ok('/')->status_is(302)->content_is('')->header_is(Location => '/topic/2
 # An erster Stelle in den Listen
 $t->get_ok('/forum')->status_is(200);
 $t->content_unlike(qr~<div class="postbox topiclist">\s*<h2 [^\w="]>\s*<span class="menuentry">\s*<a href="/topic/2"~);
-$t->content_like(qr~<div class="topicpopup popup otherspopup">\s*<p class="smallnodisplay"><a href="/topic/[13]">~);
+$t->content_like(qr~<div class="topicpopup popup otherspopup">\s*<p class="smallnodisplay"><a title="($:$Topics[0][1]|$Topics[2][1])" href="/topic/[13]">~);
 $t->content_like(qr~<title>\(0\) Ffc Forum</title>~);
 # Alle Themen für User auf gelesen setzen
 $t->get_ok('/topic/mark_all_read')->status_is(302)->content_is('')->header_is(Location => '/forum');
@@ -144,22 +144,22 @@ $t->content_like(qr~<title>\(7\) Ffc Forum</title>~);
 $t->content_like(qr~<span class="linktext linkstart">Start \(<span class="mark">3</span>\)</span></a>~);
 $t->content_like(qr~
     \s*<div class="topicpopup popup otherspopup">
-    \s*<p class="smallnodisplay newpost"><a href="/topic/3">$Topics[2][1]</a>\.\.\. \(<span class="mark">4</span>\)</p>
-    \s*<p class="smallnodisplay"><a href="/topic/1">$Topics[0][1]</a>\.\.\.</p>
+    \s*<p class="smallnodisplay newpost"><a title="$Topics[2][1]" href="/topic/3">$Topics[2][1]</a>\.\.\. \(<span class="mark">4</span>\)</p>
+    \s*<p class="smallnodisplay"><a title="$Topics[0][1]" href="/topic/1">$Topics[0][1]</a>\.\.\.</p>
     \s*</div>
 ~);
 
 $t->get_ok('/')->status_is(302)->content_is('')->header_is(Location => '/topic/2');
 $t->get_ok('/topic/2')->status_is(200);
 $t->content_unlike(qr~<div class="postbox topiclist">\s*<h2\s*[\w="]+>\s*<span class="menuentry">\s*<a href="/topic/2"~);
-$t->content_unlike(qr~<div class="topicpopup popup otherspopup">\s*<p class="smallnodisplay\s*starttopic"><a href="/topic/2">~);
+$t->content_unlike(qr~<div class="topicpopup popup otherspopup">\s*<p class="smallnodisplay\s*starttopic"><a title="$Topics[1][1]" href="/topic/2">~);
 $t->content_like(qr~<h1>\s*Startseite~);
 $t->content_like(qr~<title>\(4\) Ffc Forum</title>~);
 $t->content_like(qr~<span class="linktext linkstart active activestart">Start</span></a>~);
 $t->content_like(qr~
     \s*<div class="topicpopup popup otherspopup">
-    \s*<p class="smallnodisplay newpost"><a href="/topic/3">$Topics[2][1]</a>\.\.\. \(<span class="mark">4</span>\)</p>
-    \s*<p class="smallnodisplay"><a href="/topic/1">$Topics[0][1]</a>\.\.\.</p>
+    \s*<p class="smallnodisplay newpost"><a title="$Topics[2][1]" href="/topic/3">$Topics[2][1]</a>\.\.\. \(<span class="mark">4</span>\)</p>
+    \s*<p class="smallnodisplay"><a title="$Topics[0][1]" href="/topic/1">$Topics[0][1]</a>\.\.\.</p>
     \s*</div>
 ~);
 
@@ -173,13 +173,13 @@ $t->content_like(qr~<option\s+value="$_->[0]">$_->[1]</option>~xmso)
     for @Topics;
 info('Startseitenthema zurückgesetzt');
 $t->content_unlike(qr~<span class="linktext linkstart">Start~);
-$t->content_like(qr~\s*<p class="smallnodisplay"><a href="/topic/2">$Topics[1][1]</a>\.\.\.</p>~);
+$t->content_like(qr~\s*<p class="smallnodisplay"><a title="$Topics[1][1]" href="/topic/2">$Topics[1][1]</a>\.\.\.</p>~);
 
 user();
 $t->get_ok('/')->status_is(200);
 $t->content_unlike(qr~<h1>\s*Startseite~);
 $t->content_unlike(qr~<span class="linktext linkstart">Start~);
-$t->content_like(qr~\s*<p class="smallnodisplay"><a href="/topic/2">$Topics[1][1]</a>\.\.\.</p>~);
+$t->content_like(qr~\s*<p class="smallnodisplay"><a title="$Topics[1][1]" href="/topic/2">$Topics[1][1]</a>\.\.\.</p>~);
 
 add_post(2); add_post(2); add_post(3); add_post(3); add_post(3);
 
@@ -190,10 +190,10 @@ for my $set ( qw~pin ignore~ ) {
     $t->get_ok('/forum')->status_is(200);
     $t->content_unlike(qr~<span class="linktext linkstart">Start~);
     if ( $set eq 'ignore' ) {
-        $t->content_like(qr~\s*<p class="smallnodisplay ignored"><a href="/topic/2">$Topics[1][1]</a>\.\.\.</p>~);
+        $t->content_like(qr~\s*<p class="smallnodisplay ignored"><a title="$Topics[1][1]" href="/topic/2">$Topics[1][1]</a>\.\.\.</p>~);
     }
     else {
-        $t->content_like(qr~\s*<p class="smallnodisplay newpost pin newpinpost"><a href="/topic/2">$Topics[1][1]</a>\.\.\. \(<span class="mark">2</span>\)</p>~);
+        $t->content_like(qr~\s*<p class="smallnodisplay newpost pin newpinpost"><a title="$Topics[1][1]" href="/topic/2">$Topics[1][1]</a>\.\.\. \(<span class="mark">2</span>\)</p>~);
     }
 
     $t->post_ok('/admin/set_starttopic', form => { topicid => 2 })
@@ -208,5 +208,5 @@ for my $set ( qw~pin ignore~ ) {
     $t->get_ok("/topic/2/un$set")->status_is(302)->content_is('')->header_is(Location => '/forum');
     $t->get_ok('/forum')->status_is(200);
     $t->content_unlike(qr~<span class="linktext linkstart">Start~);
-    $t->content_like(qr~\s*<p class="smallnodisplay newpost"><a href="/topic/2">$Topics[1][1]</a>\.\.\. \(<span class="mark">2</span>\)</p>~);
+    $t->content_like(qr~\s*<p class="smallnodisplay newpost"><a title="$Topics[1][1]" href="/topic/2">$Topics[1][1]</a>\.\.\. \(<span class="mark">2</span>\)</p>~);
 }

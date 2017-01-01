@@ -30,27 +30,27 @@ login1();
 $t->post_ok('/topic/new', form => {titlestring => $Topics[0], textdata => $Articles[0][0]})->status_is(302);
 $t->header_like( Location => qr{\A/topic/1}xms );
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~)
+  ->content_like(qr~<a title="$Topics[0]" href="/topic/1">$Topics[0]</a>~)
   ->content_like(qr~$user1,\n\s*$timeqr~);
 ch_nfo('Ein neuer Beitrag wurde erstellt');
 
 login2();
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~<span class="addinfos">\s*Neu: <span class="mark">\[1\]</span>,\n\s*$user1,\n\s*$timeqr\s*~)
-  ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~);
+  ->content_like(qr~<a title="$Topics[0]" href="/topic/1">$Topics[0]</a>~);
 $t->get_ok('/topic/1')->status_is(200)->content_like(qr~$Articles[0][0]~);
 $t->post_ok('/topic/1/new', form => {textdata => $Articles[0][0]})
   ->status_is(302)->header_like(Location => qr~/topic/1~);
 $t->get_ok('/topic/1')->status_is(200)->content_like(qr~$Articles[0][0]~);
 ch_nfo('Ein neuer Beitrag wurde erstellt');
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~)
+  ->content_like(qr~<a title="$Topics[0]" href="/topic/1">$Topics[0]</a>~)
   ->content_like(qr~$user2,\n\s*$timeqr~);
 
 login1();
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~<span class="addinfos">\s*Neu: <span class="mark">\[1\]</span>,\n\s*$user2,\n\s*$timeqr\s*~)
-  ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~);
+  ->content_like(qr~<a title="$Topics[0]" href="/topic/1">$Topics[0]</a>~);
 $t->get_ok('/topic/1')->status_is(200)->content_like(qr~$Articles[0][0]~);
 $t->post_ok('/topic/1/new', form => {textdata => $Articles[0][0]})
   ->status_is(302)->header_like(Location => qr~/topic/1~);
@@ -65,11 +65,11 @@ $t->post_ok('/topic/1/new', form => {textdata => $Articles[0][0]})
 $t->get_ok('/topic/1')->status_is(200)->content_like(qr~$Articles[0][0]~);
 ch_nfo('Ein neuer Beitrag wurde erstellt');
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~)
+  ->content_like(qr~<a title="$Topics[0]" href="/topic/1">$Topics[0]</a>~)
   ->content_like(qr~$user1,\n\s*$timeqr~);
 
 login2();
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~<span class="addinfos">\s*Neu: <span class="mark">\[3\]</span>,\n\s*$user1,\n\s*$timeqr\s*~)
-  ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~);
+  ->content_like(qr~<a title="$Topics[0]" href="/topic/1">$Topics[0]</a>~);
 

@@ -38,7 +38,7 @@ for my $i ( 0 .. $#Topics ) {
       ->status_is(302)->header_like( Location => qr{\A/topic/$id}xms )->content_is('');
     set_lastid($arts->[0]);
     $t->get_ok('/forum')->status_is(200)
-      ->content_like(qr~<a href="/topic/$id">$top</a>~);
+      ->content_like(qr~<a title="$top" href="/topic/$id">$top</a>~);
     $t->get_ok("/topic/$id")->status_is(200)
       ->content_like(qr~<p>$arts->[0]->[0]</p>~);
     note(qq~Fuege weitere Artikel zum Thema Nr. $id hinzu~);

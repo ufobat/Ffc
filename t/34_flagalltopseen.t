@@ -26,17 +26,17 @@ sub info { Testinit::test_info(    $t, @_ ) }
 sub check_new {
     my ( $tid, $cnt ) = @_;
     $t->content_like(
-        qr~<a href="/topic/$tid">Testtopic $tid</a>\.\.\. \(<span class="mark">$cnt</span>\)</p>~);
+        qr~<a title="Testtopic $tid" href="/topic/$tid">Testtopic $tid</a>\.\.\. \(<span class="mark">$cnt</span>\)</p>~);
     $t->content_unlike(
-        qr~<a href="/topic/$tid">Testtopic $tid</a>\.\.\.</p>~);
+        qr~<a title="Testtopic $tid" href="/topic/$tid">Testtopic $tid</a>\.\.\.</p>~);
 }
 
 sub check_old {
     my ( $tid ) = @_;
     $t->content_like(
-        qr~<a href="/topic/$tid">Testtopic $tid</a>\.\.\.</p>~);
+        qr~<a title="Testtopic $tid" href="/topic/$tid">Testtopic $tid</a>\.\.\.</p>~);
     $t->content_unlike(
-        qr~<a href="/topic/$tid">Testtopic $tid</a>\.\.\. \(<span class="mark">\d*</span>\)</p>~);
+        qr~<a title="Testtopic $tid" href="/topic/$tid">Testtopic $tid</a>\.\.\. \(<span class="mark">\d*</span>\)</p>~);
 }
 
 #################################################

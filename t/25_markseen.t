@@ -77,7 +77,7 @@ for my $i ( 0 .. $#Topics ) {
     $t->post_ok('/topic/new', form => {titlestring => $top, textdata => $arts->[0]})
       ->status_is(302)->header_like( Location => qr{\A/topic/$id}xms );
     $t->get_ok('/forum')->status_is(200)
-      ->content_like(qr~<a href="/topic/$id">$top</a>~);
+      ->content_like(qr~<a title="$top" href="/topic/$id">$top</a>~);
     for my $art ( @{$arts}[1..$#$arts] ) {
         $t->post_ok("/topic/$id/new", form => {textdata => $art})
           ->status_is(302)->header_like(Location => qr~/topic/$id~);
@@ -108,7 +108,7 @@ for my $i ( 0 .. $#Topics ) {
     $t->get_ok("/topic/$id/seen")
       ->status_is(302)->header_like( Location => qr{\A/forum\z}xms );
     $t->get_ok('/forum')->status_is(200)
-      ->content_like(qr~<a href="/topic/$id">$top</a>~);
+      ->content_like(qr~<a title="$top" href="/topic/$id">$top</a>~);
     for my $i ( 0 .. $#Topics ) {
         if ( $Topics[$i][2] ) { check_seen(   $i ) }
         else                  { check_unseen( $i ) }

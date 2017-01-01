@@ -41,7 +41,7 @@ sub check_topics {
         '<div class="topicpopup popup otherspopup">',
         map( {; 
             my $id = $_ + 1; my $text = $topics[$_];
-            qq~<p(?:\\s+class="[\\w\\s]+")?><a href="/topic/$id">$text</a>...~
+            qq~<p(?:\\s+class="[\\w\\s]+")?><a title="$text" href="/topic/$id">$text</a>...~
                 . qq~(?: \\(<span class="mark">\[1\]</span>\\))?~
                 . qq~</p>~ 
         } $#topics - $topiclimit + 1 .. $#topics ),

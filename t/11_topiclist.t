@@ -67,7 +67,7 @@ $t->content_like(qr~<textarea required name="textdata" id="textinput" class="edi
 $t->post_ok('/topic/new', form => {titlestring => $Topics[0], textdata => $Articles[0][0]})->status_is(302);
 $t->header_like( Location => qr{\A/topic/1}xms );
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~)
+  ->content_like(qr~<a title="$Topics[0]" href="/topic/1">$Topics[0]</a>~)
   ->content_like(qr~$user2,\n\s*$timeqr~);
 ch_nfo('Ein neuer Beitrag wurde erstellt');
 $t->get_ok('/topic/1')->status_is(200)
@@ -83,7 +83,7 @@ $t->get_ok('/topic/1')->status_is(200)
 $t->post_ok('/topic/new', form => {titlestring => $Topics[0], textdata => $Articles[0][1]})->status_is(302);
 $t->header_like( Location => qr{\A/topic/1}xms );
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~)
+  ->content_like(qr~<a title="$Topics[0]" href="/topic/1">$Topics[0]</a>~)
   ->content_like(qr~$user1,\n\s*$timeqr~);
 ch_nfo('Ein neuer Beitrag wurde erstellt');
 $t->get_ok('/topic/1')->status_is(200)
@@ -98,8 +98,8 @@ $t->post_ok('/topic/new', form => {titlestring => $Topics[1], textdata => $Artic
 
 $t->header_like( Location => qr{\A/topic/2}xms );
 $t->get_ok('/')->status_is(200)
-  ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~)
-  ->content_like(qr~<a href="/topic/2">$Topics[1]</a>~)
+  ->content_like(qr~<a title="$Topics[0]" href="/topic/1">$Topics[0]</a>~)
+  ->content_like(qr~<a title="$Topics[1]" href="/topic/2">$Topics[1]</a>~)
   ->content_like(qr~$user1,\n\s*$timeqr~);
 ch_nfo('Ein neuer Beitrag wurde erstellt');
 $t->get_ok('/topic/2')->status_is(200)
@@ -138,7 +138,7 @@ $t->post_ok('/topic/2/edit', form => { titlestring => $Topics[1] })->status_is(3
 $t->header_like( Location => qr{\A/topic/2}xms );
 $t->get_ok('/')->status_is(200)
   ->content_unlike(qr~$oldtopic~)
-  ->content_like(qr~<a href="/topic/2">$Topics[1]</a>~);
+  ->content_like(qr~<a title="$Topics[1]" href="/topic/2">$Topics[1]</a>~);
 ch_nfo('Die Überschrift des Themas wurde geändert.');
 $t->get_ok('/topic/2')->status_is(200)
   ->content_like(qr~$Topics[1]~)->content_like(qr~$Articles[1][0]~);
@@ -146,7 +146,7 @@ $t->get_ok('/topic/2')->status_is(200)
 login2();
 $t->get_ok('/')->status_is(200)
   ->content_unlike(qr~$oldtopic~)
-  ->content_like(qr~<a href="/topic/2">$Topics[1]</a>~);
+  ->content_like(qr~<a title="$Topics[1]" href="/topic/2">$Topics[1]</a>~);
 $t->get_ok('/topic/2')->status_is(200)
   ->content_like(qr~$Topics[1]~)->content_like(qr~$Articles[1][0]~);
 
@@ -154,7 +154,7 @@ my $newtopic = Testinit::test_randstring();
 $t->post_ok('/topic/2/edit', form => { titlestring => $newtopic })->status_is(302);
 $t->header_like( Location => qr{\A/topic/2}xms );
 $t->get_ok('/topic/2')->status_is(200)
-  ->content_like(qr~<a href="/topic/2">$Topics[1]</a>~)
+  ->content_like(qr~<a title="$Topics[1]" href="/topic/2">$Topics[1]</a>~)
   ->content_unlike(qr~$newtopic~);
 ch_err('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde und Sie auch kein Administrator sind.');
 
@@ -165,7 +165,7 @@ $t->post_ok('/topic/2/edit', form => { titlestring => $Topics[1] })->status_is(3
 $t->header_like( Location => qr{\A/topic/2}xms );
 $t->get_ok('/')->status_is(200)
   ->content_unlike(qr~$oldtopic~)
-  ->content_like(qr~<a href="/topic/2">$Topics[1]</a>~);
+  ->content_like(qr~<a title="$Topics[1]" href="/topic/2">$Topics[1]</a>~);
 ch_nfo('Die Überschrift des Themas wurde geändert.');
 $t->get_ok('/topic/2')->status_is(200)
   ->content_like(qr~$Topics[1]~)->content_like(qr~$Articles[1][0]~);
@@ -184,8 +184,8 @@ $t->get_ok('/topic/1/moveto/2')->status_is(302);
 $t->header_like( Location => qr{\A/forum}xms );
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~"/topic/new"~)->content_like(qr~<div class="postbox topiclist" id="topiclist">~)
-  ->content_like(qr~<a href="/topic/1">$Topics[0]</a>~)
-  ->content_like(qr~<a href="/topic/2">$Topics[1]</a>~);
+  ->content_like(qr~<a title="$Topics[0]" href="/topic/1">$Topics[0]</a>~)
+  ->content_like(qr~<a title="$Topics[1]" href="/topic/2">$Topics[1]</a>~);
 ch_err('Kann das Thema nicht ändern, da es nicht von Ihnen angelegt wurde und Sie auch kein Administrator sind.');
 
 login2();
@@ -196,8 +196,8 @@ ch_nfo('Die Beiträge wurden in ein anderes Thema verschoben.');
 $t->content_like(qr~$_~) for @{$Articles[0]}, @{$Articles[1]};
 $t->get_ok('/')->status_is(200)
   ->content_like(qr~"/topic/new"~)->content_like(qr~<div class="postbox topiclist" id="topiclist">~)
-  ->content_unlike(qr~<a href="/topic/1">$Topics[0]</a>~)
-  ->content_like(qr~<a href="/topic/2">$Topics[1]</a>~);
+  ->content_unlike(qr~<a title="$Topics[0]" href="/topic/1">$Topics[0]</a>~)
+  ->content_like(qr~<a title="$Topics[1]" href="/topic/2">$Topics[1]</a>~);
 $t->get_ok('/topic/1')->status_is(200)
   ->content_like(qr~"/topic/new"~)->content_like(qr~<div class="postbox topiclist" id="topiclist">~);
 ch_err('Konnte das gewünschte Thema nicht finden.');
