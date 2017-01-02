@@ -9,9 +9,10 @@ use File::Spec::Functions 'catfile';
 # Helper-Registration für das Plugin
 sub register {
     my ( $self, $app ) = @_;
-    $app->helper( file_upload => \&_file_upload );
-    $app->helper( is_image    => \&_is_image    );
-    $app->helper( is_inline   => \&_is_inline   );
+    $app->helper( file_upload   => \&_file_upload   );
+    $app->helper( is_image      => \&_is_image      );
+    $app->helper( is_image_link => \&_is_image_link );
+    $app->helper( is_inline     => \&_is_inline     );
     return $self;
 }
 

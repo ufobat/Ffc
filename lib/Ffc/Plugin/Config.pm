@@ -12,6 +12,7 @@ use Digest::SHA 'sha512_base64';
 my %Defaults = (
     title           => 'Ffc Forum',
     urlshorten      => 30,
+    inlineimage     => 0,
     sessiontimeout  => 259200,
     backgroundcolor => '',
     starttopic      => 0,
@@ -46,7 +47,7 @@ sub register {
         $config->{sessiontimeout} || $Defaults{sessiontimeout});
 
     # Konfigurierte Voreinstellungen, falls bei diesen Parametern nichts brauchbares angegeben ist
-    for ( qw(urlshorten starttopic starttopiccount) ) {
+    for ( qw(urlshorten starttopic starttopiccount inlineimage) ) {
         unless ( $config->{$_} and $config->{$_} =~ m/\A\d+\z/xmso ) {
             $config->{$_} = $Defaults{$_};
         }

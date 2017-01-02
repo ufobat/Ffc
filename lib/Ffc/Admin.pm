@@ -47,6 +47,10 @@ our @Settings = (
         'Maximale Größe von hochzuladenden Dateien ändern',
         'Die maximale Größe, die eine Datei haben kann, die hochgeladen werden soll',
         'Die Dateigröße wird in Megabyte angegeben und muss eine Zahl sein' ],
+    [ inlineimage => 'Bilderlinks darstellen', undef, 0, 'checkbox',
+        'Bildanzeige in Beiträgen und Chatnachrichten',
+        'Sollen Links auf Bilder direkt im Text als Bilder angezeigt werden oder sollen nur die Links angezeigt werden',
+        'Dieser Wert muss angehakt werden oder nicht' ],
 );
 
 # RegEx für die Settings

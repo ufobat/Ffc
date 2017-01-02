@@ -56,6 +56,7 @@ my %HTMLHandle = (
     h3         => [ 1, 0, 1, 1, 0 ],
     map({;$_   => [0,0,0,0,1]} qw(b u i strike q em)),
 );
+my $LinkImage = qr~(?:jp[eg]|bmp|gif|png)\z~xmsio;
 
 ###############################################################################
 # App-Helper registrieren
@@ -114,7 +115,7 @@ sub _format_timestamp {
 # Teil-Formatierung für iterativen Durchlauf des HTML-angelehnten Markup-Baumes
 sub _pre_format_text_part {
 #   controller, string, stacklevel, disable-p, disable-html, insert in newlines, no smileys, no blocks
-    my ( $c, $ostr, $lvl, $dis_p, $dis_html, $set_n, $nosmil, $dis_block ) = @_;
+    my ( $c, $ostr, $lvl, $dis_p, $dis_html, $set_n, $nosmil, $dis_block, $inlimg ) = @_;
     my $str = $ostr; # Ich arbeite hier auf einer Kopie
 
     # Leerstrings fallen von vorn herein raus, Zeilenumbrüche werden normalisiert
@@ -160,7 +161,7 @@ sub _pre_format_text_part {
         elsif ( $m{urlmatch} ) {
 #warn "      URL!\n;";
 #warn '     LINK: "' .($m{url}//''). "\"\n";
-            $o .= _make_link( $c, $m{url} );
+            $o .= _make_link( $c, $m{url}, $inlimg );
         }
         # Oder wir haben es mit einem Smiley zu tun, welches ebenfalls gesondert formatiert wird
         elsif ( $m{smileymatch} ) {
@@ -196,10 +197,11 @@ sub _format_plain_text {
 ###############################################################################
 # Hier wird der Text tatsächlich einer schier meisterhaften Formatierung unterzogen
 sub _pre_format_text {
-    my ( $c, $str, $nosmil ) = @_;
+    my ( $c, $str, $nosmil, $inlimg ) = @_;
 
     # Hier wird durch die Formatierung durch iteriert
-    my $o = _pre_format_text_part($c, $str, (undef) x 4, $nosmil );
+    # $c, $ostr, $lvl, $dis_p, $dis_html, $set_n, $nosmil, $dis_block, $inlimg
+    my $o = _pre_format_text_part($c, $str, (undef) x 4, $nosmil, undef, $inlimg );
     # Leere Rückgabestrings fallen generell raus
     return '' if $o =~ m/\A\s*\z/xmso;
     
@@ -226,7 +228,7 @@ sub _pre_format_text {
 ###############################################################################
 # HTML-ähnliche Tags aus der Formatierung passend ersetzen
 sub _make_tag {
-    my ( $c, $tag, $inner, $lvl, $dis_p, $dis_html, $set_n, $dis_block ) = @_;
+    my ( $c, $tag, $inner, $lvl, $dis_p, $dis_html, $set_n, $dis_block, $inlimg ) = @_;
 
     # Sonderfall Leertags (wie z.B. <hr />)
     not $inner and $tag =~ $HTMLEmptyTagRe and return "<$tag />";
@@ -242,7 +244,7 @@ sub _make_tag {
     }
 
     # Formatierungen innerhalb des Tags
-    my $in = _pre_format_text_part($c, $inner, $lvl, $dis_p, $dis_html, undef, undef, $dis_block );
+    my $in = _pre_format_text_part($c, $inner, $lvl, $dis_p, $dis_html, undef, undef, $dis_block, $inlimg );
 
     # Ausgabe bei Bedarf mit Leerzeilen
     return $set_n
@@ -253,13 +255,17 @@ sub _make_tag {
 ###############################################################################
 # Einen Link formatieren
 sub _make_link {
-    my ( $c, $url ) = @_;
+    my ( $c, $url, $inlimg ) = @_;
     # Quotes URL-kompatibel machen
     $url =~ s/"/\%22/xmso;
     # XML-Escape für die HTML-Anzeige 
     my $url_xmlencode = xml_escape($url);
     return qq~<a href="$url" title="Externe Webseite: $url_xmlencode" target="_blank">~ 
-        . _stripped_url($c, $url_xmlencode) . qq~</a>~;
+        . ( 
+            ( $inlimg && $url =~ $LinkImage )
+                ? qq~<img src="$url title="$url_xmlencode" />~
+                : _stripped_url($c, $url_xmlencode) 
+        ) . qq~</a>~;
 }
 
 ###############################################################################
@@ -296,7 +302,7 @@ sub _format_short {
     $_[1] or return ''; # Nüx gibt nüx
 
     # Normales Formatieren ohne Tag-Ersetzung und Smiley-Ersetzung
-    my $str = _pre_format_text_part($_[0], substr($_[1],0,255), 1, 1, 1, 1);
+    my $str = _pre_format_text_part($_[0], substr($_[1],0,255), 1, 1, 1, 1, 0);
     
     # Bestimmte Sachen rausschneiden, die wir in der Zusammenfassung nicht sehen wollen 
     # (bissel unschön, aber passt so)

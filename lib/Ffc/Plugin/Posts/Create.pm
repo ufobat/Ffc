@@ -14,7 +14,7 @@ sub _add_post {
         $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen)');
         return $c->show;
     }
-    my $cache = $c->pre_format($text);
+    my $cache = $c->pre_format($text, undef, $c->configdata->{inlineimage});
     if ( !defined($cache) or (2 > length $cache) ) {
         $c->stash(textdata => $text);
         $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen ohne Auszeichnungen)');
@@ -127,7 +127,7 @@ sub _edit_post_do {
         $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen)');
         return $c->edit_form;
     }
-    my $cache = $c->pre_format($text);
+    my $cache = $c->pre_format($text, undef, $c->configdata->{inlineimage});
     if ( !defined($cache) or (2 > length $cache) ) {
         $c->stash(textdata => $text);
         $c->set_error('Es wurde zu wenig Text eingegeben (min. 2 Zeichen ohne Auszeichnungen)');

@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 887;
+use Test::More tests => 975;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -45,6 +45,9 @@ my @Settings = (
     [ maxuploadsize => 'Maximale Dateigröße in Megabyte', 'number',
         [10 + int( rand 90),110 + int(rand 90)],['asdf', ''],
         'Die Dateigröße wird in Megabyte angegeben und muss eine Zahl sein' ],
+    [ inlineimage => 'Bilderlinks darstellen', 'checkbox',
+        [1,''],['asdf', '2'],
+        'Dieser Wert muss angehakt werden oder nicht' ],
 );
 
 note qq~checking that admins have input fields available for boardsettings~;
@@ -85,7 +88,7 @@ for my $s ( @Settings ) {
       ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
     $t->get_ok('/admin/form')->status_is(200)
       ->content_like(qr'active activeoptions">Administration<');
-    if ( $key =~ m/favicon|backgroundcolor|customcss|chronsortorder/xmso ) {
+    if ( $key =~ m/inlineimage|favicon|backgroundcolor|customcss|chronsortorder/xmso ) {
         info($info);
     }
     else {

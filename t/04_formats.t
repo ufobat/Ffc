@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 104;
+use Test::More tests => 107;
 
 srand;
 
@@ -47,6 +47,11 @@ srand;
         my $c = shift;
         $c->prepare;
         $c->render(text => $c->pre_format($c->param('text'), 1));
+    };
+    any '/pre_format_inlineimage' => sub {
+        my $c = shift;
+        $c->prepare;
+        $c->render(text => $c->pre_format($c->param('text'), undef, 1));
     };
 }
 
@@ -113,9 +118,10 @@ sub _escape_str2re {
 }
 
 sub format_things_test {
-    my $tests = shift;
-    my $nosmil = shift;
+    my $tests   = shift;
+    my $nosmil  = shift;
     my $summary = shift;
+    my $inlimg  = shift;
     note q~Testing the formatting functions~;
 
     for my $test ( @$tests ) {
@@ -126,6 +132,7 @@ sub format_things_test {
         chomp $html;
         my $url = '/pre_format';
         $url = '/pre_format_nosmiley' if $nosmil;
+        $url = '/pre_format_inlineimage' if $inlimg;
         $url = '/format_short' if $summary;
         $t->post_ok($url, form => {text => $test->[0]})
           ->status_is(200);
@@ -564,6 +571,21 @@ EOHTML
         7
     ],
 );
+my @Tests_Inlimg = (
+    [
+        << 'EOTXT',
+asdf http://test.de asdf asdf
+https://bla.org
+asdfasdf
+EOTXT
+        << 'EOHTML',
+<p>asdf <a href="http://test.de" title="Externe Webseite: http://test.de" target="_blank">http://test.de</a> asdf asdf</p>
+<p><a href="https://bla.org" title="Externe Webseite: https://bla.org" target="_blank">https://bla.org</a></p>
+<p>asdfasdf</p>
+EOHTML
+        1
+    ],
+);
 
 ###############################################################################
 ###############################################################################
@@ -573,6 +595,7 @@ note q~run some tests~;
 
 format_timestamp_test();
 format_things_test(\@Tests);
-format_things_test(\@Tests_NoSmil, 1);
-format_things_test(\@Tests_Short, 0, 1);
+format_things_test(\@Tests_NoSmil, 1, 0, 0);
+format_things_test(\@Tests_Short,  0, 1, 0);
+format_things_test(\@Tests_Inlimg, 0, 0, 1)
 
