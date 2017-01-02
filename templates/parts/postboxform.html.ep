@@ -18,7 +18,7 @@
 %   }
     </h1>
 % }
-    <form action="<%== $dourl %>" accept-charset="UTF-8" method="POST" id="textinputform">
+    <form action="<%== $dourl %>" accept-charset="UTF-8" enctype="multipart/form-data" method="POST" id="textinputform">
 %= include 'parts/postboxtextarea', headbuttons => 1;
     </form>
 </div>

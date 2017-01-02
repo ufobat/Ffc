@@ -92,6 +92,10 @@ EOSQL
         $c->set_lastseenforum($userid, $topicid);
     }
     $c->param(postid => $r->[0]->[0]);
+    
+    # Attachements? - aber ohne meckern, wenn nix kommt
+    $c->upload_post_do(1,1);
+
     $c->set_info_f('Ein neuer Beitrag wurde erstellt') unless $noinfo;
     _redirect_to_show($c) unless $noredirect;
 }
@@ -157,6 +161,9 @@ sub _edit_post_do {
             $c->dbh_do( $sql, $c->format_short($text->[0]->[1]) // '', $topicid );
         }
     }
+
+    # Attachements? - aber ohne meckern, wenn nix kommt
+    $c->upload_post_do(1,1);
 
     # Und raus mit der Webseite
     $c->set_info_f('Der Beitrag wurde geändert');

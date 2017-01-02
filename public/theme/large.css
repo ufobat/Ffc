@@ -195,8 +195,12 @@ input[type="text"].titlestring {
 .othersmenulinktext {
     cursor: default;
 }
-.subtabuttonp {
+#subtabuttonp {
     padding-top: .5em;
+}
+#uploadinputsbox {
+    text-align: left;
+    padding-bottom: .5em;
 }
 .hovering {
     position: absolute; margin-top: 0;

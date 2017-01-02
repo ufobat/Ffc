@@ -21,7 +21,7 @@ sub _upload_post_form {
 ###############################################################################
 # Dateien hochladen
 sub _upload_post_do {
-    my $c = $_[0];
+    my ( $c, $allownofiles, $noredirect ) = @_[0,1,2];
     my ( $wheres, @wherep ) = $c->where_modify;
     my $postid = $c->param('postid');
 
@@ -32,7 +32,8 @@ sub _upload_post_do {
         my $post = $c->dbh_selectall_arrayref( $sql, $postid, @wherep );
         unless ( @$post ) {
             $c->set_error_f('Zum angegebene Beitrag kann kein Anhang hochgeladen werden.');
-            return _redirect_to_show($c);
+            return _redirect_to_show($c) unless $noredirect;
+            return;
         }
     }
 
@@ -60,10 +61,10 @@ sub _upload_post_do {
         return [ 'uploads', $fileid->[0]->[0] ];
     };
 
-    $c->file_upload( 'attachement', undef, 'Dateianhang', 1, $c->configdata->{maxuploadsize}, 2, 200, $filepathsub );
-    $c->set_info_f('Dateien an den Beitrag angehängt');
+    my @ret = $c->file_upload( 'attachement', undef, 'Dateianhang', 1, $c->configdata->{maxuploadsize}, 2, 200, $filepathsub, $allownofiles );
+    $c->set_info_f('Dateien an den Beitrag angehängt') if @ret;
 
-    _redirect_to_show($c);
+    _redirect_to_show($c) unless $noredirect;
 }
 
 ###############################################################################

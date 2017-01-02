@@ -30,21 +30,23 @@ sub _is_image {
 ###############################################################################
 # Den gesammelten File-Upload durchführen
 sub _file_upload {
+    # $c, $param, $fnum, $name, $min_s, $max_s, $min_l, $max_l, $filenamesub, $allownofiles
     my @p = (@_);
     # Eine Liste der Upload-Parameter erzeugen (benötigt für mehrere Downloads in einem Rutsch)
     my $files = $p[0]->every_param($p[1]);
     unless ( @$files ) {
-        $p[0]->set_error_f("Kein $p[3] angegeben.");
+        $p[0]->set_error_f("Kein $p[3] angegeben.") unless $p[9];
         return;
     }
     my $i = 0;
     my @rets;
     # Jeweils eine Datei hochladen
     for my $file ( @$files ) {
+        next unless $file;
         my @ret = _single_file_upload($file, @p);
-        @ret or $p[2] == 1 ? last : next;
+        @ret or next;
         push @rets, \@ret;
-        $i++;
+        $p[9] = ++$i;
         $p[2] and $i >= $p[2] and last;
     }
     # Es haben keine Uploads stattgefunden
@@ -58,11 +60,11 @@ sub _file_upload {
 ###############################################################################
 # Eine einzelne Datei hochladen über die Mojolicious-Mechanismen
 sub _single_file_upload {
-    my ( $file, $c, $param, $fnum, $name, $min_s, $max_s, $min_l, $max_l, $filenamesub ) = @_;
+    my ( $file, $c, $param, $fnum, $name, $min_s, $max_s, $min_l, $max_l, $filenamesub, $allownofiles ) = @_;
 
     # Prüfen der Dateiparameter
     unless ( $file ) {
-        $c->set_error_f("Kein $name angegeben.");
+        $c->set_error_f("Kein $name angegeben.") unless $allownofiles;
         return;
     }
     unless ( $file->isa('Mojo::Upload') ) {
@@ -71,6 +73,7 @@ sub _single_file_upload {
     }
     my $filename = $file->filename;
     if ( ( !$fnum or $fnum > 1 ) and not $filename ) {
+        $c->set_error_f("Kein Name für $name übergeben.") unless $allownofiles;
         return;
     }
     if ( $file->size < $min_s ) {

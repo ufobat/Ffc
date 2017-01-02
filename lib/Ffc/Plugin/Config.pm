@@ -19,7 +19,6 @@ my %Defaults = (
     startuppage     => 0,
     maxscore        => 10,
     cookiename      => 'ffc_cookie',
-    hypnotoad       => 'http://localhost:8083/', 
 );
 
 ###############################################################################
@@ -65,7 +64,7 @@ sub register {
     $app->helper(dbh_do                 => \&_dbh_do                 );
 
     # Besondere Default-Werte
-    for ( qw(title backgroundcolor hypnotoad) ) {
+    for ( qw(title backgroundcolor) ) {
         $config->{$_} ||= $Defaults{$_};
     }
 

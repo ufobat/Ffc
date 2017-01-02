@@ -1,0 +1,3 @@
+        <div id="uploadinputsbox">
+            <p id="uploadinputfield"><%= file_field attachement => (accept => '*', onchange => 'ffcdata.features.fileuploadchange(this)') %></p>
+        </div>

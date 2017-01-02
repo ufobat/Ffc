@@ -295,6 +295,13 @@ sub add_attachement {
         seen_entries();
         error('Konnte keinen passenden Beitrag um Anhänge hochzuladen finden');
     }
+    # Dateiupload ohne Dateien failed
+    $t->post_ok("$Urlpref/upload/$entry->[0]", form => { postid => $entry->[0], attachement => [] } )
+      ->status_is(302)->content_is('')->header_like(Location => qr~$Urlpref~);
+    $t->get_ok($Urlpref)->status_is(200);
+    if ( $entry->[2] eq $user ) { error('Kein Dateianhang angegeben.') }
+    else                        { error('Zum angegebene Beitrag kann kein Anhang hochgeladen werden.') }
+    # Richtiger Upload
     $t->post_ok("$Urlpref/upload/$entry->[0]", 
         form => { 
             postid => $entry->[0],
