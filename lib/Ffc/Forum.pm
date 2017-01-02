@@ -74,7 +74,7 @@ sub show {
     );
     $c->stash( topicediturl => $c->url_for('edit_forum_topic_form', topicid => $topicid) )
         if $uid eq $userfrom or $c->session->{admin};
-    $c->stash( startuppage => $topicid )
+    $c->stash( starttopic => $topicid )
         if $topicid == $c->configdata()->{starttopic};
     $c->set_lastseenforum( $uid, $topicid );
     if ( $ajax ) { $c->fetch_new_posts() }

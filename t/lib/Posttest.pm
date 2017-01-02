@@ -67,6 +67,7 @@ sub run_tests {
 
     note 'neue Beitraege: 1 .. ' . ($Postlimit * 2 + 1) ;
     map { insert_text($Users[$from], ( $to && $Users[$to] ) ) } 1 .. $Postlimit * 2 + 1;
+    die "Neue Beiträge mit Uploads testen!!!";
     ck();
 
     if ( $do_edit ) {

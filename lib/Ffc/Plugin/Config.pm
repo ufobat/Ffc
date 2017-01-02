@@ -16,7 +16,6 @@ my %Defaults = (
     backgroundcolor => '',
     starttopic      => 0,
     starttopiccount => 0,
-    startuppage     => 0,
     maxscore        => 10,
     cookiename      => 'ffc_cookie',
 );
@@ -47,7 +46,7 @@ sub register {
         $config->{sessiontimeout} || $Defaults{sessiontimeout});
 
     # Konfigurierte Voreinstellungen, falls bei diesen Parametern nichts brauchbares angegeben ist
-    for ( qw(urlshorten starttopic startuppage starttopiccount) ) {
+    for ( qw(urlshorten starttopic starttopiccount) ) {
         unless ( $config->{$_} and $config->{$_} =~ m/\A\d+\z/xmso ) {
             $config->{$_} = $Defaults{$_};
         }
@@ -73,7 +72,7 @@ sub register {
         configdata      => $config,
         page            => 1,
         lastseen        => -1,
-        startuppage     => 0,
+        starttopic      => 0,
         starttopiccount => 0,
         map( {; $_ => undef }
             qw(postid topicid) ),
