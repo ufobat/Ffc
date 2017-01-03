@@ -81,30 +81,9 @@ ffcdata.utils.notify = function(msg){
 };
 
 /************************************************************************
- *** Anfrage Desktopbenachrichtigungen an Browser-Einstellungen       ***
- ************************************************************************/
-ffcdata.utils.notify_permission_request = 
-/************************************************************************
  *** Desktopbenachrichtigung einschalten                              ***
  ************************************************************************/
 ffcdata.utils.notify_init = function(msg) {
-    var notopt = document.getElementById('notifyoption');
-    if ( notopt ) {
-        notopt.className = 'postbox options';
-        var notoptlink = document.getElementById('notoptlink');
-        if ( notoptlink ) {
-            notoptlink.onclick = function() {
-                console.log('darf ich?');
-                Notification.requestPermission(function(perm){
-                    if ( perm === 'granted' )
-                        ffcdata.utils.notify('Benachrichtigungen wurden eingeschalten');
-                    else
-                        ffcdata.utils.notify('Benachrichtigungen wurden ausgeschalten');
-                });
-            };
-        }
-    }
-
     if ( Notification.permission === 'denied' || Notification.permission === 'granted' )
         return;
     Notification.requestPermission(function(perm){

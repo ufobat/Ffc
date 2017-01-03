@@ -32,12 +32,6 @@
     </form>
 </div>
 % }
-<div class="postbox options nodisplay" id="notifyoption">
-    <a name="notifications"></a>
-    <h1>Desktop-Benachrichtigungsfenster</h1>
-    <p>(Darf über neue Beiträge im Forum oder im Chat als kleine Popups auf dem Desktop oder als Geräusche benachrichtigt werden.)</p>
-    <p><a href="#notofications" title="Anfrage an die Berechtigungeseinstellungen des Browsers stellen" id="notoptlink">Berechtigungsanfrage im Browser stellen</a></p>
-</div>
 <div class="postbox options">
     <a name="password"></a>
     <h1>Passwort ändern</h1>
