@@ -40,6 +40,8 @@ sub ck {
     note 'HERKUNFT: ' . join ' ; ', map {; join ', ', (caller($_))[1,2] } 0 .. 3; 
     my $entries = shift() // \@entries;
     note Dumper $entries, \@delents, \@delatts, \@_;
+    my @caller = caller(0);
+    note '------------------ ' . join ' - ', @caller[0 .. 4];
     $Check_env->($t, $entries, \@delents, \@delatts, @_);
 }
 
@@ -67,7 +69,7 @@ sub run_tests {
 
     note 'neue Beitraege: 1 .. ' . ($Postlimit * 2 + 1) ;
     map { insert_text($Users[$from], ( $to && $Users[$to] ) ) } 1 .. $Postlimit * 2 + 1;
-    die "Neue Beiträge mit Uploads testen!!!";
+
     ck();
 
     if ( $do_edit ) {
@@ -115,7 +117,7 @@ sub run_tests {
         del_attachement($user1, @$_) for [1 => 1], [5 => 6], [5 => 5]; # array id's to db id's!!!
         ck();
 
-        # diag 'test attache a no image file';
+        note 'test non image file';
         login2();
         add_attachement($user2, 0, 1);
         ck();
@@ -148,6 +150,11 @@ sub run_tests {
         note 'test add multi attachements works';
         login1();
         add_attachement($user1, 1, undef, 3);
+        ck();
+
+        note 'test add attachements direct at adding a new post';
+        login1();
+        insert_text( $Users[$from], ($to ? $Users[$to] : undef), 1);
         ck();
     }
 }
@@ -430,15 +437,42 @@ sub no_update_text {
 }
 
 sub insert_text {
-    my ( $from, $to ) = @_;
+    my ( $from, $to, $attachement ) = @_;
     my ($str,$search)  = get_randstring();
-    $t->post_ok("$Urlpref/new", form => { textdata => $str })
+    my @atts = map {;
+        my ($data, $filename) 
+            = (Testinit::test_randstring(), Testinit::test_randstring().'.png');
+        [
+            $data, $filename,
+            {
+                file => Mojo::Asset::Memory->new->add_chunk($data),
+                filename => $filename,
+                'Content-Type' => 'image/png',
+            }
+        ]
+    } 1 .. 2;
+
+    my $formdata = { 
+        textdata => $str, 
+        ( $attachement ? (attachement => [map {;$_->[2]} @atts]) : () ),
+    };
+    note 'Attachement verlang: ' . Dumper $formdata if $attachement;
+    $t->post_ok("$Urlpref/new", form => $formdata)
       ->status_is(302)->content_is('')
       ->header_like(location => qr~$Urlpref~);
     my $str1 = format_text($str);
+
     $t->get_ok($Urlpref)->status_is(200)->content_like(qr~$str1~);
-# $entry = [ $id, $textdata, $userfromid, $usertoid, [$attachements], $is_new_or_altered, $rawdata, $partialsearchstr ];
-    return add_entry_testarray($str1, $from, $to, [], 1, format_for_re($str), $search);
+    info('Ein neuer Beitrag wurde erstellt');
+    if ( $attachement ) {
+        $t->content_like(qr~$_->[1]~) for @atts;
+        @atts = map {;[ $attcnt++, $_->[0], $_->[1] ]} @atts;
+    }
+    else {
+        @atts = ();
+    }
+
+    return add_entry_testarray($str1, $from, $to, \@atts, 1, format_for_re($str), $search);
 }
 
 {
