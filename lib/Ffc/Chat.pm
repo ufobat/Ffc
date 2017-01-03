@@ -89,8 +89,7 @@ sub _add_msg {
     my ( $c, $msg, $issys ) = @_;
 
     # Formatieren der neuen Nachricht
-    my $cache = $c->pre_format($msg, undef, $c->configdata->{inlineimage});
-    $msg = $c->pre_format($msg);
+    $msg = $c->pre_format($msg, undef, $c->configdata->{inlineimage});
     $msg =~ s~\A\s*<p>~~xmsgo;
     $msg =~ s~</p>\s*\z~~xmsgo;
     $msg =~ s~</p>\s*<p>~<br />~xgmso;
