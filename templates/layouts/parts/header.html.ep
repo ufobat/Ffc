@@ -18,20 +18,21 @@
 % if ( $controller ne 'auth' ) {
     <script type="text/javascript">
         ffcdata = {
-            singleuser: <%= @$users ? 'false' : 'true' %>,
-            autorefresh: <%= session()->{autorefresh} || 0 %>,
-            user: "<%= session()->{user} || '' %>",
-            lastcount: <%= $newpostcount + $newmsgscount %>,
-            textpreviewurl: "<%= url_for 'textpreview' %>",
-            fetchurl: "<%= url_for 'fetch' %>",
-            topiclisturl: "<%= url_for 'get_forum_topiclist' %>",
-            queryurl: "<%= $queryurl %>",
-            controller: "<%= $controller %>",
-            title: ['(', ") <%= $configdata->{title} %>"],
-            newmessagecount: <%= $newpostcount + $newmsgscount + $starttopiccount %>,
-            fetchnewurl: '<%= $fetchnewurl %>',
-            action: '<%= $action %>',
-            lastseen: '<%= $lastseen %>',
+            singleuser:           <%= @$users ? 'false' : 'true' %>,
+            autorefresh:          <%= session()->{autorefresh} || 0 %>,
+            user:                 "<%= session()->{user} || '' %>",
+            lastcount:            <%= $newpostcount + $newmsgscount %>,
+            textpreviewurl:       "<%= url_for 'textpreview' %>",
+            fetchurl:             "<%= url_for 'fetch' %>",
+            topiclisturl:         "<%= url_for 'get_forum_topiclist' %>",
+            queryurl:             "<%= $queryurl %>",
+            controller:           "<%= $controller %>",
+            title:                ['(', ") <%= $configdata->{title} %>"],
+            newmessagecount:      <%= $newpostcount + $newmsgscount + $starttopiccount %>,
+            fetchnewurlfocused:   '<%= $fetchnewurlfocused %>',
+            fetchnewurlunfocused: '<%= $fetchnewurlunfocused %>',
+            action:               '<%= $action %>',
+            lastseen:             '<%= $lastseen %>',
         };
     </script>
     <%= javascript '/js/utils.js' %>

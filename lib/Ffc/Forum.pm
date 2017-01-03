@@ -76,14 +76,15 @@ sub show {
         if $uid eq $userfrom or $c->session->{admin};
     $c->stash( starttopic => $topicid )
         if $topicid == $c->configdata()->{starttopic};
-    $c->set_lastseenforum( $uid, $topicid );
+    $c->set_lastseenforum( $uid, $topicid ) if !$ajax or $ajax == 1;
     if ( $ajax ) { $c->fetch_new_posts() }
     else         { $c->show_posts()      }
 }
 
 ###############################################################################
 # Neue Beiträge als JSON zurück liefern
-sub fetch_new { show($_[0], 1) }
+sub fetch_new_focused   { show($_[0], 1) }
+sub fetch_new_unfocused { show($_[0], 2) }
 
 ###############################################################################
 # Einen Beitrag zu einem Thema hinzu fügen

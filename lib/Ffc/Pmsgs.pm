@@ -76,14 +76,15 @@ sub show {
         heading      => 'Private Nachrichten mit "' . $c->_get_username . '"',
     );
     # anders herum, weil ich ja von-zu setze und ich möchte meine eigene Zählung anpassen
-    $c->set_lastseenpmsgs( $utoid, $uid ); 
+    $c->set_lastseenpmsgs( $utoid, $uid ) if !$ajax or $ajax == 1;
     if ( $ajax ) { $c->fetch_new_posts() }
     else         { $c->show_posts()      }
 }
 
 ###############################################################################
 # Neue Beiträge als JSON zurück liefern
-sub fetch_new { show($_[0], 1) }
+sub fetch_new_focused   { show($_[0], 1) }
+sub fetch_new_unfocused { show($_[0], 2) }
 
 ###############################################################################
 # Eine neue Privatnachricht an einem Benutzer schreiben

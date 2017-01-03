@@ -65,7 +65,11 @@ ffcdata.features.init = function(){
      * Auto-Refresh-Beitragsliste
      ************************************************************************/
     var auto_refresh_postlist = function() {
-        ffcdata.utils.request('GET', ffcdata.fetchnewurl, 
+        var url = ffcdata.fetchnewurlunfocused;
+        if ( document.hasFocus() )
+            url = ffcdata.fetchnewurlfocused;
+
+        ffcdata.utils.request('GET', url, 
             {
                 pageurl:    ffcdata.pageurl, 
                 queryurl:   ffcdata.queryurl, 

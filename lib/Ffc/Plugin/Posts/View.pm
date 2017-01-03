@@ -97,14 +97,16 @@ sub _show_posts {
             delupl       => "delete_upload_${cname}_check",                      # Formular zum entfernen von Anhängen
             # ... oder eben mit der Seitenzahl, auf die geblättert werden soll
             pageurl      => "show_${cname}_page",                                # URL für die Seitenweiterschaltung
-            fetchnewurl  => $c->url_for("fetch_new_${cname}"),                   # URL für AJAX - Neue Beiträge
+            fetchnewurlfocused    => $c->url_for("fetch_new_focused_${cname}"),   # URL für AJAX - Neue Beiträge
+            fetchnewurlunfocused  => $c->url_for("fetch_new_unfocused_${cname}"), # URL für AJAX - Neue Beiträge
         );
         _setup_stash($c);
     }
     else {
         $c->stash(
-            pageurl      => "search_${cname}_posts_page",
-            fetchnewurl  => $c->url_for("fetch_new_${cname}"),
+            pageurl => "search_${cname}_posts_page",
+            fetchnewurlfocused    => $c->url_for("fetch_new_focused${cname}"),   # URL für AJAX - Neue Beiträge
+            fetchnewurlunfocused  => $c->url_for("fetch_new_unfocused${cname}"), # URL für AJAX - Neue Beiträge
         );
         # Hier muss setup_stash vor dem nächsten Stash-Schritt kommen, weil
         # in dem folgenden Schritt werden einige Variablen aus setup_stash wieder überschrieben, is halt so

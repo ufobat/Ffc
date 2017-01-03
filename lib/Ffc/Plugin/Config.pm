@@ -83,7 +83,8 @@ sub register {
             qw(newmsgs newpost note readlater) ),
         map( {;$_ => ''} 
             qw(error info warning query textdata heading description backtext queryurl pageurl queryreset
-               dourl returl editurl moveurl msgurl delurl uplurl delupl downld backurl topicediturl fetchnewurl ) ),
+               dourl returl editurl moveurl msgurl delurl uplurl delupl downld backurl topicediturl 
+               fetchnewurlfocused fetchnewurlunfocused) ),
     });
 
     # Benutzer-Benachrichtigungs-Helper

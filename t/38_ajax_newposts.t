@@ -31,14 +31,16 @@ sub _lastseen_table {
 
 # Prüfen, ob was da ist, oder ob gerade das nicht da ist
 sub _check_ajax {
-    my $u = shift; my $uto = shift; my @posts = @_;
+    my $u = shift; my $uto = shift; my $focused = shift; my @posts = @_;
     my  $ispmsgs = $uto ? 1 : 0;
     note '';
     note '---------- test ' . ( $ispmsgs ? 'pmsgs' : 'forum' );
     my ( $t, $uid, $utoid ) = ( $u->{t}, $u->{userid}, $uto->{userid} );
     note "  -- test userid = $uid ($u->{username})";
+    
     my $urlstart = ($utoid ? "/pmsgs/$utoid" : '/topic/1');
-    my $urlfetch = "$urlstart/fetch/new";
+    my $urlfetch = "$urlstart/fetch/new/" . ($focused ? '' : 'un') . 'focused';
+
     note '  -- before: ' . join "\n             ", _lastseen_table($ispmsgs);
     $t->get_ok( $urlfetch )->status_is(200)->json_has( "/$#posts" );
     if ( not $t->{success} ) {
@@ -75,8 +77,10 @@ sub _check_ajax {
         }
     }
 }
-sub check_forum { _check_ajax( shift(), undef,   @_ ) }
-sub check_pmsgs { _check_ajax( shift(), shift(), @_ ) }
+sub check_forum_focused   { _check_ajax( shift(), undef,   1, @_ ) }
+sub check_pmsgs_focused   { _check_ajax( shift(), shift(), 1, @_ ) }
+sub check_forum_unfocused { _check_ajax( shift(), undef,   0, @_ ) }
+sub check_pmsgs_unfocused { _check_ajax( shift(), shift(), 0, @_ ) }
 
 # Neues Thema mit paar Beiträgen - wir benutzen immer das selbe, warum auch nicht
 note "---------- insert start";
@@ -95,13 +99,13 @@ Testinit::add_pmsgs( $user2, $user3, 3 );
 note '';
 note '';
 note '---------- forum post test for users';
-check_forum( $user2, reverse Testinit::forums() );
-check_forum( $user3, reverse Testinit::forums() );
+check_forum_focused( $user2, reverse Testinit::forums() );
+check_forum_focused( $user3, reverse Testinit::forums() );
 note '';
 note '';
 note '---------- pmsgs post test for users';
-check_pmsgs( $user2, $user3, reverse Testinit::pmsgss() );
-check_pmsgs( $user3, $user2, reverse Testinit::pmsgss() );
+check_pmsgs_focused( $user2, $user3, reverse Testinit::pmsgss() );
+check_pmsgs_focused( $user3, $user2, reverse Testinit::pmsgss() );
 
 # Forenbeiträge auf gelesen markieren
 note '';
@@ -112,10 +116,10 @@ Testinit::resetall($user3, '/pmsgs/2', Testinit::pmsgss());
 #Testinit::show_forums();
 #Testinit::show_pmsgss();
 
-check_forum( $user2, reverse Testinit::forums() );
-check_forum( $user3, reverse Testinit::forums() );
-check_pmsgs( $user2, $user3, reverse Testinit::pmsgss() );
-check_pmsgs( $user3, $user2, reverse Testinit::pmsgss() );
+check_forum_focused( $user2, reverse Testinit::forums() );
+check_forum_focused( $user3, reverse Testinit::forums() );
+check_pmsgs_focused( $user2, $user3, reverse Testinit::pmsgss() );
+check_pmsgs_focused( $user3, $user2, reverse Testinit::pmsgss() );
 
 # Neue Beiträge durch User 2
 note "--------- new entries";
@@ -124,9 +128,9 @@ Testinit::add_pmsgs($user2,$user3,2);
 #Testinit::show_forums();
 #Testinit::show_pmsgss();
 
-check_forum( $user2,         reverse Testinit::forums() );
-check_pmsgs( $user2, $user3, reverse Testinit::pmsgss() );
+check_forum_focused( $user2,         reverse Testinit::forums() );
+check_pmsgs_focused( $user2, $user3, reverse Testinit::pmsgss() );
 
-check_forum( $user3,         reverse Testinit::forums() );
-check_pmsgs( $user3, $user2, reverse Testinit::pmsgss() );
+check_forum_focused( $user3,         reverse Testinit::forums() );
+check_pmsgs_focused( $user3, $user2, reverse Testinit::pmsgss() );
 
