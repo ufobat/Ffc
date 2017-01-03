@@ -178,6 +178,14 @@ ffcdata.features.init = function(){
     }
 
     /************************************************************************
+     * Autorefresh-Option zuschalten
+     ************************************************************************/
+    var enable_autorefreshoption = function(){
+        var optbox = document.getElementById('autorefreshoption');
+        if ( optbox ) optbox.className = 'postbox options';
+    };
+
+    /************************************************************************
      * Features initial aktiveren
      ************************************************************************/
     var enable_strg_s = function() {
@@ -207,6 +215,7 @@ ffcdata.features.init = function(){
     set_upload_multi();
     enable_hidemessagebox();
     enable_strg_s();
+    enable_autorefreshoption();
     notify_newmsgs();
 };
 

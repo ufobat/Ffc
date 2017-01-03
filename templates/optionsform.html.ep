@@ -13,7 +13,7 @@
     <p><a href="<%= url_for 'no_bg_color' %>#bgcolor">Standardhintergrundfarbe des Forums</a></p>
 </div>
 % if ( @$users ) {
-<div class="postbox options">
+<div class="postbox options nodisplay" id="autorefreshoption">
     <a name="autorefresh"></a>
     <h1>Automatisches Neuladen der Forenwebseite</h1>
     <p>(Hier kann die Anzahl der Minuten eingestellt werden, aller wievieler sich die Webseite (der Teil mit dem Forum, für den Chat muss die Auswahlbox im Chatfenster unabhängig hiervon verwendet werden) aktualisiert, wenn sie im Hintergrund ist, stellt man &quot;0&quot; ein, so aktualisiert sich die Seite nie von alleine neu, standardmäßig sind hier 3 Minuten eingestellt)</p>
@@ -32,6 +32,12 @@
     </form>
 </div>
 % }
+<div class="postbox options nodisplay" id="notifyoption">
+    <a name="notifications"></a>
+    <h1>Desktop-Benachrichtigungsfenster</h1>
+    <p>(Darf über neue Beiträge im Forum oder im Chat als kleine Popups auf dem Desktop oder als Geräusche benachrichtigt werden.)</p>
+    <p><a href="#notofications" title="Anfrage an die Berechtigungeseinstellungen des Browsers stellen" id="notoptlink">Berechtigungsanfrage im Browser stellen</a></p>
+</div>
 <div class="postbox options">
     <a name="password"></a>
     <h1>Passwort ändern</h1>
