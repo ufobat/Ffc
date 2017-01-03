@@ -81,6 +81,13 @@ sub run_tests {
         login1();
         update_text($user1, $_) for 1, 3, 6;
         ck();
+
+        if ( $do_attachements and 0 == 1 ) {
+            note 'test text updates with new attachements work';
+            login1();
+            update_text($user1, $_, 1) for 2, 4, 5;
+            ck();
+        }
     }
     else {
         note 'check, that no edits are possible';
@@ -363,7 +370,7 @@ sub get_randstring {
 }
 
 sub update_text {
-    my ( $user, $i ) = @_;
+    my ( $user, $i, $attachement ) = @_;
     my $entry = $entries[$i] or die "no entry count '$i' available";
     my ( $str, $search ) = get_randstring();
     $t->get_ok("$Urlpref/edit/$entry->[0]");
@@ -379,11 +386,31 @@ sub update_text {
         error('Konnte keinen passenden Beitrag zum Ändern finden');
         seen_entries();
     }
+
+    my @atts = map {;
+        my ($data, $filename) 
+            = (Testinit::test_randstring(), Testinit::test_randstring().'.png');
+        [
+            $data, $filename,
+            {
+                file => Mojo::Asset::Memory->new->add_chunk($data),
+                filename => $filename,
+                'Content-Type' => 'image/png',
+            }
+        ]
+    } 1 .. 2;
+    my @attform = $attachement ? (attachement => [map {;$_->[2]} @atts]) : (); 
     
     # leerer Text
-    $t->post_ok("$Urlpref/edit/$entry->[0]", form => {postid => $entry->[0]});
+    $t->post_ok("$Urlpref/edit/$entry->[0]", form => {
+        postid => $entry->[0], 
+        @attform,
+    });
     if ( $entry->[2] eq $user ) {
         $t->status_is(200);
+        if ( $attachement ) {
+            $t->content_unlike(qr~$_->[1]~) for @atts;
+        }
         error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\)');
     }
     else {
@@ -391,11 +418,21 @@ sub update_text {
           ->header_like(location => qr~$Urlpref~);
         $t->get_ok($Urlpref)->status_is(200);
         error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\) Konnte keinen passenden Beitrag zum Ändern finden');
+        if ( $attachement ) {
+            $t->content_unlike(qr~$_->[1]~) for @atts;
+        }
         seen_entries();
     }
-    $t->post_ok("$Urlpref/edit/$entry->[0]", form => {textdata => '', postid => $entry->[0]});
+    $t->post_ok("$Urlpref/edit/$entry->[0]", form => {
+        textdata => '', 
+        postid => $entry->[0],
+        @attform,
+    });
     if ( $entry->[2] eq $user ) {
         $t->status_is(200);
+        if ( $attachement ) {
+            $t->content_unlike(qr~$_->[1]~) for @atts;
+        }
         error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\)');
     }
     else {
@@ -403,6 +440,9 @@ sub update_text {
           ->header_like(location => qr~$Urlpref~);
         $t->get_ok($Urlpref)->status_is(200);
         error('Es wurde zu wenig Text eingegeben \\(min. 2 Zeichen\\) Konnte keinen passenden Beitrag zum Ändern finden');
+        if ( $attachement ) {
+            $t->content_unlike(qr~$_->[1]~) for @atts;
+        }
         seen_entries();
     }
 
@@ -417,9 +457,15 @@ sub update_text {
         $entry->[6] = format_for_re($str);
         $entry->[7] = $search;
         $entry->[5] = 1;
+        if ( $attachement ) {
+            push @{$entry->[4]}, map {[ $attcnt++, $_->[0], $_->[1] ]} @atts;
+        }
         info('Der Beitrag wurde geändert');
     }
     else {
+        if ( $attachement ) {
+            $t->content_unlike(qr~$_->[1]~) for @atts;
+        }
         error('Kein passender Beitrag zum ändern gefunden');
     }
     seen_entries();
