@@ -82,7 +82,7 @@ sub run_tests {
         update_text($user1, $_) for 1, 3, 6;
         ck();
 
-        if ( $do_attachements and 0 == 1 ) {
+        if ( $do_attachements ) {
             note 'test text updates with new attachements work';
             login1();
             update_text($user1, $_, 1) for 2, 4, 5;
@@ -117,11 +117,12 @@ sub run_tests {
 
         note 'test delete single attachements fails';
         login2();
-        del_attachement($user2, 6 => 7);
+        del_attachement($user2, 6 => 10);
 
         note 'test delete single attachements works';
         login1();
-        del_attachement($user1, @$_) for [1 => 1], [5 => 6], [5 => 5]; # array id's to db id's!!!
+        # Sonderbehandlung Privatnachrichten, wo man nicht ändern oder löschen darf!!!
+        del_attachement($user1, @$_) for [1 => (($from and $to and $from != $to) ? 1 : 7)], [5 => 6], [5 => 5]; # array id's to db id's!!!
         ck();
 
         note 'test non image file';
@@ -172,6 +173,13 @@ sub no_delete {
     my $str = Testinit::test_randstring();
     $t->get_ok("$Urlpref/delete/$entry->[0]")
       ->status_is(404);
+    unless ( $t->{success} ) {
+        for my $i (0, 1, 2) {
+            my ( $package, $filename, $line, $sub ) = caller($i);
+            next unless $package;
+            note "no_delete scheduled by line = $line,  package = $package, sub = $sub, filename => $filename";
+        }
+    }
     $t->post_ok("$Urlpref/delete/$entry->[0]", 
         form => { textdata => $str, postid => $entry->[0] })
       ->status_is(404);
@@ -233,6 +241,13 @@ sub no_attachements {
 
 sub del_attachement {
     my ( $user, $eid, $aid ) = @_;
+    note "deleting upload entryindex $eid, uploadid $aid";
+    note "entry: " . Dumper $entries[$eid];
+    for my $i (0, 1, 2) {
+        my ( $package, $filename, $line, $sub ) = caller($i);
+        next unless $package;
+        note "delete scheduled by line = $line,  package = $package, sub = $sub, filename => $filename";
+    }
     my $edbid = $entries[$eid][0];
     $t->get_ok("$Urlpref/upload/delete/$edbid/$aid");
     #diag Dumper $entries[$eid];
@@ -387,25 +402,43 @@ sub update_text {
         seen_entries();
     }
 
-    my @atts = map {;
-        my ($data, $filename) 
-            = (Testinit::test_randstring(), Testinit::test_randstring().'.png');
-        [
-            $data, $filename,
-            {
+    my (@atts, @attform);
+    if ( $attachement ) {
+        note 'testing with attachement';
+        for my $n ( 1 .. 2 ) {
+            my ($data, $filename) 
+                = (Testinit::test_randstring(), Testinit::test_randstring().'.png');
+            my $att = {
                 file => Mojo::Asset::Memory->new->add_chunk($data),
                 filename => $filename,
                 'Content-Type' => 'image/png',
+            };
+            push @atts, [$data, $filename, $att];
+        }
+        @attform = map {;$_->[2]} @atts;
+    }
+    else {
+        note 'testing without attachement';
+    }
+    my $get_atts = sub {
+        my @attarr;
+        for my $att ( @attform ) {
+            my %atthash;
+            for my $k ( keys %$att ) {
+                $atthash{$k} = $att->{$k};
             }
-        ]
-    } 1 .. 2;
-    my @attform = $attachement ? (attachement => [map {;$_->[2]} @atts]) : (); 
+            push @attarr, \%atthash;
+        }
+        return $attachement ? (attachement => \@attarr) : ();
+    };
+    note 'Formdata 1 for attachements: ' . Dumper(\@attform);
     
     # leerer Text
     $t->post_ok("$Urlpref/edit/$entry->[0]", form => {
         postid => $entry->[0], 
-        @attform,
+        $get_atts->(),
     });
+    note 'Formdata 2 for attachements: ' . Dumper(\@attform);
     if ( $entry->[2] eq $user ) {
         $t->status_is(200);
         if ( $attachement ) {
@@ -423,11 +456,13 @@ sub update_text {
         }
         seen_entries();
     }
+    note 'Formdata 3 for attachements: ' . Dumper(\@attform);
     $t->post_ok("$Urlpref/edit/$entry->[0]", form => {
         textdata => '', 
         postid => $entry->[0],
-        @attform,
+        $get_atts->(),
     });
+    note 'Formdata 4 for attachements: ' . Dumper(\@attform);
     if ( $entry->[2] eq $user ) {
         $t->status_is(200);
         if ( $attachement ) {
@@ -447,10 +482,17 @@ sub update_text {
     }
 
     # Funktionierendes Edit
+    note 'Formdata 5 for attachements: ' . Dumper(\@attform);
+    my $formdata = { textdata => $str, postid => $entry->[0], $get_atts->() };
+    note 'Formdata: ' . Dumper($formdata);
     $t->post_ok("$Urlpref/edit/$entry->[0]", 
-        form => { textdata => $str, postid => $entry->[0] })
+        form => $formdata)
       ->status_is(302)->content_is('')
       ->header_like(location => qr~$Urlpref~);
+    if ( $attachement ) {
+        note 'Attachements postid, attachementid: ' 
+            . Dumper( $dbh->selectall_arrayref('SELECT postid, id FROM attachements ORDER BY postid, id') );
+    }
     $t->get_ok($Urlpref)->status_is(200);
     if ( $entry->[2] eq $user ) {
         $entry->[1] = format_text($str);
@@ -477,6 +519,9 @@ sub no_update_text {
     my $str = Testinit::test_randstring();
     $t->get_ok("$Urlpref/edit/$entry->[0]")
       ->status_is(404);
+    if ( not $t->{success} ) {
+        $t->content_is('');
+    }
     $t->post_ok("$Urlpref/edit/$entry->[0]", 
         form => { textdata => $str, postid => $entry->[0] })
       ->status_is(404);
@@ -485,24 +530,27 @@ sub no_update_text {
 sub insert_text {
     my ( $from, $to, $attachement ) = @_;
     my ($str,$search)  = get_randstring();
-    my @atts = map {;
-        my ($data, $filename) 
-            = (Testinit::test_randstring(), Testinit::test_randstring().'.png');
-        [
-            $data, $filename,
-            {
-                file => Mojo::Asset::Memory->new->add_chunk($data),
-                filename => $filename,
-                'Content-Type' => 'image/png',
-            }
-        ]
-    } 1 .. 2;
 
-    my $formdata = { 
-        textdata => $str, 
-        ( $attachement ? (attachement => [map {;$_->[2]} @atts]) : () ),
-    };
-    note 'Attachement verlang: ' . Dumper $formdata if $attachement;
+    my ( @atts, @attform );
+    if ( $attachement ) {
+        my @atts = map {;
+            my ($data, $filename) 
+                = (Testinit::test_randstring(), Testinit::test_randstring().'.png');
+            [
+                $data, $filename,
+                {
+                    file => Mojo::Asset::Memory->new->add_chunk($data),
+                    filename => $filename,
+                    'Content-Type' => 'image/png',
+                }
+            ]
+        } 1 .. 2;
+        @attform = (attachement => [map {;$_->[2]} @atts]);
+        @atts = map {;[ $attcnt++, $_->[0], $_->[1] ]} @atts;
+    }
+
+    my $formdata = { textdata => $str, @attform };
+    note 'Formulardaten insert_text: ' . Dumper $formdata;
     $t->post_ok("$Urlpref/new", form => $formdata)
       ->status_is(302)->content_is('')
       ->header_like(location => qr~$Urlpref~);
@@ -510,14 +558,8 @@ sub insert_text {
 
     $t->get_ok($Urlpref)->status_is(200)->content_like(qr~$str1~);
     info('Ein neuer Beitrag wurde erstellt');
-    if ( $attachement ) {
-        $t->content_like(qr~$_->[1]~) for @atts;
-        @atts = map {;[ $attcnt++, $_->[0], $_->[1] ]} @atts;
-    }
-    else {
-        @atts = ();
-    }
 
+    $t->content_like(qr~$_->[2]~) for @atts;
     return add_entry_testarray($str1, $from, $to, \@atts, 1, format_for_re($str), $search);
 }
 
