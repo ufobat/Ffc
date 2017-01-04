@@ -165,14 +165,15 @@ sub _add {
     my $uid = $u->{userid};
     for my $i ( 1 .. $cnt ) {
         my $str = $givenstr // '___' . Testinit::test_randstring() . '___';
+        my $newid = $id++;
         note '----------';
-        note '  add to '.($tu?'pmsgs':'forum').": $str";
+        note "  add postid $newid to ".($tu?'pmsgs':'forum').": $str";
         note "    userfrom = $u->{userid} ($u->{username})";
         note "    userto   = $tu->{userid} ($tu->{username})" if $tu;
         my $new = {
             userfrom => $u, 
             userto   => $tu, 
-            postid   => $id++,
+            postid   => $newid,
             content  => $str, 
             newflags => {map {;$_->{userid} => {isnew => 1, user => $_}} @userlist}
         };
@@ -235,12 +236,17 @@ sub isnew {
             ? 1 : 0;
 }
 
-sub resetall {
+sub Testinit::set_posts_seen {
+    my ( $user, @posts ) = @_;
+    $_->{newflags}->{$user->{userid}}->{isnew} = 0 for @posts;
+}
+
+sub set_seen_all_incl_url {
     my $u = shift; my $url = shift; my @posts = @_;
     note '';
     note "---------- set all postings as read for userid $u->{userid} via $url";
     $u->{t}->get_ok($url)->status_is(200);
-    $_->{newflags}->{$u->{userid}}->{isnew} = 0 for @posts;
+    set_posts_seen($u, @posts);
 }
 
 1;

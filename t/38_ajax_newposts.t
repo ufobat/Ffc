@@ -11,7 +11,7 @@ use Mojo::Util 'xml_escape';
 use Data::Dumper;
 
 use Test::Mojo;
-use Test::More tests => 328;
+use Test::More tests => 815;
 
 # Benutzer anlegen
 my ( $t, $path, $aname, $apass, $dbh ) = Testinit::start_test();
@@ -55,12 +55,13 @@ sub _check_ajax {
         push @check, {
             order => $i,
             post  => $p,
-            isnew => $isnew,
+            isnew => ( $isnew or not $focused ) ? 1 : 0,
             own   => ( $uid == $p->{userfrom}->{userid} ? 1 : 0 ),
         };
         if ( $isnew ) { push @new, $p }
         else          { push @old, $p }
     }
+    note '  -- delivered:';
     note '             old : ' . join( ', ', map {;$_->{postid}} @old ) if @old;
     note '             new : ' . join( ', ', map {;$_->{postid}} @new ) if @new;
     note '  --  json tests';
@@ -75,6 +76,9 @@ sub _check_ajax {
             if   ( $ci->{own} ) { $t->json_like( $jr, qr~<div class="postbox ownpost">~ ) }
             else                { $t->json_like( $jr, qr~<div class="postbox">~         ) }
         }
+    }
+    if ( $focused ) {
+        Testinit::set_posts_seen($u, $_) for @posts;
     }
 }
 sub check_forum_focused   { _check_ajax( shift(), undef,   1, @_ ) }
@@ -110,9 +114,7 @@ check_pmsgs_focused( $user3, $user2, reverse Testinit::pmsgss() );
 # Forenbeiträge auf gelesen markieren
 note '';
 note '';
-note "---------- reset all";
-Testinit::resetall($user3, '/topic/1', Testinit::forums());
-Testinit::resetall($user3, '/pmsgs/2', Testinit::pmsgss());
+note "---------- all seen";
 #Testinit::show_forums();
 #Testinit::show_pmsgss();
 
@@ -122,6 +124,8 @@ check_pmsgs_focused( $user2, $user3, reverse Testinit::pmsgss() );
 check_pmsgs_focused( $user3, $user2, reverse Testinit::pmsgss() );
 
 # Neue Beiträge durch User 2
+note '';
+note '';
 note "--------- new entries";
 Testinit::add_forum($user2,2);
 Testinit::add_pmsgs($user2,$user3,2);
@@ -133,4 +137,42 @@ check_pmsgs_focused( $user2, $user3, reverse Testinit::pmsgss() );
 
 check_forum_focused( $user3,         reverse Testinit::forums() );
 check_pmsgs_focused( $user3, $user2, reverse Testinit::pmsgss() );
+
+note '';
+note '';
+note '======================================================================';
+note '======================================================================';
+note '======================================================================';
+note '';
+note '';
+note "--------- new entries checked unfocused";
+Testinit::add_forum($user2,3);
+Testinit::add_pmsgs($user2,$user3,3);
+
+check_forum_unfocused( $user3,         reverse Testinit::forums() );
+check_pmsgs_unfocused( $user3, $user2, reverse Testinit::pmsgss() );
+
+Testinit::add_forum($user2,1);
+Testinit::add_pmsgs($user2,$user3,1);
+
+note '--------- unfocused doubletime';
+check_forum_unfocused( $user3,         reverse Testinit::forums() );
+check_pmsgs_unfocused( $user3, $user2, reverse Testinit::pmsgss() );
+check_forum_unfocused( $user3,         reverse Testinit::forums() );
+check_pmsgs_unfocused( $user3, $user2, reverse Testinit::pmsgss() );
+
+note '--------- focused == set seen';
+check_forum_focused( $user3,           reverse Testinit::forums() );
+check_pmsgs_focused( $user3, $user2,   reverse Testinit::pmsgss() );
+
+note '--------- unfocused doubletime after focused';
+check_forum_unfocused( $user3,         reverse Testinit::forums() );
+check_pmsgs_unfocused( $user3, $user2, reverse Testinit::pmsgss() );
+
+check_forum_unfocused( $user3,         reverse Testinit::forums() );
+check_pmsgs_unfocused( $user3, $user2, reverse Testinit::pmsgss() );
+
+note '--------- focused still seen';
+check_forum_focused( $user3,           reverse Testinit::forums() );
+check_pmsgs_focused( $user3, $user2,   reverse Testinit::pmsgss() );
 
