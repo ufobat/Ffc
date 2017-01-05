@@ -18,7 +18,7 @@ sub install_routes {
     $o->post("/$_")
       ->to("options#set_$_")
       ->name("set_$_")
-        for qw(email password autorefresh infos hidelastseen);
+        for qw(email password autorefresh infos hidelastseen notifications);
     
     # Hintergrund-Farbeinstellungen
     my $b = $o->under('/bgcolor')->name('bgcolor_bridge');
@@ -28,7 +28,6 @@ sub install_routes {
     $b->post('/color')
       ->to('options#bg_color')
       ->name('bg_color_form');
-
 }
 
 1;

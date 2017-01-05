@@ -97,6 +97,16 @@ sub set_hidelastseen {
 }
 
 ###############################################################################
+# Desktopbenachrichtigungen
+sub set_notifications {
+    my $c = $_[0];
+    my $set = $c->param('notifications') ? 1 : 0;
+    $c->user_session_config('options', 'notifications', 0, $set);
+    $c->set_info_f('Desktopbenachrichtigungen ' . ( $set ? 'eingeschalten' : 'ausgeschalten' ));
+    $c->redirect_to('options_form');
+}
+
+###############################################################################
 # Zusätzliche eigene Benutzerinformationen eintragen
 sub set_infos {
     my $c = $_[0];

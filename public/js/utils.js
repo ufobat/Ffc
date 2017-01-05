@@ -74,7 +74,7 @@ ffcdata.utils.init = function(){
  *** Desktopbenachrichtigung absetzen                                 ***
  ************************************************************************/
 ffcdata.utils.notify = function(msg){
-    if ( Notification.permission !== 'granted' )
+    if ( Notification.permission !== 'granted' || !ffcdata.notifications )
         return;
     var n = new Notification(msg);
     setTimeout(n.close.bind(n), 5000); 

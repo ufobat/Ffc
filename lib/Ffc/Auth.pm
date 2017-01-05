@@ -43,17 +43,12 @@ sub check_login {
             $s->{backgroundcolor} = $c->configdata->{backgroundcolor}
                 unless $s->{backgroundcolor};
 
-            # Themenlistenlänge und Beitragslistenlänge (inkl. fest verdrahteter Defaultwert) ermitteln
-            for my $o ( [ topiclimit => 15 ], [ postlimit => 10 ] ) {
-                if ( my $l = $s->{limits}->{$s->{userid}}->{$o->[0]} ) {
-                    # Bisherige clientseitige Benutzer-Einstellung
-                    $s->{$o->[0]} = $l; 
-                }
-                else {
-                    # Fallback auf Defaultwert für beide Speichergrößen (verwendet und userspezifisch im Cookie rückgesichert)
-                    $s->{$o->[0]} = $s->{limits}->{$s->{userid}}->{$o->[0]} = $o->[1];
-                }
-            }
+            # Themenlistenlänge und Beitragslistenlänge (inkl. fest verdrahteter Defaultwert) ermitteln sowie Desktopbenachrichtigungen
+            $s->{$_->[0]} = $c->user_session_config( @$_ )
+                for
+                    [ limits  => topiclimit    => 15 ], 
+                    [ limits  => postlimit     => 10 ],
+                    [ options => notifications => 0  ];
 
             # Online-Information zurück schreiben
             $c->dbh_do('UPDATE "users" SET "lastonline"=CURRENT_TIMESTAMP WHERE "id"=? AND "hidelastseen"=0',
@@ -127,6 +122,7 @@ sub logout {
     delete $s->{chronsortorder};
     delete $s->{topiclimit};
     delete $s->{postlimit};
+    delete $s->{notifications};
 
     # Meldungsfenster setzen und zurück zur Anmeldeseite
     $c->set_info('Abmelden erfolgreich');

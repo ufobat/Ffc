@@ -54,9 +54,10 @@ sub register {
     }
 
     # Konfigurationshelper
-    $app->helper(datapath     => sub { $datapath  });
-    $app->helper(configdata   => sub { $config    });
-    $app->helper(data_return  => \&_data_return    );
+    $app->helper(datapath            => sub { $datapath }      );
+    $app->helper(configdata          => sub { $config   }      );
+    $app->helper(data_return         => \&_data_return         );
+    $app->helper(user_session_config => \&_user_session_config );
 
     # Datenbankhelper
     $app->helper(dbh                    => sub{ $dbh }               );
@@ -100,6 +101,20 @@ sub register {
         sub { sha512_base64 $_[1], $secconfig->{cryptsalt} } );
 
     return $self;
+}
+
+###############################################################################
+# Sessionabhängige Konfigurationen setzen
+sub _user_session_config {
+    my ( $c, $top, $conf, $def, $set ) = @_;
+    my $s = $c->session;
+    if ( not $s->{$top} or 'HASH' ne ref $s->{$top} ) {
+        $s->{$top} = {$s->{userid} => {$conf => $s->{$conf} // $def} };
+    }
+    if ( defined $set ) {
+        $s->{$top}->{$s->{userid}}->{$conf} = $set;
+    }
+    return $s->{$conf} = $s->{$top}->{$s->{userid}}->{$conf};
 }
 
 ###############################################################################

@@ -4,11 +4,12 @@
  ************************************************************************/
 
 ffcdata.chat.init = function() {
-    var msgfield = document.getElementById('textinput');
-    var titlenode = document.getElementsByTagName("title")[0].firstChild
+    var msgfield         = document.getElementById('textinput');
+    var titlenode        = document.getElementsByTagName("title")[0].firstChild
     var refreshtimefield = document.getElementById('refreshtime');
-    var msglog = document.getElementById('msglog');
-    var userlist = document.getElementById('userlist');
+    var msglog           = document.getElementById('msglog');
+    var userlist         = document.getElementById('userlist');
+    var notifyswitch     = document.getElementById('notifyswitch');
 
     /************************************************************************
      *** Chat-Text formatieren                                            ***
@@ -257,6 +258,13 @@ ffcdata.chat.init = function() {
     document.getElementById('clrscr').onclick = function(e) {
         // console.log('clear message log');
         clrscr();
+    };
+
+    /************************************************************************
+     *** Desktopbenachrichtigungserlaubenseinstellung                     ***
+     ************************************************************************/
+    notifyswitch.onchange = function(){
+        ffcdata.notifications = notifyswitch.checked;
     };
 
     /************************************************************************

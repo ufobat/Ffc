@@ -32,6 +32,7 @@
         <option value="900">15 Minuten</option>
        </select>
        <a href="<%= url_for 'help' %>#chat" title="Hilfeseite anzeigen" target="_blank"><button name="help" id="help">Hilfe</button></a>
+       <span class="notifyswitch">Pling: <input type="checkbox" id="notifyswitch" value="1"<%== session()->{notifications} ? ' checked="checked"' : '' %> /></span>
       </div>
      </td>
     </tr>

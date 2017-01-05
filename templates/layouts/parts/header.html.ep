@@ -33,6 +33,7 @@
             fetchnewurlunfocused: '<%= $fetchnewurlunfocused %>',
             action:               '<%= $action %>',
             lastseen:             '<%= $lastseen %>',
+            notifications:        <%= session()->{notifications} ? 'true' : 'false' %>,
         };
     </script>
     <%= javascript '/js/utils.js' %>

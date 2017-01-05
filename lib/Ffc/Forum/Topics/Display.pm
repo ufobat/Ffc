@@ -66,7 +66,7 @@ sub set_topiclimit {
     }
 
     # Themenlisten-Anzahl übernehmen (Browserseitige Speicherung)
-    $c->session->{limits}->{$c->session->{userid}}->{topiclimit} = $c->session->{topiclimit} = $topiclimit;
+    $c->user_session_config('limits', 'topiclimit', 10, $topiclimit );
     $c->set_info_f("Anzahl der auf einer Seite der Liste angezeigten Überschriften auf $topiclimit geändert.");
     $c->redirect_to('show_forum_topiclist');
 }

@@ -172,7 +172,7 @@ sub _set_post_postlimit {
 
     # Hier wird die Einstellung in die Session übernommen und gleichzeitig im Cookie
     # Benutzerübergreifend als clientseitig verfügbar abgelegt
-    $c->session->{limits}->{$c->session->{userid}}->{postlimit} = $c->session->{postlimit} = $postlimit;
+    $c->user_session_config('limits', 'postlimit', 10, $postlimit );
 
     # Änderung aktiv
     $c->set_info_f("Anzahl der auf einer Seite der Liste angezeigten Beiträge auf $postlimit geändert.");

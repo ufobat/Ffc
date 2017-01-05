@@ -156,4 +156,7 @@ div, textarea {
 #textpreviewarea {
     height: 8em;
 }
+.notifyswitch {
+    white-space: nowrap;
+}
 

@@ -33,6 +33,15 @@
 </div>
 % }
 <div class="postbox options">
+    <a name="notifications"></a>
+    <h1>Benachrichtigungen auf dem Desktop</h1>
+    <p>(Hier können Benachrichtigungen für Beiträge, Privatnachrichten und Chatnachrichten eingeschalten werden, die dann üblicherweise als kleine Hinweise auf dem Desktop aufploppen.)</p>
+    <form action="<%= url_for 'set_notifications' %>#notifications" title="Desktopbenachrichtigungen" method="POST">
+        Desktopbenachrichtigungen aktivieren: <input type="checkbox" name="notifications" value="1"<%== session()->{notifications} ? ' checked="checked"' : '' %> />,
+        <button type="submit">Einstellung ändern</button>
+    </form>
+</div>
+<div class="postbox options">
     <a name="password"></a>
     <h1>Passwort ändern</h1>
     <p>(Aus Sicherheitsgründen sollte das eigene Passwort regelmäßig geändert werden)</p>
