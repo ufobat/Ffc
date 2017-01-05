@@ -21,9 +21,9 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Titelstring der Webseite aendern                                 ***
      ************************************************************************/
-    var set_title = function(newchatcount, newpostcount, newmsgscount) {
+    var set_title = function(newchatcount, newpostcount, newmsgscount, startet) {
         var tp = ffcdata.chat.title;
-        if ( document.hasFocus() )
+        if ( document.hasFocus() || startet )
             ffcdata.chat.newchatcountsum = 0;
         else 
             ffcdata.chat.newchatcountsum = ffcdata.chat.newchatcountsum + newchatcount;
@@ -142,10 +142,10 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Empfangene Daten verwerten                                       ***
      ************************************************************************/
-    var resolve = function(data) {
+    var resolve = function(data, startet) {
         // console.log('resolving fetched data');
-        // Titel aktualisieren
-        set_title(data[0].length, data[2], data[3]);
+        // Titel aktualisieren - aber nicht beim Beginn des Chats
+        set_title(data[0].length, data[2], data[3], startet);
 
         // Benutzerliste aktualisieren
         update_userlist(data[1]);
@@ -186,15 +186,13 @@ ffcdata.chat.init = function() {
             return;
         }
         // console.log('fetching data');
-        var url = ffcdata.chat.unfocusedurl;
-        if ( document.hasFocus() )
-            url = ffcdata.chat.focusedurl;
-        if ( started )
-            url = ffcdata.chat.startedurl;
-        if ( msg )
-            ffcdata.utils.request('POST', url, msg, resolve);
-        else
-            ffcdata.utils.request('GET', url, null, resolve);
+        var revfun = function(data){resolve(data,started)};
+
+        var url    = ffcdata.chat.unfocusedurl;
+        if ( document.hasFocus() ) url = ffcdata.chat.focusedurl;
+        if ( started             ) url = ffcdata.chat.startedurl;
+        
+        ffcdata.utils.request(( msg ? 'POST' : 'GET' ), url, msg,  revfun);
     };
     var receive = function(msg) { receive_do(msg, false) };
     var receive_start = function() { receive_do(false, true); };
