@@ -108,10 +108,19 @@ sub register {
 sub _user_session_config {
     my ( $c, $top, $conf, $def, $set ) = @_;
     my $s = $c->session;
-    if ( not $s->{$top} or 'HASH' ne ref $s->{$top} ) {
-        $s->{$top} = {$s->{userid} => {$conf => $s->{$conf} // $def} };
+    if ( ( not exists $s->{$conf} ) or ( 'SCALAR' ne $s->{$conf} ) ) {
+        $s->{$conf} = $def;
     }
-    if ( defined $set ) {
+    if ( ( not exists $s->{$top} ) or ( 'HASH' ne ref $s->{$top} ) ) {
+        $s->{$top} = {$s->{userid} => {$conf => $s->{$conf} // $def } };
+    }
+    elsif ( ( not exists $s->{$top}->{$s->{userid}} ) or ( 'HASH' ne ref $s->{$top}->{$s->{userid}} ) ) {
+        $s->{$top}->{$s->{userid}} = {$conf => $s->{$conf} // $def};
+    }
+    elsif ( ( not exists $s->{$top}->{$s->{userid}}->{$conf} ) or ( 'SCALAR' ne ref $s->{$top}->{$s->{userid}}->{$conf} ) ) {
+        $s->{$top}->{$s->{userid}}->{$conf} = $s->{$conf} // $def;
+    }
+    elsif ( defined $set ) {
         $s->{$top}->{$s->{userid}}->{$conf} = $set;
     }
     return $s->{$conf} = $s->{$top}->{$s->{userid}}->{$conf};

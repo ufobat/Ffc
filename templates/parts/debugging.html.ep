@@ -1,0 +1,11 @@
+<div class="postbox">
+<h2>Session:</h2>
+<pre>
+%= dumper(session())
+</pre>
+<h2>Konfiguration:</h2>
+<pre>
+%= dumper(configdata())
+</pre>
+</div>
+

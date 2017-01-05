@@ -44,11 +44,13 @@ sub check_login {
                 unless $s->{backgroundcolor};
 
             # Themenlistenlänge und Beitragslistenlänge (inkl. fest verdrahteter Defaultwert) ermitteln sowie Desktopbenachrichtigungen
-            $s->{$_->[0]} = $c->user_session_config( @$_ )
-                for
-                    [ limits  => topiclimit    => 15 ], 
-                    [ limits  => postlimit     => 10 ],
-                    [ options => notifications => 0  ];
+            for my $o ( 
+                [ limits  => topiclimit    => 15 ], 
+                [ limits  => postlimit     => 10 ],
+                [ options => notifications => 0  ],
+            ) {
+                $c->user_session_config( @$o );
+            }
 
             # Online-Information zurück schreiben
             $c->dbh_do('UPDATE "users" SET "lastonline"=CURRENT_TIMESTAMP WHERE "id"=? AND "hidelastseen"=0',

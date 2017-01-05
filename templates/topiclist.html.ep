@@ -17,3 +17,4 @@
     </h1>
 </div>
 %= include 'parts/topiclist'
+%= include 'parts/debugging'
