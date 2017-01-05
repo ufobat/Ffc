@@ -119,14 +119,14 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Neue Chatnachrichten anzeigen                                    ***
      ************************************************************************/
-    var add_msgs = function(msgs) {
+    var add_msgs = function(msgs, started) {
         if ( msgs.length > 0 ) {
             var ml = msglog.innerHTML;
             var match_l = ffcdata.chat.lastmsgtime.match(/\d\d\.\d\d\.\d\d\d\d/);
             for ( var i = msgs.length - 1; i >= 0; i-- ) {
                 ml = ml + compose_msg(msgs, i, match_l);
             }
-            if ( !document.hasFocus() )
+            if ( !document.hasFocus() && !started )
                 ffcdata.utils.notify('Es sind ' + msgs.length + ' neue Nachrichten im Chat');
 
             msglog.innerHTML = ml;
@@ -142,16 +142,16 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Empfangene Daten verwerten                                       ***
      ************************************************************************/
-    var resolve = function(data, startet) {
+    var resolve = function(data, started) {
         // console.log('resolving fetched data');
         // Titel aktualisieren - aber nicht beim Beginn des Chats
-        set_title(data[0].length, data[2], data[3], startet);
+        set_title(data[0].length, data[2], data[3], started);
 
         // Benutzerliste aktualisieren
         update_userlist(data[1]);
 
         // Neue Nachrichten ins Log schreiben
-        add_msgs(data[0]);
+        add_msgs(data[0], started);
 
         // Timeout wieder neu starten
         t_start();
