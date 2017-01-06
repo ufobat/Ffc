@@ -34,7 +34,7 @@ sub _create_topic {
 
     # Das neue Thema anlegen
     $c->dbh_do(
-        'INSERT INTO "topics" ("userfrom", "title") VALUES (?,?)',
+        'INSERT INTO "topics" ("userfrom", "title", "starttopic") VALUES (?,?,0)',
         $uid, $titlestring
     );
     # Die Id des neuen Themas ermitteln

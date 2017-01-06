@@ -54,5 +54,5 @@
 % }
 </div>
 % }
-%= include 'parts/pagelinks', more => @$topics >= session->{topiclimit} ? 1 : 0
+%= include 'parts/pagelinks', more => @$topics_for_list >= session->{topiclimit} ? 1 : 0
 

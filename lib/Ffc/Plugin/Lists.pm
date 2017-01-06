@@ -73,9 +73,9 @@ sub _generate_topiclist {
     $stashkey and $page = $c->param('page') // 1 or $stashkey = 'topics';
 
     # Eingrenzungen der Datenbankabfragen ermitteln
-    my $session = $c->session;
+    my $session    = $c->session;
     my $topiclimit = $session->{topiclimit} || 10;
-    my $query = uc( $session->{topicquery} // '');
+    my $query      = uc( $session->{topicquery} // '');
 
     # Komplexe zusammengesetzte Datenbankabfrage durchführen
     my $tlist = $c->dbh_selectall_arrayref(<< 'EOSQL'

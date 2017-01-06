@@ -88,7 +88,7 @@ sub set_topiclimit_error {
         'Die Anzahl der auf einer Seite in der Liste angezeigten Überschriften muss eine ganze Zahl kleiner 128 sein.');
 }
 
-my $topiclimit = 15; # Default
+my $topiclimit = 10; # Default
 check_topiclimit($topiclimit);
 $topiclimit = 5;
 set_topiclimit_ok($topiclimit);
@@ -97,7 +97,7 @@ set_topiclimit_error(0);
 check_topiclimit($topiclimit);
 set_topiclimit_error(128);
 check_topiclimit($topiclimit);
-$topiclimit = 10;
+$topiclimit = 15;
 set_topiclimit_ok($topiclimit);
 check_topiclimit($topiclimit);
 $topiclimit = 5;
@@ -106,10 +106,10 @@ check_topiclimit($topiclimit);
 Testinit::test_login($t, $user1, $pass1);
 check_topiclimit($topiclimit);
 
-$topiclimit = 15; # Default wieder
+$topiclimit = 10; # Default wieder
 Testinit::test_login($t, $user2, $pass2);
 check_topiclimit($topiclimit);
-$topiclimit = 10;
+$topiclimit = 15;
 set_topiclimit_ok($topiclimit);
 check_topiclimit($topiclimit);
 $topiclimit = 5;
