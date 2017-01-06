@@ -107,23 +107,23 @@ sub register {
 # Sessionabhängige Konfigurationen setzen
 sub _user_session_config {
     my ( $c, $top, $conf, $def, $set ) = @_;
-    my $s = $c->session;
-    if ( ( not exists $s->{$conf} ) or ( 'SCALAR' ne $s->{$conf} ) ) {
-        $s->{$conf} = $def;
-    }
+    my $s = $c->session; my $userid = $s->{userid};
+
+    # Datenstruktur vorbereiten
     if ( ( not exists $s->{$top} ) or ( 'HASH' ne ref $s->{$top} ) ) {
-        $s->{$top} = {$s->{userid} => {$conf => $s->{$conf} // $def } };
+        $s->{$top} = {$userid => {$conf => $def } };
     }
-    elsif ( ( not exists $s->{$top}->{$s->{userid}} ) or ( 'HASH' ne ref $s->{$top}->{$s->{userid}} ) ) {
-        $s->{$top}->{$s->{userid}} = {$conf => $s->{$conf} // $def};
+    elsif ( ( not exists $s->{$top}->{$userid} ) or ( 'HASH' ne ref $s->{$top}->{$userid} ) ) {
+        $s->{$top}->{$userid} = {$conf => $def};
     }
-    elsif ( ( not exists $s->{$top}->{$s->{userid}}->{$conf} ) or ( 'SCALAR' ne ref $s->{$top}->{$s->{userid}}->{$conf} ) ) {
-        $s->{$top}->{$s->{userid}}->{$conf} = $s->{$conf} // $def;
+    elsif ( ( not exists $s->{$top}->{$userid}->{$conf} ) or ( '' ne ref $s->{$top}->{$userid}->{$conf} ) ) {
+        $s->{$top}->{$userid}->{$conf} = $def;
     }
-    elsif ( defined $set ) {
-        $s->{$top}->{$s->{userid}}->{$conf} = $set;
-    }
-    return $s->{$conf} = $s->{$top}->{$s->{userid}}->{$conf};
+
+    # Set oder Get
+    if   ( defined $set ) { $s->{$top}->{$userid}->{$conf} = $set }
+    else                  { $set = $s->{$top}->{$userid}->{$conf} }
+    return $s->{$conf} = $set;
 }
 
 ###############################################################################

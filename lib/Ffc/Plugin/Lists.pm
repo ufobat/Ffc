@@ -74,7 +74,7 @@ sub _generate_topiclist {
 
     # Eingrenzungen der Datenbankabfragen ermitteln
     my $session = $c->session;
-    my $topiclimit = $session->{topiclimit} || 20;
+    my $topiclimit = $session->{topiclimit} || 10;
     my $query = uc( $session->{topicquery} // '');
 
     # Komplexe zusammengesetzte Datenbankabfrage durchführen

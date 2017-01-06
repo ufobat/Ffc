@@ -45,9 +45,9 @@ sub check_login {
 
             # Themenlistenlänge und Beitragslistenlänge (inkl. fest verdrahteter Defaultwert) ermitteln sowie Desktopbenachrichtigungen
             for my $o ( 
-                [ limits  => topiclimit    => 15 ], 
-                [ limits  => postlimit     => 10 ],
                 [ options => notifications => 0  ],
+                [ limits  => topiclimit    => 10 ], 
+                [ limits  => postlimit     => 10 ],
             ) {
                 $c->user_session_config( @$o );
             }
