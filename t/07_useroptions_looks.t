@@ -32,10 +32,11 @@ $t->get_ok('/')
   ->content_like(qr~Angemeldet als "$user2"~)
   ->content_unlike(qr'background-color:');
 
-test_bgcolor();
-test_email();
-test_autorefresh();
-test_hidelastseen();
+#test_bgcolor();
+#test_email();
+#test_autorefresh();
+#test_hidelastseen();
+test_notifications();
 
 sub test_bgcolor {
     note 'checking background colors';
@@ -312,4 +313,9 @@ sub test_hidelastseen {
         "SELECT CASE WHEN lastonline IS NULL THEN 0 ELSE 1 END FROM users WHERE name=?"
         , undef, $user2)->[0]->[0], 0, "lastseen is not logged in database";
 }
+
+sub test_notifications {
+    die "WHATAAAAATAAA"
+}
+
 
