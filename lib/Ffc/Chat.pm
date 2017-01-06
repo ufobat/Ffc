@@ -144,7 +144,7 @@ sub _receive {
 
     # Beginn des Rückgabe-SQL erstellen
     my $sql = << 'EOSQL';
-SELECT c."id", uf."name", c."msg", datetime(c."posted", 'localtime'), c."sysmsg"
+SELECT c."id", uf."name", c."msg", datetime(c."posted", 'localtime'), c."sysmsg", c."userfromid"
 FROM "chat" c 
 INNER JOIN "users" uf ON uf."id"=c."userfromid"
 EOSQL

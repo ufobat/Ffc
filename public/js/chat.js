@@ -100,7 +100,7 @@ ffcdata.chat.init = function() {
             }
             else {
                 userstr = '<span class="username">' + msgs[i][1] + '</span>: ';
-                if ( msgs[i][4] === 2 ) {
+                if ( msgs[i][4] === 2 && msgs[i][5] != ffcdata.userid ) {
                     ffcdata.utils.notify(msgs[i][1]);
                 }
             }
@@ -124,10 +124,12 @@ ffcdata.chat.init = function() {
         if ( msgs.length > 0 ) {
             var ml = msglog.innerHTML;
             var match_l = ffcdata.chat.lastmsgtime.match(/\d\d\.\d\d\.\d\d\d\d/);
+            var relevantcnt = 0;
             for ( var i = msgs.length - 1; i >= 0; i-- ) {
                 ml = ml + compose_msg(msgs, i, match_l);
+                if ( msgs[i][5] != ffcdata.userid ) relevantcnt++;
             }
-            if ( !document.hasFocus() && !started )
+            if ( !document.hasFocus() && !started && relevantcnt > 0 )
                 ffcdata.utils.notify('Es sind ' + msgs.length + ' neue Nachrichten im Chat');
 
             msglog.innerHTML = ml;

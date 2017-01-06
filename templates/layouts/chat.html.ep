@@ -10,7 +10,8 @@
 %= include 'layouts/parts/styleinc';
     <script type="text/javascript">
       ffcdata = { 
-          user:           "<%= session()->{user} || '' %>" || undefined,
+          user:           "<%= session()->{user}   || '' %>" || undefined,
+          userid:         "<%= session()->{userid} || '' %>" || undefined,
           textpreviewurl: "<%= url_for 'textpreview' %>",
           notifications:  <%= session()->{notifications} ? 'true' : 'false' %>,
           chat: {
