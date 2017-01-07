@@ -91,6 +91,12 @@ sub install_routes_posts {
       ->to(controller => $cname, action => 'inc_highscore')->name("inc_${cname}_highscore");
     $l->route("/$start/score/decrease/:postid", @startps, postid => $Ffc::Digqr)->via('get')
       ->to(controller => $cname, action => 'dec_highscore')->name("dec_${cname}_highscore");
+    
+    # Folgende Routen kümmern sich um die Beitragsbewertung - via Ajax
+    $l->route("/$start/score/increase/:postid/ajax", @startps, postid => $Ffc::Digqr)->via('get')
+      ->to(controller => $cname, action => 'inc_highscore_ajax')->name("inc_${cname}_highscore_ajax");
+    $l->route("/$start/score/decrease/:postid/ajax", @startps, postid => $Ffc::Digqr)->via('get')
+      ->to(controller => $cname, action => 'dec_highscore_ajax')->name("dec_${cname}_highscore_ajax");
 }
 
 1;

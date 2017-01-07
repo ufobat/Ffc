@@ -55,7 +55,7 @@ sub check_score {
         $score = qr~<span\s+title="Bewertungswert\s+des\s+Beitrages"\s+class="score">0</span>~xmsi;
     }
     if ( $show ) {
-        $show = qr~<a\s+href="/topic/1/score/increase/$id"\s+title="Bewertung\s+erhöhen">\+</a>\s*$score\s*<a\s+href="/topic/1/score/decrease/$id"\s+title="Bewertung\s+herabsetzen">\-</a>~xmsi;
+        $show = qr~<a\s+name="highscorelink"\s+href="/topic/1/score/increase/$id"\s+title="Bewertung\s+erhöhen">\+</a>\s*$score\s*<a\s+href="/topic/1/score/decrease/$id"\s+title="Bewertung\s+herabsetzen">\-</a>~xmsi;
     }
     else {
         $show = $score;

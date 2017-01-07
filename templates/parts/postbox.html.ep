@@ -12,11 +12,11 @@
 % if ( $controller eq 'forum' and @$users and not $post->[11] ) {
             Bewertung:
 %   if ( $post->[1] != session->{userid} ) {
-            <a href="<%= url_for "inc_${controller}_highscore", postid => $post->[0], ( $post->[5] ? (topicid => $post->[5]) : () ), @$additional_params %>" title="Bewertung erhöhen">+</a>
+            <a name="highscorelink" href="<%= url_for "inc_${controller}_highscore", postid => $post->[0], ( $post->[5] ? (topicid => $post->[5]) : () ), @$additional_params %>" title="Bewertung erhöhen">+</a>
 %   }
             <span title="Bewertungswert des Beitrages" class="score<%= $post->[10] > 0 ? ' goodpost' : '' %><%= $post->[10] < 0 ? ' badpost' : '' %>"><%= $post->[10] > 0 ? "+$post->[10]" : $post->[10] %></span>
 %   if ( $post->[1] != session->{userid} ) {
-            <a href="<%= url_for "dec_${controller}_highscore", postid => $post->[0], ( $post->[5] ? (topicid => $post->[5]) : () ), @$additional_params %>" title="Bewertung herabsetzen">-</a>
+            <a name="highscorelink" href="<%= url_for "dec_${controller}_highscore", postid => $post->[0], ( $post->[5] ? (topicid => $post->[5]) : () ), @$additional_params %>" title="Bewertung herabsetzen">-</a>
 %   }
 % }
         )</span>

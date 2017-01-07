@@ -93,11 +93,13 @@ sub _get_attachements {
 
 ###############################################################################
 # Bewertung ändern
-sub _inc_highscore { _update_highscore( $_[0], 1 ) }
-sub _dec_highscore { _update_highscore( $_[0], 0 ) }
+sub _inc_highscore      { _update_highscore( $_[0], 1, 0 ) }
+sub _dec_highscore      { _update_highscore( $_[0], 0, 0 ) }
+sub _inc_highscore_ajax { _update_highscore( $_[0], 1, 1 ) }
+sub _dec_highscore_ajax { _update_highscore( $_[0], 0, 1 ) }
 # Handler
 sub _update_highscore {
-    my ( $c, $up ) = @_;
+    my ( $c, $up, $ajax ) = @_;
 
     # Den bestehenden Score holen
     my $score = $c->dbh_selectall_arrayref('SELECT "score", "userfrom" FROM "posts" WHERE "id"=?', $c->param('postid'));
@@ -112,8 +114,13 @@ sub _update_highscore {
 
     # Und ab damit in die Datenbank und weiter zur Seite
     $c->dbh_do('UPDATE "posts" SET "score"=? WHERE "id"=?', $score, $c->param('postid'));
-    $c->set_info_f( 'Bewertung ' . ( $up ? 'erhöht' : 'veringert' ) );
-    _redirect_to_show($c);
+    if ( $ajax ) {
+        $c->render( text => 'ok' );
+    }
+    else {
+        $c->set_info_f( 'Bewertung ' . ( $up ? 'erhöht' : 'veringert' ) );
+        _redirect_to_show($c);
+    }
 }
 
 ###############################################################################

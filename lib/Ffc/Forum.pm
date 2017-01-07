@@ -132,8 +132,10 @@ sub delete_upload_check {
 
 ###############################################################################
 # Hier ist der einzige Ort, wo High-Scores gezählt werden
-sub inc_highscore { $_[0]->inc_post_highscore() }
-sub dec_highscore { $_[0]->dec_post_highscore() }
+sub inc_highscore      { $_[0]->inc_post_highscore()      }
+sub dec_highscore      { $_[0]->dec_post_highscore()      }
+sub inc_highscore_ajax { $_[0]->inc_post_highscore_ajax() }
+sub dec_highscore_ajax { $_[0]->dec_post_highscore_ajax() }
 
 ###############################################################################
 # Das wird direkt durechgeleitet

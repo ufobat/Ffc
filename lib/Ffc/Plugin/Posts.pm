@@ -36,6 +36,8 @@ sub register {
     $app->helper( set_post_postlimit       => \&_set_post_postlimit       );
     $app->helper( inc_post_highscore       => \&_inc_highscore            );
     $app->helper( dec_post_highscore       => \&_dec_highscore            );
+    $app->helper( inc_post_highscore_ajax  => \&_inc_highscore_ajax       );
+    $app->helper( dec_post_highscore_ajax  => \&_dec_highscore_ajax       );
     $app->helper( get_single_post          => \&_get_single_post          );
     $app->helper( pagination               => \&_pagination               );
     return $_[0];

@@ -82,6 +82,7 @@ ffcdata.features.init = function(){
             for ( var i = 2; i < boxes.length; i++ ) {
                 if ( boxes[i] && res[i-2] ) boxes[i].outerHTML = res[i-2];
             }
+            enable_highscore();
         }, false);
     };
 
@@ -190,6 +191,33 @@ ffcdata.features.init = function(){
     };
 
     /************************************************************************
+     * Highscore via Ajax setzen, falls möglich
+     ************************************************************************/
+    var set_ajax_highscorelink = function(link){
+        var href = link.href + '/ajax';
+        link.attributes.removeNamedItem('href');
+        link.addEventListener("click", function(){
+            link.removeEventListener('glick', function(){
+                link.className='nodisplay'
+            });
+            ffcdata.utils.request('GET', href, null,
+                function(res){
+                    if ( !res ) return;
+                    if ( res !== 'ok' ) return;
+                    auto_refresh_postlist();
+                },
+                1 // data, nojason
+            );
+        });
+    };
+    var enable_highscore = function(){
+        var scorelinks = document.getElementsByName('highscorelink'); 
+        for ( var i = 0; i < scorelinks.length; i++ ) {
+            set_ajax_highscorelink(scorelinks[i]);
+        }
+    };
+
+    /************************************************************************
      * Features initial aktiveren
      ************************************************************************/
     var enable_strg_s = function() {
@@ -220,6 +248,7 @@ ffcdata.features.init = function(){
     enable_hidemessagebox();
     enable_strg_s();
     enable_autorefreshoption();
+    enable_highscore();
     notify_newmsgs();
 };
 
