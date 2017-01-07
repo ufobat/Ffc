@@ -7,7 +7,7 @@ use Testinit;
 use Ffc::Plugin::Config;
 
 use Test::Mojo;
-use Test::More tests => 802;
+use Test::More tests => 1184;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user1, $pass1, $user2, $pass2 ) = qw(test1 test1234 test2 test4321);
@@ -32,12 +32,17 @@ $t->get_ok('/')
   ->content_like(qr~Angemeldet als "$user2"~)
   ->content_unlike(qr'background-color:');
 
-#test_bgcolor();
-#test_email();
-#test_autorefresh();
-#test_hidelastseen();
+###############################################################################
+###############################################################################
+
+test_bgcolor();
+test_email();
+test_autorefresh();
+test_hidelastseen();
 test_notifications();
 
+###############################################################################
+###############################################################################
 sub test_bgcolor {
     note 'checking background colors';
     my @good = ( '#aaBB99', '#aabb99', '', 'SlateBlue', scalar('a' x 128), 'aa' );
@@ -103,6 +108,8 @@ sub test_bgcolor {
     }
 }
 
+###############################################################################
+###############################################################################
 sub test_email {
     note 'checking email entry';
     login($user1, $pass1);
@@ -185,6 +192,8 @@ sub test_email {
     }
 }
 
+###############################################################################
+###############################################################################
 sub test_autorefresh {
     # Default prüfen
     login($user1, $pass1);
@@ -262,6 +271,8 @@ sub test_autorefresh {
       ->json_is('/autorefresh', 3);
 }
 
+###############################################################################
+###############################################################################
 sub test_hidelastseen {
     login($user1, $pass1);
 
@@ -314,8 +325,128 @@ sub test_hidelastseen {
         , undef, $user2)->[0]->[0], 0, "lastseen is not logged in database";
 }
 
+###############################################################################
+###############################################################################
 sub test_notifications {
-    die "WHATAAAAATAAA"
+    # Diag
+    my $d = sub {
+        my $t = shift() // $t;
+        if ( not $t->{success} ) {
+            my @caller = caller(1);
+            diag("-- error came from '$caller[2]'");
+        }
+    };
+
+    # Check, ob und wie Notifications gesetzt sind
+    my $check = sub {
+        my $on = shift() // 0; my $t = shift() // $t;
+        $t->get_ok('/options/form')->status_is(200);
+        if ( $on ) {
+            $t->content_like(
+                qr~<input type="checkbox" name="notifications" value="1" checked="checked" />~);
+        }
+        else {
+            $t->content_like(
+                qr~<input type="checkbox" name="notifications" value="1" />~);
+        }
+        $d->();
+        $t->get_ok('/forum')->status_is(200);
+        $t->content_like($on ? qr~notifications:\s*true~ : qr~notifications:\s*false~ );
+        $d->();
+        $t->get_ok('/chat')->status_is(200);
+        $t->content_like($on ? qr~notifications:\s*true~ : qr~notifications:\s*false~ );
+        $d->();
+        if ( $on ) {
+            $t->content_like(
+                qr~<input type="checkbox" id="notifyswitch" value="1" checked="checked" />~);
+        }
+        else {
+            $t->content_like(
+                qr~<input type="checkbox" id="notifyswitch" value="1" />~);
+        }
+        $d->();
+    };
+
+    # Notifications setzen
+    my $set = sub {
+        my $on = shift() // 0; my $t = shift() // $t;
+        $t->post_ok('/options/notifications', form => { notifications => $on })->status_is(302);
+        $t->content_is('');
+        $t->header_is( Location => '/options/form' );
+    };
+
+    # Default User 1
+    login($user1, $pass1);
+    $check->(0);
+
+    # User 1 enable
+    $set->(1);
+    $check->(1);
+
+    # User 1 logout and login, setting should be preserved
+    logout($user1, $pass1);
+    login($user1, $pass1);
+    $check->(1);
+    $set->(0);
+    logout($user1, $pass1);
+    login($user1, $pass1);
+    $check->(0);
+
+    # User 2 hat Default, auch wenn User 1 was gesetzt hat
+    $set->(1);
+    logout($user1, $pass1);
+    login($user2, $pass2);
+    $check->(0);
+
+    # User 2 merkt sich das Setting
+    $set->(1);
+    $check->(1);
+    logout($user2, $pass2);
+    login($user2, $pass2);
+    $check->(1);
+
+    # User 2 Setting wird nicht an User 1 übertragen
+    $set->(0);
+    $check->(0);
+    logout($user2, $pass2);
+    login($user1, $pass1);
+    $check->(1);
+    $set->(0);
+    $check->(0);
+
+    # Zweite parallele Session für User 2
+    logout($user1, $pass1);
+    login($user2, $pass2);
+    $set->(1);
+    $check->(1);
+
+    my $t2 = Test::Mojo->new('Ffc');
+    my $login2  = sub {Testinit::test_login ($t2, $user2, $pass2)};
+    my $logout2 = sub {Testinit::test_logout($t2, $user2, $pass2)};
+
+    $login2->();
+    $check->(0, $t2);
+    $set->(1, $t2);
+    $check->(1, $t2);
+
+    # Wie schlägt sich derweil die user1 Session
+    logout($user2, $pass2);
+    login($user1, $pass1);
+    $check->(0);
+    $check->(1, $t2);
+    $check->(0);
+    $set->(1);
+    $check->(1);
+    $check->(1, $t2);
+    $set->(0);
+    $check->(1, $t2);
+    $set->(1, $t2);
+    $check->(0);
+    logout($user1, $pass1);
+    login($user2, $pass2);
+    $check->(1);
+    $set->(0);
+    $check->(1,$t2);
 }
 
 
