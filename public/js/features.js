@@ -197,9 +197,9 @@ ffcdata.features.init = function(){
         var href = link.href + '/ajax';
         link.attributes.removeNamedItem('href');
         link.addEventListener("click", function(){
-            link.removeEventListener('glick', function(){
-                link.className='nodisplay'
-            });
+            link.onclick = undefined;
+            link.className='hiddendisplay'
+            link.removeEventListener('click', function(){ return 1 });
             ffcdata.utils.request('GET', href, null,
                 function(res){
                     if ( !res ) return;
