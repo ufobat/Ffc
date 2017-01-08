@@ -93,35 +93,55 @@ sub _get_attachements {
 
 ###############################################################################
 # Bewertung ändern
-sub _inc_highscore      { _update_highscore( $_[0], 1, 0 ) }
-sub _dec_highscore      { _update_highscore( $_[0], 0, 0 ) }
-sub _inc_highscore_ajax { _update_highscore( $_[0], 1, 1 ) }
-sub _dec_highscore_ajax { _update_highscore( $_[0], 0, 1 ) }
-# Handler
 sub _update_highscore {
     my ( $c, $up, $ajax ) = @_;
 
     # Den bestehenden Score holen
     my $score = $c->dbh_selectall_arrayref('SELECT "score", "userfrom" FROM "posts" WHERE "id"=?', $c->param('postid'));
+
     # Man selber darf seine eigenen Beiträge natürlich nicht bewerten, klar
-    $score->[0]->[1] eq $c->session->{userid} and return _redirect_to_show($c);
-    $score = $score->[0]->[0] || 0;
+    if ( $score->[0]->[1] == $c->session->{userid} ) {
+        if ( $ajax ) {
+            return $c->render( text => 'failed ownpost' );
+        }
+        else {
+            $c->set_error_f( 'Eigene Beiträge können nicht bewertet werden' );
+            return _redirect_to_show($c);
+        }
+    }
+    $score = $score->[0]->[0];
 
     # Aufpassen, dass der Score nicht überläuft
     my $maxscore = $c->configdata->{maxscore};
-    if ( $up ) { $score++; $score >  $maxscore and ( $score =  $maxscore ) }
-    else       { $score--; $score < -$maxscore and ( $score = -$maxscore ) }
+    my $fail = 0;
+        $up and $score >=  $maxscore and $fail = 1;
+    not $up and $score <= -$maxscore and $fail = 1;
+    if ( $fail ) {
+        if ( $ajax ) {
+            return $c->render( text => 'failed ' . ( $up ? 'max' : 'min' ) );
+        }
+        else {
+            $c->set_error_f( 'Bewertung hat das ' . ( $up ? 'Maximum' : 'Minimum' ) . ' erreicht' );
+            return _redirect_to_show($c);
+        }
+    }
+    $score = $score + ( $up ? 1 : -1 );
 
     # Und ab damit in die Datenbank und weiter zur Seite
     $c->dbh_do('UPDATE "posts" SET "score"=? WHERE "id"=?', $score, $c->param('postid'));
     if ( $ajax ) {
-        $c->render( text => 'ok' );
+        $c->render( text => $up ? 'up' : 'down' );
     }
     else {
         $c->set_info_f( 'Bewertung ' . ( $up ? 'erhöht' : 'veringert' ) );
         _redirect_to_show($c);
     }
 }
+# Bewertungs-Zugriff
+sub _inc_highscore      { _update_highscore( $_[0], 1, 0 ) }
+sub _dec_highscore      { _update_highscore( $_[0], 0, 0 ) }
+sub _inc_highscore_ajax { _update_highscore( $_[0], 1, 1 ) }
+sub _dec_highscore_ajax { _update_highscore( $_[0], 0, 1 ) }
 
 ###############################################################################
 # Für das gelesen-Tracking für das Forum

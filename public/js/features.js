@@ -203,7 +203,7 @@ ffcdata.features.init = function(){
             ffcdata.utils.request('GET', href, null,
                 function(res){
                     if ( !res ) return;
-                    if ( res !== 'ok' ) return;
+                    if ( ! (res === 'up' || res === 'down') ) return;
                     auto_refresh_postlist();
                 },
                 1 // data, nojason
