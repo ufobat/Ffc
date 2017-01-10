@@ -94,10 +94,14 @@ form {
     overflow: hidden;
     text-align: center;
 }
+.postbox ul {
+    margin-left: 2em;
+}
 ul.attachements {
     clear: both;
     border-top: .1em gainsboro dashed;
     list-style: none;
+    margin-left: 0;
 }
 ul.attachements li {
     padding-top: .5em;
