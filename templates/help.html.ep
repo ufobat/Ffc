@@ -23,27 +23,29 @@
     <p>Falls auf einem Desktopsystem Javascript im Browser eingeschalten ist, stehen folgende Buttons zur Verfügung, welche die Formatierungsauszeichnungen automatisch in den Text im Textfeld einfügen.</p>
     <p>
         (Anzeigebeispiel:
-            <a href="#" class="buttonalike" id="boldbutton" title="Fett markiert"><b>f</b></a><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben"><i>k</i></a><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung"><u>u</u></a><a href="#" class="buttonalike" id="linethroughbutton" title="Durchgestrichen"><strike>d</strike></a><a href="#" class="buttonalike" id="emotionalbutton" title="Emotional"><span class="emotion">*</span></a>
-            <a href="#" class="buttonalike" id="h1button" title="Überschrift"><span class="underline"><span class="bold">Ü</span></span></a><a class="buttonalike" id="horizontalline" title="Horizontale Linie"><b>–</b></a>
-            <a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste">&middot;</a><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste">&sup1;</a><a href="#" class="buttonalike" id="listitembutton" title="Listenelement">…</a>
-            <a class="buttonalike" id="quotebutton" title="Einzeiliges Zitat">&quot;</a><a class="buttonalike" id="blockquotebutton" title="Mehrzeiliges Zitat">»</a><a class="buttonalike" id="codebutton" title="Vorformatierter einzeiliger Programm-Quelltext"><code>c</code></a><a class="buttonalike" id="prebutton" title="Vorformatierter mehrzeiliger Programm-Quelltext"><code>¢</code></a>
+            <span id="editbuttons" class="editbuttons">
+                <a href="#" class="buttonalike" id="boldbutton" title="Fett markiert"><b>f</b></a><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben"><i>k</i></a><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung"><u>u</u></a><a href="#" class="buttonalike" id="linethroughbutton" title="Durchgestrichen"><strike>d</strike></a><a href="#" class="buttonalike" id="emotionalbutton" title="Emotional"><span class="emotion">*</span></a>
+                <a href="#" class="buttonalike" id="h1button" title="Überschrift"><span class="underline"><span class="bold">Ü</span></span></a><a class="buttonalike" id="horizontalline" title="Horizontale Linie"><b>–</b></a>
+                <a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste">&middot;</a><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste">&sup1;</a><a href="#" class="buttonalike" id="listitembutton" title="Listenelement">…</a>
+                <a class="buttonalike" id="quotebutton" title="Einzeiliges Zitat">&quot;</a><a class="buttonalike" id="blockquotebutton" title="Mehrzeiliges Zitat">»</a><a class="buttonalike" id="codebutton" title="Vorformatierter einzeiliger Programm-Quelltext"><code>c</code></a><a class="buttonalike" id="prebutton" title="Vorformatierter mehrzeiliger Programm-Quelltext"><code>¢</code></a>
+            </span>
         )
     </p>
     <ul>
-            <li><a href="#" class="buttonalike" id="boldbutton" title="Fett markiert"><b>f</b></a>: Fett schreiben</li>
-            <li><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben"><i>k</i></a>: Kursiv schreiben</li>
-            <li><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung"><u>u</u></a>: Unterstreichen</li>
-            <li><a href="#" class="buttonalike" id="linethroughbutton" title="Durchgestrichen"><strike>d</strike></a>: Durchstreichen</li>
-            <li><a href="#" class="buttonalike" id="emotionalbutton" title="Emotional"><span class="emotion">*</span></a></span>: Emotionale Markierung</li>
-            <li><a href="#" class="buttonalike" id="h1button" title="Überschrift"><span class="underline bold">Ü</span></a>: Überschrift einfügen</li>
-            <li><a class="buttonalike" id="horizontalline" title="Horizontale Linie"><b>–</b></a>: Horizontale Linie einfügen</li>
-            <li><a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste">&middot;</a>: Liste einfügen</li>
-            <li><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste">&sup1;</a>: Aufzählungsliste</li>
-            <li><a href="#" class="buttonalike" id="listitembutton" title="Listenelement">…</a>: Listenelement auszeichnen (muss zwischen <a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste">&middot;</a> oder <a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste">&sup1;</a> stehen)</li>
-            <li><a href="#" class="buttonalike" id="quotebutton" title="Einzeiliges Zitat">&quot;</a>: Einzeiliges Zitat einfügen</li>
-            <li><a href="#" class="buttonalike" id="blockquotebutton" title="Mehrzeiliges Zitat">»</a>: Mehrzeiliges Zitat einfügen</li>
-            <li><a class="buttonalike" id="codebutton" title="Vorformatierter einzeiliger Programm-Quelltext"><code>c</code></a>: Quellcode-Element</li>
-            <li><a class="buttonalike" id="prebutton" title="Vorformatierter mehrzeiliger Programm-Quelltext"><code>¢</code></a>: Quellcode-Text</li>
+            <li><span id="editbuttons" class="editbuttons"><a href="#" class="buttonalike" id="boldbutton" title="Fett markiert"><b>f</b></a></span>: Fett schreiben</li>
+            <li><span id="editbuttons" class="editbuttons"><a href="#" class="buttonalike" id="italicbutton" title="Schräg geschrieben"><i>k</i></a></span>: Kursiv schreiben</li>
+            <li><span id="editbuttons" class="editbuttons"><a href="#" class="buttonalike" id="underlinebutton" title="Unterstreichung"><u>u</u></a></span>: Unterstreichen</li>
+            <li><span id="editbuttons" class="editbuttons"><a href="#" class="buttonalike" id="linethroughbutton" title="Durchgestrichen"><strike>d</strike></a></span>: Durchstreichen</li>
+            <li><span id="editbuttons" class="editbuttons"><a href="#" class="buttonalike" id="emotionalbutton" title="Emotional"><span class="emotion">*</span></a></span></span>: Emotionale Markierung</li>
+            <li><span id="editbuttons" class="editbuttons"><a href="#" class="buttonalike" id="h1button" title="Überschrift"><span class="underline bold">Ü</span></a></span>: Überschrift einfügen</li>
+            <li><span id="editbuttons" class="editbuttons"><a class="buttonalike" id="horizontalline" title="Horizontale Linie"><b>–</b></a></span>: Horizontale Linie einfügen</li>
+            <li><span id="editbuttons" class="editbuttons"><a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste">&middot;</a></span>: Liste einfügen</li>
+            <li><span id="editbuttons" class="editbuttons"><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste">&sup1;</a></span>: Aufzählungsliste</li>
+            <li><span id="editbuttons" class="editbuttons"><a href="#" class="buttonalike" id="listitembutton" title="Listenelement">…</a></span>: Listenelement auszeichnen (muss zwischen <span id="editbuttons" class="editbuttons"><a href="#" class="buttonalike" id="unorderedlistbutton" title="Unsortierte Liste">&middot;</a></span> oder <span id="editbuttons" class="editbuttons"><a href="#" class="buttonalike" id="orderedlistbutton" title="Aufzählungsliste">&sup1;</a></span> stehen)</li>
+            <li><span id="editbuttons" class="editbuttons"><a href="#" class="buttonalike" id="quotebutton" title="Einzeiliges Zitat">&quot;</a></span>: Einzeiliges Zitat einfügen</li>
+            <li><span id="editbuttons" class="editbuttons"><a href="#" class="buttonalike" id="blockquotebutton" title="Mehrzeiliges Zitat">»</a></span>: Mehrzeiliges Zitat einfügen</li>
+            <li><span id="editbuttons" class="editbuttons"><a class="buttonalike" id="codebutton" title="Vorformatierter einzeiliger Programm-Quelltext"><code>c</code></a></span>: Quellcode-Element</li>
+            <li><span id="editbuttons" class="editbuttons"><a class="buttonalike" id="prebutton" title="Vorformatierter mehrzeiliger Programm-Quelltext"><code>¢</code></a></span>: Quellcode-Text</li>
     </ul>
     <p>Ist im Browser Javascript deaktiviert oder funktionieren die Buttons nicht, so kann man die Formatierungen alternativ auch händisch in den Text wie im folgenden beschrieben (<a href="#formatting">Textformatierungen</a>, <a href="#structuring">Textstrukturierungen</a>) einfügen.</p>
 </div>
