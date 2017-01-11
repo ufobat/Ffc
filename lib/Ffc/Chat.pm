@@ -155,7 +155,7 @@ EOSQL
         unless ( 
             $c->dbh_selectall_arrayref( << 'EOSQL', $s->{userid} )->[0]->[0]
 SELECT CASE WHEN
-    "inchat" AND DATETIME("lastseenchat", 'localtime', '+'||"chatrefreshsecs"||' seconds') >= DATETIME('now', 'localtime') THEN 1 ELSE 0 END
+    "inchat" AND DATETIME("lastseenchat", 'localtime', '+'||"chatrefreshsecs"||'+16 seconds') >= DATETIME('now', 'localtime') THEN 1 ELSE 0 END
 FROM "users" 
 WHERE "id"=?
 EOSQL

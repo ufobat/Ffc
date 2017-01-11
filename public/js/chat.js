@@ -143,12 +143,24 @@ ffcdata.chat.init = function() {
     };
 
     /************************************************************************
+     *** Anzahl neuer nicht eigener Chat-Nachrichten                      ***
+     ************************************************************************/
+    var get_newmsg_count = function(msgs){
+        var cnt = 0;
+        for( var i=0; i < msgs.length; i++ ) {
+            if ( ffcdata.user !== msgs[i][1] )
+                cnt++;
+        }
+        return cnt;
+    };
+
+    /************************************************************************
      *** Empfangene Daten verwerten                                       ***
      ************************************************************************/
     var resolve = function(data, started) {
         // console.log('resolving fetched data');
         // Titel aktualisieren - aber nicht beim Beginn des Chats
-        set_title(data[0].length, data[2], data[3], started);
+        set_title(get_newmsg_count(data[0]), data[2], data[3], started);
 
         // Benutzerliste aktualisieren
         update_userlist(data[1]);
