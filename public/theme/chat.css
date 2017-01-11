@@ -28,14 +28,14 @@ div, textarea {
     overflow: auto;
 }
 #msglog, #textinput {
-    width: 40em;
-    min-width: 40em;
-    max-width: 40em;
+    width: 45em;
+    min-width: 45em;
+    max-width: 45em;
     font-size: 1em;
     font-family: sans-serif;
 }
 #userlist, #buttonlist {
-    width: 15em;
+    width: 10em;
 }
 #textinput {
     height: 5em;
@@ -46,6 +46,7 @@ div, textarea {
 }
 #msglog {
     background: whitesmoke;
+    color: navy;
 }
 #userlist, #textinput, #msglog {
     padding: .25em;
@@ -56,6 +57,9 @@ div, textarea {
     max-height: 60em;
     padding-left: 1.5em;
     overflow: visible;
+}
+#buttonlist > * {
+    margin-bottom: .25em;
 }
 #textinput:hover {
     border-color: dodgerblue;
@@ -80,24 +84,24 @@ div, textarea {
     text-align: center;
     border: none;
 }
-#msglog .username, .ownmsg, .timestamp {
-    color: gray;
+#msglog .ownmsg {
+    color: black;
 }
 #msglog .username {
     font-weight: bold;
+    color: black;
+    text-decoration: underline;
 }
-.ownmsg .username {
-    color: silver;
-}
-.timestamp {
+#msglog .timestamp {
+    color: gray;    
     font-size: 0.75em;
 }
 #msglog p {
-    text-indent: -1.25em;
-    padding-left: 1.25em;
+    text-indent: -5em;
+    padding-left: 5em;
 }
 #msglog .sameuser {
-    text-indent: -0.75em;
+    text-indent: -3.25em;
 }
 #msglog .sameuser .timestamp {
     color: lightgray;

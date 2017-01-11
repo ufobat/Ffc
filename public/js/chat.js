@@ -73,7 +73,6 @@ ffcdata.chat.init = function() {
         var classstr = [];
         var userstrthing = '';
         var userstr = '';
-        var msgstr = msgs[i][2];
         var classstr = [];
         var match_n = msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/);
         if ( i < msgs.length - 1 ) {
