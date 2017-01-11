@@ -30,7 +30,7 @@ h3 {
 .loginform, .headbox, .popup {
     background: whitesmoke;
 }
-button {
+button, #editbuttons .buttonalike {
     color: black;
     background: lavender;
 }
@@ -38,16 +38,16 @@ button {
     color: black;
     background: white;
 }
-#textinput, input, button, select {
+#textinput, input, button, select, #editbuttons .buttonalike {
     border: .1em steelblue solid;
 }
-#textinput:hover, input:hover, button:active, select:hover {
+#textinput:hover, input:hover, button:active, select:hover, #editbuttons .buttonalike:hover {
     border-color: dodgerblue;
 }
-#textinput:focus, input:focus, button:hover, select:focus {
+#textinput:focus, input:focus, button:hover, select:focus, #editbuttons .buttonalike:focus {
     border-color: blue;
 }
-button:hover {
+button:hover, #editbuttons .buttonalike:hover {
     background: ghostwhite;
 }
 #textinput {
