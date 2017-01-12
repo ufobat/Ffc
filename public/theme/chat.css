@@ -93,7 +93,7 @@ div, textarea {
 }
 #msglog .timestamp {
     font-size: 0.75em;
-    color: lightgray;
+    color: gray;
 }
 #msglog p {
     text-indent: -5em;
@@ -156,15 +156,15 @@ div, textarea {
 .chatmsgbox, .chatmsgprefix, .chatmsgcontent, .newdaymsg {
     border: none;
 }
-.chatmsgbox {
-    vertical-align: top;
-}
 .chatmsgprefix, .chatmsgcontent {
     display: inline-block;
 }
 .chatmsgprefix {
     width: 8em;
     text-align: right;
+}
+.chatmsgbox div {
+    vertical-align: text-top
 }
 .chatmsgcontent {
     margin-left: .5em;
