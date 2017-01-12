@@ -65,7 +65,7 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Neue Chatnachrichten zusammenbauen                               ***
      ************************************************************************/
-    var compose_msg = function(msgs, i, match_l){
+    var compose_msg = function(msgs, i, match_l, started){
         var newdaymsg = false;
         var userstrthing = '';
         var userstr = '';
@@ -74,7 +74,9 @@ ffcdata.chat.init = function() {
         var userstrthing = '';
         var userstr = '';
         var classstr = [];
+        var newdate = '';
         var match_n = msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/);
+        var timepart = msgs[i][3].match(/\d\d:\d\d/);
         if ( i < msgs.length - 1 ) {
             var match_a = msgs[i + 1][3].match(/\d\d\.\d\d\.\d\d\d\d/);
             if ( match_a && ( !match_n || match_n[0] !== match_a[0] ) ) {
@@ -86,7 +88,11 @@ ffcdata.chat.init = function() {
                 newdaymsg = true;
             }
         }
-        if ( newdaymsg ) classstr.push('newdaymsg');
+        if ( started ) classstr.push('startmsg');
+        if ( newdaymsg && match_n ) {
+            //classstr.push('newdaymsg');
+            newdate = '<div class="chatmsgbox newdaymsg">' + match_n + '</div>';
+        }
         var sameuser = ffcdata.chat.lastmsguser === msgs[i][1];
         if ( sameuser && !newdaymsg ) classstr.push('sameuser');
 
@@ -110,10 +116,13 @@ ffcdata.chat.init = function() {
 
         ffcdata.chat.lastmsguser = msgs[i][1];
 
-        return '<p' + ( classstr.length > 0 ? ' class="' + classstr.join(' ') + '"' : '' ) + '>'
-           + '<span class="timestamp">(' + msgs[i][3] + ')</span> '
-           + userstrthing + msgstr
-           + '</p>\n';
+        return newdate
+           + '<div class="chatmsgbox' 
+           + ( ( classstr.length > 0 ? ' ' : '' ) + classstr.join(' ') ) 
+           + '">'
+           + '<div class="chatmsgprefix"><span class="timestamp">(' + timepart + ')</span> '
+           + userstrthing + '</div><div class="chatmsgcontent">' + msgstr
+           + '</div></div>\n';
     }
 
     /************************************************************************
@@ -125,7 +134,7 @@ ffcdata.chat.init = function() {
             var match_l = ffcdata.chat.lastmsgtime.match(/\d\d\.\d\d\.\d\d\d\d/);
             var relevantcnt = 0;
             for ( var i = msgs.length - 1; i >= 0; i-- ) {
-                ml = ml + compose_msg(msgs, i, match_l);
+                ml = ml + compose_msg(msgs, i, match_l, started);
                 if ( msgs[i][5] != ffcdata.userid ) relevantcnt++;
             }
             if ( !document.hasFocus() && !started && relevantcnt > 0 )

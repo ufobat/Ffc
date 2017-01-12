@@ -92,18 +92,15 @@ div, textarea {
     text-decoration: underline;
 }
 #msglog .timestamp {
-    color: gray;    
     font-size: 0.75em;
+    color: lightgray;
 }
 #msglog p {
     text-indent: -5em;
     padding-left: 5em;
 }
-#msglog .sameuser {
-    text-indent: -3.25em;
-}
-#msglog .sameuser .timestamp {
-    color: lightgray;
+#msglog .startmsg {
+    color: dimgray;
 }
 .myself {
     color: red;
@@ -125,9 +122,6 @@ div, textarea {
 }
 #msglog a:focus {
     color: gainsboro;
-}
-.newdaymsg {
-    border-top: .1em silver solid;
 }
 .editbuttons {
     text-align: right;
@@ -162,4 +156,27 @@ div, textarea {
 .notifyswitch {
     white-space: nowrap;
 }
-
+.chatmsgbox, .chatmsgprefix, .chatmsgcontent, .newdaymsg {
+    border: none;
+}
+.chatmsgbox {
+    vertical-align: top;
+}
+.chatmsgprefix, .chatmsgcontent {
+    display: inline-block;
+}
+.chatmsgprefix {
+    width: 8em;
+    text-align: right;
+}
+.chatmsgcontent {
+    margin-left: .5em;
+    width: 35em;
+}
+.newdaymsg {
+    border-top: .1em silver dashed;
+    width: 43em;
+    color: dimgray;
+    text-align: center;
+    margin:.5em;
+}
