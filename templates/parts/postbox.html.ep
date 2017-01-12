@@ -57,7 +57,7 @@
 %     if ( $editurl or $delurl ) {
       /
 %     }
-      <a href="<%= url_for $delurl, postid => $post->[0], @$additional_params %>" title="Beitrag löschen">entfernen</a>
+      <a href="<%= url_for $delurl, postid => $post->[0], @$additional_params %>" title="Beitrag löschen">löschen</a>
 %   }
 %   if ( $uplurl ) {
       /

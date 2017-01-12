@@ -6,6 +6,6 @@
                <%= $attachement->[2] %></a>
 % }
 % if ( $delupl and $attachement->[5] ) {
-            <span class="smallfont">(<a href="<%= url_for $delupl, fileid => $attachement->[0], postid => $post->[0], @$additional_params %>">entfernen</a>)</span>
+            <span class="smallfont">(<a href="<%= url_for $delupl, fileid => $attachement->[0], postid => $post->[0], @$additional_params %>">löschen</a>)</span>
 % }
         </li>
