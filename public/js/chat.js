@@ -90,7 +90,6 @@ ffcdata.chat.init = function() {
         }
         if ( started ) classstr.push('startmsg');
         if ( newdaymsg && match_n ) {
-            //classstr.push('newdaymsg');
             newdate = '<div class="chatmsgbox newdaymsg">' + match_n + '</div>';
         }
         var sameuser = ffcdata.chat.lastmsguser === msgs[i][1];
@@ -112,9 +111,9 @@ ffcdata.chat.init = function() {
             if ( ffcdata.user === msgs[i][1] ) classstr.push('ownmsg');
             userstrthing = ( !sameuser || mecmd || newdaymsg ? userstr : '' );
             msgstr = usernamefilter(msgs[i][2]);
+            ffcdata.chat.lastmsguser = msgs[i][1];
         }
 
-        ffcdata.chat.lastmsguser = msgs[i][1];
 
         return newdate
            + '<div class="chatmsgbox' 

@@ -99,9 +99,6 @@ div, textarea {
     text-indent: -5em;
     padding-left: 5em;
 }
-#msglog .startmsg {
-    color: dimgray;
-}
 .myself {
     color: red;
     font-weight: bold;
