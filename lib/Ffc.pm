@@ -19,7 +19,7 @@ use Ffc::Chat;
 our $Digqr = qr/\d+/xmso;
 
 # Vorkompilierte standartisierte Username-Prüfung
-our $Usrqr = qr(\w{2,32})xmso;
+our $Usrqr = qr(\w{2,12})xmso;
 
 # Vorkompilierte standartisierte Datums-Wert-Prüfung
 our $Dater = qr~\A\s*(?:

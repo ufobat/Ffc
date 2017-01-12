@@ -20,7 +20,7 @@ sub useradmin {
     }
     # Benutzernamen müssen bestimmten Konventionen entsprechen
     if ( $username !~ m/\A$Ffc::Usrqr\z/xmso) {
-        $c->set_error_f('Benutzername passt nicht (muss zwischen 2 und 32 Buchstaben haben)');
+        $c->set_error_f('Benutzername passt nicht (muss zwischen 2 und 12 Buchstaben haben)');
         return $c->redirect_to('admin_options_form');
     }
     # Falls Passwörter (Passwort + zweites Mal eingeben zur Bestätigung) angegeben sind 

@@ -84,13 +84,13 @@ is @{get_users()}, 1, 'user count ok';
 $t->post_ok('/admin/useradd', form => {username => 'a'})
   ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
 $t->get_ok('/admin/form')->status_is(200);
-error(q~Benutzername passt nicht \\(muss zwischen 2 und 32 Buchstaben haben\\)~);
+error(q~Benutzername passt nicht \\(muss zwischen 2 und 12 Buchstaben haben\\)~);
 is @{get_users()}, 1, 'user count ok';
 
 $t->post_ok('/admin/useradd', form => {username => ('a' x 33)})
   ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
 $t->get_ok('/admin/form')->status_is(200);
-error(q~Benutzername passt nicht \\(muss zwischen 2 und 32 Buchstaben haben\\)~);
+error(q~Benutzername passt nicht \\(muss zwischen 2 und 12 Buchstaben haben\\)~);
 is @{get_users()}, 1, 'user count ok';
   
 $t->post_ok('/admin/useradd', form => {username => $user})
