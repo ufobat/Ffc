@@ -30,7 +30,7 @@ h3 {
 .loginform, .headbox, .popup {
     background: whitesmoke;
 }
-button, #editbuttons .buttonalike {
+button, #editbuttons .buttonalike, .chatoptionspopupswitch {
     color: black;
     background: lavender;
 }
@@ -38,16 +38,16 @@ button, #editbuttons .buttonalike {
     color: black;
     background: white;
 }
-#textinput, input, button, select, #editbuttons .buttonalike {
+#textinput, input, button, select, #editbuttons .buttonalike, .chatoptionspopupswitch {
     border: .1em steelblue solid;
 }
-#textinput:hover, input:hover, button:active, select:hover, #editbuttons .buttonalike:hover {
+#textinput:hover, input:hover, button:active, select:hover, #editbuttons .buttonalike:hover, .chatoptionspopupswitch:hover {
     border-color: dodgerblue;
 }
-#textinput:focus, input:focus, button:hover, select:focus, #editbuttons .buttonalike:focus {
+#textinput:focus, input:focus, button:hover, select:focus, #editbuttons .buttonalike:focus, .chatoptionspopupswitch:focus {
     border-color: blue;
 }
-button:hover, #editbuttons .buttonalike:hover {
+button:hover, #editbuttons .buttonalike:hover, .chatoptionspopupswitch:hover {
     background: ghostwhite;
 }
 #textinput {
