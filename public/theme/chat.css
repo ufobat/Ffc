@@ -160,7 +160,7 @@ div, textarea {
     display: inline-block;
 }
 .chatmsgprefix {
-    width: 8em;
+    width: 11em;
     text-align: right;
 }
 .chatmsgbox div {
@@ -168,7 +168,7 @@ div, textarea {
 }
 .chatmsgcontent {
     margin-left: .5em;
-    width: 35em;
+    width: 30em;
 }
 .newdaymsg {
     border-top: .1em silver dashed;
