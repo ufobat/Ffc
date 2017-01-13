@@ -21,20 +21,7 @@
        <div class="popuparrow chatoptionpopup activedim menuentry">
            <span class="othersmenulinktext chatoptionpopupswitch">Mehr ...<span>
            <div class="popup otherspopup">
-               <p>
-                <select name="refreshtime" id="refreshtime">
-                 <option value="1">1 Sekunde</option>
-                 <option value="15">15 Sekunden</option>
-                 <option value="30">30 Sekunden</option>
-                 <option value="60">1 Minute</option>
-                 <option value="120">2 Minuten</option>
-                 <option value="180">3 Minuten</option>
-                 <option value="300">5 Minuten</option>
-                 <option value="420">7 Minuten</option>
-                 <option value="600">10 Minuten</option>
-                 <option value="900">15 Minuten</option>
-                </select>
-               </p>
+               <p><input type="number" name="refreshtime" id="refreshtime" value="60" min="15" max="300" step="15" /> sec. Refresh</p>
                <p><span class="notifyswitch">Desktop-Hinweis: <input type="checkbox" id="notifyswitch" value="1"<%== session()->{notifications} ? ' checked="checked"' : '' %> /></span></b>
                <p>
                 <a href="<%= url_for 'show_forum_topiclist' %>" title="Link zur Foren-Webseite" target="_blank">Forum</a> /

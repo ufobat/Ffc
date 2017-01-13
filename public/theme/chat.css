@@ -198,8 +198,8 @@ span.chatoptionpopupswitch {
     padding: 0 1em;
 }
 .chatoptionpopup .popup {
-    margin-left: -1em;
+    margin-left: -2em;
 }
-select#refreshtime {
-    min-width: 10em;
+input#refreshtime {
+    width: 4em;
 }
