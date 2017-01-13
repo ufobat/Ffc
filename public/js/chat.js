@@ -75,6 +75,7 @@ ffcdata.chat.init = function() {
         var userstr = '';
         var classstr = [];
         var newdate = '';
+        var usernameprefix = '';
         var match_n = msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/);
         var timepart = msgs[i][3].match(/\d\d:\d\d/);
         if ( i < msgs.length - 1 ) {
@@ -93,34 +94,44 @@ ffcdata.chat.init = function() {
             newdate = '<div class="chatmsgbox newdaymsg">' + match_n + '</div>';
         }
         var sameuser = ffcdata.chat.lastmsguser === msgs[i][1];
-        if ( sameuser && !newdaymsg ) classstr.push('sameuser');
 
+        var mecmd = false;
+        if ( msgs[i][2].match(/^\/me\s+/ ) ) {
+            msgs[i][2] = msgs[i][2].replace(/^\/me\s+/, '');
+            userstr = msgs[i][1] + ' ';
+            mecmd = true;
+        }
+        else {
+            userstr = '<span class="username">' + msgs[i][1] + '</span>: ';
+            if ( msgs[i][4] === 2 && msgs[i][5] != ffcdata.userid ) {
+                ffcdata.utils.notify(msgs[i][1]);
+            }
+        }
+        if ( ffcdata.user === msgs[i][1] ) classstr.push('ownmsg');
+        userstrthing = ( !sameuser || mecmd || newdaymsg ? userstr : '' );
         if ( msgs[i][4] === 0 ) {
-            var mecmd = false;
-            if ( msgs[i][2].match(/^\/me\s+/ ) ) {
-                msgs[i][2] = msgs[i][2].replace(/^\/me\s+/, '');
-                userstr = msgs[i][1] + ' ';
-                mecmd = true;
-            }
-            else {
-                userstr = '<span class="username">' + msgs[i][1] + '</span>: ';
-                if ( msgs[i][4] === 2 && msgs[i][5] != ffcdata.userid ) {
-                    ffcdata.utils.notify(msgs[i][1]);
-                }
-            }
-            if ( ffcdata.user === msgs[i][1] ) classstr.push('ownmsg');
-            userstrthing = ( !sameuser || mecmd || newdaymsg ? userstr : '' );
             msgstr = usernamefilter(msgs[i][2]);
-            ffcdata.chat.lastmsguser = msgs[i][1];
         }
 
+        classstr.push('sameuser');
+        ffcdata.chat.lastmsguser = msgs[i][1];
+        if ( msgs[i][4] !== 0  && !sameuser ) {
+            sameuser = '';
+            userstr = '<span class="username">' + msgs[i][1] + '</span>: ';
+        }
+//        }
+
+        if ( !sameuser ) {
+           usernameprefix = '<div class="chatmsgbox usernameline">' + userstr + '</div>\n';
+        }
 
         return newdate
+           + usernameprefix
            + '<div class="chatmsgbox' 
            + ( ( classstr.length > 0 ? ' ' : '' ) + classstr.join(' ') ) 
            + '">'
            + '<div class="chatmsgprefix"><div class="chatmsgprefixinner"><span class="timestamp">(' + timepart + ')</span> '
-           + userstrthing + '</div></div><div class="chatmsgcontent">' + msgstr
+           + '</div></div><div class="chatmsgcontent">' + msgstr
            + '</div></div>\n';
     }
 

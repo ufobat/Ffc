@@ -98,7 +98,6 @@ div, textarea {
 }
 #msglog .username {
     color: black;
-    text-decoration: underline;
 }
 #msglog .timestamp {
     font-size: 0.75em;
@@ -165,24 +164,22 @@ div, textarea {
 .chatmsgbox, .chatmsgprefix, .chatmsgprefixinner, .chatmsgcontent, .newdaymsg {
     border: none;
 }
-.chatmsgprefix, .chatmsgcontent {
-    display: inline-block;
+.usernameline {
+    background: gainsboro;
+    width: 42.5em;
+    padding-left: 1em;
+    margin-top: .5em;
 }
-.chatmsgprefix {
-    width: 7em;
+.sameuser .chatmsgprefix {
     text-align: right;
-    overflow: hidden;
+    width: 5em;
+    margin-right: .5em;
 }
-.chatmsgprefixinner {
-    white-space: nowrap;
-    float: right;
+.sameuser .chatmsgcontent {
+    width: 38em;
 }
 .chatmsgbox div {
     vertical-align: text-top
-}
-.chatmsgcontent {
-    margin-left: .5em;
-    width: 34em;
 }
 .newdaymsg {
     border-top: .1em silver dashed;
