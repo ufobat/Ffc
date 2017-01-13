@@ -199,5 +199,5 @@ span.chatoptionpopupswitch {
     margin-left: -1em;
 }
 select#refreshtime {
-    width: 12em;
+    min-width: 10em;
 }
