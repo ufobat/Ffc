@@ -3,7 +3,7 @@
 /******************************************************************************/
 CREATE TABLE "users" (
   "id"                 integer       PRIMARY KEY AUTOINCREMENT,
-  "name"               varchar(64)   NOT NULL,
+  "name"               varchar(12)   NOT NULL,
   "password"           varchar(512)  NOT NULL,
   "active"             tinyint(1)    NOT NULL DEFAULT '0',
   "chronsortorder"     tinyint(1)    NOT NULL DEFAULT '0',
