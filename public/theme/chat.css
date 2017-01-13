@@ -61,7 +61,7 @@ div, textarea {
     text-align: center;
     border: .1em gray solid;
     color: black;
-    background: gainsboro;
+    background: lightgray;
     padding-top: .5em;
 }
 #buttonlist > * {
