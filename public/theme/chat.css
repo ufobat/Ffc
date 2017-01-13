@@ -162,22 +162,27 @@ div, textarea {
 .notifyswitch {
     white-space: nowrap;
 }
-.chatmsgbox, .chatmsgprefix, .chatmsgcontent, .newdaymsg {
+.chatmsgbox, .chatmsgprefix, .chatmsgprefixinner, .chatmsgcontent, .newdaymsg {
     border: none;
 }
 .chatmsgprefix, .chatmsgcontent {
     display: inline-block;
 }
 .chatmsgprefix {
-    width: 11em;
+    width: 7em;
     text-align: right;
+    overflow: hidden;
+}
+.chatmsgprefixinner {
+    white-space: nowrap;
+    float: right;
 }
 .chatmsgbox div {
     vertical-align: text-top
 }
 .chatmsgcontent {
     margin-left: .5em;
-    width: 30em;
+    width: 34em;
 }
 .newdaymsg {
     border-top: .1em silver dashed;

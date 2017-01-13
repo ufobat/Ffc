@@ -119,8 +119,8 @@ ffcdata.chat.init = function() {
            + '<div class="chatmsgbox' 
            + ( ( classstr.length > 0 ? ' ' : '' ) + classstr.join(' ') ) 
            + '">'
-           + '<div class="chatmsgprefix"><span class="timestamp">(' + timepart + ')</span> '
-           + userstrthing + '</div><div class="chatmsgcontent">' + msgstr
+           + '<div class="chatmsgprefix"><div class="chatmsgprefixinner"><span class="timestamp">(' + timepart + ')</span> '
+           + userstrthing + '</div></div><div class="chatmsgcontent">' + msgstr
            + '</div></div>\n';
     }
 
