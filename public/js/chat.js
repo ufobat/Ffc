@@ -65,7 +65,7 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Neue Chatnachrichten zusammenbauen                               ***
      ************************************************************************/
-    var compose_msg = function(msgs, i, match_l, started){
+    var compose_msg = function(msgs, i, started){
         var newdaymsg = false;
         var userstrthing = '';
         var userstr = '';
@@ -77,24 +77,18 @@ ffcdata.chat.init = function() {
         var newdate = '';
         var usernameprefix = '';
         var match_n = msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/);
-        var timepart = msgs[i][3].match(/\d\d:\d\d/);
-        if ( i < msgs.length - 1 ) {
-            var match_a = msgs[i + 1][3].match(/\d\d\.\d\d\.\d\d\d\d/);
-            if ( match_a && ( !match_n || match_n[0] !== match_a[0] ) ) {
-                newdaymsg = true;
+        var match_l = ffcdata.chat.lastmsgtime.match(/\d\d\.\d\d\.\d\d\d\d/);
+        if ( match_l && ( !match_n || match_n[0] !== match_l[0] ) ) {
+            if ( match_n ) {
+                newdate = '<div class="chatmsgbox newdaymsg">' + match_n + '</div>';
             }
         }
-        else {
-            if ( match_l && ( !match_n || match_n[0] !== match_l[0] ) ) {
-                newdaymsg = true;
-            }
-        }
+        ffcdata.chat.lastmsgtime = msgs[i][3];
+
         if ( started ) classstr.push('startmsg');
-        if ( newdaymsg && match_n ) {
-            newdate = '<div class="chatmsgbox newdaymsg">' + match_n + '</div>';
-        }
         var sameuser = ffcdata.chat.lastmsguser === msgs[i][1];
 
+        var timepart = msgs[i][3].match(/\d\d:\d\d/);
         var mecmd = false;
         if ( msgs[i][2].match(/^\/me\s+/ ) ) {
             msgs[i][2] = msgs[i][2].replace(/^\/me\s+/, '');
@@ -141,17 +135,15 @@ ffcdata.chat.init = function() {
     var add_msgs = function(msgs, started) {
         if ( msgs.length > 0 ) {
             var ml = msglog.innerHTML;
-            var match_l = ffcdata.chat.lastmsgtime.match(/\d\d\.\d\d\.\d\d\d\d/);
             var relevantcnt = 0;
             for ( var i = msgs.length - 1; i >= 0; i-- ) {
-                ml = ml + compose_msg(msgs, i, match_l, started);
+                ml = ml + compose_msg(msgs, i, started);
                 if ( msgs[i][5] != ffcdata.userid ) relevantcnt++;
             }
             if ( !document.hasFocus() && !started && relevantcnt > 0 )
                 ffcdata.utils.notify('Es sind ' + msgs.length + ' neue Nachrichten im Chat');
 
             msglog.innerHTML = ml;
-            ffcdata.chat.lastmsgtime = msgs[0][3];
 
             var scrollHeight = Math.max(msglog.scrollHeight, msglog.clientHeight);
             msglog.scrollTop = scrollHeight - msglog.clientHeight;
