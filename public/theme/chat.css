@@ -42,7 +42,7 @@ div, textarea {
     min-height: 5em;
 }
 #userlist, #msglog {
-    height: 25em;
+    height: 30em;
 }
 #msglog {
     background: whitesmoke;
