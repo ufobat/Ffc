@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 564;
+use Test::More tests => 590;
 use Test::Mojo;
 use Data::Dumper;
 
@@ -207,3 +207,14 @@ $t1->get_ok('/chat/receive/focused')->status_is(200);
 $t2->get_ok('/chat/receive/focused')->status_is(200);
 bothusers($t2,1,2);
 bothusers($t1,1,1);
+
+# Testen, ob Privatnachrichten und Forenbeiträge korrekt ankommen
+my @Pmsgs2 = map {Testinit::test_randstring()} 1 .. 2;
+$t1->post_ok('/pmsgs/2/new', form => { textdata => $_ })
+   ->status_is(302) for @Pmsgs;
+$t1->get_ok('/chat/receive/focused')->status_is(200);
+$t2->get_ok('/chat/receive/focused')->status_is(200);
+bothusers($t2,1,2);
+bothusers($t1,1,1);
+$t1->json_is('/1/0/5' => 0);
+$t2->json_is('/1/0/5' => 2);
