@@ -54,8 +54,16 @@ ffcdata.chat.init = function() {
             var uh = '<span class="username">' + users[i][0] + '</span>';
             if ( users[i][4] !== '' ) {
                 uh = '<a href="' + users[i][4] + '" target="_blank">' + uh;
-                if ( users[i][5] )
+                if ( users[i][5] ) {
                     uh = uh + ' (' + users[i][5] + ')';
+                    if ( users[i][5] > 0 ) {
+                        ffcdata.utils.notify(
+                              '' + users[i][5] 
+                            + ' neue Privatnachrichten von ' 
+                            + users[i][0]
+                        );
+                    }
+                }
                 uh = uh + '</a>';
             }
             ul = ul +'<p>' + uh + '<br /><span class="timestamp">(';
