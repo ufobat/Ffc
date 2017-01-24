@@ -51,13 +51,16 @@ ffcdata.chat.init = function() {
     var update_userlist = function(users) {
         var ul = '';
         for ( var i = 0; i < users.length; i++ ) {
-            var uh = '<span class="username">' + users[i][0] + '</span>';
+            var uh = '';
             if ( users[i][4] !== '' ) {
-                uh = '<a href="' + users[i][4] + '" target="_blank">' + uh;
-                uh = uh + '</a>';
+                uh = '<a href="' + users[i][4] + '" target="_blank">' + users[i][0] + '</a>';
                 if ( users[i][5] )
                     uh = uh + ' (' + users[i][5] + ')';
             }
+            else {
+                uh = users[i][0];
+            }
+            uh = '<span class="username">' + uh + '</span>';
             ul = ul +'<p>' + uh + '<br /><span class="timestamp">(';
             if ( users[i][2] >= 60 )
                 ul = ul + ( users[i][2] / 60 ) + 'min';
