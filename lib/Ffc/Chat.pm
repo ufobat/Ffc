@@ -109,6 +109,7 @@ sub receive_unfocused { _receive($_[0], 0, 0) }
 ###############################################################################
 # Benutzerliste ermitteln
 sub get_chat_users {
+    my $c = $_[0];
     my $sql = << 'EOSQL';
 SELECT 
     "name", 
@@ -121,11 +122,20 @@ WHERE
     AND "inchat"=1
 ORDER BY UPPER("name"), "id"
 EOSQL
-    my $users = $_[0]->dbh_selectall_arrayref( $sql );
+    my $users = $c->dbh_selectall_arrayref( $sql );
+    $c->generate_userlist();
+    my @fusers = ( '', sort {$a->[0] <=> $b->[0]} @{$c->stash('users')} );
     # Nachbearbeitung der Benutzerliste
+    my $uid = $c->session->{userid};
     for my $u ( @$users ) {
-        $u->[1] = $_[0]->format_timestamp( $u->[1] || 0 );
+        $u->[1] = $c->format_timestamp( $u->[1] || 0 );
         $u->[0] = xml_escape($u->[0]);
+        $u->[4] = $u->[3] == $uid 
+            ? ''
+            : $c->url_for( 'show_pmsgs', usertoid => $u->[3] );
+        $u->[5] = $fusers[$u->[3]]
+            ? $fusers[$u->[3]][2]
+            : '0';
     }
     return $users;
 }

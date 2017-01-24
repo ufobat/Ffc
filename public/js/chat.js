@@ -28,7 +28,10 @@ ffcdata.chat.init = function() {
             ffcdata.chat.newchatcountsum = 0;
         else 
             ffcdata.chat.newchatcountsum = ffcdata.chat.newchatcountsum + newchatcount;
-        var str = tp[0]+ffcdata.chat.newchatcountsum+tp[1]+(newpostcount+newmsgscount)+tp[2]+tp[3];
+
+        var str = ffcdata.chat.newchatcountsum + tp[0]
+                + newpostcount + tp[1] + newmsgscount + tp[2] + tp[3];
+
         titlenode.data = str;
         // console.log('title updated');
     };
@@ -48,8 +51,14 @@ ffcdata.chat.init = function() {
     var update_userlist = function(users) {
         var ul = '';
         for ( var i = 0; i < users.length; i++ ) {
-            ul = ul +'<p><span class="username">'
-                + users[i][0] + '</span><br /><span class="timestamp">(';
+            var uh = '<span class="username">' + users[i][0] + '</span>';
+            if ( users[i][4] !== '' ) {
+                uh = '<a href="' + users[i][4] + '" target="_blank">' + uh;
+                if ( users[i][5] )
+                    uh = uh + ' (' + users[i][5] + ')';
+                uh = uh + '</a>';
+            }
+            ul = ul +'<p>' + uh + '<br /><span class="timestamp">(';
             if ( users[i][2] >= 60 )
                 ul = ul + ( users[i][2] / 60 ) + 'min';
             else

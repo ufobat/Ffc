@@ -15,7 +15,7 @@
           textpreviewurl: "<%= url_for 'textpreview' %>",
           notifications:  <%= session()->{notifications} ? 'true' : 'false' %>,
           chat: {
-              title:           ['(', ') Chat, (', ') ', <%== $title_array %>],
+              title:           [' (', '/', ') ', <%== $title_array %>],
               userre:          /(\s|^|\.|!|,|\(|@)(<%= session->{user} %>)(\s|$|\.|!|\?|,|\)|:|;)/i,
               leaveurl:        '<%= url_for "chat_leave" %>',
               refreshseturl:   '<%= url_for "chat_set_refresh", refresh => 33 %>',

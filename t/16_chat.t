@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 544;
+use Test::More tests => 564;
 use Test::Mojo;
 use Data::Dumper;
 
@@ -30,11 +30,16 @@ for my $u (
 sub bothusers {
     my $t = $_[0];
     my $aref = $_[1] || 42;
+    my $uid = $_[2] // 0;
     my $i = 0;
-    for my $u ( sort {uc($a->[0]) cmp uc($b->[0])} [$user,60], [$admin,$aref] ) {
+    for my $u ( sort {uc($a->[0]) cmp uc($b->[0])} [$user,60,2], [$admin,$aref,1] ) {
         $t->json_is("/1/$i/0" => $u->[0])
           ->json_is("/1/$i/2" => $u->[1])
-          ->json_is("/1/$i/3" => $i + 1 );
+          ->json_is("/1/$i/3" => $u->[2] );
+        if ( $uid ) { # PMSGS-Link
+            if ( $uid == $u->[2] ) { $t->json_is("/1/$i/4" => '')                  }
+            else                   { $t->json_is("/1/$i/4" => '/pmsgs/'. $u->[2] ) }
+        }
         $i++;
     }
 }
@@ -197,4 +202,8 @@ $t2->json_hasnt('/0/2');
 $t2->json_is('/0/1/0' => ++$id, '/0/1/1' => "$admin", '/0/1/2' => "$admin hat den Chat betreten.", '/0/1/4' => 1);
 $t2->json_is('/0/0/0' => ++$id, '/0/0/1' => "$admin", '/0/0/2' => "$admin hat den Chat verlassen.", '/0/0/4' => 1);
 
-
+# Der nächste Test ist dazu da, zu schauen, ob für die User URL's zu PMSGS-Formularen mitgeliefert werden
+$t1->get_ok('/chat/receive/focused')->status_is(200);
+$t2->get_ok('/chat/receive/focused')->status_is(200);
+bothusers($t2,1,2);
+bothusers($t1,1,1);
