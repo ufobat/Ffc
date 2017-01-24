@@ -54,9 +54,9 @@ ffcdata.chat.init = function() {
             var uh = '<span class="username">' + users[i][0] + '</span>';
             if ( users[i][4] !== '' ) {
                 uh = '<a href="' + users[i][4] + '" target="_blank">' + uh;
+                uh = uh + '</a>';
                 if ( users[i][5] )
                     uh = uh + ' (' + users[i][5] + ')';
-                uh = uh + '</a>';
             }
             ul = ul +'<p>' + uh + '<br /><span class="timestamp">(';
             if ( users[i][2] >= 60 )
