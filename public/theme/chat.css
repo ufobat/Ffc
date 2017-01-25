@@ -53,22 +53,15 @@ div, textarea {
     margin: .25em;
 }
 #buttonlist {
-    border-color: transparent;
     max-height: 60em;
     margin: 0 .25em;
-    padding: 0 .25em;
+    padding: .25em;
     overflow: visible;
     text-align: center;
     border: .1em gray solid;
     color: black;
     background: lightgray;
     padding-top: .5em;
-}
-#buttonlist > * {
-    margin-bottom: .25em;
-}
-#buttonlist > button {
-    width: 10em;
 }
 #textinput:hover {
     border-color: dodgerblue;
@@ -192,14 +185,23 @@ div, textarea {
     border: none;
 }
 span.chatoptionpopupswitch {
-    width: 5em;
-    display: block;
     color: black;
-    padding: 0 1em;
 }
 .chatoptionpopup .popup {
-    margin-left: -2em;
+    margin-left: -5em;
 }
 input#refreshtime {
     width: 4em;
+}
+#buttonlist table {
+    width: 100%;
+    border-collapse: collapse;
+}
+#buttonlist td {
+    width: 4em;
+    padding: .15em .3em;
+    border: none;
+}
+#buttonlist td button {
+    width: 100%;
 }
