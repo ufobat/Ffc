@@ -134,6 +134,7 @@ EOSQL
             ? ''
             : $c->url_for( 'show_pmsgs', usertoid => $u->[3] );
         $u->[5] = $fusers{$u->[3]} || 0;
+        $u->[6] = $c->url_for( 'avatar_show', userid => $u->[3] );
     }
     return $users;
 }

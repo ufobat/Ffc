@@ -60,7 +60,7 @@ ffcdata.chat.init = function() {
             else {
                 uh = users[i][0];
             }
-            uh = '<span class="username">' + uh + '</span>';
+            uh = '<img class="avatar" src="' + users[i][6] + '" /><span class="username">' + uh + '</span>';
             ul = ul +'<p>' + uh + '<br /><span class="timestamp">(';
             if ( users[i][2] >= 60 )
                 ul = ul + ( users[i][2] / 60 ) + 'min';
@@ -77,7 +77,7 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Neue Chatnachrichten zusammenbauen                               ***
      ************************************************************************/
-    var compose_msg = function(msgs, i, started, users){
+    var compose_msg = function(msgs, i, started){
         var newdaymsg = false;
         var userstrthing = '';
         var userstr = '';
@@ -140,7 +140,7 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Neue Chatnachrichten anzeigen                                    ***
      ************************************************************************/
-    var add_msgs = function(msgs, started, users) {
+    var add_msgs = function(msgs, started) {
         if ( msgs.length > 0 ) {
             var ml = msglog.innerHTML;
             var relevantcnt = 0;
@@ -184,7 +184,7 @@ ffcdata.chat.init = function() {
         update_userlist(data[1]);
 
         // Neue Nachrichten ins Log schreiben
-        add_msgs(data[0], started, data[1]);
+        add_msgs(data[0], started);
 
         // Timeout wieder neu starten
         t_start();

@@ -22,8 +22,6 @@ table {
 }
 div, textarea {
     border: .1em gray solid;
-}
-div, textarea {
     display: inline-block;
     overflow: auto;
 }
@@ -35,7 +33,7 @@ div, textarea {
     font-family: sans-serif;
 }
 #userlist, #buttonlist {
-    width: 11em;
+    width: 13em;
 }
 #textinput {
     height: 5em;
@@ -71,13 +69,22 @@ div, textarea {
 }
 #userlist .timestamp {
     color: gray;
-    margin-left: 1.5em;
 }
 #userlist .username {
     white-space: nowrap;
 }
 #userlist {
     background: gainsboro;
+}
+#userlist img {
+    height: 2em;
+    max-width: 3em;
+    margin-right: .25em;
+    float: left;
+    border: .1em gray solid;
+}
+#userlist p {
+    clear: both;
 }
 .titlebanner {
     background: inherit;
@@ -187,9 +194,6 @@ div, textarea {
 .chatoptionpopup {
     border: none;
 }
-span.username > a {
-    color: navy;
-}
 span.chatoptionpopupswitch {
     color: black;
 }
@@ -211,3 +215,4 @@ input#refreshtime {
 #buttonlist td button {
     width: 100%;
 }
+
