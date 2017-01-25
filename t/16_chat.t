@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 590;
+use Test::More tests => 786;
 use Test::Mojo;
 use Data::Dumper;
 
@@ -211,10 +211,101 @@ bothusers($t1,1,1);
 # Testen, ob Privatnachrichten und Forenbeiträge korrekt ankommen
 my @Pmsgs2 = map {Testinit::test_randstring()} 1 .. 2;
 $t1->post_ok('/pmsgs/2/new', form => { textdata => $_ })
-   ->status_is(302) for @Pmsgs;
+   ->status_is(302) for @Pmsgs2;
 $t1->get_ok('/chat/receive/focused')->status_is(200);
 $t2->get_ok('/chat/receive/focused')->status_is(200);
 bothusers($t2,1,2);
 bothusers($t1,1,1);
 $t1->json_is('/1/0/5' => 0);
 $t2->json_is('/1/0/5' => 2);
+
+# Testen, ob Privatnachrichten und Forenbeiträge korrekt ankommen
+# Diesmal mit anderen Nutzern und deaktiviertem Admin
+my $t3 = Test::Mojo->new('Ffc');
+my $t4 = Test::Mojo->new('Ffc'); # Admin
+my $t5 = Test::Mojo->new('Ffc');
+my ( $user3, $pass3 ) = ( 'z'.Testinit::test_randstring(), Testinit::test_randstring() );
+my ( $user4, $pass4 ) = ( 'w'.Testinit::test_randstring(), Testinit::test_randstring() ); # Admin
+my ( $user5, $pass5 ) = ( 'y'.Testinit::test_randstring(), Testinit::test_randstring() );
+Testinit::test_add_users( $t3, $admin, $apass, $user3, $pass3 );
+Testinit::test_add_users( $t4, $admin, $apass, $user4, $pass4 ); # Admin
+Testinit::test_add_users( $t5, $admin, $apass, $user5, $pass5 );
+
+for my $u (
+    [ $t3, $user3, $pass3 ],
+    [ $t4, $user4, $pass4 ], # Admin
+    [ $t5, $user5, $pass5 ],
+) {
+    Testinit::test_login(@$u);
+    $u->[0]->get_ok('/chat')->status_is(200)
+      ->content_like(qr~<!-- Angemeldet als "$u->[1]" !-->~);
+}
+
+# Adminuser umswitchen und Admin (userid 1) deaktivieren
+$t1->post_ok("/admin/usermod/$user4", form => {overwriteok => 1, newpw1 => $apass, newpw2 => $apass, active => 1, admin => 1})
+  ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
+$t1->get_ok('/logout')->status_is(200)->content_like(qr'<!-- Angemeldet als "&lt;noone&gt;" !-->');
+
+$t3->post_ok("/admin/usermod/$admin", form => {overwriteok => 1, newpw1 => $apass, newpw2 => $apass, active => 0, admin => 1})
+  ->status_is(302)->content_is('')->header_is(Location => '/options/form');
+
+$t1->post_ok('/login', form => { form => {username => $admin, password => $apass} } )
+   ->status_is(403)->content_like(qr~<h1 class="loginformh1">Anmeldung</h1>~);
+$t3->get_ok('/chat')->status_is(200)
+   ->content_like(qr~<!-- Angemeldet als "$user3" !-->~);
+
+my @Pmsgs3 = map {Testinit::test_randstring()} 1 .. 2;
+$t2->post_ok('/pmsgs/3/new', form => { textdata => $_ })
+   ->status_is(302) for @Pmsgs3;
+
+my @Pmsgs4 = map {Testinit::test_randstring()} 1 .. 3;
+$t5->post_ok('/pmsgs/4/new', form => { textdata => $_ })
+   ->status_is(302) for @Pmsgs4;
+
+$_->get_ok('/chat')->status_is(200) for $t2, $t3, $t4, $t5;
+$t2->get_ok('/chat/receive/started')->status_is(200); # 0 Pmsgs
+$t3->get_ok('/chat/receive/started')->status_is(200); # 2 Pmsgs von 2
+$t4->get_ok('/chat/receive/started')->status_is(200); # 3 Pmsgs von 5
+$t5->get_ok('/chat/receive/started')->status_is(200); # 0 Pmsgs
+sleep $sleepval;
+
+my @usermap = sort { uc($a->[1]) cmp uc($b->[1]) } [2, $user], [3, $user3], [4, $user4], [5, $user5];
+my %usermap = map { $usermap[$_][0] => [$_, @{$usermap[$_]}] } 0 .. $#usermap;
+sub check_user_msg_cnt {
+    my ( $t, $myuid, $uid, $msgcnt ) = @_;
+    my $arrid = $usermap{$uid}[0];
+    $t->get_ok('/chat/receive/focused')->status_is(200);
+    note("  -----  user '$myuid' received '$msgcnt' pmsgs from user '$uid' (array id '$arrid')");
+
+    $t->json_is("/1/$arrid/3" => $uid);
+    unless ( $t->success ) {
+        $t->content_is('');
+        die Data::Dumper::Dumper \%usermap;
+    }
+    
+    if   ( $myuid == $uid ) { $t->json_is("/1/$arrid/4" => ''              ) }
+    else                    { $t->json_is("/1/$arrid/4" => '/pmsgs/'. $uid ) }
+
+    if   ( $msgcnt > 0 ) { $t->json_is("/1/$arrid/5" => $msgcnt ) }
+    else                 { $t->json_is("/1/$arrid/5" => 0       ) }
+    unless ( $t->success ) {
+        die $t->json_is('/1');
+    }
+}
+
+# User 2
+check_user_msg_cnt($t2, 2, 3, 0);
+check_user_msg_cnt($t2, 2, 4, 0);
+check_user_msg_cnt($t2, 2, 5, 0);
+# User 3
+check_user_msg_cnt($t3, 3, 2, 2);
+check_user_msg_cnt($t3, 3, 4, 0);
+check_user_msg_cnt($t3, 3, 5, 0);
+# User 4
+check_user_msg_cnt($t4, 4, 2, 0);
+check_user_msg_cnt($t4, 4, 3, 0);
+check_user_msg_cnt($t4, 4, 5, 3);
+# User 5
+check_user_msg_cnt($t5, 5, 2, 0);
+check_user_msg_cnt($t5, 5, 3, 0);
+check_user_msg_cnt($t5, 5, 4, 0);

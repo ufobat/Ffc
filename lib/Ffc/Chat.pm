@@ -124,7 +124,7 @@ ORDER BY UPPER("name"), "id"
 EOSQL
     my $users = $c->dbh_selectall_arrayref( $sql );
     $c->generate_userlist();
-    my @fusers = ( '', sort {$a->[0] <=> $b->[0]} @{$c->stash('users')} );
+    my %fusers = map {;$_->[0] => $_->[2]} @{$c->stash('users')};
     # Nachbearbeitung der Benutzerliste
     my $uid = $c->session->{userid};
     for my $u ( @$users ) {
@@ -133,9 +133,7 @@ EOSQL
         $u->[4] = $u->[3] == $uid 
             ? ''
             : $c->url_for( 'show_pmsgs', usertoid => $u->[3] );
-        $u->[5] = $fusers[$u->[3]]
-            ? $fusers[$u->[3]][2]
-            : '0';
+        $u->[5] = $fusers{$u->[3]} || 0;
     }
     return $users;
 }
