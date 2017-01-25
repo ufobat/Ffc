@@ -69,6 +69,7 @@ div, textarea {
 }
 #userlist .timestamp {
     color: gray;
+    margin-left: 1em;
 }
 #userlist .username {
     white-space: nowrap;
