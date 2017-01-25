@@ -80,7 +80,7 @@ div, textarea {
     height: 2em;
     max-width: 3em;
     margin-right: .25em;
-    float: left;
+    float: right;
     border: .1em gray solid;
 }
 #userlist p {
