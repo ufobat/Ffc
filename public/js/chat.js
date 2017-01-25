@@ -77,14 +77,14 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Neue Chatnachrichten zusammenbauen                               ***
      ************************************************************************/
-    var compose_msg = function(msgs, i, started){
+    var compose_msg = function(msgs, i, started, users){
         var newdaymsg = false;
         var userstrthing = '';
         var userstr = '';
         var msgstr = msgs[i][2];
         var classstr = [];
         var userstrthing = '';
-        var userstr = '';
+        var userstr = msgs[i][1];
         var classstr = [];
         var newdate = '';
         var usernameprefix = '';
@@ -107,9 +107,6 @@ ffcdata.chat.init = function() {
             userstr = msgs[i][1] + ' ';
             mecmd = true;
         }
-        else {
-            userstr = '<span class="username">' + msgs[i][1] + '</span>: ';
-        }
         if ( ffcdata.user === msgs[i][1] ) classstr.push('ownmsg');
         userstrthing = ( !sameuser || mecmd || newdaymsg ? userstr : '' );
         if ( msgs[i][4] === 0 ) {
@@ -120,9 +117,11 @@ ffcdata.chat.init = function() {
         ffcdata.chat.lastmsguser = msgs[i][1];
         if ( msgs[i][4] !== 0  && !sameuser ) {
             sameuser = '';
-            userstr = '<span class="username">' + msgs[i][1] + '</span>: ';
         }
-//        }
+        if ( msgs[i][5] != ffcdata.userid ) {
+            userstr = '<a href="' + msgs[i][6] + '" target="_blank" title="Private Nachricht senden" class="chatusernamelink">' + userstr + '</a>';
+        }
+        userstr = '<span class="username">' + userstr + '</span>';
 
         if ( !sameuser ) {
            usernameprefix = '<div class="chatmsgbox usernameline">' + userstr + '</div>\n';
@@ -141,7 +140,7 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Neue Chatnachrichten anzeigen                                    ***
      ************************************************************************/
-    var add_msgs = function(msgs, started) {
+    var add_msgs = function(msgs, started, users) {
         if ( msgs.length > 0 ) {
             var ml = msglog.innerHTML;
             var relevantcnt = 0;
@@ -185,7 +184,7 @@ ffcdata.chat.init = function() {
         update_userlist(data[1]);
 
         // Neue Nachrichten ins Log schreiben
-        add_msgs(data[0], started);
+        add_msgs(data[0], started, data[1]);
 
         // Timeout wieder neu starten
         t_start();

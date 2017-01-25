@@ -192,10 +192,17 @@ EOSQL
     my $msgs = $c->dbh_selectall_arrayref( $sql,
         ( $started ? 50 : $s->{userid} )
     );
+
     # Nachbearbeitung der empfangenen Nachrichten
+    my %ulinks;
     for my $m ( @$msgs ) {
         $m->[1] = xml_escape($m->[1]);
         $m->[3] = $c->format_timestamp($m->[3], 1);
+        $ulinks{$m->[5]} = 
+            $m->[5] == $s->{userid} ?
+                '' : $c->url_for( 'show_pmsgs', usertoid => $m->[5] )
+                    unless exists $ulinks{$m->[5]};
+        $m->[6] = $ulinks{$m->[5]};
     }
 
     # Refresh-Timer neu setzen, damit diese Statusabfrage bei der Berechnung der Aktivität berücksichtig werden kann

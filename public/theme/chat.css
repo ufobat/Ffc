@@ -163,6 +163,9 @@ div, textarea {
     padding-left: 1em;
     margin-top: .5em;
 }
+#msglog .usernameline .username .chatusernamelink {
+    color: navy;
+}
 .sameuser .chatmsgprefix {
     text-align: right;
     width: 5em;
@@ -183,6 +186,9 @@ div, textarea {
 }
 .chatoptionpopup {
     border: none;
+}
+span.username > a {
+    color: navy;
 }
 span.chatoptionpopupswitch {
     color: black;
