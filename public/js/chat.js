@@ -124,7 +124,9 @@ ffcdata.chat.init = function() {
         var match_n = msg[3].match(/\d\d\d\d-\d\d-\d\d/);
         //console.log(match_o + ' → ' + match_n);
         if ( match_n && ( !match_o || ( match_o[0] != match_n[0] ) ) ) {
-            newdate = '<div class="chatmsgbox newdaymsg">' + match_n[0] + '</div>';
+            var ndm = match_n[0].match(/(\d\d\d\d)-(\d\d)-(\d\d)/);
+            console.log(ndm);
+            newdate = '<div class="chatmsgbox newdaymsg">' + ndm[3] + '.' + ndm[2] + '.' + ndm[1] + '</div>';
         }
         ffcdata.chat.lastmsgtime = msg[3];
 
