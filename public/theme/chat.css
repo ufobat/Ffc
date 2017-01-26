@@ -236,7 +236,7 @@ input#refreshtime {
     margin: .25em;
 }
 #forumentries {
-    width: 15em;
+    width: 20em;
 }
 #forumentries > p, .chatoptionpopup p {
     border-bottom: .1em silver dashed;
