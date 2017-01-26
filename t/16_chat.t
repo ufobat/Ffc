@@ -311,7 +311,7 @@ check_user_msg_cnt($t5, 5, 3, 0);
 check_user_msg_cnt($t5, 5, 4, 0);
 
 # Check for topic-receive
-$t3->get_ok('/topic/sort/chronological')->status_is(200);
+$t3->get_ok('/topic/sort/chronological')->status_is(302);
 $t3->get_ok('/topic/1')->status_is(200);
 $t3->get_ok('/topic/2')->status_is(200);
 
