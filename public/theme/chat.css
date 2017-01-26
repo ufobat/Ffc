@@ -87,7 +87,8 @@ div, textarea {
 #userlist p {
     clear: both;
     border-bottom: .1em silver dashed;
-    margin: .25em;
+    margin: .25em .5em;
+    padding-bottom: .5em;
 }
 .titlebanner {
     background: inherit;
