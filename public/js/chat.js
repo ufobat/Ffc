@@ -78,48 +78,49 @@ ffcdata.chat.init = function() {
      *** Neue Chatnachrichten zusammenbauen                               ***
      ************************************************************************/
     var compose_msg = function(msgs, i, started){
-        var newdaymsg = false;
-        var userstrthing = '';
-        var userstr = '';
-        var msgstr = msgs[i][2];
-        var classstr = [];
-        var userstrthing = '';
-        var userstr = msgs[i][1];
-        var classstr = [];
-        var newdate = '';
+        var msg            = msgs[i];
+        var newdaymsg      = false;
+        var userstrthing   = '';
+        var userstr        = '';
+        var msgstr         = msg[2];
+        var classstr       = [];
+        var userstrthing   = '';
+        var userstr        = msg[1];
+        var classstr       = [];
+        var newdate        = '';
         var usernameprefix = '';
-        var match_n = msgs[i][3].match(/\d\d\.\d\d\.\d\d\d\d/);
-        var match_l = ffcdata.chat.lastmsgtime.match(/\d\d\.\d\d\.\d\d\d\d/);
-        if ( match_l && ( !match_n || match_n[0] !== match_l[0] ) ) {
-            if ( match_n ) {
-                newdate = '<div class="chatmsgbox newdaymsg">' + match_n + '</div>';
-            }
+
+        var match_o = ffcdata.chat.lastmsgtime.match(/\d\d\d\d-\d\d-\d\d/);
+        var match_n = msg[3].match(/\d\d\d\d-\d\d-\d\d/);
+        console.log(match_o + ' → ' + match_n);
+        if ( match_n && ( !match_o || ( match_o[0] != match_n[0] ) ) ) {
+            newdate = '<div class="chatmsgbox newdaymsg">' + match_n[0] + '</div>';
         }
-        ffcdata.chat.lastmsgtime = msgs[i][3];
+        ffcdata.chat.lastmsgtime = msg[3];
 
         if ( started ) classstr.push('startmsg');
-        var sameuser = ffcdata.chat.lastmsguser === msgs[i][1];
+        var sameuser = ffcdata.chat.lastmsguser === msg[1];
 
-        var timepart = msgs[i][3].match(/\d\d:\d\d/);
+        var timepart = msg[3].match(/\d\d:\d\d/);
         var mecmd = false;
-        if ( msgs[i][2].match(/^\/me\s+/ ) ) {
-            msgs[i][2] = msgs[i][2].replace(/^\/me\s+/, '');
-            userstr = msgs[i][1] + ' ';
+        if ( msg[2].match(/^\/me\s+/ ) ) {
+            msg[2] = msg[2].replace(/^\/me\s+/, '');
+            userstr = msg[1] + ' ';
             mecmd = true;
         }
-        if ( ffcdata.user === msgs[i][1] ) classstr.push('ownmsg');
+        if ( ffcdata.user === msg[1] ) classstr.push('ownmsg');
         userstrthing = ( !sameuser || mecmd || newdaymsg ? userstr : '' );
-        if ( msgs[i][4] === 0 ) {
-            msgstr = usernamefilter(msgs[i][2]);
+        if ( msg[4] === 0 ) {
+            msgstr = usernamefilter(msg[2]);
         }
 
         classstr.push('sameuser');
-        ffcdata.chat.lastmsguser = msgs[i][1];
-        if ( msgs[i][4] !== 0  && !sameuser ) {
+        ffcdata.chat.lastmsguser = msg[1];
+        if ( msg[4] !== 0  && !sameuser ) {
             sameuser = '';
         }
-        if ( msgs[i][5] != ffcdata.userid ) {
-            userstr = '<a href="' + msgs[i][6] + '" target="_blank" title="Private Nachricht senden" class="chatusernamelink">' + userstr + '</a>';
+        if ( msg[5] != ffcdata.userid ) {
+            userstr = '<a href="' + msg[6] + '" target="_blank" title="Private Nachricht senden" class="chatusernamelink">' + userstr + '</a>';
         }
         userstr = '<span class="username">' + userstr + '</span>';
 
