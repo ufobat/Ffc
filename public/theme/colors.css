@@ -137,7 +137,7 @@ a.coloroption:hover {
     color: gainsboro;
     background: whitesmoke;
 }
-.menu .pin {
+.forumoptionpopup .pin, ..menu .pin {
     background-color: lightgoldenrodyellow;
 }
 ul.topiclist {
@@ -146,7 +146,7 @@ ul.topiclist {
 .mark {
     color: palevioletred;
 }
-h2.newpost, .newpost h1, .newpost .title, input.activesearch {
+.forumoptionpopup .newpost, h2.newpost, .newpost h1, .newpost .title, input.activesearch {
     background: lemonchiffon;
 }
 .topiclist .newpost, .newpost h1, .newpost .title, input.activesearch, .newpost .avatar {
@@ -240,7 +240,7 @@ pre {
 .ignored {
     background: whitesmoke;
 }
-.menu .ignored {
+.forumoptionpopup .ignored, .menu .ignored {
     background: gainsboro;
 }
 .score {

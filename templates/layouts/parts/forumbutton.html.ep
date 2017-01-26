@@ -1,7 +1,5 @@
-<div id="forumbutton" class="popuparrow chatoptionpopup activedim menuentry">
-    <p><a href="<%= url_for 'show_forum_topiclist' %>" target="_blank" title="Forum öffnen"><span class="linktext linkchat">Forum</span></a></p>
-    <div class="popup otherspopup">
-    asdfasdfasdf
-    </div>
+<div id="forumbutton" class="popuparrow forumoptionpopup activedim menuentry">
+    <p><a href="<%= url_for 'show_forum_topiclist' %>" target="_blank" title="Forum öffnen"><span class="linktext linkchat">Forum</span></a><span id="forumcounter"></span></p>
+    <div class="popup otherspopup" id="forumentries"></div>
 </div>
 

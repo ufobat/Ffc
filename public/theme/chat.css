@@ -5,7 +5,7 @@
 body {
     font-family: sans-serif;
     color: black;
-    background: gainsboro;
+    background: gainsboro url('img/chg.png') no-repeat fixed top left;
     overflow: hidden;
     width: 65em;
     height: 30em;
@@ -202,7 +202,7 @@ span.chatoptionpopupswitch {
     color: black;
 }
 .chatoptionpopup .popup {
-    margin-left: -7em;
+    margin-left: -4em;
 }
 input#refreshtime {
     width: 4em;
@@ -222,6 +222,7 @@ input#refreshtime {
 #forumbutton {
     box-shadow: 0 0 .25em dimgrey;
     background-color: whitesmoke;
+    overflow: visible;
 }
 #forumbutton {
     position: fixed;
@@ -231,8 +232,14 @@ input#refreshtime {
     margin: 0;
     border: .1em gray solid;
 }
-#forumbutton p {
+#forumbutton > p {
     margin: .25em;
+}
+#forumentries {
+    width: 15em;
+}
+#forumentries > p {
+    border-bottom: .1em silver dashed;
 }
 
 

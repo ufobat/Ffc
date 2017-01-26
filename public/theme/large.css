@@ -364,4 +364,7 @@ button:active, #editbuttons .buttonalike:active {
 #chatbutton p {
     margin: .25em;
 }
+.topicpopup > p, .userspopup > p, .optionspopup > p {
+    border-bottom: .1em silver dashed;
+}
 

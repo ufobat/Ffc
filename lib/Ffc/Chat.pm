@@ -140,6 +140,20 @@ EOSQL
 }
 
 ###############################################################################
+# Themenliste für den Chat raus ziehen
+sub get_topic_list {
+    my $c = $_[0];
+    $c->generate_topiclist();
+    my $us = $c->configdata->{urlshorten};
+    return [ map {; [
+        $c->url_for('show_forum', topicid => $_->[0]),
+        substr($_->[2] // '', 0, $us) . ' ...',
+        $_->[3]  // 0,
+        $_->[11] // '',
+    ] } @{ $c->stash('topics') } ];
+}
+
+###############################################################################
 # Action-Handler für die Status-Ermittlung aus der Datenbank und den optionalen Nachrichtentransfer in die Datenbank
 sub _receive {
     my ( $c, $active, $started ) = @_;
@@ -216,7 +230,13 @@ EOSQL
 
     # Rückgabe der Statusabfragen inkl. der Anzahlen der neuen Nachrichten und Forenbeiträge für die Titelleiste
     $c->res->headers( 'Cache-Control' => 'public, max-age=0, no-cache' );
-    $c->render( json => [$msgs, get_chat_users($c), $c->newpostcount, $c->newmsgscount] );
+    $c->render( json => [
+        $msgs, 
+        get_chat_users($c), 
+        $c->newpostcount, 
+        $c->newmsgscount, 
+        get_topic_list($c), 
+    ] );
 }
 
 1;
