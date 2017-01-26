@@ -18,10 +18,10 @@
        <table>
         <tr>
          <td><button name="send" id="send">Senden</button></td>
-         <td><button name="reload" id="reload">Laden</button></td>
+         <td><button name="clrscr" id="clrscr">Log leeren</button></td>
         </tr>
         <tr>
-         <td><button name="clrscr" id="clrscr">Log leeren</button></td>
+         <td><button name="reload" id="reload">Laden</button></td>
          <td>
           <div class="popuparrow chatoptionpopup activedim menuentry">
            <span class="othersmenulinktext chatoptionpopupswitch">Mehr ...<span>
