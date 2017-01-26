@@ -39,6 +39,8 @@
   <body>
    <!-- Angemeldet als "<%= session()->{user} %>" !-->
 
+%= include 'layouts/parts/forumbutton';
+
 %= content
 
   <script type="text/javascript">

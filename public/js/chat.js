@@ -92,7 +92,6 @@ ffcdata.chat.init = function() {
 
         var match_o = ffcdata.chat.lastmsgtime.match(/\d\d\d\d-\d\d-\d\d/);
         var match_n = msg[3].match(/\d\d\d\d-\d\d-\d\d/);
-        console.log(match_o + ' → ' + match_n);
         if ( match_n && ( !match_o || ( match_o[0] != match_n[0] ) ) ) {
             newdate = '<div class="chatmsgbox newdaymsg">' + match_n[0] + '</div>';
         }
