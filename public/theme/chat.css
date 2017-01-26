@@ -86,6 +86,8 @@ div, textarea {
 }
 #userlist p {
     clear: both;
+    border-bottom: .1em silver solid;
+    margin: .25em;
 }
 .titlebanner {
     background: inherit;
