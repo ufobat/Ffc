@@ -304,7 +304,7 @@ button:active, #editbuttons .buttonalike:active {
     padding-bottom: 0;
 }
 .topiclist > h2 {
-    border-bottom-width: .2em;
+    border-bottom-width: .1em;
 }
 .userlisth1, .topiclisth1, .loginformh1 {
     margin-bottom: 0;
