@@ -86,7 +86,7 @@ div, textarea {
 }
 #userlist p {
     clear: both;
-    border-bottom: .1em silver solid;
+    border-bottom: .1em silver dotted;
     margin: .25em;
 }
 .titlebanner {
