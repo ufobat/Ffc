@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 786;
+use Test::More tests => 824;
 use Test::Mojo;
 use Data::Dumper;
 
@@ -309,3 +309,41 @@ check_user_msg_cnt($t4, 4, 5, 3);
 check_user_msg_cnt($t5, 5, 2, 0);
 check_user_msg_cnt($t5, 5, 3, 0);
 check_user_msg_cnt($t5, 5, 4, 0);
+
+# Check for topic-receive
+$t3->get_ok('/topic/sort/chronological');
+$t3->get_ok('/topic/1')->status_is(200);
+$t3->get_ok('/topic/2')->status_is(200);
+
+my @Texts = (map {Testinit::test_randstring()} 1 .. 5);
+$t2->post_ok('/topic/1/new', form => { textdata => $_ })->status_is(302)
+    for @Texts[0,1];
+$t3->get_ok('/chat/receive/focused')->status_is(200);
+
+$t3->json_is('/4/0/0' => '/topic/1');
+$t3->json_is('/4/0/1' => "$Topics[0][0] ...");
+$t3->json_is('/4/0/2' => '2');
+$t3->json_is('/4/0/3' => 'newpost');
+
+$t3->json_is('/4/1/0' => '/topic/2');
+$t3->json_is('/4/1/1' => "$Topics[1][0] ...");
+$t3->json_is('/4/1/2' => '0');
+$t3->json_is('/4/1/3' => '');
+
+$t3->get_ok('/topic/1')->status_is(200);
+$t3->get_ok('/topic/2')->status_is(200);
+
+$t2->post_ok('/topic/2/new', form => { textdata => $_ })->status_is(302)
+    for @Texts[2,3,4];
+$t3->get_ok('/chat/receive/focused')->status_is(200);
+
+$t3->json_is('/4/0/0' => '/topic/2');
+$t3->json_is('/4/0/1' => "$Topics[1][0] ...");
+$t3->json_is('/4/0/2' => '3');
+$t3->json_is('/4/0/3' => 'newpost');
+
+$t3->json_is('/4/1/0' => '/topic/1');
+$t3->json_is('/4/1/1' => "$Topics[0][0] ...");
+$t3->json_is('/4/1/2' => '0');
+$t3->json_is('/4/1/3' => '');
+

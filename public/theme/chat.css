@@ -238,7 +238,7 @@ input#refreshtime {
 #forumentries {
     width: 15em;
 }
-#forumentries > p {
+#forumentries > p, .chatoptionpopup p {
     border-bottom: .1em silver dashed;
 }
 

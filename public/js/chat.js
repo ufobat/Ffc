@@ -10,6 +10,7 @@ ffcdata.chat.init = function() {
     var msglog           = document.getElementById('msglog');
     var userlist         = document.getElementById('userlist');
     var topiclist        = document.getElementById('forumentries');
+    var topiccounter     = document.getElementById('forumcounter');
     var notifyswitch     = document.getElementById('notifyswitch');
 
     /************************************************************************
@@ -78,22 +79,28 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Themenliste befuellen                                            ***
      ************************************************************************/
-    var update_topiclist = function(topics) {
-        var entries = '';
+    var update_topiclist = function(topics, newpostcount) {
 
+        if ( newpostcount > 0 ) {
+            topiccounter.innerHTML = ' (<span class="mark">' + newpostcount + '</span>)';
+        }
+        else {
+            topiccounter.innerHTML = '';
+        }
+
+        var entries = '';
         for ( var i = 0; i < topics.length; i++ ) {
             var t = topics[i];
             entries = entries + '<p';
             if ( t[3] != '' ) {
                 entries = entries + ' class="' + t[3] + '"';
             }
-            entries = entries + '><a href="'+ t[0] +'">' + t[1] + '</a>';
+            entries = entries + '><a target="_blank" href="'+ t[0] +'">' + t[1] + '</a>';
             if ( t[2] > 0 ) {
                 entries = entries + ' (<span class="mark">' + t[2] + '</span>)'
             }
             entries = entries + '</p>';
         }
-
         topiclist.innerHTML = entries;
     };
 
@@ -208,7 +215,7 @@ ffcdata.chat.init = function() {
         update_userlist(data[1]);
 
         // Topic-Liste aktualisieren
-        update_topiclist(data[4]);
+        update_topiclist(data[4], data[2]);
 
         // Neue Nachrichten ins Log schreiben
         add_msgs(data[0], started);
