@@ -16,13 +16,13 @@
      <td>
       <div id="buttonlist">
        <table>
-        <tr><td colspan="2"><button name="send" id="send">Senden</button></td></tr>
         <tr>
+         <td><button name="send" id="send">Senden</button></td>
          <td><button name="reload" id="reload">Laden</button></td>
-         <td><button name="clrscr" id="clrscr">Log leeren</button></td>
         </tr>
         <tr>
-         <td colspan="2">
+         <td><button name="clrscr" id="clrscr">Log leeren</button></td>
+         <td>
           <div class="popuparrow chatoptionpopup activedim menuentry">
            <span class="othersmenulinktext chatoptionpopupswitch">Mehr ...<span>
            <div class="popup otherspopup">
