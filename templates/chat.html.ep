@@ -16,16 +16,18 @@
      <td>
       <div id="buttonlist">
        <table>
-        <tr><td><button name="send" id="send">Senden</button></td></tr>
-        <tr><td><button name="reload" id="reload">Laden</button></td></tr>
-        <tr><td><button name="clrscr" id="clrscr">Log leeren</button></td></tr>
+        <tr><td colspan="2"><button name="send" id="send">Senden</button></td></tr>
         <tr>
-         <td>
+         <td><button name="reload" id="reload">Laden</button></td>
+         <td><button name="clrscr" id="clrscr">Log leeren</button></td>
+        </tr>
+        <tr>
+         <td colspan="2">
           <div class="popuparrow chatoptionpopup activedim menuentry">
            <span class="othersmenulinktext chatoptionpopupswitch">Mehr ...<span>
            <div class="popup otherspopup">
             <p>Aller <input type="number" name="refreshtime" id="refreshtime" value="60" min="15" max="300" step="15" /> s laden</p>
-            <p><span class="notifyswitch">Desktop-Hinweis: <input type="checkbox" id="notifyswitch" value="1"<%== session()->{notifications} ? ' checked="checked"' : '' %> /></span></b>
+            <p><span class="notifyswitch">Desktop-Hinweis: <input type="checkbox" id="notifyswitch" value="1"<%== session()->{notifications} ? ' checked="checked"' : '' %> /></span></p>
             <p><a href="<%= url_for 'help' %>#chat" title="Hilfeseite anzeigen" target="_blank">Hilfe</a></p>
            </div>
           </div>
