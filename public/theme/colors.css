@@ -208,8 +208,11 @@ pre {
 .functionlinks {
     font-weight: normal;
 }
-.pages, .menu {
+.pages, .menu{
     background: #f0f0f0;
+}
+#chatbutton, #forumbutton {
+    background: whitesmoke;
 }
 .buttonalike, .buttonalike:active, .buttonalike:focus {
     color: black;
@@ -354,4 +357,7 @@ h2.pin {
 }
 .newpost .postboxinner {
     border: 0 khaki solid;
+}
+.topicpopup > p, .userspopup > p, .optionspopup > p, #forumentries > p, .chatoptionpopup p {
+    border-bottom: 0 silver dashed;
 }

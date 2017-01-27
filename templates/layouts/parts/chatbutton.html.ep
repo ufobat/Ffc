@@ -1,7 +1,7 @@
 % if ( @$users ) {
 %   my $cocnt = grep { $_->[4] } @$chat_users;
 <div id="chatbutton" class="nodisplay popuparrow forumoptionpopup activedim menuentry">
-    <p><a href="<%= url_for 'chat_window' %>" target="_blank" title="Chatfenster öffnen"><span class="linktext linkchat">Chat</span></a><%= $cocnt ? " ($cocnt)" : '' %></p>
+    <p><a href="<%= url_for 'chat_window' %>" target="_blank"><span class="linktext linkchat">Chat</span></a><%= $cocnt ? " ($cocnt)" : '' %></p>
 %  if ( $cocnt ) {
     <div class="popup otherspopup" id="forumentries">
 %    for my $u ( @$chat_users ) {

@@ -1,7 +1,7 @@
 %= include 'layouts/parts/header';
 %= include 'layouts/parts/menu';
 %= include 'parts/messageboxes';
-%= content
 %= include 'layouts/parts/chatbutton';
+%= content
 %= include 'layouts/parts/javascript';
 %= include 'layouts/parts/footer';

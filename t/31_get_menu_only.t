@@ -96,7 +96,7 @@ EOMENU
     $t->json_unlike('/1' => qr~$str~);
 }
 $t->json_is('/0' => 2);
-$t->json_like('/2' => qr~<div id="chatbutton" class="nodisplay">~);
+$t->json_like('/2' => qr~<div id="chatbutton" class="nodisplay popuparrow forumoptionpopup activedim menuentry">~);
 
 $t->post_ok("/topic/1/new", form => { textdata => 'qwer' })
   ->status_is(302)->content_is('')
@@ -165,5 +165,5 @@ EOMENU
     $t->json_like('/1' => qr~$str~);
 }
 $t->json_is('/0' => 3);
-$t->json_like('/2' => qr~<div id="chatbutton" class="nodisplay">~);
+$t->json_like('/2' => qr~<div id="chatbutton" class="nodisplay popuparrow forumoptionpopup activedim menuentry">~);
 

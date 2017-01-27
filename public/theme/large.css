@@ -268,7 +268,7 @@ button:active, #editbuttons .buttonalike:active {
 #editbuttons .buttonalike {
     margin-left: .1em;
 }
-.menu, .shadowed, #chatbutton {
+.menu, .shadowed, #chatbutton, #forumbutton {
     box-shadow: 0 0 .25em dimgrey;
 }
 .popup, .messagebox > div {
@@ -355,22 +355,29 @@ button:active, #editbuttons .buttonalike:active {
 .headbox, .postboxform, .loginform {
     padding-bottom: 1em;
 }
-#chatbutton {
+#chatbutton, #forumbutton {
+    overflow: visible;
     position: fixed;
     top: 0;
     left: 0;
     padding: .25em .75em .25em .5em;
+    padding: .1em;
+    margin-top: 0;
+    border-width: 0 .1em .1em 0;
 }
-#chatbutton p {
-    margin: .25em;
+.topicpopup > p, .userspopup > p, .optionspopup > p, #forumentries > p {
+    border-bottom-width: .1em;
 }
-#chatbutton div {
+#chatbutton > p, #forumbutton > p {
+    margin: .5em .75em;
+}
+#forumbutton > div, #chatbutton > div {
     white-space: nowrap;
-    margin-top: 1em;
-    padding: 0;
 }
-
-.topicpopup > p, .userspopup > p, .optionspopup > p {
-    border-bottom: .1em silver dashed;
+#chatbutton > div {
+    margin: .5em 0 0 .75em;
+}
+#chatbutton div p {
+    border: none;
 }
 
