@@ -357,13 +357,19 @@ button:active, #editbuttons .buttonalike:active {
 }
 #chatbutton {
     position: fixed;
-    bottom: 0;
-    right: 0;
+    top: 0;
+    left: 0;
     padding: .25em .75em .25em .5em;
 }
 #chatbutton p {
     margin: .25em;
 }
+#chatbutton div {
+    white-space: nowrap;
+    margin-top: 1em;
+    padding: 0;
+}
+
 .topicpopup > p, .userspopup > p, .optionspopup > p {
     border-bottom: .1em silver dashed;
 }
