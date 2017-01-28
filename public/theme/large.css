@@ -32,7 +32,7 @@ a {
 .messagebox {
     position: fixed;
     bottom: 0;
-    right: 4em;
+    right: 0;
 }
 .messagebox > * {
     padding: .5em;
