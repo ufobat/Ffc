@@ -30,11 +30,19 @@
         </div>
     </div>
     <span class="menubarseparator">|</span>
+
     <div class="menuentry<%= $controller eq 'notes' ? ' activemenuentry' : '' %>">
         <a href="<%= url_for 'show_notes', page => 1 %>"><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>" title="Eigene Notizen">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
     </div>
 % }
     <span class="menubarseparator">|</span>
+% if ( @$users ) {
+%   my $cocnt = grep { $_->[4] } @$chat_users;
+        <div class="nodisplay activedim menuentry">
+            <p><a href="<%= url_for 'chat_window' %>" target="_blank"><span class="linktext linkchat">Chat</span></a><%= $cocnt ? " ($cocnt)" : '' %></p>
+        </div>
+    <span class="menubarseparator">|</span>
+% }
     <div class="menuentry">
         <form <%== $queryurl ? '' : 'style="visibility: hidden" ' %>action="<%== $queryurl %>" accept-charset="UTF-8" method="POST">
 % if ( $query ) {

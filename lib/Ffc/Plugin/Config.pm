@@ -81,11 +81,12 @@ sub register {
         map( {; $_ => [] }
             qw(additional_params topics users attachements chat_users) ),
         map( {;$_.'count' => 0} 
-            qw(newmsgs newpost note readlater) ),
+            qw(newmsgs newpost note readlater chatotherscnt) ),
         map( {;$_ => ''} 
-            qw(error info warning query textdata heading description backtext queryurl pageurl queryreset
-               dourl returl editurl moveurl msgurl delurl uplurl delupl downld backurl topicediturl 
-               fetchnewurlfocused fetchnewurlunfocused) ),
+            qw(error info warning query textdata heading description backtext queryurl 
+               pageurl queryreset dourl returl editurl moveurl msgurl delurl uplurl 
+               delupl downld backurl topicediturl fetchnewurlfocused fetchnewurlunfocused
+               ischat) ),
     });
 
     # Benutzer-Benachrichtigungs-Helper
