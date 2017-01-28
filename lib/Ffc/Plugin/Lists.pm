@@ -246,34 +246,35 @@ sub _set_lastseenpmsgs {
 ###############################################################################
 # Generalroutine fürs Durchzählen und Erstellen der Listen
 sub _counting {
+    my $c = $:[0];
     # Anzahlen ermitteln
-    my $npc = _newpostcount(  $_[0] ) // 0;
-    my $nmc = _newmsgscount(  $_[0] ) // 0;
-    $_[0]->stash(
+    my $npc = _newpostcount(  $c ) // 0;
+    my $nmc = _newmsgscount(  $c ) // 0;
+    $c->stash(
         newpostcount    => $npc,
         newmsgscount    => $nmc,
         newcountall     => $npc + $nmc,
-        starttopiccount => _newstartcount( $_[0] ),
-        readlatercount  => $_[0]->dbh_selectall_arrayref(
+        starttopiccount => _newstartcount( $c ),
+        readlatercount  => $c->dbh_selectall_arrayref(
                 'SELECT COUNT(r."postid") FROM "readlater" r WHERE r."userid"=?',
-                $_[0]->session->{userid}
+                $c->session->{userid}
             )->[0]->[0],
-        notecount       => $_[0]->dbh_selectall_arrayref(
+        notecount       => $c->dbh_selectall_arrayref(
                 'SELECT COUNT("id") FROM "posts" WHERE "userfrom"=? AND "userfrom"="userto"',
-                $_[0]->session->{userid}
+                $c->session->{userid}
             )->[0]->[0],
     );
 
     # Passgenaue Themen- und Benutzerliste generlieren
-    $_[0]->generate_topiclist();
-    $_[0]->generate_userlist();
+    $c->generate_topiclist();
+    $c->generate_userlist();
 
     # Benutzerliste aus dem Chat
-    $_[0]->stash( chat_users => $_[0]->get_chat_users() );
+    $c->stash( chat_users => $c->get_chat_users() );
 
     # Rückgabe einstellen
-    $_[0]->res->headers( 'Cache-Control' => 'public, max-age=0, no-cache' );
-    return $_[0];
+    $c->res->headers( 'Cache-Control' => 'public, max-age=0, no-cache' );
+    return $c;
 }
 
 1;
