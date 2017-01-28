@@ -8,7 +8,7 @@ table {
     margin: 2.75em auto 0 auto;
     background: none;
 }
-table div, table textarea {
+table > tr > td > div, table textarea {
     border: .1em gray solid;
     display: inline-block;
     overflow: auto;
@@ -34,6 +34,7 @@ table div, table textarea {
 #msglog {
     background: whitesmoke;
     color: navy;
+    overflow: scroll;
 }
 #userlist, #textinput, #msglog {
     padding: .25em;
@@ -41,13 +42,12 @@ table div, table textarea {
 }
 #buttonlist {
     margin: 0 .25em;
-    padding: .25em;
+    padding: 0 .25em;
     overflow: visible;
     text-align: center;
     border: .1em gray solid;
     color: black;
     background: lightgray;
-    padding-top: .5em;
 }
 #textinput:hover {
     border-color: dodgerblue;
@@ -90,7 +90,7 @@ table div, table textarea {
 }
 #msglog p {
     text-indent: -5em;
-    padding-left: 5em;
+    margin-left: 5em;
 }
 .myself {
     color: red;
@@ -128,7 +128,7 @@ table div, table textarea {
 }
 .usernameline {
     background: gainsboro;
-    width: 41.5em;
+    width: 42em;
     padding-left: 1em;
     margin-top: .5em;
 }
@@ -137,18 +137,17 @@ table div, table textarea {
 }
 .sameuser .chatmsgprefix {
     text-align: right;
-    width: 5em;
+    width: 4em;
     margin-right: .5em;
 }
 .sameuser .chatmsgcontent {
     width: 37em;
-}
-.chatmsgbox div {
-    vertical-align: text-top
+    margin-left: 5em;
+    display: inline-box;
 }
 .newdaymsg {
     border-top: .1em silver dashed;
-    width: 41.5em;
+    width: 42em;
     color: dimgray;
     text-align: center;
     margin:.5em;
@@ -173,11 +172,8 @@ input#refreshtime {
     width: 5em;
     padding: .15em .3em;
     border: none;
+    vertical-align: top;
 }
 #buttonlist td button {
     width: 100%;
-}
-#forumbutton > div {
-    margin: 0 0 0 .5em;
-    padding: .25em .5em;
 }
