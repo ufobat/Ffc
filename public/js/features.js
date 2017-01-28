@@ -41,6 +41,7 @@ ffcdata.features.init = function(){
      * Chat-Button bei Bedarf aktivieren
      ************************************************************************/
     var activate_chatbutton = function(){
+        if ( ffcdata.isinchat !== '' ) return;
         var chatb = document.getElementById('chatbutton');
         if ( chatb )
             chatb.className = 'popuparrow forumoptionpopup menuentry';
@@ -96,7 +97,7 @@ ffcdata.features.init = function(){
      * Auto-Refresh-Chatbutton setzen
      ************************************************************************/
     var set_chatbutton = function(res) {
-        if ( !res ) return;
+        if ( !res || ffcdata.isinchat !== '' ) return;
         var chatbutton = document.getElementById('chatbutton');
         if ( chatbutton ) {
             chatbutton.outerHTML = res;
@@ -128,7 +129,7 @@ ffcdata.features.init = function(){
                         auto_refresh_postlist();
                 set_title(      res[0] );
                 set_menu(       res[1] );
-                set_chatbutton( res[2] );
+                if ( ffcdata.isinchat !== '' ) set_chatbutton( res[2] );
                 return true;
             }
         );
@@ -247,5 +248,6 @@ ffcdata.features.init = function(){
     enable_autorefreshoption();
     enable_highscore();
     notify_newmsgs();
+    ffcdata.features.set_menu = set_menu;
 };
 

@@ -1,51 +1,50 @@
-% if ( $isinchat ) { $menulinktarget = ' target="_blank"' }
+% if ( $isinchat ) { $menulinktarget = ' target="_blank"'; $menulinkdisplay=' style="visibilty=hidden"' }
 <div class="menu" id="menu">
 % if ( configdata()->{starttopic} ) {
     <div class="activedim menuentry menulinkwleftpu<%= $controller eq 'forum' && $starttopic ? ' activemenuentry' : '' %>">
-        <a href="<%= url_for 'show_forum', topicid => configdata->{starttopic} %>" title="Zur Startseite des Forums gehen"<%= $menulinktarget %>><span class="linktext linkstart<%= $controller eq 'forum' && $starttopic ? ' active activestart' : '' %>">Start<% if ( $starttopiccount ) { %> (<span class="mark"><%= $starttopiccount %></span>)<% } %></span></a>
+        <a href="<%= url_for 'show_forum', topicid => configdata->{starttopic} %>" title="Zur Startseite des Forums gehen"<%== $menulinktarget %>><span class="linktext linkstart<%= $controller eq 'forum' && $starttopic ? ' active activestart' : '' %>">Start<% if ( $starttopiccount ) { %> (<span class="mark"><%= $starttopiccount %></span>)<% } %></span></a>
     </div>
     <span class="menubarseparator">|</span>
 % }
     <div class="activedim menuentry menulinkwleftpu<%= $controller eq 'forum' && !$starttopic ? ' activemenuentry' : '' %>">
-        <a href="<%= url_for 'show_forum_topiclist', page => 1 %>" title="Liste aller Themen"<%= $menulinktarget %>><span class="linktext linkforum<%= $controller eq 'forum' && !$starttopic ? ' active activeforum' : '' %>">Themen<% if ( $newpostcount ) { %> (<span class="mark"><%= $newpostcount %></span>)<% } %></span></a>
+        <a href="<%= url_for 'show_forum_topiclist', page => 1 %>" title="Liste aller Themen"<%== $menulinktarget %>><span class="linktext linkforum<%= $controller eq 'forum' && !$starttopic ? ' active activeforum' : '' %>">Themen<% if ( $newpostcount ) { %> (<span class="mark"><%= $newpostcount %></span>)<% } %></span></a>
     </div>
     <div class="popuparrow activedim menuentry">
         <span class="othersmenulinktext">***</span>
         <div class="topicpopup popup otherspopup">
 % for my $t ( @$topics ) {
-            <p class="smallnodisplay<%== $t->[11] ? qq~ $t->[11]~ : '' %>"><a title="<%= $t->[2] %>" href="<%= url_for 'show_forum', topicid => $t->[0] %>"<%= $menulinktarget %>><%= substr $t->[2], 0, $configdata->{urlshorten} %></a>...<% if ( $t->[3] and not $t->[5] ) { %> (<span class="mark"><%= $t->[3] %></span>)<% } %></p>
+            <p class="smallnodisplay<%== $t->[11] ? qq~ $t->[11]~ : '' %>"><a title="<%= $t->[2] %>" href="<%= url_for 'show_forum', topicid => $t->[0] %>"<%== $menulinktarget %>><%= substr $t->[2], 0, $configdata->{urlshorten} %></a>...<% if ( $t->[3] and not $t->[5] ) { %> (<span class="mark"><%= $t->[3] %></span>)<% } %></p>
 % }
         </div>
     </div>
 % if ( @$users ) {
     <span class="menubarseparator">|</span>
     <div class="activedim menuentry menulinkwleftpu<%= $controller eq 'pmsgs' ? ' activemenuentry' : '' %>">
-        <a href="<%= url_for 'show_pmsgs_userlist' %>" title="Liste aller aktiven Benutzer"<%= $menulinktarget %>><span class="linktext linkpmsgs<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>">Benutzer</span><% if ( $newmsgscount ) { %> (<span class="mark"><%= $newmsgscount %></span>)<% } %></a>
+        <a href="<%= url_for 'show_pmsgs_userlist' %>" title="Liste aller aktiven Benutzer"<%== $menulinktarget %>><span class="linktext linkpmsgs<%= $controller eq 'pmsgs' ? ' active activepmsgs' : '' %>">Benutzer</span><% if ( $newmsgscount ) { %> (<span class="mark"><%= $newmsgscount %></span>)<% } %></a>
     </div>
     <div class="popuparrow activedim menuentry">
         <span class="othersmenulinktext">***</span>
         <div class="userspopup popup otherspopup">
 %   for my $u ( @$users ) {
-            <p class="smallnodisplay"><a href="<%= url_for 'show_pmsgs', usertoid => $u->[0] %>"<%== $u->[9] ? ' style="color:'.$u->[9].'"' : '' %><%= $menulinktarget %>><%= $u->[1] %></a><% if ( $u->[2] or $u->[5] ) { %> <span class="dim">(<% if ( $u->[2] ) { %><span class="mark"><%= $u->[2] %></span><% } if ( $u->[2] and $u->[5] ) { %>, <% } if ( $u->[5] ) { %><%= format_timestamp($u->[5]) %><% } %>)</span><% } %></p>
+            <p class="smallnodisplay"><a href="<%= url_for 'show_pmsgs', usertoid => $u->[0] %>"<%== $u->[9] ? ' style="color:'.$u->[9].'"' : '' %><%== $menulinktarget %>><%= $u->[1] %></a><% if ( $u->[2] or $u->[5] ) { %> <span class="dim">(<% if ( $u->[2] ) { %><span class="mark"><%= $u->[2] %></span><% } if ( $u->[2] and $u->[5] ) { %>, <% } if ( $u->[5] ) { %><%= format_timestamp($u->[5]) %><% } %>)</span><% } %></p>
 %   }
         </div>
     </div>
     <span class="menubarseparator">|</span>
 
     <div class="menuentry<%= $controller eq 'notes' ? ' activemenuentry' : '' %>">
-        <a href="<%= url_for 'show_notes', page => 1 %>"<%= $menulinktarget %>><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>" title="Eigene Notizen">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
+        <a href="<%= url_for 'show_notes', page => 1 %>"<%== $menulinktarget %>><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>" title="Eigene Notizen">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
     </div>
 % }
-% if ( !$isinchat and @$users ) {
-    <span class="menubarseparator">|</span>
+% if ( @$users ) {
+    <span class="menubarseparator"<%== $menulinkdisplay %>>|</span>
 %   my $cocnt = grep { $_->[4] } @$chat_users;
-        <div class="nodisplay activedim menuentry">
-            <p><a href="<%= url_for 'chat_window' %>" target="_blank"><span class="linktext linkchat">Chat</span></a><%= $cocnt ? " ($cocnt)" : '' %></p>
+        <div class="nodisplay activedim menuentry"<%== $menulinkdisplay %>>
+            <p><a href="<%= url_for 'chat_window' %>" target="_blank"><span class="linktext linkchat">Chat</span></a></p>
         </div>
-    <span class="menubarseparator">|</span>
+    <span class="menubarseparator"<%== $menulinkdisplay %>>|</span>
 % }
-% if ( not $isinchat ) {
-    <div class="menuentry">
+    <div class="menuentry"<%== $menulinkdisplay %>>
         <form <%== $queryurl ? '' : 'style="visibility: hidden" ' %>action="<%== $queryurl %>" accept-charset="UTF-8" method="POST">
 %   if ( $query ) {
             <a href="<%= url_for "/$controller" %>" title="Suchanfrage zurück setzen">x</a>
@@ -56,22 +55,21 @@
             <button type="submit" title="Suchen">&gt;</button>
         </form>
     </div>
-    <span class="menubarseparator">|</span>
-% }
-    <div class="otherspopuplink activedim menuentry<%= $controller eq 'options' ? ' activemenuentry' : '' %>">
+    <span class="menubarseparator"<%== $menulinkdisplay %>>|</span>
+    <div class="otherspopuplink activedim menuentry<%= $controller eq 'options' ? ' activemenuentry' : '' %>"<%== $menulinkdisplay %>>
         <span class="othersmenulinktext<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Konto</span>
         <div class="otherspopup popup optionspopup">
             <p class="optionslink">
-                <a href="<%= url_for 'options_form' %>"<%= $menulinktarget %>><span class="linktext linkoptions<%= $action eq 'options_form' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
+                <a href="<%= url_for 'options_form' %>"<%== $menulinktarget %>><span class="linktext linkoptions<%= $action eq 'options_form' ? ' active activeoptions' : '' %>">Einstellungen</span></a>
             </p>
 % if ( session()->{admin} ) {
             <p class="optionslink">
-                <a href="<%= url_for 'admin_options_form' %>"<%= $menulinktarget %>><span class="linktext linkoptions<%= $action eq 'admin_options_form' ? ' active activeoptions' : '' %>">Administration</span></a>
+                <a href="<%= url_for 'admin_options_form' %>"<%== $menulinktarget %>><span class="linktext linkoptions<%= $action eq 'admin_options_form' ? ' active activeoptions' : '' %>">Administration</span></a>
             </p>
 % }
             <p class="othersmenutext smallnodisplay">Angemeldet als <%= session->{user} %></p>
             <p class="logoutbutton2">
-                <a href="<%= url_for 'logout' %>"<%= $menulinktarget %>><span class="linkalike linklogout">abmelden</span></a>
+                <a href="<%= url_for 'logout' %>"><span class="linkalike linklogout">abmelden</span></a>
             </p>
         </div>
     </div>

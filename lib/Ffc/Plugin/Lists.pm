@@ -246,7 +246,7 @@ sub _set_lastseenpmsgs {
 ###############################################################################
 # Generalroutine fürs Durchzählen und Erstellen der Listen
 sub _counting {
-    my $c = $:[0];
+    my $c = $_[0];
     # Anzahlen ermitteln
     my $npc = _newpostcount(  $c ) // 0;
     my $nmc = _newmsgscount(  $c ) // 0;

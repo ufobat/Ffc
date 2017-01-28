@@ -70,7 +70,7 @@ sub chat_window_open {
 
     # Caching-Vorgaben und Fenster-Rendering anstoßen
     $c->res->headers( 'Cache-Control' => 'public, max-age=0, no-cache' );
-    $c->render( template => 'chat' );
+    $c->render( template => 'chat', isinchat => 1 );
 }
 
 ###############################################################################
@@ -236,7 +236,7 @@ EOSQL
         get_chat_users($c), 
         $c->stash('newpostcount'), 
         $c->stash('newmsgscount'), 
-        $c->render_to_string('layouts/parts/menu'),
+        $c->render_to_string('layouts/parts/menu', isinchat => 1),
     ] );
 }
 

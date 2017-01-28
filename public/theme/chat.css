@@ -1,28 +1,18 @@
-* {
-    padding: 0;
-    margin: 0;
-}
 body {
-    font-family: sans-serif;
-    color: black;
-    overflow: hidden;
-    width: 65em;
-    height: 30em;
-    margin: 0 auto;
-    padding: .5em;
-}
-body > * {
-    background: transparent;
+    margin-bottom: 0;
+    padding: 0;
 }
 table {
     border-collapse: collapse;
     border: none;
-    margin: 0 auto;
+    margin: 2.75em auto 0 auto;
+    background: none;
 }
-div, textarea {
+table div, table textarea {
     border: .1em gray solid;
     display: inline-block;
     overflow: auto;
+    margin: 2.75em auto 0 auto;
 }
 #msglog, #textinput {
     width: 44em;
@@ -32,7 +22,7 @@ div, textarea {
     font-family: sans-serif;
 }
 #userlist, #buttonlist {
-    width: 11em;
+    width: 13em;
 }
 #textinput {
     height: 5em;
@@ -50,7 +40,6 @@ div, textarea {
     margin: .25em;
 }
 #buttonlist {
-    max-height: 60em;
     margin: 0 .25em;
     padding: .25em;
     overflow: visible;
@@ -88,13 +77,6 @@ div, textarea {
     border-bottom: .1em silver dashed;
     margin: .25em .5em;
     padding-bottom: .5em;
-}
-.titlebanner {
-    background: inherit;
-    font-size: 1.5em;
-    padding: 0;
-    text-align: center;
-    border: none;
 }
 #msglog .ownmsg {
     color: black;
@@ -134,29 +116,6 @@ div, textarea {
 .editbuttons {
     text-align: right;
     margin-right: 3em;
-}
-.hovering {
-    margin-top: 25em;
-    max-height: 12.5em;
-    height: 12.5em;
-    max-width: 39em;
-    width: 39em;
-    overflow: hidden;
-}
-.hovering > div {
-    height: 8em;
-    border: none;
-    margin-top: 0;
-    margin-bottom: 0;
-    width: 39em;
-}
-.hovering > h2 {
-    margin-bottom: 0;
-    margin-top: 0;
-}
-.hovering > p {
-    margin-top: 0;
-    margin-bottom: 0;
 }
 #textpreviewarea {
     height: 8em;
@@ -222,25 +181,3 @@ input#refreshtime {
     margin: 0 0 0 .5em;
     padding: .25em .5em;
 }
-/*#forumbutton {
-    overflow: visible;
-    position: fixed;
-    padding: .1em;
-    margin: 0;
-    border: 0 gray solid;
-    border-width: 0 .1em .1em 0;
-    top: 0;
-    left: 0;
-}
-#forumbutton > p {
-    margin: .25em;
-}
-#forumentries {
-    white-space: nowrap;
-}
-#forumentries > p, .chatoptionpopup p {
-    border-bottom: .1em silver dashed;
-}
-*/
-
-
