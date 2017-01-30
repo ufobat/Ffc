@@ -9,10 +9,12 @@ table {
     background: none;
 }
 table > tr > td > div, table textarea {
-    border: .1em gray solid;
     display: inline-block;
     overflow: auto;
     margin: 2.75em auto 0 auto;
+}
+#msglog, #buttonlist, #userlist, table > tr > td > div, table textarea, #userlist img {
+    border: .1em gray solid;
 }
 #msglog, #textinput {
     width: 44em;
@@ -70,7 +72,6 @@ table > tr > td > div, table textarea {
     max-width: 3em;
     margin-right: .25em;
     float: right;
-    border: .1em gray solid;
 }
 #userlist p {
     clear: both;
