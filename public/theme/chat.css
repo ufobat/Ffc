@@ -136,6 +136,12 @@ table > tr > td > div, table textarea {
 #msglog .usernameline .username .chatusernamelink {
     color: navy;
 }
+.chatmsgbox {
+    clear: both;
+}
+.chatmsgprefix {
+    float: left;
+}
 .sameuser .chatmsgprefix {
     text-align: right;
     width: 4em;
