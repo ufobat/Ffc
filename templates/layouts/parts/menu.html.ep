@@ -1,4 +1,4 @@
-% if ( $isinchat or $controller eq 'chat' ) { $menulinktarget = ' target="_blank"'; $menulinkdisplay=' style="visibilty:hidden"' }
+% if ( $isinchat or $controller eq 'chat' ) { $menulinktarget = ' target="_blank"'; $menulinkdisplay=' style="visibility:hidden"' }
 <div class="menu" id="menu">
 % if ( configdata()->{starttopic} ) {
     <div class="activedim menuentry menulinkwleftpu<%= $controller eq 'forum' && $starttopic ? ' activemenuentry' : '' %>">
