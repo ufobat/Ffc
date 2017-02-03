@@ -150,8 +150,10 @@ ffcdata.chat.init = function() {
                 ml = ml + compose_msg(msgs, i, started);
                 if ( msgs[i][5] != ffcdata.userid ) relevantcnt++;
             }
-            if ( !document.hasFocus() && !started && relevantcnt > 0 )
-                ffcdata.utils.notify('Es sind ' + msgs.length + ' neue Nachrichten im Chat');
+            if ( !document.hasFocus() && !started && relevantcnt > 0 ) {
+                if ( msgs.length === 1 ) { ffcdata.utils.notify('Es ist eine neue Nachricht im Chat'); }
+                else { ffcdata.utils.notify('Es sind ' + msgs.length + ' neue Nachrichten im Chat'); }
+            }
 
             msglog.innerHTML = ml;
 

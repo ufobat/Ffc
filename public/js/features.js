@@ -98,7 +98,7 @@ ffcdata.features.init = function(){
      ************************************************************************/
     var set_chatbutton = function(res) {
         if ( !res || ffcdata.isinchat !== '' ) return;
-        var chatbutton = document.getElementById('chatbutton');
+        var chatbutton = document.getElementById('chatuserlist');
         if ( chatbutton ) {
             chatbutton.outerHTML = res;
             activate_chatbutton();

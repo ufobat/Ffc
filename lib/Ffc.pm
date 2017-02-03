@@ -105,7 +105,7 @@ sub _install_util_routes {
                 ? $_[0]->render_to_string('layouts/parts/menu')
                 : undef
             ),
-            $_[0]->render_to_string('layouts/parts/chatbutton'),
+            $_[0]->render_to_string('layouts/parts/chatuserlist'),
         ] );
     } )->name('fetch');
 }
