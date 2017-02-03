@@ -36,8 +36,8 @@
         <a href="<%= url_for 'show_notes', page => 1 %>"<%== $menulinktarget %>><span class="linktext linknotes<%= $controller eq 'notes' ? ' active activenotes' : '' %>" title="Eigene Notizen">Notizen<% if ( $notecount ) { %> (<span class="notecount"><%= $notecount %></span>)<% } %></span></a>
     </div>
 % }
-% if ( @$users ) {
-    <span class="menubarseparator hiddendisplay"<%== $menulinkdisplay %> id="menuchatseparator">|</span>
+% if ( @$users or $menulinktarget ) {
+    <span class="menubarseparator hiddendisplay"<%== $menulinkdisplay %>id="menuchatseparator">|</span>
         <div class="nodisplay activedim menuentry"<%== $menulinkdisplay %>>
             <p id="chatlink" class="hiddendisplay"><a href="<%= url_for 'chat_window' %>" target="_blank"><span class="linktext linkchat">Chat</span></a></p>
         </div>
