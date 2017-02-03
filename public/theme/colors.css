@@ -211,7 +211,7 @@ pre {
 .pages, .menu{
     background: #f0f0f0;
 }
-#chatbutton, #forumbutton {
+#chatuserlist, #forumbutton {
     background: whitesmoke;
 }
 .buttonalike, .buttonalike:active, .buttonalike:focus {

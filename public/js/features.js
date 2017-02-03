@@ -100,10 +100,11 @@ ffcdata.features.init = function(){
         if ( users && users.length > 0 ) {
             var chatbutton = document.getElementById('chatuserlist');
             if ( chatbutton ) {
-                var chatuserstr = '';
+                var chatuserstr = '<p><a href="' + ffcdata.chaturl
+                    + '" target="_blank">Chat</a>:</p>';
                 for ( var i = 0; i < users.length; i++ ) {
                     chatuserstr = chatuserstr 
-                        + '<p cass="dim">' + users[i][0] + ' (' + users[i][1] + ')</p>';
+                        + '<p>' + users[i][0] + ' (' + users[i][1] + ')</p>';
                 }
                 chatbutton.innerHTML = chatuserstr;
                 chatbutton.className = 'nodisplay popuparrow forumoptionpopup activedim menuentry';

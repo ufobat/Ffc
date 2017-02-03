@@ -32,7 +32,8 @@ a {
 .messagebox {
     position: fixed;
     bottom: 0;
-    right: 0;
+    right: 1em;
+    max-width: 15em;
 }
 .messagebox > * {
     padding: .5em;
@@ -268,7 +269,7 @@ button:active, #editbuttons .buttonalike:active {
 #editbuttons .buttonalike {
     margin-left: .1em;
 }
-.menu, .shadowed, #chatbutton, #forumbutton {
+.menu, .shadowed, #chatuserlist {
     box-shadow: 0 0 .25em dimgrey;
 }
 .popup, .messagebox > div {
@@ -355,29 +356,17 @@ button:active, #editbuttons .buttonalike:active {
 .headbox, .postboxform, .loginform {
     padding-bottom: 1em;
 }
-#chatbutton, #forumbutton {
-    overflow: visible;
-    position: fixed;
-    top: 0;
-    left: 0;
-    padding: .25em .75em .25em .5em;
-    padding: .1em;
-    margin-top: 0;
-    border-width: 0 .1em .1em 0;
-}
-.topicpopup > p, .userspopup > p, .optionspopup > p, #forumentries > p {
+.topicpopup > p, .userspopup > p, .optionspopup > p, #chatuserlist > p {
     border-bottom-width: .1em;
 }
-#chatbutton > p, #forumbutton > p {
-    margin: .5em .75em;
+#chatuserlist {
+    position: fixed;
+    bottom: 3em;
+    left: 0;
+    padding: .25em .75em .25em .5em;
+    color: dimgray;
+    border-width: .1em .1em .1em 0;
 }
-#forumbutton > div, #chatbutton > div {
-    white-space: nowrap;
+#chatuserlist p {
+    margin: .25em;
 }
-#chatbutton > div {
-    margin: .5em 0 0 .75em;
-}
-#chatbutton div p {
-    border: none;
-}
-
