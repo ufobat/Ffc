@@ -42,9 +42,18 @@ ffcdata.features.init = function(){
      ************************************************************************/
     var activate_chatbutton = function(){
         if ( ffcdata.isinchat !== '' ) return;
-        var chatb = document.getElementById('chatbutton');
+
+        var chatb = document.getElementById('chatuserlist');
         if ( chatb )
             chatb.className = 'popuparrow forumoptionpopup menuentry';
+
+        var chats = document.getElementById('menuchatseparator');
+        if ( chats )
+            chats.className = 'menubarseparator';
+
+        var chats = document.getElementById('chatlink');
+        if ( chats )
+            chats.className = 'chatlink';
     };
 
     /************************************************************************
@@ -97,8 +106,8 @@ ffcdata.features.init = function(){
      * Auto-Refresh-Chatbutton setzen
      ************************************************************************/
     var set_chatbutton = function(users) {
+        var chatbutton = document.getElementById('chatuserlist');
         if ( users && users.length > 0 ) {
-            var chatbutton = document.getElementById('chatuserlist');
             if ( chatbutton ) {
                 var chatuserstr = '<p><a href="' + ffcdata.chaturl
                     + '" target="_blank">Chat</a>:</p>';
