@@ -7,7 +7,7 @@ use Testinit;
 use utf8;
 
 use Test::Mojo;
-use Test::More tests => 120;
+use Test::More tests => 163;
 
 ###############################################################################
 note q~Testsystem vorbereiten~;
@@ -164,12 +164,23 @@ EOMENU
     ) {
     $t->json_like('/1' => qr~$str~);
 }
-$t->json_is('/0' => 3);
+
+Testinit::test_login($t, $admin, $apass);
+my ( $user2, $pass2 ) = ( Testinit::test_randstring(), Testinit::test_randstring() );
+Testinit::test_add_users( $t, $admin, $apass, $user2, $pass2 );
+
+Testinit::test_logout($t);
+Testinit::test_login($t, $user1, $pass1);
+
+my $t2 = Test::Mojo->new('Ffc'); 
+Testinit::test_login($t2, $user2, $pass2);
+
+$t->post_ok('/fetch')->status_is(200);
+$t->json_is('/0' => 1);
 $t->json_is('/2' => []);
 $t->get_ok('/chat')->status_is(200);
 $t->get_ok('/chat/receive/started')->status_is(200);
 
-my $t2 = Test::Mojo->new('Ffc'); 
-Testinit::test_login($t2, $user1, $pass1);
 $t2->post_ok('/fetch')->status_is(200);
-$t2->json_is('/2/0/0' => $user);
+$t2->json_is('/0' => 3);
+$t2->json_is('/2/0/0' => $user1);
