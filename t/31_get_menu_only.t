@@ -7,7 +7,7 @@ use Testinit;
 use utf8;
 
 use Test::Mojo;
-use Test::More tests => 104;
+use Test::More tests => 120;
 
 ###############################################################################
 note q~Testsystem vorbereiten~;
@@ -96,7 +96,7 @@ EOMENU
     $t->json_unlike('/1' => qr~$str~);
 }
 $t->json_is('/0' => 2);
-$t->json_like('/2' => qr~<div id="chatbutton" class="nodisplay popuparrow forumoptionpopup activedim menuentry">~);
+$t->json_is('/2' => []);
 
 $t->post_ok("/topic/1/new", form => { textdata => 'qwer' })
   ->status_is(302)->content_is('')
@@ -165,5 +165,11 @@ EOMENU
     $t->json_like('/1' => qr~$str~);
 }
 $t->json_is('/0' => 3);
-$t->json_like('/2' => qr~<div id="chatbutton" class="nodisplay popuparrow forumoptionpopup activedim menuentry">~);
+$t->json_is('/2' => []);
+$t->get_ok('/chat')->status_is(200);
+$t->get_ok('/chat/receive/started')->status_is(200);
 
+my $t2 = Test::Mojo->new('Ffc'); 
+Testinit::test_login($t2, $user1, $pass1);
+$t2->post_ok('/fetch')->status_is(200);
+$t2->json_is('/2/0/0' => $user);

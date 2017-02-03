@@ -106,8 +106,7 @@ ffcdata.features.init = function(){
                         + '<p cass="dim">' + users[i][0] + ' (' + users[i][1] + ')</p>';
                 }
                 chatbutton.innerHTML = chatuserstr;
-                chatbutton.className = '';
-                console.log(chatbutton);
+                chatbutton.className = 'nodisplay popuparrow forumoptionpopup activedim menuentry';
             }
         }
         else {
