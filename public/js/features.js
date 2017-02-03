@@ -96,12 +96,22 @@ ffcdata.features.init = function(){
     /************************************************************************
      * Auto-Refresh-Chatbutton setzen
      ************************************************************************/
-    var set_chatbutton = function(res) {
-        if ( !res || ffcdata.isinchat !== '' ) return;
-        var chatbutton = document.getElementById('chatuserlist');
-        if ( chatbutton ) {
-            chatbutton.outerHTML = res;
-            activate_chatbutton();
+    var set_chatbutton = function(users) {
+        if ( users && users.length > 0 ) {
+            var chatbutton = document.getElementById('chatuserlist');
+            if ( chatbutton ) {
+                var chatuserstr = '';
+                for ( var i = 0; i < users.length; i++ ) {
+                    chatuserstr = chatuserstr 
+                        + '<p cass="dim">' + users[i][0] + ' (' + users[i][1] + ')</p>';
+                }
+                chatbutton.innerHTML = chatuserstr;
+                chatbutton.className = '';
+                console.log(chatbutton);
+            }
+        }
+        else {
+            chatbutton.className = 'nodisplay';
         }
     };
 
@@ -129,7 +139,7 @@ ffcdata.features.init = function(){
                         auto_refresh_postlist();
                 set_title(      res[0] );
                 set_menu(       res[1] );
-                if ( ffcdata.isinchat !== '' ) set_chatbutton( res[2] );
+                set_chatbutton( res[2] );
                 return true;
             }
         );
@@ -138,7 +148,7 @@ ffcdata.features.init = function(){
     /************************************************************************
      * Auto-Refresh nur für das Menü und den Titel bei Bedarf aktivieren
      ************************************************************************/
-    var set_menurefresh = function(){
+    var set_timerrefresh = function(){
         ffcdata.features.autorefresh_interval 
             = window.setInterval(auto_refresh, ffcdata.autorefresh * 1000 );
     };
@@ -239,8 +249,9 @@ ffcdata.features.init = function(){
         set_titletime();
     activate_chatbutton();
     if ( ffcdata.autorefresh > 0 && !ffcdata.utils.is_disabled() && !ffcdata.singleuser ) {
-        set_menurefresh();
+        set_timerrefresh();
         set_focusrefresh();
+        auto_refresh();
     }
     set_upload_multi();
     enable_hidemessagebox();
