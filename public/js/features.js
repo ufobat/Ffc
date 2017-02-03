@@ -41,6 +41,7 @@ ffcdata.features.init = function(){
      * Chat-Button bei Bedarf aktivieren
      ************************************************************************/
     var activate_chatbutton = function(){
+        if ( ffcdata.isinchat !== '' ) return;
         var chatb = document.getElementById('chatbutton');
         if ( chatb )
             chatb.className = 'popuparrow forumoptionpopup menuentry';
@@ -95,12 +96,22 @@ ffcdata.features.init = function(){
     /************************************************************************
      * Auto-Refresh-Chatbutton setzen
      ************************************************************************/
-    var set_chatbutton = function(res) {
-        if ( !res ) return;
-        var chatbutton = document.getElementById('chatbutton');
-        if ( chatbutton ) {
-            chatbutton.outerHTML = res;
-            activate_chatbutton();
+    var set_chatbutton = function(users) {
+        if ( users && users.length > 0 ) {
+            var chatbutton = document.getElementById('chatuserlist');
+            if ( chatbutton ) {
+                var chatuserstr = '<p><a href="' + ffcdata.chaturl
+                    + '" target="_blank">Chat</a>:</p>';
+                for ( var i = 0; i < users.length; i++ ) {
+                    chatuserstr = chatuserstr 
+                        + '<p>' + users[i][0] + ' (' + users[i][1] + ')</p>';
+                }
+                chatbutton.innerHTML = chatuserstr;
+                chatbutton.className = 'nodisplay popuparrow forumoptionpopup activedim menuentry';
+            }
+        }
+        else {
+            chatbutton.className = 'nodisplay';
         }
     };
 
@@ -137,7 +148,7 @@ ffcdata.features.init = function(){
     /************************************************************************
      * Auto-Refresh nur für das Menü und den Titel bei Bedarf aktivieren
      ************************************************************************/
-    var set_menurefresh = function(){
+    var set_timerrefresh = function(){
         ffcdata.features.autorefresh_interval 
             = window.setInterval(auto_refresh, ffcdata.autorefresh * 1000 );
     };
@@ -238,8 +249,9 @@ ffcdata.features.init = function(){
         set_titletime();
     activate_chatbutton();
     if ( ffcdata.autorefresh > 0 && !ffcdata.utils.is_disabled() && !ffcdata.singleuser ) {
-        set_menurefresh();
+        set_timerrefresh();
         set_focusrefresh();
+        auto_refresh();
     }
     set_upload_multi();
     enable_hidemessagebox();
@@ -247,5 +259,6 @@ ffcdata.features.init = function(){
     enable_autorefreshoption();
     enable_highscore();
     notify_newmsgs();
+    ffcdata.features.set_menu = set_menu;
 };
 

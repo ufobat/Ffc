@@ -9,8 +9,6 @@ ffcdata.chat.init = function() {
     var refreshtimefield = document.getElementById('refreshtime');
     var msglog           = document.getElementById('msglog');
     var userlist         = document.getElementById('userlist');
-    var topiclist        = document.getElementById('forumentries');
-    var topiccounter     = document.getElementById('forumcounter');
     var notifyswitch     = document.getElementById('notifyswitch');
 
     /************************************************************************
@@ -77,34 +75,6 @@ ffcdata.chat.init = function() {
     };
 
     /************************************************************************
-     *** Themenliste befuellen                                            ***
-     ************************************************************************/
-    var update_topiclist = function(topics, newpostcount) {
-
-        if ( newpostcount > 0 ) {
-            topiccounter.innerHTML = ' (<span class="mark">' + newpostcount + '</span>)';
-        }
-        else {
-            topiccounter.innerHTML = '';
-        }
-
-        var entries = '';
-        for ( var i = 0; i < topics.length; i++ ) {
-            var t = topics[i];
-            entries = entries + '<p';
-            if ( t[3] != '' ) {
-                entries = entries + ' class="' + t[3] + '"';
-            }
-            entries = entries + '><a target="_blank" href="'+ t[0] +'">' + t[1] + '</a>';
-            if ( t[2] > 0 ) {
-                entries = entries + ' (<span class="mark">' + t[2] + '</span>)'
-            }
-            entries = entries + '</p>';
-        }
-        topiclist.innerHTML = entries;
-    };
-
-    /************************************************************************
      *** Neue Chatnachrichten zusammenbauen                               ***
      ************************************************************************/
     var compose_msg = function(msgs, i, started){
@@ -125,7 +95,6 @@ ffcdata.chat.init = function() {
         //console.log(match_o + ' → ' + match_n);
         if ( match_n && ( !match_o || ( match_o[0] != match_n[0] ) ) ) {
             var ndm = match_n[0].match(/(\d\d\d\d)-(\d\d)-(\d\d)/);
-            console.log(ndm);
             newdate = '<div class="chatmsgbox newdaymsg">' + ndm[3] + '.' + ndm[2] + '.' + ndm[1] + '</div>';
         }
         ffcdata.chat.lastmsgtime = msg[3];
@@ -181,8 +150,10 @@ ffcdata.chat.init = function() {
                 ml = ml + compose_msg(msgs, i, started);
                 if ( msgs[i][5] != ffcdata.userid ) relevantcnt++;
             }
-            if ( !document.hasFocus() && !started && relevantcnt > 0 )
-                ffcdata.utils.notify('Es sind ' + msgs.length + ' neue Nachrichten im Chat');
+            if ( !document.hasFocus() && !started && relevantcnt > 0 ) {
+                if ( msgs.length === 1 ) { ffcdata.utils.notify('Es ist eine neue Nachricht im Chat'); }
+                else { ffcdata.utils.notify('Es sind ' + msgs.length + ' neue Nachrichten im Chat'); }
+            }
 
             msglog.innerHTML = ml;
 
@@ -216,8 +187,8 @@ ffcdata.chat.init = function() {
         // Benutzerliste aktualisieren
         update_userlist(data[1]);
 
-        // Topic-Liste aktualisieren
-        update_topiclist(data[4], data[2]);
+        // Menü aktualisieren
+        ffcdata.features.set_menu( data[4] );
 
         // Neue Nachrichten ins Log schreiben
         add_msgs(data[0], started);

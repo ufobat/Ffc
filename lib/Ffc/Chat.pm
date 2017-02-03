@@ -70,6 +70,7 @@ sub chat_window_open {
 
     # Caching-Vorgaben und Fenster-Rendering anstoßen
     $c->res->headers( 'Cache-Control' => 'public, max-age=0, no-cache' );
+    $c->stash(isinchat => 1);
     $c->render( template => 'chat' );
 }
 
@@ -230,12 +231,14 @@ EOSQL
 
     # Rückgabe der Statusabfragen inkl. der Anzahlen der neuen Nachrichten und Forenbeiträge für die Titelleiste
     $c->res->headers( 'Cache-Control' => 'public, max-age=0, no-cache' );
+    $c->counting();
+    $c->stash(isinchat => 1);
     $c->render( json => [
         $msgs, 
         get_chat_users($c), 
-        $c->newpostcount, 
-        $c->newmsgscount, 
-        get_topic_list($c), 
+        $c->stash('newpostcount'), 
+        $c->stash('newmsgscount'), 
+        $c->render_to_string('layouts/parts/menu'),
     ] );
 }
 

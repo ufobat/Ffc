@@ -1,28 +1,20 @@
-* {
-    padding: 0;
-    margin: 0;
-}
 body {
-    font-family: sans-serif;
-    color: black;
-    overflow: hidden;
-    width: 65em;
-    height: 30em;
-    margin: 0 auto;
-    padding: .5em;
-}
-body > * {
-    background: transparent;
+    margin-bottom: 0;
+    padding: 0;
 }
 table {
     border-collapse: collapse;
     border: none;
-    margin: 0 auto;
+    margin: 2.75em auto 0 auto;
+    background: none;
 }
-div, textarea {
-    border: .1em gray solid;
+table > tr > td > div, table textarea {
     display: inline-block;
     overflow: auto;
+    margin: 2.75em auto 0 auto;
+}
+#msglog, #buttonlist, #userlist, table > tr > td > div, table textarea, #userlist img {
+    border: .1em gray solid;
 }
 #msglog, #textinput {
     width: 44em;
@@ -32,7 +24,7 @@ div, textarea {
     font-family: sans-serif;
 }
 #userlist, #buttonlist {
-    width: 12em;
+    width: 13em;
 }
 #textinput {
     height: 5em;
@@ -44,21 +36,20 @@ div, textarea {
 #msglog {
     background: whitesmoke;
     color: navy;
+    overflow: scroll;
 }
 #userlist, #textinput, #msglog {
     padding: .25em;
     margin: .25em;
 }
 #buttonlist {
-    max-height: 60em;
     margin: 0 .25em;
-    padding: .25em;
+    padding: 0 .25em;
     overflow: visible;
     text-align: center;
     border: .1em gray solid;
     color: black;
     background: lightgray;
-    padding-top: .5em;
 }
 #textinput:hover {
     border-color: dodgerblue;
@@ -81,20 +72,12 @@ div, textarea {
     max-width: 3em;
     margin-right: .25em;
     float: right;
-    border: .1em gray solid;
 }
 #userlist p {
     clear: both;
     border-bottom: .1em silver dashed;
     margin: .25em .5em;
     padding-bottom: .5em;
-}
-.titlebanner {
-    background: inherit;
-    font-size: 1.5em;
-    padding: 0;
-    text-align: center;
-    border: none;
 }
 #msglog .ownmsg {
     color: black;
@@ -108,7 +91,7 @@ div, textarea {
 }
 #msglog p {
     text-indent: -5em;
-    padding-left: 5em;
+    margin-left: 5em;
 }
 .myself {
     color: red;
@@ -135,29 +118,6 @@ div, textarea {
     text-align: right;
     margin-right: 3em;
 }
-.hovering {
-    margin-top: 25em;
-    max-height: 12.5em;
-    height: 12.5em;
-    max-width: 39em;
-    width: 39em;
-    overflow: hidden;
-}
-.hovering > div {
-    height: 8em;
-    border: none;
-    margin-top: 0;
-    margin-bottom: 0;
-    width: 39em;
-}
-.hovering > h2 {
-    margin-bottom: 0;
-    margin-top: 0;
-}
-.hovering > p {
-    margin-top: 0;
-    margin-bottom: 0;
-}
 #textpreviewarea {
     height: 8em;
 }
@@ -169,27 +129,32 @@ div, textarea {
 }
 .usernameline {
     background: gainsboro;
-    width: 41.5em;
+    width: 42em;
     padding-left: 1em;
     margin-top: .5em;
 }
 #msglog .usernameline .username .chatusernamelink {
     color: navy;
 }
+.chatmsgbox {
+    clear: both;
+}
+.chatmsgprefix {
+    float: left;
+}
 .sameuser .chatmsgprefix {
     text-align: right;
-    width: 5em;
+    width: 4em;
     margin-right: .5em;
 }
 .sameuser .chatmsgcontent {
     width: 37em;
-}
-.chatmsgbox div {
-    vertical-align: text-top
+    margin-left: 5em;
+    display: inline-box;
 }
 .newdaymsg {
     border-top: .1em silver dashed;
-    width: 41.5em;
+    width: 42em;
     color: dimgray;
     text-align: center;
     margin:.5em;
@@ -214,33 +179,8 @@ input#refreshtime {
     width: 5em;
     padding: .15em .3em;
     border: none;
+    vertical-align: top;
 }
 #buttonlist td button {
     width: 100%;
 }
-#forumbutton > div {
-    margin: 0 0 0 .5em;
-    padding: .25em .5em;
-}
-/*#forumbutton {
-    overflow: visible;
-    position: fixed;
-    padding: .1em;
-    margin: 0;
-    border: 0 gray solid;
-    border-width: 0 .1em .1em 0;
-    top: 0;
-    left: 0;
-}
-#forumbutton > p {
-    margin: .25em;
-}
-#forumentries {
-    white-space: nowrap;
-}
-#forumentries > p, .chatoptionpopup p {
-    border-bottom: .1em silver dashed;
-}
-*/
-
-

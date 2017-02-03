@@ -43,7 +43,7 @@ ffcdata.utils.request = function(methd, url, data, callback, nojson) {
         if ( methd === 'POST' ) {
             req.setRequestHeader("Content-type", "multipart/formdata");
             //req.setRequestHeader("Content-length", data.toString().length);
-            req.setRequestHeader("Connection", "close");
+            //req.setRequestHeader("Connection", "close");
             req.send(JSON.stringify(data));
         }
         else {
