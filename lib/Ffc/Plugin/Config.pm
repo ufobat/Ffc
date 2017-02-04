@@ -147,7 +147,7 @@ sub _get_config {
 ###############################################################################
 # Datenbank-Handle erzeugen
 sub _get_dbh {
-#    return $_[0]->{dbh} if $_[0]->{dbh};
+    return $_[0]->{dbh} if $_[0]->{dbh};
     my $self = $_[0];
     $self->{dbfile} = catdir @{ $self->_get_datapath() }, 'database.sqlite3';
     $self->{dbh} = DBI->connect("DBI:SQLite:database=$self->{dbfile}", 
@@ -171,11 +171,11 @@ sub _reset_envconfig {
 # SELECT mit Datenrückgabe
     sub _dbh_selectall_arrayref {
         my $c = shift; my $sql = shift;
-#        my $sth = exists $sths{$sql}
-#            ? $sths{$sql}
-#            : $sths{$sql} = $c->dbh->prepare($sql)
-#                || die $sths{$sql}->errstr;
-        my $sth = $c->dbh->prepare($sql) || die $sths{$sql}->errstr;
+        my $sth = exists $sths{$sql}
+            ? $sths{$sql}
+            : $sths{$sql} = $c->dbh->prepare($sql)
+                || die $sths{$sql}->errstr;
+#        my $sth = $c->dbh->prepare($sql) || die $sths{$sql}->errstr;
         $sth->execute( @_ ) or die $sth->errstr;
 #        return $sth->fetchall_arrayref || die $sth->errstr;
         my $r = $sth->fetchall_arrayref || die $sth->errstr;
@@ -187,11 +187,11 @@ sub _reset_envconfig {
 # SQL-Abfrage ohne Datenrückgabe
     sub _dbh_do {
         my $c = shift; my $sql = shift;
-#        my $sth = exists $sths{$sql}
-#            ? $sths{$sql}
-#            : $sths{$sql} = $c->dbh->prepare($sql)
-#                || die $sths{$sql}->errstr;
-        my $sth = $c->dbh->prepare($sql) || die $sths{$sql}->errstr;
+        my $sth = exists $sths{$sql}
+            ? $sths{$sql}
+            : $sths{$sql} = $c->dbh->prepare($sql)
+                || die $sths{$sql}->errstr;
+#        my $sth = $c->dbh->prepare($sql) || die $sths{$sql}->errstr;
         $sth->execute( @_ ) or die $sth->errstr;
         $sth->finish;
     }

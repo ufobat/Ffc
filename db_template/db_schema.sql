@@ -125,6 +125,7 @@ CREATE TABLE "chat" (
    "posted"     timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP,
    "sysmsg"     tinyint(1) NOT NULL DEFAULT 0
 );
+CREATE INDEX "chat_id_ix" ON "chat"("id");
 
 /******************************************************************************/
 /* Konfiguration für die Software-Instanz
