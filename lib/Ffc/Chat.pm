@@ -124,7 +124,9 @@ WHERE
 ORDER BY UPPER("name"), "id"
 EOSQL
     my $users = $c->dbh_selectall_arrayref( $sql );
+
     $c->generate_userlist();
+
     my %fusers = map {;$_->[0] => $_->[2]} @{$c->stash('users')};
     # Nachbearbeitung der Benutzerliste
     my $uid = $c->session->{userid};
@@ -138,20 +140,6 @@ EOSQL
         $u->[6] = $c->url_for( 'avatar_show', userid => $u->[3] );
     }
     return $users;
-}
-
-###############################################################################
-# Themenliste für den Chat raus ziehen
-sub get_topic_list {
-    my $c = $_[0];
-    $c->generate_topiclist();
-    my $us = $c->configdata->{urlshorten};
-    return [ map {; [
-        $c->url_for('show_forum', topicid => $_->[0]),
-        substr($_->[2] // '', 0, $us) . ' ...',
-        $_->[3]  // 0,
-        $_->[11] // '',
-    ] } @{ $c->stash('topics') } ];
 }
 
 ###############################################################################

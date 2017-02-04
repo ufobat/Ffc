@@ -67,10 +67,13 @@ sub _newmsgscount {
 # Liste der Themen mit allen notwendigen Zusatzinformationen generieren
 sub _generate_topiclist {
     my ( $c, $stashkey ) = @_;
-    my $page = 1;
 
     # Sonderbehandlung der Seitenanzahl, wenn der Stashkey gesetzt ist ... oder Stashkey setzen
-    $stashkey and $page = $c->param('page') // 1 or $stashkey = 'topics';
+    my $page = 1;
+    if ( $stashkey ) { $page     = $c->param('page') // 1 }
+    else             { $stashkey = 'topics'               }
+
+    return $c->stash($stashkey) if $c->stash($stashkey) and @{$c->stash($stashkey)};
 
     # Eingrenzungen der Datenbankabfragen ermitteln
     my $session    = $c->session;
@@ -128,6 +131,8 @@ EOSQL
 ###############################################################################
 # Liste der Benutzer und aller notwendiger zugehöriger Informationen generieren
 sub _generate_userlist {
+    return $_[0]->stash('users') if @{$_[0]->stash('users')};
+    
     # Benutzerdaten aus der Datenbank holen
     my $data = $_[0]->dbh_selectall_arrayref( << 'EOSQL'
 SELECT
