@@ -223,7 +223,7 @@ EOSQL
     $c->stash(isinchat => 1);
     $c->render( json => [
         $msgs, 
-        get_chat_users($c), 
+        $c->stash('chat_users'),
         $c->stash('newpostcount'), 
         $c->stash('newmsgscount'), 
         $c->render_to_string('layouts/parts/menu'),

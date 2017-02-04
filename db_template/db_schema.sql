@@ -26,6 +26,7 @@ CREATE TABLE "users" (
   "infos"              varchar(1024),
   UNIQUE ("name")
 );
+CREATE INDEX "user_id_ix"     ON "users"("id");
 CREATE INDEX "user_active_ix" ON "users"("active");
 CREATE INDEX "user_inchat_ix" ON "users"("inchat");
 
