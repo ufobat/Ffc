@@ -149,7 +149,7 @@ sub _receive {
 
     # Für den Fall, dass eine Nachricht gesendet wurde, diese in die Datenbank eintragen
     # ( Nur notwendig, wenn das Fenster aktiv ist beim Senden bzw. wenn ein POST-Request stattfand)
-    if ( $c->req->method eq 'POST' ) {
+    if ( $c->req->json ) {
         _add_msg($c, $c->req->json);
     }
     my $s = $c->session;
