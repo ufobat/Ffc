@@ -99,13 +99,16 @@ ffcdata.features.init = function(){
     var set_menu = function(res) {
         if ( !res ) return;
         var menu = document.getElementById('menu');
-        if ( menu ) menu.outerHTML = res;
+        if ( menu ) {
+            menu.outerHTML = res;
+            activate_chatbutton();
+        }
     };
 
     /************************************************************************
      * Auto-Refresh-Chatbutton setzen
      ************************************************************************/
-    var set_chatbutton = function(users) {
+    var set_chatuserlist = function(users) {
         var chatbutton = document.getElementById('chatuserlist');
         if ( users && users.length > 0 ) {
             if ( chatbutton ) {
@@ -146,9 +149,9 @@ ffcdata.features.init = function(){
                 if ( res[0] > 0 && ffcdata.action === 'show' 
                     && ( ffcdata.controller === 'forum' || ffcdata.controller === 'pmsgs' ) )
                         auto_refresh_postlist();
-                set_title(      res[0] );
-                set_menu(       res[1] );
-                set_chatbutton( res[2] );
+                set_title(        res[0] );
+                set_menu(         res[1] );
+                set_chatuserlist( res[2] );
                 return true;
             }
         );
