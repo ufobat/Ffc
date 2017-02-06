@@ -36,7 +36,7 @@ table > tr > td > div, table textarea {
 #msglog {
     background: whitesmoke;
     color: navy;
-    overflow: scroll;
+    overflow: auto;
 }
 #userlist, #textinput, #msglog {
     padding: .25em;
@@ -129,7 +129,7 @@ table > tr > td > div, table textarea {
 }
 .usernameline {
     background: gainsboro;
-    width: 41em;
+    width: 42em;
     padding-left: 1em;
     margin-top: .5em;
 }
@@ -148,13 +148,13 @@ table > tr > td > div, table textarea {
     margin-right: .5em;
 }
 .sameuser .chatmsgcontent {
-    width: 36em;
+    width: 37em;
     margin-left: 5em;
     display: inline-box;
 }
 .newdaymsg {
     border-top: .1em silver dashed;
-    width: 41em;
+    width: 42em;
     color: dimgray;
     text-align: center;
     margin:.5em;
