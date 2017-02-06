@@ -129,7 +129,7 @@ table > tr > td > div, table textarea {
 }
 .usernameline {
     background: gainsboro;
-    width: 42em;
+    width: 41em;
     padding-left: 1em;
     margin-top: .5em;
 }
@@ -148,13 +148,13 @@ table > tr > td > div, table textarea {
     margin-right: .5em;
 }
 .sameuser .chatmsgcontent {
-    width: 37em;
+    width: 36em;
     margin-left: 5em;
     display: inline-box;
 }
 .newdaymsg {
     border-top: .1em silver dashed;
-    width: 42em;
+    width: 41em;
     color: dimgray;
     text-align: center;
     margin:.5em;
