@@ -189,4 +189,10 @@ input#refreshtime {
 .chatoptionpopup div p {
     border-bottom-width: .1em;
 }
+#msglog blockquote p {
+    text-indent: 0;
+    margin-left: 0;
+    padding-left: .5em;
+}
+
 
