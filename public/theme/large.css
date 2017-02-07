@@ -367,6 +367,10 @@ button:active, #editbuttons .buttonalike:active {
     color: dimgray;
     border-width: .1em .1em .1em 0;
 }
-#chatuserlist p {
+#chatuserlist > p {
     margin: .25em;
+    border-bottom-width: .1em;
+}
+.shiftin {
+    padding-left: 1em;
 }

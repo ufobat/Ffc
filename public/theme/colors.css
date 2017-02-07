@@ -358,6 +358,6 @@ h2.pin {
 .newpost .postboxinner {
     border: 0 khaki solid;
 }
-.topicpopup > p, .userspopup > p, .optionspopup > p, #forumentries > p, .chatoptionpopup p {
+.topicpopup > p, .userspopup > p, .optionspopup > p, #forumentries > p, .chatoptionpopup p, #chatuserlist p {
     border-bottom: 0 silver dashed;
 }

@@ -115,8 +115,16 @@ ffcdata.features.init = function(){
                 var chatuserstr = '<p><a href="' + ffcdata.chaturl
                     + '" target="_blank">Chat</a>:</p>';
                 for ( var i = 0; i < users.length; i++ ) {
-                    chatuserstr = chatuserstr 
-                        + '<p>' + users[i][0] + ' (' + users[i][1] + ')</p>';
+                    chatuserstr = chatuserstr + '<p class="shiftin">';
+                    if ( users[i][4] ) {
+                        chatuserstr = chatuserstr 
+                                    + '<a href="' + users[i][4] + '" target="_blank">'
+                                    + users[i][0] + '</a>';
+                    }
+                    else {
+                        chatuserstr = chatuserstr + users[i][0];
+                    }
+                    chatuserstr = chatuserstr + ' (' + users[i][1] + ')</p>';
                 }
                 chatbutton.innerHTML = chatuserstr;
                 chatbutton.className = 'nodisplay popuparrow forumoptionpopup activedim menuentry';

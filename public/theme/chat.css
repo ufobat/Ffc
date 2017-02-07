@@ -186,3 +186,7 @@ input#refreshtime {
 #buttonlist td button {
     width: 100%;
 }
+.chatoptionpopup div p {
+    border-bottom-width: .1em;
+}
+
