@@ -340,6 +340,12 @@ button:active, #editbuttons .buttonalike:active {
     padding: 0;
     margin: 0 .5em;
 }
+.postbox, .popup, .headbox, .pages {
+    border-radius: .25em;
+}
+textarea, .buttonalike, button, input {
+    border-radius: .2em;
+}
 .headbox, .postboxform {
     margin-top: 3em;
 }

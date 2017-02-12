@@ -39,6 +39,9 @@ table > tr > td > div, table textarea {
     overflow: auto;
     box-shadow: inset 0 .1em .2em silver;
 }
+#userlist, #buttonlist, #msglog {
+    border-radius: .25em;
+}
 #userlist, #textinput, #msglog {
     padding: .25em;
     margin: .25em;
