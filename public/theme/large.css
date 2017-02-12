@@ -340,8 +340,11 @@ button:active, #editbuttons .buttonalike:active {
     padding: 0;
     margin: 0 .5em;
 }
-.postbox, .popup, .headbox, .pages {
+.postbox, .popup, .headbox, .pages, .messagebox > * {
     border-radius: .25em;
+}
+#chatuserlist {
+    border-radius: 0 .25em .25em 0;
 }
 textarea, .buttonalike, button, input {
     border-radius: .2em;
