@@ -8,6 +8,7 @@
     <tr>
      <td>
       <p id="editbuttons" class="editbuttons">
+       <a href="<%= url_for 'help' %>#chat" title="Hilfeseite anzeigen" target="_blank" class="backgroundedlink">Hilfe</a>
        <button id="textpreviewtabutton" title="Vorschau anzeigen für den eingegebenen Text" type="button">Vorschau</button>
 %= include 'parts/editbuttons';
       </p>
@@ -28,7 +29,6 @@
            <div class="popup otherspopup">
             <p>Aller <input type="number" name="refreshtime" id="refreshtime" value="60" min="15" max="300" step="15" /> s laden</p>
             <p><span class="notifyswitch">Desktop-Hinweis: <input type="checkbox" id="notifyswitch" value="1"<%== session()->{notifications} ? ' checked="checked"' : '' %> /></span></p>
-            <p><a href="<%= url_for 'help' %>#chat" title="Hilfeseite anzeigen" target="_blank">Hilfe</a></p>
            </div>
           </div>
          </td>

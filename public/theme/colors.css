@@ -21,14 +21,11 @@ h1, h2, h3 {
 h2 {
     color: gray;
 }
-.topiclist h2:hover, .userlist div:hover {
+.topiclist h2:hover, .userlist div:hover, .backgroundedlink, .loginform, .headbox, .popup, .backgroundedlink {
     background: whitesmoke;
 }
 h3 {
     text-decoration: underline;
-}
-.loginform, .headbox, .popup {
-    background: whitesmoke;
 }
 button, #editbuttons .buttonalike, .chatoptionspopupswitch {
     color: black;
@@ -82,7 +79,7 @@ a:hover {
 a:focus {
     color: midnightblue;
 }
-.menu a:hover, .popup a:hover, .topiclist a:hover, .pages a:hover, .headbox a:hover {
+.menu a:hover, .popup a:hover, .topiclist a:hover, .pages a:hover, .headbox a:hover, .backgroundedlink:hover {
     background: gainsboro;
 }
 .active:focus, a.active:focus {

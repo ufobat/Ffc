@@ -346,7 +346,7 @@ button:active, #editbuttons .buttonalike:active {
 #chatuserlist {
     border-radius: 0 .25em .25em 0;
 }
-textarea, .buttonalike, button, input {
+textarea, .buttonalike, button, input, .avatar, .backgroundedlink {
     border-radius: .2em;
 }
 .headbox, .postboxform {
@@ -382,4 +382,8 @@ textarea, .buttonalike, button, input {
 }
 .shiftin {
     padding-left: 1em;
+}
+.backgroundedlink {
+    display: inline-box;
+    padding: .1em .25em;
 }
