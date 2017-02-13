@@ -7,7 +7,7 @@ use Testinit;
 use utf8;
 
 use Test::Mojo;
-use Test::More tests => 163;
+use Test::More tests => 164;
 
 ###############################################################################
 note q~Testsystem vorbereiten~;
@@ -37,13 +37,30 @@ EOMENU
     </div>
 EOMENU
   << "EOMENU",
-    <div class="menuentry">
-        <form action="/blu/plum" accept-charset="UTF-8" method="POST">
-            <span style="display: none">X</span>
-            <input name="query" type="text" value="">
-            <button type="submit" title="Suchen">&gt;</button>
-        </form>
+    <div class="activedim menuentry menulinkwleftpu">
+        <a href="/pmsgs" title="Liste aller aktiven Benutzer"><span class="linktext linkpmsgs">Benutzer</span></a>
     </div>
+EOMENU
+  << "EOMENU",
+    <div class="popuparrow activedim menuentry">
+        <span class="othersmenulinktext">\\*\\*\\*</span>
+        <div class="userspopup popup otherspopup">
+            <p class="smallnodisplay"><a href="/pmsgs/2">$user1</a></p>
+        </div>
+    </div>
+EOMENU
+  << "EOMENU",
+        </div>
+    </div>
+    <span class="menubarseparator">|</span>
+</div>
+EOMENU
+    ) {
+    $t->json_like('/1' => qr~$str~);
+}
+for my $str (
+  << "EOMENU",
+            <p class="smallnodisplay"><a href="/pmsgs/1">admin</a></p>
 EOMENU
   << "EOMENU",
     <div class="otherspopuplink activedim menuentry">
@@ -69,30 +86,15 @@ EOMENU
             </p>
 EOMENU
   << "EOMENU",
-        </div>
-    </div>
-    <span class="menubarseparator">|</span>
-</div>
-EOMENU
-  << "EOMENU",
-    <div class="activedim menuentry menulinkwleftpu">
-        <a href="/pmsgs" title="Liste aller aktiven Benutzer"><span class="linktext linkpmsgs">Benutzer</span></a>
+    <div class="menuentry">
+        <form action="/blu/plum" accept-charset="UTF-8" method="POST">
+            <span style="display: none">X</span>
+            <input name="query" type="text" value="">
+            <button type="submit" title="Suchen">&gt;</button>
+        </form>
     </div>
 EOMENU
-    ) {
-    $t->json_like('/1' => qr~$str~);
-}
-for my $str (
-  << "EOMENU",
-    <div class="popuparrow activedim menuentry">
-        <span class="othersmenulinktext">\\*\\*\\*</span>
-        <div class="userspopup popup otherspopup">
-            <p class="smallnodisplay"><a href="/pmsgs/1">admin</a></p>
-            <p class="smallnodisplay"><a href="/pmsgs/2">$user1</a></p>
-        </div>
-    </div>
-EOMENU
-    ) {
+) {
     $t->json_unlike('/1' => qr~$str~);
 }
 $t->json_is('/0' => 2);
@@ -107,7 +109,7 @@ Testinit::test_add_users($t, $admin, $apass, $user, $pass);
 Testinit::test_login($t, $user, $pass);
 
 $t->post_ok('/fetch', json => {pageurl => '/bla/blubb', queryurl => '/blu/plum', controller => 'notes'})->status_is(200);
-    for my $str (
+for my $str (
   << "EOMENU",
     <div class="activedim menuentry menulinkwleftpu">
         <a href="/forum" title="Liste aller Themen"><span class="linktext linkforum">Themen \\(<span class="mark">3</span>\\)</span></a>
@@ -133,6 +135,16 @@ EOMENU
     </div>
 EOMENU
   << "EOMENU",
+        </div>
+    </div>
+    <span class="menubarseparator">|</span>
+</div>
+EOMENU
+    ) {
+    $t->json_like('/1' => qr~$str~);
+}
+for my $str (
+  << "EOMENU",
     <div class="menuentry">
         <form action="/blu/plum" accept-charset="UTF-8" method="POST">
             <span style="display: none">X</span>
@@ -155,14 +167,8 @@ EOMENU
                 <a href="/logout"><span class="linkalike linklogout">abmelden</span></a>
             </p>
 EOMENU
-  << "EOMENU",
-        </div>
-    </div>
-    <span class="menubarseparator">|</span>
-</div>
-EOMENU
-    ) {
-    $t->json_like('/1' => qr~$str~);
+) {
+    $t->json_unlike('/1' => qr~$str~);
 }
 
 Testinit::test_login($t, $admin, $apass);

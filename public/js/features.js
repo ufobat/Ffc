@@ -98,9 +98,9 @@ ffcdata.features.init = function(){
      ************************************************************************/
     var set_menu = function(res) {
         if ( !res ) return;
-        var menu = document.getElementById('menu');
+        var menu = document.getElementById('menudynamic');
         if ( menu ) {
-            menu.outerHTML = res;
+            menu.innerHTML = res;
             activate_chatbutton();
         }
     };

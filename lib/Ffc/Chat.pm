@@ -226,7 +226,7 @@ EOSQL
         $c->stash('chat_users'),
         $c->stash('newpostcount'), 
         $c->stash('newmsgscount'), 
-        $c->render_to_string('layouts/parts/menu'),
+        $c->render_to_string('layouts/parts/menudynamic'),
     ] );
 }
 

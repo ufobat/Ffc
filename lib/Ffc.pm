@@ -100,7 +100,7 @@ sub _install_util_routes {
              ->stash(controller => $j ? $j->{controller} : '');
         $_[0]->render( json => [
             $_[0]->stash('newcountall') // 0,
-            $_[0]->render_to_string('layouts/parts/menu'),
+            $_[0]->render_to_string('layouts/parts/menudynamic'),
             $_[0]->stash('chat_users'),
         ] );
     } )->name('fetch');
