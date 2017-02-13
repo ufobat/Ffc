@@ -8,7 +8,6 @@
     <tr>
      <td>
       <p id="editbuttons" class="editbuttons">
-       <a href="<%= url_for 'help' %>#chat" title="Hilfeseite anzeigen" target="_blank" class="backgroundedlink">Hilfe</a>
        <button id="textpreviewtabutton" title="Vorschau anzeigen für den eingegebenen Text" type="button">Vorschau</button>
 %= include 'parts/editbuttons';
       </p>

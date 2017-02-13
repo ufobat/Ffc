@@ -55,7 +55,7 @@
         </form>
     </div>
     <span class="menubarseparator"<%== $menulinkdisplay %>>|</span>
-    <div class="otherspopuplink activedim menuentry<%= $controller eq 'options' ? ' activemenuentry' : '' %>"<%== $menulinkdisplay %>>
+    <div class="otherspopuplink activedim menuentry<%= $controller eq 'options' ? ' activemenuentry' : '' %>">
         <span class="othersmenulinktext<%= $controller eq 'options' ? ' active activeoptions' : '' %>">Konto</span>
         <div class="otherspopup popup optionspopup">
             <p class="optionslink">
@@ -69,6 +69,9 @@
             <p class="othersmenutext smallnodisplay">Angemeldet als <%= session->{user} %></p>
             <p class="logoutbutton2">
                 <a href="<%= url_for 'logout' %>"><span class="linkalike linklogout">abmelden</span></a>
+            </p>
+            <p>
+                <a href="<%= url_for 'help' %>" target="_blank"><span class="linkalike">Hilfe</span></a>
             </p>
         </div>
     </div>
