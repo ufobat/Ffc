@@ -70,9 +70,12 @@
             <p class="logoutbutton2">
                 <a href="<%= url_for 'logout' %>"><span class="linkalike linklogout">abmelden</span></a>
             </p>
-            <p>
-                <a href="<%= url_for 'help' %>" target="_blank"><span class="linkalike">Hilfe</span></a>
-            </p>
+        </div>
+    </div>
+    <span class="menubarseparator">|</span>
+    <div class="otherspopuplink activedim menuentry">
+        <div class="activedim menuentry menulinkwleftpu">
+            <a href="<%= url_for 'help' %>" target="_blank"><span class="linkalike">??</span></a>
         </div>
     </div>
 </div>

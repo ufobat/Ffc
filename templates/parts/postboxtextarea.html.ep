@@ -5,9 +5,11 @@
 %   }
             <button type="submit" class="send"><%= $controller eq 'pmsgs' ? 'Senden' : 'Speichern' %></button>
             (
-            <a href="<%== $returl %>">abbrechen</a>
+            <a href="<%== $returl %>">abbrechen</a><span id="editbuttons" class="editbuttons nodisplay">,
+% } else {
+            <span id="editbuttons" class="editbuttons nodisplay">,
 % }
-            <span id="editbuttons" class="editbuttons nodisplay">, <%= include 'parts/editbuttons' %></span> 
+             <%= include 'parts/editbuttons' %></span> 
             )
         </p>
 %= include 'parts/textpreviewbox';
