@@ -3,7 +3,7 @@ body {
     background: gainsboro;
     font-family: sans-serif;
 }
-body > *, .popup, .hovering {
+body > *, .popup, .hovering, .backgrounded {
     background: white;
     border: .1em gray solid;
 }
@@ -21,7 +21,7 @@ h1, h2, h3 {
 h2 {
     color: gray;
 }
-.topiclist h2:hover, .userlist div:hover, .backgroundedlink, .loginform, .headbox, .popup, .backgroundedlink {
+.topiclist h2:hover, .userlist div:hover, .loginform, .headbox, .popup {
     background: whitesmoke;
 }
 h3 {
@@ -79,7 +79,7 @@ a:hover {
 a:focus {
     color: midnightblue;
 }
-.menu a:hover, .popup a:hover, .topiclist a:hover, .pages a:hover, .headbox a:hover, .backgroundedlink:hover {
+.menu a:hover, .popup a:hover, .topiclist a:hover, .pages a:hover, .headbox a:hover, .backgrounded {
     background: gainsboro;
 }
 .active:focus, a.active:focus {
@@ -134,7 +134,7 @@ a.coloroption:hover {
     color: gainsboro;
     background: whitesmoke;
 }
-.forumoptionpopup .pin, ..menu .pin {
+.forumoptionpopup .pin, .menu .pin {
     background-color: lightgoldenrodyellow;
 }
 ul.topiclist {
@@ -357,4 +357,8 @@ h2.pin {
 }
 .topicpopup > p, .userspopup > p, .optionspopup > p, #forumentries > p, .chatoptionpopup p, #chatuserlist p {
     border-bottom: 0 silver dashed;
+}
+.backgrounded {
+    background: lightgray;
+    border: 0 gray solid;
 }

@@ -7,10 +7,19 @@
     </tr>
     <tr>
      <td>
-      <p id="editbuttons" class="editbuttons">
+      <div id="editbuttons" class="editbuttons">
+       <div class="popuparrow chatoptionpopup activedim menuentry chatuploadform">
+        <span class="othersmenulinktext chatoptionpopupswitch backgrounded">Anhang</span>
+        <div class="popup otherspopup">
+         <form enctype="multipart/form-data" method="POST" name="chatuploadform">
+          <input type="file" name="attachement" required="required" />
+          <button>hochladen</button>
+         </form>
+        </div>
+       </div>
        <button id="textpreviewtabutton" title="Vorschau anzeigen für den eingegebenen Text" type="button">Vorschau</button>
 %= include 'parts/editbuttons';
-      </p>
+      </div>
       <textarea id="textinput" name="msg"></textarea>
      </td>
      <td>
@@ -24,7 +33,7 @@
          <td><button name="reload" id="reload">Laden</button></td>
          <td>
           <div class="popuparrow chatoptionpopup activedim menuentry">
-           <span class="othersmenulinktext chatoptionpopupswitch">Mehr ...<span>
+           <span class="othersmenulinktext chatoptionpopupswitch">Mehr ...</span>
            <div class="popup otherspopup">
             <p>Aller <input type="number" name="refreshtime" id="refreshtime" value="60" min="15" max="300" step="15" /> s laden</p>
             <p><span class="notifyswitch">Desktop-Hinweis: <input type="checkbox" id="notifyswitch" value="1"<%== session()->{notifications} ? ' checked="checked"' : '' %> /></span></p>

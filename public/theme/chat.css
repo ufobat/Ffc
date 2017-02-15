@@ -197,5 +197,17 @@ input#refreshtime {
     margin-left: 0;
     padding-left: .5em;
 }
-
+.chatuploadform {
+    display: inline;
+}
+.chatuploadform .popup {
+    margin-top: -0.25em;
+    margin-left: 0em;
+}
+.backgrounded {
+    display: inline-box;
+    padding: .1em 0;
+    margin: 0 1em;
+    text-align: center;
+}
 
