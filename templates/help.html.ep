@@ -52,7 +52,6 @@
 <div class="postbox helptext">
     <h2><a name="formatting" href="#content">^</a> Textformatierungen</h2>
     <p>Die folgenden Formatierungsmöglichkeiten für Forenbeiträge, private Nachrichten oder Notizen können von Hand in den Text eingefügt werden.</p>
-    <p>Chatnachrichten können nicht formatiert werden.</p> 
     <p>Ist Javascript aktiviert, so erscheinen über den Eingabefeldern für Beiträge kleine graue Buttons, über die ebenfalls die folgenden Änderungen angewendet werden können. Die Buttons wirken in einer Auswahl von Text.</p>
     <p>Anstatt von Leerzeichen zwischen Wörtern müssen im folgenden die entsprechenden Formatierungszeichen verwendet werden.</p>
     <ul>
@@ -79,6 +78,7 @@
         <li><code>&lt;ul&gt;Listeninhalt&lt;/ul&gt;</code>: Erzeugt eine Liste</li>
         <li><code>&lt;ol&gt;Listeninhalt&lt;/ol&gt;</code>: Erzeugt eine Aufzählungsliste</li>
         <li><code>&lt;li&gt;Listentext&lt;/li&gt;</code>: Erzeugt ein Listenelement (muss zwischen <code>&lt;ul&gt;&lt;/ul&gt;</code> oder <code>&lt;ol&gt;&lt;/ol&gt;</code> direkt in der Mitte zwischen den <code>&gt;&lt;</code> stehen)</li>
+        <li><code>&lt;hr /&gt;</code>: Erzeugt eine waagerechte Linie, die man zum besseren kenntlich machen von einzelnen Textteilen verwenden kann</li>
     </ul>
 </div>
 <div class="postbox helptext">
