@@ -129,17 +129,6 @@ CREATE TABLE "chat" (
 CREATE INDEX "chat_id_ix" ON "chat"("id");
 
 /******************************************************************************/
-/* Verzeichnis der Chat-Dateianhänge
-/******************************************************************************/
-CREATE TABLE "attachements_chat" (
-  "id"           integer       PRIMARY KEY AUTOINCREMENT,
-  "chatid"       int(11)       NOT NULL,
-  "filename"     varchar(256),
-  "content_type" varchar(128)
-);
-CREATE INDEX "attachements_chatid_ix" ON "attachements_chat"("chatid");
-
-/******************************************************************************/
 /* Konfiguration für die Software-Instanz
 /******************************************************************************/
 CREATE TABLE "config" (
