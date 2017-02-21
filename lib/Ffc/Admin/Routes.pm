@@ -19,7 +19,7 @@ sub install_routes {
     $oa->post('/useradd')
        ->to('admin#useradmin')
        ->name('adminuseradd');
-    $oa->post('/usermod/:username', [username => $Ffc::Usrqr])
+    $oa->post('/usermod/:newusername', [newusername => $Ffc::Usrqr])
        ->to('admin#useradmin')
        ->name('adminusermod');
 

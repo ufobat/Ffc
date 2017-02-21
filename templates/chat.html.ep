@@ -11,8 +11,8 @@
        <div class="popuparrow chatoptionpopup activedim menuentry chatuploadform">
         <span class="othersmenulinktext chatoptionpopupswitch backgrounded">Anhang</span>
         <div class="popup otherspopup">
-         <form enctype="multipart/form-data" method="POST" name="chatuploadform">
-          <input type="file" name="attachement" required="required" />
+         <form enctype="multipart/form-data" method="POST" id="chatuploadform">
+          <input type="file" name="attachement" id="attachement" required="required" />
           <button>hochladen</button>
          </form>
         </div>

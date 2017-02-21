@@ -81,38 +81,38 @@ $t->get_ok('/admin/form')->status_is(200);
 error(q~Benutzername nicht angegeben~);
 is @{get_users()}, 1, 'user count ok';
 
-$t->post_ok('/admin/useradd', form => {username => 'a'})
+$t->post_ok('/admin/useradd', form => {newusername => 'a'})
   ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
 $t->get_ok('/admin/form')->status_is(200);
 error(q~Benutzername passt nicht \\(muss zwischen 2 und 12 Buchstaben haben\\)~);
 is @{get_users()}, 1, 'user count ok';
 
-$t->post_ok('/admin/useradd', form => {username => ('a' x 33)})
+$t->post_ok('/admin/useradd', form => {newusername => ('a' x 33)})
   ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
 $t->get_ok('/admin/form')->status_is(200);
 error(q~Benutzername passt nicht \\(muss zwischen 2 und 12 Buchstaben haben\\)~);
 is @{get_users()}, 1, 'user count ok';
   
-$t->post_ok('/admin/useradd', form => {username => $user})
+$t->post_ok('/admin/useradd', form => {newusername => $user})
   ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
 $t->get_ok('/admin/form')->status_is(200);
 error(q~Neuen Benutzern muss ein Passwort gesetzt werden~);
 is @{get_users()}, 1, 'user count ok';
 
-$t->post_ok('/admin/useradd', form => {username => $user, newpw1 => $pass})
+$t->post_ok('/admin/useradd', form => {newusername => $user, newpw1 => $pass})
   ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
 $t->get_ok('/admin/form')->status_is(200);
 error(q~Neuen Benutzern muss ein Passwort gesetzt werden~);
 is @{get_users()}, 1, 'user count ok';
 
-$t->post_ok('/admin/useradd', form => {username => $user, newpw1 => $pass, newpw2 => "$pass#"})
+$t->post_ok('/admin/useradd', form => {newusername => $user, newpw1 => $pass, newpw2 => "$pass#"})
   ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
 $t->get_ok('/admin/form')->status_is(200);
 error(q~Passworte stimmen nicht überein~);
 is @{get_users()}, 1, 'user count ok';
 
 note 'new inactive user';
-$t->post_ok('/admin/useradd', form => {username => $user, newpw1 => $pass, newpw2 => $pass})
+$t->post_ok('/admin/useradd', form => {newusername => $user, newpw1 => $pass, newpw2 => $pass})
   ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
 $t->get_ok('/admin/form')->status_is(200);
 info(qq~Benutzer \&quot;$user\&quot; angelegt~);
@@ -126,7 +126,7 @@ error_login();
 dump_user();
 
 note 'new active adminuser';
-$t->post_ok('/admin/useradd', form => {username => $user, newpw1 => $pass, newpw2 => $pass, active => 1, admin => 1})
+$t->post_ok('/admin/useradd', form => {newusername => $user, newpw1 => $pass, newpw2 => $pass, active => 1, admin => 1})
   ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
 $t->get_ok('/admin/form')->status_is(200);
 info(qq~Benutzer \&quot;$user\&quot; angelegt~);
@@ -142,7 +142,7 @@ $t->get_ok('/admin/form')->status_is(200)
 dump_user();
 
 note 'new active normal user';
-$t->post_ok('/admin/useradd', form => {username => $user, newpw1 => $pass, newpw2 => $pass, active => 1})
+$t->post_ok('/admin/useradd', form => {newusername => $user, newpw1 => $pass, newpw2 => $pass, active => 1})
   ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
 $t->get_ok('/admin/form')->status_is(200);
 info(qq~Benutzer \&quot;$user\&quot; angelegt~);
@@ -282,7 +282,7 @@ sub add_testuser {
     note 'test user has email adress' if $email;
     my ( $user, $pass ) = (trandstr(), trandstr());
     $email = trandstr().'@home.de' if $email;
-    $t->post_ok('/admin/useradd', form => {username => $user, newpw1 => $pass, newpw2 => $pass, active => 1})
+    $t->post_ok('/admin/useradd', form => {newusername => $user, newpw1 => $pass, newpw2 => $pass, active => 1})
       ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
     $t->get_ok('/admin/form')->status_is(200);
     info(qq~Benutzer \&quot;$user\&quot; angelegt~);

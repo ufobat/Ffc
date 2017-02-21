@@ -10,6 +10,8 @@ ffcdata.chat.init = function() {
     var msglog           = document.getElementById('msglog');
     var userlist         = document.getElementById('userlist');
     var notifyswitch     = document.getElementById('notifyswitch');
+    var chatattachements = document.getElementById('chatuploadform');
+    var attachement      = document.getElementById('attachement');
 
     /************************************************************************
      *** Chat-Text formatieren                                            ***
@@ -378,10 +380,19 @@ ffcdata.chat.init = function() {
     };
 
     /************************************************************************
+     *** Uploads im Chatfenster                                           ***
+     ************************************************************************/
+    var attach_fun = function(){
+        console.log('updoad!!!!');
+    };
+
+    /************************************************************************
      *** Fertisch                                                         ***
      ************************************************************************/
     receive_start();
     msgfield.focus();
+    
+    chatattachements.onsubmit = attach_fun;
     window.onfocus = onfocus_fun;
 };
 

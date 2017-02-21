@@ -10,7 +10,7 @@
         <input type="hidden" name="overwriteok" value="0" />
         <p>
             Benutzername:
-            <input required type="text" name="username" value="" />
+            <input required type="text" name="newusername" value="" />
         </p>
         <p>
             Passwort:
@@ -33,7 +33,7 @@
 % for my $u ( @$userlist ) {
 <div class="suboption useradmin_form">
     <h2>Benutzer &quot;<%= $u->[1] %>&quot; ändern<% if ( $u->[4] ) { %> (<%= $u->[4] %>)<% } %>:</h2>
-    <form action="<%= url_for adminusermod => { username => $u->[1] } %>#useradmin" method="POST">
+    <form action="<%= url_for adminusermod => { newusername => $u->[1] } %>#useradmin" method="POST">
         <input type="hidden" name="overwriteok" value="1" />
         <p>
             Passwort:

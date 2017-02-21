@@ -6,7 +6,7 @@ use strict; use warnings; use utf8;
 sub useradmin {
     my $c        = $_[0];
 
-    my $username = $c->param('username');
+    my $username = $c->param('newusername');
     my $newpw1   = $c->param('newpw1');
     my $newpw2   = $c->param('newpw2');
     my $isadmin  = $c->param('admin')  ? 1 : 0;
