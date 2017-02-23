@@ -311,12 +311,8 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Absenden                                                         ***
      ************************************************************************/
-    var sendit = function() {
-        receive(msgfield.value);
-    };
-    var cleanmsg = function() {
-        msgfield.value = '';
-    }
+    var sendit   = function() { receive(msgfield.value) };
+    var cleanmsg = function() { msgfield.value = '' };
 
     /************************************************************************
      *** Manuelles Absenden                                               ***
@@ -332,12 +328,12 @@ ffcdata.chat.init = function() {
      ************************************************************************/
     var isShift = false;
     msgfield.onkeydown = function(e) {
+        // console.log(e.keyCode);
         if ( e.keyCode == 16 ) {
             isShift = true;
         }
 
         if ( e.keyCode == 13 && !isShift ) {
-            // console.log('enter-key send triggered');
             var msgval = msgfield.value;
             if ( msgval ) {
                 ffcdata.chat.history_list.push(msgval);
@@ -347,6 +343,7 @@ ffcdata.chat.init = function() {
         }
     };
     msgfield.onkeyup = function(e) {
+        // console.log(e.keyCode);
         if ( e.keyCode == 16 ) {
             isShift = false;
         }
@@ -355,8 +352,9 @@ ffcdata.chat.init = function() {
             // console.log('enter-key send done');
             cleanmsg();
         }
-
-        if ( isShift && e.keyCode == 38 && ffcdata.chat.history_pointer > 0 ) { // shift + up arrow, history back
+        
+        // shift + up arrow, history back
+        if ( isShift && e.keyCode == 38 && ffcdata.chat.history_pointer > 0 ) {
             var msgval = msgfield.value;
             if ( msgval.length > 0 && ffcdata.chat.history_list[ffcdata.chat.history_pointer] != msgval ) {
                 ffcdata.chat.history_list[ffcdata.chat.history_pointer] = msgval;
@@ -364,7 +362,9 @@ ffcdata.chat.init = function() {
             ffcdata.chat.history_pointer--;
             msgfield.value = ffcdata.chat.history_list[ffcdata.chat.history_pointer];
         }
-        if ( isShift && e.keyCode == 40 && ffcdata.chat.history_pointer < ffcdata.chat.history_list.length ) { // shift + down arrow, history foreward
+
+        // shift + down arrow, history foreward
+        if ( isShift && e.keyCode == 40 && ffcdata.chat.history_pointer < ffcdata.chat.history_list.length ) {
             var msgval = msgfield.value;
             if ( msgval.length > 0 && ffcdata.chat.history_list[ffcdata.chat.history_pointer] != msgval ) {
                 ffcdata.chat.history_list[ffcdata.chat.history_pointer] = msgval;
