@@ -388,3 +388,6 @@ textarea, .buttonalike, button, input, .avatar, .backgrounded, .suboption {
     display: inline-box;
     padding: .1em .25em;
 }
+ol {
+    padding-left: 2em;
+}
