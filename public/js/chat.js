@@ -340,6 +340,7 @@ ffcdata.chat.init = function() {
                 ffcdata.chat.history_pointer = ffcdata.chat.history_list.length;
             }
             sendit();
+            cleanmsg();
         }
     };
     msgfield.onkeyup = function(e) {
@@ -349,8 +350,8 @@ ffcdata.chat.init = function() {
         }
 
         if ( e.keyCode == 13 && !isShift  ) {
-            // console.log('enter-key send done');
-            cleanmsg();
+            //console.log('enter-key send done');
+            if ( msgfield.value.match(/^[\s\r\n]+$/) ) cleanmsg();
         }
         
         // shift + up arrow, history back
