@@ -119,7 +119,7 @@ SELECT
     "id"
 FROM "users"
 WHERE 
-    DATETIME("lastseenchat", 'localtime', '+'||"chatrefreshsecs"||' seconds') >= DATETIME('now', 'localtime')
+    DATETIME("lastseenchat", 'localtime', '+'|| ( "chatrefreshsecs" + 1 ) ||' seconds') >= DATETIME('now', 'localtime')
     AND "inchat"=1
 ORDER BY UPPER("name"), "id"
 EOSQL
