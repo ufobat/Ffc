@@ -49,6 +49,7 @@ say "ok: using '$uid' as data path owner and '$gid' as data path group";
 # Sämtliche notwendige Pfade errechnen
 my $AvatarPath     = catdir @BasePath, 'avatars';
 my $UploadPath     = catdir @BasePath, 'uploads';
+my $ChatUploadPath = catdir @BasePath, 'chatuploads';
 my $FavIconSource  = catdir @FavRoot,  'favicon.png';
 my $FavIconPath    = catdir @BasePath, 'favicon';
 my $DatabasePath   = catdir @BasePath, 'database.sqlite3';
@@ -67,10 +68,11 @@ sub generate_paths {
     # Alle Unterverzeichnisse durchgehen
     for my $d ( 
         # Bezeichnung => Pfad, Ist ein Verzeichnis?, Dateiberechtigung, Quelldatei?, Datenbankdatei? 
-        [ avatar   => $AvatarPath,   1, 0770, '',              0 ],
-        [ upload   => $UploadPath,   1, 0770, '',              0 ],
-        [ database => $DatabasePath, 0, 0660, $DatabaseSource, 1 ],
-        [ favicon  => $FavIconPath,  0, 0660, $FavIconSource,  0 ],
+        [ avatar      => $AvatarPath,     1, 0770, '',              0 ],
+        [ upload      => $UploadPath,     1, 0770, '',              0 ],
+        [ chatupload  => $ChatUploadPath, 1, 0770, '',              0 ],
+        [ database    => $DatabasePath,   0, 0660, $DatabaseSource, 1 ],
+        [ favicon     => $FavIconPath,    0, 0660, $FavIconSource,  0 ],
     ) {
         my ( $name, $path, $isdir, $mode, $copy, $db ) = @$d;
 
