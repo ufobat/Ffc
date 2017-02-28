@@ -117,9 +117,11 @@ EOSQL
             ( $t->[6]            ? 'pin'        : () ),
             ( $t->[3] && $t->[6] ? 'newpinpost' : () ),
         ;
-        push @topicchanges, $t->[0] if $t->[3]
+        if ( $t->[3] ) {
+            push @topicchanges, $t->[0] if $t->[3];
+        }
     }
-    $c->stash( topicchanges => \@topicchanges);
+    $c->stash( topicchanges => \@topicchanges );
 
     # Nachträgliche Sortierung der ermittelten Datensätze für die Themenliste
     # und eintragen der Themenliste in den Stash unterhalb des vorgesehenen Stash-Keys $stashkey

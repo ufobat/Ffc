@@ -161,14 +161,16 @@ my $id = 1; my @forums; my @pmsgss;
 
 # Abstrahierte Beitragserstellung
 sub _add {
-    my ($u, $tu, $cnt, $givenstr) = @_;
+    my ($u, $tu, $cnt, $givenstr, $tid) = @_;
     my $uid = $u->{userid};
+    my $topicid = $tid // 1;
     for my $i ( 1 .. $cnt ) {
         my $str = $givenstr // '___' . Testinit::test_randstring() . '___';
         my $newid = $id++;
         note '----------';
         note "  add postid $newid to ".($tu?'pmsgs':'forum').": $str";
         note "    userfrom = $u->{userid} ($u->{username})";
+        note "    topicid  = $topicid" unless $tu;
         note "    userto   = $tu->{userid} ($tu->{username})" if $tu;
         my $new = {
             userfrom => $u, 
@@ -185,7 +187,7 @@ sub _add {
         }
         else {
             note "  real insert call";
-            my $url = $tu ? "/pmsgs/$tu->{userid}" : '/topic/1';
+            my $url = $tu ? "/pmsgs/$tu->{userid}" : "/topic/$topicid";
             $u->{t}->post_ok("$url/new", form => { textdata => $str })
               ->status_is(302)->content_is('')
               ->header_like(location => qr~$url~);
@@ -195,7 +197,7 @@ sub _add {
 }
 
 # Forenbeitrag erstellen
-sub add_forum { _add($_[0], undef, $_[1], $_[2]) }
+sub add_forum { _add($_[0], undef, $_[1], $_[2], $_[3]) }
 # Privatnachricht erstellen
 sub add_pmsgs { _add(@_[0,1,2,3]) }
 
