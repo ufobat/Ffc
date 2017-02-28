@@ -106,6 +106,7 @@ EOSQL
         , ( $session->{userid} ) x 2, ($query ? "\%$query\%" : ()), $topiclimit, ( $page - 1 ) * $topiclimit
     );
 
+    my @topicchanges;
     for my $t ( @$tlist ) {
         # Zeitstempel in das gewünschte Format bringen
         $t->[9] = $c->format_timestamp($t->[9]);
@@ -116,7 +117,9 @@ EOSQL
             ( $t->[6]            ? 'pin'        : () ),
             ( $t->[3] && $t->[6] ? 'newpinpost' : () ),
         ;
+        push @topicchanges, $t->[0] if $t->[3]
     }
+    $c->stash( topicchanges => \@topicchanges);
 
     # Nachträgliche Sortierung der ermittelten Datensätze für die Themenliste
     # und eintragen der Themenliste in den Stash unterhalb des vorgesehenen Stash-Keys $stashkey
@@ -152,6 +155,7 @@ EOSQL
     );
 
     # Aufbereitung des Geburtstdatums
+    my @pmsgschanges;
     for my $dat ( @$data ) {
         if ( $dat->[6] and $dat->[6] =~ $Ffc::Dater ) {
             $dat->[6] = $+{jahr}
@@ -161,7 +165,9 @@ EOSQL
         else {
             $dat->[6] = '';
         }
+        push @pmsgschanges, $dat->[0] if $dat->[2];
     }
+    $_[0]->stash( pmsgschanges => \@pmsgschanges );
 
     # Generierte Benutzerliste entsprechend im Stash unter "users" ablegen
     $_[0]->stash( users => $data );

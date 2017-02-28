@@ -37,6 +37,8 @@
             notifications:        <%= session()->{notifications} ? 'true' : 'false' %>,
             isinchat:             '<%= $isinchat %>',
             chaturl:              '<%= url_for 'chat_window' %>',
+            topicid:              <%= param('topicid')  || 0 %>,
+            usertoid:             <%= param('usertoid') || 0 %>,
         };
     </script>
     <%= javascript '/js/utils.js' %>

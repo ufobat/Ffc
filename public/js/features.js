@@ -154,9 +154,23 @@ ffcdata.features.init = function(){
                 if ( res[0] > 0 && res[0] > ffcdata.lastcount ) {
                     notify_newmsgs();
                 }
-                if ( res[0] > 0 && ffcdata.action === 'show' 
-                    && ( ffcdata.controller === 'forum' || ffcdata.controller === 'pmsgs' ) )
-                        auto_refresh_postlist();
+                var do_postlist_refresh = false;
+                var check_act_topic = function(id){ 
+                    if ( ffcdata.topicid  === id )
+                        do_postlist_refresh = true;
+                };
+                var check_act_pmsgs = function(id){ 
+                    if ( ffcdata.usertoid === id )
+                        do_postlist_refresh = true;
+                };
+                if ( res[0] > 0 && ffcdata.action === 'show' ) {
+                    if ( ffcdata.controller === 'forum' && ffcdata.topicid  !== '0' )
+                        res[3].filter(check_act_topic);
+                    if ( ffcdata.controller === 'pmsgs' && ffcdata.usertoid !== '0' )
+                        res[4].filter(check_act_pmsgs);
+                }
+
+                if ( do_postlist_refresh ) auto_refresh_postlist();
                 set_title(        res[0] );
                 set_menu(         res[1] );
                 set_chatuserlist( res[2] );
