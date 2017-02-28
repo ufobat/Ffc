@@ -101,7 +101,10 @@ sub _install_util_routes {
         $_[0]->render( json => [
             $_[0]->stash('newcountall') // 0,
             $_[0]->render_to_string('layouts/parts/menudynamic'),
+            #'---',
             $_[0]->stash('chat_users'),
+            $_[0]->stash('topicchanges'),
+            $_[0]->stash('pmsgschanges'),
         ] );
     } )->name('fetch');
 }
