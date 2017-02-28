@@ -15,7 +15,7 @@ use File::Temp;
 use File::Spec::Functions qw(catfile);
 use Digest::SHA 'sha512_base64';
 
-use Test::More tests => 198;
+use Test::More tests => 232;
 
 my $script = $Testinit::Script;
 note "testing init script '$script'";
@@ -60,6 +60,7 @@ sub check_paths {
     for my $path ( 
         [ qq'$testpath/avatars',          1 ],
         [ qq'$testpath/uploads',          1 ],
+        [ qq'$testpath/chatuploads',      1 ],
         [ qq'$testpath/database.sqlite3', 0 ],
         [ qq'$testpath/favicon',          0 ],
     ) {
@@ -120,6 +121,7 @@ sub test_path {
         qr~ok: using '\d+' as data path owner and '\d+' as data path group~,
         qr~ok: using '$testpath/avatars' as avatar store~,
         qr~ok: using '$testpath/uploads' as upload store~,
+        qr~ok: using '$testpath/chatuploads' as chatupload store~,
         qr~ok: using '$testpath/database\.sqlite3' as database store~,
         qr~ok: check user and group priviledges of the data path!~,
         qr~ok: initial cookiesecret, salt, admin user and password:~,
@@ -146,6 +148,8 @@ sub test_path {
         qr~ok: path '$testpath/avatars' as avatar allready exists~,
         qr~ok: using '$testpath/uploads' as upload store~,
         qr~ok: path '$testpath/uploads' as upload allready exists~,
+        qr~ok: using '$testpath/chatuploads' as chatupload store~,
+        qr~ok: path '$testpath/chatuploads' as chatupload allready exists~,
         qr~ok: using '$testpath/database\.sqlite3' as database store~,
         qr~ok: path '$testpath/database\.sqlite3' as database allready exists~,
         qr~ok: using '$testpath/favicon' as favicon store~,
@@ -176,6 +180,8 @@ sub test_path {
         qr~ok: path '$testpath/avatars' as avatar allready exists~,
         qr~ok: using '$testpath/uploads' as upload store~,
         qr~ok: path '$testpath/uploads' as upload allready exists~,
+        qr~ok: using '$testpath/chatuploads' as chatupload store~,
+        qr~ok: path '$testpath/chatuploads' as chatupload allready exists~,
         qr~ok: using '$testpath/database\.sqlite3' as database store~,
         qr~ok: using '$testpath/favicon' as favicon store~,
         qr~ok: check user and group priviledges of the data path!~,
