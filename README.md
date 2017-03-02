@@ -32,7 +32,7 @@ The project is up and stable for several years now. The ideas have proven to be 
 Copyright und Lizenz
 ====================
 
-Copyright (C) 2012-2015 by Markus Pinkert
+Copyright (C) 2012-2017 by Markus Pinkert
 
 This application is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
 
