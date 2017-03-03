@@ -85,6 +85,7 @@ sub leave_chat {
 
 ###############################################################################
 # Eine neue Chat-Nachricht in die Datenbank eintragen
+my $i = 0;
 sub _add_msg {
     return unless $_[1];
     my ( $c, $msg, $issys ) = @_;
@@ -210,12 +211,19 @@ EOSQL
     }
 
     # Refresh-Timer neu setzen, damit diese Statusabfrage bei der Berechnung der Aktivität berücksichtig werden kann
-    $sql = qq~UPDATE "users" SET\n~;
+    $sql  = qq~UPDATE "users" SET\n~;
     $sql .= qq~    "lastchatid"=?,\n~ if @$msgs;
     $sql .= qq~    "inchat"=1,\n    "lastseenchat"=CURRENT_TIMESTAMP~;
     $sql .= qq~,\n    "lastseenchatactive"=CURRENT_TIMESTAMP~ if $active;
     $sql .= qq~\nWHERE "id"=?~;
+    
+    # Datenbankverbindung beschleunigen ... gefährlich, aber warum nicht
+    $c->dbh_do( qq~PRAGMA journal_mode = OFF~ );
+    $c->dbh_do( qq~PRAGMA synchronous = OFF~ );
     $c->dbh_do( $sql, ( @$msgs ? $msgs->[0]->[0] : () ), $s->{userid} );
+    # Und schnell wieder zurück
+    $c->dbh_do( qq~PRAGMA journal_mode = DELETE~ );
+    $c->dbh_do( qq~PRAGMA synchronous = ON~ );
 
     # Rückgabe der Statusabfragen inkl. der Anzahlen der neuen Nachrichten und Forenbeiträge für die Titelleiste
     $c->res->headers( 'Cache-Control' => 'public, max-age=0, no-cache' );
