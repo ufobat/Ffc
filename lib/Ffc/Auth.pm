@@ -51,17 +51,9 @@ sub check_login {
                 $c->user_session_config( @$o );
             }
 
-            # Beschleunigungsfeature getrichen wegen unnötig!!!
-            # Wir versuchen das mal, wow ist das Hardcore!!! Sehr vorsichtig, DANGERZONE!!! 
-            # Eigentlich total hirnrissig, das so zu machen, aber Wayne, wir machenn das ja nur im Chat
-            #$c->dbh_do( qq~PRAGMA journal_mode = OFF~ );
-            #$c->dbh_do( qq~PRAGMA synchronous = OFF~ );
             # Online-Information zurück schreiben
             $c->dbh_do('UPDATE "users" SET "lastonline"=CURRENT_TIMESTAMP WHERE "id"=? AND "hidelastseen"=0', $s->{userid}) 
                     unless $c->match->endpoint->name() eq 'countings';
-            # Und schnell wieder zurück
-            #$c->dbh_do( qq~PRAGMA journal_mode = DELETE~ );
-            #$c->dbh_do( qq~PRAGMA synchronous = ON~ );
             
             return 1; # Passt!
         }
