@@ -269,10 +269,10 @@ button:active, #editbuttons .buttonalike:active {
 #editbuttons .buttonalike {
     margin-left: .1em;
 }
-.menu, .shadowed, #chatuserlist {
+.menu {
     box-shadow: 0 0 .25em dimgrey;
 }
-.popup, .messagebox > div {
+.popup, .messagebox > div, #chatuserlist, .shadowed {
     box-shadow: 0 .1em .25em dimgrey;
 }
 .textpreviewarea {
