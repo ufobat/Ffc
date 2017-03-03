@@ -217,13 +217,14 @@ EOSQL
     $sql .= qq~,\n    "lastseenchatactive"=CURRENT_TIMESTAMP~ if $active;
     $sql .= qq~\nWHERE "id"=?~;
     
+    # Beschleunigungsfeature getrichen wegen unnötig!!!
     # Datenbankverbindung beschleunigen ... gefährlich, aber warum nicht
-    $c->dbh_do( qq~PRAGMA journal_mode = OFF~ );
-    $c->dbh_do( qq~PRAGMA synchronous = OFF~ );
+    #$c->dbh_do( qq~PRAGMA journal_mode = OFF~ );
+    #$c->dbh_do( qq~PRAGMA synchronous = OFF~ );
     $c->dbh_do( $sql, ( @$msgs ? $msgs->[0]->[0] : () ), $s->{userid} );
     # Und schnell wieder zurück
-    $c->dbh_do( qq~PRAGMA journal_mode = DELETE~ );
-    $c->dbh_do( qq~PRAGMA synchronous = ON~ );
+    #$c->dbh_do( qq~PRAGMA journal_mode = DELETE~ );
+    #$c->dbh_do( qq~PRAGMA synchronous = ON~ );
 
     # Rückgabe der Statusabfragen inkl. der Anzahlen der neuen Nachrichten und Forenbeiträge für die Titelleiste
     $c->res->headers( 'Cache-Control' => 'public, max-age=0, no-cache' );
