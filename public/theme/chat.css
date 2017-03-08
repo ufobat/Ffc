@@ -93,10 +93,6 @@ table > tr > td > div, table textarea {
     font-size: 0.75em;
     color: gray;
 }
-#msglog p {
-    text-indent: -5em;
-    margin-left: 5em;
-}
 .myself {
     color: red;
     font-weight: bold;
