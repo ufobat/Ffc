@@ -38,6 +38,21 @@ ffcdata.features.init = function(){
     };
 
     /************************************************************************
+     * Auto-Refresh Timer
+     ************************************************************************/
+    var start_timerrefresh = function(){
+        console.log('start timer');
+        ffcdata.features.autorefresh_interval 
+            = window.setInterval(auto_refresh, ffcdata.autorefresh * 1000 );
+    };
+    var stop_timerrefresh = function(){
+        console.log('stop timer');
+        if ( ffcdata.features.autorefresh_interval )
+            window.clearTimeout( ffcdata.features.autorefresh_interval );
+    };
+
+
+    /************************************************************************
      * Chat-Button bei Bedarf aktivieren
      ************************************************************************/
     var activate_chatbutton = function(){
@@ -139,6 +154,7 @@ ffcdata.features.init = function(){
      * Auto-Refresh-Funktion
      ************************************************************************/
     var auto_refresh = function(){
+        stop_timerrefresh();
         ffcdata.utils.request('POST', ffcdata.fetchurl, 
             {
                 pageurl:    ffcdata.pageurl, 
@@ -174,17 +190,10 @@ ffcdata.features.init = function(){
                 set_title(        res[0] );
                 set_menu(         res[1] );
                 set_chatuserlist( res[2] );
+                start_timerrefresh();
                 return true;
             }
         );
-    };
-
-    /************************************************************************
-     * Auto-Refresh nur für das Menü und den Titel bei Bedarf aktivieren
-     ************************************************************************/
-    var set_timerrefresh = function(){
-        ffcdata.features.autorefresh_interval 
-            = window.setInterval(auto_refresh, ffcdata.autorefresh * 1000 );
     };
 
     /************************************************************************
@@ -283,7 +292,7 @@ ffcdata.features.init = function(){
         set_titletime();
     activate_chatbutton();
     if ( ffcdata.autorefresh > 0 && !ffcdata.utils.is_disabled() && !ffcdata.singleuser ) {
-        set_timerrefresh();
+        start_timerrefresh();
         set_focusrefresh();
         auto_refresh();
     }
