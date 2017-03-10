@@ -41,12 +41,12 @@ ffcdata.features.init = function(){
      * Auto-Refresh Timer
      ************************************************************************/
     var start_timerrefresh = function(){
-        console.log('start timer');
+        //console.log('start timer');
         ffcdata.features.autorefresh_interval 
             = window.setInterval(auto_refresh, ffcdata.autorefresh * 1000 );
     };
     var stop_timerrefresh = function(){
-        console.log('stop timer');
+        //console.log('stop timer');
         if ( ffcdata.features.autorefresh_interval )
             window.clearTimeout( ffcdata.features.autorefresh_interval );
     };
