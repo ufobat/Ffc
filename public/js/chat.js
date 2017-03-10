@@ -221,7 +221,7 @@ ffcdata.chat.init = function() {
      ************************************************************************/
     var receive_do = function(msg, started) {
         // console.log('receiving');
-        if ( !started && !t_stop() ) {
+        if ( !t_stop() && !started ) {
             // console.log('timeout allready stopped, receive might be in progress');
             return;
         }
