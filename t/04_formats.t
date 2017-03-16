@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 107;
+use Test::More tests => 110;
 
 srand;
 
@@ -491,6 +491,36 @@ EOHTML
             } 'o_O', 'O_o', 'O_ò', 'ó_O', 'Oo', 'oO' ) . '</p>',
         21
     ],
+    [
+        << 'EOCODE',
+Obächt >
+
+Halla
+
+<pre>
+Test, Töst, <Täst>:
+
+Blups
+
+Bla
+</pre>
+
+TamTam
+EOCODE
+        << 'EOCODE',
+<p>Obächt &gt;</p>
+<p>Halla</p>
+<pre>
+Test, Töst, &lt;Täst&gt;:
+
+Blups
+
+Bla
+</pre>
+<p>TamTam</p>
+EOCODE
+        22
+    ],
 );
 
 my @Tests_NoSmil = (
@@ -594,6 +624,7 @@ note q~run some tests~;
 ###############################################################################
 
 format_timestamp_test();
+#format_things_test([$Tests[21]]);
 format_things_test(\@Tests);
 format_things_test(\@Tests_NoSmil, 1, 0, 0);
 format_things_test(\@Tests_Short,  0, 1, 0);
