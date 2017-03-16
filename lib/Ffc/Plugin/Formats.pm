@@ -117,13 +117,14 @@ sub _pre_format_text_part {
 #   controller, string, stacklevel, disable-p, disable-html, insert in newlines, no smileys, no blocks
     my ( $c, $ostr, $lvl, $dis_p, $dis_html, $set_n, $nosmil, $dis_block, $inlimg ) = @_;
     my $str = $ostr; # Ich arbeite hier auf einer Kopie
+#warn "STARTSTRING: $str";
 
     # Leerstrings fallen von vorn herein raus, Zeilenumbrüche werden normalisiert
     $str =~ m/\A\s*\z/xmso and return '';
-    $str =~ s~(?:\r?\n\r?)+~\n~gxmsio;
+    $str =~ s~(?:\r?\n\r?)~\n~gxmsio;
     # Ist HTML-Formatierung abgeschalten, wird der String lediglich XML-Escaped zurück gegeben, mehr passiert da nicht
     $dis_html and return xml_escape($str);
-    
+
     # Schachtelungs-Level mitzählen
     $lvl ||= 0; $lvl++;
 
@@ -146,10 +147,10 @@ sub _pre_format_text_part {
         $start < $end and
 #warn "    PLAIN\n";
 #warn '    SUBSTR: "' .substr($str, $start, $end - $start). "\"\n";
-            $o .= _format_plain_text( substr($lstr, $start, $end - $start), $dis_p );
+        $o .= _format_plain_text( substr($lstr, $start, $end - $start), $dis_p );
 
         # Wenn die gesuchten "HTML-Tags" matchen, werden diese hier umgesetzt
-        if ( $m{htmlmatch} ) {
+       if ( $m{htmlmatch} ) {
 #warn "     HTML!\n";
             my $dis_block ||= defined($m{tag}) && exists($HTMLHandle{$m{tag}}) && $HTMLHandle{$m{tag}}[4];
 #warn '    BLOCKS: ' . ($dis_block ? 'no blocks' : 'blocks allowed') . "\n";
@@ -218,8 +219,8 @@ sub _pre_format_text {
 
     $o =~ s~<p>\s*(&lt;\w+&gt;\s*&lt;/\w+&gt;\s*)*</p>~~gsmo;
     # Leerzeichen und Zeilenumbrüche zurecht stutzen und überflüssiges entfernen
-    $o =~ s~\n\n+~\n~gsmxo;
-    $o =~ s~\A\s+~~smxo;
+    #$o =~ s~\n\n~\n~gsmxo;
+    $o =~ s~\A\s+~~so;
     $o =~ s~\s+\z~~smxo;
 
     return $o;
