@@ -12,6 +12,7 @@ ffcdata.chat.init = function() {
     var notifyswitch     = document.getElementById('notifyswitch');
     var chatattachements = document.getElementById('chatuploadform');
     var attachement      = document.getElementById('attachement');
+    var sendonentercheck = document.getElementById('sendonentercheck');
 
     /************************************************************************
      *** Chat-Text formatieren                                            ***
@@ -311,8 +312,23 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Absenden                                                         ***
      ************************************************************************/
+<<<<<<< HEAD
     var sendit   = function() { receive(msgfield.value) };
     var cleanmsg = function() { msgfield.value = '' };
+=======
+    var sendit = function() {
+        var msgval = msgfield.value;
+        if ( msgval ) {
+            ffcdata.chat.history_list.push(msgval);
+            ffcdata.chat.history_pointer = ffcdata.chat.history_list.length;
+        }
+        receive(msgfield.value);
+        msgfield.focus();
+    };
+    var cleanmsg = function() {
+        msgfield.value = '';
+    }
+>>>>>>> master
 
     /************************************************************************
      *** Manuelles Absenden                                               ***
@@ -333,12 +349,17 @@ ffcdata.chat.init = function() {
             isShift = true;
         }
 
+<<<<<<< HEAD
         if ( e.keyCode == 13 && !isShift ) {
             var msgval = msgfield.value;
             if ( msgval ) {
                 ffcdata.chat.history_list.push(msgval);
                 ffcdata.chat.history_pointer = ffcdata.chat.history_list.length;
             }
+=======
+        if ( e.keyCode == 13 && !( isShift || !sendonentercheck.checked ) ) {
+            // console.log('enter-key send triggered');
+>>>>>>> master
             sendit();
             cleanmsg();
         }
@@ -349,7 +370,7 @@ ffcdata.chat.init = function() {
             isShift = false;
         }
 
-        if ( e.keyCode == 13 && !isShift  ) {
+        if ( e.keyCode == 13 && !( isShift || !sendonentercheck.checked ) ) {
             //console.log('enter-key send done');
             if ( msgfield.value.match(/^[\s\r\n]+$/) ) cleanmsg();
         }
