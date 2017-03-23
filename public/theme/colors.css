@@ -187,6 +187,7 @@ em, .emotion {
     color: dimgrey;
     font-variant: small-caps;
     font-style: normal;
+    font-weight: bold;
 }
 blockquote {
     border-left: .5em gainsboro solid;
