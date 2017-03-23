@@ -184,7 +184,7 @@ q:after,  .quote:after  { content: "“"}
 em:before { content: "*"}
 em:after  { content: "*"}
 em, .emotion {
-    color: dimgrey;
+    color: darkgrey;
     font-variant: small-caps;
     font-style: normal;
     font-weight: bold;
