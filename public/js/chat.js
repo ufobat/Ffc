@@ -10,6 +10,7 @@ ffcdata.chat.init = function() {
     var msglog           = document.getElementById('msglog');
     var userlist         = document.getElementById('userlist');
     var notifyswitch     = document.getElementById('notifyswitch');
+    var sendonentercheck = document.getElementById('sendonentercheck');
 
     /************************************************************************
      *** Chat-Text formatieren                                            ***
@@ -310,7 +311,13 @@ ffcdata.chat.init = function() {
      *** Absenden                                                         ***
      ************************************************************************/
     var sendit = function() {
+        var msgval = msgfield.value;
+        if ( msgval ) {
+            ffcdata.chat.history_list.push(msgval);
+            ffcdata.chat.history_pointer = ffcdata.chat.history_list.length;
+        }
         receive(msgfield.value);
+        msgfield.focus();
     };
     var cleanmsg = function() {
         msgfield.value = '';
@@ -334,13 +341,8 @@ ffcdata.chat.init = function() {
             isShift = true;
         }
 
-        if ( e.keyCode == 13 && !isShift ) {
+        if ( e.keyCode == 13 && !( isShift || !sendonentercheck.checked ) ) {
             // console.log('enter-key send triggered');
-            var msgval = msgfield.value;
-            if ( msgval ) {
-                ffcdata.chat.history_list.push(msgval);
-                ffcdata.chat.history_pointer = ffcdata.chat.history_list.length;
-            }
             sendit();
             cleanmsg();
         }
@@ -350,7 +352,7 @@ ffcdata.chat.init = function() {
             isShift = false;
         }
 
-        if ( e.keyCode == 13 && !isShift  ) {
+        if ( e.keyCode == 13 && !( isShift || !sendonentercheck.checked ) ) {
             //console.log('enter-key send done');
             if ( msgfield.value.match(/^[\s\r\n]+$/) ) cleanmsg();
         }
