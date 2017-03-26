@@ -136,6 +136,7 @@ CREATE TABLE "attachements_chat" (
   "filename"     varchar(256),
   "content_type" varchar(128)
 );
+CREATE INDEX "achachements_chat_id_ix" ON "attachements_chat"("id");
 
 /******************************************************************************/
 /* Konfiguration für die Software-Instanz
