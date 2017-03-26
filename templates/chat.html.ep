@@ -8,21 +8,12 @@
     <tr>
      <td>
       <div id="editbuttons" class="editbuttons">
-       <div class="popuparrow chatoptionpopup activedim menuentry chatuploadform">
-        <span class="othersmenulinktext chatoptionpopupswitch backgrounded">Anhang</span>
-        <div class="popup otherspopup">
-         <form enctype="multipart/form-data" method="POST" id="chatuploadform">
-          <input type="file" name="attachement" id="attachement" required="required" />
-          <button>hochladen</button>
-         </form>
-        </div>
-       </div>
        <button id="textpreviewtabutton" title="Vorschau anzeigen für den eingegebenen Text" type="button">Vorschau</button>
 %= include 'parts/editbuttons';
       </div>
       <textarea id="textinput" name="msg"></textarea>
      </td>
-     <td>
+     <td id="buttoncell">
       <div id="buttonlist">
        <table>
         <tr>
@@ -31,6 +22,22 @@
         </tr>
         <tr>
          <td><button name="reload" id="reload">Laden</button></td>
+         <td colspan="2">&nbsp;</td>
+        </tr>
+        <tr>
+         <td>
+          <div class="popuparrow chatuploadpopup activedim menuentry">
+           <span class="othersmenulinktext chatuploadpopupswitch">Anhang ...</span>
+           <div class="popup otherspopup">
+            <form enctype="multipart/form-data" method="POST" id="chatuploadform">
+             <table><tr>
+              <td><input type="file" name="attachement" id="attachement" required="required" /></td>
+              <td><button id="chatuploadbutton">hochladen</button></td>
+             </tr></table>
+            </form>
+           </div>
+          </div>
+         </td>
          <td>
           <div class="popuparrow chatoptionpopup activedim menuentry">
            <span class="othersmenulinktext chatoptionpopupswitch">Mehr ...</span>

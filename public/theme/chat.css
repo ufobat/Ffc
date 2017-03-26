@@ -162,7 +162,7 @@ table > tr > td > div, table textarea {
 .chatoptionpopup {
     border: none;
 }
-span.chatoptionpopupswitch {
+span.chatuploadpopupswitch, span.chatoptionpopupswitch {
     color: black;
 }
 .chatoptionpopup .popup {
@@ -193,17 +193,19 @@ input#refreshtime {
     margin-left: 0;
     padding-left: .5em;
 }
-.chatuploadform {
+#chatuploadform {
     display: inline;
+    max-width: 20em;
+    padding: 0;
+    margin: 0;
 }
-.chatuploadform .popup {
-    margin-top: -0.25em;
-    margin-left: 0em;
+.chatuploadpopup .popup {
+    margin-left: -16.05em;
 }
-.backgrounded {
-    display: inline-box;
-    padding: .1em 0;
-    margin: 0 1em;
-    text-align: center;
+#chatuploadbutton {
+    width: 10em;
+}
+#buttoncell {
+    vertical-align: top;
 }
 
