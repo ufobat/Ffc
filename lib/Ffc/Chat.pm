@@ -4,41 +4,56 @@ use strict; use warnings; use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 use Mojo::Util 'xml_escape';
 use Mojo::JSON 'encode_json';
+use Mojo::Util 'quote';
+use Encode 'encode';
+use File::Spec::Functions;
 
 ###############################################################################
 # Routen für die Behandlung des Chats einrichten
 sub install_routes {
     my $r = $_[0];
 
+    my $p = $_[0]->under('/chat')->name('chat_bridge');
+
     # Lediglich das Chatfenster darstellen
-    $r->route('/chat')->via('get')
+    $p->route('/')->via('get')
          ->to(controller => 'chat', action => 'chat_window_open')
          ->name('chat_window');
 
     # Start des Chats mit Eingangsinformationen
-    $r->route('/chat/receive/started')->via(qw(GET))
+    $p->route('/receive/started')->via(qw(GET))
          ->to(controller => 'chat', action => 'receive_started')
          ->name('chat_receive_started');
    
     # Regelmäßige Statusabfrage inklusive Nachrichtenübermittlung, wenn der Fokus auf dem Chat-Webbrowserfenster liegt
-    $r->route('/chat/receive/focused')->via(qw(GET POST))
+    $p->route('/receive/focused')->via(qw(GET POST))
          ->to(controller => 'chat', action => 'receive_focused')
          ->name('chat_receive_focused');
 
     # Regelmäßige Statusabfrage, wenn der Fokus nicht auf dem Chat-Webbrowserfenster liegt
-    $r->route('/chat/receive/unfocused')->via(qw(GET POST))
+    $p->route('/receive/unfocused')->via(qw(GET POST))
          ->to(controller => 'chat', action => 'receive_unfocused')
          ->name('chat_receive_unfocused');
 
     # Der Benutzer verlässt den Chat, zum Beispiel, in dem er das entsprechende Browserfenster schließt
-    $r->route('/chat/leave')->via(qw(GET))
+    $p->route('/leave')->via(qw(GET))
          ->to(controller => 'chat', action => 'leave_chat')
          ->name('chat_leave');
 
     # Häufigkeit der Statusabfragen festlegen
-    $r->route('/chat/refresh/:refresh', refresh => $Ffc::Digqr)->via(qw(GET))
+    $p->route('/refresh/:refresh', refresh => $Ffc::Digqr)->via(qw(GET))
          ->to(controller => 'chat', action => 'set_refresh')
          ->name('chat_set_refresh');
+
+    # Dateien hochladen
+    $p->route('/upload')->via(qw(POST))
+         ->to(controller => 'chat', action => 'upload')
+         ->name('chat_upload');
+   
+    # Dateien herunterladen 
+    $p->route('/download/:fileid', fileid => $Ffc::Digqr)->via(qw(GET))
+         ->to(controller => 'chat', action => 'download')
+         ->name('chat_download');
 }
 
 ###############################################################################
@@ -229,6 +244,77 @@ EOSQL
         $c->stash('newmsgscount'), 
         $c->render_to_string('layouts/parts/menudynamic'),
     ] );
+}
+
+###############################################################################
+# Chat-Uploads
+sub chat_upload {
+    my $c = $_[0];
+    # Datei-Upload-Helper
+    my @file_ids_outer;
+    my ( $filename, $filetype ) = $c->file_upload(
+        'attachement', 1, 'Datei', 100, 1, 2, 250, 
+        sub { 
+            my ($c, $filename, $filetype, $content_type) = @_;
+            # Attachment in der Datenbank als Datensatz anlegen
+            $c->dbh_do('INSERT INTO "attachements_chat" ("filename", "content_type") VALUES (?,?)',
+                $filename, $content_type);
+            # Die Id aus der Datenbank wird gleichzeitig zum Dateinamen
+            my $fileid = $c->dbh_selectall_arrayref(
+                'SELECT "id" FROM "attachements_chat" WHERE "filename"=? ORDER BY "id" DESC LIMIT 1',
+                $filename);
+            # Keine Ahnung, was da schief gelaufen sein sollte ...
+            if ( not @$fileid ) {
+                $c->set_error_f('Beim Dateiupload ist etwas schief gegangen, ich finde die Datei nicht mehr in der Datenbank');
+                defined $fileid and $c->dbh_do('DELETE FROM "attachements" WHERE "id"=?', $fileid);
+                return;
+            }
+            # Das hier wird zum Dateipfad catdir't ($fileid ist das Datenbank-Resultset)
+            push @file_ids_outer, $fileid->[0]->[0];
+            return [ 'chatuploads', $fileid->[0]->[0] ];
+        },
+    );
+
+    # Der Upload hat nicht funktioniert
+    return $c->render(text => 'failed') unless $filename;
+
+    _add_msg($c, q~<a href="~
+        . $c->url_for('chat_download', fileid => $_) 
+        . qq~ target="_blank" title="$filename" alt="$filename" />~)
+            for @file_ids_outer;
+    return $c->render(text => 'ok');
+}
+
+###############################################################################
+# Chat-Uploads
+sub chat_download {
+    my $c = $_[0];
+    my $fileid = $c->param('fileid');
+    my $filename = $c->dbh_selectall_arrayref(
+        'SELECT a."filename", a."content_type" FROM "attachements_chat" a WHERE a."id"=?', $fileid);
+    unless ( @$filename ) {
+        $c->set_error('Konnte die gewünschte Datei nicht in der Datenbank finden.');
+        return $c->rendered(404);
+    }
+    my $content_type = $filename->[0]->[1];
+    $filename = $filename->[0]->[0];
+    my $file = catfile(@{$c->datapath}, 'chatuploads', $fileid);
+    # Gibt es die Datei im Dateisystem?
+    unless ( -e $file ) {
+        $c->set_error('Konnte die gewünschte Datei im Dateisystem nicht finden.');
+        return $c->renderd(404);
+    }
+    
+    # Datei-Download-HTTP-Dingsi zusammenbasteln
+    $file = Mojo::Asset::File->new(path => $file);
+    my $headers = Mojo::Headers->new();
+    $headers->add( 'Content-Length' => $file->size );
+    $headers->add( 'Content-Type', $content_type );
+    $headers->add( 'Content-Disposition', 
+        'attachment; filename=' . quote( encode 'UTF-8', $filename ) );
+    $c->res->content->headers($headers);
+    $c->res->content->asset($file);
+    $c->rendered(200);
 }
 
 1;

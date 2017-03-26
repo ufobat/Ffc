@@ -31,6 +31,16 @@ sub _is_image {
 ###############################################################################
 # Den gesammelten File-Upload durchführen
 sub _file_upload {
+    # 0. Controllerobjekt
+    # 1. Parametername
+    # 2. Wieviele Dateien dürfen es sein (undef = egal, 1 = 1, n = n
+    # 3. Bezeichnung
+    # 4. Minimal erlaubte Dateigröße (B)
+    # 5. Maximal erlaubte Dateigröße (MB)
+    # 6. Minimale Länge des Dateinamens
+    # 7. Maximale Länge des Dateinamens
+    # 8. Subroutine, die den Ablagepfad der Datei ermittelt
+    # 9. Ist es erlaubt, keine Dateien hoch zu laden, oder kommt dann ein Fehler
     # $c, $param, $fnum, $name, $min_s, $max_s, $min_l, $max_l, $filenamesub, $allownofiles
     my @p = (@_);
     # Eine Liste der Upload-Parameter erzeugen (benötigt für mehrere Downloads in einem Rutsch)

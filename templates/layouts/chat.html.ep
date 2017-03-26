@@ -36,6 +36,7 @@
               focusedurl:      '<%= url_for "chat_receive_focused" %>',
               unfocusedurl:    '<%= url_for "chat_receive_unfocused" %>',
               startedurl:      '<%= url_for "chat_receive_started" %>',
+              chatuploadurl:   '<%= url_for "chat_upload" %>',
               refresh:         60,
               to:              '',
               history_list:    <%== $history_list %>,
