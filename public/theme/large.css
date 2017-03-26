@@ -227,7 +227,7 @@ input[type="text"].titlestring {
     width: 30em;
 }
 #textinput:focus, input:focus, select:focus {
-    box-shadow: 0 0 .5em gray;
+    box-shadow: inset 0 0 .25em steelblue;
 }
 .infooptions th {
     text-align: right;
