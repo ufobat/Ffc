@@ -5,8 +5,8 @@
     <div class="postbox loginform">
       <h2 class="title">Anmeldung</h2>
       <form action="<%= url_for 'login' %>" method="POST">
-        <p>Benutzer: <input required type="text" name="username" class="loginfield" /></p>
-        <p>Passwort: <input required type="password" name="password" class="loginfield" /></p>
+        <p><label for="username">Benutzer:</label> <input required type="text" name="username" class="loginfield" /></p>
+        <p><label for="password">Passwort:</label> <input required type="password" name="password" class="loginfield" /></p>
         <p><button type="submit" class="linkalike">Anmelden</button></p>
       </form>
     </div>
