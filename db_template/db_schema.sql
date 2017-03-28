@@ -133,6 +133,7 @@ CREATE INDEX "chat_id_ix" ON "chat"("id");
 /******************************************************************************/
 CREATE TABLE "attachements_chat" (
   "id"           integer       PRIMARY KEY AUTOINCREMENT,
+  "msgid"        integer,
   "filename"     varchar(256),
   "content_type" varchar(128)
 );

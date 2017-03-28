@@ -118,6 +118,16 @@ sub _add_msg {
 }
 
 ###############################################################################
+# Aktuelle Chat-Id heraus finden
+sub _get_own_msg_id {
+    my $res = $_[0]->dbh_selectall_arrayref(
+        'SELECT "id" FROM "chat" WHERE "userfromid"=? ORDER BY "id" DESC LIMIT 1'
+            , $_[0]->session->{userid} );
+    return unless $res;
+    return $res->[0]->[0];
+}
+
+###############################################################################
 # Currying der Actions
 sub receive_started   { _receive($_[0], 1, 1) }
 sub receive_focused   { _receive($_[0], 1, 0) }
@@ -197,6 +207,17 @@ EOSQL
 ORDER BY c."id" DESC
 LIMIT ?;
 EOSQL
+
+        # Veraltete Einträge aus der Chat- und Chat-Attachement-Tabelle entfernen (inkl. Dateien)
+        my $fiftyid = $c->dbh_selectall_arrayref('SELECT "id" FROM "chat" ORDER BY "id" DESC LIMIT 50');
+        if ( $fiftyid ) {
+            $c->dbh_do('DELETE FROM "chat" WHERE "id"<?', $fiftyid->[-1]->[0]);
+            my $fileids = $c->dbh_selectall_arrayref('SELECT "id" FROM "attachements_chat" WHERE "msgid"<?', $fiftyid->[-1]->[0]);
+            for my $fid ( map {; $_->[0] } @$fileids ) {
+                unlink catfile(@{$c->datapath}, 'chatuploads', $fid);
+            }
+            $c->dbh_do('DELETE FROM "attachements_chat" WHERE "msgid"<?', $fiftyid->[-1]->[0]);
+        }
     }
     else {
         # Ist man bereits drin, müssen die anderen Benutzer für die Nachrichten berücksichtigt werden
@@ -278,10 +299,16 @@ sub chat_upload {
     # Der Upload hat nicht funktioniert
     return $c->render(text => 'failed') unless $filename;
 
-    _add_msg($c, q~<a href="~
-        . $c->url_for('chat_download', fileid => $_) 
-        . qq~ target="_blank" title="$filename" alt="$filename" />~)
-            for @file_ids_outer;
+    for my $fid ( @file_ids_outer ) {
+        _add_msg($c, q~<a href="~
+            . $c->url_for('chat_download', fileid => $fid) 
+            . qq~ target="_blank" title="$filename" alt="$filename" />~)
+    }
+    my $mid = _get_own_msg_id();
+    $c->dbh_do(
+        'UPDATE "attachements_chat" SET "msgid"=? WHERE "id"=>?'
+            , $mid, $file_ids_outer[0] );
+
     return $c->render(text => 'ok');
 }
 

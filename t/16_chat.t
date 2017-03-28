@@ -4,15 +4,17 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 818;
+use Test::More tests => 900;
 use Test::Mojo;
 use Data::Dumper;
+use List::Util 'any';
 
 my ( $t1, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = ( 'x'.Testinit::test_randstring(), Testinit::test_randstring() );
 Testinit::test_add_users( $t1, $admin, $apass, $user, $pass );
 my $t2 = Test::Mojo->new('Ffc');
 my $sleepval = 2;
+#$sleepval = 0;
 my $id = 0;
 
 # log users into chat
@@ -338,4 +340,40 @@ $t3->json_like('/4' => qr"$Topics[1][0]</a>\.\.\.");
 
 $t3->json_like('/4' => qr'/topic/1');
 $t3->json_like('/4' => qr"$Topics[0][0]</a>\.\.\.");
+
+{
+    note 'Test fallout of old messages';
+
+    my @fallout = map {Testinit::test_randstring()} 1 .. 10;
+    my @in      = map {Testinit::test_randstring()} 1 .. 50;
+    Testinit::test_login($t2, $user, $pass);
+    for my $str ( @fallout, @in ) {
+        $t2->post_ok('/chat/receive/focused', json => $str);
+    }
+    Testinit::test_login($t3, $user3, $pass3);
+    $t3->get_ok('/chat/receive/started')->status_is(200);
+    my @res = @{ $t3->tx->res->json->[0] };
+    #diag Dumper \@res;
+    my ( $incnt, $outcnt ) = ( 0, 0 );
+    for my $s ( @in ) {
+        if ( grep {; $_->[2] eq $s } @res ) {
+            $incnt++;  
+        }
+        else {
+            diag qq~"$s" should (!!!) be in result~;
+        }
+    }
+    for my $s ( @fallout ) {
+        if ( not grep {; $_->[2] eq $s } @res ) {
+            $outcnt++;  
+        }
+        else {
+            diag qq~"$s" should (!!!) not be in result~;
+        }
+    }
+    ok $incnt  == scalar(@in),      'expected data in result available';
+    #diag qq~count of data in results: $incnt, expection: ~ . scalar(@in);
+    ok $outcnt == scalar(@fallout), 'unexpected data not in result available';
+    #diag qq~count of data not in results: $outcnt, expection: ~ . scalar(@fallout);
+}
 
