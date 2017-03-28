@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 900;
+use Test::More tests => 931;
 use Test::Mojo;
 use Data::Dumper;
 use List::Util 'any';
@@ -246,6 +246,7 @@ for my $u (
 # Adminuser umswitchen und Admin (userid 1) deaktivieren
 $t1->post_ok("/admin/usermod/$user4", form => {overwriteok => 1, newpw1 => $apass, newpw2 => $apass, active => 1, admin => 1})
   ->status_is(302)->content_is('')->header_is(Location => '/admin/form');
+$pass4 = $apass;
 $t1->get_ok('/logout')->status_is(200)->content_like(qr'<!-- Angemeldet als "&lt;noone&gt;" !-->');
 
 $t3->post_ok("/admin/usermod/$admin", form => {overwriteok => 1, newpw1 => $apass, newpw2 => $apass, active => 0, admin => 1})
@@ -350,30 +351,42 @@ $t3->json_like('/4' => qr"$Topics[0][0]</a>\.\.\.");
     for my $str ( @fallout, @in ) {
         $t2->post_ok('/chat/receive/focused', json => $str);
     }
-    Testinit::test_login($t3, $user3, $pass3);
-    $t3->get_ok('/chat/receive/started')->status_is(200);
-    my @res = @{ $t3->tx->res->json->[0] };
-    #diag Dumper \@res;
-    my ( $incnt, $outcnt ) = ( 0, 0 );
-    for my $s ( @in ) {
-        if ( grep {; $_->[2] eq $s } @res ) {
-            $incnt++;  
+    my $testsub = sub {
+        my ( $t, $u, $p ) = @_;
+        Testinit::test_login($t, $u, $p);
+        $t->get_ok('/chat/receive/started')->status_is(200);
+        my @res = @{ $t->tx->res->json->[0] };
+        #diag Dumper \@res;
+        my ( $incnt, $outcnt ) = ( 0, 0 );
+        for my $s ( @in ) {
+            if ( grep {; $_->[2] eq $s } @res ) {
+                $incnt++;  
+            }
+            else {
+                diag qq~"$s" should (!!!) be in result~;
+            }
         }
-        else {
-            diag qq~"$s" should (!!!) be in result~;
+        for my $s ( @fallout ) {
+            if ( not grep {; $_->[2] eq $s } @res ) {
+                $outcnt++;  
+            }
+            else {
+                diag qq~"$s" should (!!!) not be in result~;
+            }
         }
+        ok $incnt  == scalar(@in),      'expected data in result available';
+        #diag qq~count of data in results: $incnt, expection: ~ . scalar(@in);
+        ok $outcnt == scalar(@fallout), 'unexpected data not in result available';
+        #diag qq~count of data not in results: $outcnt, expection: ~ . scalar(@fallout);
+    };
+    $testsub->( $t3, $user3, $pass3 );
+    $testsub->( $t2, $user,  $pass  );
+    for my $i ( 1 .. 5 ) {
+        my $str = Testinit::test_randstring();
+        push @fallout, shift @in;
+        push @in, $str;
+        $t3->post_ok('/chat/receive/focused', json => $str);
     }
-    for my $s ( @fallout ) {
-        if ( not grep {; $_->[2] eq $s } @res ) {
-            $outcnt++;  
-        }
-        else {
-            diag qq~"$s" should (!!!) not be in result~;
-        }
-    }
-    ok $incnt  == scalar(@in),      'expected data in result available';
-    #diag qq~count of data in results: $incnt, expection: ~ . scalar(@in);
-    ok $outcnt == scalar(@fallout), 'unexpected data not in result available';
-    #diag qq~count of data not in results: $outcnt, expection: ~ . scalar(@fallout);
+    $testsub->( $t4, $user4, $pass4 );
 }
 
