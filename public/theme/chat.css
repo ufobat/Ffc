@@ -37,7 +37,7 @@ table > tr > td > div, table textarea {
     background: whitesmoke;
     color: navy;
     overflow: auto;
-    box-shadow: inset 0 .1em .2em silver;
+    box-shadow: inset 0 0 .25em silver;
 }
 #userlist, #buttonlist, #msglog {
     border-radius: .25em;

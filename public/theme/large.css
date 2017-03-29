@@ -255,7 +255,7 @@ input[type="text"].titlestring {
     white-space: nowrap;
 }
 textarea, input, select {
-    box-shadow: inset 0 .1em .25em silver;
+    box-shadow: inset 0 0 .25em silver;
 }
 button, #editbuttons .buttonalike {
     box-shadow: inset 0 -0.25em .5em silver;
