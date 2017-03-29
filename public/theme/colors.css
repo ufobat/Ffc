@@ -38,10 +38,10 @@ button, #editbuttons .buttonalike, .chatoptionspopupswitch {
 #textinput, input, button, select, #editbuttons .buttonalike, .chatoptionspopupswitch {
     border: .1em steelblue solid;
 }
-#textinput:hover, input:hover, button:active, select:hover, #editbuttons .buttonalike:hover, .chatoptionspopupswitch:hover {
+#textinput:hover, input:hover, button:hover, select:hover, #editbuttons .buttonalike:hover, .chatoptionspopupswitch:hover {
     border-color: dodgerblue;
 }
-#textinput:focus, input:focus, button:hover, select:focus, #editbuttons .buttonalike:focus, .chatoptionspopupswitch:focus {
+#textinput:focus, input:focus, button:focus, select:focus, #editbuttons .buttonalike:focus, .chatoptionspopupswitch:focus {
     border-color: blue;
 }
 button:hover, #editbuttons .buttonalike:hover, .chatoptionspopupswitch:hover {
