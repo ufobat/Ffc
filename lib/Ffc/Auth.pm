@@ -54,7 +54,7 @@ sub check_login {
             # Online-Information zurück schreiben
             $c->dbh_do('UPDATE "users" SET "lastonline"=CURRENT_TIMESTAMP WHERE "id"=? AND "hidelastseen"=0', $s->{userid}) 
                     unless $c->match->endpoint->name() eq 'countings';
-            
+            $c->update_config(); 
             return 1; # Passt!
         }
 
@@ -88,6 +88,7 @@ sub login {
         return $c->render(template => 'loginform', status => 403);
     }
 
+    $c->update_config(); 
     # Anmeldeinformationen prüfen und notwendige Vorbelegungen abholen
     my $r = $c->dbh_selectall_arrayref(
         'SELECT u.name, u.id

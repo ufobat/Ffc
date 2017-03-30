@@ -25,7 +25,8 @@ sub boardsettingsadmin {
         $c->dbh_do('UPDATE "config" SET "value"=? WHERE "key"=?',
             $optvalue, $optkey);
         # Einstellung in der aktuell verwendeten programminternen Konfiguration eintragen
-        $c->configdata->{$optkey} = $optvalue;
+        #$c->configdata->{$optkey} = $optvalue;
+        $c->update_config(1);
         # Eine optionale Subroutine nachschieben für die Einstellungsoption
         $sub and $sub->($c, $optkey, $optvalue);
         # Info für den Benutzer

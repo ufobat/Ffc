@@ -19,6 +19,7 @@ my %Defaults = (
     starttopiccount => 0,
     maxscore        => 10,
     cookiename      => 'ffc_cookie',
+    chatloglength   => 50,
 );
 
 ###############################################################################
@@ -30,24 +31,33 @@ sub register {
     # Variablenvorbelegung für weitere Verwendung
     my $datapath  = $self->_get_datapath();  # Pfad zu den Daten
     my $dbh       = $self->_get_dbh();       # Datenbankhandle
-    my $config    = $self->_get_config();    # Normale Konfigurationseinstellungen
+    my $config    = {%Defaults};
     my $secconfig = $self->{secconfig} = {}; # Besonders gesicherte Konfigurationseinstellungen
 
     # Sicherheitsrelevante Einstellungen werden aus der normalen Konfiguration heraus gelöscht
     # und stehen nur noch innerhalb dieser Subroutine zur Verfügung
-    for my $c ( qw(cookiesecret cryptsalt) ) {
-        $secconfig->{$c} = delete $config->{$c};
-    }
+    my $gotconfig = 0;
+    my $get_config = sub {
+        return if $gotconfig and not $_[0];
+        $config = { map { @$_ } 
+            @{ $self->{dbh}->selectall_arrayref(
+                'SELECT "key", "value" FROM "config"') } };
+        $secconfig->{$_} = delete $config->{$_} for qw(cookiesecret cryptsalt);
+        $gotconfig = 1;
+        return $config;
+    };
 
-    # Session-Einstellungen
+    $get_config->();
     $app->secrets([$secconfig->{cookiesecret}]);
     $app->sessions->cookie_name(
         $config->{cookiename} || $Defaults{cookiename});
     $app->sessions->default_expiration(
         $config->{sessiontimeout} || $Defaults{sessiontimeout});
+    # Session-Einstellungen
+    
 
     # Konfigurierte Voreinstellungen, falls bei diesen Parametern nichts brauchbares angegeben ist
-    for ( qw(urlshorten starttopic starttopiccount inlineimage) ) {
+    for ( qw(urlshorten starttopic starttopiccount inlineimage chatloglength) ) {
         unless ( $config->{$_} and $config->{$_} =~ m/\A\d+\z/xmso ) {
             $config->{$_} = $Defaults{$_};
         }
@@ -55,9 +65,11 @@ sub register {
 
     # Konfigurationshelper
     $app->helper(datapath            => sub { $datapath }      );
-    $app->helper(configdata          => sub { $config   }      );
+    $app->helper(configdata          => $get_config            );
     $app->helper(data_return         => \&_data_return         );
     $app->helper(user_session_config => \&_user_session_config );
+
+    $app->helper(update_config       => sub { $get_config->($_[1]) } );
 
     # Datenbankhelper
     $app->helper(dbh                    => sub{ $dbh }               );

@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 931;
+use Test::More tests => 934;
 use Test::Mojo;
 use Data::Dumper;
 use List::Util 'any';
@@ -283,7 +283,7 @@ sub check_user_msg_cnt {
     $t->json_is("/1/$arrid/3" => $uid);
     unless ( $t->success ) {
         $t->content_is('');
-        die Data::Dumper::Dumper \%usermap;
+        diag Data::Dumper::Dumper \%usermap;
     }
     
     if   ( $myuid == $uid ) { $t->json_is("/1/$arrid/4" => ''              ) }
@@ -292,7 +292,7 @@ sub check_user_msg_cnt {
     if   ( $msgcnt > 0 ) { $t->json_is("/1/$arrid/5" => $msgcnt ) }
     else                 { $t->json_is("/1/$arrid/5" => 0       ) }
     unless ( $t->success ) {
-        die $t->json_is('/1');
+        diag $t->json_is('/1');
     }
 }
 
@@ -344,17 +344,33 @@ $t3->json_like('/4' => qr"$Topics[0][0]</a>\.\.\.");
 
 {
     note 'Test fallout of old messages';
+    my $chatloglength = 37;
+
+    Testinit::test_login($t1, $admin, $apass);
+    $t1->post_ok('/admin/boardsettings/chatloglength', form => {optionvalue => $chatloglength})
+       ->status_is(302);
+    ok $dbh->selectall_arrayref(q~SELECT "value" FROM "config" WHERE "key"='chatloglength'~)->[0]->[0] == $chatloglength,
+        q~config option chatloglength in database~;
 
     my @fallout = map {Testinit::test_randstring()} 1 .. 10;
-    my @in      = map {Testinit::test_randstring()} 1 .. 50;
+    my @in      = map {Testinit::test_randstring()} 1 .. $chatloglength;
     Testinit::test_login($t2, $user, $pass);
     for my $str ( @fallout, @in ) {
         $t2->post_ok('/chat/receive/focused', json => $str);
     }
+
+    my $dbtestsub = sub {
+        my $indb = $dbh->selectall_arrayref(q~SELECT COUNT("id") FROM "chat"~)->[0]->[0];
+        ok $indb == $chatloglength,
+            $_[0] || 'entry count in database chat log ok'
+                or diag qq~got: $indb, expected: $chatloglength~;
+    };
+
     my $testsub = sub {
         my ( $t, $u, $p ) = @_;
         Testinit::test_login($t, $u, $p);
         $t->get_ok('/chat/receive/started')->status_is(200);
+        $dbtestsub->();
         my @res = @{ $t->tx->res->json->[0] };
         #diag Dumper \@res;
         my ( $incnt, $outcnt ) = ( 0, 0 );
@@ -388,5 +404,8 @@ $t3->json_like('/4' => qr"$Topics[0][0]</a>\.\.\.");
         $t3->post_ok('/chat/receive/focused', json => $str);
     }
     $testsub->( $t4, $user4, $pass4 );
+
+    ok $dbh->selectall_arrayref(q~SELECT COUNT("id") FROM "chat"~)->[0]->[0] == $chatloglength, 
+        'entry count in database chat log ok';
 }
 

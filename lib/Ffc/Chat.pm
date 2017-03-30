@@ -8,8 +8,6 @@ use Mojo::Util 'quote';
 use Encode 'encode';
 use File::Spec::Functions;
 
-our $MaxChatMsg = 50;
-
 ###############################################################################
 # Routen für die Behandlung des Chats einrichten
 sub install_routes {
@@ -181,6 +179,7 @@ sub _receive {
         _add_msg($c, $c->req->json);
     }
     my $s = $c->session;
+    my $chatloglength = $c->configdata->{chatloglength};
 
     # Beginn des Rückgabe-SQL erstellen
     my $sql = << 'EOSQL';
@@ -192,6 +191,7 @@ EOSQL
     # Bei Betreten des Chats wird eventuell eine Nachricht erzeugt, dass der Benutzer den Chat betreten hat,
     # wobei die Refresh-Zeit des Benutzers mit in die Berechnung mit einbezogen wird
     if ( $started ) {
+
         unless ( 
             $c->dbh_selectall_arrayref( << 'EOSQL', $s->{userid} )->[0]->[0]
 SELECT CASE WHEN
@@ -211,7 +211,7 @@ LIMIT ?;
 EOSQL
 
         # Veraltete Einträge aus der Chat- und Chat-Attachement-Tabelle entfernen (inkl. Dateien)
-        my $fiftyid = $c->dbh_selectall_arrayref('SELECT "id" FROM "chat" ORDER BY "id" DESC LIMIT ?', $MaxChatMsg);
+        my $fiftyid = $c->dbh_selectall_arrayref('SELECT "id" FROM "chat" ORDER BY "id" DESC LIMIT ?', $chatloglength);
         if ( $fiftyid ) {
             $c->dbh_do('DELETE FROM "chat" WHERE "id"<?', $fiftyid->[-1]->[0]);
             my $fileids = $c->dbh_selectall_arrayref('SELECT "id" FROM "attachements_chat" WHERE "msgid"<?', $fiftyid->[-1]->[0]);
@@ -233,7 +233,7 @@ EOSQL
 
     # Nachrichten-Abfrage wird durchgeführt
     my $msgs = $c->dbh_selectall_arrayref( $sql,
-        ( $started ? $MaxChatMsg : $s->{userid} )
+        ( $started ? $chatloglength : $s->{userid} )
     );
 
     # Nachbearbeitung der empfangenen Nachrichten

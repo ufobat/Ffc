@@ -6,7 +6,7 @@ use lib "$FindBin::Bin/../lib";
 use Testinit;
 
 use Test::Mojo;
-use Test::More tests => 975;
+use Test::More tests => 1055;
 
 my ( $t, $path, $admin, $apass, $dbh ) = Testinit::start_test();
 my ( $user, $pass ) = qw(test test1234);
@@ -33,6 +33,9 @@ my @Settings = (
     [ urlshorten => 'Maximale Länge für die URL-Darstellung', 'number',
         [10 + int( rand 90),110 + int(rand 90)],['asdf'],
         'Die Länge, auf die URLs in der Anzeige gekürzt werden, muss eine Zahl sein' ],
+    [ chatloglength => 'Maximale Länge des in der Datenbank gespeicherten Chat-Logs', 'number',
+        [10 + int( rand 90),110 + int(rand 90)],['asdf'],
+        'Die Anzahl der Chat-Log-Einträge in der Datenbank muss eine Zahl sein' ],
     [ backgroundcolor => 'Hintergrundfarbe', 'text',
         ['#aaBB99', '#aabb99', '', 'SlateBlue', scalar('a' x 128), 'aa'], ['#aabbfg', 'asdf ASD', '11$AA', '#aacc999', 'a', scalar('a' x 129), 'aa#bbcc'],
         'Die Hintergrundfarbe für die Webseite muss in hexadezimaler Schreibweise mit führender Raute oder als Webfarbenname angegeben werden' ],

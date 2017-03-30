@@ -167,4 +167,5 @@ INSERT INTO "config" ("key", "value") VALUES ('maxscore',           '10'        
 INSERT INTO "config" ("key", "value") VALUES ('maxuploadsize',      '3'                     );
 INSERT INTO "config" ("key", "value") VALUES ('hypnotoad',          'http://127.0.0.1:8083' );
 INSERT INTO "config" ("key", "value") VALUES ('inlineimage',        '0'                     );
+INSERT INTO "config" ("key", "value") VALUES ('chatloglength',      '50'                    );
 
