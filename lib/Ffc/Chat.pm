@@ -253,6 +253,7 @@ EOSQL
     $sql .= qq~    "lastchatid"=?,\n~ if @$msgs;
     $sql .= qq~    "inchat"=1,\n    "lastseenchat"=CURRENT_TIMESTAMP~;
     $sql .= qq~,\n    "lastseenchatactive"=CURRENT_TIMESTAMP~ if $active;
+    $sql .= qq~,\n    "lastonline"=CASE WHEN "hidelastseen"=0 THEN CURRENT_TIMESTAMP ELSE 0 END~;
     $sql .= qq~\nWHERE "id"=?~;
     $c->dbh_do( $sql, ( @$msgs ? $msgs->[0]->[0] : () ), $s->{userid} );
 

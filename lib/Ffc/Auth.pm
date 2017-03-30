@@ -53,7 +53,7 @@ sub check_login {
 
             # Online-Information zurück schreiben
             $c->dbh_do('UPDATE "users" SET "lastonline"=CURRENT_TIMESTAMP WHERE "id"=? AND "hidelastseen"=0', $s->{userid}) 
-                    unless $c->match->endpoint->name() eq 'countings';
+                    unless $c->match->endpoint->name() =~ m/countings|chat/xmso;
             $c->update_config(); 
             return 1; # Passt!
         }
