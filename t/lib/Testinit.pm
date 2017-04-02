@@ -155,6 +155,7 @@ sub make_userobjs {
     } 2 .. $cnt + 1;
 }
 sub userlist { wantarray ? @userlist : \@userlist }
+sub login_userobj { Testinit::test_login( @{$_[0]}{qw~t username password~} ) }
 
 # Liste der Beiträge für weitere Verwendung
 my $id = 1; my @forums; my @pmsgss;

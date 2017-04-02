@@ -305,7 +305,7 @@ sub chat_upload {
     for my $fid ( @file_ids_outer ) {
         _add_msg($c, q~<a href="~
             . $c->url_for('chat_download', fileid => $fid) 
-            . qq~ target="_blank" title="$filename" alt="$filename" />~)
+            . qq~ target="_blank" title="$filename" alt="$filename">Dateianhang</a>~)
     }
     my $mid = _get_own_msg_id();
     $c->dbh_do(
