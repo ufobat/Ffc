@@ -4,7 +4,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Testinit;
 
-use Test::More tests => 934;
+use Test::More tests => 936;
 use Test::Mojo;
 use Data::Dumper;
 use List::Util 'any';
@@ -349,6 +349,7 @@ $t3->json_like('/4' => qr"$Topics[0][0]</a>\.\.\.");
     Testinit::test_login($t1, $admin, $apass);
     $t1->post_ok('/admin/boardsettings/chatloglength', form => {optionvalue => $chatloglength})
        ->status_is(302);
+    $t1->get_ok('/admin/form')->status_is(200);
     ok $dbh->selectall_arrayref(q~SELECT "value" FROM "config" WHERE "key"='chatloglength'~)->[0]->[0] == $chatloglength,
         q~config option chatloglength in database~;
 

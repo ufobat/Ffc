@@ -47,12 +47,12 @@ sub install_routes {
 
     # Dateien hochladen
     $p->route('/upload')->via(qw(POST))
-         ->to(controller => 'chat', action => 'upload')
+         ->to(controller => 'chat', action => 'chat_upload')
          ->name('chat_upload');
    
     # Dateien herunterladen 
     $p->route('/download/:fileid', fileid => $Ffc::Digqr)->via(qw(GET))
-         ->to(controller => 'chat', action => 'download')
+         ->to(controller => 'chat', action => 'chat_download')
          ->name('chat_download');
 }
 
@@ -212,13 +212,15 @@ EOSQL
 
         # Veraltete Einträge aus der Chat- und Chat-Attachement-Tabelle entfernen (inkl. Dateien)
         my $fiftyid = $c->dbh_selectall_arrayref('SELECT "id" FROM "chat" ORDER BY "id" DESC LIMIT ?', $chatloglength);
-        if ( $fiftyid ) {
-            $c->dbh_do('DELETE FROM "chat" WHERE "id"<?', $fiftyid->[-1]->[0]);
-            my $fileids = $c->dbh_selectall_arrayref('SELECT "id" FROM "attachements_chat" WHERE "msgid"<?', $fiftyid->[-1]->[0]);
+        if ( @$fiftyid ) {
+            $fiftyid = $fiftyid->[-1]->[0];
+            $c->dbh_do('DELETE FROM "chat" WHERE "id"<?', $fiftyid);
+            my $fileids = $c->dbh_selectall_arrayref('SELECT "id" FROM "attachements_chat" WHERE "msgid"<?', $fiftyid);
             for my $fid ( map {; $_->[0] } @$fileids ) {
-                unlink catfile(@{$c->datapath}, 'chatuploads', $fid);
+                my $file = catfile(@{$c->datapath}, 'chatuploads', $fid);
+                unlink $file or die qq~could not delete file "$file": $!~;
             }
-            $c->dbh_do('DELETE FROM "attachements_chat" WHERE "msgid"<?', $fiftyid->[-1]->[0]);
+            $c->dbh_do('DELETE FROM "attachements_chat" WHERE "msgid"<?', $fiftyid);
         }
     }
     else {
@@ -275,9 +277,9 @@ EOSQL
 sub chat_upload {
     my $c = $_[0];
     # Datei-Upload-Helper
-    my @file_ids_outer;
-    my ( $filename, $filetype ) = $c->file_upload(
-        'attachement', 1, 'Datei', 100, 1, 2, 250, 
+    my @files;
+    my @rets = $c->file_upload(
+        'attachement', 1, 'Datei', 1, 1, 2, 250, 
         sub { 
             my ($c, $filename, $filetype, $content_type) = @_;
             # Attachment in der Datenbank als Datensatz anlegen
@@ -294,23 +296,24 @@ sub chat_upload {
                 return;
             }
             # Das hier wird zum Dateipfad catdir't ($fileid ist das Datenbank-Resultset)
-            push @file_ids_outer, $fileid->[0]->[0];
-            return [ 'chatuploads', $fileid->[0]->[0] ];
+            push @files, { id => $fileid->[0]->[0], name => $filename };
+            return [ catfile 'chatuploads', $fileid->[0]->[0] ];
         },
     );
 
     # Der Upload hat nicht funktioniert
-    return $c->render(text => 'failed') unless $filename;
+    return $c->render(text => 'failed') unless @files;
 
-    for my $fid ( @file_ids_outer ) {
+    for my $f ( @files ) {
+        my ( $fid, $filename ) = @{$f}{qw~id name~};
         _add_msg($c, q~<a href="~
             . $c->url_for('chat_download', fileid => $fid) 
-            . qq~ target="_blank" title="$filename" alt="$filename">Dateianhang</a>~)
+            . qq~" target="_blank" title="$filename" alt="$filename">Dateianhang</a>~);
+        my $mid = _get_own_msg_id($c);
+        $c->dbh_do(
+            'UPDATE "attachements_chat" SET "msgid"=? WHERE "id"=?'
+                , $mid, $fid );
     }
-    my $mid = _get_own_msg_id();
-    $c->dbh_do(
-        'UPDATE "attachements_chat" SET "msgid"=? WHERE "id"=>?'
-            , $mid, $file_ids_outer[0] );
 
     return $c->render(text => 'ok');
 }
@@ -331,8 +334,7 @@ sub chat_download {
     my $file = catfile(@{$c->datapath}, 'chatuploads', $fileid);
     # Gibt es die Datei im Dateisystem?
     unless ( -e $file ) {
-        $c->set_error('Konnte die gewünschte Datei im Dateisystem nicht finden.');
-        return $c->renderd(404);
+        return $c->rendered(404);
     }
     
     # Datei-Download-HTTP-Dingsi zusammenbasteln

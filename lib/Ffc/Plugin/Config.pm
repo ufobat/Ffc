@@ -22,6 +22,7 @@ my %Defaults = (
     chatloglength   => 50,
 );
 
+
 ###############################################################################
 # Plugin-Registrierung für Konfigurationshelper
 sub register {
@@ -37,8 +38,9 @@ sub register {
     # Sicherheitsrelevante Einstellungen werden aus der normalen Konfiguration heraus gelöscht
     # und stehen nur noch innerhalb dieser Subroutine zur Verfügung
     my $gotconfig = 0;
+    my $confread = 0;
     my $get_config = sub {
-        return if $gotconfig and not $_[0];
+        return $config if $gotconfig and not $_[0];
         $config = { map { @$_ } 
             @{ $self->{dbh}->selectall_arrayref(
                 'SELECT "key", "value" FROM "config"') } };
@@ -64,12 +66,13 @@ sub register {
     }
 
     # Konfigurationshelper
-    $app->helper(datapath            => sub { $datapath }      );
-    $app->helper(configdata          => $get_config            );
-    $app->helper(data_return         => \&_data_return         );
-    $app->helper(user_session_config => \&_user_session_config );
+    $app->helper(datapath            => sub { $datapath }        );
+    $app->helper(configdata          => sub { $config } ); #$get_config              );
+    $app->helper(data_return         => \&_data_return           );
+    $app->helper(user_session_config => \&_user_session_config   );
 
-    $app->helper(update_config       => sub { $get_config->($_[1]) } );
+    $app->helper(update_config       => $get_config              );
+    $app->helper(update_config_hard  => sub { $get_config->(1) } );
 
     # Datenbankhelper
     $app->helper(dbh                    => sub{ $dbh }               );

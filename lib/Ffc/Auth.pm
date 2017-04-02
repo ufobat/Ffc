@@ -54,7 +54,6 @@ sub check_login {
             # Online-Information zurück schreiben
             $c->dbh_do('UPDATE "users" SET "lastonline"=CURRENT_TIMESTAMP WHERE "id"=? AND "hidelastseen"=0', $s->{userid}) 
                     unless $c->match->endpoint->name() =~ m/countings|chat/xmso;
-            $c->update_config(); 
             return 1; # Passt!
         }
 
@@ -88,7 +87,6 @@ sub login {
         return $c->render(template => 'loginform', status => 403);
     }
 
-    $c->update_config(); 
     # Anmeldeinformationen prüfen und notwendige Vorbelegungen abholen
     my $r = $c->dbh_selectall_arrayref(
         'SELECT u.name, u.id
@@ -102,6 +100,7 @@ sub login {
             undef $c->session->{lasturl};
             return $c->redirect_to($lasturl);
         }
+        $c->update_config_hard(); 
         # Der Benutzer wird per Default auf die Startseite geleitet
         return $c->redirect_to('show');
     }
