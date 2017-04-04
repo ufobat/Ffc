@@ -319,7 +319,7 @@ input[type="date"], input[type="color"], textarea {
 h2.pin {
     border-color: gold;
 }
-.postbox hr {
+hr {
     border: none;
     border-bottom: .1em gainsboro solid;
     height: 0;

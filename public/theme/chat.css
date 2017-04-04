@@ -208,4 +208,7 @@ input#refreshtime {
 #buttoncell {
     vertical-align: top;
 }
+.chatmsgcontent hr {
+    margin: .5em 20%;
+}
 
