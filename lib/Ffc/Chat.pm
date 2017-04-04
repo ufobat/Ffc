@@ -103,13 +103,15 @@ sub leave_chat {
 my $i = 0;
 sub _add_msg {
     return unless $_[1];
-    my ( $c, $msg, $issys ) = @_;
+    my ( $c, $msg, $issys, $noquote ) = @_;
 
-    # Formatieren der neuen Nachricht
-    $msg = $c->pre_format($msg, undef, $c->configdata->{inlineimage});
-    $msg =~ s~\A\s*<p>~~xmsgo;
-    $msg =~ s~</p>\s*\z~~xmsgo;
-    $msg =~ s~</p>\s*<p>~<br />~xgmso;
+    # Formatieren der neuen Nachricht (kann abgeschalten werden)
+    unless ( $noquote ) {
+        $msg = $c->pre_format($msg, undef, $c->configdata->{inlineimage});
+        $msg =~ s~\A\s*<p>~~xmsgo;
+        $msg =~ s~</p>\s*\z~~xmsgo;
+        $msg =~ s~</p>\s*<p>~<br />~xgmso;
+    }
 
     # Die neue Nachricht in die Daten eintragen, wenn sie Daten enthält
     $c->dbh_do('INSERT INTO "chat" ("userfromid", "msg", "sysmsg") VALUES (?,?,?)',
@@ -308,7 +310,7 @@ sub chat_upload {
         my ( $fid, $filename ) = @{$f}{qw~id name~};
         _add_msg($c, q~<a href="~
             . $c->url_for('chat_download', fileid => $fid) 
-            . qq~" target="_blank" title="$filename" alt="$filename">Dateianhang</a>~);
+            . qq~" target="_blank" title="$filename" alt="$filename">Dateianhang</a>~, 1, 1);
         my $mid = _get_own_msg_id($c);
         $c->dbh_do(
             'UPDATE "attachements_chat" SET "msgid"=? WHERE "id"=?'
