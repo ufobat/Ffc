@@ -256,7 +256,7 @@ ffcdata.chat.init = function() {
                 receive();
                 // console.log('set_refresh ok');
             }
-        });
+        }, true);
     };
 
     /************************************************************************
@@ -308,7 +308,24 @@ ffcdata.chat.init = function() {
      *** Desktopbenachrichtigungserlaubenseinstellung                     ***
      ************************************************************************/
     notifyswitch.addEventListener('change', function(){
-        ffcdata.notifications = notifyswitch.checked;
+        if ( notifyswitch.checked ) {
+            notifyswitch.checked = false;
+            ffcdata.utils.request('GET', ffcdata.chat.ennotifyurl, null, 
+                function(res){ 
+                    ffcdata.notifications = true;
+                    notifyswitch.checked  = true;
+                }, true
+            );
+        }
+        else {
+            notifyswitch.checked = true;
+            ffcdata.utils.request('GET', ffcdata.chat.disnotifyurl, null, 
+                function(res){ 
+                    ffcdata.notifications = false;
+                    notifyswitch.checked  = false;
+                }, true
+            );
+        }
     });
 
     /************************************************************************
