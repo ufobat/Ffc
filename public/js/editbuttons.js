@@ -164,9 +164,9 @@ ffcdata.editbuttons.init = function(){
         var register_one_button = function(b){
             var butt = document.getElementById(b[0]);
             if ( butt ) {
-                butt.onclick = function(){
+                butt.addEventListener('click', function(){
                     tagthat(b[1],b[2],b[3],b[4],b[5]);
-                };
+                });
             }
         };
         for (var j=0; j<buttons.length; j++){
@@ -230,7 +230,7 @@ ffcdata.editbuttons.init = function(){
         else {
             var closeb = document.getElementById('closetextabutton');
             if ( closeb ) {
-                closeb.onclick = closetextarea;
+                closeb.addEventListener('click', closetextarea);
                 closeb.className = '';
                 tinput.onfocus = opentextarea;
             }
@@ -242,10 +242,10 @@ ffcdata.editbuttons.init = function(){
         // Vorschau-Button aktivieren
         var previewbutton = document.getElementById('textpreviewtabutton');
         if ( previewbutton )
-            previewbutton.onclick = get_preview;
+            previewbutton.addEventListener('click', get_preview);
         var closepreviewbutton = document.getElementById('closetextpreviewareabutton');
         if ( closepreviewbutton )
-            closepreviewbutton.onclick = close_preview;
+            closepreviewbutton.addEventListener('click', close_preview);
     };
 
     /************************************************************************

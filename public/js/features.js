@@ -215,7 +215,6 @@ ffcdata.features.init = function(){
         ffcdata.features.fileuploadchange = function(it){
             var val = it.value;
             if ( !val || val === '' || iter > 42 ) return;
-            it.onchange = null;
             var uifieldnew = uifield.cloneNode(true);
             uifieldnew.firstChild.value = '';
             uibox.appendChild(uifieldnew);
@@ -246,11 +245,9 @@ ffcdata.features.init = function(){
      ************************************************************************/
     var set_ajax_highscorelink = function(link){
         var href = link.href + '/ajax';
-        link.attributes.removeNamedItem('href');
-        link.addEventListener("click", function(){
-            link.onclick = undefined;
+        var highscorelinkfun = function(){
+            link.removeEventListener('click', highscorelinkfun)
             link.className='hiddendisplay'
-            link.removeEventListener('click', function(){ return 1 });
             ffcdata.utils.request('GET', href, null,
                 function(res){
                     if ( !res ) return;
@@ -259,7 +256,9 @@ ffcdata.features.init = function(){
                 },
                 1 // data, nojason
             );
-        });
+        };
+        link.attributes.removeNamedItem('href');
+        link.addEventListener("click", highscorelinkfun);
     };
     var enable_highscore = function(){
         var scorelinks = document.getElementsByName('highscorelink'); 
@@ -275,13 +274,13 @@ ffcdata.features.init = function(){
         var tif = document.getElementById('textinputform'); 
         if ( tif ) {
             // console.log(tif);
-            tif.onkeydown = function(ev) {
+            tif.addEventListener('keydown', function(ev) {
                 // console.log(ev.keyCode + '-' + ev.ctrlKey);
                 if (ev.keyCode == 83 && ev.ctrlKey) {
                     tif.submit();
                     ev.preventDefault();
                 }
-            };
+            });
         }
     };
 

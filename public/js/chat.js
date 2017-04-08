@@ -13,6 +13,8 @@ ffcdata.chat.init = function() {
     var chatattachements = document.getElementById('chatuploadform');
     var attachement      = document.getElementById('attachement');
     var sendonentercheck = document.getElementById('sendonentercheck');
+    var chatuploadform   = document.getElementById('chatuploadform');
+    var chatuploadpopup  = document.getElementById('chatuploadpopup');
 
     /************************************************************************
      *** Chat-Text formatieren                                            ***
@@ -277,18 +279,18 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Refresh-Einstellung wechseln                                     ***
      ************************************************************************/
-    refreshtimefield.onchange = function() {
+    refreshtimefield.addEventListener('change', function() {
         // console.log('refresh time changed');
         set_refresh(this.value);
-    };
+    });
 
     /************************************************************************
      *** Manuelles Neuladen                                               ***
      ************************************************************************/
-    document.getElementById('reload').onclick = function() {
+    document.getElementById('reload').addEventListener('click', function() {
         // console.log('manual reload triggered');
         receive();
-    };
+    });
 
     /************************************************************************
      *** Message-Log leeren                                               ***
@@ -297,17 +299,17 @@ ffcdata.chat.init = function() {
         msglog.innerHTML = '';
         ffcdata.chat.lastmsguser = '';
     };
-    document.getElementById('clrscr').onclick = function(e) {
+    document.getElementById('clrscr').addEventListener('click', function(e) {
         // console.log('clear message log');
         clrscr();
-    };
+    });
 
     /************************************************************************
      *** Desktopbenachrichtigungserlaubenseinstellung                     ***
      ************************************************************************/
-    notifyswitch.onchange = function(){
+    notifyswitch.addEventListener('change', function(){
         ffcdata.notifications = notifyswitch.checked;
-    };
+    });
 
     /************************************************************************
      *** Absenden                                                         ***
@@ -328,41 +330,32 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Manuelles Absenden                                               ***
      ************************************************************************/
-    document.getElementById('send').onclick = function() {
+    document.getElementById('send').addEventListener('click', function() {
         // console.log('manual send triggered');
         sendit();
         cleanmsg();
-    };
+    });
 
     /************************************************************************
      *** Enter-Absenden                                                   ***
      ************************************************************************/
-    var isShift = false;
-    msgfield.onkeydown = function(e) {
+    msgfield.addEventListener('keydown', function(e) {
         // console.log(e.keyCode);
-        if ( e.keyCode == 16 ) {
-            isShift = true;
-        }
-
-        if ( e.keyCode == 13 && !( isShift || !sendonentercheck.checked ) ) {
+        if ( e.keyCode == 13 && !( e.shiftKey || !sendonentercheck.checked ) ) {
             // console.log('enter-key send triggered');
             sendit();
             cleanmsg();
         }
-    };
-    msgfield.onkeyup = function(e) {
+    });
+    msgfield.addEventListener('keyup', function(e) {
         // console.log(e.keyCode);
-        if ( e.keyCode == 16 ) {
-            isShift = false;
-        }
-
-        if ( e.keyCode == 13 && !( isShift || !sendonentercheck.checked ) ) {
+        if ( e.keyCode == 13 && !( e.shiftKey || !sendonentercheck.checked ) ) {
             //console.log('enter-key send done');
             if ( msgfield.value.match(/^[\s\r\n]+$/) ) cleanmsg();
         }
         
         // shift + up arrow, history back
-        if ( isShift && e.keyCode == 38 && ffcdata.chat.history_pointer > 0 ) {
+        if ( e.shiftKey && e.keyCode == 38 && ffcdata.chat.history_pointer > 0 ) {
             var msgval = msgfield.value;
             if ( msgval.length > 0 && ffcdata.chat.history_list[ffcdata.chat.history_pointer] != msgval ) {
                 ffcdata.chat.history_list[ffcdata.chat.history_pointer] = msgval;
@@ -372,7 +365,7 @@ ffcdata.chat.init = function() {
         }
 
         // shift + down arrow, history foreward
-        if ( isShift && e.keyCode == 40 && ffcdata.chat.history_pointer < ffcdata.chat.history_list.length ) {
+        if ( e.shiftKey && e.keyCode == 40 && ffcdata.chat.history_pointer < ffcdata.chat.history_list.length ) {
             var msgval = msgfield.value;
             if ( msgval.length > 0 && ffcdata.chat.history_list[ffcdata.chat.history_pointer] != msgval ) {
                 ffcdata.chat.history_list[ffcdata.chat.history_pointer] = msgval;
@@ -385,13 +378,16 @@ ffcdata.chat.init = function() {
                 msgfield.value = '';
             }
         }
-    };
+    });
 
     /************************************************************************
      *** Uploads im Chatfenster                                           ***
      ************************************************************************/
-    var attach_fun = function(){
-        console.log('updoad!!!!');
+    var attach_fun = function(ev){
+        ev.preventDefault()
+        chatuploadpopup.focus = undefined;
+        console.log('updoad!!!!' + attachement.value);
+        attachement.value = '';
     };
 
     /************************************************************************
@@ -400,7 +396,7 @@ ffcdata.chat.init = function() {
     receive_start();
     msgfield.focus();
     
-    chatattachements.onsubmit = attach_fun;
-    window.onfocus = onfocus_fun;
+    chatattachements.addEventListener('change', attach_fun);
+    window.addEventListener('focus', onfocus_fun);
 };
 
