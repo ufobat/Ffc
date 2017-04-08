@@ -29,7 +29,7 @@
           <div class="popuparrow chatuploadpopup activedim menuentry">
            <span class="othersmenulinktext chatuploadpopupswitch">Anhang ...</span>
            <div class="popup otherspopup" id="chatuploadpopup">
-            <form enctype="multipart/form-data" method="POST" id="chatuploadform">
+            <form enctype="multipart/form-data" method="POST" id="chatuploadform" name="chatuploadform">
              <input type="file" name="attachement" id="attachement" required="required" />
             </form>
            </div>
@@ -39,7 +39,7 @@
           <div class="popuparrow chatoptionpopup activedim menuentry">
            <span class="othersmenulinktext chatoptionpopupswitch">Mehr ...</span>
            <div class="popup otherspopup">
-            <p><input type="checkbox" checked="checked" id="sendonentercheck" /> Enter, <span class="notifyswitch"><input type="checkbox" id="notifyswitch" value="1"<%== session()->{notifications} ? ' checked="checked"' : '' %> /> Hinweise</span></p>
+            <p><input type="checkbox" checked="checked" id="sendonentercheck" /> Enter, <span class="notifyswitch"><input type="checkbox" id="notifyswitch" value="1"<%== ( session()->{notifications} && session()->{chatnotify} ) ? ' checked="checked"' : '' %> /> Hinweise</span></p>
             <p>Aller <input type="number" name="refreshtime" id="refreshtime" value="60" min="15" max="300" step="15" /> s laden</p>
            </div>
           </div>

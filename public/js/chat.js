@@ -10,7 +10,6 @@ ffcdata.chat.init = function() {
     var msglog           = document.getElementById('msglog');
     var userlist         = document.getElementById('userlist');
     var notifyswitch     = document.getElementById('notifyswitch');
-    var chatattachements = document.getElementById('chatuploadform');
     var attachement      = document.getElementById('attachement');
     var sendonentercheck = document.getElementById('sendonentercheck');
     var chatuploadform   = document.getElementById('chatuploadform');
@@ -401,9 +400,15 @@ ffcdata.chat.init = function() {
      *** Uploads im Chatfenster                                           ***
      ************************************************************************/
     var attach_fun = function(ev){
-        ev.preventDefault()
+        var fData = new FormData(chatuploadform);
+        ffcdata.utils.request('POST', ffcdata.chat.uploadurl, fData, 
+            function(res) {
+                if ( res != 'oks' )
+                    new Error('Upload fehlteschlagen');
+            }, true, true
+        );
+        ev.preventDefault();
         chatuploadpopup.focus = undefined;
-        console.log('updoad!!!!' + attachement.value);
         attachement.value = '';
     };
 
@@ -413,7 +418,7 @@ ffcdata.chat.init = function() {
     receive_start();
     msgfield.focus();
     
-    chatattachements.addEventListener('change', attach_fun);
+    attachement.addEventListener('change', attach_fun);
     window.addEventListener('focus', onfocus_fun);
 };
 

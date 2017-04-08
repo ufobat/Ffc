@@ -21,7 +21,7 @@ ffcdata.utils.is_disabled = function(){
 /************************************************************************
  *** Standard-Request-Funktion                                        ***
  ************************************************************************/
-ffcdata.utils.request = function(methd, url, data, callback, nojson) {
+ffcdata.utils.request = function(methd, url, data, callback, nojson, nojsondata) {
     try {
         // console.log('starting request');
         var req = new XMLHttpRequest();
@@ -44,7 +44,12 @@ ffcdata.utils.request = function(methd, url, data, callback, nojson) {
             req.setRequestHeader("Content-type", "multipart/formdata");
             //req.setRequestHeader("Content-length", data.toString().length);
             //req.setRequestHeader("Connection", "close");
-            req.send(JSON.stringify(data));
+            if ( nojsondata ) {
+                req.send(data);
+            }
+            else {
+                req.send(JSON.stringify(data));
+            }
         }
         else {
             req.send();

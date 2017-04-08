@@ -54,6 +54,14 @@ sub install_routes {
     $p->route('/download/:fileid', fileid => $Ffc::Digqr)->via(qw(GET))
          ->to(controller => 'chat', action => 'chat_download')
          ->name('chat_download');
+
+    # Benachrichtingen im Chat lokal in den Cookies einstellen
+    $p->route('/ennotify')->via(qw(GET))
+         ->to(controller => 'chat', action => 'chat_ennotify')
+         ->name('chat_ennotify');
+    $p->route('/disnotify')->via(qw(GET))
+         ->to(controller => 'chat', action => 'chat_disnotify')
+         ->name('chat_disnotify');
 }
 
 ###############################################################################
@@ -65,7 +73,7 @@ sub set_refresh {
         $c->dbh_do('UPDATE "users" SET "chatrefreshsecs"=? WHERE "id"=?',
             $refresh, $c->session->{userid} );
     }
-    $c->render( json => 'ok' );
+    $c->render( text => 'ok' );
 }
 
 ###############################################################################
@@ -280,11 +288,14 @@ sub chat_upload {
     my $c = $_[0];
     # Datei-Upload-Helper
     my @files;
+    return $c->render( text => $c->dumper( $c->req ) );
+    #( 'attachement', undef, 'Dateianhang', 1, , 2, 200, $filepathsub, $allownofiles );
     my @rets = $c->file_upload(
-        'attachement', 1, 'Datei', 1, 1, 2, 250, 
+        'attachement', 1, 'Datei', 1, $c->configdata->{maxuploadsize}, 2, 250, 
         sub { 
             my ($c, $filename, $filetype, $content_type) = @_;
             # Attachment in der Datenbank als Datensatz anlegen
+            return $c->render( text => $filename );
             $c->dbh_do('INSERT INTO "attachements_chat" ("filename", "content_type") VALUES (?,?)',
                 $filename, $content_type);
             # Die Id aus der Datenbank wird gleichzeitig zum Dateinamen
@@ -349,6 +360,17 @@ sub chat_download {
     $c->res->content->headers($headers);
     $c->res->content->asset($file);
     $c->rendered(200);
+}
+
+###############################################################################
+# Chat-Hints in Cookies speichern
+sub chat_ennotify { 
+    $_[0]->session->{chatnotify} = 1;
+    $_[0]->render(text => 'ok enabled');
+}
+sub chat_disnotify {
+    $_[0]->session->{chatnotify} = 0;
+    $_[0]->render(text => 'ok disabled');
 }
 
 1;
