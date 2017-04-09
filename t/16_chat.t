@@ -54,7 +54,7 @@ sub get_lastchatseenactive {
 }
 
 # erstmal schaun, ob alle da sind
-$t1->get_ok('/chat/refresh/42')->status_is(200)->content_is('"ok"');
+$t1->get_ok('/chat/refresh/42')->status_is(200)->content_is('ok');
 $t1->get_ok('/chat/receive/focused')->status_is(200)
    ->json_has('/0')->json_hasnt('/0/0')
    ->json_is('/1/0/0' => $admin)->json_is('/1/0/2' => 42)
@@ -167,7 +167,7 @@ bothusers($t2);
 bothusers($t1);
 
 # schauen, ob das automatische ablaufen auch funktioniert
-$t1->get_ok('/chat/refresh/1')->status_is(200)->content_is('"ok"');
+$t1->get_ok('/chat/refresh/1')->status_is(200)->content_is('ok');
 sleep $sleepval + 1; # Sonst ist der Admin noch drin
 $t2->get_ok('/chat/receive/focused')->status_is(200)
    ->json_has('/0')->json_hasnt('/0/0')

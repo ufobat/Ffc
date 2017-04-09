@@ -280,14 +280,12 @@ sub chat_upload {
     my $c = $_[0];
     # Datei-Upload-Helper
     my @files;
-    return $c->render( text => $c->dumper( $c->req ) );
     #( 'attachement', undef, 'Dateianhang', 1, , 2, 200, $filepathsub, $allownofiles );
     my @rets = $c->file_upload(
         'attachement', 1, 'Datei', 1, $c->configdata->{maxuploadsize}, 2, 250, 
         sub { 
             my ($c, $filename, $filetype, $content_type) = @_;
             # Attachment in der Datenbank als Datensatz anlegen
-            return $c->render( text => $filename );
             $c->dbh_do('INSERT INTO "attachements_chat" ("filename", "content_type") VALUES (?,?)',
                 $filename, $content_type);
             # Die Id aus der Datenbank wird gleichzeitig zum Dateinamen
