@@ -54,14 +54,6 @@ sub install_routes {
     $p->route('/download/:fileid', fileid => $Ffc::Digqr)->via(qw(GET))
          ->to(controller => 'chat', action => 'chat_download')
          ->name('chat_download');
-
-    # Benachrichtingen im Chat lokal in den Cookies einstellen
-    $p->route('/ennotify')->via(qw(GET))
-         ->to(controller => 'chat', action => 'chat_ennotify')
-         ->name('chat_ennotify');
-    $p->route('/disnotify')->via(qw(GET))
-         ->to(controller => 'chat', action => 'chat_disnotify')
-         ->name('chat_disnotify');
 }
 
 ###############################################################################
@@ -360,17 +352,6 @@ sub chat_download {
     $c->res->content->headers($headers);
     $c->res->content->asset($file);
     $c->rendered(200);
-}
-
-###############################################################################
-# Chat-Hints in Cookies speichern
-sub chat_ennotify { 
-    $_[0]->session->{chatnotify} = 1;
-    $_[0]->render(text => 'ok enabled');
-}
-sub chat_disnotify {
-    $_[0]->session->{chatnotify} = 0;
-    $_[0]->render(text => 'ok disabled');
 }
 
 1;

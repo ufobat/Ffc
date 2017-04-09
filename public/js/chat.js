@@ -261,10 +261,10 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Den Chat verlassen                                               ***
      ************************************************************************/
-    window.onbeforeunload = function() {
+    window.addEventListener('beforeunload', function() {
         ffcdata.utils.request('GET', ffcdata.chat.leaveurl, null, function(ret) { console.log(ret); });
         return;
-    };
+    });
 
     /************************************************************************
      *** Chatfenster anwaehlen                                            ***
@@ -308,22 +308,10 @@ ffcdata.chat.init = function() {
      ************************************************************************/
     notifyswitch.addEventListener('change', function(){
         if ( notifyswitch.checked ) {
-            notifyswitch.checked = false;
-            ffcdata.utils.request('GET', ffcdata.chat.ennotifyurl, null, 
-                function(res){ 
-                    ffcdata.notifications = true;
-                    notifyswitch.checked  = true;
-                }, true
-            );
+            ffcdata.notifications = true;
         }
         else {
-            notifyswitch.checked = true;
-            ffcdata.utils.request('GET', ffcdata.chat.disnotifyurl, null, 
-                function(res){ 
-                    ffcdata.notifications = false;
-                    notifyswitch.checked  = false;
-                }, true
-            );
+            ffcdata.notifications = false;
         }
     });
 
@@ -418,7 +406,7 @@ ffcdata.chat.init = function() {
     receive_start();
     msgfield.focus();
     
-    attachement.addEventListener('change', attach_fun);
+    //attachement.addEventListener('change', attach_fun);
     window.addEventListener('focus', onfocus_fun);
 };
 
