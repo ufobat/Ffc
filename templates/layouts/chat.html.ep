@@ -44,8 +44,6 @@
               newchatcountsum: 0,
               lastmsgtime:     '',
               lastmsguser:     '',
-              ennotifyurl:     '<%= url_for "chat_ennotify" %>',
-              disnotifyurl:    '<%= url_for "chat_disnotify" %>',
               uploadurl:       '<%= url_for "chat_upload" %>',
           },
       };
