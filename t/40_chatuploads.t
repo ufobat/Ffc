@@ -11,7 +11,7 @@ use Mojo::Util 'xml_escape';
 use Data::Dumper;
 
 use Test::Mojo;
-use Test::More tests => 735;
+use Test::More tests => 796;
 
 #############################################################################
 # Benutzer anlegen
@@ -26,6 +26,7 @@ my %id2file;
 my @msgids = (['-', '-']);
 my $fileid = 0;
 my $msgid = 0;
+my $imgswitch = 0;
 
 
 
@@ -146,7 +147,9 @@ sub check_file_msg {
     my ( $u, $uf, $fileid, $deleted ) = @_;
     my ( $filename, $content, $contenttype, $msgid ) = @{$id2file{$fileid}}{qw~filename content contenttype calmsgid~};
     note qq~checking file "$filename" ($fileid) ~ . ( $deleted ? 'deleted' : 'existing' ) . qq~ in messages request ($msgid)~;
-    my $msgstr = qq~<a href="/chat/download/$fileid" target="_blank" title="$filename" alt="$filename">$filename</a>~;
+    my $url = "/chat/download/$fileid";
+    my $fname = $imgswitch ? qq~<img src="$url" alt="$filename" />~ : $filename;
+    my $msgstr = qq~<a href="$url" target="_blank" title="$filename" alt="$filename">$fname</a>~;
 
     # request
     $u->{t}->get_ok('/chat/receive/started')->status_is(200);
@@ -251,6 +254,16 @@ sub reducedlogtest {
     $check->($u3, $_) for 3, 4, 7, 8;
 }
 
+###############################################################################
+# show uploadet images inline
+sub inlinimgtest {
+    $imgswitch = 1;
+    $t->post_ok('/admin/boardsettings/inlineimage', 
+        form => {optionvalue => $imgswitch}
+    )->status_is(302);
+    init_started();
+    check_complete($u2);
+}
 
 ###############################################################################
 ##  Test run  #################################################################
@@ -258,7 +271,8 @@ sub reducedlogtest {
 
 normaltest();
 reducedlogtest();
-note idstring();
+inlinimgtest();
+#note idstring();
 #diag Dumper \%id2file;
 
 

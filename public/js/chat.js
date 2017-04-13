@@ -4,15 +4,21 @@
  ************************************************************************/
 
 ffcdata.chat.init = function() {
-    var msgfield         = document.getElementById('textinput');
-    var titlenode        = document.getElementsByTagName("title")[0].firstChild
-    var refreshtimefield = document.getElementById('refreshtime');
-    var msglog           = document.getElementById('msglog');
-    var userlist         = document.getElementById('userlist');
-    var notifyswitch     = document.getElementById('notifyswitch');
-    var attachement      = document.getElementById('attachement');
-    var sendonentercheck = document.getElementById('sendonentercheck');
-    var chatuploadform   = document.getElementById('chatuploadform');
+    var msgfield                   = document.getElementById('textinput');
+    var titlenode                  = document.getElementsByTagName("title")[0].firstChild
+    var refreshtimefield           = document.getElementById('refreshtime');
+    var msglog                     = document.getElementById('msglog');
+    var userlist                   = document.getElementById('userlist');
+    var notifyswitch               = document.getElementById('notifyswitch');
+    var attachement                = document.getElementById('attachement');
+    var sendonentercheck           = document.getElementById('sendonentercheck');
+    var chatuploadform             = document.getElementById('chatuploadform');
+    var chatuploadpopupfield       = document.getElementById('chatuploadpopup');
+    var chatuploadpopup            = document.getElementById('chatuploadpopup');
+    var chatuploadpopupswitch      = document.getElementById('chatuploadpopupswitch');
+    var chatuploadpopupswitchclass = chatuploadpopupswitch.className.toString();
+    var chatuploadpopupfieldclass  = chatuploadpopupfield.className.toString();
+    var chatuploadpopupclass       = chatuploadpopup.className.toString();
 
     /************************************************************************
      *** Chat-Text formatieren                                            ***
@@ -388,13 +394,22 @@ ffcdata.chat.init = function() {
      ************************************************************************/
     var attach_fun = function(ev){
         ev.preventDefault();
+        chatuploadpopup.className       = 'nodisplay';
+        chatuploadpopupfield.className  = chatuploadpopupfieldclass;
+        chatuploadpopupswitch.className = chatuploadpopupswitchclass + ' dimmer';
 
-        var formData = new FormData(chatuploadform),
-            xhr = new XMLHttpRequest();
-        xhr.open("POST", ffcdata.chat.uploadurl);
-        xhr.send(formData);
-
-        chatuploadpopup.focus = undefined;
+        var fData = new FormData(chatuploadform);
+        var req = new XMLHttpRequest();
+        req.open("POST", ffcdata.chat.uploadurl);
+        req.addEventListener("load", function() {
+            if (req.status === 200 && req.responseText === 'ok' ) {
+                chatuploadpopupswitch.className = chatuploadpopupswitchclass;
+                msgfield.focus();
+            } else {
+                alert('Dateiuploads funktionieren hier nicht');
+            }
+        });
+        req.send(fData);
         attachement.value = '';
     };
 

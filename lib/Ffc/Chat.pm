@@ -309,9 +309,11 @@ sub chat_upload {
 
     for my $f ( @files ) {
         my ( $fid, $filename ) = @{$f}{qw~id name~};
-        _add_msg($c, q~<a href="~
-            . $c->url_for('chat_download', fileid => $fid) 
-            . qq~" target="_blank" title="$filename" alt="$filename">$f->{name}</a>~, 1, 1);
+
+        my $url   = $c->url_for('chat_download', fileid => $fid);
+        my $fname = $c->configdata->{inlineimage} ? qq~<img src="$url" alt="$filename" />~ : $filename;
+
+        _add_msg($c, qq~<a href="$url" target="_blank" title="$filename" alt="$filename">$fname</a>~, 0, 1);
         my $mid = _get_own_msg_id($c);
         $c->dbh_do(
             'UPDATE "attachements_chat" SET "msgid"=? WHERE "id"=?'

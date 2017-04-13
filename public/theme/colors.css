@@ -363,3 +363,6 @@ hr {
     background: lightgray;
     border: 0 gray solid;
 }
+.dimmer {
+    color: grey;
+}
