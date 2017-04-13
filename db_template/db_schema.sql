@@ -151,21 +151,21 @@ CREATE TABLE "config" (
 /******************************************************************************/
 /* Vorbelegung für die Konfiguration
 /******************************************************************************/
+INSERT INTO "config" ("key", "value") VALUES ('backgroundcolor',    ''                      );
+INSERT INTO "config" ("key", "value") VALUES ('chatloglength',      '50'                    );
 INSERT INTO "config" ("key", "value") VALUES ('cookiename',         ''                      );
 INSERT INTO "config" ("key", "value") VALUES ('cookiesecret',       ''                      );
 INSERT INTO "config" ("key", "value") VALUES ('cryptsalt',          ''                      );
-INSERT INTO "config" ("key", "value") VALUES ('title',              'Ffc Forum'             );
-INSERT INTO "config" ("key", "value") VALUES ('sessiontimeout',     '432000'                );
-INSERT INTO "config" ("key", "value") VALUES ('urlshorten',         '30'                    );
-INSERT INTO "config" ("key", "value") VALUES ('backgroundcolor',    ''                      );
-INSERT INTO "config" ("key", "value") VALUES ('favicon',            ''                      );
-INSERT INTO "config" ("key", "value") VALUES ('favicontype',        'png'                   );
-INSERT INTO "config" ("key", "value") VALUES ('faviconcontenttype', 'image/png'             );
 INSERT INTO "config" ("key", "value") VALUES ('customcss',          ''                      );
-INSERT INTO "config" ("key", "value") VALUES ('starttopic',         '0'                     );
-INSERT INTO "config" ("key", "value") VALUES ('maxscore',           '10'                    );
-INSERT INTO "config" ("key", "value") VALUES ('maxuploadsize',      '3'                     );
+INSERT INTO "config" ("key", "value") VALUES ('favicon',            ''                      );
+INSERT INTO "config" ("key", "value") VALUES ('faviconcontenttype', 'image/png'             );
+INSERT INTO "config" ("key", "value") VALUES ('favicontype',        'png'                   );
 INSERT INTO "config" ("key", "value") VALUES ('hypnotoad',          'http://127.0.0.1:8083' );
 INSERT INTO "config" ("key", "value") VALUES ('inlineimage',        '0'                     );
-INSERT INTO "config" ("key", "value") VALUES ('chatloglength',      '50'                    );
+INSERT INTO "config" ("key", "value") VALUES ('maxscore',           '10'                    );
+INSERT INTO "config" ("key", "value") VALUES ('maxuploadsize',      '3'                     );
+INSERT INTO "config" ("key", "value") VALUES ('sessiontimeout',     '432000'                );
+INSERT INTO "config" ("key", "value") VALUES ('starttopic',         '0'                     );
+INSERT INTO "config" ("key", "value") VALUES ('title',              'Ffc Forum'             );
+INSERT INTO "config" ("key", "value") VALUES ('urlshorten',         '30'                    );
 

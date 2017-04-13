@@ -29,7 +29,7 @@
           <div class="popuparrow chatuploadpopup activedim menuentry">
            <span class="othersmenulinktext chatuploadpopupswitch">Anhang ...</span>
            <div class="popup otherspopup" id="chatuploadpopup">
-            <form enctype="multipart/form-data" method="POST" id="chatuploadform" name="chatuploadform">
+            <form enctype="multipart/form-data" method="POST" id="chatuploadform" name="chatuploadform" action="<%= url_for "chat_upload" %>">
              <input type="file" name="attachement" id="attachement" required="required" />
             </form>
            </div>

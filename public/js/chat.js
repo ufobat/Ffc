@@ -13,7 +13,6 @@ ffcdata.chat.init = function() {
     var attachement      = document.getElementById('attachement');
     var sendonentercheck = document.getElementById('sendonentercheck');
     var chatuploadform   = document.getElementById('chatuploadform');
-    var chatuploadpopup  = document.getElementById('chatuploadpopup');
 
     /************************************************************************
      *** Chat-Text formatieren                                            ***
@@ -388,14 +387,13 @@ ffcdata.chat.init = function() {
      *** Uploads im Chatfenster                                           ***
      ************************************************************************/
     var attach_fun = function(ev){
-        var fData = new FormData(chatuploadform);
-        ffcdata.utils.request('POST', ffcdata.chat.uploadurl, fData, 
-            function(res) {
-                if ( res != 'oks' )
-                    new Error('Upload fehlteschlagen');
-            }, true, true
-        );
         ev.preventDefault();
+
+        var formData = new FormData(chatuploadform),
+            xhr = new XMLHttpRequest();
+        xhr.open("POST", ffcdata.chat.uploadurl);
+        xhr.send(formData);
+
         chatuploadpopup.focus = undefined;
         attachement.value = '';
     };
@@ -406,7 +404,7 @@ ffcdata.chat.init = function() {
     receive_start();
     msgfield.focus();
     
-    //attachement.addEventListener('change', attach_fun);
+    attachement.addEventListener('change', attach_fun);
     window.addEventListener('focus', onfocus_fun);
 };
 

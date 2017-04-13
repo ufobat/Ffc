@@ -70,7 +70,7 @@ sub generate_paths {
         # Bezeichnung => Pfad, Ist ein Verzeichnis?, Dateiberechtigung, Quelldatei?, Datenbankdatei? 
         [ avatar      => $AvatarPath,     1, 0770, '',              0 ],
         [ upload      => $UploadPath,     1, 0770, '',              0 ],
-        [ chatupload  => $ChatUploadPath, 1, 0770, '',              0 ],
+        [ chatuploads => $ChatUploadPath, 1, 0770, '',              0 ],
         [ database    => $DatabasePath,   0, 0660, $DatabaseSource, 1 ],
         [ favicon     => $FavIconPath,    0, 0660, $FavIconSource,  0 ],
     ) {

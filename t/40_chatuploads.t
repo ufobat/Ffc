@@ -146,7 +146,7 @@ sub check_file_msg {
     my ( $u, $uf, $fileid, $deleted ) = @_;
     my ( $filename, $content, $contenttype, $msgid ) = @{$id2file{$fileid}}{qw~filename content contenttype calmsgid~};
     note qq~checking file "$filename" ($fileid) ~ . ( $deleted ? 'deleted' : 'existing' ) . qq~ in messages request ($msgid)~;
-    my $msgstr = qq~<a href="/chat/download/$fileid" target="_blank" title="$filename" alt="$filename">Dateianhang</a>~;
+    my $msgstr = qq~<a href="/chat/download/$fileid" target="_blank" title="$filename" alt="$filename">$filename</a>~;
 
     # request
     $u->{t}->get_ok('/chat/receive/started')->status_is(200);

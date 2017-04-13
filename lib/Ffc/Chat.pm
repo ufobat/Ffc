@@ -311,7 +311,7 @@ sub chat_upload {
         my ( $fid, $filename ) = @{$f}{qw~id name~};
         _add_msg($c, q~<a href="~
             . $c->url_for('chat_download', fileid => $fid) 
-            . qq~" target="_blank" title="$filename" alt="$filename">Dateianhang</a>~, 1, 1);
+            . qq~" target="_blank" title="$filename" alt="$filename">$f->{name}</a>~, 1, 1);
         my $mid = _get_own_msg_id($c);
         $c->dbh_do(
             'UPDATE "attachements_chat" SET "msgid"=? WHERE "id"=?'
