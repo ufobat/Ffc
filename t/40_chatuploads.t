@@ -26,7 +26,6 @@ my %id2file;
 my @msgids = (['-', '-']);
 my $fileid = 0;
 my $msgid = 0;
-my $imgswitch = 0;
 
 
 
@@ -148,8 +147,7 @@ sub check_file_msg {
     my ( $filename, $content, $contenttype, $msgid ) = @{$id2file{$fileid}}{qw~filename content contenttype calmsgid~};
     note qq~checking file "$filename" ($fileid) ~ . ( $deleted ? 'deleted' : 'existing' ) . qq~ in messages request ($msgid)~;
     my $url = "/chat/download/$fileid";
-    my $fname = $imgswitch ? qq~<img src="$url" alt="$filename" />~ : $filename;
-    my $msgstr = qq~<a href="$url" target="_blank" title="$filename" alt="$filename">$fname</a>~;
+    my $msgstr = qq~<a href="$url" target="_blank" title="$filename" alt="$filename">$filename</a>~;
 
     # request
     $u->{t}->get_ok('/chat/receive/started')->status_is(200);
@@ -257,9 +255,8 @@ sub reducedlogtest {
 ###############################################################################
 # show uploadet images inline
 sub inlinimgtest {
-    $imgswitch = 1;
     $t->post_ok('/admin/boardsettings/inlineimage', 
-        form => {optionvalue => $imgswitch}
+        form => {optionvalue => 1}
     )->status_is(302);
     init_started();
     check_complete($u2);

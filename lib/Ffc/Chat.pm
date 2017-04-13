@@ -107,7 +107,7 @@ sub _add_msg {
 
     # Formatieren der neuen Nachricht (kann abgeschalten werden)
     unless ( $noquote ) {
-        $msg = $c->pre_format($msg, undef, $c->configdata->{inlineimage});
+        $msg = $c->pre_format($msg);
         $msg =~ s~\A\s*<p>~~xmsgo;
         $msg =~ s~</p>\s*\z~~xmsgo;
         $msg =~ s~</p>\s*<p>~<br />~xgmso;
@@ -311,9 +311,7 @@ sub chat_upload {
         my ( $fid, $filename ) = @{$f}{qw~id name~};
 
         my $url   = $c->url_for('chat_download', fileid => $fid);
-        my $fname = $c->configdata->{inlineimage} ? qq~<img src="$url" alt="$filename" />~ : $filename;
-
-        _add_msg($c, qq~<a href="$url" target="_blank" title="$filename" alt="$filename">$fname</a>~, 0, 1);
+        _add_msg($c, qq~<a href="$url" target="_blank" title="$filename" alt="$filename">$filename</a>~, 0, 1);
         my $mid = _get_own_msg_id($c);
         $c->dbh_do(
             'UPDATE "attachements_chat" SET "msgid"=? WHERE "id"=?'
