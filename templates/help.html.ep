@@ -14,12 +14,12 @@
     </ul>
 </div>
 <div class="postbox helptext">
-    <h2><a name="create" href="#content">^</a> Beiträge erstellen</h2>
+    <h2><a name="create" href="#content">^^^</a> Beiträge erstellen</h2>
     <p>Über das Textfeld im oberen Bereich der Webseite können Beiträge erstellt werden. Diese erscheinen dann im ausgewählten Thema. Bei Privatnachrichten muss vorher ein Konversationsteilnehmer ausgewählt werden.</p>
     <p>Wird zwischenzeitlich ein Beitrag von einem anderen Benutzer in der selben Kategorie oder Konversation erstellt, während man selber einen Beitrag schreibt, erscheint eine Warnung. Dann kann man den Beitrag gegebenenfalls noch einmal überarbeiten, muss ihn aber dann noch einmal explizit speichern.</p>
 </div>
 <div class="postbox helptext">
-    <h2><a name="buttons" href="#content">^</a> Editierhilfen (Buttons)</h2>
+    <h2><a name="buttons" href="#content">^^^</a> Editierhilfen (Buttons)</h2>
     <p>Falls auf einem Desktopsystem Javascript im Browser eingeschalten ist, stehen folgende Buttons zur Verfügung, welche die Formatierungsauszeichnungen automatisch in den Text im Textfeld einfügen.</p>
     <p>
         (Anzeigebeispiel:
@@ -50,7 +50,7 @@
     <p>Ist im Browser Javascript deaktiviert oder funktionieren die Buttons nicht, so kann man die Formatierungen alternativ auch händisch in den Text wie im folgenden beschrieben (<a href="#formatting">Textformatierungen</a>, <a href="#structuring">Textstrukturierungen</a>) einfügen.</p>
 </div>
 <div class="postbox helptext">
-    <h2><a name="formatting" href="#content">^</a> Textformatierungen</h2>
+    <h2><a name="formatting" href="#content">^^^</a> Textformatierungen</h2>
     <p>Die folgenden Formatierungsmöglichkeiten für Forenbeiträge, private Nachrichten oder Notizen können von Hand in den Text eingefügt werden.</p>
     <p>Ist Javascript aktiviert, so erscheinen über den Eingabefeldern für Beiträge kleine graue Buttons, über die ebenfalls die folgenden Änderungen angewendet werden können. Die Buttons wirken in einer Auswahl von Text.</p>
     <p>Anstatt von Leerzeichen zwischen Wörtern müssen im folgenden die entsprechenden Formatierungszeichen verwendet werden.</p>
@@ -70,7 +70,7 @@
     </ul>
 </div>
 <div class="postbox helptext">
-    <h2><a name="structuring" href="#content">^</a> Textstrukturierungen</h2>
+    <h2><a name="structuring" href="#content">^^^</a> Textstrukturierungen</h2>
     <p>Folgende Methoden stehen zur Verfügung, um Texte inhaltlich zu strukturieren. Die Formatierungszeichen müssen an den Anfang einer entsprechenden Zeile gesetzt werden.</p>
     <p>Ist Javascript aktiviert, erscheinen über den Eingabefeldern für Beiträge kleine graue Buttons, die ebenfalls die Zeile, in der der Cursor steht oder die Zeilen, die ausgewählt wurden, entsprechend behandeln.</p>
     <ul>
@@ -82,12 +82,12 @@
     </ul>
 </div>
 <div class="postbox helptext">
-    <h2><a name="links" href="#content">^</a> Links und Bilder</h2>
+    <h2><a name="links" href="#content">^^^</a> Links und Bilder</h2>
     <p>Links werden weitestgehend automatisch erkannt und entsprechend als Links markiert, sobald sie im Text auftauchen.</p>
     <p>Bilder werden weitestgehend automatisch erkannt und entsprechend als Links zur Bildquelle markiert, sobald sie im Text auftauchen.</p>
 </div>
 <div class="postbox helptext">
-    <h2><a name="smileys" href="#content">^</a> Smileys</h2>
+    <h2><a name="smileys" href="#content">^^^</a> Smileys</h2>
     <p>Smileys können direkt in ihrer Textrepräsentation eingegeben werden und werden nach Möglichkeit automatisch ersetzt.</p>
     <p>Folgende Smileys werden erkannt:</p>
     <ul>
@@ -109,7 +109,7 @@
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/nope.png" %>" /> (Zweifeln): <code>:/ :-/ :\ :-\ =/ =\</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/sunny.png" %>" /> (Die Sonne aus dem Heck scheinen lassen): <code>B-) 8) 8-)</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/yeah.png" %>" /> (Und alle so Hurra): <code>\o/ \O/ \0/</code></li>
-        <li><img class="smiley" src="<%= url_for "/theme/img/smileys/cats.png" %>" /> (Die beliebten Katzenaugen): <code>^^</code></li>
+        <li><img class="smiley" src="<%= url_for "/theme/img/smileys/cats.png" %>" /> (Die beliebten Katzenaugen): <code>^^^^^^</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/love.png" %>" /> (Ein kitschiges Herz): <code>&lt;3</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/devilsmile.png" %>" /> (Diabolisches Lächeln): <code>&gt;:) &gt;:-) &gt;=)</code></li>
         <li><img class="smiley" src="<%= url_for "/theme/img/smileys/angry.png" %>" /> (Wütend sein): <code>&gt;:( &gt;:-( &gt;=(</code></li>
@@ -122,14 +122,14 @@
     </ul>
 </div>
 <div class="postbox helptext">
-    <h2><a name="attachements" href="#content">^</a> Dateianhänge</h2>
+    <h2><a name="attachements" href="#content">^^^</a> Dateianhänge</h2>
     <p>Anhänge können an bestehende Beiträge angefügt werden. Dazu muss zuerst der Beitrag erstellt werden, anschließend kann über den Link "anhängen" eine neue Datei hinzugefügt werden.</p>
     <p>Anhänge werden unterhalb des Beitrages angezeigt. Bilder werden dabei als kleinere Vorschau angezeigt. Anhänge werden mit einem Download-Link hinterlegt, sodass man sie direkt mit einem Klick herunterladen kann.</p>
     <p>Die Sortierung der Anhänge in der Anzeige erfolgt alphabetisch. Damit kann man zum Beispiel durch Nummerierung in den Dateinamen eine bestimmte Sortierung erzwingen. Bei zwei gleich benannten Dateien (sollte eigentlich vermieden werden aus Gründen der Übersicht), wird die zuerst hochgeladene Datei auch zuerst dargestellt.</p>
     <p>Für das Löschen von eigenen Anhängen ist neben dem Anhang ein entsprechender Link ("entfernen") hinterlegt, welcher über eine Bestätigungsseite den Anhang komplett entfernt. Wird ein Beitrag gelöscht, werden sämltiche Anhänge ebenfalls gelöscht.</p>
 </div>
 <div class="postbox helptext">
-    <h2><a name="chat" href="#content">^</a> Chat</h2>
+    <h2><a name="chat" href="#content">^^^</a> Chat</h2>
     <p>Der Instantchat kann über die Menüzeile erreicht werden. Hierzu muss im Webbrowser JavaScript entsprechend eingeschalten sein.</p>
     <p>Im Chat können im unteren Textfeld auf der linken Seite Nachrichten eingegeben werden. Durch drücken der <q>Enter</q>-Taste oder durch betätigen des <q>Senden</q>-Knopfes wird die Nachricht versendet. Wird die <q>Enter</q>-Taste gleichzeitig mit gedrückter <q>Shift</q>-Taste betätigt, so erzeugt dies einen Zeilenumbruch in der Textnachricht.</p>
     <p>Die Auswahlbox wählt das Zeitintervall, innerhalb dessen neue Nachrichten im Chat nachgeladen werden. Der Knopf <q>Laden</q> holt ebenfalls neue Nachrichten ab.</p>
