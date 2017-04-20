@@ -74,7 +74,7 @@
     <p>Folgende Methoden stehen zur Verfügung, um Texte inhaltlich zu strukturieren. Die Formatierungszeichen müssen an den Anfang einer entsprechenden Zeile gesetzt werden.</p>
     <p>Ist Javascript aktiviert, erscheinen über den Eingabefeldern für Beiträge kleine graue Buttons, die ebenfalls die Zeile, in der der Cursor steht oder die Zeilen, die ausgewählt wurden, entsprechend behandeln.</p>
     <ul>
-        <li><code>&lt;h3&gt;&lt;/h3&gt;</code>: Erzeugt eine Zwischenüberschrift</li>
+        <li><code>&lt;h3&gt;Überschrift&lt;/h3&gt;</code>: Erzeugt eine Zwischenüberschrift</li>
         <li><code>&lt;ul&gt;Listeninhalt&lt;/ul&gt;</code>: Erzeugt eine Liste</li>
         <li><code>&lt;ol&gt;Listeninhalt&lt;/ol&gt;</code>: Erzeugt eine Aufzählungsliste</li>
         <li><code>&lt;li&gt;Listentext&lt;/li&gt;</code>: Erzeugt ein Listenelement (muss zwischen <code>&lt;ul&gt;&lt;/ul&gt;</code> oder <code>&lt;ol&gt;&lt;/ol&gt;</code> direkt in der Mitte zwischen den <code>&gt;&lt;</code> stehen)</li>
