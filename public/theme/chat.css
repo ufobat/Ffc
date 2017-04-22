@@ -115,8 +115,7 @@ table > tr > td > div, table textarea {
     color: gainsboro;
 }
 .editbuttons {
-    text-align: right;
-    margin-right: 3em;
+    margin-left: 1.5em;
 }
 #textpreviewarea {
     height: 8em;
