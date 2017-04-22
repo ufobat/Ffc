@@ -93,8 +93,11 @@ sub chat_window_open {
 # Den Chat verlassen bzw. das Chat-Webbrowserfenster schließen
 sub leave_chat {
     my $c = $_[0];
+    my $s = $c->session;
+    # Chatlog stutzen
+    _cut_chatlog($c, $s);
     # Vermerk und Info-Nachricht in die Datenbank eintragen, dass der entsprechende Benutzer den Chat verlassen hat
-    $c->dbh_do('UPDATE "users" SET "inchat"=0 WHERE "id"=?', $c->session->{userid} );
+    $c->dbh_do('UPDATE "users" SET "inchat"=0 WHERE "id"=?', $s->{userid} );
     $c->render( text => 'ok' );
 }
 
@@ -171,6 +174,79 @@ EOSQL
 }
 
 ###############################################################################
+# Besondere Start-Aktionen
+sub _startup {
+    my ( $c, $s ) = @_;
+    unless ( 
+        $c->dbh_selectall_arrayref( << 'EOSQL', $s->{userid} )->[0]->[0]
+SELECT CASE WHEN
+    "inchat" AND DATETIME("lastseenchat", 'localtime', '+'||"chatrefreshsecs"||' seconds') >= DATETIME('now', 'localtime') 
+    THEN 1 ELSE 0 END
+FROM "users" WHERE "id"=?
+EOSQL
+    ) { 
+        $c->dbh_do('DELETE FROM "chat" WHERE "sysmsg" = 1 AND "userfromid"=?', $s->{userid});
+        _add_msg($c, $s->{user}.' schaut im Chat vorbei', 2);
+    }
+
+    _cut_chatlog($c, $s);
+
+    return << 'EOSQL';
+ORDER BY c."id" DESC
+LIMIT ?;
+EOSQL
+}
+
+###############################################################################
+# Chatlog zurecht stutzen
+sub _cut_chatlog {
+    my ( $c, $s ) = @_;
+    my $fiftyid = $c->dbh_selectall_arrayref('SELECT "id" FROM "chat" ORDER BY "id" DESC LIMIT ?'
+        , $c->configdata->{chatloglength});
+
+    if ( @$fiftyid ) {
+        $fiftyid = $fiftyid->[-1]->[0];
+        $c->dbh_do('DELETE FROM "chat" WHERE "id"<?', $fiftyid);
+        my $fileids = $c->dbh_selectall_arrayref('SELECT "id" FROM "attachements_chat" WHERE "msgid"<?', $fiftyid);
+        for my $fid ( map {; $_->[0] } @$fileids ) {
+            my $file = catfile(@{$c->datapath}, 'chatuploads', $fid);
+            unlink $file or die qq~could not delete file "$file": $!~;
+        }
+        $c->dbh_do('DELETE FROM "attachements_chat" WHERE "msgid"<?', $fiftyid);
+    }
+}
+
+###############################################################################
+sub _prepare_msgs {
+    my ( $c, $s, $msgs ) = @_;
+    my %ulinks;
+    for my $m ( @$msgs ) {
+        $m->[1] = xml_escape($m->[1]);
+        $ulinks{$m->[5]} = 
+            $m->[5] == $s->{userid} ?
+                '' : $c->url_for( 'show_pmsgs', usertoid => $m->[5] )
+                    unless exists $ulinks{$m->[5]};
+        $m->[6] = $ulinks{$m->[5]};
+        $m->[7] = $c->format_timestamp($m->[3], 1);
+    }
+
+}
+
+###############################################################################
+#
+sub _update_refreshtime {
+    my ( $c, $s, $msgs, $active ) = @_;
+    # Refresh-Timer neu setzen, damit diese Statusabfrage bei der Berechnung der Aktivität berücksichtig werden kann
+    my $sql  = qq~UPDATE "users" SET\n~;
+    $sql .= qq~    "lastchatid"=?,\n~ if @$msgs;
+    $sql .= qq~    "inchat"=1,\n    "lastseenchat"=CURRENT_TIMESTAMP~;
+    $sql .= qq~,\n    "lastseenchatactive"=CURRENT_TIMESTAMP~ if $active;
+    $sql .= qq~,\n    "lastonline"=CASE WHEN "hidelastseen"=0 THEN CURRENT_TIMESTAMP ELSE 0 END~;
+    $sql .= qq~\nWHERE "id"=?~;
+    $c->dbh_do( $sql, ( @$msgs ? $msgs->[0]->[0] : () ), $s->{userid} );
+}
+
+###############################################################################
 # Action-Handler für die Status-Ermittlung aus der Datenbank und den optionalen Nachrichtentransfer in die Datenbank
 sub _receive {
     my ( $c, $active, $started ) = @_;
@@ -181,7 +257,6 @@ sub _receive {
         _add_msg($c, $c->req->json);
     }
     my $s = $c->session;
-    my $chatloglength = $c->configdata->{chatloglength};
 
     # Beginn des Rückgabe-SQL erstellen
     my $sql = << 'EOSQL';
@@ -193,37 +268,7 @@ EOSQL
     # Bei Betreten des Chats wird eventuell eine Nachricht erzeugt, dass der Benutzer den Chat betreten hat,
     # wobei die Refresh-Zeit des Benutzers mit in die Berechnung mit einbezogen wird
     if ( $started ) {
-
-        unless ( 
-            $c->dbh_selectall_arrayref( << 'EOSQL', $s->{userid} )->[0]->[0]
-SELECT CASE WHEN
-    "inchat" AND DATETIME("lastseenchat", 'localtime', '+'||"chatrefreshsecs"||' seconds') >= DATETIME('now', 'localtime') THEN 1 ELSE 0 END
-FROM "users" 
-WHERE "id"=?
-EOSQL
-        ) { 
-            $c->dbh_do('DELETE FROM "chat" WHERE "sysmsg" = 1 AND "userfromid"=?', $s->{userid});
-            _add_msg($c, $s->{user}.' schaut im Chat vorbei', 2);
-        }
-
-        # Nachrichtensortierung und Nachrichtenlimit für den Einstieg berücksichtigen
-        $sql .= << 'EOSQL';
-ORDER BY c."id" DESC
-LIMIT ?;
-EOSQL
-
-        # Veraltete Einträge aus der Chat- und Chat-Attachement-Tabelle entfernen (inkl. Dateien)
-        my $fiftyid = $c->dbh_selectall_arrayref('SELECT "id" FROM "chat" ORDER BY "id" DESC LIMIT ?', $chatloglength);
-        if ( @$fiftyid ) {
-            $fiftyid = $fiftyid->[-1]->[0];
-            $c->dbh_do('DELETE FROM "chat" WHERE "id"<?', $fiftyid);
-            my $fileids = $c->dbh_selectall_arrayref('SELECT "id" FROM "attachements_chat" WHERE "msgid"<?', $fiftyid);
-            for my $fid ( map {; $_->[0] } @$fileids ) {
-                my $file = catfile(@{$c->datapath}, 'chatuploads', $fid);
-                unlink $file or die qq~could not delete file "$file": $!~;
-            }
-            $c->dbh_do('DELETE FROM "attachements_chat" WHERE "msgid"<?', $fiftyid);
-        }
+        $sql .= _startup($c, $s);
     }
     else {
         # Ist man bereits drin, müssen die anderen Benutzer für die Nachrichten berücksichtigt werden
@@ -237,29 +282,14 @@ EOSQL
 
     # Nachrichten-Abfrage wird durchgeführt
     my $msgs = $c->dbh_selectall_arrayref( $sql,
-        ( $started ? $chatloglength : $s->{userid} )
+        ( $started ? $c->configdata->{chatloglength} : $s->{userid} )
     );
 
     # Nachbearbeitung der empfangenen Nachrichten
-    my %ulinks;
-    for my $m ( @$msgs ) {
-        $m->[1] = xml_escape($m->[1]);
-        $ulinks{$m->[5]} = 
-            $m->[5] == $s->{userid} ?
-                '' : $c->url_for( 'show_pmsgs', usertoid => $m->[5] )
-                    unless exists $ulinks{$m->[5]};
-        $m->[6] = $ulinks{$m->[5]};
-        $m->[7] = $c->format_timestamp($m->[3], 1);
-    }
+    _prepare_msgs( $c, $s, $msgs );
 
-    # Refresh-Timer neu setzen, damit diese Statusabfrage bei der Berechnung der Aktivität berücksichtig werden kann
-    $sql  = qq~UPDATE "users" SET\n~;
-    $sql .= qq~    "lastchatid"=?,\n~ if @$msgs;
-    $sql .= qq~    "inchat"=1,\n    "lastseenchat"=CURRENT_TIMESTAMP~;
-    $sql .= qq~,\n    "lastseenchatactive"=CURRENT_TIMESTAMP~ if $active;
-    $sql .= qq~,\n    "lastonline"=CASE WHEN "hidelastseen"=0 THEN CURRENT_TIMESTAMP ELSE 0 END~;
-    $sql .= qq~\nWHERE "id"=?~;
-    $c->dbh_do( $sql, ( @$msgs ? $msgs->[0]->[0] : () ), $s->{userid} );
+    # Refresh-Zeit aktualisieren
+    _update_refreshtime( $c, $s, $msgs, $active );
 
     # Rückgabe der Statusabfragen inkl. der Anzahlen der neuen Nachrichten und Forenbeiträge für die Titelleiste
     $c->res->headers( 'Cache-Control' => 'public, max-age=0, no-cache' );
