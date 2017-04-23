@@ -388,3 +388,7 @@ textarea, .buttonalike, button, input, .avatar, .backgrounded, .suboption {
 ol {
     padding-left: 2em;
 }
+.insertformbuttons {
+    margin-bottom: .5em;
+}
+
