@@ -21,11 +21,11 @@ ffcdata.utils.is_disabled = function(){
 /************************************************************************
  *** Standard-Request-Funktion                                        ***
  ************************************************************************/
-ffcdata.utils.request = function(methd, url, data, callback, nojson, nojsondata) {
+ffcdata.utils.request = function(methd, url, data, callback, nojson, nojsondata, noasync) {
     try {
         // console.log('starting request');
         var req = new XMLHttpRequest();
-        req.open(methd, url, true);
+        req.open(methd, url, ( noasync ? false : true ) );
         req.addEventListener("load", function() {
             if (req.status < 400) {
                 if ( nojson !== undefined && nojson )

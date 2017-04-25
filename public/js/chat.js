@@ -266,8 +266,10 @@ ffcdata.chat.init = function() {
     /************************************************************************
      *** Den Chat verlassen                                               ***
      ************************************************************************/
-    window.addEventListener('beforeunload', function() {
-        ffcdata.utils.request('GET', ffcdata.chat.leaveurl, null, function(ret) { console.log(ret); });
+    window.addEventListener('beforeunload', function(e) {
+        ffcdata.utils.request('GET', ffcdata.chat.leaveurl, null, function(ret) { 
+            console.log(ret);
+        }, true, true, true);
         return true;
     });
 
