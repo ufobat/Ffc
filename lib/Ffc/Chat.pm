@@ -97,6 +97,17 @@ sub leave_chat {
     # Chatlog stutzen
     _cut_chatlog($c, $s);
     # Vermerk und Info-Nachricht in die Datenbank eintragen, dass der entsprechende Benutzer den Chat verlassen hat
+    if ( 
+        $c->dbh_selectall_arrayref( << 'EOSQL', $s->{userid} )->[0]->[0]
+SELECT CASE WHEN
+    "inchat" AND DATETIME("lastseenchat", 'localtime', '+'||"chatrefreshsecs"||' seconds') >= DATETIME('now', 'localtime') 
+    THEN 1 ELSE 0 END
+FROM "users" WHERE "id"=?
+EOSQL
+    ) { 
+        $c->dbh_do('DELETE FROM "chat" WHERE "sysmsg" = 3 AND "userfromid"=?', $s->{userid});
+        _add_msg($c, $s->{user}.' hat den Chat verlassen', 3);
+    }
     $c->dbh_do('UPDATE "users" SET "inchat"=0 WHERE "id"=?', $s->{userid} );
     $c->render( text => 'ok' );
 }
@@ -114,12 +125,12 @@ sub _add_msg {
         $msg =~ s~\A\s*<p>~~xmsgo;
         $msg =~ s~</p>\s*\z~~xmsgo;
         $msg =~ s~</p>\s*<p>~<br />~xgmso;
+        return unless $msg;
     }
 
     # Die neue Nachricht in die Daten eintragen, wenn sie Daten enthält
     $c->dbh_do('INSERT INTO "chat" ("userfromid", "msg", "sysmsg") VALUES (?,?,?)',
-        $c->session->{userid}, $msg, $issys ? 1 : 0)
-            if $msg;
+        $c->session->{userid}, $msg, $issys // 0);
 }
 
 ###############################################################################
@@ -150,7 +161,7 @@ SELECT
     "id"
 FROM "users"
 WHERE 
-    DATETIME("lastseenchat", 'localtime', '+'|| ( "chatrefreshsecs" + 1 ) ||' seconds') >= DATETIME('now', 'localtime')
+    DATETIME("lastseenchat", 'localtime', '+'|| ( "chatrefreshsecs" + 2 ) ||' seconds') >= DATETIME('now', 'localtime')
     AND "inchat"=1
 ORDER BY UPPER("name"), "id"
 EOSQL
@@ -185,7 +196,7 @@ SELECT CASE WHEN
 FROM "users" WHERE "id"=?
 EOSQL
     ) { 
-        $c->dbh_do('DELETE FROM "chat" WHERE "sysmsg" = 1 AND "userfromid"=?', $s->{userid});
+        $c->dbh_do('DELETE FROM "chat" WHERE ( "sysmsg" = 2 or "sysmsg" = 3 ) AND "userfromid"=?', $s->{userid});
         _add_msg($c, $s->{user}.' schaut im Chat vorbei', 2);
     }
 
