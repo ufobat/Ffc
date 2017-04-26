@@ -231,6 +231,7 @@ sub _cut_chatlog {
 sub _prepare_msgs {
     my ( $c, $s, $msgs ) = @_;
     my %ulinks;
+    my %uavs;
     for my $m ( @$msgs ) {
         $m->[1] = xml_escape($m->[1]);
         $ulinks{$m->[5]} = 
@@ -239,6 +240,10 @@ sub _prepare_msgs {
                     unless exists $ulinks{$m->[5]};
         $m->[6] = $ulinks{$m->[5]};
         $m->[7] = $c->format_timestamp($m->[3], 1);
+        $uavs{$m->[5]} = $c->url_for( 'avatar_show', userid => $m->[5] )
+            unless exists $uavs{$m->[5]};
+        $m->[8] = $uavs{$m->[5]};
+        
     }
 
 }

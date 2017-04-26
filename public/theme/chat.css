@@ -135,9 +135,6 @@ table > tr > td > div, table textarea {
 #msglog .usernameline .username .chatusernamelink {
     color: navy;
 }
-.chatmsgbox {
-    clear: both;
-}
 .chatmsgprefix {
     float: left;
 }
@@ -209,5 +206,10 @@ input#refreshtime {
 }
 .chatmsgcontent hr {
     margin: .5em 20%;
+}
+#msglog .avatar {
+    height: 1.5em;
+    float:right;
+    border: .1em solid silver;
 }
 
