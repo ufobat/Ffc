@@ -132,7 +132,7 @@ ffcdata.chat.init = function() {
         if ( msg[5] != ffcdata.userid ) {
             userstr = '<a href="' + msg[6] + '" target="_blank" title="Private Nachricht senden" class="chatusernamelink">' + userstr + '</a>';
         }
-        userstr = '<img src="' + msg[8] + '" class="avatar" /><span class="username"></span>' + userstr + '</span>';
+        userstr = '<img src="' + msg[8] + '" class="avatar" /><span class="username">' + userstr + '</span>';
 
         if ( !sameuser ) {
            usernameprefix = '<div class="chatmsgbox usernameline">' + userstr + '</div>\n';
