@@ -217,10 +217,13 @@ input#refreshtime {
     margin-top: -1em;
     border-radius: 0;
     padding: 0;
+    position: fixed;
+    right: 3em;
+    bottom: 3em;
 }
 #msglog .popup img {
-    max-width: 12em;
-    max-height: 8em;
+    max-width: 15em;
+    max-height: 10em;
     margin: 0;
 }
 
