@@ -11,7 +11,7 @@ use Mojo::Util 'xml_escape';
 use Data::Dumper;
 
 use Test::Mojo;
-use Test::More tests => 796;
+use Test::More tests => 990;
 
 #############################################################################
 # Benutzer anlegen
@@ -68,25 +68,32 @@ sub idstring {
 
 ###############################################################################
 sub fileupload {
-    my ( $u ) = @_;
+    my ( $u, $content_type, $fileext, $isimage ) = @_;
     my $t = $u->{t};
+    ( $content_type, $fileext, $isimage ) = ( 'image/png', 'png', 1 ) unless $content_type;
     note qq~-------- uploading file by user "$u->{username}" ($u->{userid})~;
     # Dateiupload ohne Dateien failed
     $t->post_ok("/chat/upload", form => { } )
       ->status_is(200)->content_is('failed');
     # Richtiger Upload
     $fileid++;
-    my $filename = Testinit::test_randstring() . '.png';
+    my $filename = Testinit::test_randstring() . ".$fileext";
     my $content  = Testinit::test_randstring();
     note qq~uploading file "$filename" ($fileid) with content "$content"~;
-    $id2file{$fileid} = { filename => $filename, content => $content, contenttype => 'image/png' };
+    $id2file{$fileid} = { 
+        filename    => $filename, 
+        content     => $content, 
+        contenttype => $content_type, 
+        fileext     => $fileext, 
+        isimage     => ($isimage ? 1 : 0)
+    };
     $t->post_ok("/chat/upload/",
         form => { 
             attachement => [
                 {
                     file => Mojo::Asset::Memory->new->add_chunk($content),
                     filename => $filename,
-                    'Content-Type' => 'text/ong',
+                    'Content-Type' => $content_type,
                 }
             ]
         }
@@ -101,7 +108,7 @@ sub fileupload {
 ###############################################################################
 sub check_file_system {
     my ( $fileid, $deleted ) = @_;
-    my ( $filename, $content, $contenttype ) = @{$id2file{$fileid}}{qw~filename content contenttype~};
+    my ( $filename, $content, $isimage, $contenttype ) = @{$id2file{$fileid}}{qw~filename content isimage contenttype~};
     note qq~checking file "$filename" ($fileid) ~ . ( $deleted ? 'deleted' : 'existing' ) . qq~ in file system~;
     my $uplpath = catfile $path, 'chatuploads', $fileid;
     if ( $deleted ) {
@@ -122,7 +129,7 @@ sub check_file_system {
 ###############################################################################
 sub check_file_database {
     my ( $fileid, $deleted ) = @_;
-    my ( $filename, $content, $contenttype ) = @{$id2file{$fileid}}{qw~filename content contenttype~};
+    my ( $filename, $content, $isimage, $contenttype ) = @{$id2file{$fileid}}{qw~filename content isimage contenttype~};
     note qq~checking file "$filename" ($fileid) ~ . ( $deleted ? 'deleted' : 'existing' ) . qq~ in database~;
     my $res = $dbh->selectall_arrayref(
         q~SELECT "msgid", "filename", "content_type" FROM "attachements_chat" WHERE "id"=?~
@@ -135,7 +142,7 @@ sub check_file_database {
     is scalar(@$res), 1, 'we got exact 1 entry'  or return;
     my ( $msgid, $rfilename, $rcontenttype ) = @{ $res->[0] };
     is $rfilename,   $filename,   'filename is correct';
-    is $contenttype, 'image/png', 'contenttype is correct';
+    is $contenttype, $rcontenttype, 'contenttype is correct';
     is $msgid, $id2file{$fileid}{calmsgid}, 'database msg id is correct';
     $id2file{$fileid}{gotmsgid} = $msgid;
     return $msgid;
@@ -144,16 +151,18 @@ sub check_file_database {
 ###############################################################################
 sub check_file_msg {
     my ( $u, $uf, $fileid, $deleted ) = @_;
-    my ( $filename, $content, $contenttype, $msgid ) = @{$id2file{$fileid}}{qw~filename content contenttype calmsgid~};
-    note qq~checking file "$filename" ($fileid) ~ . ( $deleted ? 'deleted' : 'existing' ) . qq~ in messages request ($msgid)~;
+    my ( $filename, $content, $isimage, $contenttype, $cmsgid ) = @{$id2file{$fileid}}{qw~filename content isimage contenttype calmsgid~};
+    note qq~checking file "$filename" ($fileid) ~ . ( $deleted ? 'deleted' : 'existing' ) . qq~ in messages request ($cmsgid)~;
     my $url = "/chat/download/$fileid";
-    my $msgstr = qq~<a href="$url" target="_blank" title="$filename" alt="$filename">$filename</a>~;
+    my $msgstr = $isimage
+        ? qq~<span class="menuentry"><a href="$url" target="_blank">$filename</a>'<div class="popup"><img src="$url" /></div></span>~
+        : qq~<a href="$url" target="_blank" title="$filename" alt="$filename">$filename</a>~;
 
     # request
     $u->{t}->get_ok('/chat/receive/started')->status_is(200);
     my @res = @{ $u->{t}->tx->res->json->[0] };
 
-    my @msgs = grep {; $_->[2] =~ qr~href="/chat/download/$fileid"~ } @res;
+    my @msgs = grep {; $_->[2] =~ qr~href="$url"~ } @res;
     if ( $deleted ) {
         my $cnt = @msgs;
         is $cnt, 0, 'file no longer in messsages';
@@ -164,7 +173,7 @@ sub check_file_msg {
     my $msg = $msgs[0];
     
     my ( $rmsgid, $rmsgstr, $ruserid ) = @{$msg}[ 0, 2, 5 ];
-    is $rmsgid, $msgid, 'message id ok';
+    is $rmsgid, $cmsgid, 'message id ok';
     is $ruserid, $uf->{userid}, 'userfrom id ok';
     like $rmsgstr, qr~$msgstr~, 'message content ok'; 
 }
@@ -215,8 +224,8 @@ sub check_online {
 ###############################################################################
 # complete check run
 sub check_complete {
-    my ( $uf, $deleted ) = @_;
-    my ( $filename, $fileid ) = fileupload($uf);
+    my ( $uf, $deleted, $content_type, $fileext, $isimg ) = @_;
+    my ( $filename, $fileid ) = fileupload($uf, $content_type, $fileext, $isimg);
     check_online( $uf, $fileid, $deleted );
 };
 
@@ -260,6 +269,25 @@ sub inlinimgtest {
     )->status_is(302);
     init_started();
     check_complete($u2);
+    check_complete($u2, 0, 'text/plain;charset=UTF-8', 'txt', 0);
+    check_complete($u2, 0, 'image/jpeg', 'jpg', 1);
+    $t->post_ok('/admin/boardsettings/inlineimage', 
+        form => {optionvalue => 0}
+    )->status_is(302);
+}
+
+###############################################################################
+# upload files that are no images
+sub noimgtest {
+    init_started();
+    check_complete($u2, 0, 'text/plain;charset=UTF-8', 'txt', 0);
+}
+
+###############################################################################
+# upload files that are jpeg images
+sub jpegimgtest {
+    init_started();
+    check_complete($u2, 0, 'image/jpeg', 'jpg', 1);
 }
 
 ###############################################################################
@@ -268,6 +296,8 @@ sub inlinimgtest {
 
 normaltest();
 reducedlogtest();
+noimgtest();
+jpegimgtest();
 inlinimgtest();
 #note idstring();
 #diag Dumper \%id2file;

@@ -345,7 +345,7 @@ sub chat_upload {
                 return;
             }
             # Das hier wird zum Dateipfad catdir't ($fileid ist das Datenbank-Resultset)
-            push @files, { id => $fileid->[0]->[0], name => $filename };
+            push @files, { id => $fileid->[0]->[0], name => $filename, content_type => $content_type };
             return [ catfile 'chatuploads', $fileid->[0]->[0] ];
         },
     );
@@ -357,11 +357,17 @@ sub chat_upload {
         my ( $fid, $filename ) = @{$f}{qw~id name~};
 
         my $url   = $c->url_for('chat_download', fileid => $fid);
-        _add_msg($c, qq~<a href="$url" target="_blank" title="$filename" alt="$filename">$filename</a>~, 0, 1);
-        my $mid = _get_own_msg_id($c);
-        $c->dbh_do(
-            'UPDATE "attachements_chat" SET "msgid"=? WHERE "id"=?'
-                , $mid, $fid );
+        if ( $c->is_image($f->{content_type}) ) {
+            _add_msg($c, 
+                qq~<span class="menuentry"><a href="$url" target="_blank">$filename</a>'<div class="popup"><img src="$url" /></div></span>~
+                , 0, 1 );
+        }
+        else {
+            _add_msg($c,
+                qq~<a href="$url" target="_blank" title="$filename" alt="$filename">$filename</a>~
+                , 0, 1 );
+        }
+        $c->dbh_do( 'UPDATE "attachements_chat" SET "msgid"=? WHERE "id"=?', _get_own_msg_id($c), $fid );
     }
 
     return $c->render(text => 'ok');
