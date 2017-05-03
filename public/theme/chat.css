@@ -219,7 +219,7 @@ input#refreshtime {
     position: fixed;
     right: auto;
     left:auto;
-    top: 10em;
+    top: 12em;
     background: gainsboro;
 }
 #msglog .popup img {
