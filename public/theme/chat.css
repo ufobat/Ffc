@@ -213,13 +213,14 @@ input#refreshtime {
     border: .1em solid silver;
 }
 #msglog .popup {
-    margin-left: 5em;
-    margin-top: -1em;
+    margin-left: 8em;
     border-radius: 0;
     padding: 0;
     position: fixed;
-    right: 3em;
-    bottom: 3em;
+    right: auto;
+    left:auto;
+    top: 10em;
+    background: gainsboro;
 }
 #msglog .popup img {
     max-width: 24em;
