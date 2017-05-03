@@ -213,7 +213,7 @@ input#refreshtime {
     border: .1em solid silver;
 }
 #msglog .popup {
-    margin-left: 8em;
+    margin-left: 6em;
     border-radius: 0;
     padding: 0;
     position: fixed;
