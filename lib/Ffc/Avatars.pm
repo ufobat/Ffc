@@ -65,7 +65,7 @@ sub avatar_upload {
     
     # Datei-Upload-Helper
     my ( $filename, $filetype ) = $c->file_upload(
-        'avatarfile', 1, 'Avatarbild', 100, 1, 8, 80, 
+        'avatarfile', 1, 'Avatarbild', 100, 1, 5, 80, 
         sub { 
             # Optionaler Spezial-Check für den Upload
             unless ( $_[0]->is_image($_[3]) ) {

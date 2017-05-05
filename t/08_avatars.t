@@ -160,7 +160,7 @@ sub file_db_ok {
         }
     )->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200);
-    error('Dateiname ist zu kurz, muss mindestens 8 Zeichen inklusive Dateiendung enthalten.');
+    error('Dateiname ist zu kurz, muss mindestens 5 Zeichen inklusive Dateiendung enthalten.');
     is file_db_ok('', $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
     ok !@dirlist, 'no files in storage directory';
@@ -168,7 +168,7 @@ sub file_db_ok {
 
 {
     note 'test with filename to short';
-    my $fn = 'aa.png';
+    my $fn = 'b.pg';
     $t->post_ok('/avatar/upload', form => {
             avatarfile => {
                 file => Mojo::Asset::Memory->new->add_chunk('a' x 10000),
@@ -178,7 +178,7 @@ sub file_db_ok {
         }
     )->status_is(302)->content_is('')->header_is(Location => '/options/form');
     $t->get_ok('/options/form')->status_is(200);
-    error('Dateiname ist zu kurz, muss mindestens 8 Zeichen inklusive Dateiendung enthalten.');
+    error('Dateiname ist zu kurz, muss mindestens 5 Zeichen inklusive Dateiendung enthalten.');
     is file_db_ok($fn, $user1), 'nofileindb', 'no file in database';
     my @dirlist = dir_list();
     ok !@dirlist, 'no files in storage directory';
