@@ -7,7 +7,7 @@ use lib "$FindBin::Bin/lib";
 use lib "$FindBin::Bin/../lib";
 use Test::Mojo;
 
-use Test::More tests => 110;
+use Test::More tests => 113;
 
 srand;
 
@@ -614,6 +614,14 @@ EOTXT
 <p>asdfasdf</p>
 EOHTML
         1
+    ],
+    [
+        << 'EOTXT',
+asdf http://blubbdi.de/test.png afsdf
+EOTXT
+        << 'EOTXT',
+<p>asdf <a href="http://blubbdi.de/test.png" title="Externe Webseite: http://blubbdi.de/test.png" target="_blank"><img src="http://blubbdi.de/test.png" title="http://blubbdi.de/test.png" /></a> afsdf</p>
+EOTXT
     ],
 );
 

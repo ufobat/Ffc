@@ -264,7 +264,7 @@ sub _make_link {
     return qq~<a href="$url" title="Externe Webseite: $url_xmlencode" target="_blank">~ 
         . ( 
             ( $inlimg && $url =~ $LinkImage )
-                ? qq~<img src="$url title="$url_xmlencode" />~
+                ? qq~<img src="$url" title="$url_xmlencode" />~
                 : _stripped_url($c, $url_xmlencode) 
         ) . qq~</a>~;
 }

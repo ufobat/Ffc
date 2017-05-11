@@ -131,6 +131,26 @@ sub delete_upload_check {
 }
 
 ###############################################################################
+# Beim Löschen eines Beitrages muss ggf. das Thema gelöscht werden, wenn es der letzte Beitrag war
+sub delete_do { 
+    my $c = $_[0];
+    my $tid = $c->param('topicid');
+    my $r = $c->dbh_selectall_arrayref(
+        'SELECT "topicid" FROM "posts" p WHERE p."topicid"=? AND p."id"=? AND p."userfrom"=?',
+        $tid, $c->param('postid'), $c->session->{userid});
+    if ( @$r ) {
+        $r = $c->dbh_selectall_arrayref(
+            'SELECT count(p."id") FROM "posts" p WHERE p."topicid"=?',
+            $tid
+        );
+        unless ( $r->[0]->[0] ) {
+            $c->dbh_do('DELETE FROM "topics" WHERE "id"=?', $tid);
+        }
+    }
+    $c->delete_post_do();
+}
+
+###############################################################################
 # Hier ist der einzige Ort, wo High-Scores gezählt werden
 sub inc_highscore      { $_[0]->inc_post_highscore()      }
 sub dec_highscore      { $_[0]->dec_post_highscore()      }
@@ -145,6 +165,5 @@ sub set_postlimit    { $_[0]->set_post_postlimit()    }
 sub upload_do        { $_[0]->upload_post_do()        }
 sub download         { $_[0]->download_post()         }
 sub delete_upload_do { $_[0]->delete_upload_post_do() }
-sub delete_do        { $_[0]->delete_post_do()        }
 
 1;
