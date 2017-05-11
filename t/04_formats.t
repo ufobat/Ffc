@@ -622,6 +622,7 @@ EOTXT
         << 'EOTXT',
 <p>asdf <a href="http://blubbdi.de/test.png" title="Externe Webseite: http://blubbdi.de/test.png" target="_blank"><img src="http://blubbdi.de/test.png" title="http://blubbdi.de/test.png" /></a> afsdf</p>
 EOTXT
+        2
     ],
 );
 
