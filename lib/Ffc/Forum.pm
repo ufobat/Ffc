@@ -135,6 +135,7 @@ sub delete_upload_check {
 sub delete_do { 
     my $c = $_[0];
     my $tid = $c->param('topicid');
+    my $del = 0;
     my $r = $c->dbh_selectall_arrayref(
         'SELECT "topicid" FROM "posts" p WHERE p."topicid"=? AND p."id"=? AND p."userfrom"=?',
         $tid, $c->param('postid'), $c->session->{userid});
@@ -143,11 +144,15 @@ sub delete_do {
             'SELECT count(p."id") FROM "posts" p WHERE p."topicid"=?',
             $tid
         );
-        unless ( $r->[0]->[0] ) {
+        if ( $r->[0]->[0] == 1 ) {
             $c->dbh_do('DELETE FROM "topics" WHERE "id"=?', $tid);
+            $del = 1;
         }
     }
     $c->delete_post_do();
+    if ( $del ) {
+        $c->redirect_to('show_forum_topiclist');
+    }
 }
 
 ###############################################################################
