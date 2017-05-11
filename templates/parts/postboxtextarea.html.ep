@@ -7,7 +7,7 @@
             (
             <a href="<%== $returl %>">abbrechen</a><span id="editbuttons" class="editbuttons nodisplay">,
 % } else {
-            <span id="editbuttons" class="editbuttons nodisplay">,
+            (<span id="editbuttons" class="editbuttons nodisplay">
 % }
              <%= include 'parts/editbuttons' %></span> 
             )
@@ -16,9 +16,11 @@
         <p>
             <textarea required name="textdata" id="textinput" class="edit<%= $textdata ? ' inedit' : '' %>"><%== $textdata // '' %></textarea>
         </p>
+% if ( $action ne 'add_topic_form' ) {
         <div class="subtabuttonp">
 %= include 'parts/uploadinputbox';
         </div>
+% }
         <div id="subtabuttonp" class="nodisplay">
             <button id="textpreviewtabutton" title="Vorschau anzeigen für den eingegebenen Text" type="button">Vorschau</button>
             <button id="closetextabutton" title="Textfeld wieder zusammen klappen" type="button" class="nodisplay">Textfeld einklappen</button>
