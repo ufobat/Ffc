@@ -5,10 +5,11 @@
         <span class="menuentry">
             <a href="<%= url_for 'show_forum', topicid => $t->[0] %>"><%= $t->[2] %>
 % if ( $t->[10] ) {
-            <div class="otherspopup popup topiclistpopup summarypopup">
-                <p><%== $t->[10] %> ...</p>
-            </div></a>
+                <div class="otherspopup popup topiclistpopup summarypopup">
+                    <p><%== $t->[10] %> ...</p>
+                </div>
 % }
+            </a>
         </span>
         <span class="addinfos">
 % if ( $t->[3] and not $t->[5] ) {
