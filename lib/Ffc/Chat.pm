@@ -105,7 +105,7 @@ SELECT CASE WHEN
 FROM "users" WHERE "id"=?
 EOSQL
     ) { 
-        $c->dbh_do('DELETE FROM "chat" WHERE "sysmsg" = 3 AND "userfromid"=?', $s->{userid});
+        $c->dbh_do('DELETE FROM "chat" WHERE "sysmsg"=3 AND "userfromid"=?', $s->{userid});
         _add_msg($c, $s->{user}.' hat den Chat verlassen', 3);
     }
     $c->dbh_do('UPDATE "users" SET "inchat"=0 WHERE "id"=?', $s->{userid} );
@@ -196,7 +196,7 @@ SELECT CASE WHEN
 FROM "users" WHERE "id"=?
 EOSQL
     ) { 
-        $c->dbh_do('DELETE FROM "chat" WHERE ( "sysmsg" = 2 or "sysmsg" = 3 ) AND "userfromid"=?', $s->{userid});
+        $c->dbh_do('DELETE FROM "chat" WHERE "userfromid"=? AND ( "sysmsg"=2 OR "sysmsg"=3 )', $s->{userid});
         _add_msg($c, $s->{user}.' schaut im Chat vorbei', 2);
     }
 
