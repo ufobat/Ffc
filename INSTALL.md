@@ -60,7 +60,7 @@ Das Initialisierungsscript liegt unter `script/init.pl` und muss einmal vor Inbe
 
 Dem Initialisierungsscript muss als letzten Parameter ein eindeutiger Name für die Cookies übergeben werden. Das ist notwendig, falls mehrere Instanzen der Software unter einer Domain eingerichtet werden sollen.
 
-Dem Initialisierungsscript kann zusätzlich mit `-d` vor dem letzten Parameter zusätzliche Information (Cookie-Secret, Crypt-Salt) entlockt werden bei Bedarf (Test-Suite).
+Dem Initialisierungsscript können optional mit `-d` vor dem letzten Parameter zusätzliche Information (Cookie-Secret, Crypt-Salt) zum Beispiel zu Testzwecken entlockt werden.
 
 Außerdem wird ein erster Administratoren-Account mit Zufallspasswort angelegt. Die Zugangsdaten werden auf der Kommandozeile beim Aufruf von `script/init.pl` ausgegeben und sollten notiert werden, da die weiterführende Konfiguration über diesen Account von statten geht.
 
@@ -68,4 +68,9 @@ Anschließend muss der Webserver so konfiguriert werden, dass das Script `script
 
 Unter der so eingerichteten URL sollte, wenn alles passt, anschließend das entsprechende Forum verfügbar sein. Hier kann man sich mit den vom `script/init.pl` gelieferten Daten anmelden und kann entsprechende weiterführende Konfigurationen (Foreneinstellungen und Benutzerverwaltung) unter dem Menüpunkt "Optionen" vornehmen.
 
+Testsuite durchführen
+---------------------
 
+Die Testsuite kann wie üblich mittels der Perl-Werkzeuge `prove` automatisch durchlaufen werden. Dazu ist keine extra Instanz notwendig, die Tests erstellen sich selber temporäre Instanzen im "Temp-Verzeichnis", welche bei erfolgreichen Tests wieder gelöscht geräumt werden.
+
+Mittels `perl` kann ein einzelner Test, wie gehabt, durchgeführt werden.
